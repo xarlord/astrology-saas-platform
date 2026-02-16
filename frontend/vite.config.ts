@@ -84,7 +84,17 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           charts: ['d3', 'recharts'],
+          query: ['@tanstack/react-query'],
+          utils: ['axios', 'date-fns'],
         },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
       },
     },
   },
