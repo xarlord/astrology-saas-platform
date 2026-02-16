@@ -1,0 +1,19 @@
+{
+  "name": "@mooncalender/shared-constants",
+  "version": "1.0.0",
+  "description": "Shared constants for MoonCalender platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "constants",
+    "astrology",
+    "shared"
+  ],
+  "author": "MoonCalender Dev Team",
+  "license": "MIT"
+}

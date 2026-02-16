@@ -14,16 +14,8 @@ import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 
-// Import routes
-import authRoutes from './routes/auth.routes';
-import userRoutes from './routes/user.routes';
-import chartRoutes from './routes/chart.routes';
-import analysisRoutes from './routes/analysis.routes';
-import transitRoutes from './routes/transit.routes';
-import healthRoutes from './routes/health.routes';
-import calendarRoutes from './routes/calendar.routes';
-import lunarReturnRoutes from './routes/lunarReturn.routes';
-import synastryRoutes from './routes/synastry.routes';
+// Import API router with versioning
+import apiRouter from './api';
 
 // Load environment variables
 dotenv.config();
@@ -90,13 +82,29 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // ============================================
+// API Version Middleware
+// ============================================
+
+app.use('/api/', (req, res, next) => {
+  const version = req.path.match(/\/v(\d+)/)?.[1] || '1';
+  res.setHeader('X-API-Version', version);
+
+  // Add deprecation notice for v1 (optional, when v2 is ready)
+  if (version === '1') {
+    res.setHeader('X-API-Status', 'stable');
+  }
+
+  next();
+});
+
+// ============================================
 // Request Logging
 // ============================================
 
 app.use(requestLogger);
 
 // ============================================
-// Health Check
+// Health Check (no versioning)
 // ============================================
 
 app.get('/health', (req: Request, res: Response) => {
@@ -105,22 +113,19 @@ app.get('/health', (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development',
+    api: {
+      versions: ['v1', 'v2'],
+      current: 'v1',
+      base: '/api'
+    }
   });
 });
 
 // ============================================
-// API Routes
+// API Routes (Versioned)
 // ============================================
 
-app.use('/api/health', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/charts', chartRoutes);
-app.use('/api/analysis', analysisRoutes);
-app.use('/api/transits', transitRoutes);
-app.use('/api/calendar', calendarRoutes);
-app.use('/api/lunar-return', lunarReturnRoutes);
-app.use('/api/synastry', synastryRoutes);
+app.use('/api', apiRouter);
 
 // ============================================
 // Error Handling

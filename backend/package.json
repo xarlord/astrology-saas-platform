@@ -38,7 +38,8 @@
     "pg": "^8.11.3",
     "swisseph": "^0.5.17",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -52,6 +53,7 @@
     "@types/pg": "^8.10.9",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^9.0.7",
+    "@types/winston-daily-rotate-file": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",
