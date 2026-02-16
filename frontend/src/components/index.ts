@@ -62,3 +62,7 @@ export {
   BirthdaySharing,
 } from './solar.index';
 
+// PWA
+export { ServiceWorkerUpdateBanner } from './ServiceWorkerUpdateBanner';
+export { PushNotificationPermission } from './PushNotificationPermission';
+

@@ -1,0 +1,164 @@
+/**
+ * Push Notification Permission Styles
+ */
+
+.push-notification-prompt {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.push-notification-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  position: relative;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.push-notification-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.push-notification-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.push-notification-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.push-notification-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.push-notification-text h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.push-notification-text p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.push-notification-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.push-notification-button {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.push-notification-button.primary {
+  background: #6366f1;
+  color: white;
+}
+
+.push-notification-button.primary:hover:not(:disabled) {
+  background: #5558e3;
+}
+
+.push-notification-button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.push-notification-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.push-notification-button.secondary:hover {
+  background: #e5e7eb;
+}
+
+.push-notification-success {
+  background: #d1fae5;
+  border: 1px solid #10b981;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.push-notification-test {
+  background: white;
+  border: 1px solid #10b981;
+  color: #10b981;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.push-notification-test:hover {
+  background: #10b981;
+  color: white;
+}
+
+@media (max-width: 640px) {
+  .push-notification-prompt {
+    top: auto;
+    bottom: 20px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+
+  .push-notification-actions {
+    flex-direction: column;
+  }
+}
