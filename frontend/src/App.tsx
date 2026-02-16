@@ -127,6 +127,7 @@ function App() {
               <ProtectedRoute>
                 <SolarReturnsPage />
               </ProtectedRoute>
+            }
           />
 
           {/* 404 */}

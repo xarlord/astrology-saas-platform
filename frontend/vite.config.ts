@@ -56,6 +56,10 @@ export default defineConfig({
           },
         ],
       },
+      // Use custom service worker with injectManifest strategy
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
     }),
   ],
   resolve: {

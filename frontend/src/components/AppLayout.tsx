@@ -8,7 +8,7 @@ import {
   ClockIcon,
   TableCellsIcon,
   MoonIcon,
-  ArrowPathOnRectangleIcon,
+  ArrowUturnLeftIcon,
   Cog6ToothIcon,
   PlusIcon,
   CalendarIcon,
@@ -137,7 +137,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                 onClick={() => logout()}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
-                <ArrowPathOnRectangleIcon className="w-5 h-5" />
+                <ArrowUturnLeftIcon className="w-5 h-5" />
                 Logout
               </button>
             </div>
@@ -256,7 +256,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 href="/retrograde"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <ArrowPathOnRectangleIcon className="w-5 h-5" />
+                <ArrowUturnLeftIcon className="w-5 h-5" />
                 <span>Retrograde Calendar</span>
               </a>
             </div>

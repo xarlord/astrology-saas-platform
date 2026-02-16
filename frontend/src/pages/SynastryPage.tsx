@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import SynastryPage from '../components/SynastryPage';
 import { chartService, Chart } from '../services/chart.service';
-import AppLayout from '../components/AppLayout';
+import { AppLayout } from '../components/AppLayout';
 
 const SynastryPageWrapper: React.FC = () => {
   const [charts, setCharts] = useState<Chart[]>([]);

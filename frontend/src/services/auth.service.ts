@@ -34,16 +34,16 @@ export const authService = {
    * Register new user
    */
   async register(data: RegisterData): Promise<AuthResponse> {
-    const { data } = await api.post<AuthResponse>('/auth/register', data);
-    return data.data;
+    const { data: responseData } = await api.post<AuthResponse>('/auth/register', data);
+    return responseData.data;
   },
 
   /**
    * Login user
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const { data } = await api.post<AuthResponse>('/auth/login', credentials);
-    return data.data;
+    const { data: responseData } = await api.post<AuthResponse>('/auth/login', credentials);
+    return responseData.data;
   },
 
   /**
@@ -57,8 +57,8 @@ export const authService = {
    * Get current user profile
    */
   async getProfile(): Promise<{ user: any }> {
-    const { data } = await api.get('/auth/me');
-    return data.data;
+    const { data: responseData } = await api.get('/auth/me');
+    return responseData.data;
   },
 
   /**

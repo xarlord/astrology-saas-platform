@@ -1,4 +1,4 @@
-import React from 'react'} from 'react';
+import React from 'react';
 import { PlanetSymbol, ZodiacBadge } from './';
 
 // Types based on findings.md
