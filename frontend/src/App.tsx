@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 
 // Components
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -48,6 +49,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <ServiceWorkerUpdateBanner />
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<HomePage />} />
