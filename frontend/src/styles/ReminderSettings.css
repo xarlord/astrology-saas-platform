@@ -1,0 +1,334 @@
+/**
+ * ReminderSettings Component Styles
+ */
+
+.reminder-settings {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.settings-header {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: flex-start;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  color: #3b82f6;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.settings-header h2 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.settings-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Form */
+.reminder-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Event Type Options */
+.event-type-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-type-option {
+  display: flex;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.event-type-option:hover {
+  border-color: #6366f1;
+  background: #f9fafb;
+}
+
+.event-type-option.selected {
+  border-color: #6366f1;
+  background: #eff6ff;
+}
+
+.event-type-option input[type='radio'] {
+  margin-right: 12px;
+  accent-color: #6366f1;
+}
+
+.option-content {
+  flex: 1;
+}
+
+.option-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 2px;
+}
+
+.option-description {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Reminder Type Options */
+.reminder-type-options {
+  display: flex;
+  gap: 12px;
+}
+
+.reminder-type-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reminder-type-option:hover {
+  border-color: #6366f1;
+  background: #f9fafb;
+}
+
+.reminder-type-option.selected {
+  border-color: #6366f1;
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.reminder-type-option input[type='radio'] {
+  display: none;
+}
+
+.reminder-type-option span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Advance Hours Options */
+.advance-hours-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advance-hours-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.advance-hours-option:hover {
+  border-color: #6366f1;
+  background: #f9fafb;
+}
+
+.advance-hours-option.selected {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.advance-hours-option input[type='checkbox'] {
+  margin-right: 12px;
+  accent-color: #10b981;
+  width: 18px;
+  height: 18px;
+}
+
+.advance-hours-option span {
+  flex: 1;
+  font-size: 14px;
+  color: #374151;
+}
+
+.check-icon {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.form-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #92400e;
+  line-height: 1.4;
+}
+
+/* Toggle Switch */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 24px;
+  transition: background 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked + .toggle-slider {
+  background: #6366f1;
+}
+
+.toggle-input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+.toggle-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Messages */
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  color: #166534;
+  font-size: 14px;
+}
+
+.error-message {
+  padding: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+  font-size: 14px;
+}
+
+/* Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+}
+
+.btn-submit {
+  padding: 12px 24px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .reminder-settings {
+    padding: 16px;
+  }
+
+  .settings-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .reminder-type-options {
+    flex-direction: column;
+  }
+
+  .form-actions {
+    justify-content: stretch;
+  }
+
+  .btn-submit {
+    width: 100%;
+  }
+}

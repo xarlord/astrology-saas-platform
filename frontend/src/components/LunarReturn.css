@@ -1,0 +1,1134 @@
+/**
+ * Lunar Return Component Styles
+ * Styling for all lunar return components
+ */
+
+/* ============================================
+   LUNAR RETURN DASHBOARD
+   ============================================ */
+
+.lunar-return-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.dashboard-header .subtitle {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+/* Countdown Card */
+.countdown-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  margin-bottom: 24px;
+}
+
+.countdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.countdown-header h3 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.moon-icon {
+  font-size: 3rem;
+}
+
+.countdown-content {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.days-until {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.days-until .number {
+  font-size: 5rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.days-until .label {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-top: 8px;
+}
+
+.return-date {
+  font-size: 1.3rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.countdown-footer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.countdown-footer p {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* Natal Moon Card */
+.natal-moon-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.natal-moon-card h3 {
+  margin: 0 0 16px 0;
+  color: #2c3e50;
+}
+
+.moon-position {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.moon-position .sign {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+  text-transform: capitalize;
+}
+
+.moon-position .degree {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.natal-moon-card .description {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button .icon {
+  font-size: 1.5rem;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.action-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.action-button.secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.action-button.secondary:hover {
+  background: #f8f9ff;
+}
+
+.action-button.tertiary {
+  background: white;
+  color: #7f8c8d;
+  border: 2px solid #e0e0e0;
+}
+
+.action-button.tertiary:hover {
+  background: #f8f9fa;
+}
+
+/* Info Section */
+.info-section {
+  margin-top: 32px;
+}
+
+.info-section h3 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #2c3e50;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.info-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-card .icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.info-card h4 {
+  margin: 8px 0;
+  color: #2c3e50;
+}
+
+.info-card p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ============================================
+   LUNAR FORECAST VIEW
+   ============================================ */
+
+.lunar-forecast-view {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.forecast-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.forecast-header h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.forecast-header .return-date {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  color: #495057;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.back-button:hover {
+  background: #e9ecef;
+}
+
+/* Tabs */
+.forecast-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.tab {
+  padding: 12px 24px;
+  border: none;
+  background: #f8f9fa;
+  color: #6c757d;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  background: #e9ecef;
+}
+
+.tab.active {
+  background: #667eea;
+  color: white;
+}
+
+/* Tab Content */
+.tab-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Overview Tab */
+.overview-tab > div {
+  margin-bottom: 24px;
+}
+
+.overview-tab > div:last-child {
+  margin-bottom: 0;
+}
+
+.theme-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.theme-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.3rem;
+}
+
+.theme-card .theme-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.intensity-indicator {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}
+
+.intensity-indicator.low {
+  background: rgba(76, 175, 80, 0.3);
+}
+
+.intensity-indicator.medium {
+  background: rgba(255, 193, 7, 0.3);
+}
+
+.intensity-indicator.high {
+  background: rgba(255, 152, 0, 0.3);
+}
+
+.intensity-indicator.extreme {
+  background: rgba(244, 67, 54, 0.3);
+}
+
+.emotional-theme-card,
+.action-advice-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.emotional-theme-card h3,
+.action-advice-card h3 {
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+}
+
+.emotional-theme-card p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.action-advice-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.action-advice-card li {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+/* Key Dates */
+.key-dates-card h3 {
+  margin: 0 0 16px 0;
+  color: #2c3e50;
+}
+
+.key-dates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.key-date-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.key-date-item .date-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #667eea;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.key-date-item .date {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.key-date-item .description {
+  margin: 0;
+  color: #333;
+  font-weight: 500;
+}
+
+.key-date-item .significance {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Predictions Tab */
+.predictions-tab h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+}
+
+.predictions-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.prediction-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+}
+
+.prediction-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.prediction-header .category-icon {
+  font-size: 1.5rem;
+}
+
+.prediction-header h4 {
+  margin: 0;
+  color: #2c3e50;
+  text-transform: capitalize;
+}
+
+.likelihood {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.likelihood-bar {
+  display: flex;
+  gap: 2px;
+}
+
+.likelihood-bar .bar {
+  color: #ddd;
+  font-size: 0.6rem;
+}
+
+.likelihood-bar .bar.filled {
+  color: #667eea;
+}
+
+.likelihood .number {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.prediction-text {
+  color: #333;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.advice-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.advice-list li {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+/* Rituals Tab */
+.rituals-tab h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+}
+
+.rituals-list {
+  display: grid;
+  gap: 20px;
+}
+
+.ritual-card {
+  background: #f8f9fa;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.ritual-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ritual-header .phase-icon {
+  font-size: 2rem;
+}
+
+.ritual-header h4 {
+  margin: 0;
+  color: #2c3e50;
+  flex-grow: 1;
+}
+
+.ritual-header .phase {
+  padding: 4px 12px;
+  background: #667eea;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.ritual-description {
+  color: #333;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.materials {
+  margin-bottom: 16px;
+}
+
+.materials ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+}
+
+.materials li {
+  color: #555;
+  line-height: 1.6;
+}
+
+.ritual-steps {
+  margin-top: 16px;
+}
+
+.ritual-steps ol {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+}
+
+.ritual-steps li {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+/* Journal Tab */
+.journal-tab h3 {
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+}
+
+.journal-intro {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.journal-prompts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.journal-prompt {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.journal-prompt .prompt-number {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #667eea;
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.journal-prompt .prompt-text {
+  margin: 0;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ============================================
+   LUNAR CHART VIEW
+   ============================================ */
+
+.lunar-chart-view {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.chart-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.chart-header h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.chart-header .return-date {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.chart-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .chart-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Chart Wheel */
+.chart-wheel-section {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-wheel-section h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+}
+
+.house-wheel {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.wheel-svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.wheel-info {
+  text-align: center;
+}
+
+.wheel-info p {
+  margin: 0;
+}
+
+.wheel-info strong {
+  color: #2c3e50;
+}
+
+.wheel-info .house-meaning {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Chart Details */
+.chart-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.moon-position-card,
+.theme-card,
+.aspects-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.moon-position-card h3,
+.theme-card h3,
+.aspects-card h3 {
+  margin: 0 0 16px 0;
+  color: #2c3e50;
+}
+
+.position-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.position-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.position-row .label {
+  color: #666;
+  font-weight: 500;
+}
+
+.position-row .value {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.theme-card p {
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.intensity-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.intensity-badge.low {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.intensity-badge.medium {
+  background: #ffe082;
+  color: #f57f17;
+}
+
+.intensity-badge.high {
+  background: #ffcc80;
+  color: #e65100;
+}
+
+.intensity-badge.extreme {
+  background: #ef9a9a;
+  color: #c62828;
+}
+
+/* Aspects */
+.aspects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aspect-item {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.aspect-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.aspect-symbol {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.aspect-type {
+  text-transform: capitalize;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.aspect-orb {
+  margin-left: auto;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.aspect-planets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.aspect-planets .planet {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.aspect-planets .separator {
+  color: #ccc;
+}
+
+.aspect-interpretation {
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.applying-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  background: #667eea;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.no-aspects {
+  background: #f8f9fa;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.no-aspects p {
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
+.no-aspects .note {
+  color: #999;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* ============================================
+   LUNAR HISTORY VIEW
+   ============================================ */
+
+.lunar-history-view {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.history-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.history-header h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.history-header .subtitle {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.history-content {
+  min-height: 400px;
+}
+
+.returns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.history-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.history-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.date-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+}
+
+.date-section .theme {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.history-card .intensity-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+.history-card .card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.history-card .emotional-theme {
+  color: #333;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.history-card .emotional-theme strong {
+  color: #2c3e50;
+}
+
+.view-details-button,
+.delete-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-details-button {
+  background: #667eea;
+  color: white;
+}
+
+.view-details-button:hover {
+  background: #5568d3;
+}
+
+.delete-button {
+  background: #f8f9fa;
+  color: #dc3545;
+  border: 1px solid #dee2e6;
+}
+
+.delete-button:hover {
+  background: #f1f3f5;
+}
+
+.delete-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.history-card .card-footer {
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.history-card .created-date {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state .icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+}
+
+.empty-state p {
+  color: #7f8c8d;
+  margin-bottom: 24px;
+}
+
+.empty-state .action-button {
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.empty-state .action-button:hover {
+  background: #5568d3;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pagination-button {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.pagination-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-button:not(:disabled):hover {
+  background: #5568d3;
+}
+
+.page-info {
+  color: #666;
+  font-weight: 500;
+}
+
+/* ============================================
+   COMMON UTILITIES
+   ============================================ */
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  text-align: center;
+  padding: 40px;
+  background: #fee;
+  border-radius: 12px;
+  color: #c33;
+}
+
+.error-message p {
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.retry-button:hover {
+  background: #5568d3;
+}

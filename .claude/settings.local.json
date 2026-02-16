@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(planning-with-files:planning-with-files)",
+      "WebSearch",
+      "Bash(npx @_davideast/stitch-mcp init:*)",
+      "Bash(where npx)",
+      "Bash(gcloud auth list:*)",
+      "Bash(gcloud config list:*)",
+      "Bash(gcloud components install:*)",
+      "Bash(gcloud beta services mcp enable:*)",
+      "Bash(gcloud auth application-default login:*)",
+      "Bash(npm install:*)",
+      "Bash(dir \"%APPDATA%\\\\Claude\")",
+      "Bash(npx -y @_davideast/stitch-mcp doctor:*)",
+      "Bash(npx @_davideast/stitch-mcp doctor:*)",
+      "Bash(npx @_davideast/stitch-mcp list-projects:*)",
+      "Bash(npx:*)",
+      "Bash(start /B npx:*)",
+      "Bash(npm test)",
+      "Bash(npm search:*)",
+      "Bash(npm test:*)",
+      "Bash(curl:*)",
+      "Bash(npm run dev:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

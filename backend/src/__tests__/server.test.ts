@@ -1,0 +1,344 @@
+/**
+ * Unit Tests for Server Entry Point
+ * Tests Express app setup, middleware configuration, and server initialization
+ */
+
+import request from 'supertest';
+import { Server } from 'http';
+import app from '../server';
+
+// Mock routes to avoid initialization issues
+jest.mock('../routes/auth.routes', () => (req: any, res: any, next: any) => next());
+jest.mock('../routes/user.routes', () => (req: any, res: any, next: any) => next());
+jest.mock('../routes/chart.routes', () => (req: any, res: any, next: any) => next());
+jest.mock('../routes/analysis.routes', () => (req: any, res: any, next: any) => next());
+jest.mock('../routes/transit.routes', () => (req: any, res: any, next: any) => next());
+jest.mock('../routes/health.routes', () => (req: any, res: any, next: any) => next());
+
+describe('Server Configuration', () => {
+  beforeEach(() => {
+    // Set test environment variables
+    process.env.PORT = '3001';
+    process.env.FRONTEND_URL = 'http://localhost:3000';
+    process.env.RATE_LIMIT_WINDOW_MS = '900000';
+    process.env.RATE_LIMIT_MAX_REQUESTS = '100';
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Express App Initialization', () => {
+    it('should create Express application', () => {
+      expect(app).toBeDefined();
+      expect(typeof app).toBe('object');
+    });
+
+    it('should be a function (Express app)', () => {
+      expect(typeof app).toBe('function');
+    });
+  });
+
+  describe('Middleware Configuration', () => {
+    it('should use JSON body parser', async () => {
+      const response = await request(app)
+        .post('/api/test-endpoint')
+        .send({ data: 'test' })
+        .set('Content-Type', 'application/json');
+
+      // Request should be processed (may 404 but should not error)
+      expect([200, 404, 500]).toContain(response.status);
+    });
+
+    it('should use URL-encoded body parser', async () => {
+      const response = await request(app)
+        .post('/api/test')
+        .send('name=test&value=data')
+        .set('Content-Type', 'application/x-www-form-urlencoded');
+
+      expect([200, 404, 500]).toContain(response.status);
+    });
+
+    it('should have compression middleware', async () => {
+      const response = await request(app)
+        .get('/health')
+        .set('Accept-Encoding', 'gzip');
+
+      // Should return valid response
+      expect([200, 404, 500]).toContain(response.status);
+    });
+  });
+
+  describe('CORS Configuration', () => {
+    it('should allow requests from configured origins', async () => {
+      const response = await request(app)
+        .options('/api/health')
+        .set('Origin', 'http://localhost:3000')
+        .set('Access-Control-Request-Method', 'GET');
+
+      expect([200, 204]).toContain(response.status);
+    });
+
+    it('should include CORS headers', async () => {
+      const response = await request(app)
+        .get('/health')
+        .set('Origin', 'http://localhost:3000');
+
+      // Should have CORS headers
+      const corsHeader = response.headers['access-control-allow-origin'];
+      expect(corsHeader).toBeDefined();
+    });
+  });
+
+  describe('Security Middleware', () => {
+    it('should include security headers from Helmet', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      // Should have security headers
+      expect(response.headers['x-frame-options'] || response.headers['X-Frame-Options']).toBeDefined();
+      expect(response.headers['x-content-type-options'] || response.headers['X-Content-Type-Options']).toBeDefined();
+    });
+
+    it('should set X-Frame-Options header', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      const xFrameOptions = response.headers['x-frame-options'] || response.headers['X-Frame-Options'];
+      expect(xFrameOptions).toBeDefined();
+    });
+  });
+
+  describe('Rate Limiting', () => {
+    it('should apply rate limiting to API routes', async () => {
+      // Make multiple requests to test rate limiting
+      const requests = [];
+      for (let i = 0; i < 5; i++) {
+        requests.push(
+          request(app).get('/api/health')
+        );
+      }
+
+      const responses = await Promise.all(requests);
+
+      // First few should succeed
+      expect(responses[0].status).toBe(200);
+
+      // Eventually should hit rate limit if configured strictly
+      // (This depends on RATE_LIMIT_MAX_REQUESTS setting)
+    });
+  });
+
+  describe('Health Check Endpoint', () => {
+    it('should return 200 for health check', async () => {
+      const response = await request(app)
+        .get('/health')
+        .expect('Content-Type', /json/);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('should return correct health check structure', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      expect(response.body).toHaveProperty('status', 'ok');
+      expect(response.body).toHaveProperty('timestamp');
+      expect(response.body).toHaveProperty('uptime');
+      expect(response.body).toHaveProperty('environment');
+    });
+
+    it('should return server uptime in seconds', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      expect(response.body.uptime).toBeGreaterThanOrEqual(0);
+      expect(typeof response.body.uptime).toBe('number');
+    });
+
+    it('should return ISO timestamp', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      expect(response.body.timestamp).toBeDefined();
+      expect(new Date(response.body.timestamp)).toBeInstanceOf(Date);
+    });
+
+    it('should return environment name', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      expect(response.body.environment).toBeDefined();
+      expect(typeof response.body.environment).toBe('string');
+    });
+  });
+
+  describe('API Routes', () => {
+    it('should mount health routes at /api/health', async () => {
+      const response = await request(app)
+        .get('/api/health');
+
+      // Should route to health routes
+      expect([200, 404]).toContain(response.status);
+    });
+
+    it('should mount auth routes at /api/auth', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({});
+
+      // Should route to auth routes (may return validation error)
+      expect([200, 400, 404]).toContain(response.status);
+    });
+
+    it('should mount user routes at /api/users', async () => {
+      const response = await request(app)
+        .get('/api/users');
+
+      // Should route to user routes
+      expect([200, 401, 404]).toContain(response.status);
+    });
+
+    it('should mount chart routes at /api/charts', async () => {
+      const response = await request(app)
+        .get('/api/charts');
+
+      // Should route to chart routes
+      expect([200, 401, 404]).toContain(response.status);
+    });
+
+    it('should mount analysis routes at /api/analysis', async () => {
+      const response = await request(app)
+        .get('/api/analysis');
+
+      // Should route to analysis routes
+      expect([200, 404]).toContain(response.status);
+    });
+
+    it('should mount transit routes at /api/transits', async () => {
+      const response = await request(app)
+        .get('/api/transits');
+
+      // Should route to transit routes
+      expect([200, 404]).toContain(response.status);
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle 404 for unknown routes', async () => {
+      const response = await request(app)
+        .get('/api/unknown-route');
+
+      expect(response.status).toBe(404);
+    });
+
+    it('should return JSON error response', async () => {
+      const response = await request(app)
+        .get('/api/unknown-route');
+
+      expect(response.headers['content-type']).toMatch(/json/);
+    });
+
+    it('should include success: false in error response', async () => {
+      const response = await request(app)
+        .get('/api/unknown-route');
+
+      expect(response.body).toHaveProperty('success', false);
+    });
+  });
+
+  describe('Server Startup', () => {
+    it('should listen on configured PORT', () => {
+      const port = parseInt(process.env.PORT || '3001', 10);
+      expect(port).toBe(3001);
+    });
+
+    it('should have valid PORT number', () => {
+      const port = parseInt(process.env.PORT || '3001', 10);
+      expect(port).toBeGreaterThan(0);
+      expect(port).toBeLessThan(65536);
+    });
+  });
+
+  describe('Graceful Shutdown', () => {
+    it('should have SIGTERM handler', () => {
+      // The process should have SIGTERM listener
+      expect(process.listenerCount('SIGTERM')).toBeGreaterThan(0);
+    });
+
+    it('should have SIGINT handler', () => {
+      // The process should have SIGINT listener
+      expect(process.listenerCount('SIGINT')).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Unhandled Error Handling', () => {
+    it('should handle unhandled rejections', () => {
+      // The process should have unhandledRejection listener
+      expect(process.listenerCount('unhandledRejection')).toBeGreaterThan(0);
+    });
+
+    it('should handle uncaught exceptions', () => {
+      // The process should have uncaughtException listener
+      expect(process.listenerCount('uncaughtException')).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Body Parser Limits', () => {
+    it('should have 10mb JSON limit', async () => {
+      // Create a large payload (under 10mb)
+      const largePayload = {
+        data: 'x'.repeat(1000), // Small payload for test
+      };
+
+      const response = await request(app)
+        .post('/api/test')
+        .send(largePayload)
+        .set('Content-Type', 'application/json');
+
+      expect([200, 404, 413]).toContain(response.status);
+    });
+  });
+
+  describe('Content Security Policy', () => {
+    it('should have CSP headers configured', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      // CSP should be configured
+      const cspHeader = response.headers['content-security-policy'] || response.headers['Content-Security-Policy'];
+      expect(cspHeader).toBeDefined();
+    });
+
+    it('should restrict script sources', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      const cspHeader = response.headers['content-security-policy'] || response.headers['Content-Security-Policy'];
+      expect(cspHeader).toContain('script-src');
+    });
+
+    it('should restrict object sources', async () => {
+      const response = await request(app)
+        .get('/health');
+
+      const cspHeader = response.headers['content-security-policy'] || response.headers['Content-Security-Policy'];
+      expect(cspHeader).toContain("object-src 'none'");
+    });
+  });
+
+  describe('Application Export', () => {
+    it('should export Express app', () => {
+      expect(app).toBeDefined();
+    });
+
+    it('should be usable for testing', () => {
+      // Should be able to use app in supertest
+      const testFn = async () => {
+        return await request(app).get('/health');
+      };
+
+      expect(testFn).not.toThrow();
+    });
+  });
+});

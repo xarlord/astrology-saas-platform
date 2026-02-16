@@ -1,0 +1,642 @@
+/**
+ * Synastry Calculator Styles
+ */
+
+.synastry-calculator {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Chart Selection */
+.chart-selection {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-selection h2 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.chart-selectors {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-selector {
+  flex: 1;
+}
+
+.chart-selector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.chart-selector select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--input-background);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.chart-selector select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.calculate-button {
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.calculate-button:hover:not(:disabled) {
+  background: var(--primary-color-hover);
+}
+
+.calculate-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.calculate-button:disabled {
+  background: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error Message */
+.error-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fee;
+  color: #c00;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Results */
+.synastry-results {
+  background: var(--card-background);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Overall Score */
+.overall-score {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-hover) 100%);
+  color: white;
+}
+
+.score-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.score-number {
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.score-out-of {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.score-details h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+}
+
+.score-details .theme {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+.overall-score.excellent {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+}
+
+.overall-score.good {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+}
+
+.overall-score.fair {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+}
+
+.overall-score.challenging {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+}
+
+/* Tabs */
+.result-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 2rem 0;
+  background: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* Tab Content */
+.tab-content {
+  padding: 2rem;
+}
+
+/* Overview Tab */
+.overview-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.strengths-section h3,
+.challenges-section h3,
+.advice-section h3,
+.elemental-balance h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.3rem;
+}
+
+.strengths-list,
+.challenges-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.strength-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  border-radius: 4px;
+}
+
+.strength-item .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #4caf50;
+  color: white;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.challenge-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+}
+
+.challenge-item .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #f44336;
+  color: white;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.advice-section p {
+  margin: 0;
+  padding: 1rem;
+  background: var(--secondary-background);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 4px;
+  line-height: 1.6;
+}
+
+/* Elemental Balance */
+.elemental-balance {
+  padding: 1.5rem;
+  background: var(--secondary-background);
+  border-radius: 8px;
+}
+
+.elements-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.element-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  background: var(--card-background);
+  border-radius: 8px;
+  gap: 0.5rem;
+}
+
+.element-icon {
+  font-size: 2rem;
+}
+
+.element-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.element-name {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.element-card.fire {
+  border-top: 3px solid #f44336;
+}
+
+.element-card.earth {
+  border-top: 3px solid #795548;
+}
+
+.element-card.air {
+  border-top: 3px solid #90a4ae;
+}
+
+.element-card.water {
+  border-top: 3px solid #2196f3;
+}
+
+.balance-type {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.balance-type.well-balanced {
+  color: #4caf50;
+}
+
+.balance-type.balanced {
+  color: #ff9800;
+}
+
+.balance-type.imbalanced {
+  color: #f44336;
+}
+
+/* Scores Tab */
+.scores-tab h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.category-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.category-score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.score-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.score-value.excellent {
+  color: #4caf50;
+}
+
+.score-value.good {
+  color: #2196f3;
+}
+
+.score-value.fair {
+  color: #ff9800;
+}
+
+.score-value.challenging {
+  color: #f44336;
+}
+
+.score-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--secondary-background);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.score-fill.excellent {
+  background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+.score-fill.good {
+  background: linear-gradient(90deg, #2196f3, #64b5f6);
+}
+
+.score-fill.fair {
+  background: linear-gradient(90deg, #ff9800, #ffb74d);
+}
+
+.score-fill.challenging {
+  background: linear-gradient(90deg, #f44336, #e57373);
+}
+
+/* Aspects Tab */
+.aspects-tab h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.no-aspects {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.aspects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.aspect-card {
+  padding: 1.5rem;
+  background: var(--secondary-background);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.aspect-card:hover {
+  border-color: var(--border-color);
+  transform: translateY(-2px);
+}
+
+.aspect-card.soulmate {
+  border-color: #e91e63;
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+}
+
+.aspect-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.planets {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.aspect-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.orb {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.aspect-body {
+  margin-bottom: 1rem;
+}
+
+.interpretation {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.soulmate-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #e91e63;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.aspect-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.weight {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Composite Tab */
+.composite-tab h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.composite-description {
+  margin: 0 0 2rem 0;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.composite-planets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.composite-planet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: var(--secondary-background);
+  border-radius: 8px;
+}
+
+.composite-planet .degree {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .synastry-calculator {
+    padding: 1rem;
+  }
+
+  .chart-selectors {
+    flex-direction: column;
+  }
+
+  .vs-divider {
+    transform: rotate(90deg);
+    margin: 0.5rem 0;
+  }
+
+  .overall-score {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .elements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aspects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .composite-planets {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
