@@ -1,0 +1,208 @@
+/**
+ * Solar Return Chart Styles
+ */
+
+.solar-return-chart {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.chart-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-header h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.chart-header .location {
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-controls button {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.chart-controls button:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.chart-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.zoom-level {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+  min-width: 50px;
+  text-align: center;
+}
+
+.chart-canvas-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.chart-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.chart-canvas {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+  max-width: 100%;
+  height: auto;
+}
+
+.chart-legend {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.chart-legend h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.planet-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+}
+
+.planet-symbol {
+  font-size: 1.25rem;
+}
+
+.planet-name,
+.aspect-name {
+  font-size: 0.875rem;
+  color: #4a5568;
+  text-transform: capitalize;
+}
+
+.aspect-line {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.planet-info {
+  position: fixed;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  z-index: 1000;
+}
+
+.planet-info h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+}
+
+.planet-details p {
+  font-size: 0.875rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.planet-details strong {
+  color: #2d3748;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .solar-return-chart {
+    padding: 1rem;
+  }
+
+  .chart-canvas-container {
+    padding: 0 1rem;
+  }
+
+  .chart-canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .legend-items {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .planet-info {
+    position: fixed;
+    top: auto;
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    transform: none;
+    max-width: none;
+  }
+}

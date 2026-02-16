@@ -1,0 +1,414 @@
+/**
+ * Solar Return Interpretation Styles
+ */
+
+.solar-return-interpretation {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.interpretation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.interpretation-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.return-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #718096;
+  font-size: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  color: #4a5568;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: #e2e8f0;
+}
+
+.action-btn.primary {
+  background: #6366f1;
+  color: white;
+  border-color: #6366f1;
+}
+
+.action-btn.primary:hover {
+  background: #5558e3;
+}
+
+.interpretation-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-icon {
+  color: #6366f1;
+}
+
+.section-icon.gold {
+  color: #f59e0b;
+}
+
+.section-icon.warning {
+  color: #ef4444;
+}
+
+.section-icon.success {
+  color: #10b981;
+}
+
+.section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+/* Sun House */
+.main-interpretation {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+.focus-areas h4,
+.themes-grid h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+}
+
+.focus-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.focus-tag {
+  background: #edf2f7;
+  color: #2d3748;
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.theme-card {
+  background: #f7fafc;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+/* Moon Phase */
+.moon-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.moon-interpretation {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.moon-energy {
+  font-size: 0.95rem;
+  color: #4a5568;
+  margin-bottom: 1rem;
+}
+
+.moon-advice h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+}
+
+.moon-advice ul {
+  list-style: none;
+  padding: 0;
+}
+
+.moon-advice li {
+  padding: 0.5rem 0;
+  color: #4a5568;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.moon-advice li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #6366f1;
+  font-weight: bold;
+}
+
+/* Lucky Days */
+.lucky-days-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.lucky-day-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #10b981;
+}
+
+.day-date {
+  font-weight: 600;
+  color: #2d3748;
+  min-width: 80px;
+}
+
+.day-reason {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.day-intensity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.intensity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Challenges */
+.challenges-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.challenge-card {
+  background: #fef5e7;
+  border: 1px solid #fbd38d;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.challenge-header h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #9c4221;
+  margin-bottom: 0.5rem;
+}
+
+.challenge-description {
+  color: #4a5568;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.challenge-advice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+
+.challenge-advice strong {
+  color: #9c4221;
+  flex-shrink: 0;
+}
+
+/* Opportunities */
+.opportunities-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.opportunity-card {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.opportunity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.opportunity-header h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #166534;
+}
+
+.opportunity-description {
+  color: #4a5568;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.opportunity-timing {
+  font-size: 0.875rem;
+  color: #166534;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+/* Advice */
+.advice-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.advice-list li {
+  padding: 0.75rem;
+  background: #faf5ff;
+  border-left: 3px solid #a855f7;
+  border-radius: 4px;
+  color: #4a5568;
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.advice-list li::before {
+  content: '💡';
+  position: absolute;
+  left: 0.75rem;
+}
+
+/* Keywords */
+.keywords-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword-item {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.keyword-item:hover {
+  background: #cbd5e0;
+  transform: scale(1.05);
+}
+
+/* Footer */
+.interpretation-footer {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.disclaimer {
+  font-size: 0.875rem;
+  color: #718096;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .solar-return-interpretation {
+    padding: 1rem;
+  }
+
+  .interpretation-header {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .action-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .themes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lucky-day-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .day-intensity {
+    align-self: flex-end;
+  }
+}

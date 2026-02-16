@@ -53,3 +53,12 @@ export {
   CalendarExport,
 } from './calendar.index';
 
+// Solar Returns
+export {
+  SolarReturnDashboard,
+  SolarReturnChart,
+  SolarReturnInterpretation,
+  RelocationCalculator,
+  BirthdaySharing,
+} from './solar.index';
+
