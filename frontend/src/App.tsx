@@ -20,6 +20,7 @@ import AnalysisPage from './pages/AnalysisPage';
 import TransitPage from './pages/TransitPage';
 import ProfilePage from './pages/ProfilePage';
 import SynastryPageWrapper from './pages/SynastryPage';
+import SolarReturnsPage from './pages/SolarReturnsPage';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -109,6 +110,21 @@ function App() {
                 <SynastryPageWrapper />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/solar-returns"
+            element={
+              <ProtectedRoute>
+                <SolarReturnsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/solar-returns/:year"
+            element={
+              <ProtectedRoute>
+                <SolarReturnsPage />
+              </ProtectedRoute>
           />
 
           {/* 404 */}
