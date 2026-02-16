@@ -12,6 +12,7 @@ import { transitRoutes } from '../../modules/transits';
 import { calendarRoutes } from '../../modules/calendar';
 import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
+import { solarReturnRoutes } from '../../modules/solar';
 import healthRoutes from '../../routes/health.routes';
 
 const router = Router();
@@ -42,5 +43,8 @@ router.use('/lunar-return', lunarReturnRoutes);
 
 // Synastry endpoints
 router.use('/synastry', synastryRoutes);
+
+// Solar return endpoints
+router.use('/solar-returns', solarReturnRoutes);
 
 export default router;
