@@ -10,6 +10,9 @@ import { useAuthStore, useChartsStore } from '../store';
 export { useServiceWorkerUpdate } from './useServiceWorkerUpdate';
 export { usePushNotifications } from './usePushNotifications';
 
+// AI Hooks
+export { useAIInterpretation } from './useAIInterpretation';
+
 /**
  * Use Auth Hook
  */

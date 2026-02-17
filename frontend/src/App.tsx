@@ -22,6 +22,7 @@ import TransitPage from './pages/TransitPage';
 import ProfilePage from './pages/ProfilePage';
 import SynastryPageWrapper from './pages/SynastryPage';
 import SolarReturnsPage from './pages/SolarReturnsPage';
+import CalendarPage from './pages/CalendarPage';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -126,6 +127,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SolarReturnsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/calendar"
+            element={
+              <ProtectedRoute>
+                <CalendarPage />
               </ProtectedRoute>
             }
           />

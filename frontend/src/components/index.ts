@@ -66,3 +66,7 @@ export {
 export { ServiceWorkerUpdateBanner } from './ServiceWorkerUpdateBanner';
 export { PushNotificationPermission } from './PushNotificationPermission';
 
+// AI Interpretations
+export { AIInterpretationToggle } from './AIInterpretationToggle';
+export { AIInterpretationDisplay } from './AIInterpretationDisplay';
+
