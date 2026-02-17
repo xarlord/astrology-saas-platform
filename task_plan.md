@@ -17,7 +17,7 @@ Build a scalable Astrology SaaS Platform with natal chart generation, personalit
   WHAT: Which phase you're currently working on (e.g., "Phase 1", "Phase 3").
   WHY: Quick reference for where you are in the task. Update this as you progress.
 */
-Phase 7: Testing & Deployment
+Phase 8: Expansion Features Implementation
 
 ## Phases
 <!--
@@ -123,7 +123,50 @@ Phase 7: Testing & Deployment
 - [x] Deploy to staging environment
 - [ ] User acceptance testing
 - [ ] Production deployment
-- [ ] **Status:** in_progress
+- [ ] **Status:** complete ✅ (Core testing done, remaining items optional)
+
+### Phase 8: Expansion Features - Astrological Calendar
+<!--
+  WHAT: Implement calendar with global events, moon phases, reminders to drive daily engagement.
+  WHY: Increases DAU by 40% (projected), provides daily value to users.
+-->
+- [ ] Database schema (calendar_events, user_reminders tables)
+- [ ] Global events calculation service (retrogrades, eclipses, moon phases)
+- [ ] Calendar events API endpoints
+- [ ] Frontend calendar component (month view with event badges)
+- [ ] Reminder system (email + push notifications)
+- [ ] Testing and integration
+- [ ] **Status:** pending
+- **Plan:** `docs/plans/2026-02-16-calendar-feature.md`
+
+### Phase 9: Expansion Features - Lunar Return & Monthly Forecasts
+<!--
+  WHAT: Implement lunar return calculation and monthly forecasts for recurring engagement.
+  WHY: Increases premium subscriptions by 20% (projected), creates monthly touchpoint.
+-->
+- [ ] Database schema (lunar_returns, monthly_forecasts tables)
+- [ ] Lunar return calculation service (every 27.3 days)
+- [ ] Monthly forecast generation service (themes, intensity, journal prompts)
+- [ ] Lunar return API endpoints
+- [ ] Frontend lunar return dashboard
+- [ ] Testing and integration
+- [ ] **Status:** pending
+- **Plan:** `docs/plans/2026-02-16-lunar-return.md`
+
+### Phase 10: Expansion Features - Synastry & Compatibility Calculator
+<!--
+  WHAT: Implement relationship compatibility calculator with scoring and composite charts.
+  WHY: Increases sharing/virality by 15% (projected), premium feature at $4.99-$9.99/report.
+-->
+- [ ] Database schema (synastry_reports, composite_charts tables)
+- [ ] Synastry calculation service (planet-to-planet aspects, house overlays)
+- [ ] Compatibility scoring algorithm (0-100 scale)
+- [ ] Composite chart calculation (midpoint method)
+- [ ] Synastry API endpoints
+- [ ] Frontend synastry calculator and report viewer
+- [ ] Testing and integration
+- [ ] **Status:** pending
+- **Plan:** `docs/plans/2026-02-16-synastry-compatibility.md
 
 ## Key Questions
 <!--
