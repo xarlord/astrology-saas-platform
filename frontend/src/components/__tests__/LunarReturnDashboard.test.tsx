@@ -6,22 +6,23 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LunarReturnDashboard from '../LunarReturnDashboard';
-import * as lunarReturnApi from '../../services/lunarReturn.api';
+import * as lunarReturnApi from '@services/lunarReturn.api';
+import { vi } from 'vitest';
 
 // Mock the API service
-jest.mock('../../services/lunarReturn.api');
+vi.mock('../../services/lunarReturn.api');
 
-const mockGetCurrentLunarReturn = lunarReturnApi.getCurrentLunarReturn as jest.MockedFunction<typeof lunarReturnApi.getCurrentLunarReturn>;
-const mockGetNextLunarReturn = lunarReturnApi.getNextLunarReturn as jest.MockedFunction<typeof lunarReturnApi.getNextLunarReturn>;
-const mockCalculateLunarReturnChart = lunarReturnApi.calculateLunarReturnChart as jest.MockedFunction<typeof lunarReturnApi.calculateLunarReturnChart>;
+const mockGetCurrentLunarReturn = lunarReturnApi.getCurrentLunarReturn as any;
+const mockGetNextLunarReturn = lunarReturnApi.getNextLunarReturn as any;
+const mockCalculateLunarReturnChart = lunarReturnApi.calculateLunarReturnChart as any;
 
 describe('LunarReturnDashboard', () => {
-  const mockOnChartClick = jest.fn();
-  const mockOnForecastClick = jest.fn();
-  const mockOnHistoryClick = jest.fn();
+  const mockOnChartClick = vi.fn();
+  const mockOnForecastClick = vi.fn();
+  const mockOnHistoryClick = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Loading State', () => {

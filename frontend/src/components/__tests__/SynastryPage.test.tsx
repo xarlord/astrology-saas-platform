@@ -66,7 +66,7 @@ describe('SynastryPage', () => {
   });
 
   test('switches to history view when clicking Saved Reports', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });
@@ -82,7 +82,7 @@ describe('SynastryPage', () => {
   });
 
   test('displays loading state when loading reports', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockImplementation(
+    (synastryApi.getSynastryReports as any).mockImplementation(
       () => new Promise(() => {}) // Never resolves
     );
 
@@ -96,7 +96,7 @@ describe('SynastryPage', () => {
   });
 
   test('displays reports list when reports are available', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });
@@ -113,7 +113,7 @@ describe('SynastryPage', () => {
   });
 
   test('displays empty state when no reports exist', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: [],
       pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
     });
@@ -130,7 +130,7 @@ describe('SynastryPage', () => {
   });
 
   test('navigates to calculator when clicking Go to Calculator', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: [],
       pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
     });
@@ -153,7 +153,7 @@ describe('SynastryPage', () => {
   });
 
   test('displays report details correctly', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });
@@ -171,7 +171,7 @@ describe('SynastryPage', () => {
   });
 
   test('shows favorite indicator for favorited reports', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });
@@ -188,14 +188,14 @@ describe('SynastryPage', () => {
   });
 
   test('calls deleteSynastryReport when deleting a report', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });
-    (synastryApi.deleteSynastryReport as jest.Mock).mockResolvedValue(undefined);
+    (synastryApi.deleteSynastryReport as any).mockResolvedValue(undefined);
 
     // Mock window.confirm
-    global.confirm = jest.fn(() => true);
+    global.confirm = vi.fn(() => true) as any;
 
     render(<SynastryPage charts={mockCharts} />);
 
@@ -215,11 +215,11 @@ describe('SynastryPage', () => {
   });
 
   test('toggles favorite status when clicking favorite button', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });
-    (synastryApi.updateSynastryReport as jest.Mock).mockResolvedValue(undefined);
+    (synastryApi.updateSynastryReport as any).mockResolvedValue(undefined);
 
     render(<SynastryPage charts={mockCharts} />);
 
@@ -241,7 +241,7 @@ describe('SynastryPage', () => {
   });
 
   test('handles pagination correctly', async () => {
-    (synastryApi.getSynastryReports as jest.Mock)
+    (synastryApi.getSynastryReports as any)
       .mockResolvedValueOnce({
         reports: mockReports.slice(0, 1),
         pagination: { page: 1, limit: 10, total: 20, totalPages: 2 },
@@ -279,7 +279,7 @@ describe('SynastryPage', () => {
   });
 
   test('disables previous button on first page', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 20, totalPages: 2 },
     });
@@ -295,7 +295,7 @@ describe('SynastryPage', () => {
   });
 
   test('disables next button on last page', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 2, limit: 10, total: 20, totalPages: 2 },
     });
@@ -311,7 +311,7 @@ describe('SynastryPage', () => {
   });
 
   test('handles API error when loading reports', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockRejectedValue({
+    (synastryApi.getSynastryReports as any).mockRejectedValue({
       response: { data: { error: 'Failed to load reports' } },
     });
 
@@ -325,7 +325,7 @@ describe('SynastryPage', () => {
   });
 
   test('formats dates correctly', async () => {
-    (synastryApi.getSynastryReports as jest.Mock).mockResolvedValue({
+    (synastryApi.getSynastryReports as any).mockResolvedValue({
       reports: mockReports,
       pagination: { page: 1, limit: 10, total: 2, totalPages: 1 },
     });

@@ -1,0 +1,175 @@
+/**
+ * Service Worker Update Banner Styles
+ */
+
+.sw-update-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  max-width: 90%;
+  width: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px 20px;
+  animation: slideUp 0.3s ease-out;
+}
+
+.sw-update-banner.offline {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.sw-update-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sw-update-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sw-update-message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sw-update-message strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.sw-update-subtext {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.sw-update-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sw-update-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+.sw-update-button.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.sw-update-button.primary:hover {
+  background: #2563eb;
+}
+
+.sw-update-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.sw-update-button.secondary:hover {
+  background: #e5e7eb;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 640px) {
+  .sw-update-banner {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px 12px 0 0;
+    animation: slideUpMobile 0.3s ease-out;
+  }
+
+  .sw-update-content {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .sw-update-message {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sw-update-actions {
+    width: 100%;
+    justify-content: stretch;
+    margin-top: 8px;
+  }
+
+  .sw-update-button {
+    flex: 1;
+    padding: 10px 16px;
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .sw-update-banner {
+    background: #1f2937;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .sw-update-banner.offline {
+    background: #423d0f;
+    border-color: #ca8a04;
+  }
+
+  .sw-update-message strong {
+    color: #f9fafb;
+  }
+
+  .sw-update-subtext {
+    color: #d1d5db;
+  }
+
+  .sw-update-button.secondary {
+    background: #374151;
+    color: #e5e7eb;
+  }
+
+  .sw-update-button.secondary:hover {
+    background: #4b5563;
+  }
+}

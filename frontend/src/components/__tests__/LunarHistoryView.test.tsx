@@ -6,18 +6,19 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LunarHistoryView from '../LunarHistoryView';
-import * as lunarReturnApi from '../../services/lunarReturn.api';
-import { SavedLunarReturn } from '../../services/lunarReturn.api';
+import * as lunarReturnApi from '@services/lunarReturn.api';
+import { SavedLunarReturn } from '@services/lunarReturn.api';
+import { vi } from 'vitest';
 
 // Mock the API service
-jest.mock('../../services/lunarReturn.api');
+vi.mock('../../services/lunarReturn.api');
 
-const mockGetLunarReturnHistory = lunarReturnApi.getLunarReturnHistory as jest.MockedFunction<typeof lunarReturnApi.getLunarReturnHistory>;
-const mockDeleteLunarReturn = lunarReturnApi.deleteLunarReturn as jest.MockedFunction<typeof lunarReturnApi.deleteLunarReturn>;
+const mockGetLunarReturnHistory = lunarReturnApi.getLunarReturnHistory as any;
+const mockDeleteLunarReturn = lunarReturnApi.deleteLunarReturn as any;
 
 describe('LunarHistoryView', () => {
-  const mockOnBack = jest.fn();
-  const mockOnSelect = jest.fn();
+  const mockOnBack = vi.fn();
+  const mockOnSelect = vi.fn();
 
   const mockReturns: SavedLunarReturn[] = [
     {
@@ -49,9 +50,9 @@ describe('LunarHistoryView', () => {
   ];
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Mock window.confirm
-    global.confirm = jest.fn(() => true);
+    global.confirm = vi.fn(() => true);
   });
 
   describe('Loading State', () => {
@@ -237,7 +238,7 @@ describe('LunarHistoryView', () => {
     });
 
     it('should not delete when confirm is cancelled', async () => {
-      (global.confirm as jest.Mock).mockReturnValueOnce(false);
+      (global.confirm as vi.Mock).mockReturnValueOnce(false);
 
       render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 

@@ -6,11 +6,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { SolarReturnDashboard } from '../SolarReturnDashboard';
-import { SolarReturnChart } from '../SolarReturnChart';
-import { SolarReturnInterpretation } from '../SolarReturnInterpretation';
-import { RelocationCalculator } from '../RelocationCalculator';
-import { BirthdaySharing } from '../BirthdaySharing';
+import { SolarReturnDashboard } from '../../components/SolarReturnDashboard';
+import { SolarReturnChart } from '../../components/SolarReturnChart';
+import { SolarReturnInterpretation } from '../../components/SolarReturnInterpretation';
+import { RelocationCalculator } from '../../components/RelocationCalculator';
+import { BirthdaySharing } from '../../components/BirthdaySharing';
 import * as axios from 'axios';
 
 // Mock axios

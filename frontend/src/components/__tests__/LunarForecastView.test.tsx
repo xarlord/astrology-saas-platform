@@ -6,15 +6,16 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LunarForecastView from '../LunarForecastView';
-import * as lunarReturnApi from '../../services/lunarReturn.api';
+import * as lunarReturnApi from '@services/lunarReturn.api';
+import { vi } from 'vitest';
 
 // Mock the API service
-jest.mock('../../services/lunarReturn.api');
+vi.mock('../../services/lunarReturn.api');
 
-const mockGetLunarMonthForecast = lunarReturnApi.getLunarMonthForecast as jest.MockedFunction<typeof lunarReturnApi.getLunarMonthForecast>;
+const mockGetLunarMonthForecast = lunarReturnApi.getLunarMonthForecast as any;
 
 describe('LunarForecastView', () => {
-  const mockOnBack = jest.fn();
+  const mockOnBack = vi.fn();
 
   const mockForecast = {
     userId: 'user_1',
@@ -59,7 +60,7 @@ describe('LunarForecastView', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockGetLunarMonthForecast.mockResolvedValue(mockForecast);
   });
 

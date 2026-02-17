@@ -61,7 +61,7 @@ describe('Service Worker Registration', () => {
       });
 
       expect(mockServiceWorker.register).toHaveBeenCalledWith('/sw.js', {
-        updateViaCache: 'import',
+        updateViaCache: 'imports',
       });
     });
 

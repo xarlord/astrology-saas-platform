@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "error": "Cannot read properties of undefined (reading 'completions')",
+  "interpretation": null,
+  "mockCalls": 0,
+  "loggerErrors": [
+    [
+      "OpenAI natal interpretation error:",
+      {}
+    ]
+  ]
+}

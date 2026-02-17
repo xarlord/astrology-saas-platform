@@ -9,7 +9,7 @@ import {
   getLunarMonthForecast,
   MonthlyPrediction,
   MonthlyRitual,
-} from '../../services/lunarReturn.api';
+} from '@services/lunarReturn.api';
 import './LunarReturn.css';
 
 interface LunarForecastViewProps {

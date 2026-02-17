@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '../../services/lunarReturn.api';
+import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '@services/lunarReturn.api';
 import './LunarReturn.css';
 
 interface LunarHistoryViewProps {

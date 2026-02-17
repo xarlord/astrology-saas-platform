@@ -13,6 +13,7 @@ import { calendarRoutes } from '../../modules/calendar';
 import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
+import aiRoutes from '../../modules/ai/routes/ai.routes';
 import healthRoutes from '../../routes/health.routes';
 
 const router = Router();
@@ -46,5 +47,8 @@ router.use('/synastry', synastryRoutes);
 
 // Solar return endpoints
 router.use('/solar-returns', solarReturnRoutes);
+
+// AI-powered interpretation endpoints
+router.use('/ai', aiRoutes);
 
 export default router;

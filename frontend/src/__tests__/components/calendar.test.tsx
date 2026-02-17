@@ -6,17 +6,18 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { CalendarView } from '../components/CalendarView';
-import { DailyWeatherModal } from '../components/DailyWeatherModal';
-import { ReminderSettings } from '../components/ReminderSettings';
-import { CalendarExport } from '../components/CalendarExport';
+import { vi } from 'vitest';
+import { CalendarView } from '../../components/CalendarView';
+import { DailyWeatherModal } from '../../components/DailyWeatherModal';
+import { ReminderSettings } from '../../components/ReminderSettings';
+import { CalendarExport } from '../../components/CalendarExport';
 
 // Mock the calendar service
-jest.mock('../services/calendar.service', () => ({
-  getCalendarMonth: jest.fn(),
-  getCalendarDay: jest.fn(),
-  setReminder: jest.fn(),
-  exportCalendar: jest.fn(),
+vi.mock('../../services/calendar.service', () => ({
+  getCalendarMonth: vi.fn(),
+  getCalendarDay: vi.fn(),
+  setReminder: vi.fn(),
+  exportCalendar: vi.fn(),
 }));
 
 import {
@@ -66,11 +67,11 @@ describe('CalendarView Component', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('should render calendar header with current month and year', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -80,7 +81,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should navigate to previous month', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={3} initialYear={2026} />);
 
@@ -95,7 +96,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should navigate to next month', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -110,7 +111,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should show today button when not on current month', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     const today = new Date();
     render(
@@ -126,7 +127,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should display loading state', () => {
-    (getCalendarMonth as jest.Mock).mockImplementation(() => new Promise(() => {}));
+    (getCalendarMonth as vi.Mock).mockImplementation(() => new Promise(() => {}));
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -134,7 +135,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should display error state', async () => {
-    (getCalendarMonth as jest.Mock).mockRejectedValue(new Error('API Error'));
+    (getCalendarMonth as vi.Mock).mockRejectedValue(new Error('API Error'));
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -144,7 +145,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should render calendar grid with days', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -154,7 +155,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should show event badges for days with events', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -165,7 +166,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should display calendar legend', async () => {
-    (getCalendarMonth as jest.Mock).mockResolvedValue(mockCalendarData);
+    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -196,7 +197,7 @@ describe('DailyWeatherModal Component', () => {
   };
 
   test('should render modal with date and weather info', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
     expect(screen.getByText(/february 15, 2026/i)).toBeInTheDocument();
@@ -204,7 +205,7 @@ describe('DailyWeatherModal Component', () => {
   });
 
   test('should display rating', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
     expect(screen.getByText('7/10')).toBeInTheDocument();
@@ -212,7 +213,7 @@ describe('DailyWeatherModal Component', () => {
   });
 
   test('should display moon phase information', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
     expect(screen.getByText(/moon phase/i)).toBeInTheDocument();
@@ -222,7 +223,7 @@ describe('DailyWeatherModal Component', () => {
   });
 
   test('should display lucky activities', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
     expect(screen.getByText(/favorable for:/i)).toBeInTheDocument();
@@ -231,7 +232,7 @@ describe('DailyWeatherModal Component', () => {
   });
 
   test('should close modal when clicking close button', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
     const closeButton = screen.getByRole('button', { name: /close modal/i });
@@ -241,7 +242,7 @@ describe('DailyWeatherModal Component', () => {
   });
 
   test('should close modal when clicking overlay', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     const { container } = render(
       <DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />
     );
@@ -254,7 +255,7 @@ describe('DailyWeatherModal Component', () => {
   });
 
   test('should not close modal when clicking modal content', () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
     const modalContent = screen.getByText(/february 15, 2026/i).closest('.modal-content');
@@ -267,7 +268,7 @@ describe('DailyWeatherModal Component', () => {
 
 describe('ReminderSettings Component', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('should render reminder settings form', () => {
@@ -318,7 +319,7 @@ describe('ReminderSettings Component', () => {
   });
 
   test('should submit form and show success message', async () => {
-    (setReminder as jest.Mock).mockResolvedValue({
+    (setReminder as vi.Mock).mockResolvedValue({
       message: 'Reminder saved successfully',
       reminder: {
         id: 'rem_1',
@@ -343,7 +344,7 @@ describe('ReminderSettings Component', () => {
   });
 
   test('should show error message on submission failure', async () => {
-    (setReminder as jest.Mock).mockRejectedValue({
+    (setReminder as vi.Mock).mockRejectedValue({
       response: { data: { message: 'Failed to save' } },
     });
 
@@ -360,12 +361,12 @@ describe('ReminderSettings Component', () => {
 
 describe('CalendarExport Component', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Mock URL.createObjectURL and related functions
-    global.URL.createObjectURL = jest.fn(() => 'blob:url');
-    global.URL.revokeObjectURL = jest.fn();
-    document.body.appendChild = jest.fn();
-    document.body.removeChild = jest.fn();
+    global.URL.createObjectURL = vi.fn(() => 'blob:url');
+    global.URL.revokeObjectURL = vi.fn();
+    document.body.appendChild = vi.fn();
+    document.body.removeChild = vi.fn();
   });
 
   test('should render export form', () => {
@@ -402,7 +403,7 @@ describe('CalendarExport Component', () => {
 
   test('should export calendar when button clicked', async () => {
     const mockBlob = new Blob(['test iCal content'], { type: 'text/calendar' });
-    (exportCalendar as jest.Mock).mockResolvedValue(mockBlob);
+    (exportCalendar as vi.Mock).mockResolvedValue(mockBlob);
 
     render(<CalendarExport />);
 
@@ -416,7 +417,7 @@ describe('CalendarExport Component', () => {
 
   test('should show success message after export', async () => {
     const mockBlob = new Blob(['test iCal content'], { type: 'text/calendar' });
-    (exportCalendar as jest.Mock).mockResolvedValue(mockBlob);
+    (exportCalendar as vi.Mock).mockResolvedValue(mockBlob);
 
     render(<CalendarExport />);
 
@@ -429,7 +430,7 @@ describe('CalendarExport Component', () => {
   });
 
   test('should show error message when export fails', async () => {
-    (exportCalendar as jest.Mock).mockRejectedValue(new Error('Export failed'));
+    (exportCalendar as vi.Mock).mockRejectedValue(new Error('Export failed'));
 
     render(<CalendarExport />);
 

@@ -6,10 +6,11 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LunarChartView from '../LunarChartView';
-import { LunarReturnChart } from '../../services/lunarReturn.api';
+import { LunarReturnChart } from '@services/lunarReturn.api';
+import { vi } from 'vitest';
 
 describe('LunarChartView', () => {
-  const mockOnBack = jest.fn();
+  const mockOnBack = vi.fn();
 
   const mockChart: LunarReturnChart = {
     returnDate: new Date('2026-02-15T00:00:00Z'),

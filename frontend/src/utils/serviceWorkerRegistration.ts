@@ -37,7 +37,7 @@ export async function registerSW(
   try {
     // Register service worker
     const registration = await navigator.serviceWorker.register('/sw.js', {
-      updateViaCache: 'import', // Always check for updates via import scripts
+      updateViaCache: 'imports', // Always check for updates via import scripts
     });
 
     onRegistered?.(registration);
@@ -107,7 +107,8 @@ export async function getSWRegistration(): Promise<ServiceWorkerRegistration | n
     return null;
   }
 
-  return await navigator.serviceWorker.getRegistration();
+  const registration = await navigator.serviceWorker.getRegistration();
+  return registration ?? null;
 }
 
 /**
