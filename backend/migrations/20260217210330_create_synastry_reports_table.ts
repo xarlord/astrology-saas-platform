@@ -10,8 +10,8 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('synastry_reports', (table) => {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
     table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE');
-    table.uuid('chart1_id').references('id').inTable('natal_charts').onDelete('CASCADE');
-    table.uuid('chart2_id').references('id').inTable('natal_charts').onDelete('CASCADE');
+    table.uuid('chart1_id').references('id').inTable('charts').onDelete('CASCADE');
+    table.uuid('chart2_id').references('id').inTable('charts').onDelete('CASCADE');
 
     // Overall compatibility score (0-100)
     table.integer('overall_score').notNullable();

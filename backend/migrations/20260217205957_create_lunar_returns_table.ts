@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('lunar_returns', (table) => {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
     table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE');
-    table.uuid('natal_chart_id').references('id').inTable('natal_charts').onDelete('CASCADE');
+    table.uuid('natal_chart_id').references('id').inTable('charts').onDelete('CASCADE');
 
     // The date/time when the Moon returns to its natal position
     table.timestamp('return_date').notNullable();

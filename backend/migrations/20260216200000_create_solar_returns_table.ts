@@ -57,7 +57,6 @@ export async function up(knex: Knex): Promise<void> {
 
     // Indexes for common queries
     table.index(['user_id', 'year']);
-    table.index(['return_date']);
     table.index(['is_relocated']);
   });
 
