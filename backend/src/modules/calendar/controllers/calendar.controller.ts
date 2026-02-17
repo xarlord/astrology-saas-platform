@@ -83,7 +83,7 @@ class CalendarController {
 
     monthNewMoons.forEach((nm) => {
       events.push({
-        id: \`global-newmoon-\${nm.date.getTime()}\`,
+        id: `global-newmoon-${nm.date.getTime()}`,
         user_id: null,
         event_type: 'new_moon',
         event_date: nm.date,
@@ -92,7 +92,7 @@ class CalendarController {
           degree: nm.degree,
           illumination: nm.illumination,
         },
-        interpretation: \`New Moon in \${this.capitalize(nm.sign)} - Time for new beginnings\`,
+        interpretation: `New Moon in ${this.capitalize(nm.sign)} - Time for new beginnings`,
       });
     });
 
@@ -105,7 +105,7 @@ class CalendarController {
 
     monthFullMoons.forEach((fm) => {
       events.push({
-        id: \`global-fullmoon-\${fm.date.getTime()}\`,
+        id: `global-fullmoon-${fm.date.getTime()}`,
         user_id: null,
         event_type: 'full_moon',
         event_date: fm.date,
@@ -114,7 +114,7 @@ class CalendarController {
           degree: fm.degree,
           illumination: fm.illumination,
         },
-        interpretation: \`Full Moon in \${this.capitalize(fm.sign)} - Time for culmination\`,
+        interpretation: `Full Moon in ${this.capitalize(fm.sign)} - Time for culmination`,
       });
     });
 

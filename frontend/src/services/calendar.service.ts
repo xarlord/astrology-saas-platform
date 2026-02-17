@@ -29,7 +29,7 @@ class CalendarService {
    * Get calendar events for a specific month
    */
   async getMonthEvents(year: number, month: number, includeGlobal = true): Promise<MonthEventsResponse> {
-    const response = await api.get(\`/calendar/month/\${year}/\${month}\`, {
+    const response = await api.get(`/calendar/month/${year}/${month}`, {
       params: { includeGlobal: includeGlobal.toString() },
     });
     return response.data;
@@ -53,7 +53,7 @@ class CalendarService {
    * Delete a calendar event
    */
   async deleteEvent(id: string): Promise<void> {
-    await api.delete(\`/calendar/events/\${id}\`);
+    await api.delete(`/calendar/events/${id}`);
   }
 }
 

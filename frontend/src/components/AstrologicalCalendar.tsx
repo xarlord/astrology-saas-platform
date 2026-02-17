@@ -46,7 +46,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 
     // Empty cells for days before month starts
     for (let i = 0; i < startingDayOfWeek; i++) {
-      calendar.push(<div key=\`empty-\${i}\`} className="calendar-day empty" />);
+      calendar.push(<div key={`empty-${i}`} className="calendar-day empty" />);
     }
 
     // Days of the month
@@ -62,7 +62,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
               {dayEvents.map((event) => (
                 <div
                   key={event.id}
-                  className=\`event-badge \${event.event_type}\`}
+                  className={`event-badge ${event.event_type}`}
                   title={event.interpretation}
                 >
                   <span className="event-icon">
