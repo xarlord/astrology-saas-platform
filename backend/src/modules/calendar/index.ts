@@ -4,6 +4,6 @@
  */
 
 export * from './controllers/calendar.controller';
-export { calendarRoutes } from './routes/calendar.routes';
+export { default as calendarRoutes } from './routes/calendar.routes';
 export * from './models/calendar.model';
 export * from './services/calendar.service';

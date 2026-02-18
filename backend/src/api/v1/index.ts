@@ -13,13 +13,14 @@ import { calendarRoutes } from '../../modules/calendar';
 import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
-import aiRoutes from '../../modules/ai/routes/ai.routes';
-import healthRoutes from '../../routes/health.routes';
+// Temporarily commented out for debugging
+// import aiRoutes from '../../modules/ai/routes/ai.routes';
+// import healthRoutes from '../../routes/health.routes';
 
 const router = Router();
 
-// Health check (no versioning)
-router.use('/health', healthRoutes);
+// Health check (no versioning) - temporarily disabled
+// router.use('/health', healthRoutes);
 
 // Authentication endpoints
 router.use('/auth', authRoutes);
@@ -48,7 +49,7 @@ router.use('/synastry', synastryRoutes);
 // Solar return endpoints
 router.use('/solar-returns', solarReturnRoutes);
 
-// AI-powered interpretation endpoints
-router.use('/ai', aiRoutes);
+// AI-powered interpretation endpoints (temporarily disabled)
+// router.use('/ai', aiRoutes);
 
 export default router;
