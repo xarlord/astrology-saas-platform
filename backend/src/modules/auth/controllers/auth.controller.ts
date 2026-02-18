@@ -4,10 +4,10 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
-import { UserModel } from '../../users/models/user.model';
-import { generateToken, generateRefreshToken } from '../../middleware/auth';
-import { hashPassword, comparePassword, isValidEmail, validatePassword, generateToken as randomToken, sanitizeUser } from '../../utils/helpers';
-import { asyncHandler } from '../../middleware/errorHandler';
+import UserModel from '../../users/models/user.model';
+import { generateToken, generateRefreshToken } from '../../../middleware/auth';
+import { hashPassword, comparePassword, isValidEmail, validatePassword, generateToken as randomToken, sanitizeUser } from '../../../utils/helpers';
+import { asyncHandler } from '../../../middleware/errorHandler';
 
 /**
  * Register new user

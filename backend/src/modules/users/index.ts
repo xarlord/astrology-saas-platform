@@ -4,5 +4,5 @@
  */
 
 export * from './controllers/user.controller';
-export { userRoutes } from './routes/user.routes';
+export { router as userRoutes } from './routes/user.routes';
 export * from './models/user.model';

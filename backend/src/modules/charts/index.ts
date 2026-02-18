@@ -4,5 +4,5 @@
  */
 
 export * from './controllers/chart.controller';
-export { chartRoutes } from './routes/chart.routes';
+export { router as chartRoutes } from './routes/chart.routes';
 export * from './models/chart.model';

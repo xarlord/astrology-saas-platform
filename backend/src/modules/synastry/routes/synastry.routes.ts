@@ -58,4 +58,4 @@ router.patch('/reports/:id', synastryController.updateSynastryReport);
  */
 router.delete('/reports/:id', synastryController.deleteSynastryReport);
 
-export const router = Router();;
+export { router };

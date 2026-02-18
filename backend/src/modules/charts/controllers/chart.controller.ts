@@ -3,7 +3,7 @@
  */
 
 import { Request, Response } from 'express';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../../middleware/errorHandler';
 import { ChartModel } from '../models';
 import { swissEphemeris } from '../services';
 

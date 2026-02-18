@@ -4,6 +4,6 @@
  */
 
 export * from './controllers/synastry.controller';
-export { synastryRoutes } from './routes/synastry.routes';
+export { router as synastryRoutes } from './routes/synastry.routes';
 export * from './models/synastry.model';
 export * from './services/synastry.service';

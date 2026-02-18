@@ -4,5 +4,5 @@
  */
 
 export * from './controllers/analysis.controller';
-export { analysisRoutes } from './routes/analysis.routes';
+export { router as analysisRoutes } from './routes/analysis.routes';
 export * from './services/interpretation.service';

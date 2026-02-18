@@ -59,4 +59,4 @@ router.get('/:id', asyncHandler(async (req, res) => {
   await TransitController.getTransitDetails(req, res);
 }));
 
-export const router = Router();;
+export { router };

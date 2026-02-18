@@ -66,4 +66,4 @@ router.delete('/me', asyncHandler(async (req, res) => {
   await UserController.deleteAccount(req, res);
 }));
 
-export const router = Router();;
+export { router };

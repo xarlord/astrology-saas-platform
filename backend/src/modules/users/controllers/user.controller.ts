@@ -3,9 +3,9 @@
  */
 
 import { Request, Response } from 'express';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../../middleware/errorHandler';
 import { UserModel } from '../models';
-import { sanitizeUser } from '../../utils/helpers';
+import { sanitizeUser } from '../../../utils/helpers';
 
 /**
  * Get current user

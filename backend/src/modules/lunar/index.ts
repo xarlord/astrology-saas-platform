@@ -4,6 +4,6 @@
  */
 
 export * from './controllers/lunarReturn.controller';
-export { lunarReturnRoutes } from './routes/lunarReturn.routes';
+export { router as lunarReturnRoutes } from './routes/lunarReturn.routes';
 export * from './models/lunarReturn.model';
 export * from './services/lunarReturn.service';

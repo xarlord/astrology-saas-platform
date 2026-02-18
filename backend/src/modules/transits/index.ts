@@ -4,4 +4,4 @@
  */
 
 export * from './controllers/transit.controller';
-export { transitRoutes } from './routes/transit.routes';
+export { router as transitRoutes } from './routes/transit.routes';

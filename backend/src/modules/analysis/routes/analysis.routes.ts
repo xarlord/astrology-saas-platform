@@ -57,4 +57,4 @@ router.get('/:chartId/houses', asyncHandler(async (req, res) => {
   await AnalysisController.getHousesAnalysis(req, res);
 }));
 
-export const router = Router();;
+export { router };

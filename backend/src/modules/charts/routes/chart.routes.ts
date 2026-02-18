@@ -66,4 +66,4 @@ router.post('/:id/calculate', asyncHandler(async (req, res) => {
   await ChartController.calculateChart(req, res);
 }));
 
-export const router = Router();;
+export { router };

@@ -4,4 +4,4 @@
  */
 
 export * from './controllers/auth.controller';
-export { authRoutes } from './routes/auth.routes';
+export { router as authRoutes } from './routes/auth.routes';

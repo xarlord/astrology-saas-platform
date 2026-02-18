@@ -97,4 +97,4 @@ router.post('/reset-password', asyncHandler(async (req, res) => {
   });
 }));
 
-export const router = Router();;
+export { router };

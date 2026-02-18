@@ -65,4 +65,4 @@ router.delete('/:id', lunarReturnController.deleteLunarReturn);
  */
 router.post('/calculate', lunarReturnController.calculateCustomLunarReturn);
 
-export const router = Router();;
+export { router };
