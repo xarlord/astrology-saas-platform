@@ -5,7 +5,7 @@
 import { Request, Response } from 'express';
 import { AppError } from '../../../middleware/errorHandler';
 import { ChartModel } from '../models';
-import { swissEphemeris } from '../services';
+import { swissEphemeris } from '../../shared';
 
 /**
  * Create new chart
