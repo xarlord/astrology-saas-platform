@@ -3,7 +3,7 @@
  * Tracks API usage, tokens, and costs for AI interpretations
  */
 
-import knex from '../../../db';
+import knex from '../../../config/database';
 
 export interface AIUsage {
   id: string;

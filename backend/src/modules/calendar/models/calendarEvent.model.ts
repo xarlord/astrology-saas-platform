@@ -3,7 +3,7 @@
  * Handles CRUD operations for calendar events (astrological events)
  */
 
-import { knex } from '../../../db';
+import knex from '../../../config/database';
 
 export interface CalendarEvent {
   id: string;

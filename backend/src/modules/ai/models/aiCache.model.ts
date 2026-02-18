@@ -4,7 +4,7 @@
  * Uses PostgreSQL JSONB for flexible data storage
  */
 
-import knex from '../../../db';
+import knex from '../../../config/database';
 
 export interface AICacheEntry {
   id: string;

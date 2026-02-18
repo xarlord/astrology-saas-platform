@@ -2,7 +2,7 @@
  * Push Subscription Model
  */
 
-import db from '../../../db';
+import knex from '../../../config/database';
 
 export interface PushSubscription {
   id: string;
