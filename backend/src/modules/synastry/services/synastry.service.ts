@@ -7,8 +7,8 @@ import {
   calculateJulianDay,
   getZodiacSign,
   normalizeDegree,
-} from './calendar.service';
-import { MoonPhase, Planet, ZodiacSign } from '../models/calendar.model';
+} from '../../calendar/services/calendar.service';
+import { MoonPhase, Planet, ZodiacSign } from '../../calendar/models/calendar.model';
 
 // Helper function: Calculate angular distance between two degrees
 function angularDistance(deg1: number, deg2: number): number {
