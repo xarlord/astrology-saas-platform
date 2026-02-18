@@ -8,8 +8,8 @@ import {
   getZodiacSign,
   normalizeDegree,
   calculateMoonPhase,
-} from './calendar.service';
-import { MoonPhase, Planet, ZodiacSign } from '../models/calendar.model';
+} from '../../calendar/services/calendar.service';
+import { MoonPhase, Planet, ZodiacSign } from '../../calendar/models/calendar.model';
 
 export interface NatalChart {
   id: string;
