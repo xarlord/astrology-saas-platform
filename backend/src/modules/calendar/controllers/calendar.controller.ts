@@ -122,6 +122,79 @@ class CalendarController {
   }
 
   /**
+   * POST /api/calendar/events
+   * Create a custom calendar event
+   */
+  async createCustomEvent(req: RequestWithUser, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const { event_type, event_date, event_data, interpretation } = req.body;
+
+      // Validate required fields
+      if (!event_type || !event_date) {
+        res.status(400).json({
+          success: false,
+          error: 'event_type and event_date are required',
+        });
+        return;
+      }
+
+      // Create event
+      const event = await calendarEventModel.create({
+        user_id: userId,
+        event_type,
+        event_date: new Date(event_date),
+        event_data: event_data || {},
+        interpretation: interpretation || '',
+      });
+
+      res.status(201).json({
+        success: true,
+        data: event,
+      });
+    } catch (error) {
+      console.error('Error creating custom event:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create custom event',
+      });
+    }
+  }
+
+  /**
+   * DELETE /api/calendar/events/:id
+   * Delete a calendar event
+   */
+  async deleteEvent(req: RequestWithUser, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+      const { id } = req.params;
+
+      // Delete event (only if it belongs to the user)
+      const deleted = await calendarEventModel.delete(id, userId);
+
+      if (!deleted) {
+        res.status(404).json({
+          success: false,
+          error: 'Event not found or does not belong to user',
+        });
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Event deleted successfully',
+      });
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to delete event',
+      });
+    }
+  }
+
+  /**
    * Helper: Capitalize first letter
    */
   private capitalize(str: string): string {
