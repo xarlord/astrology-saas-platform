@@ -3,7 +3,7 @@
  * Handles database operations for solar returns
  */
 
-import knex from '../../db';
+import knex from '../../../config/database';
 import { SolarReturn, SolarReturnInput, SolarReturnLocation, SolarReturnChartData } from './types';
 
 export class SolarReturnModel {
