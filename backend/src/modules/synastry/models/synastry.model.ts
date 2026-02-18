@@ -3,8 +3,8 @@
  * TypeScript interfaces for synastry/compatibility feature
  */
 
-// Re-export commonly used types
-export { Planet, ZodiacSign } from './calendar.model';
+// Re-export commonly used types from calendar module
+export { Planet, ZodiacSign } from '../../calendar/models/calendar.model';
 
 export interface NatalChart {
   id: string;
