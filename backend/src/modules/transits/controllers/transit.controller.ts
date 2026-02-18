@@ -5,7 +5,7 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../middleware/errorHandler';
-import { ChartModel } from '../models';
+import { ChartModel } from '../../charts/models/chart.model';
 import { swissEphemeris } from '../../shared';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
 
