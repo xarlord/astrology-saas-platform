@@ -2,7 +2,7 @@
  * User Model
  */
 
-import db from '../db';
+import knex from '../../../config/database';
 
 export interface User {
   id: string;
@@ -41,7 +41,7 @@ class UserModel {
    * Find user by ID
    */
   async findById(id: string): Promise<User | null> {
-    const user = await db(this.tableName)
+    const user = await knex(this.tableName)
       .where({ id })
       .whereNull('deleted_at')
       .first();
@@ -53,7 +53,7 @@ class UserModel {
    * Find user by email
    */
   async findByEmail(email: string): Promise<User | null> {
-    const user = await db(this.tableName)
+    const user = await knex(this.tableName)
       .where({ email })
       .whereNull('deleted_at')
       .first();
@@ -65,7 +65,7 @@ class UserModel {
    * Create new user
    */
   async create(data: CreateUserData): Promise<User> {
-    const [user] = await db(this.tableName)
+    const [user] = await knex(this.tableName)
       .insert({
         ...data,
         preferences: {},
@@ -82,7 +82,7 @@ class UserModel {
    * Update user
    */
   async update(id: string, data: UpdateUserData): Promise<User | null> {
-    const [user] = await db(this.tableName)
+    const [user] = await knex(this.tableName)
       .where({ id })
       .whereNull('deleted_at')
       .update({
@@ -98,7 +98,7 @@ class UserModel {
    * Soft delete user
    */
   async softDelete(id: string): Promise<boolean> {
-    const count = await db(this.tableName)
+    const count = await knex(this.tableName)
       .where({ id })
       .update({
         deleted_at: new Date(),
@@ -117,7 +117,7 @@ class UserModel {
     status: 'active' | 'canceled' | 'expired' = 'active',
     renewsAt?: Date
   ): Promise<User | null> {
-    const [user] = await db(this.tableName)
+    const [user] = await knex(this.tableName)
       .where({ id })
       .whereNull('deleted_at')
       .update({
@@ -135,7 +135,7 @@ class UserModel {
    * Get user's charts
    */
   async getCharts(userId: string, limit = 20, offset = 0) {
-    return db('charts')
+    return knex('charts')
       .where({ user_id: userId })
       .whereNull('deleted_at')
       .orderBy('created_at', 'desc')
@@ -152,7 +152,7 @@ class UserModel {
 
     const updatedPreferences = { ...user.preferences, ...preferences };
 
-    const [updatedUser] = await db(this.tableName)
+    const [updatedUser] = await knex(this.tableName)
       .where({ id })
       .update({
         preferences: updatedPreferences,

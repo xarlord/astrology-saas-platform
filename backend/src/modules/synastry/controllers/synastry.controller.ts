@@ -47,8 +47,8 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
 
     // Fetch both charts from database
     const [chart1Data, chart2Data] = await Promise.all([
-      db('charts').where({ id: chart1Id }).first(),
-      db('charts').where({ id: chart2Id }).first(),
+      knex('charts').where({ id: chart1Id }).first(),
+      knex('charts').where({ id: chart2Id }).first(),
     ]);
 
     if (!chart1Data || !chart2Data) {
@@ -217,7 +217,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
     const synastryChart = calculateSynastryChart(chart1, chart2);
 
     // Check if already exists
-    const existingSynastry = await db('synastry_charts')
+    const existingSynastry = await knex('synastry_charts')
       .where({
         chart1_id: chart1Id,
         chart2_id: chart2Id,
@@ -229,7 +229,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
 
     // Save to database if new
     if (!synastryId) {
-      const [inserted] = await db('synastry_charts')
+      const [inserted] = await knex('synastry_charts')
         .insert({
           chart1_id: chart1Id,
           chart2_id: chart2Id,
@@ -249,7 +249,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
 
       // Insert aspects
       for (const aspect of synastryChart.synastryAspects) {
-        await db('synastry_aspects').insert({
+        await knex('synastry_aspects').insert({
           synastry_chart_id: synastryId,
           planet1: aspect.planet1,
           planet2: aspect.planet2,
@@ -302,8 +302,8 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
 
     // Fetch both charts
     const [chart1Data, chart2Data] = await Promise.all([
-      db('charts').where({ id: chart1Id }).first(),
-      db('charts').where({ id: chart2Id }).first(),
+      knex('charts').where({ id: chart1Id }).first(),
+      knex('charts').where({ id: chart2Id }).first(),
     ]);
 
     if (!chart1Data || !chart2Data) {
@@ -399,13 +399,13 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = (page - 1) * limit;
 
-    const reports = await db('synastry_charts')
+    const reports = await knex('synastry_charts')
       .where({ user_id: userId })
       .orderBy('created_at', 'desc')
       .limit(limit)
       .offset(offset);
 
-    const total = await db('synastry_charts')
+    const total = await knex('synastry_charts')
       .where({ user_id: userId })
       .count('* as count')
       .first();
@@ -456,7 +456,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
       });
     }
 
-    const report = await db('synastry_charts')
+    const report = await knex('synastry_charts')
       .where({ id, user_id: userId })
       .first();
 
@@ -468,7 +468,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
     }
 
     // Fetch aspects
-    const aspects = await db('synastry_aspects')
+    const aspects = await knex('synastry_aspects')
       .where({ synastry_chart_id: id });
 
     res.json({
@@ -501,7 +501,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
     }
 
     // Check if report exists and belongs to user
-    const report = await db('synastry_charts')
+    const report = await knex('synastry_charts')
       .where({ id, user_id: userId })
       .first();
 
@@ -512,7 +512,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
       });
     }
 
-    await db('synastry_charts')
+    await knex('synastry_charts')
       .where({ id, user_id: userId })
       .del();
 
@@ -543,7 +543,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
     }
 
     // Check if report exists and belongs to user
-    const report = await db('synastry_charts')
+    const report = await knex('synastry_charts')
       .where({ id, user_id: userId })
       .first();
 
@@ -567,7 +567,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
       updateData.notes = notes;
     }
 
-    await db('synastry_charts')
+    await knex('synastry_charts')
       .where({ id, user_id: userId })
       .update(updateData);
 

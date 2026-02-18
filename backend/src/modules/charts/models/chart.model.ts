@@ -2,7 +2,7 @@
  * Chart Model
  */
 
-import db from '../db';
+import knex from '../../../config/database';
 
 export interface Chart {
   id: string;
@@ -56,7 +56,7 @@ class ChartModel {
    * Find chart by ID
    */
   async findById(id: string): Promise<Chart | null> {
-    const chart = await db(this.tableName)
+    const chart = await knex(this.tableName)
       .where({ id })
       .whereNull('deleted_at')
       .first();
@@ -68,7 +68,7 @@ class ChartModel {
    * Find chart by ID and user ID (ensures ownership)
    */
   async findByIdAndUserId(id: string, userId: string): Promise<Chart | null> {
-    const chart = await db(this.tableName)
+    const chart = await knex(this.tableName)
       .where({ id, user_id: userId })
       .whereNull('deleted_at')
       .first();
@@ -84,7 +84,7 @@ class ChartModel {
     limit = 20,
     offset = 0
   ): Promise<Chart[]> {
-    return db(this.tableName)
+    return knex(this.tableName)
       .where({ user_id: userId })
       .whereNull('deleted_at')
       .orderBy('created_at', 'desc')
@@ -96,7 +96,7 @@ class ChartModel {
    * Create new chart
    */
   async create(data: CreateChartData): Promise<Chart> {
-    const [chart] = await db(this.tableName)
+    const [chart] = await knex(this.tableName)
       .insert({
         ...data,
         type: data.type || 'natal',
@@ -113,7 +113,7 @@ class ChartModel {
    * Update chart
    */
   async update(id: string, userId: string, data: UpdateChartData): Promise<Chart | null> {
-    const [chart] = await db(this.tableName)
+    const [chart] = await knex(this.tableName)
       .where({ id, user_id: userId })
       .whereNull('deleted_at')
       .update({
@@ -129,7 +129,7 @@ class ChartModel {
    * Update calculated data
    */
   async updateCalculatedData(id: string, userId: string, calculatedData: any): Promise<Chart | null> {
-    const [chart] = await db(this.tableName)
+    const [chart] = await knex(this.tableName)
       .where({ id, user_id: userId })
       .whereNull('deleted_at')
       .update({
@@ -145,7 +145,7 @@ class ChartModel {
    * Soft delete chart
    */
   async softDelete(id: string, userId: string): Promise<boolean> {
-    const count = await db(this.tableName)
+    const count = await knex(this.tableName)
       .where({ id, user_id: userId })
       .update({
         deleted_at: new Date(),
@@ -159,7 +159,7 @@ class ChartModel {
    * Permanently delete chart
    */
   async delete(id: string, userId: string): Promise<boolean> {
-    const count = await db(this.tableName)
+    const count = await knex(this.tableName)
       .where({ id, user_id: userId })
       .del();
 
@@ -170,7 +170,7 @@ class ChartModel {
    * Count charts for user
    */
   async countByUserId(userId: string): Promise<number> {
-    const [{ count }] = await db(this.tableName)
+    const [{ count }] = await knex(this.tableName)
       .where({ user_id: userId })
       .whereNull('deleted_at')
       .count('* as count');
