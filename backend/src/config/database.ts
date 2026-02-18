@@ -3,6 +3,7 @@
  */
 
 import type { Knex } from 'knex';
+import knex from 'knex';
 import config from './index';
 
 const knexConfig: Knex.Config = {
@@ -29,4 +30,7 @@ const knexConfig: Knex.Config = {
   searchPath: ['knex', 'public'],
 };
 
-export default knexConfig;
+// Initialize and export knex instance
+const db = knex(knexConfig);
+
+export default db;
