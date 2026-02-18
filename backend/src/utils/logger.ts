@@ -330,5 +330,3 @@ export const performanceLogger = winston.createLogger({
 
 export default logger;
 export { logger };
-export { createChildLogger, logHttpRequest, winstonStream, addRequestContext };
-export { queryLogger, securityLogger, performanceLogger };
