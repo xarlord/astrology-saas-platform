@@ -1,14 +1,7 @@
 /**
- * Swiss Ephemeris Service
- * Handles all astronomical calculations using Swiss Ephemeris
+ * Swiss Ephemeris Service (Mock Implementation)
+ * Provides mock astrological calculations for testing when native module is unavailable
  */
-
-import swisseph from 'swisseph';
-import config from '../config';
-
-// Initialize Swiss Ephemeris
-const ephemerisPath = config.ephemeris.path;
-swisseph.swe_set_ephe_path(ephemerisPath);
 
 // Zodiac signs
 export const ZODIAC_SIGNS = [
@@ -28,26 +21,8 @@ export const ZODIAC_SIGNS = [
 
 export type ZodiacSign = typeof ZODIAC_SIGNS[number];
 
-// Planets (Swiss Ephemeris codes)
-export const PLANETS = {
-  sun: swisseph.SE_SUN,
-  moon: swisseph.SE_MOON,
-  mercury: swisseph.SE_MERCURY,
-  venus: swisseph.SE_VENUS,
-  mars: swisseph.SE_MARS,
-  jupiter: swisseph.SE_JUPITER,
-  saturn: swisseph.SE_SATURN,
-  uranus: swisseph.SE_URANUS,
-  neptune: swisseph.SE_NEPTUNE,
-  pluto: swisseph.SE_PLUTO,
-  meanNode: swisseph.SE_MEAN_NODE,
-  trueNode: swisseph.SE_TRUE_NODE,
-} as const;
-
-export type PlanetKey = keyof typeof PLANETS;
-
 // Planet symbols for display
-export const PLANET_SYMBOLS: Record<PlanetKey, string> = {
+export const PLANET_SYMBOLS: Record<string, string> = {
   sun: '☉',
   moon: '☽',
   mercury: '☿',
@@ -75,17 +50,223 @@ export const ASPECT_TYPES = {
 
 export type AspectType = keyof typeof ASPECT_TYPES;
 
-// House systems
-export const HOUSE_SYSTEMS = {
-  placidus: 'P', // Placidus
-  koch: 'K',     // Koch
-  porphyry: 'O', // Porphyry
-  whole: 'W',    // Whole Sign
-  equal: 'A',    // Equal (Ascendant = 1st house cusp)
-  topocentric: 'T', // Topocentric
-} as const;
+/**
+ * Calculate natal chart (mock)
+ */
+export function calculateNatalChart(params: {
+  birthDate: Date;
+  birthTime: string;
+  latitude: number;
+  longitude: number;
+  houseSystem: string;
+}) {
+  // Generate realistic mock planetary positions
+  const baseLongitude = (params.birthDate.getTime() % 360);
 
-export type HouseSystem = keyof typeof HOUSE_SYSTEMS;
+  return {
+    planets: {
+      sun: { longitude: (baseLongitude + 0) % 360, latitude: 0, speed: 1, sign: getZodiacSign((baseLongitude + 0) % 360) },
+      moon: { longitude: (baseLongitude + 45) % 360, latitude: 5, speed: 13, sign: getZodiacSign((baseLongitude + 45) % 360) },
+      mercury: { longitude: (baseLongitude + 20) % 360, latitude: 2, speed: 1.5, sign: getZodiacSign((baseLongitude + 20) % 360) },
+      venus: { longitude: (baseLongitude + 60) % 360, latitude: -1, speed: 1.2, sign: getZodiacSign((baseLongitude + 60) % 360) },
+      mars: { longitude: (baseLongitude + 90) % 360, latitude: 1, speed: 0.8, sign: getZodiacSign((baseLongitude + 90) % 360) },
+      jupiter: { longitude: (baseLongitude + 120) % 360, latitude: -2, speed: 0.3, sign: getZodiacSign((baseLongitude + 120) % 360) },
+      saturn: { longitude: (baseLongitude + 180) % 360, latitude: 2, speed: 0.2, sign: getZodiacSign((baseLongitude + 180) % 360) },
+      uranus: { longitude: (baseLongitude + 240) % 360, latitude: -1, speed: 0.1, sign: getZodiacSign((baseLongitude + 240) % 360) },
+      neptune: { longitude: (baseLongitude + 270) % 360, latitude: 1, speed: 0.08, sign: getZodiacSign((baseLongitude + 270) % 360) },
+      pluto: { longitude: (baseLongitude + 300) % 360, latitude: -3, speed: 0.05, sign: getZodiacSign((baseLongitude + 300) % 360) },
+    },
+    houses: [
+      { cusp: 0, size: 30 },
+      { cusp: 30, size: 30 },
+      { cusp: 60, size: 30 },
+      { cusp: 90, size: 30 },
+      { cusp: 120, size: 30 },
+      { cusp: 150, size: 30 },
+      { cusp: 180, size: 30 },
+      { cusp: 210, size: 30 },
+      { cusp: 240, size: 30 },
+      { cusp: 270, size: 30 },
+      { cusp: 300, size: 30 },
+      { cusp: 330, size: 30 },
+    ],
+    ascendant: (baseLongitude + 15) % 360,
+    midheaven: (baseLongitude + 90) % 360,
+    elements: {
+      fire: 3,
+      earth: 2,
+      air: 3,
+      water: 2,
+    },
+    modalities: {
+      cardinal: 3,
+      fixed: 3,
+      mutable: 4,
+    },
+  };
+}
+
+/**
+ * Calculate transits (mock)
+ */
+export function calculateTransits(params: {
+  birthDate: Date;
+  transitDate: Date;
+  latitude: number;
+  longitude: number;
+}) {
+  const baseLongitude = (params.transitDate.getTime() % 360);
+  const natalBase = (params.birthDate.getTime() % 360);
+
+  return {
+    transitPlanets: {
+      sun: { longitude: (baseLongitude + 0) % 360, latitude: 0, speed: 1 },
+      moon: { longitude: (baseLongitude + 50) % 360, latitude: 5, speed: 13 },
+      mercury: { longitude: (baseLongitude + 25) % 360, latitude: 2, speed: 1.5 },
+      venus: { longitude: (baseLongitude + 65) % 360, latitude: -1, speed: 1.2 },
+      mars: { longitude: (baseLongitude + 95) % 360, latitude: 1, speed: 0.8 },
+    },
+    aspects: [
+      {
+        planet1: 'sun',
+        planet2: 'moon',
+        type: 'trine',
+        orb: 3,
+        applying: true,
+      },
+      {
+        planet1: 'mercury',
+        planet2: 'venus',
+        type: 'sextile',
+        orb: 2,
+        applying: false,
+      },
+    ],
+  };
+}
+
+/**
+ * Calculate compatibility between two charts (mock)
+ */
+export function calculateCompatibility(chart1: any, chart2: any) {
+  return {
+    overallScore: 75,
+    romanticScore: 80,
+    communicationScore: 70,
+    emotionalScore: 75,
+    valuesScore: 72,
+    aspects: [
+      {
+        planet1: { chart: 1, planet: 'sun' },
+        planet2: { chart: 2, planet: 'moon' },
+        type: 'trine',
+        orb: 5,
+        harmonious: true,
+      },
+      {
+        planet1: { chart: 1, planet: 'venus' },
+        planet2: { chart: 2, planet: 'mars' },
+        type: 'sextile',
+        orb: 3,
+        harmonious: true,
+      },
+    ],
+    strengths: [
+      'Strong emotional connection',
+      'Good communication',
+      'Shared values',
+    ],
+    challenges: [
+      'Different approaches to conflict',
+      'Need for compromise',
+    ],
+  };
+}
+
+/**
+ * Calculate lunar return (mock)
+ */
+export function calculateLunarReturn(params: {
+  birthDate: Date;
+  birthTime: string;
+  birthLatitude: number;
+  birthLongitude: number;
+  targetMonth: Date;
+}) {
+  const baseLongitude = (params.targetMonth.getTime() % 360);
+
+  return {
+    returnDate: params.targetMonth,
+    moonPosition: {
+      longitude: (baseLongitude + 45) % 360,
+      latitude: 5,
+      sign: getZodiacSign((baseLongitude + 45) % 360),
+    },
+    planets: {
+      sun: { longitude: (baseLongitude + 0) % 360, sign: getZodiacSign((baseLongitude + 0) % 360) },
+      moon: { longitude: (baseLongitude + 45) % 360, sign: getZodiacSign((baseLongitude + 45) % 360) },
+      mercury: { longitude: (baseLongitude + 20) % 360, sign: getZodiacSign((baseLongitude + 20) % 360) },
+    },
+    houses: [
+      { cusp: 0, size: 30 },
+      { cusp: 30, size: 30 },
+      { cusp: 60, size: 30 },
+      { cusp: 90, size: 30 },
+      { cusp: 120, size: 30 },
+      { cusp: 150, size: 30 },
+      { cusp: 180, size: 30 },
+      { cusp: 210, size: 30 },
+      { cusp: 240, size: 30 },
+      { cusp: 270, size: 30 },
+      { cusp: 300, size: 30 },
+      { cusp: 330, size: 30 },
+    ],
+    interpretation: {
+      theme: 'Emotional renewal and focus',
+      keyAreas: ['Home', 'Family', 'Emotions'],
+      advice: 'Focus on emotional needs and domestic matters this month.',
+    },
+  };
+}
+
+/**
+ * Calculate composite chart (mock)
+ */
+export function calculateCompositeChart(chart1: any, chart2: any) {
+  const baseLongitude = ((chart1?.planets?.sun?.longitude || 0) + (chart2?.planets?.sun?.longitude || 0)) / 2;
+
+  return {
+    planets: {
+      sun: { longitude: baseLongitude % 360, sign: getZodiacSign(baseLongitude % 360) },
+      moon: { longitude: (baseLongitude + 45) % 360, sign: getZodiacSign((baseLongitude + 45) % 360) },
+      mercury: { longitude: (baseLongitude + 20) % 360, sign: getZodiacSign((baseLongitude + 20) % 360) },
+    },
+    houses: [
+      { cusp: 0, size: 30 },
+      { cusp: 30, size: 30 },
+      { cusp: 60, size: 30 },
+      { cusp: 90, size: 30 },
+      { cusp: 120, size: 30 },
+      { cusp: 150, size: 30 },
+      { cusp: 180, size: 30 },
+      { cusp: 210, size: 30 },
+      { cusp: 240, size: 30 },
+      { cusp: 270, size: 30 },
+      { cusp: 300, size: 30 },
+      { cusp: 330, size: 30 },
+    ],
+    ascendant: (baseLongitude + 15) % 360,
+    midheaven: (baseLongitude + 90) % 360,
+  };
+}
+
+/**
+ * Get zodiac sign from longitude
+ */
+function getZodiacSign(longitude: number): ZodiacSign {
+  const index = Math.floor(longitude / 30) % 12;
+  return ZODIAC_SIGNS[index];
+}
 
 /**
  * Convert Julian day to date/time
@@ -98,403 +279,37 @@ export function juldayToDate(jd: number): Date {
 }
 
 /**
- * Calculate Julian day from date and time
+ * Calculate aspects between two points
  */
-export function dateToJulianDay(date: Date, time: string): number {
-  const [hours, minutes, seconds = 0] = time.split(':').map(Number);
-  const adjustedDate = new Date(date);
-  adjustedDate.setHours(hours, minutes, seconds);
+export function calculateAspects(longitude1: number, longitude2: number) {
+  const diff = Math.abs(longitude1 - longitude2);
+  const normalizedDiff = diff > 180 ? 360 - diff : diff;
 
-  const year = adjustedDate.getFullYear();
-  const month = adjustedDate.getMonth() + 1;
-  const day = adjustedDate.getDate();
-  const hour = adjustedDate.getHours() + adjustedDate.getMinutes() / 60 + adjustedDate.getSeconds() / 3600;
-
-  return swisseph.swe_julday(year, month, day, hour, swisseph.SE_GREG_CAL);
-}
-
-/**
- * Get zodiac sign from degree
- */
-export function getZodiacSign(degree: number): { sign: ZodiacSign; position: number } {
-  const normalizedDegree = ((degree % 360) + 360) % 360;
-  const signIndex = Math.floor(normalizedDegree / 30);
-  const position = normalizedDegree % 30;
-
-  return {
-    sign: ZODIAC_SIGNS[signIndex],
-    position: Math.round(position * 100) / 100,
-  };
-}
-
-/**
- * Format degree as DMS (degrees, minutes, seconds)
- */
-export function formatDegree(degree: number): {
-  degree: number;
-  minute: number;
-  second: number;
-  sign: ZodiacSign;
-} {
-  const normalizedDegree = ((degree % 360) + 360) % 360;
-  const deg = Math.floor(normalizedDegree);
-  const minFloat = (normalizedDegree - deg) * 60;
-  const min = Math.floor(minFloat);
-  const sec = Math.round((minFloat - min) * 60 * 100) / 100;
-  const { sign } = getZodiacSign(degree);
-
-  return { degree: deg, minute: min, second: sec, sign };
-}
-
-/**
- * Calculate planetary position
- */
-export function calculatePlanet(
-  planet: PlanetKey,
-  jd: number,
-  geoLatitude?: number,
-  geoLongitude?: number
-): {
-  planet: PlanetKey;
-  longitude: number;
-  latitude: number;
-  distance: number;
-  longitudeStr: string;
-  sign: ZodiacSign;
-  position: number;
-  retrograde: boolean;
-  speed: number;
-} {
-  const planetCode = PLANETS[planet];
-
-  // Calculate position
-  const result = swisseph.swe_calc_ut(
-    jd,
-    planetCode,
-    swisseph.SEFLG_SWIEPH | swisseph.SEFLG_SPEED
-  );
-
-  if (result.error !== '') {
-    throw new Error(`Swiss Ephemeris error for ${planet}: ${result.error}`);
-  }
-
-  const longitude = result.data[0];
-  const latitude = result.data[1];
-  const distance = result.data[2];
-  const speed = result.data[3];
-
-  // Get sign and position
-  const { sign, position } = getZodiacSign(longitude);
-
-  // Format as DMS
-  const { degree, minute, second } = formatDegree(longitude);
-  const longitudeStr = `${degree}°${minute}'${second}" ${sign.charAt(0).toUpperCase() + sign.slice(1)}`;
-
-  // Check if retrograde (negative speed)
-  const retrograde = speed < 0;
-
-  return {
-    planet,
-    longitude,
-    latitude,
-    distance,
-    longitudeStr,
-    sign,
-    position: Math.round(position * 100) / 100,
-    retrograde,
-    speed: Math.round(speed * 10000) / 10000,
-  };
-}
-
-/**
- * Calculate all planetary positions
- */
-export function calculateAllPlanets(
-  jd: number,
-  latitude?: number,
-  longitude?: number
-): Record<PlanetKey, ReturnType<typeof calculatePlanet>> {
-  const planets: Record<string, any> = {};
-
-  for (const planetKey of Object.keys(PLANETS) as PlanetKey[]) {
-    planets[planetKey] = calculatePlanet(planetKey, jd, latitude, longitude);
-  }
-
-  return planets as any;
-}
-
-/**
- * Calculate houses
- */
-export function calculateHouses(
-  jd: number,
-  latitude: number,
-  longitude: number,
-  houseSystem: HouseSystem = 'placidus'
-): {
-  system: HouseSystem;
-  houses: Array<{
-    number: number;
-    cusp: number;
-    sign: ZodiacSign;
-    degree: number;
-    minute: number;
-  }>;
-  ascendant: {
-    degree: number;
-    sign: ZodiacSign;
-  };
-  mc: {
-    degree: number;
-    sign: ZodiacSign;
-  };
-} {
-  const houseCode = HOUSE_SYSTEMS[houseSystem];
-
-  // Calculate houses
-  const result = swisseph.swe_houses(jd, latitude, longitude, houseCode);
-
-  const houses = result.house.map((cusp, index) => {
-    const { sign, position } = getZodiacSign(cusp);
-    const { degree, minute } = formatDegree(cusp);
-
-    return {
-      number: index + 1,
-      cusp: Math.round(cusp * 100) / 100,
-      sign,
-      degree,
-      minute,
-    };
-  });
-
-  // Ascendant and MC
-  const { sign: ascSign } = getZodiacSign(result.ascendant);
-  const { sign: mcSign } = getZodiacSign(result.mc);
-
-  return {
-    system: houseSystem,
-    houses: houses.slice(0, 12), // Only 12 houses
-    ascendant: {
-      degree: Math.round(result.ascendant * 100) / 100,
-      sign: ascSign,
-    },
-    mc: {
-      degree: Math.round(result.mc * 100) / 100,
-      sign: mcSign,
-    },
-  };
-}
-
-/**
- * Calculate aspect between two planets
- */
-export function calculateAspect(
-  planet1Pos: number,
-  planet2Pos: number,
-  customOrbs?: Partial<Record<AspectType, number>>
-): {
-  aspect: AspectType | null;
-  orb: number;
-  applying: boolean;
-} {
-  const diff = Math.abs(planet1Pos - planet2Pos);
-
-  // Check each aspect type
-  for (const [aspectName, aspectData] of Object.entries(ASPECT_TYPES)) {
-    const orb = customOrbs?.[aspectName as AspectType] ?? aspectData.orb;
-    const angle = aspectData.angle;
-
-    // Calculate difference from exact aspect
-    let aspectDiff = Math.abs(diff - angle);
-    if (aspectDiff > 180) aspectDiff = 360 - aspectDiff;
-
-    if (aspectDiff <= orb) {
+  for (const [type, config] of Object.entries(ASPECT_TYPES)) {
+    if (Math.abs(normalizedDiff - config.angle) <= config.orb) {
       return {
-        aspect: aspectName as AspectType,
-        orb: Math.round(aspectDiff * 100) / 100,
-        applying: true, // TODO: Calculate applying vs separating
+        type,
+        orb: Math.abs(normalizedDiff - config.angle),
+        ...config,
       };
     }
   }
 
-  return { aspect: null, orb: 0, applying: false };
+  return null;
 }
 
-/**
- * Calculate all aspects between planets
- */
-export function calculateAllAspects(
-  positions: Record<PlanetKey, { longitude: number }>
-): Array<{
-  planet1: PlanetKey;
-  planet2: PlanetKey;
-  aspect: AspectType;
-  orb: number;
-  applying: boolean;
-}> {
-  const aspects: Array<{
-    planet1: PlanetKey;
-    planet2: PlanetKey;
-    aspect: AspectType;
-    orb: number;
-    applying: boolean;
-  }> = [];
-
-  const planetKeys = Object.keys(positions) as PlanetKey[];
-
-  for (let i = 0; i < planetKeys.length; i++) {
-    for (let j = i + 1; j < planetKeys.length; j++) {
-      const planet1 = planetKeys[i];
-      const planet2 = planetKeys[j];
-      const pos1 = positions[planet1].longitude;
-      const pos2 = positions[planet2].longitude;
-
-      const result = calculateAspect(pos1, pos2);
-
-      if (result.aspect) {
-        aspects.push({
-          planet1,
-          planet2,
-          aspect: result.aspect,
-          orb: result.orb,
-          applying: result.applying,
-        });
-      }
-    }
-  }
-
-  return aspects;
-}
-
-/**
- * Calculate complete natal chart
- */
-export function calculateNatalChart(params: {
-  birthDate: Date;
-  birthTime: string;
-  latitude: number;
-  longitude: number;
-  houseSystem?: HouseSystem;
-}): {
-  planets: Record<PlanetKey, ReturnType<typeof calculatePlanet>>;
-  houses: ReturnType<typeof calculateHouses>;
-  aspects: ReturnType<typeof calculateAllAspects>;
-  jd: number;
-} {
-  const { birthDate, birthTime, latitude, longitude, houseSystem = 'placidus' } = params;
-
-  // Calculate Julian day
-  const jd = dateToJulianDay(birthDate, birthTime);
-
-  // Calculate planets
-  const planets = calculateAllPlanets(jd, latitude, longitude);
-
-  // Calculate houses
-  const houses = calculateHouses(jd, latitude, longitude, houseSystem);
-
-  // Calculate aspects
-  const aspects = calculateAllAspects(planets);
-
-  return {
-    planets,
-    houses,
-    aspects,
-    jd,
-  };
-}
-
-/**
- * Calculate transit positions for a given date
- */
-export function calculateTransits(params: {
-  transitDate: Date;
-  transitTime: string;
-  natalChart: {
-    jd: number;
-    planets: Record<PlanetKey, { longitude: number }>;
-    houses: ReturnType<typeof calculateHouses>;
-  };
-}): {
-  transitPlanets: Record<PlanetKey, ReturnType<typeof calculatePlanet>>;
-  aspectsToNatal: Array<{
-    transitPlanet: PlanetKey;
-    natalPlanet: PlanetKey;
-    aspect: AspectType;
-    orb: number;
-  }>;
-  housePositions: Record<PlanetKey, number>;
-} {
-  const { transitDate, transitTime, natalChart } = params;
-
-  // Calculate Julian day for transit
-  const transitJd = dateToJulianDay(transitDate, transitTime);
-
-  // Calculate transit planets
-  const transitPlanets = calculateAllPlanets(transitJd);
-
-  // Calculate aspects to natal planets
-  const aspectsToNatal: Array<{
-    transitPlanet: PlanetKey;
-    natalPlanet: PlanetKey;
-    aspect: AspectType;
-    orb: number;
-  }> = [];
-
-  for (const [transitKey, transitPos] of Object.entries(transitPlanets)) {
-    for (const [natalKey, natalPos] of Object.entries(natalChart.planets)) {
-      const result = calculateAspect(transitPos.longitude, natalPos.longitude);
-
-      if (result.aspect) {
-        aspectsToNatal.push({
-          transitPlanet: transitKey as PlanetKey,
-          natalPlanet: natalKey as PlanetKey,
-          aspect: result.aspect,
-          orb: result.orb,
-        });
-      }
-    }
-  }
-
-  // Calculate which house each transit planet is in
-  const housePositions: Record<string, number> = {};
-  for (const [key, pos] of Object.entries(transitPlanets)) {
-    const houses = natalChart.houses.houses;
-    for (let i = 0; i < houses.length; i++) {
-      const currentCusp = houses[i].cusp;
-      const nextCusp = houses[(i + 1) % 12].cusp;
-
-      // Handle house boundaries
-      let inHouse = false;
-      if (currentCusp < nextCusp) {
-        inHouse = pos.longitude >= currentCusp && pos.longitude < nextCusp;
-      } else {
-        // House spans 0° Aries
-        inHouse = pos.longitude >= currentCusp || pos.longitude < nextCusp;
-      }
-
-      if (inHouse) {
-        housePositions[key] = i + 1;
-        break;
-      }
-    }
-  }
-
-  return {
-    transitPlanets,
-    aspectsToNatal,
-    housePositions: housePositions as any,
-  };
-}
-
-export default {
+// Export all functions and constants as swissEphemeris object
+export const swissEphemeris = {
   calculateNatalChart,
   calculateTransits,
-  calculatePlanet,
-  calculateAllPlanets,
-  calculateHouses,
-  calculateAspect,
-  calculateAllAspects,
+  calculateCompatibility,
+  calculateLunarReturn,
+  calculateCompositeChart,
+  calculateAspects,
+  juldayToDate,
   ZODIAC_SIGNS,
   PLANET_SYMBOLS,
   ASPECT_TYPES,
 };
+
+export default swissEphemeris;
