@@ -1,9 +1,17 @@
 /**
- * Models Export
- * NOTE: This file is deprecated. Models should be imported directly from their respective modules.
+ * Models Index
+ * Central exports for all models
  */
 
-// Re-exports moved to individual module directories
-// Import UserModel from '../../modules/users/models'
-// Import ChartModel from '../../modules/charts/models'
-// Import Calendar types from '../../modules/calendar/models/calendarEvent.model'
+export { ChartModel } from './chart.model';
+export { UserModel } from './user.model';
+export * from '../modules/auth/models/refreshToken.model';
+export * from '../modules/calendar/models/calendar.model';
+export * from '../modules/calendar/models/calendarEvent.model';
+export * from '../modules/lunar/models/lunarReturn.model';
+export * from '../modules/notifications/models/pushSubscription.model';
+export * from '../modules/solar/models/solarReturn.model';
+export * from '../modules/synastry/models/synastry.model';
+export * from '../modules/ai/models/aiCache.model';
+export * from '../modules/ai/models/aiUsage.model';
+

@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../hooks';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -12,6 +12,21 @@ interface LoginFormProps {
 
 interface RegisterFormProps {
   onSuccess?: () => void;
+}
+
+// Error Message Component with Icon
+interface ErrorMessageProps {
+  message: string;
+  id?: string;
+}
+
+function ErrorMessage({ message, id }: ErrorMessageProps) {
+  return (
+    <p id={id} className="error-message" role="alert" aria-live="assertive">
+      <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
+      <span className="error-text">{message}</span>
+    </p>
+  );
 }
 
 // ==================== LOGIN FORM ====================
@@ -23,6 +38,10 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof typeof formData, string>>>({});
   const [showPassword, setShowPassword] = useState(false);
+
+  // Generate unique IDs for accessibility
+  const emailErrorId = 'email-error';
+  const passwordErrorId = 'password-error';
 
   const validate = () => {
     const newErrors: Partial<Record<keyof typeof formData, string>> = {};
@@ -110,28 +129,44 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email Address
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={`
-                w-full px-4 py-3 rounded-lg border transition-colors
-                ${
-                  errors.email
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
-                }
-                bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-              `}
-              placeholder="you@example.com"
-            />
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-            )}
+            <div className="relative">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? emailErrorId : undefined}
+                className={`
+                  w-full px-4 py-3 rounded-lg border pr-12 transition-colors
+                  ${
+                    errors.email
+                      ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                      : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
+                  }
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                `}
+                placeholder="you@example.com"
+              />
+              {errors.email && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 pointer-events-none"
+                aria-hidden="true"
+              >
+                <div className="w-5 h-5" />
+              </button>
+            </div>
+            {errors.email && <ErrorMessage message={errors.email} id={emailErrorId} />}
           </div>
 
           {/* Password Field */}
@@ -147,22 +182,31 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
-              onBlur={handleBlur}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? passwordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
                     errors.password
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                      ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
                       : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
                   }
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                 `}
                 placeholder="Enter your password"
               />
+              {errors.password && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
                   <EyeSlashIcon className="w-5 h-5" />
@@ -171,9 +215,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 )}
               </button>
             </div>
-            {errors.password && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
-            )}
+            {errors.password && <ErrorMessage message={errors.password} id={passwordErrorId} />}
 
             {/* Forgot Password Link */}
             <div className="mt-2 text-right">
@@ -295,6 +337,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Generate unique IDs for accessibility
+  const nameErrorId = 'name-error';
+  const emailErrorId = 'email-error';
+  const passwordErrorId = 'password-error';
+  const confirmPasswordErrorId = 'confirmPassword-error';
+
   const validate = () => {
     const newErrors: Partial<Record<keyof typeof formData, string>> = {};
 
@@ -404,28 +452,36 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Full Name
             </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              autoComplete="name"
-              value={formData.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={`
-                w-full px-4 py-3 rounded-lg border transition-colors
-                ${
-                  errors.name
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
-                }
-                bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-              `}
-              placeholder="Your full name"
-            />
-            {errors.name && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
-            )}
+            <div className="relative">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                autoComplete="name"
+                value={formData.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? nameErrorId : undefined}
+                className={`
+                  w-full px-4 py-3 rounded-lg border pr-12 transition-colors
+                  ${
+                    errors.name
+                      ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                      : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
+                  }
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                `}
+                placeholder="Your full name"
+              />
+              {errors.name && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            {errors.name && <ErrorMessage message={errors.name} id={nameErrorId} />}
           </div>
 
           {/* Email Field */}
@@ -433,28 +489,36 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email Address
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={`
-                w-full px-4 py-3 rounded-lg border transition-colors
-                ${
-                  errors.email
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
-                }
-                bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-              `}
-              placeholder="you@example.com"
-            />
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-            )}
+            <div className="relative">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? emailErrorId : undefined}
+                className={`
+                  w-full px-4 py-3 rounded-lg border pr-12 transition-colors
+                  ${
+                    errors.email
+                      ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                      : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
+                  }
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                `}
+                placeholder="you@example.com"
+              />
+              {errors.email && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            {errors.email && <ErrorMessage message={errors.email} id={emailErrorId} />}
           </div>
 
           {/* Password Field */}
@@ -470,22 +534,31 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
-              onBlur={handleBlur}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? passwordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
                     errors.password
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                      ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
                       : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
                   }
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                 `}
                 placeholder="Create a password"
               />
+              {errors.password && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
                   <EyeSlashIcon className="w-5 h-5" />
@@ -494,9 +567,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 )}
               </button>
             </div>
-            {errors.password && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
-            )}
+            {errors.password && <ErrorMessage message={errors.password} id={passwordErrorId} />}
             {!errors.password && (
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 Must be at least 8 characters with uppercase, lowercase, and number
@@ -517,22 +588,31 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-              onBlur={handleBlur}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-invalid={!!errors.confirmPassword}
+                aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
                     errors.confirmPassword
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                      ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
                       : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500'
                   }
                   bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                 `}
                 placeholder="Confirm your password"
               />
+              {errors.confirmPassword && (
+                <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
                 {showConfirmPassword ? (
                   <EyeSlashIcon className="w-5 h-5" />
@@ -541,9 +621,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 )}
               </button>
             </div>
-            {errors.confirmPassword && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
-            )}
+            {errors.confirmPassword && <ErrorMessage message={errors.confirmPassword} id={confirmPasswordErrorId} />}
           </div>
 
           {/* Terms and Conditions */}

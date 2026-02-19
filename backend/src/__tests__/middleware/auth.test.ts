@@ -6,12 +6,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { authenticate, optionalAuthenticate, generateToken, generateRefreshToken } from '../middleware/auth';
-import { AppError } from '../middleware/errorHandler';
-import config from '../config';
+import { authenticate, optionalAuthenticate, generateToken, generateRefreshToken } from '../../middleware/auth';
+import { AppError } from '../../middleware/errorHandler';
+import config from '../../config';
 
 // Mock dependencies
-jest.mock('../config');
+jest.mock('../../config');
 jest.mock('jsonwebtoken');
 
 // Mock request/response/next
@@ -42,7 +42,7 @@ describe('Authentication Middleware', () => {
       const next = mockNext;
 
       const tokenPayload = {
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
       };
 
@@ -54,7 +54,7 @@ describe('Authentication Middleware', () => {
 
       expect(req.user).toEqual(tokenPayload);
       expect(next).toHaveBeenCalledWith();
-      expect(jwt.verify).toHaveBeenCalledWith('validtoken', config.jwt.secret);
+      expect(jwt.verify).toHaveBeenCalledWith('valid-token', config.jwt.secret);
     });
 
     it('should throw 401 when no authorization header provided', () => {
@@ -62,8 +62,13 @@ describe('Authentication Middleware', () => {
       const res = mockResponse();
       const next = mockNext;
 
-      expect(() => authenticate(req, res, next)).toThrow(AppError);
-      expect(() => authenticate(req, res, next)).toThrow('No token provided');
+      authenticate(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(AppError));
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'No token provided',
+        statusCode: 401,
+      }));
     });
 
     it('should throw 401 when authorization header does not start with Bearer', () => {
@@ -73,8 +78,13 @@ describe('Authentication Middleware', () => {
 
       req.headers.authorization = 'InvalidFormat token';
 
-      expect(() => authenticate(req, res, next)).toThrow(AppError);
-      expect(() => authenticate(req, res, next)).toThrow('No token provided');
+      authenticate(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(AppError));
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'No token provided',
+        statusCode: 401,
+      }));
     });
 
     it('should throw 401 when token is invalid (JsonWebTokenError)', () => {
@@ -134,7 +144,7 @@ describe('Authentication Middleware', () => {
       req.headers.authorization = 'Bearer my-jwt-token';
 
       const tokenPayload = {
-        userId: '456',
+        id: '456',
         email: 'user@example.com',
       };
 
@@ -153,14 +163,20 @@ describe('Authentication Middleware', () => {
       req.headers.authorization = 'bearer my-token'; // lowercase
 
       const tokenPayload = {
-        userId: '789',
+        id: '789',
         email: 'another@example.com',
       };
 
       (jwt.verify as jest.Mock).mockReturnValue(tokenPayload);
 
-      // Should still throw because we check for exact 'Bearer ' match
-      expect(() => authenticate(req, res, next)).toThrow('No token provided');
+      // Should still fail because we check for exact 'Bearer ' match
+      authenticate(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(AppError));
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'No token provided',
+        statusCode: 401,
+      }));
     });
   });
 
@@ -171,7 +187,7 @@ describe('Authentication Middleware', () => {
       const next = mockNext;
 
       const tokenPayload = {
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
       };
 
@@ -251,7 +267,7 @@ describe('Authentication Middleware', () => {
   describe('generateToken', () => {
     it('should generate JWT token with correct payload', () => {
       const payload = {
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
       };
 
@@ -267,7 +283,7 @@ describe('Authentication Middleware', () => {
 
     it('should generate token without iat and exp in payload', () => {
       const payload = {
-        userId: '456',
+        id: '456',
         email: 'user@example.com',
       };
 
@@ -288,7 +304,7 @@ describe('Authentication Middleware', () => {
 
     it('should use configured JWT secret', () => {
       const payload = {
-        userId: '789',
+        id: '789',
         email: 'another@example.com',
       };
 
@@ -305,7 +321,7 @@ describe('Authentication Middleware', () => {
 
     it('should use configured expiration time', () => {
       const payload = {
-        userId: '999',
+        id: '999',
         email: 'expire@example.com',
       };
 
@@ -322,67 +338,58 @@ describe('Authentication Middleware', () => {
   });
 
   describe('generateRefreshToken', () => {
-    it('should generate refresh token with correct payload', () => {
+    it('should generate refresh token', () => {
       const payload = {
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
       };
 
-      (jwt.sign as jest.Mock).mockReturnValue('refresh-token');
-
       const token = generateRefreshToken(payload);
 
-      expect(token).toBe('refresh-token');
-      expect(jwt.sign).toHaveBeenCalledWith(payload, config.jwt.secret, {
-        expiresIn: config.jwt.refreshExpiresIn,
-      });
+      expect(token).toBeDefined();
+      expect(typeof token).toBe('string');
+      expect(token.length).toBeGreaterThan(0);
     });
 
-    it('should use refresh token expiration time', () => {
+    it('should generate different tokens each time', () => {
       const payload = {
-        userId: '456',
+        id: '456',
         email: 'refresh@example.com',
       };
 
-      (jwt.sign as jest.Mock).mockReturnValue('long-lived-token');
+      const token1 = generateRefreshToken(payload);
+      const token2 = generateRefreshToken(payload);
 
-      generateRefreshToken(payload);
-
-      expect(jwt.sign).toHaveBeenCalledWith(
-        expect.any(Object),
-        expect.any(String),
-        { expiresIn: config.jwt.refreshExpiresIn }
-      );
+      expect(token1).not.toBe(token2);
     });
 
     it('should generate different tokens than access token', () => {
       const payload = {
-        userId: '789',
+        id: '789',
         email: 'tokens@example.com',
       };
 
-      (jwt.sign as jest.Mock)
-        .mockReturnValueOnce('access-token')
-        .mockReturnValueOnce('refresh-token');
+      (jwt.sign as jest.Mock).mockReturnValue('access-token');
 
       const accessToken = generateToken(payload);
       const refreshToken = generateRefreshToken(payload);
 
       expect(accessToken).not.toBe(refreshToken);
-      expect(jwt.sign).toHaveBeenCalledTimes(2);
+      expect(accessToken).toBe('access-token');
+      expect(typeof refreshToken).toBe('string');
     });
   });
 
   describe('Token Payload Interface', () => {
     it('should accept valid token payload structure', () => {
       const validPayload = {
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
         iat: 1234567890,
         exp: 1234567890,
       };
 
-      expect(validPayload.userId).toBeDefined();
+      expect(validPayload.id).toBeDefined();
       expect(validPayload.email).toBeDefined();
       expect(validPayload.iat).toBeDefined();
       expect(validPayload.exp).toBeDefined();
@@ -390,11 +397,11 @@ describe('Authentication Middleware', () => {
 
     it('should accept payload without timestamps', () => {
       const payloadWithoutTimestamps = {
-        userId: '456',
+        id: '456',
         email: 'user@example.com',
       };
 
-      expect(payloadWithoutTimestamps.userId).toBeDefined();
+      expect(payloadWithoutTimestamps.id).toBeDefined();
       expect(payloadWithoutTimestamps.email).toBeDefined();
       expect(payloadWithoutTimestamps.iat).toBeUndefined();
       expect(payloadWithoutTimestamps.exp).toBeUndefined();
@@ -405,7 +412,7 @@ describe('Authentication Middleware', () => {
     it('should allow user property to be attached to request', () => {
       const req: Request = {} as Request;
       const user = {
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
       };
 

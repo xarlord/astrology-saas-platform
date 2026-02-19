@@ -72,4 +72,8 @@ export default {
     },
   },
   plugins: [],
+  // Custom utilities for accessibility
+  corePlugins: {
+    preflight: true,
+  },
 };

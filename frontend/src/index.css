@@ -11,6 +11,72 @@
   body {
     @apply antialiased;
   }
+
+  /* WCAG 2.1 AA - Focus Visible Indicator */
+  *:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Ensure focus is visible on all interactive elements */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  /* Remove default outline and use focus-visible only */
+  * {
+    outline: none;
+  }
+
+  /* Skip Navigation Link - Hidden by default, visible on focus */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    z-index: 100;
+    transition: top 0.3s;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 0 0 4px 0;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
 }
 
 @layer components {
@@ -28,5 +94,85 @@
 
   .input {
     @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white;
+  }
+
+  /* Error Message Styles */
+  .error-message {
+    @apply mt-2 text-sm flex items-start gap-2;
+    animation: errorSlideIn 0.3s ease-out;
+  }
+
+  .error-icon {
+    @apply flex-shrink-0 w-5 h-5 text-red-500 dark:text-red-400 mt-0.5;
+  }
+
+  .error-text {
+    @apply text-red-600 dark:text-red-400 font-medium;
+  }
+
+  /* Error Input Styles */
+  .input-error {
+    @apply border-red-300 dark:border-red-600 focus:border-red-500 focus:ring-red-500;
+    animation: errorShake 0.4s ease-in-out;
+  }
+
+  /* Error Animations */
+  @keyframes errorSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes errorShake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-8px);
+    }
+    50% {
+      transform: translateX(8px);
+    }
+    75% {
+      transform: translateX(-8px);
+    }
+  }
+
+  /* Error State Container */
+  .error-container {
+    @apply relative;
+  }
+
+  .error-container::before {
+    content: '';
+    @apply absolute inset-0 rounded-lg bg-red-50 dark:bg-red-900/20 pointer-events-none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .error-container.has-error::before {
+    opacity: 1;
+  }
+
+  /* Error Icon Wrapper */
+  .error-icon-wrapper {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none;
+    animation: errorPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes errorPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+    50% {
+      opacity: 0.7;
+      transform: translate(0, -50%) scale(1.05);
+    }
   }
 }

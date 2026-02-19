@@ -3,13 +3,13 @@
  * Tests user database operations
  */
 
-import db from '../db';
-import UserModel, { User, CreateUserData, UpdateUserData } from '../../models/user.model';
+import knex from '../../config/database';
+import { UserModel, User, CreateUserData, UpdateUserData } from '../../models/user.model';
 
 // Mock database
-jest.mock('../db');
+jest.mock('../../config/database');
 
-const mockDb = db as jest.MockedFunction<typeof db>;
+const mockKnex = knex as jest.MockedFunction<typeof knex>;
 
 describe('User Model', () => {
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(mockUser),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.findById('123');
 
@@ -53,7 +53,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.findById('999');
 
@@ -67,7 +67,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       await UserModel.findById('123');
 
@@ -96,7 +96,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(mockUser),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.findByEmail('test@example.com');
 
@@ -111,7 +111,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.findByEmail('notfound@example.com');
 
@@ -139,10 +139,11 @@ describe('User Model', () => {
       };
 
       const mockQueryBuilder = {
-        insert: jest.fn().mockResolvedValue([createdUser]),
+        insert: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([createdUser]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.create(userData);
 
@@ -179,10 +180,11 @@ describe('User Model', () => {
       };
 
       const mockQueryBuilder = {
-        insert: jest.fn().mockResolvedValue([createdUser]),
+        insert: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([createdUser]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       await UserModel.create(userData);
 
@@ -218,10 +220,11 @@ describe('User Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([updatedUser]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([updatedUser]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.update('123', updateData);
 
@@ -239,10 +242,11 @@ describe('User Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.update('999', { name: 'Updated' });
 
@@ -257,7 +261,7 @@ describe('User Model', () => {
         update: jest.fn().mockResolvedValue(1),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.softDelete('123');
 
@@ -274,7 +278,7 @@ describe('User Model', () => {
         update: jest.fn().mockResolvedValue(0),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.softDelete('999');
 
@@ -301,10 +305,11 @@ describe('User Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([updatedUser]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([updatedUser]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.updatePlan('123', 'premium', 'active', new Date());
 
@@ -321,10 +326,11 @@ describe('User Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([{ id: '123' }]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([{ id: '123' }]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       await UserModel.updatePlan('123', 'premium');
 
@@ -351,11 +357,11 @@ describe('User Model', () => {
         offset: jest.fn().mockResolvedValue(mockCharts),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.getCharts('123', 10, 0);
 
-      expect(mockDb).toHaveBeenCalledWith('charts');
+      expect(mockKnex).toHaveBeenCalledWith('charts');
       expect(mockQueryBuilder.where).toHaveBeenCalledWith({ user_id: '123' });
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('created_at', 'desc');
       expect(mockQueryBuilder.limit).toHaveBeenCalledWith(10);
@@ -372,7 +378,7 @@ describe('User Model', () => {
         offset: jest.fn().mockResolvedValue([]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       await UserModel.getCharts('123');
 
@@ -401,26 +407,25 @@ describe('User Model', () => {
         preferences: { theme: 'dark', houseSystem: 'whole_sign' },
       };
 
-      const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([updatedUser]),
-      };
-
-      mockDb.mockReturnValue(mockQueryBuilder as any);
-
-      // Mock findById to return existing user
       const findQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
         first: jest.fn().mockResolvedValue(existingUser),
       };
 
-      mockDb.mockReturnValueOnce(findQueryBuilder as any);
-      mockDb.mockReturnValueOnce(mockQueryBuilder as any);
+      const updateQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([updatedUser]),
+      };
+
+      mockKnex
+        .mockReturnValueOnce(findQueryBuilder as any)
+        .mockReturnValueOnce(updateQueryBuilder as any);
 
       const result = await UserModel.updatePreferences('123', { houseSystem: 'whole_sign', theme: 'dark' });
 
-      expect(mockQueryBuilder.update).toHaveBeenCalledWith({
+      expect(updateQueryBuilder.update).toHaveBeenCalledWith({
         preferences: { theme: 'dark', houseSystem: 'whole_sign' },
         updated_at: expect.any(Date),
       });
@@ -434,7 +439,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await UserModel.updatePreferences('999', { theme: 'dark' });
 

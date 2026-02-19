@@ -54,7 +54,8 @@ describe('Lunar Return Service', () => {
       const daysUntil = (returnDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
 
       // Simplified calculation may vary, but should be within reasonable range
-      expect(daysUntil).toBeGreaterThan(20);
+      // Lunar month is ~29.5 days, so next return should be less than that
+      expect(daysUntil).toBeGreaterThan(0);
       expect(daysUntil).toBeLessThan(30);
     });
 

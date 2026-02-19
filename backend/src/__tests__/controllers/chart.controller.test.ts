@@ -15,12 +15,34 @@ import {
   calculateChart,
 } from '../../controllers/chart.controller';
 import { AppError } from '../../middleware/errorHandler';
-import { ChartModel } from '../../models';
-import { swissEphemeris } from '../../services';
+import ChartModel from '../../modules/charts/models/chart.model';
+import { swissEphemeris } from '../../modules/shared';
 
 // Mock dependencies
-jest.mock('../../models');
-jest.mock('../../services');
+jest.mock('../../modules/charts/models/chart.model', () => ({
+  __esModule: true,
+  default: {
+    create: jest.fn(),
+    findByUserId: jest.fn(),
+    countByUserId: jest.fn(),
+    findByIdAndUserId: jest.fn(),
+    update: jest.fn(),
+    softDelete: jest.fn(),
+    updateCalculatedData: jest.fn(),
+  },
+}));
+
+jest.mock('../../modules/shared', () => ({
+  swissEphemeris: {
+    calculateNatalChart: jest.fn(),
+    calculateTransits: jest.fn(),
+    PLANET_SYMBOLS: {
+      sun: '☉',
+      moon: '☽',
+      mercury: '☿',
+    },
+  },
+}));
 
 describe('Chart Controller', () => {
   let mockRequest: Partial<Request>;
@@ -35,6 +57,8 @@ describe('Chart Controller', () => {
       body: {},
       params: {},
       query: {},
+      get: jest.fn().mockReturnValue('test-agent'),
+      ip: '127.0.0.1',
     };
 
     mockResponse = {

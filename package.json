@@ -19,6 +19,7 @@
     "start:backend": "npm run start --workspace=backend",
     "start:frontend": "npm run start --workspace=frontend",
     "test": "npm run test --workspaces",
+    "test:smoke": "node scripts/smoke-tests.js",
     "lint": "npm run lint --workspaces",
     "clean": "rm -rf node_modules */node_modules",
     "db:migrate": "npm run db:migrate --workspace=backend",

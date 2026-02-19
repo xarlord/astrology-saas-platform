@@ -3,13 +3,13 @@
  * Tests chart database operations
  */
 
-import db from '../db';
-import ChartModel, { Chart, CreateChartData, UpdateChartData } from '../../models/chart.model';
+import knex from '../../config/database';
+import { ChartModel, Chart, CreateChartData, UpdateChartData } from '../../models/chart.model';
 
 // Mock database
-jest.mock('../db');
+jest.mock('../../config/database');
 
-const mockDb = db as jest.MockedFunction<typeof db>;
+const mockKnex = knex as jest.MockedFunction<typeof knex>;
 
 describe('Chart Model', () => {
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('Chart Model', () => {
         first: jest.fn().mockResolvedValue(mockChart),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.findById('456');
 
@@ -58,7 +58,7 @@ describe('Chart Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.findById('999');
 
@@ -92,7 +92,7 @@ describe('Chart Model', () => {
         first: jest.fn().mockResolvedValue(mockChart),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.findByIdAndUserId('456', '123');
 
@@ -107,7 +107,7 @@ describe('Chart Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.findByIdAndUserId('456', '999');
 
@@ -162,7 +162,7 @@ describe('Chart Model', () => {
         offset: jest.fn().mockResolvedValue(mockCharts),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.findByUserId('123', 10, 0);
 
@@ -182,7 +182,7 @@ describe('Chart Model', () => {
         offset: jest.fn().mockResolvedValue([]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       await ChartModel.findByUserId('123');
 
@@ -216,10 +216,11 @@ describe('Chart Model', () => {
       };
 
       const mockQueryBuilder = {
-        insert: jest.fn().mockResolvedValue([createdChart]),
+        insert: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([createdChart]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.create(chartData);
 
@@ -258,10 +259,11 @@ describe('Chart Model', () => {
       };
 
       const mockQueryBuilder = {
-        insert: jest.fn().mockResolvedValue([createdChart]),
+        insert: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([createdChart]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       await ChartModel.create(chartData);
 
@@ -301,10 +303,11 @@ describe('Chart Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([updatedChart]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([updatedChart]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.update('456', '123', updateData);
 
@@ -322,10 +325,11 @@ describe('Chart Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.update('999', '123', { name: 'Updated' });
 
@@ -364,10 +368,11 @@ describe('Chart Model', () => {
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
-        update: jest.fn().mockResolvedValue([updatedChart]),
+        update: jest.fn().mockReturnThis(),
+        returning: jest.fn().mockResolvedValue([updatedChart]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.updateCalculatedData('456', '123', calculatedData);
 
@@ -386,7 +391,7 @@ describe('Chart Model', () => {
         update: jest.fn().mockResolvedValue(1),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.softDelete('456', '123');
 
@@ -403,7 +408,7 @@ describe('Chart Model', () => {
         update: jest.fn().mockResolvedValue(0),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.softDelete('999', '123');
 
@@ -419,7 +424,7 @@ describe('Chart Model', () => {
         count: jest.fn().mockResolvedValue([{ count: '5' }]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.countByUserId('123');
 
@@ -436,7 +441,7 @@ describe('Chart Model', () => {
         count: jest.fn().mockResolvedValue([{ count: '0' }]),
       };
 
-      mockDb.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as any);
 
       const result = await ChartModel.countByUserId('999');
 

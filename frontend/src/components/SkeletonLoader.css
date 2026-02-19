@@ -1,0 +1,274 @@
+/**
+ * SkeletonLoader Styles
+ * Animated placeholder styles with pulse animation
+ */
+
+/* Base skeleton animation */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    #374151 25%,
+    #4b5563 50%,
+    #374151 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* Card Skeleton */
+.skeleton-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.dark .skeleton-card {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.skeleton-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 1.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-badge {
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-card-body {
+  margin-bottom: 1rem;
+}
+
+.skeleton-line {
+  width: 100%;
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-line-sm {
+  width: 70%;
+  height: 0.75rem;
+  border-radius: 4px;
+}
+
+.skeleton-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dark .skeleton-card-footer {
+  border-top-color: #374151;
+}
+
+.skeleton-symbol {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+
+/* List Skeleton */
+.skeleton-list-item {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.dark .skeleton-list-item {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.skeleton-list-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-symbol-lg {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+
+/* Calendar Skeleton */
+.skeleton-calendar {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.dark .skeleton-calendar {
+  background: #1f2937;
+}
+
+.skeleton-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.skeleton-button {
+  width: 6rem;
+  height: 2.5rem;
+  border-radius: 6px;
+}
+
+.skeleton-title-lg {
+  width: 12rem;
+  height: 2rem;
+  border-radius: 4px;
+}
+
+.skeleton-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-weekday {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.dark .skeleton-weekday {
+  color: #9ca3af;
+}
+
+.skeleton-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.skeleton-day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+}
+
+/* Chart Skeleton */
+.skeleton-chart {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .skeleton-chart {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.skeleton-wheel {
+  aspect-ratio: 1;
+  background: #f3f4f6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.dark .skeleton-wheel {
+  background: #374151;
+}
+
+.skeleton-circle {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.skeleton-circle-inner {
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.skeleton-positions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-position {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .skeleton-position {
+  border-bottom-color: #374151;
+}
+
+.skeleton-planet {
+  width: 6rem;
+  height: 1rem;
+  border-radius: 4px;
+}
+
+.skeleton-position-value {
+  width: 8rem;
+  height: 1rem;
+  border-radius: 4px;
+}
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

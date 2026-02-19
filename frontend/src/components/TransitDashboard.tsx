@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlanetSymbol, AspectSymbol } from './';
+import { PlanetSymbol, AspectSymbol, SkeletonLoader, EmptyState } from './';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -200,9 +200,12 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
       </h3>
 
       {sortedTransits.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <p className="text-gray-500 dark:text-gray-400">No major transits today</p>
-        </div>
+        <EmptyState
+          icon="🌙"
+          title="No major transits today"
+          description="The cosmos is relatively quiet today. Check back later for upcoming astrological events."
+          size="small"
+        />
       ) : (
         <div className="space-y-4">
           {sortedTransits.map((transit, index) => (
@@ -406,15 +409,24 @@ function UpcomingHighlights({
         Upcoming Highlights
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {highlights.map((highlight, index) => (
-          <HighlightCard
-            key={index}
-            highlight={highlight}
-            onClick={() => onHighlightClick?.(highlight)}
-          />
-        ))}
-      </div>
+      {highlights.length === 0 ? (
+        <EmptyState
+          icon="✨"
+          title="No upcoming highlights"
+          description="There are no major astrological highlights in the near future. Check back later for updates."
+          size="small"
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {highlights.map((highlight, index) => (
+            <HighlightCard
+              key={index}
+              highlight={highlight}
+              onClick={() => onHighlightClick?.(highlight)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

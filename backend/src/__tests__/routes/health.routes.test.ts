@@ -4,14 +4,27 @@
  */
 
 import request from 'supertest';
-import { Router } from 'express';
+import express, { Application } from 'express';
 import healthRoutes from '../../routes/health.routes';
 
+// Mock database
+jest.mock('../../db', () => ({
+  db: {
+    raw: jest.fn().mockResolvedValue({}),
+  },
+}));
+
 describe('Health Routes', () => {
-  let app: Router;
+  let app: Application;
 
   beforeEach(() => {
-    app = Router();
+    // Create a fresh Express app for each test
+    app = express();
+
+    // Add middleware that the routes might need
+    app.use(express.json());
+
+    // Mount the health routes
     app.use('/health', healthRoutes);
   });
 

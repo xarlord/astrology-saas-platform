@@ -8,7 +8,23 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
 import { useState, useEffect } from 'react';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCreateChart, useCalculateChart, useCharts } from '../hooks';
+
+// Error Message Component with Icon
+interface ErrorMessageProps {
+  message: string;
+  id?: string;
+}
+
+function ErrorMessage({ message, id }: ErrorMessageProps) {
+  return (
+    <p id={id} className="error-message" role="alert" aria-live="assertive">
+      <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
+      <span className="error-text">{message}</span>
+    </p>
+  );
+}
 
 // Types
 export interface BirthData {
@@ -74,6 +90,13 @@ export function BirthDataForm({
   const [errors, setErrors] = useState<Partial<Record<keyof BirthData, string>>>({});
   const [placeSuggestions, setPlaceSuggestions] = useState<string[]>([]);
   const [showPlaceSearch, setShowPlaceSearch] = useState(false);
+
+  // Generate unique IDs for accessibility
+  const birthDateErrorId = 'birthDate-error';
+  const birthTimeErrorId = 'birthTime-error';
+  const birthTimeDescId = 'birthTime-desc';
+  const birthPlaceErrorId = 'birthPlace-error';
+  const chartNameErrorId = 'chartName-error';
 
   const createChartMutation = useCreateChart();
   const calculateChartMutation = useCalculateChart();
@@ -231,22 +254,30 @@ export function BirthDataForm({
             <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Birth Date <span className="text-red-500">*</span>
             </label>
-            <input
-              type="date"
-              id="birthDate"
-              name="birthDate"
-              value={formData.birthDate}
-              onChange={handleChange}
-              max={new Date().toISOString().split('T')[0]}
-              className={`mt-1 block w-full rounded-md shadow-sm ${
-                errors.birthDate
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-              } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white`}
-            />
-            {errors.birthDate && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.birthDate}</p>
-            )}
+            <div className="relative">
+              <input
+                type="date"
+                id="birthDate"
+                name="birthDate"
+                value={formData.birthDate}
+                onChange={handleChange}
+                max={new Date().toISOString().split('T')[0]}
+                aria-required="true"
+                aria-invalid={!!errors.birthDate}
+                aria-describedby={errors.birthDate ? birthDateErrorId : undefined}
+                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                  errors.birthDate
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
+                } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+              />
+              {errors.birthDate && (
+                <div className="error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            {errors.birthDate && <ErrorMessage message={errors.birthDate} id={birthDateErrorId} />}
           </div>
 
           {/* Birth Time */}
@@ -254,20 +285,30 @@ export function BirthDataForm({
             <label htmlFor="birthTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Birth Time <span className="text-red-500">*</span>
             </label>
-            <input
-              type="time"
-              id="birthTime"
-              name="birthTime"
-              value={formData.birthTime}
-              onChange={handleChange}
-              disabled={formData.timeUnknown}
-              className={`mt-1 block w-full rounded-md shadow-sm ${
-                errors.birthTime
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-              } disabled:bg-gray-100 dark:disabled:bg-gray-800 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white`}
-            />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <div className="relative">
+              <input
+                type="time"
+                id="birthTime"
+                name="birthTime"
+                value={formData.birthTime}
+                onChange={handleChange}
+                disabled={formData.timeUnknown}
+                aria-required={!formData.timeUnknown}
+                aria-invalid={!!errors.birthTime}
+                aria-describedby={errors.birthTime ? birthTimeErrorId : birthTimeDescId}
+                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                  errors.birthTime
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
+                } disabled:bg-gray-100 dark:disabled:bg-gray-800 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+              />
+              {errors.birthTime && (
+                <div className="error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            <p id={birthTimeDescId} className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Exact time is needed for accurate house calculations
             </p>
 
@@ -285,9 +326,7 @@ export function BirthDataForm({
                 I don't know my exact birth time
               </label>
             </div>
-            {errors.birthTime && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.birthTime}</p>
-            )}
+            {errors.birthTime && <ErrorMessage message={errors.birthTime} id={birthTimeErrorId} />}
           </div>
         </div>
       </div>
@@ -302,23 +341,31 @@ export function BirthDataForm({
             <label htmlFor="birthPlace" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Birth Place <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              id="birthPlace"
-              name="birthPlace"
-              value={formData.birthPlace}
-              onChange={handleChange}
-              placeholder="Search city or enter coordinates"
-              autoComplete="off"
-              className={`mt-1 block w-full rounded-md shadow-sm ${
-                errors.birthPlace
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-              } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white`}
-            />
-            {errors.birthPlace && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.birthPlace}</p>
-            )}
+            <div className="relative">
+              <input
+                type="text"
+                id="birthPlace"
+                name="birthPlace"
+                value={formData.birthPlace}
+                onChange={handleChange}
+                placeholder="Search city or enter coordinates"
+                autoComplete="off"
+                aria-required="true"
+                aria-invalid={!!errors.birthPlace}
+                aria-describedby={errors.birthPlace ? birthPlaceErrorId : undefined}
+                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                  errors.birthPlace
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
+                } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+              />
+              {errors.birthPlace && (
+                <div className="error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            {errors.birthPlace && <ErrorMessage message={errors.birthPlace} id={birthPlaceErrorId} />}
 
             {/* Place Suggestions Dropdown */}
             {showPlaceSearch && placeSuggestions.length > 0 && (
@@ -359,22 +406,30 @@ export function BirthDataForm({
             <label htmlFor="chartName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Chart Name <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              id="chartName"
-              name="chartName"
-              value={formData.chartName}
-              onChange={handleChange}
-              placeholder="My Natal Chart"
-              className={`mt-1 block w-full rounded-md shadow-sm ${
-                errors.chartName
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-              } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white`}
-            />
-            {errors.chartName && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.chartName}</p>
-            )}
+            <div className="relative">
+              <input
+                type="text"
+                id="chartName"
+                name="chartName"
+                value={formData.chartName}
+                onChange={handleChange}
+                placeholder="My Natal Chart"
+                aria-required="true"
+                aria-invalid={!!errors.chartName}
+                aria-describedby={errors.chartName ? chartNameErrorId : undefined}
+                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                  errors.chartName
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
+                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
+                } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+              />
+              {errors.chartName && (
+                <div className="error-icon-wrapper">
+                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            {errors.chartName && <ErrorMessage message={errors.chartName} id={chartNameErrorId} />}
           </div>
 
           {/* House System Selector */}

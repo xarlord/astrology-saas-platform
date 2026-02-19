@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { useCharts } from '../hooks';
-import { PlanetSymbol } from '../components';
+import { PlanetSymbol, SkeletonGrid, EmptyStates } from '../components';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -69,22 +69,11 @@ export default function DashboardPage() {
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-          </div>
+          <SkeletonGrid count={3} />
         ) : charts.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">✨</div>
-            <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">
-              No charts yet
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
-              Create your first natal chart to get started
-            </p>
-            <button onClick={() => navigate('/charts/new')} className="btn-primary">
-              Create Your First Chart
-            </button>
-          </div>
+          <EmptyStates.NoCharts
+            onAction={() => navigate('/charts/new')}
+          />
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {charts.map((chart) => (

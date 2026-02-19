@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { AIInterpretationToggle, AIInterpretationDisplay } from '../components';
+import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState } from '../components';
 import { PersonalityAnalysis } from '../components';
 
 interface ChartData {
@@ -62,8 +62,42 @@ export default function AnalysisPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
+          <div className="container mx-auto px-4 py-4">
+            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
+              ← Back to Dashboard
+            </a>
+            <h1 className="text-2xl font-bold mt-4">Personality Analysis</h1>
+          </div>
+        </header>
         <div className="container mx-auto px-4 py-8">
-          <p className="text-gray-600 dark:text-gray-400">Loading chart analysis...</p>
+          <SkeletonLoader variant="text" count={5} />
+        </div>
+      </div>
+    );
+  }
+
+  if (!chartData) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
+          <div className="container mx-auto px-4 py-4">
+            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
+              ← Back to Dashboard
+            </a>
+            <h1 className="text-2xl font-bold mt-4">Personality Analysis</h1>
+          </div>
+        </header>
+        <div className="container mx-auto px-4 py-8">
+          <EmptyState
+            icon="📊"
+            title="No chart data available"
+            description="Unable to load personality analysis. Please create a chart first."
+            actionText="Create Chart"
+            onAction={() => window.location.href = '/charts/new'}
+            secondaryActionText="Back to Dashboard"
+            onSecondaryAction={() => window.location.href = '/dashboard'}
+          />
         </div>
       </div>
     );

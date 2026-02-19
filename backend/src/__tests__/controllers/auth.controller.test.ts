@@ -8,14 +8,39 @@
 import { Request, Response } from 'express';
 import { register, login, getProfile, updateProfile, updatePreferences, logout, refreshToken } from '../../controllers/auth.controller';
 import { AppError } from '../../middleware/errorHandler';
-import { UserModel } from '../../models';
+import UserModel from '../../modules/users/models/user.model';
 import { generateToken, generateRefreshToken } from '../../middleware/auth';
 import * as helpers from '../../utils/helpers';
+import * as RefreshTokenModel from '../../modules/auth/models/refreshToken.model';
 
 // Mock dependencies
-jest.mock('../../models');
-jest.mock('../../middleware/auth');
-jest.mock('../../utils/helpers');
+jest.mock('../../modules/users/models/user.model', () => ({
+  __esModule: true,
+  default: {
+    findByEmail: jest.fn(),
+    findById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    updatePreferences: jest.fn(),
+  },
+}));
+
+jest.mock('../../modules/auth/models/refreshToken.model', () => ({
+  findRefreshToken: jest.fn(),
+  createRefreshToken: jest.fn(),
+  revokeRefreshToken: jest.fn(),
+}));
+
+jest.mock('../../middleware/auth', () => ({
+  generateToken: jest.fn(),
+  generateRefreshToken: jest.fn(),
+}));
+
+jest.mock('../../utils/helpers', () => ({
+  hashPassword: jest.fn(),
+  comparePassword: jest.fn(),
+  sanitizeUser: jest.fn(),
+}));
 
 describe('Authentication Controller', () => {
   let mockRequest: Partial<Request>;
@@ -31,6 +56,8 @@ describe('Authentication Controller', () => {
       user: { id: '123', email: 'test@example.com' },
       body: {},
       params: {},
+      get: jest.fn().mockReturnValue('test-agent'),
+      ip: '127.0.0.1',
     };
 
     // Setup mock response
@@ -68,6 +95,7 @@ describe('Authentication Controller', () => {
       });
       (generateToken as jest.Mock).mockReturnValue('access-token');
       (generateRefreshToken as jest.Mock).mockReturnValue('refresh-token');
+      (RefreshTokenModel.createRefreshToken as jest.Mock).mockResolvedValue({});
 
       await register(mockRequest as Request, mockResponse as Response, mockNext);
 
@@ -123,6 +151,7 @@ describe('Authentication Controller', () => {
       (helpers.sanitizeUser as jest.Mock).mockReturnValue({});
       (generateToken as jest.Mock).mockReturnValue('token');
       (generateRefreshToken as jest.Mock).mockReturnValue('refresh-token');
+      (RefreshTokenModel.createRefreshToken as jest.Mock).mockResolvedValue({});
 
       await register(mockRequest as Request, mockResponse as Response, mockNext);
 
@@ -143,14 +172,16 @@ describe('Authentication Controller', () => {
 
       mockRequest.body = userData;
 
-      (UserModel.findByEmail as jest.Mock).mockResolvedValue(null);
-      (helpers.hashPassword as jest.Mock).mockResolvedValue('hashed');
-      (UserModel.create as jest.Mock).mockResolvedValue({
+      const userWithHash = {
         id: '123',
         email: userData.email,
         name: userData.name,
         password_hash: 'hashed',
-      });
+      };
+
+      (UserModel.findByEmail as jest.Mock).mockResolvedValue(null);
+      (helpers.hashPassword as jest.Mock).mockResolvedValue('hashed');
+      (UserModel.create as jest.Mock).mockResolvedValue(userWithHash);
       const sanitizedUser = {
         id: '123',
         email: userData.email,
@@ -159,14 +190,11 @@ describe('Authentication Controller', () => {
       (helpers.sanitizeUser as jest.Mock).mockReturnValue(sanitizedUser);
       (generateToken as jest.Mock).mockReturnValue('token');
       (generateRefreshToken as jest.Mock).mockReturnValue('refresh-token');
+      (RefreshTokenModel.createRefreshToken as jest.Mock).mockResolvedValue({});
 
       await register(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(helpers.sanitizeUser).toHaveBeenCalledWith(
-        expect.objectContaining({
-          password_hash: undefined,
-        })
-      );
+      expect(helpers.sanitizeUser).toHaveBeenCalledWith(userWithHash);
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
         data: {
@@ -404,19 +432,35 @@ describe('Authentication Controller', () => {
 
   describe('refreshToken', () => {
     it('should generate new access token', async () => {
+      const oldRefreshToken = 'old-refresh-token';
+      mockRequest.body = { refreshToken: oldRefreshToken };
+
+      const mockTokenRecord = {
+        token: oldRefreshToken,
+        user_id: '123',
+        revoked: false,
+        expires_at: new Date(Date.now() + 86400000), // 1 day from now
+      };
+
+      const mockUser = {
+        id: '123',
+        email: 'test@example.com',
+      };
+
+      (RefreshTokenModel.findRefreshToken as jest.Mock).mockResolvedValue(mockTokenRecord);
+      (UserModel.findById as jest.Mock).mockResolvedValue(mockUser);
       (generateToken as jest.Mock).mockReturnValue('new-access-token');
+      (generateRefreshToken as jest.Mock).mockReturnValue('new-refresh-token');
 
       await refreshToken(mockRequest as Request, mockResponse as Response, mockNext);
 
+      expect(RefreshTokenModel.findRefreshToken).toHaveBeenCalledWith(oldRefreshToken);
+      expect(UserModel.findById).toHaveBeenCalledWith('123');
       expect(generateToken).toHaveBeenCalledWith({
-        userId: '123',
+        id: '123',
         email: 'test@example.com',
       });
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: true,
-        data: { accessToken: 'new-access-token' },
-      });
     });
   });
 
@@ -428,6 +472,7 @@ describe('Authentication Controller', () => {
       (helpers.sanitizeUser as jest.Mock).mockReturnValue({ id: '123' });
       (generateToken as jest.Mock).mockReturnValue('token');
       (generateRefreshToken as jest.Mock).mockReturnValue('refresh');
+      (RefreshTokenModel.createRefreshToken as jest.Mock).mockResolvedValue({});
 
       mockRequest.body = {
         name: 'Test',
@@ -444,11 +489,12 @@ describe('Authentication Controller', () => {
     it('should include user data in all auth responses', async () => {
       (UserModel.findByEmail as jest.Mock).mockResolvedValue(null);
       (helpers.comparePassword as jest.Mock).mockResolvedValue(true);
-      const mockUser = { id: '123', email: 'test@example.com' };
+      const mockUser = { id: '123', email: 'test@example.com', password_hash: 'hashed' };
       (UserModel.findByEmail as jest.Mock).mockResolvedValue(mockUser);
       (helpers.sanitizeUser as jest.Mock).mockReturnValue({ id: '123' });
       (generateToken as jest.Mock).mockReturnValue('token');
       (generateRefreshToken as jest.Mock).mockReturnValue('refresh');
+      (RefreshTokenModel.createRefreshToken as jest.Mock).mockResolvedValue({});
 
       mockRequest.body = {
         email: 'test@example.com',

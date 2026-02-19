@@ -12,6 +12,7 @@ import {
   getPlanetInSignInterpretation,
   getAspectInterpretation,
   getHouseInterpretation,
+  getTransitInterpretation,
 } from '../../data/interpretations';
 
 // Mock interpretations data
@@ -20,21 +21,22 @@ jest.mock('../../data/interpretations');
 const mockedGetPlanetInSignInterpretation = getPlanetInSignInterpretation as jest.Mock;
 const mockedGetAspectInterpretation = getAspectInterpretation as jest.Mock;
 const mockedGetHouseInterpretation = getHouseInterpretation as jest.Mock;
+const mockedGetTransitInterpretation = getTransitInterpretation as jest.Mock;
 
 describe('Interpretation Service', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     // Setup default mocks
-    mockedGetPlanetInSignInterpretation.mockReturnValue({
-      planet: 'sun',
-      sign: 'capricorn',
+    mockedGetPlanetInSignInterpretation.mockImplementation((planet: string, sign: string) => ({
+      planet,
+      sign,
       keywords: ['ambitious', 'disciplined'],
-      general: 'Sun in Capricorn interpretation',
+      general: `${planet.charAt(0).toUpperCase() + planet.slice(1)} in ${sign.charAt(0).toUpperCase() + sign.slice(1)} interpretation`,
       strengths: ['determined', 'practical'],
       challenges: ['reserved', 'pessimistic'],
       advice: ['embrace vulnerability', 'trust others'],
-    });
+    }));
 
     mockedGetAspectInterpretation.mockReturnValue({
       harmonious: true,
@@ -48,6 +50,12 @@ describe('Interpretation Service', () => {
       themes: ['identity', 'self-expression'],
       description: 'First house interpretation',
       advice: ['be authentic', 'express yourself'],
+    });
+
+    mockedGetTransitInterpretation.mockReturnValue({
+      description: 'Transit interpretation description',
+      meaning: 'This transit brings important changes',
+      advice: ['stay grounded', 'embrace change'],
     });
   });
 

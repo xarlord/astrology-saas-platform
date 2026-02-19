@@ -2,7 +2,109 @@
  * Chart View Page Component
  */
 
+import { SkeletonLoader, EmptyState } from '../components';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 export default function ChartViewPage() {
+  const { chartId } = useParams<{ chartId: string }>();
+  const [chartData, setChartData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadChart = async () => {
+      if (!chartId) return;
+
+      try {
+        setIsLoading(true);
+        setError(null);
+        // TODO: Implement actual chart data fetching
+        // For now, simulating loading
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setChartData(null); // No chart data yet
+      } catch (err) {
+        setError('Failed to load chart data');
+        console.error('Chart loading error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadChart();
+  }, [chartId]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
+          <div className="container mx-auto px-4 py-4">
+            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
+              ← Back to Dashboard
+            </a>
+            <h1 className="text-2xl font-bold mt-4">Natal Chart</h1>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8">
+          <SkeletonLoader variant="chart" />
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
+          <div className="container mx-auto px-4 py-4">
+            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
+              ← Back to Dashboard
+            </a>
+            <h1 className="text-2xl font-bold mt-4">Natal Chart</h1>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8">
+          <EmptyState
+            icon="⚠️"
+            title="Unable to load chart"
+            description={error}
+            actionText="Retry"
+            onAction={() => window.location.reload()}
+            secondaryActionText="Back to Dashboard"
+            onSecondaryAction={() => window.location.href = '/dashboard'}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  if (!chartData) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow">
+          <div className="container mx-auto px-4 py-4">
+            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
+              ← Back to Dashboard
+            </a>
+            <h1 className="text-2xl font-bold mt-4">Natal Chart</h1>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8">
+          <EmptyState
+            icon="📊"
+            title="Chart not found"
+            description="The requested chart could not be found. It may have been deleted or you may not have access to it."
+            actionText="Back to Dashboard"
+            onAction={() => window.location.href = '/dashboard'}
+          />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow">
@@ -46,7 +148,7 @@ export default function ChartViewPage() {
         </div>
 
         <div className="mt-8">
-          <a href={`/analysis/${'chartId'}`} className="btn-primary">
+          <a href={`/analysis/${chartId}`} className="btn-primary">
             View Analysis →
           </a>
         </div>

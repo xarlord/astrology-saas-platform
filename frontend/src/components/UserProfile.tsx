@@ -246,6 +246,7 @@ function ProfileHeader({
           <button
             type="button"
             className="absolute bottom-0 right-0 p-2 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label="Change avatar"
             title="Change avatar"
           >
             <CameraIcon className="w-4 h-4 text-indigo-600" />
@@ -256,29 +257,43 @@ function ProfileHeader({
         <div className="flex-1 text-center sm:text-left">
           {isEditing ? (
             <div className="space-y-3">
-              <input
-                type="text"
-                data-testid="profile-name-edit"
-                value={editData.name}
-                onChange={(e) => onDataChange({ ...editData, name: e.target.value })}
-                className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-                placeholder="Your name"
-              />
-              <select
-                value={editData.timezone}
-                onChange={(e) => onDataChange({ ...editData, timezone: e.target.value })}
-                className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-              >
-                <option value="UTC">UTC</option>
-                <option value="America/New_York">Eastern Time</option>
-                <option value="America/Chicago">Central Time</option>
-                <option value="America/Denver">Mountain Time</option>
-                <option value="America/Los_Angeles">Pacific Time</option>
-                <option value="Europe/London">London (GMT)</option>
-                <option value="Europe/Paris">Central European</option>
-                <option value="Asia/Tokyo">Japan</option>
-                <option value="Asia/Singapore">Singapore</option>
-              </select>
+              <div>
+                <label htmlFor="profile-name-edit" className="sr-only">
+                  Edit Display Name
+                </label>
+                <input
+                  type="text"
+                  id="profile-name-edit"
+                  data-testid="profile-name-edit"
+                  value={editData.name}
+                  onChange={(e) => onDataChange({ ...editData, name: e.target.value })}
+                  aria-required="true"
+                  className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label htmlFor="profile-timezone-edit" className="sr-only">
+                  Edit Timezone
+                </label>
+                <select
+                  id="profile-timezone-edit"
+                  value={editData.timezone}
+                  onChange={(e) => onDataChange({ ...editData, timezone: e.target.value })}
+                  aria-required="true"
+                  className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                >
+                  <option value="UTC">UTC</option>
+                  <option value="America/New_York">Eastern Time</option>
+                  <option value="America/Chicago">Central Time</option>
+                  <option value="America/Denver">Mountain Time</option>
+                  <option value="America/Los_Angeles">Pacific Time</option>
+                  <option value="Europe/London">London (GMT)</option>
+                  <option value="Europe/Paris">Central European</option>
+                  <option value="Asia/Tokyo">Japan</option>
+                  <option value="Asia/Singapore">Singapore</option>
+                </select>
+              </div>
             </div>
           ) : (
             <div>

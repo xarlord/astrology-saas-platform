@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import SynastryPage from '../components/SynastryPage';
 import { chartService, Chart } from '../services/chart.service';
 import { AppLayout } from '../components/AppLayout';
+import { SkeletonLoader, EmptyState } from '../components';
 
 const SynastryPageWrapper: React.FC = () => {
   const [charts, setCharts] = useState<Chart[]>([]);
@@ -35,10 +36,7 @@ const SynastryPageWrapper: React.FC = () => {
   if (loading) {
     return (
       <AppLayout>
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading charts...</p>
-        </div>
+        <SkeletonLoader variant="card" count={2} />
       </AppLayout>
     );
   }
@@ -46,7 +44,29 @@ const SynastryPageWrapper: React.FC = () => {
   if (error) {
     return (
       <AppLayout>
-        <div className="error-message">{error}</div>
+        <EmptyState
+          icon="⚠️"
+          title="Unable to load charts"
+          description={error}
+          actionText="Retry"
+          onAction={loadCharts}
+        />
+      </AppLayout>
+    );
+  }
+
+  if (charts.length === 0) {
+    return (
+      <AppLayout>
+        <EmptyState
+          icon="💫"
+          title="No charts available"
+          description="You need at least two charts to compare compatibility. Create your charts first."
+          actionText="Create Chart"
+          onAction={() => navigate('/charts/new')}
+          secondaryActionText="Back to Dashboard"
+          onSecondaryAction={() => navigate('/dashboard')}
+        />
       </AppLayout>
     );
   }

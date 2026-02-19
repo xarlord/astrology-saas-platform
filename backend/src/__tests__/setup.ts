@@ -6,7 +6,12 @@
 // Set test environment variables
 process.env.NODE_ENV = 'test';
 process.env.PORT = '3001';
-process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/astrology_test';
+process.env.DATABASE_URL = 'postgresql://postgres:astrology123@localhost:5434/astrology_saas_test';
+process.env.DATABASE_HOST = 'localhost';
+process.env.DATABASE_PORT = '5434';
+process.env.DATABASE_NAME = 'astrology_saas_test';
+process.env.DATABASE_USER = 'postgres';
+process.env.DATABASE_PASSWORD = 'astrology123';
 process.env.JWT_SECRET = 'test-jwt-secret-key';
 process.env.JWT_EXPIRES_IN = '1h';
 process.env.JWT_REFRESH_EXPIRES_IN = '7d';

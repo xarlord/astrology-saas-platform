@@ -40,6 +40,7 @@ export async function getPersonalityAnalysis(req: Request, res: Response): Promi
   }
 
   const { planets, houses, aspects } = chart.calculated_data;
+  const houseArray = houses.houses || houses; // Handle both formats
 
   // Helper function to convert decimal degrees to DMS
   const longitudeToDMS = (longitude: number) => {
@@ -61,7 +62,7 @@ export async function getPersonalityAnalysis(req: Request, res: Response): Promi
       speed: data.speed,
       ...dms, // degree, minute, second
       retrograde: data.speed < 0, // Negative speed indicates retrograde
-      house: houses.findIndex((h: any) => {
+      house: houseArray.findIndex((h: any) => {
         // Simple house calculation based on longitude
         const houseSize = 30;
         return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
@@ -72,7 +73,7 @@ export async function getPersonalityAnalysis(req: Request, res: Response): Promi
   // Use interpretation service to generate complete analysis
   const analysis = generateCompletePersonalityAnalysis({
     planets: planetsArray,
-    houses: houses.map((h: any, i: number) => ({
+    houses: houseArray.map((h: any, i: number) => ({
       house: i + 1,
       cusp: h.cusp,
       sign: getZodiacSign(h.cusp),
@@ -135,13 +136,30 @@ export async function getAspectPatterns(req: Request, res: Response): Promise<vo
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { planets, aspects } = chart.calculated_data;
+  const { planets, houses, aspects } = chart.calculated_data;
+  const houseArray = houses.houses || houses; // Handle both formats
+
+  // Convert planets object to array format for interpretation service
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => ({
+    planet,
+    sign: data.sign,
+    longitude: data.longitude,
+    latitude: data.latitude,
+    speed: data.speed,
+    retrograde: data.speed < 0,
+  }));
+
+  const housesArray = houseArray.map((h: any, i: number) => ({
+    house: i + 1,
+    cusp: h.cusp,
+    sign: getZodiacSign(h.cusp),
+  }));
 
   // Use interpretation service to detect patterns
   const analysis = generateCompletePersonalityAnalysis({
-    planets,
-    houses: chart.calculated_data.houses,
-    aspects,
+    planets: planetsArray,
+    houses: housesArray,
+    aspects: aspects || [],
   });
 
   const patterns = analysis.patterns;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks';
 import {
   Bars3Icon,
@@ -15,6 +15,7 @@ import {
   ChartBarIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
+import { useLocation } from 'react-router-dom';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -26,11 +27,20 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* WCAG 2.1 AA - Skip Navigation Link */}
+      <a
+        href="#main-content"
+        className="skip-link"
+      >
+        Skip to main content
+      </a>
+
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden bg-black/50"
           onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
         />
       )}
 
@@ -43,7 +53,11 @@ export function AppLayout({ children }: AppLayoutProps) {
         <TopNav onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Page Content */}
-        <main className="p-4 lg:p-8">
+        <main
+          id="main-content"
+          className="p-4 lg:p-8"
+          tabIndex={-1}
+        >
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
 
@@ -69,6 +83,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
           <button
             onClick={onMenuClick}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            aria-label="Open main menu"
           >
             <Bars3Icon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
           </button>
@@ -157,6 +172,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}
+      aria-label="Main navigation"
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
@@ -170,6 +186,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           <button
             onClick={onClose}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            aria-label="Close sidebar"
           >
             <XMarkIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
           </button>
@@ -288,28 +305,123 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 // Mobile Bottom Navigation
 function MobileBottomNav() {
   const { user } = useAuth();
+  const location = useLocation();
+  const [activePath, setActivePath] = useState('/');
+
+  useEffect(() => {
+    setActivePath(location.pathname);
+  }, [location.pathname]);
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return activePath === '/';
+    }
+    return activePath.startsWith(href);
+  };
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 safe-area-inset-bottom">
-      <div className="flex items-center justify-around h-16">
-        {mobileNavItems.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            className="flex flex-col items-center justify-center flex-1 h-full"
-          >
-            <item.icon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-            <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">{item.label}</span>
-          </a>
-        ))}
+    <nav
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
+      style={{
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+      aria-label="Mobile navigation"
+    >
+      <div className="flex items-center justify-around">
+        {mobileNavItems.map((item) => {
+          const active = isActive(item.href);
+          return (
+            <a
+              key={item.name}
+              href={item.href}
+              className="flex flex-col items-center justify-center flex-1 min-h-[56px] relative transition-all duration-200 group"
+              aria-label={item.label}
+              aria-current={active ? 'page' : undefined}
+            >
+              {/* Active indicator bar */}
+              {active && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+              )}
+
+              {/* Icon with active state */}
+              <span
+                className={`
+                  relative p-2 rounded-xl transition-all duration-200
+                  ${
+                    active
+                      ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                      : 'text-gray-600 dark:text-gray-400 group-hover:bg-gray-100 dark:group-hover:bg-gray-700/50'
+                  }
+                  active:scale-95 active:bg-gray-200 dark:active:bg-gray-700
+                `}
+                style={{ minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <item.icon
+                  className={`
+                    w-6 h-6 transition-all duration-200
+                    ${active ? 'scale-110' : 'group-hover:scale-105'}
+                  `}
+                  strokeWidth={active ? 2.5 : 2}
+                />
+              </span>
+
+              {/* Label with active state */}
+              <span
+                className={`
+                  text-xs mt-0.5 font-medium transition-colors duration-200
+                  ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}
+                `}
+              >
+                {item.label}
+              </span>
+            </a>
+          );
+        })}
+
+        {/* Profile button */}
         <a
           href="/profile"
-          className="flex flex-col items-center justify-center flex-1 h-full"
+          className={`flex flex-col items-center justify-center flex-1 min-h-[56px] relative transition-all duration-200 group`}
+          aria-label="Profile"
+          aria-current={activePath === '/profile' ? 'page' : undefined}
         >
-          <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
-            {user?.name?.charAt(0).toUpperCase() ?? 'U'}
-          </div>
-          <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">Profile</span>
+          {/* Active indicator bar */}
+          {activePath === '/profile' && (
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+          )}
+
+          {/* Avatar with active state */}
+          <span
+            className={`
+              relative p-2 rounded-xl transition-all duration-200
+              ${
+                activePath === '/profile'
+                  ? 'bg-indigo-100 dark:bg-indigo-900/30 ring-2 ring-indigo-600 dark:ring-indigo-400 ring-offset-2 dark:ring-offset-gray-800'
+                  : 'group-hover:bg-gray-100 dark:group-hover:bg-gray-700/50'
+              }
+              active:scale-95 active:bg-gray-200 dark:active:bg-gray-700
+            `}
+            style={{ minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <div
+              className={`
+                w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium transition-all duration-200
+                ${activePath === '/profile' ? 'scale-110 ring-2 ring-white dark:ring-gray-800' : 'group-hover:scale-105'}
+              `}
+            >
+              {user?.name?.charAt(0).toUpperCase() ?? 'U'}
+            </div>
+          </span>
+
+          {/* Label with active state */}
+          <span
+            className={`
+              text-xs mt-0.5 font-medium transition-colors duration-200
+              ${activePath === '/profile' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}
+            `}
+          >
+            Profile
+          </span>
         </a>
       </div>
     </nav>

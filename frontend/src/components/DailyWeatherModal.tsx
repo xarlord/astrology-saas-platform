@@ -1,11 +1,14 @@
 /**
  * DailyWeatherModal Component
  * Modal displaying detailed astrological weather for a specific day
+ *
+ * WCAG 2.1 AA - Keyboard accessible with focus trap
  */
 
-// import React from 'react';
+import { useEffect, useRef } from 'react';
 import { X, Moon, Star, Sparkles } from 'lucide-react';
 import { DailyWeather as DailyWeatherType, AstrologicalEvent } from '../types/calendar.types';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import '../styles/DailyWeatherModal.css';
 
 interface DailyWeatherModalProps {
@@ -15,6 +18,20 @@ interface DailyWeatherModalProps {
 }
 
 export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalProps) {
+  // WCAG 2.1 AA - Focus trap to keep keyboard navigation within modal
+  const modalRef = useFocusTrap<HTMLDivElement>({ active: true });
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
   const getRatingColor = (rating: number): string => {
     if (rating >= 7) return '#10B981'; // green
     if (rating <= 4) return '#EF4444'; // red
@@ -62,12 +79,27 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="modal-overlay"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        ref={modalRef}
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         {/* Header */}
         <div className="modal-header">
-          <h2>{formatDate(date)}</h2>
-          <button onClick={onClose} className="btn-close" aria-label="Close modal">
+          <h2 id="modal-title">{formatDate(date)}</h2>
+          <button
+            onClick={onClose}
+            className="btn-close"
+            aria-label="Close modal"
+          >
             <X size={24} />
           </button>
         </div>

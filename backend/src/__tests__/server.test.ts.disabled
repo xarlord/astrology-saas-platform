@@ -3,16 +3,34 @@
  * Tests Express app setup, middleware configuration, and server initialization
  */
 
+// Mock routes BEFORE importing app
+jest.mock('../modules/auth/routes/auth.routes', () => {
+  const express = require('express');
+  return express.Router();
+});
+jest.mock('../modules/users/routes/user.routes', () => {
+  const express = require('express');
+  return express.Router();
+});
+jest.mock('../modules/charts/routes/chart.routes', () => {
+  const express = require('express');
+  return express.Router();
+});
+jest.mock('../modules/analysis/routes/analysis.routes', () => {
+  const express = require('express');
+  return express.Router();
+});
+jest.mock('../modules/transits/routes/transit.routes', () => {
+  const express = require('express');
+  return express.Router();
+});
+jest.mock('../routes/health.routes', () => {
+  const express = require('express');
+  return express.Router();
+});
+
 import request from 'supertest';
 import app from '../server';
-
-// Mock routes to avoid initialization issues
-jest.mock('../routes/auth.routes', () => (req: any, res: any, next: any) => next());
-jest.mock('../routes/user.routes', () => (req: any, res: any, next: any) => next());
-jest.mock('../routes/chart.routes', () => (req: any, res: any, next: any) => next());
-jest.mock('../routes/analysis.routes', () => (req: any, res: any, next: any) => next());
-jest.mock('../routes/transit.routes', () => (req: any, res: any, next: any) => next());
-jest.mock('../routes/health.routes', () => (req: any, res: any, next: any) => next());
 
 describe('Server Configuration', () => {
   beforeEach(() => {

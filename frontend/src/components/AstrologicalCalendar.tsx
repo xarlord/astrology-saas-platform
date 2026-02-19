@@ -9,6 +9,7 @@
 
 import React, { useState } from 'react';
 import { useCalendarEvents } from '../hooks/useCalendarEvents';
+import { SkeletonLoader, EmptyState } from './';
 import './AstrologicalCalendar.css';
 
 interface AstrologicalCalendarProps {
@@ -119,7 +120,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   if (isLoading) {
     return (
       <div className="astrological-calendar">
-        <div className="calendar-loading">Loading calendar...</div>
+        <SkeletonLoader variant="calendar" />
       </div>
     );
   }
@@ -127,12 +128,26 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   if (error) {
     return (
       <div className="astrological-calendar">
-        <div className="calendar-error">
-          Failed to load calendar. Please try again.
-        </div>
-        <button onClick={() => refetch()} className="retry-button">
-          Retry
-        </button>
+        <EmptyState
+          icon="📅"
+          title="Unable to load calendar"
+          description="We encountered an error loading the astrological calendar. Please check your connection and try again."
+          actionText="Retry"
+          onAction={() => refetch()}
+        />
+      </div>
+    );
+  }
+
+  if (!events || events.data.length === 0) {
+    return (
+      <div className="astrological-calendar">
+        <EmptyState
+          icon="🌙"
+          title="No events this month"
+          description={`There are no major astrological events scheduled for ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}.`}
+          description="Check adjacent months for upcoming moon phases, retrogrades, and eclipses."
+        />
       </div>
     );
   }

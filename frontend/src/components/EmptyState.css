@@ -1,0 +1,277 @@
+/**
+ * EmptyState Styles
+ * Consistent empty state UI with proper spacing and visual hierarchy
+ */
+
+/* Base empty state container */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px dashed #e5e7eb;
+}
+
+.dark .empty-state {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+/* Size variants */
+.empty-state-sm {
+  padding: 2rem 1rem;
+}
+
+.empty-state-md {
+  padding: 3rem 1.5rem;
+}
+
+.empty-state-lg {
+  padding: 4rem 2rem;
+}
+
+/* Content wrapper */
+.empty-state-content {
+  max-width: 400px;
+}
+
+/* Icon section */
+.empty-state-icon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-state-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  display: block;
+}
+
+.empty-state-sm .empty-state-emoji {
+  font-size: 2.5rem;
+}
+
+.empty-state-lg .empty-state-emoji {
+  font-size: 5rem;
+}
+
+/* Title */
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.dark .empty-state-title {
+  color: #f9fafb;
+}
+
+.empty-state-sm .empty-state-title {
+  font-size: 1rem;
+}
+
+.empty-state-lg .empty-state-title {
+  font-size: 1.5rem;
+}
+
+/* Description */
+.empty-state-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.dark .empty-state-description {
+  color: #9ca3af;
+}
+
+.empty-state-sm .empty-state-description {
+  font-size: 0.8125rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state-lg .empty-state-description {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Actions */
+.empty-state-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .empty-state-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.empty-state-action-primary,
+.empty-state-action-secondary {
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+/* Primary action button */
+.empty-state-action-primary {
+  background: #4f46e5;
+  color: white;
+}
+
+.empty-state-action-primary:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+.empty-state-action-primary:active {
+  transform: translateY(0);
+}
+
+.dark .empty-state-action-primary {
+  background: #6366f1;
+}
+
+.dark .empty-state-action-primary:hover {
+  background: #818cf8;
+}
+
+/* Secondary action button */
+.empty-state-action-secondary {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.empty-state-action-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.dark .empty-state-action-secondary {
+  background: #374151;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+.dark .empty-state-action-secondary:hover {
+  background: #4b5563;
+  border-color: #6b7280;
+}
+
+/* Full-width empty state for pages */
+.empty-state-full-page {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+}
+
+/* Inline empty state (for smaller containers) */
+.empty-state-inline {
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.empty-state-inline .empty-state-content {
+  max-width: none;
+}
+
+.empty-state-inline .empty-state-icon {
+  margin-right: 1rem;
+  margin-bottom: 0;
+}
+
+.empty-state-inline .empty-state-icon .empty-state-emoji {
+  font-size: 2rem;
+}
+
+.empty-state-inline .empty-state-title {
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-inline .empty-state-description {
+  margin-bottom: 1rem;
+}
+
+.empty-state-inline .empty-state-actions {
+  justify-content: flex-start;
+}
+
+/* Empty state with illustration */
+.empty-state-illustration {
+  margin-bottom: 1.5rem;
+}
+
+.empty-state-illustration svg {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  color: #9ca3af;
+}
+
+.dark .empty-state-illustration svg {
+  color: #6b7280;
+}
+
+/* Accessibility */
+.empty-state[role="status"] {
+  /* Ensure screen readers announce the empty state */
+}
+
+/* Focus visible styles for keyboard navigation */
+.empty-state-action-primary:focus-visible,
+.empty-state-action-secondary:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.dark .empty-state-action-primary:focus-visible,
+.dark .empty-state-action-secondary:focus-visible {
+  outline-color: #818cf8;
+}
+
+/* Loading state within empty state (for retry scenarios) */
+.empty-state-loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.empty-state-loading .empty-state-action-primary::after,
+.empty-state-loading .empty-state-action-secondary::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

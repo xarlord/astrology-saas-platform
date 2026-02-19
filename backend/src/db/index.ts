@@ -2,12 +2,8 @@
  * Database Connection
  */
 
-import knex from 'knex';
-import knexConfig from '../config/database';
+import db from '../config/database';
 import logger from '../utils/logger';
-
-// Create knex instance
-const db = knex(knexConfig);
 
 // Test connection
 (async () => {
@@ -24,4 +20,5 @@ db.on('error', (error) => {
   logger.error('Database pool error:', error);
 });
 
+export { db };
 export default db;

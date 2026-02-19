@@ -3,33 +3,34 @@
  * Tests transit route configuration
  */
 
-import { Router } from 'express';
-import transitRoutes from '../../routes/transit.routes';
-import { authenticate } from '../../middleware/auth';
+// Mock dependencies BEFORE imports
+jest.mock('../../middleware/auth', () => ({
+  authenticate: (req: any, res: any, next: any) => next(),
+}));
 
-// Mock dependencies
-jest.mock('../../middleware/auth');
-jest.mock('../../middleware/errorHandler');
-jest.mock('../../utils/validators');
+jest.mock('../../middleware/errorHandler', () => ({
+  asyncHandler: (fn: any) => fn,
+}));
+
+jest.mock('../../utils/validators', () => ({
+  validateBody: (schema: any) => (req: any, res: any, next: any) => next(),
+  calculateTransitsSchema: {},
+}));
+
+import { Router } from 'express';
+import { transitRoutes } from '../../modules/transits';
 
 describe('Transit Routes', () => {
-  let app: Router;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    app = Router();
-    app.use('/api/transits', transitRoutes);
-  });
-
   describe('Route Configuration', () => {
     it('should have POST /calculate route', () => {
-      // This test verifies the route is configured
-      // The actual controller tests cover the functionality
       expect(transitRoutes).toBeDefined();
+      expect(typeof transitRoutes).toBe('function');
+      expect(transitRoutes).toHaveProperty('stack');
     });
 
     it('should have GET /today route', () => {
       expect(transitRoutes).toBeDefined();
+      expect(typeof transitRoutes).toBe('function');
     });
 
     it('should have GET /calendar route', () => {
@@ -45,22 +46,20 @@ describe('Transit Routes', () => {
     });
   });
 
-  describe('Authentication', () => {
-    it('should require authentication for all routes', () => {
-      // Verify authenticate is used as middleware
-      expect(authenticate).toBeDefined();
-    });
-  });
-
   describe('Route Structure', () => {
     it('should export router', () => {
       expect(transitRoutes).toBeDefined();
-      expect(typeof transitRoutes).toBe('object');
+      expect(typeof transitRoutes).toBe('function');
     });
 
     it('should be express router', () => {
       expect(transitRoutes).toHaveProperty('stack');
       expect(transitRoutes).toHaveProperty('name');
+      expect(typeof transitRoutes.stack).toBe('object');
+    });
+
+    it('should have routes defined', () => {
+      expect(transitRoutes.stack.length).toBeGreaterThan(0);
     });
   });
 });

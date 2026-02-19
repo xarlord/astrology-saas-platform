@@ -15,12 +15,24 @@ import {
   deleteAccount,
 } from '../../controllers/user.controller';
 import { AppError } from '../../middleware/errorHandler';
-import { UserModel } from '../../models';
+import UserModel from '../../modules/users/models/user.model';
 import { sanitizeUser } from '../../utils/helpers';
 
 // Mock dependencies
-jest.mock('../../models');
-jest.mock('../../utils/helpers');
+jest.mock('../../modules/users/models/user.model', () => ({
+  __esModule: true,
+  default: {
+    findById: jest.fn(),
+    update: jest.fn(),
+    getCharts: jest.fn(),
+    updatePreferences: jest.fn(),
+    softDelete: jest.fn(),
+  },
+}));
+
+jest.mock('../../utils/helpers', () => ({
+  sanitizeUser: jest.fn(),
+}));
 
 describe('User Controller', () => {
   let mockRequest: Partial<Request>;
@@ -35,6 +47,8 @@ describe('User Controller', () => {
       body: {},
       params: {},
       query: {},
+      get: jest.fn().mockReturnValue('test-agent'),
+      ip: '127.0.0.1',
     };
 
     mockResponse = {
