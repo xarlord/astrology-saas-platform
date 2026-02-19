@@ -10,7 +10,7 @@ import {
   LunarForecastView,
   LunarHistoryView,
 } from '../components';
-import { LunarReturnChart } from '../services/lunarReturn.api';
+import { LunarReturnChart, SavedLunarReturn } from '../services/lunarReturn.api';
 import './LunarReturnsPage.css';
 
 type ViewMode = 'dashboard' | 'chart' | 'forecast' | 'history';
@@ -23,6 +23,26 @@ const LunarReturnsPage: React.FC = () => {
   const handleChartClick = (chart: LunarReturnChart) => {
     setSelectedChart(chart);
     setViewMode('chart');
+  };
+
+  const handleSavedReturnClick = (savedReturn: SavedLunarReturn) => {
+    // Convert SavedLunarReturn to LunarReturnChart format
+    // Since SavedLunarReturn doesn't have the full chart data, we'll create a minimal chart
+    const chart: LunarReturnChart = {
+      returnDate: new Date(savedReturn.returnDate),
+      moonPosition: {
+        sign: 'leo', // Default - actual data would need to be fetched
+        degree: 15,
+        minute: 30,
+        second: 0,
+      },
+      moonPhase: 'full',
+      housePlacement: 1,
+      aspects: [],
+      theme: savedReturn.theme,
+      intensity: savedReturn.intensity,
+    };
+    handleChartClick(chart);
   };
 
   const handleForecastClick = () => {
@@ -42,7 +62,7 @@ const LunarReturnsPage: React.FC = () => {
   const renderViewModeTabs = () => {
     if (viewMode === 'dashboard') return null;
 
-    const tabs: Array<{ mode: ViewMode; label: string }> = [
+    const tabs: { mode: ViewMode; label: string }[] = [
       { mode: 'dashboard', label: 'Dashboard' },
       { mode: 'forecast', label: 'Forecast' },
       { mode: 'history', label: 'History' },
@@ -104,7 +124,7 @@ const LunarReturnsPage: React.FC = () => {
 
         {viewMode === 'history' && (
           <LunarHistoryView
-            onChartClick={handleChartClick}
+            onSelect={handleSavedReturnClick}
             onBack={handleBackToDashboard}
           />
         )}

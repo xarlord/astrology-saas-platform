@@ -260,7 +260,7 @@ const MOON_PHASES: Record<string, {
 /**
  * Generate complete solar return interpretation
  */
-export function generateSolarReturnInterpretation(chartData: any, year: number): SolarReturnInterpretation {
+export function generateSolarReturnInterpretation(chartData: any, _year: number): SolarReturnInterpretation {
   // Find Sun's house
   const sun = chartData.planets?.find((p: any) => p.planet === 'sun');
   const sunHouse = sun?.house || 1;
@@ -290,7 +290,10 @@ export function generateSolarReturnInterpretation(chartData: any, year: number):
       interpretation: sunInHouseData.interpretation,
       focus: sunInHouseData.focus,
     },
-    moonPhase: MOON_PHASES[chartData.moonPhase?.phase || 'new'],
+    moonPhase: {
+      phase: chartData.moonPhase?.phase || 'new',
+      ...MOON_PHASES[chartData.moonPhase?.phase || 'new'],
+    },
     luckyDays: [], // Will be calculated separately
     challenges,
     opportunities,
@@ -438,7 +441,7 @@ function generateAdvice(sunHouse: number, chartData: any): string[] {
 /**
  * Generate keywords
  */
-function generateKeywords(sunHouse: number, chartData: any): string[] {
+function generateKeywords(sunHouse: number, _chartData: any): string[] {
   const keywords: string[] = [];
 
   const houseKeywords: Record<number, string[]> = {

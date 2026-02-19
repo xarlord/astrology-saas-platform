@@ -31,7 +31,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     onSuccess: () => {
       setError(null);
     },
-    onError: (err) => setError(err as Error),
+    onError: (err) => setError(err),
   });
 
   const transitMutation = useMutation({
@@ -39,7 +39,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     onSuccess: () => {
       setError(null);
     },
-    onError: (err) => setError(err as Error),
+    onError: (err) => setError(err),
   });
 
   const compatibilityMutation = useMutation({
@@ -47,7 +47,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     onSuccess: () => {
       setError(null);
     },
-    onError: (err) => setError(err as Error),
+    onError: (err) => setError(err),
   });
 
   return {

@@ -1577,7 +1577,7 @@ export const aspectInterpretations: Record<string, AspectInterpretation> = {
     type: 'conjunction',
     keywords: ['fusion', 'intensity', 'new beginning', 'integration', 'focus'],
     general: 'A conjunction occurs when two planets are at the same degree, creating a powerful fusion of their energies. This aspect represents a new beginning, where the archetypal forces merge and intensify each other. The conjunction acts as a focal point in the chart, where the combined energy must be integrated and expressed.',
-    harmonious: null, // Depends on planets involved
+    harmonious: false, // Depends on planets involved
     expression: 'Conjunctions create a blending of energies that cannot be easily separated. The planets involved work as a team, their identities fused together. This creates intensity and focus in the areas of life represented by both planets.',
     advice: [
       'Integrate the combined energy consciously',

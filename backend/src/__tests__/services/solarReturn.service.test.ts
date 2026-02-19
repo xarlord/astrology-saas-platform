@@ -3,6 +3,7 @@
  * Unit tests for solar return calculations
  */
 
+n/* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import solarReturnService from '../services/solarReturn.service';
 

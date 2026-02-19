@@ -483,36 +483,43 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
 // Aspect themes
 export const synastryAspectThemes: Record<string, SynastryAspectTheme> = {
   conjunction: {
+    aspect: 'conjunction',
     generalMeaning: 'Merging and fusion of energies',
     inRelationship: 'The two planets function as a unit, blending their energies completely.',
     growthPotential: 'Learn to use this combined energy constructively while maintaining individuality.',
   },
   opposition: {
+    aspect: 'opposition',
     generalMeaning: 'Polarity and tension between complementary forces',
     inRelationship: 'The planets pull in opposite directions, creating awareness and potential conflict.',
     growthPotential: 'Integrate opposing qualities to find balance and wholeness.',
   },
   trine: {
+    aspect: 'trine',
     generalMeaning: 'Harmonious flow and easy expression',
     inRelationship: 'The planets work together naturally, creating ease and flow.',
     growthPotential: 'Appreciate and build upon natural harmony without becoming complacent.',
   },
   square: {
+    aspect: 'square',
     generalMeaning: 'Dynamic tension and challenge',
     inRelationship: 'The planets create friction that requires conscious navigation.',
     growthPotential: 'Transform tension into growth through awareness and effort.',
   },
   sextile: {
+    aspect: 'sextile',
     generalMeaning: 'Opportunities and creative expression',
     inRelationship: 'The planets offer chances for growth and cooperation.',
     growthPotential: 'Take advantage of opportunities while putting in necessary effort.',
   },
   quincunx: {
+    aspect: 'quincunx',
     generalMeaning: 'Adjustment and integration of different approaches',
     inRelationship: 'The planets require adaptation and understanding of differences.',
     growthPotential: 'Learn to appreciate differences and find creative ways to integrate them.',
   },
   'semi-sextile': {
+    aspect: 'semi-sextile',
     generalMeaning: 'Gentle influence and subtle connection',
     inRelationship: 'A mild, generally supportive connection that requires attention to activate.',
     growthPotential: 'Cultivate this connection through conscious effort and appreciation.',

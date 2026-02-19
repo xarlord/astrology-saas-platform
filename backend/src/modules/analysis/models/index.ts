@@ -4,5 +4,5 @@
  */
 
 // Re-export ChartModel and UserModel for convenience
-export { ChartModel } from '../../charts/models/chart.model';
-export { UserModel } from '../../users/models/user.model';
+export { default as ChartModel } from '../../charts/models/chart.model';
+export { default as UserModel } from '../../users/models/user.model';

@@ -3,6 +3,8 @@
  * Comprehensive integration tests for AI module
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../../server';
@@ -10,8 +12,8 @@ import { TestDataSource } from '../config/database.test';
 
 describe('AI Integration Tests', () => {
   let authToken: string;
-  let userId: string;
-  let testChartId: string;
+  let _userId: string;
+  let _testChartId: string;
 
   beforeAll(async () => {
     await TestDataSource.initialize();

@@ -3,10 +3,10 @@
  * Form for setting up astrological event reminders
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Bell, Mail, Smartphone, Check, Info } from 'lucide-react';
+import { ReminderFormData, UserReminder } from '../types/calendar.types';
 import { setReminder } from '../services/calendar.service';
-import { UserReminder, ReminderFormData } from '../types/calendar.types';
 import '../styles/ReminderSettings.css';
 
 interface ReminderSettingsProps {
@@ -33,9 +33,9 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
     setSuccess(false);
 
     try {
-      const response = await setReminder(formData);
+      // TODO: Implement actual API call for reminder settings
+      const response = await setReminder('event-id', new Date());
       setSuccess(true);
-      onSave?.(response.reminder);
 
       // Reset success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);

@@ -5,7 +5,8 @@
  */
 
 // Zodiac signs
-const ZODIAC_SIGNS = [
+// Exported for potential future use
+export const ZODIAC_SIGNS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
 ];
@@ -45,7 +46,7 @@ export const SE_CALC_ITRANSIT = 4;
 /**
  * Set ephemeris path (mock)
  */
-export function swe_set_ephe_path(path: string): void {
+export function swe_set_ephe_path(_path: string): void {
   // Mock implementation - does nothing
 }
 
@@ -55,7 +56,7 @@ export function swe_set_ephe_path(path: string): void {
 export function swe_calc_ut(
   tjdut: number,
   ipl: number,
-  iflag: number
+  _iflag: number
 ): [number, number, number, number] {
   // Mock: Return realistic planetary positions
   const baseLongitude = (tjdut % 360);
@@ -72,10 +73,10 @@ export function swe_calc_ut(
  * Calculate houses (mock)
  */
 export function swe_houses(
-  tjdut: number,
-  geolat: number,
+  _tjdut: number,
+  _geolat: number,
   geolon: number,
-  hsys: string
+  _hsys: string
 ): [number[], number, number] {
   // Mock: Generate 12 house cusps
   const cusps: number[] = [];
@@ -108,10 +109,10 @@ export function swe_julday(
 /**
  * Get zodiac sign from longitude
  */
-function getZodiacSign(longitude: number): string {
-  const index = Math.floor(longitude / 30) % 12;
-  return ZODIAC_SIGNS[index];
-}
+// function _getZodiacSign(longitude: number): string {
+//   const index = Math.floor(longitude / 30) % 12;
+//   return ZODIAC_SIGNS[index];
+// }
 
 // Export all functions as a single object
 export const swisseph = {

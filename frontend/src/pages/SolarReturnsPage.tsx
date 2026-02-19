@@ -113,7 +113,7 @@ export const SolarReturnsPage: React.FC = () => {
   const renderViewModeTabs = () => {
     if (!selectedReturn) return null;
 
-    const tabs: Array<{ mode: ViewMode; label: string; icon: React.ReactNode }> = [
+    const tabs: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
       { mode: 'chart', label: 'Chart', icon: <Calendar size={18} /> },
       { mode: 'interpretation', label: 'Interpretation', icon: <Calendar size={18} /> },
       { mode: 'relocate', label: 'Relocate', icon: <Settings size={18} /> },

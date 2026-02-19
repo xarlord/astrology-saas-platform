@@ -16,32 +16,11 @@ import openaiService from './openai.service';
 import aiCacheService from './aiCache.service';
 import { generateCompletePersonalityAnalysis } from '../../analysis/services/interpretation.service';
 import logger from '../../../utils/logger';
+import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
 
 // ============================================================================
 // TYPE DEFINITIONS
 // ============================================================================
-
-export interface PlanetPosition {
-  planet: string;
-  sign: string;
-  degree: number;
-  house: number;
-  retrograde?: boolean;
-}
-
-export interface HouseCusp {
-  house: number;
-  sign: string;
-  degree: number;
-}
-
-export interface Aspect {
-  planet1: string;
-  planet2: string;
-  type: string;
-  orb: number;
-  applying?: boolean;
-}
 
 export interface ChartData {
   planets: PlanetPosition[];
@@ -148,7 +127,11 @@ class AIInterpretationService {
           }
 
           // Combine with rule-based for comprehensive reading
-          const ruleBased = generateCompletePersonalityAnalysis(chartData);
+          const ruleBased = generateCompletePersonalityAnalysis({
+            planets: chartData.planets,
+            houses: chartData.houses || [],
+            aspects: chartData.aspects || [],
+          });
 
           return {
             ...ruleBased,
@@ -402,7 +385,11 @@ class AIInterpretationService {
    */
   private getRuleBasedNatal(chartData: ChartData): InterpretationResult {
     try {
-      const ruleBased = generateCompletePersonalityAnalysis(chartData);
+      const ruleBased = generateCompletePersonalityAnalysis({
+        planets: chartData.planets,
+        houses: chartData.houses || [],
+        aspects: chartData.aspects || [],
+      });
 
       return {
         ...ruleBased,
@@ -444,6 +431,7 @@ class AIInterpretationService {
       compatibility: 50,
       analysis: 'Compatibility analysis not available',
       ai: false,
+      source: 'rule-based',
       insights: [],
     };
   }

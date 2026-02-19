@@ -3,6 +3,8 @@
  * Tests user profile and preferences management
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Request, Response } from 'express';
 import {
   getCurrentUser,

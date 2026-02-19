@@ -79,7 +79,7 @@ export async function registerSW(
 
     return {
       update: () => {
-        registration.update();
+        void registration.update();
       },
       skipWaiting: () => {
         registration.waiting?.postMessage({ type: 'SKIP_WAITING' });

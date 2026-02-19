@@ -3,6 +3,7 @@
  * Tests error catching, formatting, and AppError class
  */
 
+n/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import { errorHandler, AppError, asyncHandler } from '../middleware/errorHandler';
 import logger from '../utils/logger';

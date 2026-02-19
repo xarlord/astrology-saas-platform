@@ -3,6 +3,9 @@
  * Tests user profile management, settings updates, and account operations
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import request from 'supertest';
 import bcrypt from 'bcryptjs';
 import { db } from '../db';

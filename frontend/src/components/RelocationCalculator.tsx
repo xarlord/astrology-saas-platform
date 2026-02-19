@@ -37,12 +37,12 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
   onRecalculate,
 }) => {
   const [locations, setLocations] = useState<Location[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [selectedLocation] = useState<Location | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showComparison, setShowComparison] = useState(false);
-  const [originalReturn, setOriginalReturn] = useState<SolarReturnData | null>(null);
+  const [originalReturn] = useState<SolarReturnData | null>(null);
   const [relocatedReturn, setRelocatedReturn] = useState<SolarReturnData | null>(null);
 
   // Popular locations
@@ -109,7 +109,9 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
   };
 
   const getThemeChanges = () => {
-    if (!originalReturn?.interpretation || !relocatedReturn?.interpretation) return [];
+    if (!originalReturn?.interpretation || !relocatedReturn?.interpretation) {
+      return { added: [], removed: [] };
+    }
 
     const originalThemes = originalReturn.interpretation.themes || [];
     const relocatedThemes = relocatedReturn.interpretation.themes || [];

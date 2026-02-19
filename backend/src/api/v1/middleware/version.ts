@@ -19,15 +19,16 @@ export const addApiVersionHeaders = (req: Request, res: Response, next: NextFunc
   next();
 };
 
-export const validateApiVersion = (req: Request, res: Response, next: NextFunction) => {
+export const validateApiVersion = (req: Request, res: Response, next: NextFunction): void => {
   const version = req.path.match(/\/api\/v(\d+)/)?.[1];
 
   if (version && parseInt(version) > 2) {
-    return res.status(400).json({
+    res.status(400).json({
       error: 'Invalid API version',
       message: 'API version must be v1 or v2',
       supported_versions: ['v1', 'v2']
     });
+    return;
   }
 
   next();

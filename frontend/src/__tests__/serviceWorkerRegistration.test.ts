@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { registerSW, isOffline, getSWRegistration } from '../utils/serviceWorkerRegistration';
 
@@ -111,12 +118,14 @@ describe('Service Worker Registration', () => {
       // @ts-ignore
       navigator.serviceWorker = mockServiceWorker;
 
-      const { skipWaiting } = await registerSW({
+      const controls = await registerSW({
         onNeedRefresh: vi.fn(),
         onOfflineReady: vi.fn(),
       });
 
-      skipWaiting();
+      if (controls?.skipWaiting) {
+        controls.skipWaiting();
+      }
 
       expect(mockWaiting.postMessage).toHaveBeenCalledWith({ type: 'SKIP_WAITING' });
     });
@@ -138,12 +147,14 @@ describe('Service Worker Registration', () => {
       // @ts-ignore
       navigator.serviceWorker = mockServiceWorker;
 
-      const { update } = await registerSW({
+      const controls = await registerSW({
         onNeedRefresh: vi.fn(),
         onOfflineReady: vi.fn(),
       });
 
-      update();
+      if (controls?.update) {
+        controls.update();
+      }
 
       expect(mockRegistration.update).toHaveBeenCalled();
     });

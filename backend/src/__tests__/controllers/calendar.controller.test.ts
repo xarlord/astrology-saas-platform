@@ -3,6 +3,8 @@
  * Tests calendar controller logic without database dependencies
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Request, Response, NextFunction } from 'express';
 import * as CalendarController from '../../controllers/calendar.controller';
 import { AppError } from '../../utils/appError';

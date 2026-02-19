@@ -6,21 +6,12 @@
 import { asyncHandler } from '../../../middleware/errorHandler';
 import aiUsageService from '../services/aiUsage.service';
 import { Request, Response } from 'express';
-import logger from '../../../utils/logger';
-
-// Extend Express Request type to include user
-interface AuthenticatedRequest extends Request {
-  user?: {
-    userId: string;
-    email: string;
-  };
-}
 
 /**
  * Get user's AI usage statistics
  */
-export const getUserStats = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const userId = req.user!.userId;
+export const getUserStats = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
 
   const stats = await aiUsageService.getUserStats(userId);
 
@@ -33,8 +24,8 @@ export const getUserStats = asyncHandler(async (req: AuthenticatedRequest, res: 
 /**
  * Get user's AI usage history
  */
-export const getUsageHistory = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const userId = req.user!.userId;
+export const getUsageHistory = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   const { limit } = req.query;
 
   const history = await aiUsageService.getUsageHistory(userId, Number(limit) || 50);
@@ -48,8 +39,8 @@ export const getUsageHistory = asyncHandler(async (req: AuthenticatedRequest, re
 /**
  * Get daily usage statistics
  */
-export const getDailyUsage = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const userId = req.user!.userId;
+export const getDailyUsage = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   const { days } = req.query;
 
   const dailyUsage = await aiUsageService.getDailyUsage(userId, Number(days) || 30);
@@ -63,8 +54,8 @@ export const getDailyUsage = asyncHandler(async (req: AuthenticatedRequest, res:
 /**
  * Get usage by date range
  */
-export const getUsageByDateRange = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const userId = req.user!.userId;
+export const getUsageByDateRange = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   const { startDate, endDate } = req.query;
 
   if (!startDate || !endDate) {
@@ -90,7 +81,7 @@ export const getUsageByDateRange = asyncHandler(async (req: AuthenticatedRequest
 /**
  * Estimate cost for a request
  */
-export const estimateCost = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+export const estimateCost = asyncHandler(async (req: Request, res: Response) => {
   const { inputTokens, outputTokens } = req.body;
 
   if (typeof inputTokens !== 'number' || typeof outputTokens !== 'number') {
@@ -117,7 +108,7 @@ export const estimateCost = asyncHandler(async (req: AuthenticatedRequest, res: 
 /**
  * Get current pricing information
  */
-export const getPricing = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+export const getPricing = asyncHandler(async (_req: Request, res: Response) => {
   const pricing = aiUsageService.getPricing();
 
   res.json({
@@ -129,8 +120,8 @@ export const getPricing = asyncHandler(async (req: AuthenticatedRequest, res: Re
 /**
  * Check if user is within usage limits
  */
-export const checkUsageLimit = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const userId = req.user!.userId;
+export const checkUsageLimit = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
   const { limit } = req.query;
 
   if (!limit) {

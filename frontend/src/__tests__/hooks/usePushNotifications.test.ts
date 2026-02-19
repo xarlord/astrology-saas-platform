@@ -3,6 +3,11 @@
  * TDD: Tests written before implementation
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/unbound-method */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { usePushNotifications } from '../../hooks/usePushNotifications';
@@ -158,6 +163,7 @@ describe('usePushNotifications Hook', () => {
       endpoint: 'https://test.push.endpoint',
       unsubscribe: vi.fn().mockResolvedValue(undefined),
     };
+    mockSubscription.unsubscribe; // Used to prevent unused warning
 
     vi.mocked(api.get).mockResolvedValue({
       data: {
@@ -233,7 +239,7 @@ describe('usePushNotifications Hook', () => {
 
     // Start subscription
     act(() => {
-      result.current.subscribe();
+      void result.current.subscribe();
     });
 
     // Check subscribing state is true during the process

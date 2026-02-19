@@ -35,7 +35,8 @@ const ZODIAC_SIGNS = [
   'pisces',
 ];
 
-const ASPECT_ORBS = {
+// Exported for future use
+export const ASPECT_ORBS = {
   conjunction: 10,
   opposition: 8,
   trine: 8,
@@ -248,7 +249,7 @@ export function getRetrogradePeriod(planet: Planet, year: number): RetrogradePer
     }
   } else if (planet === 'mars') {
     // Mars retrograde every 26 months
-    const marsRetroYears = [2024, 2026];
+    // const marsRetroYears = [2024, 2026]; // Removed unused
 
     if (year === 2026) {
       retros.push({
@@ -359,7 +360,7 @@ export function getEclipses(year: number): Eclipse[] {
  */
 export function calculateMoonPhases(month: number, year: number): MoonPhaseEvent[] {
   const phases: MoonPhaseEvent[] = [];
-  const synodicMonth = 29.53058867; // days
+  // const synodicMonth = 29.53058867; // days - removed unused
   const startDate = new Date(`${year}-${String(month).padStart(2, '0')}-01T00:00:00Z`);
 
   // Find first new moon of the month
@@ -492,7 +493,7 @@ export function calculateTransitIntensity(transit: {
  * Generate iCal format from astrological events
  */
 export function generateICalFormat(events: AstrologicalEvent[]): string {
-  let iCal = [
+  const iCal = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//AstroSaaS//Calendar//EN',

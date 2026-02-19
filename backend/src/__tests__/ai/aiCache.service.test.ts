@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import aiCacheService from '../../modules/ai/services/aiCache.service';
-import db from '../../db';
+import db from '../../config/database';
 
 describe('AI Cache Service', () => {
   beforeEach(async () => {

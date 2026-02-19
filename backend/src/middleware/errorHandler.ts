@@ -20,7 +20,7 @@ export const errorHandler = (
   err: ErrorWithStatusCode,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   // Check if error is an AppError
   const isAppError = err instanceof AppError;
@@ -71,7 +71,7 @@ export const errorHandler = (
   if (process.env.NODE_ENV === 'development') {
     errorResponse.error.details = {
       stack: err.stack,
-      ...(err.details && { originalDetails: err.details }),
+      ...(err.details && typeof err.details === 'object' ? { originalDetails: err.details } : {}),
       isOperational,
       errorType
     };
@@ -95,14 +95,16 @@ export const errorHandler = (
 export const asyncHandler = (
   fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>
 ) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    Promise.resolve(fn(req, res, next)).catch((err) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      await fn(req, res, next);
+    } catch (err) {
       // Enhance error with request context
       if (!(err instanceof AppError)) {
         err.message = `Error in ${req.method} ${req.path}: ${err.message}`;
       }
       next(err);
-    });
+    }
   };
 };
 

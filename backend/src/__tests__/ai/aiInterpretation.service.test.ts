@@ -32,8 +32,11 @@ describe('AI Interpretation Service - Basic Functionality', () => {
 
   beforeAll(() => {
     // Import after mocks are set up
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     aiInterpretationService = require('../../modules/ai/services/aiInterpretation.service').default;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     openaiService = require('../../modules/ai/services/openai.service').default;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     aiCacheService = require('../../modules/ai/services/aiCache.service').default;
   });
 

@@ -3,9 +3,11 @@
  * Testing lunar return endpoints end-to-end
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import request from 'supertest';
 import app from '../../server';
-import { db } from '../../db';
+import db from '../../config/database';
 import { generateToken } from '../../utils/auth';
 
 // Mock database

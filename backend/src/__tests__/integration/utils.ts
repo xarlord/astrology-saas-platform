@@ -3,7 +3,6 @@
  */
 
 import bcrypt from 'bcryptjs';
-import { db } from '../../db';
 
 /**
  * Clean database tables

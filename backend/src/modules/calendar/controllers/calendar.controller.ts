@@ -3,10 +3,10 @@
  * API endpoints for astrological calendar functionality
  */
 
-import { Request, Response } from 'express';
+import { Response, Request } from 'express';
 import calendarEventModel from '../models/calendarEvent.model';
 import globalEventsService from '../services/globalEvents.service';
-import { RequestWithUser } from '../../../middleware/auth';
+import logger from '../../../utils/logger';
 
 class CalendarController {
   /**
@@ -14,7 +14,7 @@ class CalendarController {
    * Get calendar events for a specific month
    * Includes both personal events and global astrological events
    */
-  async getMonthEvents(req: RequestWithUser, res: Response): Promise<void> {
+  async getMonthEvents(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.user!.id;
       const { year, month } = req.params;
@@ -57,7 +57,7 @@ class CalendarController {
         },
       });
     } catch (error) {
-      console.error('Error fetching calendar events:', error);
+      logger.error('Error fetching calendar events:', error);
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to fetch calendar events',
@@ -125,7 +125,7 @@ class CalendarController {
    * POST /api/calendar/events
    * Create a custom calendar event
    */
-  async createCustomEvent(req: RequestWithUser, res: Response): Promise<void> {
+  async createCustomEvent(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.user!.id;
       const { event_type, event_date, event_data, interpretation } = req.body;
@@ -140,8 +140,7 @@ class CalendarController {
       }
 
       // Create event
-      const event = await calendarEventModel.create({
-        user_id: userId,
+      const event = await calendarEventModel.create(userId, {
         event_type,
         event_date: new Date(event_date),
         event_data: event_data || {},
@@ -153,7 +152,7 @@ class CalendarController {
         data: event,
       });
     } catch (error) {
-      console.error('Error creating custom event:', error);
+      logger.error('Error creating custom event:', error);
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create custom event',
@@ -165,7 +164,7 @@ class CalendarController {
    * DELETE /api/calendar/events/:id
    * Delete a calendar event
    */
-  async deleteEvent(req: RequestWithUser, res: Response): Promise<void> {
+  async deleteEvent(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.user!.id;
       const { id } = req.params;
@@ -186,7 +185,7 @@ class CalendarController {
         message: 'Event deleted successfully',
       });
     } catch (error) {
-      console.error('Error deleting event:', error);
+      logger.error('Error deleting event:', error);
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to delete event',

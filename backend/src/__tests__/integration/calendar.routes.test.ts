@@ -3,6 +3,8 @@
  * Tests all calendar API endpoints
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { build } from 'express';
 import request from 'supertest';
 import { generateMockToken } from '../auth.utils';

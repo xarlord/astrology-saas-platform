@@ -4,7 +4,21 @@
  */
 
 // Re-export commonly used types from calendar module
-export { Planet, ZodiacSign } from '../../calendar/models/calendar.model';
+export type { Planet } from '../../calendar/models/calendar.model';
+// Define ZodiacSign locally to avoid circular import
+export type ZodiacSign =
+  | 'aries'
+  | 'taurus'
+  | 'gemini'
+  | 'cancer'
+  | 'leo'
+  | 'virgo'
+  | 'libra'
+  | 'scorpio'
+  | 'sagittarius'
+  | 'capricorn'
+  | 'aquarius'
+  | 'pisces';
 
 export interface NatalChart {
   id: string;

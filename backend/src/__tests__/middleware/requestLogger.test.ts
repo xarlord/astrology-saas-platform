@@ -3,6 +3,7 @@
  * Tests request/response logging
  */
 
+n/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import logger from '../../utils/logger';
 import { requestLogger } from '../../middleware/requestLogger';
@@ -68,11 +69,11 @@ describe('Request Logger Middleware', () => {
   });
 
   it('should log response on finish', () => {
-    let finishCallback: Function | undefined;
+    let finishCallback: (() => void) | undefined;
 
     mockResponse.on = jest.fn().mockImplementation((event, callback) => {
       if (event === 'finish') {
-        finishCallback = callback as Function;
+        finishCallback = callback as () => void;
       }
     });
 
@@ -92,11 +93,11 @@ describe('Request Logger Middleware', () => {
   });
 
   it('should log duration in milliseconds', () => {
-    let finishCallback: Function | undefined;
+    let finishCallback: (() => void) | undefined;
 
     mockResponse.on = jest.fn().mockImplementation((event, callback) => {
       if (event === 'finish') {
-        finishCallback = callback as Function;
+        finishCallback = callback as () => void;
       }
     });
 
@@ -114,11 +115,11 @@ describe('Request Logger Middleware', () => {
   it('should log warning for 4xx status codes', () => {
     mockResponse.statusCode = 404;
 
-    let finishCallback: Function | undefined;
+    let finishCallback: (() => void) | undefined;
 
     mockResponse.on = jest.fn().mockImplementation((event, callback) => {
       if (event === 'finish') {
-        finishCallback = callback as Function;
+        finishCallback = callback as () => void;
       }
     });
 
@@ -136,11 +137,11 @@ describe('Request Logger Middleware', () => {
   it('should log warning for 5xx status codes', () => {
     mockResponse.statusCode = 500;
 
-    let finishCallback: Function | undefined;
+    let finishCallback: (() => void) | undefined;
 
     mockResponse.on = jest.fn().mockImplementation((event, callback) => {
       if (event === 'finish') {
-        finishCallback = callback as Function;
+        finishCallback = callback as () => void;
       }
     });
 
@@ -158,11 +159,11 @@ describe('Request Logger Middleware', () => {
   it('should log info for 2xx status codes', () => {
     mockResponse.statusCode = 201;
 
-    let finishCallback: Function | undefined;
+    let finishCallback: (() => void) | undefined;
 
     mockResponse.on = jest.fn().mockImplementation((event, callback) => {
       if (event === 'finish') {
-        finishCallback = callback as Function;
+        finishCallback = callback as () => void;
       }
     });
 
@@ -180,11 +181,11 @@ describe('Request Logger Middleware', () => {
   it('should log info for 3xx status codes', () => {
     mockResponse.statusCode = 301;
 
-    let finishCallback: Function | undefined;
+    let finishCallback: (() => void) | undefined;
 
     mockResponse.on = jest.fn().mockImplementation((event, callback) => {
       if (event === 'finish') {
-        finishCallback = callback as Function;
+        finishCallback = callback as () => void;
       }
     });
 

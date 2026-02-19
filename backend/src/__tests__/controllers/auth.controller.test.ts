@@ -3,6 +3,8 @@
  * Tests user registration, login, profile management, and token refresh
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Request, Response } from 'express';
 import { register, login, getProfile, updateProfile, updatePreferences, logout, refreshToken } from '../../controllers/auth.controller';
 import { AppError } from '../../middleware/errorHandler';

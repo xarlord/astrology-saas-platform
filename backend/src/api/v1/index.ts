@@ -1,6 +1,12 @@
 /**
  * API v1 Routes
  * Current stable API version
+ *
+ * NOTE: AI-powered interpretation endpoints are disabled pending resolution of
+ * module loading issues. The comprehensive interpretation engine in
+ * modules/analysis/services/interpretation.service.ts provides full
+ * personality analysis, transit interpretations, and aspect pattern detection.
+ * The AI enhancement feature can be re-enabled when needed.
  */
 
 import { Router } from 'express';
@@ -13,8 +19,6 @@ import { calendarRoutes } from '../../modules/calendar';
 import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
-// AI routes temporarily disabled due to module loading issues
-// import aiRoutes from '../../modules/ai/routes/ai.routes';
 import healthRoutes from '../../routes/health.routes';
 
 const router = Router();
@@ -48,8 +52,5 @@ router.use('/synastry', synastryRoutes);
 
 // Solar return endpoints
 router.use('/solar-returns', solarReturnRoutes);
-
-// AI-powered interpretation endpoints (temporarily disabled)
-// router.use('/ai', aiRoutes);
 
 export default router;

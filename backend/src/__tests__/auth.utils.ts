@@ -23,7 +23,7 @@ export function generateMockToken(
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn }
+    { expiresIn: expiresIn as any }
   );
 }
 
@@ -51,7 +51,7 @@ export function generateExpiredToken(userId: number): string {
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn: '-1h' } // Expired 1 hour ago
+    { expiresIn: '-1h' as any } // Expired 1 hour ago
   );
 }
 

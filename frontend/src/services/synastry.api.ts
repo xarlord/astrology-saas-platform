@@ -50,15 +50,13 @@ export interface SynastryChart {
 export interface CompositeChart {
   chart1Id: string;
   chart2Id: string;
-  planets: {
-    [key: string]: {
+  planets: Record<string, {
       name: string;
       degree: number;
       minute: number;
       second: number;
       sign: string;
-    };
-  };
+    }>;
   interpretation: string;
 }
 
@@ -103,7 +101,7 @@ export async function compareCharts(chart1Id: string, chart2Id: string): Promise
 export async function getCompatibility(
   chart1Id: string,
   chart2Id: string,
-  includeComposite: boolean = false
+  includeComposite = false
 ): Promise<{
   chart1Id: string;
   chart2Id: string;
@@ -147,7 +145,7 @@ export async function generateCompatibilityReport(
 /**
  * Get all synastry reports for the current user
  */
-export async function getSynastryReports(page: number = 1, limit: number = 10): Promise<{
+export async function getSynastryReports(page = 1, limit = 10): Promise<{
   reports: SynastryReport[];
   pagination: {
     page: number;

@@ -7,23 +7,22 @@ import { Request, Response, NextFunction } from 'express';
 import {
   calculateSynastryChart,
   calculateCompositeChart,
-  generateCompatibilityReport,
   calculateCategoryScores,
   calculateElementalBalance,
+  type Chart,
 } from '../services/synastry.service';
-import { Chart, CompatibilityReport, SynastryChart, CompositeChart } from '../models/synastry.model';
-import { db } from '../db';
+import knex from '../../../config/database';
 
 /**
  * Compare two charts and calculate synastry
  * POST /synastry/compare
  */
-export async function compareCharts(req: Request, res: Response, next: NextFunction) {
+export async function compareCharts(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -32,14 +31,14 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
     const { chart1Id, chart2Id } = req.body;
 
     if (!chart1Id || !chart2Id) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'chart1Id and chart2Id are required',
       });
     }
 
     if (chart1Id === chart2Id) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Cannot compare a chart with itself',
       });
@@ -52,7 +51,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
     ]);
 
     if (!chart1Data || !chart2Data) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'One or both charts not found',
       });
@@ -280,12 +279,12 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
  * Calculate compatibility score
  * POST /synastry/compatibility
  */
-export async function getCompatibility(req: Request, res: Response, next: NextFunction) {
+export async function getCompatibility(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -294,7 +293,7 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
     const { chart1Id, chart2Id, includeComposite = false } = req.body;
 
     if (!chart1Id || !chart2Id) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'chart1Id and chart2Id are required',
       });
@@ -307,7 +306,7 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
     ]);
 
     if (!chart1Data || !chart2Data) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'One or both charts not found',
       });
@@ -384,12 +383,12 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
  * Get all synastry comparisons for user
  * GET /synastry/reports
  */
-export async function getSynastryReports(req: Request, res: Response, next: NextFunction) {
+export async function getSynastryReports(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -444,13 +443,13 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
  * Get specific synastry report
  * GET /synastry/reports/:id
  */
-export async function getSynastryReport(req: Request, res: Response, next: NextFunction) {
+export async function getSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userId = (req as any).user?.id;
     const { id } = req.params;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -461,7 +460,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
       .first();
 
     if (!report) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Synastry report not found',
       });
@@ -488,13 +487,13 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
  * Delete synastry report
  * DELETE /synastry/reports/:id
  */
-export async function deleteSynastryReport(req: Request, res: Response, next: NextFunction) {
+export async function deleteSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userId = (req as any).user?.id;
     const { id } = req.params;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -506,7 +505,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
       .first();
 
     if (!report) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Synastry report not found',
       });
@@ -529,14 +528,14 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
  * Update synastry report (notes, favorite status)
  * PATCH /synastry/reports/:id
  */
-export async function updateSynastryReport(req: Request, res: Response, next: NextFunction) {
+export async function updateSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userId = (req as any).user?.id;
     const { id } = req.params;
     const { isFavorite, notes } = req.body;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -548,7 +547,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
       .first();
 
     if (!report) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Synastry report not found',
       });

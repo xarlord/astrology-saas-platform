@@ -14,7 +14,7 @@ import {
   ConflictError,
 } from '../../../utils/appError';
 import { asyncHandler } from '../../../middleware/errorHandler';
-import { SolarReturnCalculationParams, SolarReturnRecalculationParams } from '../models/types';
+import { SolarReturnCalculationParams } from '../models/types';
 
 export class SolarReturnController {
   /**

@@ -70,7 +70,7 @@ router.post('/refresh', authenticate, asyncHandler(async (req, res) => {
  * @desc    Request password reset
  * @access  Public
  */
-router.post('/forgot-password', asyncHandler(async (req, res) => {
+router.post('/forgot-password', asyncHandler(async (_req, res) => {
   // TODO: Implement forgot password flow
   res.status(501).json({
     success: false,
@@ -86,7 +86,7 @@ router.post('/forgot-password', asyncHandler(async (req, res) => {
  * @desc    Reset password with token
  * @access  Public
  */
-router.post('/reset-password', asyncHandler(async (req, res) => {
+router.post('/reset-password', asyncHandler(async (_req, res) => {
   // TODO: Implement reset password flow
   res.status(501).json({
     success: false,

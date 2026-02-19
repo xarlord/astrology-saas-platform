@@ -120,7 +120,7 @@ export const requestTimer = (req: LoggedRequest, res: Response, next: NextFuncti
  * Error Logging Middleware
  * Logs errors with full context
  */
-export const errorLogger = (err: Error, req: LoggedRequest, res: Response, next: NextFunction): void => {
+export const errorLogger = (err: Error, req: LoggedRequest, _res: Response, next: NextFunction): void => {
   logger.error('Request error', {
     requestId: req.id,
     method: req.method,

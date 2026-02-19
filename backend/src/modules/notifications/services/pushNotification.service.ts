@@ -12,12 +12,9 @@ const publicVapidKey = process.env.VAPID_PUBLIC_KEY || '';
 const privateVapidKey = process.env.VAPID_PRIVATE_KEY || '';
 const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:contact@astrology-saas.com';
 
-let vapidConfigured = false;
-
 try {
   if (publicVapidKey && privateVapidKey) {
     webpush.setVapidDetails(vapidSubject, publicVapidKey, privateVapidKey);
-    vapidConfigured = true;
   } else if (process.env.NODE_ENV !== 'test') {
     logger.warn('VAPID keys not configured. Push notifications will not work.');
   }

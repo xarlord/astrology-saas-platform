@@ -35,32 +35,32 @@ export const chartService = {
    * Create new chart
    */
   async createChart(data: BirthData): Promise<{ chart: Chart }> {
-    const { responseData } = await api.post('/charts', data);
-    return responseData.data;
+    const response = await api.post('/charts', data);
+    return response.data.data;
   },
 
   /**
    * Get user's charts
    */
   async getCharts(page = 1, limit = 20): Promise<{ charts: Chart[]; pagination: any }> {
-    const { data } = await api.get('/charts', { params: { page, limit } });
-    return data.data;
+    const response = await api.get('/charts', { params: { page, limit } });
+    return response.data.data;
   },
 
   /**
    * Get specific chart
    */
   async getChart(id: string): Promise<{ chart: Chart }> {
-    const { data } = await api.get(`/charts/${id}`);
-    return data.data;
+    const response = await api.get(`/charts/${id}`);
+    return response.data.data;
   },
 
   /**
    * Update chart
    */
   async updateChart(id: string, data: Partial<BirthData>): Promise<{ chart: Chart }> {
-    const { responseData } = await api.put(`/charts/${id}`, data);
-    return responseData.data;
+    const response = await api.put(`/charts/${id}`, data);
+    return response.data.data;
   },
 
   /**
@@ -74,7 +74,7 @@ export const chartService = {
    * Calculate chart
    */
   async calculateChart(id: string): Promise<{ chart: Chart }> {
-    const { data } = await api.post(`/charts/${id}/calculate`);
-    return data.data;
+    const response = await api.post(`/charts/${id}/calculate`);
+    return response.data.data;
   },
 };

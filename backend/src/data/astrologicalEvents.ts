@@ -3,7 +3,7 @@
  * Contains interpretations for retrogrades, eclipses, moon phases, and seasonal ingresses
  */
 
-import { Planet, MoonPhase } from '../models/calendar.model';
+import { Planet, MoonPhase } from '../modules/calendar/models/calendarEvent.model';
 
 export interface RetrogradeInterpretation {
   planet: Planet;

@@ -70,6 +70,7 @@ export function generateToken(): string {
  * Sanitize user object (remove sensitive data)
  */
 export function sanitizeUser<T extends Record<string, any>>(user: T): Omit<T, 'password_hash'> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password_hash, ...sanitized } = user;
   return sanitized;
 }

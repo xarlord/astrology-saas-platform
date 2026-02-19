@@ -2,7 +2,7 @@
  * Astrology SaaS Platform - Main Server Entry Point
  */
 
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -107,7 +107,7 @@ app.use(requestLogger);
 // Health Check (no versioning)
 // ============================================
 
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     timestamp: new Date().toISOString(),

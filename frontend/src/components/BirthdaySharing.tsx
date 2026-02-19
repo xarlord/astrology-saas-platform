@@ -3,6 +3,14 @@
  * Share solar return readings as gifts
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+
 import React, { useState } from 'react';
 import { Gift, Mail, Link, Copy, Check, Share2, Calendar, Lock } from 'lucide-react';
 import axios from 'axios';

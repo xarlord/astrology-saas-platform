@@ -1,24 +1,9 @@
 /**
  * Models Export
+ * NOTE: This file is deprecated. Models should be imported directly from their respective modules.
  */
 
-export { default as UserModel } from './user.model';
-export { default as ChartModel } from './chart.model';
-export type { User, CreateUserData, UpdateUserData } from './user.model';
-export type { Chart, CreateChartData, UpdateChartData } from './chart.model';
-export type {
-  AstrologicalEvent,
-  TransitEvent,
-  DailyWeather,
-  CalendarMonth,
-  UserReminder,
-  CalendarView,
-  EventType,
-  AspectType,
-  Planet,
-  MoonPhase,
-  RetrogradePeriod,
-  Eclipse,
-  MoonPhaseEvent,
-  NotificationPayload,
-} from './calendar.model';
+// Re-exports moved to individual module directories
+// Import UserModel from '../../modules/users/models'
+// Import ChartModel from '../../modules/charts/models'
+// Import Calendar types from '../../modules/calendar/models/calendarEvent.model'

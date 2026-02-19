@@ -3,23 +3,25 @@
  */
 
 import knex from 'knex';
-import knexConfig from '../../knexfile';
+import knexConfig from '../config/database';
+import logger from '../utils/logger';
 
 // Create knex instance
 const db = knex(knexConfig);
 
 // Test connection
-db.raw('SELECT 1')
-  .then(() => {
-    console.log('✅ Database connected successfully');
-  })
-  .catch((error) => {
-    console.error('❌ Database connection failed:', error.message);
-  });
+(async () => {
+  try {
+    await db.raw('SELECT 1');
+    logger.info('✅ Database connected successfully');
+  } catch (error) {
+    logger.error('❌ Database connection failed:', (error as Error).message);
+  }
+})();
 
 // Handle pool errors
 db.on('error', (error) => {
-  console.error('Database pool error:', error);
+  logger.error('Database pool error:', error);
 });
 
 export default db;

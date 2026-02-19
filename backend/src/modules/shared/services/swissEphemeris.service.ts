@@ -116,7 +116,6 @@ export function calculateTransits(params: {
   longitude: number;
 }) {
   const baseLongitude = (params.transitDate.getTime() % 360);
-  const natalBase = (params.birthDate.getTime() % 360);
 
   return {
     transitPlanets: {
@@ -148,7 +147,7 @@ export function calculateTransits(params: {
 /**
  * Calculate compatibility between two charts (mock)
  */
-export function calculateCompatibility(chart1: any, chart2: any) {
+export function calculateCompatibility(_chart1: any, _chart2: any) {
   return {
     overallScore: 75,
     romanticScore: 80,
@@ -290,7 +289,7 @@ export function calculateAspects(longitude1: number, longitude2: number) {
       return {
         type,
         orb: Math.abs(normalizedDiff - config.angle),
-        ...config,
+        angle: config.angle,
       };
     }
   }

@@ -3,11 +3,9 @@
  * Tests transit route configuration
  */
 
-import request from 'supertest';
 import { Router } from 'express';
 import transitRoutes from '../../routes/transit.routes';
 import { authenticate } from '../../middleware/auth';
-import { asyncHandler } from '../../middleware/errorHandler';
 
 // Mock dependencies
 jest.mock('../../middleware/auth');

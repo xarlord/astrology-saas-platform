@@ -20,21 +20,22 @@ const customLevels = {
 };
 
 // Custom log format for development
-const devFormat = printf(({ level, message, timestamp, stack, ...metadata }) => {
-  let msg = `${timestamp as string} [${level}]: ${message}`;
-
-  // Add metadata if present
-  if (Object.keys(metadata).length > 0) {
-    msg += ` ${JSON.stringify(metadata)}`;
-  }
-
-  // Add stack trace for errors
-  if (stack) {
-    msg += `\n${stack}`;
-  }
-
-  return msg;
-});
+// TODO: use this format in development mode
+// const devFormat = printf(({ level, message, timestamp, stack, ...metadata }) => {
+//   let msg = `${timestamp as string} [${level}]: ${message}`;
+//
+//   // Add metadata if present
+//   if (Object.keys(metadata).length > 0) {
+//     msg += ` ${JSON.stringify(metadata)}`;
+//   }
+//
+//   // Add stack trace for errors
+//   if (stack) {
+//     msg += `\n${stack}`;
+//   }
+//
+//   return msg;
+// });
 
 // Custom log format with request context
 const contextFormat = printf(({ level, message, timestamp, stack, ...metadata }) => {
@@ -185,7 +186,7 @@ export const createChildLogger = (context: Record<string, unknown>) => {
 /**
  * Log HTTP requests
  */
-export const logHttpRequest = (req: any, res: any, responseTime: number) => {
+export const logHttpRequest = (req: any, _res: any, responseTime: number) => {
   const { method, originalUrl, statusCode } = req;
   const userId = req.user?.id;
   const requestId = req.id;

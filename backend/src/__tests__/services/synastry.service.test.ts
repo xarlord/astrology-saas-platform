@@ -3,6 +3,7 @@
  * Testing synastry and compatibility calculations
  */
 
+n/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   calculateSynastryAspects,
   calculateCompatibilityScore,

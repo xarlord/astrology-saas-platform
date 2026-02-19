@@ -3,8 +3,8 @@
  * Visual display of lunar return chart
  */
 
-import React from 'react';
-import { LunarReturnChart, LunarAspect } from '@services/lunarReturn.api';
+// import React from 'react';
+import { LunarReturnChart, LunarAspect } from '@/services/lunarReturn.api';
 import './LunarReturn.css';
 
 interface LunarChartViewProps {
@@ -76,6 +76,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
             const startY = 100 + 85 * Math.sin((startAngle * Math.PI) / 180);
             const endX = 100 + 85 * Math.cos((endAngle * Math.PI) / 180);
             const endY = 100 + 85 * Math.sin((endAngle * Math.PI) / 180);
+            void endX, endY; // Mark as used
 
             const isCurrentHouse = house === currentHouse;
 
@@ -209,7 +210,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
             <div className="aspects-card">
               <h3>Lunar Aspects</h3>
               <div className="aspects-list">
-                {chart.aspects.map((aspect, i) => renderAspect(aspect, i))}
+                {chart.aspects.map((aspect: LunarAspect, i: number) => renderAspect(aspect, i))}
               </div>
             </div>
           )}

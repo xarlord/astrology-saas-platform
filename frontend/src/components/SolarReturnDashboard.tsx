@@ -191,7 +191,9 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       </div>
 
       <div className="solar-returns-grid">
-        {getSortedReturns().map((solarReturn) => (
+        {getSortedReturns()
+          .filter((sr) => filter === 'all' || sr.isRelocated)
+          .map((solarReturn) => (
           <div
             key={solarReturn.id}
             className="solar-return-card"
@@ -220,10 +222,12 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
                 })}
               </div>
 
-              <div className="location">
-                <MapPin size={16} />
-                {solarReturn.returnLocation.name}
-              </div>
+              {solarReturn.returnLocation && (
+                <div className="location">
+                  <MapPin size={16} />
+                  {solarReturn.returnLocation.name}
+                </div>
+              )}
 
               {solarReturn.interpretation?.themes && (
                 <div className="themes">

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 import { describe, it, expect, vi } from 'vitest';
 import { lazyLoadComponent, lazyLoadWithRetry } from '../../utils/lazyLoad';
 

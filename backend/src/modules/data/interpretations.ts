@@ -153,7 +153,7 @@ export function generatePersonalityAnalysis(data: {
   challenges: string[];
   advice: string[];
 } {
-  const { planets, houses, aspects } = data;
+  const { planets, houses } = data;
 
   const sun = planets.find((p: any) => p.name === 'sun');
   const moon = planets.find((p: any) => p.name === 'moon');

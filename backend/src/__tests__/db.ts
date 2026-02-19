@@ -2,7 +2,9 @@
  * Database export for tests
  */
 
-import db from '../../db';
+// Import the database connection from the config
+// @ts-expect-error - TypeScript module resolution issue with NodeNext
+import db from '../../config/database';
 
 export default db;
 export { db };

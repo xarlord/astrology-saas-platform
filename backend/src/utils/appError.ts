@@ -35,14 +35,19 @@ export class AppError extends Error {
   }
 
   toJSON() {
-    return {
+    const result: Record<string, unknown> = {
       name: this.name,
       message: this.message,
       statusCode: this.statusCode,
       errorCode: this.errorCode,
       timestamp: this.timestamp.toISOString(),
-      ...(this.details && { details: this.details })
     };
+
+    if (this.details) {
+      result.details = this.details;
+    }
+
+    return result;
   }
 }
 
@@ -131,7 +136,7 @@ export class ServiceUnavailableError extends AppError {
  * Database Error
  */
 export class DatabaseError extends AppError {
-  constructor(message: string, details?: unknown) {
+  constructor(message: string = 'Database error occurred', details?: unknown) {
     super(message, 500, false, 'DATABASE_ERROR', details);
   }
 }
@@ -149,7 +154,7 @@ export class AuthenticationError extends AppError {
  * Token Error
  */
 export class TokenError extends AppError {
-  constructor(message: string, details?: unknown) {
+  constructor(message: string = 'Token error occurred', details?: unknown) {
     super(message, 401, true, 'TOKEN_ERROR', details);
   }
 }

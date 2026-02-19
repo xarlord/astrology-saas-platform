@@ -8,7 +8,6 @@ import {
   registerSchema,
   loginSchema,
   createChartSchema,
-  updateChartSchema,
   calculateTransitsSchema,
   paginationSchema,
   validateBody,
@@ -159,7 +158,7 @@ describe('Validators', () => {
     };
 
     it('should validate valid chart data', () => {
-      const { error, value } = createChartSchema.validate(validChart);
+      const { error } = createChartSchema.validate(validChart);
 
       expect(error).toBeUndefined();
     });

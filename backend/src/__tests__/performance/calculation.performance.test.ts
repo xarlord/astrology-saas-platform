@@ -361,7 +361,7 @@ describe('Calculation Engine Performance Tests', () => {
 
       // Check that all results are identical
       const firstResult = results[0];
-      results.forEach((result, index) => {
+      results.forEach((result, _index) => {
         expect(result.planets).toEqual(firstResult.planets);
         expect(result.houses).toEqual(firstResult.houses);
         expect(result.aspects).toEqual(firstResult.aspects);

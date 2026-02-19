@@ -2,8 +2,8 @@
  * Database Configuration (Knex.js)
  */
 
-import type { Knex } from 'knex';
 import knex from 'knex';
+import type { Knex } from 'knex';
 import config from './index';
 
 const knexConfig: Knex.Config = {
@@ -30,7 +30,6 @@ const knexConfig: Knex.Config = {
   searchPath: ['knex', 'public'],
 };
 
-// Initialize and export knex instance
 const db = knex(knexConfig);
 
 export default db;

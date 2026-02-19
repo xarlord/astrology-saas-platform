@@ -4,11 +4,11 @@
  */
 
 import {
-  calculateJulianDay,
   getZodiacSign,
   normalizeDegree,
 } from '../../calendar/services/calendar.service';
-import { MoonPhase, Planet, ZodiacSign } from '../../calendar/models/calendar.model';
+import type { Planet } from '../../calendar/models/calendar.model';
+import type { ZodiacSign } from '../models/synastry.model';
 
 // Helper function: Calculate angular distance between two degrees
 function angularDistance(deg1: number, deg2: number): number {
@@ -146,15 +146,15 @@ export function calculateSynastryAspects(chart1: Chart, chart2: Chart): Synastry
 
   // Get all planet pairs
   for (const p1 in planets1) {
-    if (!planets1[p1]) continue;
+    if (!planets1[p1 as Planet]) continue;
 
-    const planet1Pos = planets1[p1]!;
+    const planet1Pos = planets1[p1 as Planet]!;
     const degree1 = planet1Pos.degree + planet1Pos.minute / 60 + planet1Pos.second / 3600;
 
     for (const p2 in planets2) {
-      if (!planets2[p2]) continue;
+      if (!planets2[p2 as Planet]) continue;
 
-      const planet2Pos = planets2[p2]!;
+      const planet2Pos = planets2[p2 as Planet]!;
       const degree2 = planet2Pos.degree + planet2Pos.minute / 60 + planet2Pos.second / 3600;
 
       // Calculate angular distance
@@ -310,10 +310,10 @@ export function calculateCompositeChart(chart1: Chart, chart2: Chart): Composite
 
   // Calculate midpoint for each planet
   for (const planet in planets1) {
-    if (!planets1[planet] || !planets2[planet]) continue;
+    if (!planets1[planet as Planet] || !planets2[planet as Planet]) continue;
 
-    const p1 = planets1[planet]!;
-    const p2 = planets2[planet]!;
+    const p1 = planets1[planet as Planet]!;
+    const p2 = planets2[planet as Planet]!;
 
     // Convert to absolute zodiac positions
     const degree1 = signDegreeToAbsolute(p1.sign, p1.degree, p1.minute, p1.second);
@@ -332,12 +332,12 @@ export function calculateCompositeChart(chart1: Chart, chart2: Chart): Composite
     const minute = Math.floor((degreeInSign - degree) * 60);
     const second = Math.round(((degreeInSign - degree) * 60 - minute) * 60);
 
-    compositePlanets[planet] = {
-      name: planet,
+    compositePlanets[planet as Planet] = {
+      name: planet as Planet,
       degree,
       minute,
       second,
-      sign,
+      sign: sign as ZodiacSign,
     };
   }
 
@@ -386,7 +386,7 @@ export function calculateElementalBalance(chart1: Chart, chart2: Chart): Element
     const waterSigns = ['cancer', 'scorpio', 'pisces'];
 
     for (const planet in chart.planets) {
-      const pos = chart.planets[planet];
+      const pos = chart.planets[planet as Planet];
       if (pos) {
         if (fireSigns.includes(pos.sign)) elements.fire++;
         if (earthSigns.includes(pos.sign)) elements.earth++;
@@ -444,7 +444,7 @@ function getSynastryAspectInterpretation(
   planet1: string,
   planet2: string,
   aspect: string,
-  orb: number
+  _orb: number
 ): string {
   // Simplified interpretations - in production, use comprehensive database
   const interpretations: Record<string, string> = {
@@ -509,7 +509,7 @@ function calculateCategoryScore(aspects: SynastryAspect[]): number {
   return Math.max(1, Math.min(10, Math.round(score * 10) / 10));
 }
 
-function getRelationshipTheme(aspects: SynastryAspect[], compatibility: number): string {
+function getRelationshipTheme(_aspects: SynastryAspect[], compatibility: number): string {
   if (compatibility >= 8) {
     return 'Highly compatible relationship with strong potential for harmony and growth';
   } else if (compatibility >= 6) {
@@ -569,7 +569,7 @@ function getRelationshipChallenges(aspects: SynastryAspect[]): string[] {
   return challenges;
 }
 
-function getRelationshipAdvice(aspects: SynastryAspect[], compatibility: number): string {
+function getRelationshipAdvice(_aspects: SynastryAspect[], compatibility: number): string {
   if (compatibility >= 8) {
     return 'Your high compatibility provides a strong foundation. Focus on maintaining appreciation and avoiding complacency.';
   } else if (compatibility >= 6) {
@@ -632,14 +632,14 @@ function getGrowthOpportunities(aspects: SynastryAspect[], scores: Compatibility
   return opportunities;
 }
 
-function getCompositeChartInterpretation(compositePlanets: { [key in Planet]?: CompositePlanet }): string {
+function getCompositeChartInterpretation(_compositePlanets: { [key in Planet]?: CompositePlanet }): string {
   return 'The composite chart represents the relationship itself as a separate entity. ' +
     'It reveals the purpose and dynamics of your partnership.';
 }
 
 function generateDetailedReport(
   scores: CompatibilityScores,
-  aspects: SynastryAspect[],
+  _aspects: SynastryAspect[],
   elementalBalance: ElementalBalance,
   synastryChart: SynastryChart
 ): string {

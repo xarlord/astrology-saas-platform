@@ -10,9 +10,8 @@ import {
   getAspectInterpretation,
   getHouseInterpretation,
   getTransitInterpretation,
-  generatePersonalityAnalysis,
-} from '../../data/interpretations';
-import { PlanetPosition, HouseCusp, Aspect } from '../types/chart';
+} from '../../../data/interpretations';
+import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
 
 // ============================================================================
 // PERSONALITY ANALYSIS
@@ -74,15 +73,15 @@ export function generateCompletePersonalityAnalysis(
   const { planets, houses, aspects } = chartData;
 
   // Get Sun and Moon signs
-  const sunPlanet = planets.find((p) => p.planet === 'sun');
-  const moonPlanet = planets.find((p) => p.planet === 'moon');
+  const _sunPlanet = planets.find((p) => p.planet === 'sun');
+  const _moonPlanet = planets.find((p) => p.planet === 'moon');
   const ascendantSign = houses[0]?.sign; // First house cusp
 
-  const sunSign = sunPlanet
-    ? getPlanetInSignInterpretation('sun', sunPlanet.sign)
+  const sunSign = _sunPlanet
+    ? getPlanetInSignInterpretation('sun', _sunPlanet.sign)
     : null;
-  const moonSign = moonPlanet
-    ? getPlanetInSignInterpretation('moon', moonPlanet.sign)
+  const moonSign = _moonPlanet
+    ? getPlanetInSignInterpretation('moon', _moonPlanet.sign)
     : null;
 
   // Generate planets in signs analysis
@@ -292,7 +291,7 @@ function findPolygonPatterns(
 function findTSquares(
   oppositions: Aspect[],
   squares: Aspect[],
-  planets: PlanetPosition[]
+  _planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];
 
@@ -330,7 +329,7 @@ function findTSquares(
 function findGrandCross(
   oppositions: Aspect[],
   squares: Aspect[],
-  planets: PlanetPosition[]
+  _planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];
 
@@ -385,7 +384,7 @@ function findGrandCross(
 function findYods(
   sextiles: Aspect[],
   quincunxes: Aspect[],
-  planets: PlanetPosition[]
+  _planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];
 
@@ -503,6 +502,11 @@ export function generateTransitAnalysis(
 
   transitingPlanets.forEach((transitingPlanet) => {
     natalChart.planets.forEach((natalPlanet) => {
+      // Skip if natal planet doesn't have longitude
+      if (natalPlanet.longitude === undefined) {
+        return;
+      }
+
       const aspect = calculateAspect(
         transitingPlanet.longitude,
         natalPlanet.longitude

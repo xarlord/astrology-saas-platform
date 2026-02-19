@@ -6,7 +6,6 @@
 import { Router } from 'express';
 import solarReturnController from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
-import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
 import Joi from 'joi';
 
@@ -52,9 +51,7 @@ router.use(authenticate);
 router.post(
   '/calculate',
   validateBody(calculateSchema),
-  asyncHandler(async (req, res) => {
-    await solarReturnController.calculateSolarReturn(req, res);
-  })
+  solarReturnController.calculateSolarReturn
 );
 
 /**
@@ -64,9 +61,7 @@ router.post(
  */
 router.get(
   '/year/:year',
-  asyncHandler(async (req, res) => {
-    await solarReturnController.getSolarReturnByYear(req, res);
-  })
+  solarReturnController.getSolarReturnByYear
 );
 
 /**
@@ -76,9 +71,7 @@ router.get(
  */
 router.get(
   '/:id',
-  asyncHandler(async (req, res) => {
-    await solarReturnController.getSolarReturnById(req, res);
-  })
+  solarReturnController.getSolarReturnById
 );
 
 /**
@@ -88,9 +81,7 @@ router.get(
  */
 router.get(
   '/history',
-  asyncHandler(async (req, res) => {
-    await solarReturnController.getSolarReturnHistory(req, res);
-  })
+  solarReturnController.getSolarReturnHistory
 );
 
 /**
@@ -101,9 +92,7 @@ router.get(
 router.post(
   '/:id/recalculate',
   validateBody(recalculateSchema),
-  asyncHandler(async (req, res) => {
-    await solarReturnController.recalculateSolarReturn(req, res);
-  })
+  solarReturnController.recalculateSolarReturn
 );
 
 /**
@@ -113,9 +102,7 @@ router.post(
  */
 router.get(
   '/stats',
-  asyncHandler(async (req, res) => {
-    await solarReturnController.getSolarReturnStats(req, res);
-  })
+  solarReturnController.getSolarReturnStats
 );
 
 /**
@@ -125,9 +112,7 @@ router.get(
  */
 router.get(
   '/years/available',
-  asyncHandler(async (req, res) => {
-    await solarReturnController.getAvailableYears(req, res);
-  })
+  solarReturnController.getAvailableYears
 );
 
 /**
@@ -137,9 +122,7 @@ router.get(
  */
 router.delete(
   '/:id',
-  asyncHandler(async (req, res) => {
-    await solarReturnController.deleteSolarReturn(req, res);
-  })
+  solarReturnController.deleteSolarReturn
 );
 
 export { router as solarReturnRoutes };

@@ -21,7 +21,7 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const { user, logout } = useAuth();
+  const { logout: _logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -59,7 +59,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
 // Top Navigation Bar
 function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
@@ -109,10 +109,10 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
           <div className="relative group">
             <button className="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+                {user?.name?.charAt(0).toUpperCase() ?? 'U'}
               </div>
               <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {user?.name || 'User'}
+                {user?.name ?? 'User'}
               </span>
             </button>
 
@@ -307,7 +307,7 @@ function MobileBottomNav() {
           className="flex flex-col items-center justify-center flex-1 h-full"
         >
           <div className="w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
-            {user?.name?.charAt(0).toUpperCase() || 'U'}
+            {user?.name?.charAt(0).toUpperCase() ?? 'U'}
           </div>
           <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">Profile</span>
         </a>

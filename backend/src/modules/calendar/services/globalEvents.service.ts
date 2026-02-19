@@ -7,8 +7,6 @@
  * - Solstices and equinoxes
  */
 
-import swisseph from 'swisseph';
-import { julday } from '../../shared/services/swissEphemeris.service';
 
 export interface RetrogradePeriod {
   planet: string;
@@ -40,8 +38,8 @@ class GlobalEventsService {
    * Calculate Mercury retrograde periods for a year
    * Mercury goes retrograde 3-4 times per year, ~3 weeks each
    */
-  async calculateMercuryRetrograde(year: number): Promise<RetrogradePeriod[]> {
-    const retrogrades: RetrogradePeriod[] = [];
+  async calculateMercuryRetrograde(_year: number): Promise<RetrogradePeriod[]> {
+    // const retrogrades: RetrogradePeriod[] = []; // Not needed - returning mapped array directly
 
     // For MVP: Use known astronomical patterns for Mercury retrograde
     // Mercury goes retrograde when:
@@ -94,8 +92,8 @@ class GlobalEventsService {
    * Calculate Venus retrograde periods
    * Venus goes retrograde every 18 months for ~6 weeks
    */
-  async calculateVenusRetrograde(year: number): Promise<RetrogradePeriod[]> {
-    const retrogrades: RetrogradePeriod[] = [];
+  async calculateVenusRetrograde(_year: number): Promise<RetrogradePeriod[]> {
+    // const retrogrades: RetrogradePeriod[] = []; // Not needed - returning mapped array directly
 
     // Venus retrograde 2026 (if applicable)
     const venusRetrograde2026: Array<{
@@ -110,7 +108,7 @@ class GlobalEventsService {
 
     // Only return retrogrades that actually occur in the given year
     return venusRetrograde2026
-      .filter((r) => new Date(r.start).getFullYear() === year)
+      .filter((r) => new Date(r.start).getFullYear() === _year)
       .map((r) => ({
         planet: 'venus',
         startDate: new Date(r.start),
@@ -125,8 +123,8 @@ class GlobalEventsService {
    * Calculate Mars retrograde periods
    * Mars goes retrograde every 26 months for ~2-3 months
    */
-  async calculateMarsRetrograde(year: number): Promise<RetrogradePeriod[]> {
-    const retrogrades: RetrogradePeriod[] = [];
+  async calculateMarsRetrograde(_year: number): Promise<RetrogradePeriod[]> {
+    // const retrogrades: RetrogradePeriod[] = []; // Not needed - returning mapped array directly
 
     // Mars retrograde occurs approximately every 26 months
     // Last major Mars retrograde was 2024 (in Gemini), next will be 2026-2027
@@ -148,7 +146,7 @@ class GlobalEventsService {
     ];
 
     return marsRetrograde2026
-      .filter((r) => new Date(r.start).getFullYear() === year)
+      .filter((r) => new Date(r.start).getFullYear() === _year)
       .map((r) => ({
         planet: 'mars',
         startDate: new Date(r.start),
@@ -334,8 +332,8 @@ class GlobalEventsService {
    * Calculate eclipses for a given year
    * 4-7 eclipses per year (solar + lunar)
    */
-  async calculateEclipses(year: number): Promise<Eclipse[]> {
-    const eclipses: Eclipse[] = [];
+  async calculateEclipses(_year: number): Promise<Eclipse[]> {
+    // const eclipses: Eclipse[] = []; // Not needed - returning mapped array directly
 
     // For MVP: Use NASA eclipse catalog data (simplified)
     const eclipses2026: Array<{
@@ -371,7 +369,7 @@ class GlobalEventsService {
     ];
 
     return eclipses2026
-      .filter((e) => new Date(e.date).getFullYear() === year)
+      .filter((e) => new Date(e.date).getFullYear() === _year)
       .map((e) => ({
         date: new Date(e.date),
         type: e.type,

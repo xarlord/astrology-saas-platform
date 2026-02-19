@@ -3,6 +3,8 @@
  * Tests Knex.js configuration and database connection settings
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import knexConfig from '../config/database';
 import config from '../config';
 

@@ -12,13 +12,13 @@ jest.mock('swisseph', () => ({
   SEFLG_SWIEPH: 2,
 }));
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect } from '@jest/globals';
 
 // Mock swissEphemeris service
 jest.mock('../../../modules/shared/services/swissEphemeris.service', () => ({
-  julday: jest.fn((year, month, day, hour, min, sec) => {
+  julday: jest.fn((_year, _month, day, _hour, _min, _sec) => {
     // Return simplified Julian day number
-    return (year - 2000) * 365.25 + month * 30.44 + day;
+    return (_year - 2000) * 365.25 + _month * 30.44 + day;
   }),
 }));
 

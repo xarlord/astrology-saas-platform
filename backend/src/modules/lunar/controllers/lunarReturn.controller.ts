@@ -10,8 +10,8 @@ import {
   generateLunarMonthForecast,
   getCurrentLunarReturn as getServiceCurrentLunarReturn,
 } from '../services/lunarReturn.service';
-import { NatalChart, LunarReturnChart, LunarMonthForecast } from '../models/lunarReturn.model';
-import { db } from '../db';
+import { NatalChart } from '../models/lunarReturn.model';
+import knex from '../../../config/database';
 
 /**
  * Get next lunar return date
@@ -22,7 +22,7 @@ export async function getNextLunarReturn(req: Request, res: Response, next: Next
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -34,7 +34,7 @@ export async function getNextLunarReturn(req: Request, res: Response, next: Next
       .first();
 
     if (!userCharts) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
@@ -75,7 +75,7 @@ export async function getCurrentLunarReturn(req: Request, res: Response, next: N
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -101,7 +101,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -110,7 +110,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
     const { returnDate } = req.body;
 
     if (!returnDate) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'returnDate is required',
       });
@@ -119,7 +119,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
     // Validate date format
     const date = new Date(returnDate);
     if (isNaN(date.getTime())) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid date format',
       });
@@ -131,7 +131,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
       .first();
 
     if (!userCharts) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
@@ -169,7 +169,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -181,7 +181,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
     let forecastDate = returnDate ? new Date(returnDate) : undefined;
 
     if (forecastDate && isNaN(forecastDate.getTime())) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid date format',
       });
@@ -193,7 +193,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
       .first();
 
     if (!userCharts) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
@@ -265,7 +265,7 @@ export async function getLunarReturnHistory(req: Request, res: Response, next: N
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -325,7 +325,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
     const { id } = req.params;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -337,7 +337,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
       .first();
 
     if (!lunarReturn) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Lunar return not found',
       });
@@ -365,7 +365,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
     const userId = (req as any).user?.id;
 
     if (!userId) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: 'Unauthorized',
       });
@@ -374,7 +374,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
     const { returnDate, includeForecast = true } = req.body;
 
     if (!returnDate) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'returnDate is required',
       });
@@ -382,7 +382,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
 
     const date = new Date(returnDate);
     if (isNaN(date.getTime())) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid date format',
       });
@@ -394,7 +394,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
       .first();
 
     if (!userCharts) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
@@ -414,7 +414,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
     // Calculate lunar return chart
     const chart = calculateLunarReturnChart(natalChart, date);
 
-    let result: any = {
+    const result: any = {
       chart,
       returnDate: date,
     };

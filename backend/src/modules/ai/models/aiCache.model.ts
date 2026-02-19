@@ -5,6 +5,7 @@
  */
 
 import knex from '../../../config/database';
+import type { Knex } from 'knex';
 
 export interface AICacheEntry {
   id: string;
@@ -40,7 +41,7 @@ class AICacheModel {
       })
       .onConflict('cache_key')
       .merge({
-        data,
+        data: data,
         expires_at: expiresAt,
         updated_at: new Date(),
       })
@@ -56,7 +57,7 @@ class AICacheModel {
   async get(cacheKey: string): Promise<any | null> {
     const entry = await knex(this.tableName)
       .where('cache_key', cacheKey)
-      .where((builder) =>
+      .where((builder: Knex.QueryBuilder) =>
         builder
           .whereNull('expires_at')
           .orWhere('expires_at', '>', new Date())
@@ -107,7 +108,7 @@ class AICacheModel {
       .where('expires_at', '<', new Date())
       .count('* as count');
     const [activeResult] = await knex(this.tableName)
-      .where((builder) =>
+      .where((builder: Knex.QueryBuilder) =>
         builder
           .whereNull('expires_at')
           .orWhere('expires_at', '>', new Date())

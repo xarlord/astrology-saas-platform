@@ -36,11 +36,13 @@ export class PromptBuilder {
    * Get prompt template by name
    */
   static getTemplate(type: string, name: string): PromptTemplate | null {
-    const templates = {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const templates: Record<string, Record<string, PromptTemplate>> = {
       natal: require('./natalChart.prompts').NATAL_CHART_PROMPTS,
       transit: require('./transit.prompts').TRANSIT_PROMPTS,
       synastry: require('./synastry.prompts').SYNASTRY_PROMPTS,
     };
+    /* eslint-enable @typescript-eslint/no-var-requires */
 
     return templates[type]?.[name] || null;
   }

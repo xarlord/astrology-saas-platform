@@ -3,8 +3,8 @@
  * Modal displaying detailed astrological weather for a specific day
  */
 
-import React from 'react';
-import { X, Moon, Sun, Star, Sparkles } from 'lucide-react';
+// import React from 'react';
+import { X, Moon, Star, Sparkles } from 'lucide-react';
 import { DailyWeather as DailyWeatherType, AstrologicalEvent } from '../types/calendar.types';
 import '../styles/DailyWeatherModal.css';
 

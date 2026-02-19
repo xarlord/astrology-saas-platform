@@ -3,6 +3,8 @@
  * Tests personality analysis and chart interpretation
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Request, Response } from 'express';
 import {
   getPersonalityAnalysis,

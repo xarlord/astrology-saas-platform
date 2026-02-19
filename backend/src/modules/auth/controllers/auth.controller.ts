@@ -6,8 +6,8 @@ import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
 import UserModel from '../../users/models/user.model';
 import { generateToken, generateRefreshToken } from '../../../middleware/auth';
-import { hashPassword, comparePassword, isValidEmail, validatePassword, generateToken as randomToken, sanitizeUser } from '../../../utils/helpers';
-import { asyncHandler } from '../../../middleware/errorHandler';
+import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
+import * as RefreshTokenModel from '../models/refreshToken.model';
 
 /**
  * Register new user
@@ -32,16 +32,28 @@ export async function register(req: Request, res: Response): Promise<void> {
   });
 
   // Generate tokens
-  const tokenPayload = { userId: user.id, email: user.email };
+  const tokenPayload = { id: user.id, email: user.email };
   const accessToken = generateToken(tokenPayload);
-  const refreshToken = generateRefreshToken(tokenPayload);
+  const refreshTokenValue = generateRefreshToken(tokenPayload);
+
+  // Store refresh token in database
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+
+  await RefreshTokenModel.createRefreshToken({
+    user_id: user.id,
+    token: refreshTokenValue,
+    expires_at: expiresAt,
+    user_agent: req.get('user-agent'),
+    ip_address: req.ip,
+  });
 
   res.status(201).json({
     success: true,
     data: {
       user: sanitizeUser(user),
       accessToken,
-      refreshToken,
+      refreshToken: refreshTokenValue,
     },
   });
 }
@@ -65,16 +77,28 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 
   // Generate tokens
-  const tokenPayload = { userId: user.id, email: user.email };
+  const tokenPayload = { id: user.id, email: user.email };
   const accessToken = generateToken(tokenPayload);
-  const refreshToken = generateRefreshToken(tokenPayload);
+  const refreshTokenValue = generateRefreshToken(tokenPayload);
+
+  // Store refresh token in database
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+
+  await RefreshTokenModel.createRefreshToken({
+    user_id: user.id,
+    token: refreshTokenValue,
+    expires_at: expiresAt,
+    user_agent: req.get('user-agent'),
+    ip_address: req.ip,
+  });
 
   res.status(200).json({
     success: true,
     data: {
       user: sanitizeUser(user),
       accessToken,
-      refreshToken,
+      refreshToken: refreshTokenValue,
     },
   });
 }
@@ -140,10 +164,17 @@ export async function updatePreferences(req: Request, res: Response): Promise<vo
 
 /**
  * Logout user
- * Note: In a production app, you would invalidate the refresh token
+ * Revokes the refresh token to prevent further use
  */
 export async function logout(req: Request, res: Response): Promise<void> {
-  // TODO: Invalidate refresh token in database
+  // Get refresh token from request body or header
+  const refreshToken = req.body.refreshToken || req.get('X-Refresh-Token');
+
+  if (refreshToken) {
+    // Revoke the refresh token in database
+    await RefreshTokenModel.revokeRefreshToken(refreshToken);
+  }
+
   res.status(200).json({
     success: true,
     message: 'Logged out successfully',
@@ -152,18 +183,64 @@ export async function logout(req: Request, res: Response): Promise<void> {
 
 /**
  * Refresh access token
+ * Verifies the refresh token from database and generates new access token
+ * Implements token rotation by issuing a new refresh token
  */
 export async function refreshToken(req: Request, res: Response): Promise<void> {
-  // TODO: Verify refresh token from database
-  // For now, just generate a new access token
-  const userId = req.user!.id;
-  const email = req.user!.email;
+  const { refreshToken: oldRefreshToken } = req.body;
 
-  const tokenPayload = { userId, email };
-  const accessToken = generateToken(tokenPayload);
+  if (!oldRefreshToken) {
+    throw new AppError('Refresh token is required', 400);
+  }
+
+  // Verify refresh token from database
+  const tokenRecord = await RefreshTokenModel.findRefreshToken(oldRefreshToken);
+
+  if (!tokenRecord) {
+    throw new AppError('Invalid refresh token', 401);
+  }
+
+  // Check if token is revoked
+  if (tokenRecord.revoked) {
+    throw new AppError('Refresh token has been revoked', 401);
+  }
+
+  // Check if token is expired
+  if (new Date() > tokenRecord.expires_at) {
+    throw new AppError('Refresh token has expired', 401);
+  }
+
+  // Get user
+  const user = await UserModel.findById(tokenRecord.user_id);
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  // Generate new tokens
+  const tokenPayload = { id: user.id, email: user.email };
+  const newAccessToken = generateToken(tokenPayload);
+  const newRefreshToken = generateRefreshToken(tokenPayload);
+
+  // Token rotation: Create new refresh token and revoke old one
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+
+  await RefreshTokenModel.createRefreshToken({
+    user_id: user.id,
+    token: newRefreshToken,
+    expires_at: expiresAt,
+    user_agent: req.get('user-agent'),
+    ip_address: req.ip,
+  });
+
+  // Revoke old refresh token
+  await RefreshTokenModel.revokeRefreshToken(oldRefreshToken);
 
   res.status(200).json({
     success: true,
-    data: { accessToken },
+    data: {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    },
   });
 }

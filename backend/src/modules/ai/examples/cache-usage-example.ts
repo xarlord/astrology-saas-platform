@@ -1,7 +1,11 @@
 /**
  * AI Cache Usage Example
  * Demonstrates how to use the cache service with OpenAI API calls
+ *
+ * NOTE: Console statements are intentional for demonstration purposes
  */
+
+/* eslint-disable no-console */
 
 import aiCacheService from '../services/aiCache.service';
 import openaiService from '../services/openai.service';
@@ -138,12 +142,12 @@ export async function getInterpretationWithFallback(chartData: any) {
 }
 
 // Helper functions (stubs)
-async function getChartDataById(chartId: string) {
+async function getChartDataById(_chartId: string) {
   // Implementation would fetch from database
   return {};
 }
 
-async function getRuleBasedInterpretation(chartData: any) {
+async function getRuleBasedInterpretation(_chartData: any) {
   // Implementation would use rule-based system
   return {};
 }

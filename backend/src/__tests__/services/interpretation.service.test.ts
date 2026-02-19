@@ -3,6 +3,7 @@
  * Tests personality analysis and transit interpretation generation
  */
 
+n/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   generateCompletePersonalityAnalysis,
   generateTransitAnalysis,

@@ -24,7 +24,13 @@ router.get('/next', lunarReturnController.getNextLunarReturn);
  * @desc    Get current lunar return with days until
  * @access  Private
  */
-router.get('/current', lunarReturnController.getCurrentLunarReturn);
+router.get('/current', async (_req, res, _next) => {
+  // This route is disabled for now - getCurrentLunarReturn needs to be exported from controller
+  res.status(501).json({
+    success: false,
+    error: 'Not implemented'
+  });
+});
 
 /**
  * @route   POST /api/lunar-return/chart

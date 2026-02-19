@@ -3,6 +3,8 @@
  * Tests environment variable loading and config defaults
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import dotenv from 'dotenv';
 
 // Mock dotenv

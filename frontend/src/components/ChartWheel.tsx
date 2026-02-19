@@ -1,5 +1,5 @@
-import React from 'react';
-import { PlanetSymbol, AspectSymbol } from './';
+// import React from 'react';
+// import { PlanetSymbol, AspectSymbol } from './';
 
 // Types based on findings.md data models
 export interface PlanetPosition {

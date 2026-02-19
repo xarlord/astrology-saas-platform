@@ -9,7 +9,7 @@ import {
   normalizeDegree,
   calculateMoonPhase,
 } from '../../calendar/services/calendar.service';
-import { MoonPhase, Planet, ZodiacSign } from '../../calendar/models/calendar.model';
+import { MoonPhase } from '../../calendar/models/calendar.model';
 
 export interface NatalChart {
   id: string;
@@ -91,7 +91,7 @@ export function calculateNextLunarReturn(natalMoon: {
   second: number;
 }): Date {
   // Synodic month: ~29.530588 days (average time between same moon phases)
-  const synodicMonthDays = 29.530588;
+  // const synodicMonthDays = 29.530588; // Removed unused
 
   // Calculate natal moon position in degrees (0-360)
   const natalDegree = natalMoon.degree + natalMoon.minute / 60 + natalMoon.second / 3600;
@@ -107,7 +107,7 @@ export function calculateNextLunarReturn(natalMoon: {
   // Calculate approximate moon position today (simplified)
   // Using J2000 epoch + days elapsed * daily motion
   const daysSinceJ2000 = currentJD - 2451545.0;
-  const currentMoonDegree = (90.0 + moonDailyMotion * daysSinceJ2000) % 360;
+  let currentMoonDegree = (90.0 + moonDailyMotion * daysSinceJ2000) % 360;
   if (currentMoonDegree < 0) currentMoonDegree += 360;
 
   // Calculate degrees to next lunar return
@@ -176,10 +176,10 @@ export function calculateLunarReturnChart(
  */
 function generateMoonAspects(
   transitingMoonDegree: number,
-  natalMoon: { degree: number; minute: number }
+  _natalMoon: { degree: number; minute: number }
 ): LunarAspect[] {
   const aspects: LunarAspect[] = [];
-  const natalMoonDegree = natalMoon.degree + natalMoon.minute / 60;
+  // const natalMoonDegree = natalMoon.degree + natalMoon.minute / 60; // TODO: use this to calculate aspects to natal moon
 
   // Check aspects with major planets (simplified - in production, use actual natal chart)
   const natalPlanets = [
@@ -240,7 +240,7 @@ function getLunarReturnTheme(house: number, moonPhase: MoonPhase): string {
   };
 
   const phaseModifiers: Record<MoonPhase, string> = {
-    'new-moon': 'with Fresh Intentions',
+    'new': 'with Fresh Intentions',
     'waxing-crescent': 'with Growing Energy',
     'first-quarter': 'with Decisive Action',
     'waxing-gibbous': 'with Building Momentum',
@@ -351,7 +351,7 @@ function generateKeyDates(returnDate: Date, chart: LunarReturnChart): KeyDate[] 
   });
 
   // Find new moon and full moon in the lunar month
-  const lunarMonth = 29.53; // days
+  // const lunarMonth = 29.53; // days - removed unused
   const newMoonDate = new Date(returnDate.getTime() + 29.53 * 0 * 24 * 60 * 60 * 1000);
 
   dates.push({
@@ -453,7 +453,7 @@ function generatePredictions(chart: LunarReturnChart): MonthlyPrediction[] {
 /**
  * Generate monthly rituals
  */
-function generateRituals(returnDate: Date, chart: LunarReturnChart): MonthlyRitual[] {
+function generateRituals(_returnDate: Date, _chart: LunarReturnChart): MonthlyRitual[] {
   const rituals: MonthlyRitual[] = [];
 
   // New moon ritual
@@ -638,7 +638,7 @@ function getActionAdvice(chart: LunarReturnChart): string[] {
 /**
  * Get current lunar return for a user
  */
-export async function getCurrentLunarReturn(userId: string): Promise<{
+export async function getCurrentLunarReturn(_userId: string): Promise<{
   returnDate: Date;
   daysUntil: number;
 }> {

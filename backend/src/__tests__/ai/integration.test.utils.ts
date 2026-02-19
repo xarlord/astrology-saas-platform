@@ -3,7 +3,6 @@
  * Helper functions for AI integration tests
  */
 
-import { db } from '../db';
 import bcrypt from 'bcryptjs';
 
 /**

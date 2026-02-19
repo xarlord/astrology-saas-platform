@@ -23,7 +23,7 @@ export const saveSubscription = asyncHandler(async (req: Request, res: Response)
   });
 });
 
-export const deleteSubscription = asyncHandler(async (req: Request, res: Response) => {
+export const deleteSubscription = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   const { subscriptionId } = req.params;
   const userId = req.user!.id;
 
@@ -32,12 +32,13 @@ export const deleteSubscription = asyncHandler(async (req: Request, res: Respons
   const subscription = subscriptions.find((s) => s.id === subscriptionId);
 
   if (!subscription) {
-    return res.status(404).json({
+    res.status(404).json({
       success: false,
       error: {
         message: 'Subscription not found',
       },
     });
+    return;
   }
 
   await pushNotificationService.deleteSubscription(subscriptionId);
@@ -75,16 +76,17 @@ export const sendTestNotification = asyncHandler(async (req: Request, res: Respo
   });
 });
 
-export const getVapidPublicKey = asyncHandler(async (req: Request, res: Response) => {
+export const getVapidPublicKey = asyncHandler(async (_req: Request, res: Response): Promise<void> => {
   const publicKey = process.env.VAPID_PUBLIC_KEY;
 
   if (!publicKey) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: {
         message: 'VAPID public key not configured',
       },
     });
+    return;
   }
 
   res.json({

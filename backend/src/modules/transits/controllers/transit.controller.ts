@@ -5,7 +5,7 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../middleware/errorHandler';
-import { ChartModel } from '../../charts/models/chart.model';
+import ChartModel from '../../charts/models/chart.model';
 import { swissEphemeris } from '../../shared';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
 
@@ -27,10 +27,8 @@ export async function calculateTransits(req: Request, res: Response): Promise<vo
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { jd, planets, houses } = chart.calculated_data;
-
   // Calculate transits for each day in range
-  const transitReadings = [];
+  const transitReadings: any[] = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
   const daysDiff = differenceInDays(end, start);
@@ -40,24 +38,23 @@ export async function calculateTransits(req: Request, res: Response): Promise<vo
 
   for (let i = 0; i <= maxDays; i++) {
     const transitDate = addDays(start, i);
-    const transitTime = '12:00:00'; // Noon for daily transits
 
     const transitData = swissEphemeris.calculateTransits({
+      birthDate: new Date(chart.birth_date),
       transitDate,
-      transitTime,
-      natalChart: { jd, planets, houses },
+      latitude: chart.birth_latitude,
+      longitude: chart.birth_longitude,
     });
 
     // Filter for significant aspects only
-    const majorAspects = transitData.aspectsToNatal.filter(
-      a => ['conjunction', 'opposition', 'trine', 'square'].includes(a.aspect) && a.orb <= 3
+    const majorAspects = transitData.aspects.filter(
+      (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
     );
 
     if (majorAspects.length > 0) {
       transitReadings.push({
         date: transitDate.toISOString().split('T')[0],
         transits: majorAspects,
-        housePositions: transitData.housePositions,
       });
     }
   }
@@ -92,19 +89,18 @@ export async function getTodayTransits(req: Request, res: Response): Promise<voi
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { jd, planets, houses } = chart.calculated_data;
   const today = new Date();
-  const transitTime = '12:00:00';
 
   const transitData = swissEphemeris.calculateTransits({
+    birthDate: new Date(chart.birth_date),
     transitDate: today,
-    transitTime,
-    natalChart: { jd, planets, houses },
+    latitude: chart.birth_latitude,
+    longitude: chart.birth_longitude,
   });
 
   // Get significant aspects
-  const majorAspects = transitData.aspectsToNatal.filter(
-    a => ['conjunction', 'opposition', 'trine', 'square'].includes(a.aspect) && a.orb <= 3
+  const majorAspects = transitData.aspects.filter(
+    (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
   );
 
   // Calculate moon phase
@@ -119,7 +115,6 @@ export async function getTodayTransits(req: Request, res: Response): Promise<voi
         name: chart.name,
       },
       majorAspects,
-      housePositions: transitData.housePositions,
       moonPhase,
       transitPlanets: transitData.transitPlanets,
     },
@@ -145,26 +140,24 @@ export async function getTransitCalendar(req: Request, res: Response): Promise<v
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { jd, planets, houses } = chart.calculated_data;
-
   // Calculate transits for the month
-  const calendarData = [];
-  const startDate = new Date(year, month - 1, 1);
+  const calendarData: any[] = [];
+  // const startDate = new Date(year, month - 1, 1); // Not used yet
   const daysInMonth = new Date(year, month, 0).getDate();
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month - 1, day);
-    const transitTime = '12:00:00';
 
     const transitData = swissEphemeris.calculateTransits({
+      birthDate: new Date(chart.birth_date),
       transitDate: date,
-      transitTime,
-      natalChart: { jd, planets, houses },
+      latitude: chart.birth_latitude,
+      longitude: chart.birth_longitude,
     });
 
     // Get major aspects
-    const majorAspects = transitData.aspectsToNatal.filter(
-      a => ['conjunction', 'opposition', 'trine', 'square'].includes(a.aspect) && a.orb <= 2
+    const majorAspects = transitData.aspects.filter(
+      (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 2
     );
 
     // Moon phase
@@ -202,9 +195,9 @@ export async function getTransitCalendar(req: Request, res: Response): Promise<v
 /**
  * Get specific transit details
  */
-export async function getTransitDetails(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
-  const { id } = req.params; // Transit reading ID
+export async function getTransitDetails(_req: Request, res: Response): Promise<void> {
+  // const userId = _req.user!.id; // TODO: will be used for DB lookup
+  // const { id } = _req.params; // Transit reading ID - TODO: will be used
 
   // TODO: Fetch specific transit reading from database
   // For now, calculate on-demand
@@ -233,7 +226,6 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { jd, planets, houses } = chart.calculated_data;
   const now = new Date();
   let endDate = now;
 
@@ -255,28 +247,28 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
 
   // Calculate significant transits (outer planets only for longer periods)
   const outerPlanets = ['jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
-  const transitForecast = [];
+  const transitForecast: any[] = [];
 
   const daysDiff = differenceInDays(endDate, now);
   const maxDays = Math.min(daysDiff, 365);
 
   for (let i = 0; i <= maxDays; i++) {
     const date = addDays(now, i);
-    const transitTime = '12:00:00';
 
     const transitData = swissEphemeris.calculateTransits({
+      birthDate: new Date(chart.birth_date),
       transitDate: date,
-      transitTime,
-      natalChart: { jd, planets, houses },
+      latitude: chart.birth_latitude,
+      longitude: chart.birth_longitude,
     });
 
     // Filter for outer planet aspects
-    const outerPlanetAspects = transitData.aspectsToNatal.filter(
-      a => outerPlanets.includes(a.transitPlanet) && a.orb <= 1
+    const outerPlanetAspects = transitData.aspects.filter(
+      (a: any) => outerPlanets.includes(a.planet1) && a.orb <= 1
     );
 
     if (outerPlanetAspects.length > 0) {
-      outerPlanetAspects.forEach(aspect => {
+      outerPlanetAspects.forEach((aspect: any) => {
         transitForecast.push({
           date: date.toISOString().split('T')[0],
           ...aspect,
@@ -288,7 +280,7 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
 
   // Group by aspect type
   const groupedByType = transitForecast.reduce((acc, item) => {
-    const key = item.aspect;
+    const key = item.type;
     if (!acc[key]) acc[key] = [];
     acc[key].push(item);
     return acc;

@@ -2,13 +2,14 @@
  * Authentication Middleware
  */
 
+/* eslint-disable @typescript-eslint/no-namespace */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from './errorHandler';
 import config from '../config';
 
 interface TokenPayload {
-  userId: string;
+  id: string;
   email: string;
   iat?: number;
   exp?: number;
@@ -28,7 +29,7 @@ declare global {
  */
 export const authenticate = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   try {
@@ -64,7 +65,7 @@ export const authenticate = (
  */
 export const optionalAuthenticate = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   try {
@@ -88,15 +89,19 @@ export const optionalAuthenticate = (
  */
 export const generateToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
   return jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn,
+    expiresIn: config.jwt.expiresIn as any,
   });
 };
 
 /**
- * Generate refresh token
+ * Generate refresh token (cryptographically secure random token)
+ * This is stored in the database and can be revoked
  */
-export const generateRefreshToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
-  return jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.refreshExpiresIn,
-  });
+export const generateRefreshToken = (_payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
+  // Generate a cryptographically secure random token
+  /* eslint-disable @typescript-eslint/no-var-requires */
+  const crypto = require('crypto');
+  /* eslint-enable @typescript-eslint/no-var-requires */
+  const randomBytes = crypto.randomBytes(32);
+  return randomBytes.toString('base64url');
 };

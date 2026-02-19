@@ -10,7 +10,7 @@ const router = Router();
  * GET /health
  * Health check endpoint
  */
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   res.status(200).json({
     success: true,
     message: 'Server is running',

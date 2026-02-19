@@ -33,7 +33,7 @@ export const createChartSchema = Joi.object({
   birth_timezone: Joi.string().required(),
   house_system: Joi.string().valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric').optional(),
   zodiac: Joi.string().valid('tropical', 'sidereal').optional(),
-  sidereal_mode: Joi.string().when('zodiac', { is: 'sidereal', then: Joi.optional(), otherwise: Joi.strip() }),
+  sidereal_mode: Joi.string().when('zodiac', { is: 'sidereal', then: Joi.optional(), otherwise: Joi.forbidden() }),
 });
 
 export const updateChartSchema = Joi.object({

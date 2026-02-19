@@ -3,6 +3,9 @@
  * Tests chart creation, retrieval, update, and deletion
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import request from 'supertest';
 import { db } from '../db';
 import { cleanDatabase, createTestUser, createTestChart } from './utils';

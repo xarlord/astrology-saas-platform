@@ -12,7 +12,7 @@ import {
   Aspect,
   HouseCusp as HouseCuspType,
 } from '../models/types';
-import solarReturnModel from '../models/solarReturn.model';
+// import solarReturnModel from '../models/solarReturn.model';
 
 export class SolarReturnService {
   /**
@@ -53,10 +53,10 @@ export class SolarReturnService {
   private async findSolarReturnDate(
     natalSunDegree: number,
     year: number,
-    location: { latitude: number; longitude: number; timezone: string }
+    _location: { latitude: number; longitude: number; timezone: string }
   ): Promise<Date> {
     // Initialize Swiss Ephemeris
-    swisseph.swe_set_ephe_path(null);
+    swisseph.swe_set_ephe_path('');
 
     // Search around the birthday (±3 days)
     const birthday = new Date(year, 0, 1); // Start from beginning of year
@@ -69,7 +69,7 @@ export class SolarReturnService {
 
     for (let i = 0; i < 20; i++) {
       const mid = new Date((low.getTime() + high.getTime()) / 2);
-      const sunPos = await this.calculateSunPosition(mid, location);
+      const sunPos = await this.calculateSunPosition(mid, _location);
 
       if (Math.abs(sunPos - natalSunDegree) < 0.0001) {
         return mid;
@@ -90,7 +90,7 @@ export class SolarReturnService {
    */
   private async calculateSunPosition(
     date: Date,
-    location: { latitude: number; longitude: number }
+    _location: { latitude: number; longitude: number }
   ): Promise<number> {
     const julianDay = this.dateToJulianDay(date);
     const flags = swisseph.SEFLG_SWIEPH | swisseph.SEFLG_SIDEREAL;
@@ -99,13 +99,16 @@ export class SolarReturnService {
       julianDay,
       swisseph.SE_SUN,
       flags
-    );
+    ) as [number, number, number, number];
 
-    if (result.error !== swisseph.OK) {
-      throw new Error(`Failed to calculate Sun position: ${result.error}`);
+    const xx = result[0]; // longitude
+    const error = result[1]; // error code
+
+    if (error !== 0) {
+      throw new Error(`Failed to calculate Sun position: ${error}`);
     }
 
-    return result.data[0]; // Longitude in degrees
+    return xx; // Longitude in degrees
   }
 
   /**
@@ -135,10 +138,12 @@ export class SolarReturnService {
     ];
 
     for (const planetId of planetIds) {
-      const result = swisseph.swe_calc_ut(julianDay, planetId, flags);
+      const result = swisseph.swe_calc_ut(julianDay, planetId, flags) as [number, number, number, number];
 
-      if (result.error === swisseph.OK) {
-        const longitude = result.data[0];
+      const error = result[1]; // error code
+
+      if (error === 0) {
+        const longitude = result[0];
         const sign = this.degreeToSign(longitude);
         const degree = longitude % 30;
 
@@ -149,7 +154,7 @@ export class SolarReturnService {
           minute: Math.floor((degree % 1) * 60),
           second: Math.floor(((degree % 1) * 60 % 1) * 60),
           house: 0, // Will be calculated after houses
-          retrograde: result.data[3] < 0, // Speed < 0 means retrograde
+          retrograde: result[3] < 0, // Speed < 0 means retrograde
         });
       }
     }
@@ -161,9 +166,9 @@ export class SolarReturnService {
       location.latitude,
       location.longitude,
       houseSystemId
-    );
+    ) as [number[], number, number];
 
-    const houses: HouseCusp[] = housesResult.cusp.map((cusp, index) => ({
+    const houses: HouseCusp[] = housesResult[0].map((cusp, index) => ({
       house: index + 1,
       sign: this.degreeToSign(cusp),
       degree: Math.floor(cusp % 30),
@@ -173,7 +178,8 @@ export class SolarReturnService {
 
     // Assign planets to houses
     planets.forEach(planet => {
-      planet.house = this.getHouseForPlanet(planet.longitude, houses);
+      const planetDegree = this.signToDegree(planet.sign, planet.degree);
+      planet.house = this.getHouseForPlanet(planetDegree, houses);
     });
 
     // Calculate aspects
@@ -181,17 +187,17 @@ export class SolarReturnService {
 
     // Calculate Ascendant and MC
     const ascendant = {
-      sign: this.degreeToSign(housesResult.cusp[0]),
-      degree: Math.floor(housesResult.cusp[0] % 30),
-      minute: Math.floor((housesResult.cusp[0] % 30 % 1) * 60),
-      second: Math.floor(((housesResult.cusp[0] % 30 % 1) * 60 % 1) * 60),
+      sign: this.degreeToSign(housesResult[0][0]),
+      degree: Math.floor(housesResult[0][0] % 30),
+      minute: Math.floor((housesResult[0][0] % 30 % 1) * 60),
+      second: Math.floor(((housesResult[0][0] % 30 % 1) * 60 % 1) * 60),
     };
 
     const mc = {
-      sign: this.degreeToSign(housesResult.cusp[9]),
-      degree: Math.floor(housesResult.cusp[9] % 30),
-      minute: Math.floor((housesResult.cusp[9] % 30 % 1) * 60),
-      second: Math.floor(((housesResult.cusp[9] % 30 % 1) * 60 % 1) * 60),
+      sign: this.degreeToSign(housesResult[0][9]),
+      degree: Math.floor(housesResult[0][9] % 30),
+      minute: Math.floor((housesResult[0][9] % 30 % 1) * 60),
+      second: Math.floor(((housesResult[0][9] % 30 % 1) * 60 % 1) * 60),
     };
 
     // Calculate moon phase
@@ -260,11 +266,11 @@ export class SolarReturnService {
     phase: string;
     illumination: number;
   } {
-    const sunResult = swisseph.swe_calc_ut(julianDay, swisseph.SE_SUN, swisseph.SEFLG_SWIEPH);
-    const moonResult = swisseph.swe_calc_ut(julianDay, swisseph.SE_MOON, swisseph.SEFLG_SWIEPH);
+    const sunResult = swisseph.swe_calc_ut(julianDay, swisseph.SE_SUN, swisseph.SEFLG_SWIEPH) as [number, number, number, number];
+    const moonResult = swisseph.swe_calc_ut(julianDay, swisseph.SE_MOON, swisseph.SEFLG_SWIEPH) as [number, number, number, number];
 
-    const sunLongitude = sunResult.data[0];
-    const moonLongitude = moonResult.data[0];
+    const sunLongitude = sunResult[0];
+    const moonLongitude = moonResult[0];
 
     let phaseAngle = moonLongitude - sunLongitude;
     if (phaseAngle < 0) phaseAngle += 360;
@@ -448,7 +454,7 @@ export class SolarReturnService {
   /**
    * Get natal chart (placeholder - would fetch from database)
    */
-  private async getNatalChart(chartId: string): Promise<any> {
+  private async getNatalChart(_chartId: string): Promise<any> {
     // This would fetch from the database in real implementation
     return {
       sunDegree: 280.5, // Example: Capricorn 10°30'

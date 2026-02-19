@@ -10,7 +10,7 @@ import v2Router from './v2';
 const router = Router();
 
 // API version metadata endpoint
-router.get('/', (req: Request, res: Response) => {
+router.get('/', (_req: Request, res: Response) => {
   res.json({
     name: 'MoonCalender API',
     versions: ['v1', 'v2'],

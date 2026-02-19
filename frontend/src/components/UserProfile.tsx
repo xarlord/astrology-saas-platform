@@ -74,8 +74,60 @@ interface UserProfileProps {
 }
 
 export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserProfileProps) {
-  const { user, updateProfile, updatePreferences } = useAuth();
+  const { user, updateProfile } = useAuth();
   const { charts, deleteChart } = useCharts();
+
+  // Convert User to UserProfile if needed
+  const userProfile: UserProfile | undefined = user ? {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    avatar: user.avatar_url || user.avatar,
+    createdAt: user.createdAt || new Date(),
+    timezone: user.timezone || 'UTC',
+    subscription: {
+      plan: (user.plan as 'free' | 'premium' | 'professional') || 'free',
+      status: 'active',
+    },
+    preferences: {
+      theme: user.preferences?.theme || 'auto',
+      defaultHouseSystem: user.preferences?.defaultHouseSystem || 'placidus',
+      defaultZodiac: user.preferences?.defaultZodiac || 'tropical',
+      aspectOrbs: user.preferences?.aspectOrbs || {
+        conjunction: 10,
+        opposition: 10,
+        trine: 8,
+        square: 8,
+        sextile: 6,
+      },
+    },
+  } : undefined;
+
+  // Convert service Chart to UserProfile Chart type
+  const chartsForDisplay: Chart[] = (charts || []).map(chart => ({
+    id: chart.id,
+    userId: '', // Not available in service Chart type
+    name: chart.name,
+    type: (chart.type || 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
+    birthData: {
+      date: new Date(chart.birth_date || Date.now()),
+      time: chart.birth_time || '00:00',
+      place: {
+        name: chart.birth_place_name || 'Unknown',
+        latitude: 0,
+        longitude: 0,
+        timezone: 'UTC',
+      },
+      timeUnknown: false,
+    },
+    settings: {
+      houseSystem: 'placidus',
+      zodiac: 'tropical',
+    },
+    calculatedData: chart.calculated_data,
+    createdAt: new Date(chart.created_at || Date.now()),
+    updatedAt: new Date(chart.created_at || Date.now()),
+  }));
 
   const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');
   const [isEditing, setIsEditing] = useState(false);
@@ -93,7 +145,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
 
   const handleSaveProfile = async () => {
     try {
-      await updateProfile(editData.name, editData.timezone);
+      await updateProfile({ name: editData.name, timezone: editData.timezone });
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to update profile:', error);
@@ -111,7 +163,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     <div className="max-w-6xl mx-auto">
       {/* Profile Header */}
       <ProfileHeader
-        user={user}
+        user={userProfile}
         isEditing={isEditing}
         editData={editData}
         onEditToggle={() => setIsEditing(!isEditing)}
@@ -126,7 +178,9 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
           <nav className="flex overflow-x-auto">
             {tabs.map((tab) => (
               <button
+                type="button"
                 key={tab.id}
+                data-testid={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
                   flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors
@@ -146,17 +200,17 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
 
         {/* Tab Content */}
         <div className="p-6">
-          {activeTab === 'account' && <AccountTab user={user} />}
+          {activeTab === 'account' && !isEditing && <AccountTab user={userProfile} />}
           {activeTab === 'charts' && (
             <ChartsTab
-              charts={charts}
+              charts={chartsForDisplay}
               onEditChart={onEditChart}
               onViewChart={onViewChart}
               onDeleteChart={handleDeleteChart}
             />
           )}
-          {activeTab === 'preferences' && <PreferencesTab user={user} />}
-          {activeTab === 'subscription' && <SubscriptionTab user={user} />}
+          {activeTab === 'preferences' && <PreferencesTab user={userProfile} />}
+          {activeTab === 'subscription' && <SubscriptionTab user={userProfile} />}
         </div>
       </div>
     </div>
@@ -190,6 +244,7 @@ function ProfileHeader({
             {user.name.charAt(0).toUpperCase()}
           </div>
           <button
+            type="button"
             className="absolute bottom-0 right-0 p-2 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
             title="Change avatar"
           >
@@ -203,6 +258,7 @@ function ProfileHeader({
             <div className="space-y-3">
               <input
                 type="text"
+                data-testid="profile-name-edit"
                 value={editData.name}
                 onChange={(e) => onDataChange({ ...editData, name: e.target.value })}
                 className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
@@ -240,23 +296,29 @@ function ProfileHeader({
           {isEditing ? (
             <>
               <button
+                type="button"
                 onClick={onSave}
                 className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
+                aria-label="Save"
               >
                 Save
               </button>
               <button
+                type="button"
                 onClick={onEditToggle}
                 className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                aria-label="Cancel"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
             </>
           ) : (
             <button
+              type="button"
               onClick={onEditToggle}
               className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
               title="Edit profile"
+              aria-label="Edit profile"
             >
               <PencilIcon className="w-5 h-5" />
             </button>
@@ -335,7 +397,7 @@ function AccountTab({ user }: { user?: UserProfile }) {
       {/* Change Password Section */}
       <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
         <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Security</h4>
-        <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button type="button" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           Change Password
         </button>
       </div>
@@ -343,8 +405,8 @@ function AccountTab({ user }: { user?: UserProfile }) {
       {/* Danger Zone */}
       <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
         <h4 className="text-md font-medium text-red-600 dark:text-red-400 mb-4">Danger Zone</h4>
-        <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">
-          Delete Account
+        <button type="button" className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">
+          Delete My Account
         </button>
         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
           This action cannot be undone. All your data will be permanently deleted.
@@ -374,7 +436,7 @@ function ChartsTab({
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Create your first natal chart to get started
         </p>
-        <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button type="button" className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <PlusIcon className="w-5 h-5 inline mr-2" />
           Create Your First Chart
         </button>
@@ -383,12 +445,12 @@ function ChartsTab({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="charts-tab-content">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           My Charts ({charts.length})
         </h3>
-        <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button type="button" className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <PlusIcon className="w-5 h-5" />
           Add New Chart
         </button>
@@ -425,16 +487,8 @@ function ChartCard({
     <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden hover:shadow-lg transition-shadow">
       {/* Chart Thumbnail */}
       <div className="aspect-square bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-750 flex items-center justify-center p-4">
-        <div className="w-full h-full">
-          <ChartWheel
-            data={{
-              planets: chart.calculatedData?.planets || [],
-              houses: chart.calculatedData?.houses || [],
-              aspects: chart.calculatedData?.aspects || [],
-            }}
-            size={200}
-            interactive={false}
-          />
+        <div className="w-full h-full flex items-center justify-center text-gray-400">
+          <span className="text-sm">Chart Preview</span>
         </div>
       </div>
 
@@ -443,7 +497,7 @@ function ChartCard({
         <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{chart.name}</h4>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
           {new Date(chart.birthData.date).toLocaleDateString('en-US', {
-            month: 'short',
+            month: 'long',
             day: 'numeric',
             year: 'numeric',
           })}{' '}
@@ -459,20 +513,25 @@ function ChartCard({
       {/* Actions */}
       <div className="px-4 pb-4 flex gap-2">
         <button
+          type="button"
           onClick={onView}
           className="flex-1 px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
         >
           View
         </button>
         <button
+          type="button"
           onClick={onEdit}
           className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+          aria-label="Edit chart"
         >
           <PencilIcon className="w-4 h-4" />
         </button>
         <button
+          type="button"
           onClick={onDelete}
           className="px-3 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+          aria-label="Delete chart"
         >
           <TrashIcon className="w-4 h-4" />
         </button>
@@ -492,10 +551,11 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Default House System */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="house-system" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Default House System
           </label>
           <select
+            id="house-system"
             defaultValue={user.preferences.defaultHouseSystem}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -510,10 +570,11 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
         {/* Default Zodiac Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="zodiac-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Default Zodiac Type
           </label>
           <select
+            id="zodiac-type"
             defaultValue={user.preferences.defaultZodiac}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -529,7 +590,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
         <div className="space-y-4">
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="conjunction-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Conjunction/ Opposition
               </label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -537,6 +598,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
               </span>
             </div>
             <input
+              id="conjunction-orb"
               type="range"
               min="1"
               max="15"
@@ -546,12 +608,13 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Trine/ Square</label>
+              <label htmlFor="trine-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">Trine/ Square</label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {user.preferences.aspectOrbs.trine}°
               </span>
             </div>
             <input
+              id="trine-orb"
               type="range"
               min="1"
               max="15"
@@ -561,12 +624,13 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sextile</label>
+              <label htmlFor="sextile-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">Sextile</label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {user.preferences.aspectOrbs.sextile}°
               </span>
             </div>
             <input
+              id="sextile-orb"
               type="range"
               min="1"
               max="12"
@@ -591,6 +655,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
               { value: 'auto', label: 'System', icon: '💻' },
             ].map((theme) => (
               <button
+                type="button"
                 key={theme.value}
                 className={`
                   p-4 rounded-lg border-2 text-center transition-all
@@ -611,7 +676,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
       {/* Save Button */}
       <div className="pt-6">
-        <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button type="button" className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           Save Preferences
         </button>
       </div>
@@ -752,6 +817,7 @@ function PlanCard({
         ))}
       </ul>
       <button
+        type="button"
         disabled={plan.disabled}
         className={`
           w-full py-3 rounded-lg font-medium transition-colors

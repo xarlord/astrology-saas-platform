@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import React, { useState } from 'react';
 import { useAuth } from '../hooks';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
@@ -63,6 +67,31 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     }
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    // Only validate if the field has a value
+    // Use a setTimeout to ensure state has updated before validation
+    setTimeout(() => {
+      const newErrors: Partial<Record<keyof typeof formData, string>> = {};
+
+      if (name === 'email' && value) {
+        if (!value) {
+          newErrors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          newErrors.email = 'Please enter a valid email address';
+        }
+      } else if (name === 'password' && value) {
+        if (!value || value.length < 8) {
+          newErrors.password = 'Password must be at least 8 characters';
+        }
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+      }
+    }, 0);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
@@ -88,6 +117,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               autoComplete="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`
                 w-full px-4 py-3 rounded-lg border transition-colors
                 ${
@@ -117,6 +147,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
+              onBlur={handleBlur}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -322,6 +353,39 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     }
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    // Only validate if the field has a value
+    setTimeout(() => {
+      const newErrors: Partial<Record<keyof typeof formData, string>> = {};
+
+      if (name === 'name' && value) {
+        if (!value.trim() || value.trim().length < 2) {
+          newErrors.name = 'Name must be at least 2 characters';
+        }
+      } else if (name === 'email' && value) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          newErrors.email = 'Please enter a valid email address';
+        }
+      } else if (name === 'password' && value) {
+        if (value.length < 8) {
+          newErrors.password = 'Password must be at least 8 characters';
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+          newErrors.password =
+            'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+        }
+      } else if (name === 'confirmPassword' && value && formData.password) {
+        if (formData.password !== value) {
+          newErrors.confirmPassword = 'Passwords do not match';
+        }
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+      }
+    }, 0);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
@@ -347,6 +411,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               autoComplete="name"
               value={formData.name}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`
                 w-full px-4 py-3 rounded-lg border transition-colors
                 ${
@@ -375,6 +440,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               autoComplete="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`
                 w-full px-4 py-3 rounded-lg border transition-colors
                 ${
@@ -404,6 +470,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
+              onBlur={handleBlur}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -450,6 +517,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+              onBlur={handleBlur}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${

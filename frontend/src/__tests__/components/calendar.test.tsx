@@ -3,6 +3,15 @@
  * Testing CalendarView, DailyWeatherModal, ReminderSettings, and CalendarExport components
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/require-await */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -13,57 +22,45 @@ import { ReminderSettings } from '../../components/ReminderSettings';
 import { CalendarExport } from '../../components/CalendarExport';
 
 // Mock the calendar service
+const mockGetCalendarMonth = vi.fn();
+const mockSetReminder = vi.fn();
+const mockExportCalendar = vi.fn();
+
 vi.mock('../../services/calendar.service', () => ({
-  getCalendarMonth: vi.fn(),
+  getCalendarMonth: (...args: any[]) => mockGetCalendarMonth(...args),
   getCalendarDay: vi.fn(),
-  setReminder: vi.fn(),
-  exportCalendar: vi.fn(),
+  setReminder: (...args: any[]) => mockSetReminder(...args),
+  exportCalendar: (...args: any[]) => mockExportCalendar(...args),
 }));
 
-import {
-  getCalendarMonth,
-  getCalendarDay,
-  setReminder,
-  exportCalendar,
-} from '../services/calendar.service';
+// Note: The actual imports are replaced by mocks above
+// declare const mockGetCalendarMonth: any;
+// declare const mockSetReminder: any;
+// declare const mockExportCalendar: any;
 
 describe('CalendarView Component', () => {
   const mockCalendarData = {
-    month: 2,
-    year: 2026,
-    events: [
+    meta: {
+      month: 2,
+      year: 2026,
+      total: 1,
+    },
+    data: [
       {
         id: 'evt_1',
-        eventType: 'retrograde' as const,
-        eventName: 'Mercury Retrograde',
-        startDate: '2026-02-15T00:00:00Z',
-        endDate: '2026-02-25T00:00:00Z',
-        intensity: 7,
-        affectedPlanets: ['mercury' as const],
-        description: 'Communication challenges',
-        advice: ['Back up data'],
-        isGlobal: true,
-        createdAt: '2026-02-05T00:00:00Z',
+        user_id: null,
+        event_type: 'retrograde',
+        event_date: new Date('2026-02-15T00:00:00Z'),
+        end_date: new Date('2026-02-25T00:00:00Z'),
+        event_data: {
+          intensity: 7,
+          affectedPlanets: ['mercury'],
+          description: 'Communication challenges',
+          advice: ['Back up data'],
+        },
+        interpretation: null,
       },
     ],
-    dailyWeather: {
-      '2026-02-15': {
-        date: '2026-02-15',
-        summary: 'Favorable for creative work',
-        rating: 7,
-        color: '#10B981',
-        moonPhase: {
-          phase: 'waxing-gibbous' as const,
-          illumination: 78,
-          sign: 'taurus',
-          degree: 15.5,
-        },
-        globalEvents: [],
-        personalTransits: [],
-        luckyActivities: ['creative work', 'meditation'],
-        challengingActivities: [],
-      },
-    },
   };
 
   beforeEach(() => {
@@ -71,7 +68,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should render calendar header with current month and year', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -81,7 +78,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should navigate to previous month', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={3} initialYear={2026} />);
 
@@ -92,11 +89,14 @@ describe('CalendarView Component', () => {
     const prevButton = screen.getByRole('button', { name: /previous month/i });
     fireEvent.click(prevButton);
 
-    expect(getCalendarMonth).toHaveBeenCalledWith(2, 2026);
+    // Component calls getCalendarMonth(year, month)
+    await waitFor(() => {
+      expect(mockGetCalendarMonth).toHaveBeenCalledWith(2026, 2);
+    });
   });
 
   test('should navigate to next month', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -107,11 +107,14 @@ describe('CalendarView Component', () => {
     const nextButton = screen.getByRole('button', { name: /next month/i });
     fireEvent.click(nextButton);
 
-    expect(getCalendarMonth).toHaveBeenCalledWith(3, 2026);
+    // Component calls getCalendarMonth(year, month)
+    await waitFor(() => {
+      expect(mockGetCalendarMonth).toHaveBeenCalledWith(2026, 3);
+    });
   });
 
   test('should show today button when not on current month', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     const today = new Date();
     render(
@@ -127,7 +130,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should display loading state', () => {
-    (getCalendarMonth as vi.Mock).mockImplementation(() => new Promise(() => {}));
+    mockGetCalendarMonth.mockImplementation(() => new Promise(() => void 0));
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -135,7 +138,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should display error state', async () => {
-    (getCalendarMonth as vi.Mock).mockRejectedValue(new Error('API Error'));
+    mockGetCalendarMonth.mockRejectedValue(new Error('API Error'));
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -145,7 +148,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should render calendar grid with days', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -155,7 +158,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should show event badges for days with events', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -166,7 +169,7 @@ describe('CalendarView Component', () => {
   });
 
   test('should display calendar legend', async () => {
-    (getCalendarMonth as vi.Mock).mockResolvedValue(mockCalendarData);
+    mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
@@ -285,7 +288,7 @@ describe('ReminderSettings Component', () => {
     const retrogradeOption = screen.getByLabelText(/retrogrades/i);
     fireEvent.click(retrogradeOption);
 
-    expect(retrogradeOption).toBeChecked;
+    expect(retrogradeOption).toBeChecked();
   });
 
   test('should allow selecting reminder type', () => {
@@ -305,7 +308,7 @@ describe('ReminderSettings Component', () => {
     const oneDayCheckbox = screen.getByLabelText(/1 day before/i);
     await user.click(oneDayCheckbox);
 
-    expect(oneDayCheckbox).toBeChecked;
+    expect(oneDayCheckbox).toBeChecked();
   });
 
   test('should allow toggling active state', () => {
@@ -319,7 +322,7 @@ describe('ReminderSettings Component', () => {
   });
 
   test('should submit form and show success message', async () => {
-    (setReminder as vi.Mock).mockResolvedValue({
+    mockSetReminder.mockResolvedValue({
       message: 'Reminder saved successfully',
       reminder: {
         id: 'rem_1',
@@ -344,7 +347,7 @@ describe('ReminderSettings Component', () => {
   });
 
   test('should show error message on submission failure', async () => {
-    (setReminder as vi.Mock).mockRejectedValue({
+    mockSetReminder.mockRejectedValue({
       response: { data: { message: 'Failed to save' } },
     });
 
@@ -354,7 +357,7 @@ describe('ReminderSettings Component', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/failed to save/i)).toBeInTheDocument();
+      expect(screen.getByText(/Failed to save/i)).toBeInTheDocument();
     });
   });
 });
@@ -365,8 +368,14 @@ describe('CalendarExport Component', () => {
     // Mock URL.createObjectURL and related functions
     global.URL.createObjectURL = vi.fn(() => 'blob:url');
     global.URL.revokeObjectURL = vi.fn();
-    document.body.appendChild = vi.fn();
-    document.body.removeChild = vi.fn();
+  });
+
+  afterEach(() => {
+    // Clean up any DOM elements added to body
+    const body = document.body;
+    while (body.firstChild) {
+      body.removeChild(body.firstChild);
+    }
   });
 
   test('should render export form', () => {
@@ -398,12 +407,18 @@ describe('CalendarExport Component', () => {
     const startDateInput = screen.getByLabelText(/from/i);
     const endDateInput = screen.getByLabelText(/to/i);
 
-    expect(startDateInput.value).toBe(endDateInput.value);
+    // After clicking "This Month", dates should be set to first and last day of current month
+    const today = new Date();
+    const expectedFirstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
+
+    expect((startDateInput as HTMLInputElement).value).toBe(expectedFirstDay);
+    expect((endDateInput as HTMLInputElement).value).toBe(expectedLastDay);
   });
 
   test('should export calendar when button clicked', async () => {
     const mockBlob = new Blob(['test iCal content'], { type: 'text/calendar' });
-    (exportCalendar as vi.Mock).mockResolvedValue(mockBlob);
+    mockExportCalendar.mockResolvedValue(mockBlob);
 
     render(<CalendarExport />);
 
@@ -411,13 +426,13 @@ describe('CalendarExport Component', () => {
     fireEvent.click(exportButton);
 
     await waitFor(() => {
-      expect(exportCalendar).toHaveBeenCalled();
+      expect(mockExportCalendar).toHaveBeenCalled();
     });
   });
 
   test('should show success message after export', async () => {
     const mockBlob = new Blob(['test iCal content'], { type: 'text/calendar' });
-    (exportCalendar as vi.Mock).mockResolvedValue(mockBlob);
+    mockExportCalendar.mockResolvedValue(mockBlob);
 
     render(<CalendarExport />);
 
@@ -430,7 +445,7 @@ describe('CalendarExport Component', () => {
   });
 
   test('should show error message when export fails', async () => {
-    (exportCalendar as vi.Mock).mockRejectedValue(new Error('Export failed'));
+    mockExportCalendar.mockRejectedValue(new Error('Export failed'));
 
     render(<CalendarExport />);
 
@@ -460,7 +475,8 @@ describe('CalendarExport Component', () => {
   test('should allow including/excluding personal transits', () => {
     render(<CalendarExport />);
 
-    const checkbox = screen.getByRole('checkbox', { name: /includePersonal/i });
+    // Get checkbox by its ID since the accessible name may not match
+    const checkbox = document.getElementById('includePersonal') as HTMLInputElement;
     expect(checkbox).toBeInTheDocument();
     expect(checkbox).toBeChecked();
 

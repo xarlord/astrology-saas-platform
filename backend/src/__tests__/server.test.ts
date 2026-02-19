@@ -4,7 +4,6 @@
  */
 
 import request from 'supertest';
-import { Server } from 'http';
 import app from '../server';
 
 // Mock routes to avoid initialization issues

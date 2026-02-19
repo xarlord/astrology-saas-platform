@@ -1,12 +1,21 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Lunar Forecast View Component Tests
+/* eslint-disable @typescript-eslint/no-unused-vars */
+ * * Lunar Forecast View Component Tests
+ * */
  */
-
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LunarForecastView from '../LunarForecastView';
-import * as lunarReturnApi from '@services/lunarReturn.api';
+import * as lunarReturnApi from '@/services/lunarReturn.api';
 import { vi } from 'vitest';
 
 // Mock the API service

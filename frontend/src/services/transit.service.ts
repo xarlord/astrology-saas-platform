@@ -6,12 +6,12 @@ import api from './api';
 
 export interface TransitReading {
   date: string;
-  transits: Array<{
+  transits: {
     transitPlanet: string;
     natalPlanet: string;
     aspect: string;
     orb: number;
-  }>;
+  }[];
   housePositions: Record<string, number>;
 }
 

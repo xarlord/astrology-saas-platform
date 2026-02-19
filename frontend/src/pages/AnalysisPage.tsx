@@ -10,23 +10,23 @@ import { PersonalityAnalysis } from '../components';
 
 interface ChartData {
   id: string;
-  planets: Array<{
+  planets: {
     planet: string;
     sign: string;
     degree: number;
     house: number;
-  }>;
-  houses: Array<{
+  }[];
+  houses: {
     house: number;
     sign: string;
     degree: number;
-  }>;
-  aspects: Array<{
+  }[];
+  aspects: {
     planet1: string;
     planet2: string;
     type: string;
     orb: number;
-  }>;
+  }[];
 }
 
 export default function AnalysisPage() {
@@ -98,7 +98,60 @@ export default function AnalysisPage() {
 
         {/* Traditional Analysis */}
         <div className="card">
-          {chartData && <PersonalityAnalysis chartData={chartData} />}
+          {chartData && (
+            <PersonalityAnalysis
+              data={{
+                overview: {
+                  sunSign: {
+                    planet: 'sun',
+                    sign: chartData.planets.find(p => p.planet === 'sun')?.sign || 'aries',
+                    keywords: ['core identity', 'vitality', 'self-expression'],
+                    general: 'Your Sun sign represents your core identity and life purpose.',
+                    strengths: ['Leadership', 'Confidence', 'Creativity'],
+                    challenges: ['Ego', 'Stubbornness', 'Impatience'],
+                    advice: ['Embrace your natural leadership abilities', 'Practice patience with others'],
+                  },
+                  moonSign: {
+                    planet: 'moon',
+                    sign: chartData.planets.find(p => p.planet === 'moon')?.sign || 'taurus',
+                    keywords: ['emotions', 'intuition', 'inner needs'],
+                    general: 'Your Moon sign reveals your emotional nature and inner world.',
+                    strengths: ['Emotional intelligence', 'Nurturing', 'Intuition'],
+                    challenges: ['Moodiness', 'Sensitivity', 'Insecurity'],
+                    advice: ['Honor your emotional needs', 'Create a safe home environment'],
+                  },
+                },
+                planetsInSigns: chartData.planets.map(p => ({
+                  planet: p.planet,
+                  sign: p.sign,
+                  keywords: [`${p.planet} in ${p.sign}`, 'energy', 'expression'],
+                  general: `${p.planet.charAt(0).toUpperCase() + p.planet.slice(1)} in ${p.sign.charAt(0).toUpperCase() + p.sign.slice(1)}`,
+                  strengths: ['Expressive', 'Dynamic'],
+                  challenges: ['Impulsive', 'Restless'],
+                  advice: ['Channel your energy constructively'],
+                })),
+                houses: chartData.houses.map(h => ({
+                  house: h.house,
+                  signOnCusp: h.sign,
+                  planetsInHouse: chartData.planets.filter(p => p.house === h.house).map(p => p.planet),
+                  themes: [`${h.sign.charAt(0).toUpperCase() + h.sign.slice(1)} themes`],
+                  interpretation: `House ${h.house} in ${h.sign.charAt(0).toUpperCase() + h.sign.slice(1)}`,
+                  advice: ['Focus on this area of life'],
+                })),
+                aspects: chartData.aspects.map(a => ({
+                  planet1: a.planet1,
+                  planet2: a.planet2,
+                  aspect: a.type,
+                  orb: a.orb,
+                  harmonious: ['trine', 'sextile'].includes(a.type),
+                  keywords: [a.type, 'aspect'],
+                  interpretation: `${a.planet1} ${a.type} ${a.planet2}`,
+                  expression: 'This aspect influences your personality',
+                  advice: ['Work with this energy consciously'],
+                })),
+              }}
+            />
+          )}
         </div>
       </main>
     </div>

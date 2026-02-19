@@ -4,6 +4,8 @@
 
 import knex from '../../../config/database';
 
+const db = knex;
+
 export interface PushSubscription {
   id: string;
   user_id: string;

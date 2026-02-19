@@ -47,7 +47,7 @@ jest.mock('../../modules/notifications/models/pushSubscription.model', () => ({
   __esModule: true,
 }));
 
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 import pushNotificationService from '../../modules/notifications/services/pushNotification.service';
 
 describe('Push Notification Service', () => {

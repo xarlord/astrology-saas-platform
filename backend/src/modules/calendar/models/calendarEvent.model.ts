@@ -17,11 +17,54 @@ export interface CalendarEvent {
   updated_at: Date;
 }
 
+// Planet type for retrograde interpretations
+export type Planet =
+  | 'mercury'
+  | 'venus'
+  | 'mars'
+  | 'jupiter'
+  | 'saturn'
+  | 'uranus'
+  | 'neptune'
+  | 'pluto'
+  | 'sun'
+  | 'moon';
+
+// Moon phase type for moon phase interpretations
+export type MoonPhase =
+  | 'new'
+  | 'waxing-crescent'
+  | 'first-quarter'
+  | 'waxing-gibbous'
+  | 'full'
+  | 'waning-gibbous'
+  | 'last-quarter'
+  | 'waning-crescent';
+
+// Detailed planet position interface
+export interface PlanetPosition {
+  name: string;
+  sign: string;
+  degree: number;
+  minute: number;
+  second: number;
+  retrograde: boolean;
+}
+
+// Detailed moon phase interface
+export interface MoonPhaseDetails {
+  date: Date;
+  type: 'new' | 'full' | 'quarter' | 'disseminating' | 'balsamic';
+  sign: string;
+  degree: number;
+  illumination: number;
+}
+
 class CalendarEventModel {
   /**
    * Create a new calendar event
    */
-  async create(userId: string, event: Omit<CalendarEvent, 'id' | 'created_at' | 'updated_at'>): Promise<CalendarEvent> {
+  async create(userId: string, event: Omit<CalendarEvent, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<CalendarEvent> {
     const [newEvent] = await knex('calendar_events')
       .insert({
         user_id: userId,

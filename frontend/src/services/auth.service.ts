@@ -34,16 +34,16 @@ export const authService = {
    * Register new user
    */
   async register(data: RegisterData): Promise<AuthResponse> {
-    const { data: responseData } = await api.post<AuthResponse>('/auth/register', data);
-    return responseData.data;
+    const response = await api.post<{ data: AuthResponse }>('/auth/register', data);
+    return response.data.data;
   },
 
   /**
    * Login user
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const { data: responseData } = await api.post<AuthResponse>('/auth/login', credentials);
-    return responseData.data;
+    const response = await api.post<{ data: AuthResponse }>('/auth/login', credentials);
+    return response.data.data;
   },
 
   /**
@@ -57,8 +57,8 @@ export const authService = {
    * Get current user profile
    */
   async getProfile(): Promise<{ user: any }> {
-    const { data: responseData } = await api.get('/auth/me');
-    return responseData.data;
+    const response = await api.get('/auth/me');
+    return response.data.data;
   },
 
   /**
@@ -69,25 +69,25 @@ export const authService = {
     avatar_url?: string;
     timezone?: string;
   }): Promise<{ user: any }> {
-    const { data: responseData } = await api.put('/auth/me', data);
-    return responseData.data;
+    const response = await api.put('/auth/me', data);
+    return response.data.data;
   },
 
   /**
    * Update preferences
    */
   async updatePreferences(preferences: Record<string, any>): Promise<{ user: any }> {
-    const { data: responseData } = await api.put('/auth/me/preferences', { preferences });
-    return responseData.data;
+    const response = await api.put('/auth/me/preferences', { preferences });
+    return response.data.data;
   },
 
   /**
    * Refresh token
    */
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-    const { data } = await api.post('/auth/refresh', {}, {
+    const response = await api.post('/auth/refresh', {}, {
       headers: { Authorization: `Bearer ${refreshToken}` },
     });
-    return data.data;
+    return response.data.data;
   },
 };

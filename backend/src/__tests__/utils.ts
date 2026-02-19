@@ -3,7 +3,8 @@
  * Provides reusable test fixtures, mocks, and helper functions
  */
 
-import { PlanetPosition, HouseCusp, Aspect } from '../../types/chart';
+import { PlanetPosition, HouseCusp, Aspect } from '@astrology-saas/shared-types';
+import * as bcrypt from 'bcryptjs';
 
 // ============================================================================
 // TEST FIXTURES
@@ -229,7 +230,7 @@ export const mockAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test';
 /**
  * Mock request with authenticated user
  */
-export const mockRequest = (overrides = {}) => ({
+export const mockRequest = (overrides: Record<string, unknown> = {}) => ({
   user: mockUser,
   headers: {
     authorization: `Bearer ${mockAuthToken}`,
@@ -244,7 +245,12 @@ export const mockRequest = (overrides = {}) => ({
  * Mock response object
  */
 export const mockResponse = () => {
-  const res: any = {
+  const res: {
+    status: jest.Mock<typeof mockResponse>;
+    json: jest.Mock<typeof mockResponse>;
+    send: jest.Mock<typeof mockResponse>;
+    locals: Record<string, unknown>;
+  } = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn().mockReturnThis(),
     send: jest.fn().mockReturnThis(),
@@ -258,9 +264,32 @@ export const mockResponse = () => {
 // ============================================================================
 
 /**
+ * Database interface for Knex operations
+ */
+interface Database {
+  (table: string): {
+    del: () => Promise<number>;
+    insert: (data: Record<string, unknown>) => {
+      returning: (columns: string) => Promise<unknown[]>;
+    };
+  };
+  migrate: {
+    latest: () => Promise<void>;
+  };
+  seed: {
+    run: () => Promise<void>;
+  };
+  destroy: () => Promise<void>;
+  schema: {
+    hasTable: (table: string) => Promise<boolean>;
+    createTable: (table: string, callback: (table: unknown) => void) => Promise<void>;
+  };
+}
+
+/**
  * Clean test database
  */
-export async function cleanDatabase(db: any) {
+export async function cleanDatabase(db: Database) {
   // Clean tables in order of dependencies
   await db('audit_log').del();
   await db('transit_readings').del();
@@ -271,9 +300,18 @@ export async function cleanDatabase(db: any) {
 }
 
 /**
+ * User data interface for test user creation
+ */
+interface TestUserData {
+  email?: string;
+  name?: string;
+  timezone?: string;
+}
+
+/**
  * Create a test user in the database
  */
-export async function createTestUser(db: any, userData = {}) {
+export async function createTestUser(db: Database, userData: TestUserData = {}) {
   const hashedPassword = await bcrypt.hash('password123', 10);
   const [user] = await db('users').insert({
     email: userData.email || 'test@example.com',
@@ -288,9 +326,27 @@ export async function createTestUser(db: any, userData = {}) {
 }
 
 /**
+ * Chart data interface for test chart creation
+ */
+interface TestChartData {
+  name?: string;
+  type?: string;
+  birth_date?: Date;
+  birth_time?: string;
+  birth_place?: string;
+  latitude?: number;
+  longitude?: number;
+  timezone?: string;
+  time_unknown?: boolean;
+  house_system?: string;
+  zodiac?: string;
+  calculated_data?: Record<string, unknown>;
+}
+
+/**
  * Create a test chart in the database
  */
-export async function createTestChart(db: any, userId: string, chartData = {}) {
+export async function createTestChart(db: Database, userId: string, chartData: TestChartData = {}) {
   const [chart] = await db('charts').insert({
     user_id: userId,
     name: chartData.name || 'Test Chart',
@@ -404,45 +460,45 @@ export function getHouseFromDegree(degree: number, cusps: number[]): number {
 /**
  * Assert that a value is a valid planet position
  */
-export function assertPlanetPosition(planet: any): asserts planet is PlanetPosition {
+export function assertPlanetPosition(planet: unknown): asserts planet is PlanetPosition {
   expect(planet).toHaveProperty('planet');
   expect(planet).toHaveProperty('sign');
   expect(planet).toHaveProperty('degree');
   expect(planet).toHaveProperty('minute');
   expect(planet).toHaveProperty('second');
   expect(planet).toHaveProperty('house');
-  expect(planet.planet).toMatch(/^(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/);
-  expect(planet.sign).toMatch(/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/);
-  expect(planet.degree).toBeGreaterThanOrEqual(0);
-  expect(planet.degree).toBeLessThan(360);
-  expect(planet.minute).toBeGreaterThanOrEqual(0);
-  expect(planet.minute).toBeLessThan(60);
-  expect(planet.house).toBeGreaterThanOrEqual(1);
-  expect(planet.house).toBeLessThanOrEqual(12);
+  expect((planet as PlanetPosition).planet).toMatch(/^(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/);
+  expect((planet as PlanetPosition).sign).toMatch(/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/);
+  expect((planet as PlanetPosition).degree).toBeGreaterThanOrEqual(0);
+  expect((planet as PlanetPosition).degree).toBeLessThan(360);
+  expect((planet as PlanetPosition).minute).toBeGreaterThanOrEqual(0);
+  expect((planet as PlanetPosition).minute).toBeLessThan(60);
+  expect((planet as PlanetPosition).house).toBeGreaterThanOrEqual(1);
+  expect((planet as PlanetPosition).house).toBeLessThanOrEqual(12);
 }
 
 /**
  * Assert that a value is a valid aspect
  */
-export function assertAspect(aspect: any): asserts aspect is Aspect {
+export function assertAspect(aspect: unknown): asserts aspect is Aspect {
   expect(aspect).toHaveProperty('planet1');
   expect(aspect).toHaveProperty('planet2');
   expect(aspect).toHaveProperty('type');
   expect(aspect).toHaveProperty('orb');
-  expect(aspect.type).toMatch(/^(conjunction|opposition|trine|square|sextile|quincunx|semi-sextile)$/);
-  expect(aspect.orb).toBeGreaterThanOrEqual(0);
+  expect((aspect as Aspect).type).toMatch(/^(conjunction|opposition|trine|square|sextile|quincunx|semi-sextile)$/);
+  expect((aspect as Aspect).orb).toBeGreaterThanOrEqual(0);
 }
 
 /**
  * Assert that a value is a valid house cusp
  */
-export function assertHouseCusp(house: any): asserts house is HouseCusp {
+export function assertHouseCusp(house: unknown): asserts house is HouseCusp {
   expect(house).toHaveProperty('house');
   expect(house).toHaveProperty('sign');
   expect(house).toHaveProperty('degree');
-  expect(house.house).toBeGreaterThanOrEqual(1);
-  expect(house.house).toBeLessThanOrEqual(12);
-  expect(house.sign).toMatch(/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/);
-  expect(house.degree).toBeGreaterThanOrEqual(0);
-  expect(house.degree).toBeLessThan(360);
+  expect((house as HouseCusp).house).toBeGreaterThanOrEqual(1);
+  expect((house as HouseCusp).house).toBeLessThanOrEqual(12);
+  expect((house as HouseCusp).sign).toMatch(/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/);
+  expect((house as HouseCusp).degree).toBeGreaterThanOrEqual(0);
+  expect((house as HouseCusp).degree).toBeLessThan(360);
 }

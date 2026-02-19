@@ -5,12 +5,21 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../middleware/errorHandler';
-import { ChartModel, UserModel } from '../models';
+import { ChartModel } from '../models';
 import { swissEphemeris } from '../../shared';
 import {
   generateCompletePersonalityAnalysis,
-  generateTransitAnalysis,
 } from '../services/interpretation.service';
+
+/**
+ * Helper: Convert degree to zodiac sign
+ */
+function getZodiacSign(degree: number): string {
+  const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+                 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+  const normalizedDegree = ((degree % 360) + 360) % 360;
+  return signs[Math.floor(normalizedDegree / 30)];
+}
 
 /**
  * Get personality analysis for a chart
@@ -32,11 +41,29 @@ export async function getPersonalityAnalysis(req: Request, res: Response): Promi
 
   const { planets, houses, aspects } = chart.calculated_data;
 
+  // Convert planets object to array format for interpretation service
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => ({
+    planet,
+    sign: data.sign,
+    longitude: data.longitude,
+    latitude: data.latitude,
+    speed: data.speed,
+    house: houses.findIndex((h: any) => {
+      // Simple house calculation based on longitude
+      const houseSize = 30;
+      return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
+    }) + 1,
+  }));
+
   // Use interpretation service to generate complete analysis
   const analysis = generateCompletePersonalityAnalysis({
-    planets,
-    houses,
-    aspects,
+    planets: planetsArray,
+    houses: houses.map((h: any, i: number) => ({
+      house: i + 1,
+      cusp: h.cusp,
+      sign: getZodiacSign(h.cusp),
+    })),
+    aspects: aspects || [],
   });
 
   res.status(200).json({
@@ -171,10 +198,11 @@ export async function getHousesAnalysis(req: Request, res: Response): Promise<vo
 
 // Helper functions
 
-function buildOverview(planets: any) {
+// Helper function for future use
+export function _buildOverview(planets: any) {
   const sun = planets.sun;
   const moon = planets.moon;
-  const ascendant = 'ascendant'; // Would get from houses
+  const ascendant = 'aries'; // Would get from houses
 
   return {
     sunSign: {
@@ -188,8 +216,8 @@ function buildOverview(planets: any) {
       retrograde: moon.retrograde,
       interpretation: `Your Moon in ${moon.sign} reveals your emotional nature and inner needs.`,
     },
-    ascendant: {
-      // Would include ascendant sign
+    risingSign: {
+      sign: ascendant,
       interpretation: 'Your Rising sign influences your outer personality and first impressions.',
     },
   };
@@ -234,16 +262,18 @@ function findHouseForPosition(longitude: number, houseCusps: Array<{cusp: number
   return 1; // Default
 }
 
-function buildMajorAspects(aspects: any[]) {
-  return aspects.filter(a =>
+// Helper function for future use
+export function _buildMajorAspects(_aspects: any[]) {
+  return _aspects.filter((a: any) =>
     ['conjunction', 'opposition', 'trine', 'square'].includes(a.aspect)
   ).slice(0, 10); // Top 10
 }
 
-function calculateDominantElements(planets: any) {
+// Helper function for future use
+export function _calculateDominantElements(planets: any) {
   const elements = { fire: 0, earth: 0, air: 0, water: 0 };
 
-  Object.entries(planets).forEach(([key, planet]: [string, any]) => {
+  Object.entries(planets).forEach(([/*key*/, planet]: [string, any]) => {
     const sign = planet.sign;
     if (['aries', 'leo', 'sagittarius'].includes(sign)) elements.fire++;
     else if (['taurus', 'virgo', 'capricorn'].includes(sign)) elements.earth++;
@@ -254,7 +284,8 @@ function calculateDominantElements(planets: any) {
   return elements;
 }
 
-function identifyChartPattern(aspects: any[]) {
+// Helper function for future use
+export function _identifyChartPattern(_aspects: any[]) {
   // TODO: Implement T-Square, Grand Cross, Grand Trine, Yod detection
   return {
     hasGrandTrine: false,
@@ -276,24 +307,25 @@ function groupAspectsByType(aspects: any[]) {
   return grouped;
 }
 
-function buildAspectGrid(aspects: any[]) {
+function buildAspectGrid(_aspects: any[]) {
   // TODO: Build matrix grid of aspects between planets
   return {};
 }
 
-function getMajorAspects(aspects: any[]) {
-  return aspects.filter(a => a.orb <= 3); // Tight orbs
+function getMajorAspects(_aspects: any[]) {
+  return _aspects.filter(a => a.orb <= 3); // Tight orbs
 }
 
-function getHarmoniousAspects(aspects: any[]) {
-  return aspects.filter(a => ['trine', 'sextile'].includes(a.aspect));
+function getHarmoniousAspects(_aspects: any[]) {
+  return _aspects.filter(a => ['trine', 'sextile'].includes(a.aspect));
 }
 
-function getChallengingAspects(aspects: any[]) {
-  return aspects.filter(a => ['square', 'opposition', 'quincunx'].includes(a.aspect));
+function getChallengingAspects(_aspects: any[]) {
+  return _aspects.filter(a => ['square', 'opposition', 'quincunx'].includes(a.aspect));
 }
 
-function identifyPatterns(planets: any, aspects: any[]) {
+// Helper function for future use
+export function _identifyPatterns(_planets: any, _aspects: any[]) {
   return {
     stelliums: [],
     grandTrines: [],
@@ -304,18 +336,18 @@ function identifyPatterns(planets: any, aspects: any[]) {
   };
 }
 
-function calculateHouseRulers(planets: any, houses: any) {
+function calculateHouseRulers(_planets: any, _houses: any) {
   // TODO: Calculate rulers of each house
   return {};
 }
 
-function identifyEmptyHouses(planets: any, houses: any) {
+function identifyEmptyHouses(_planets: any, _houses: any) {
   const emptyHouses: number[] = [];
   // TODO: Identify houses with no planets
   return emptyHouses;
 }
 
-function identifyStelliums(planets: any, houses: any) {
+function identifyStelliums(_planets: any, _houses: any) {
   // TODO: Identify 3+ planets in same sign/house
   return [];
 }

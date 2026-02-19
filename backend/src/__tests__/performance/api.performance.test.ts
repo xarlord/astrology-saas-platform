@@ -172,7 +172,9 @@ describe('API Performance Tests', () => {
 
   beforeAll(async () => {
     // Initialize Express app for testing
+    /* eslint-disable @typescript-eslint/no-var-requires */
     app = require('../../server').default;
+    /* eslint-enable @typescript-eslint/no-var-requires */
 
     // Run migrations
     await db.migrate.latest();

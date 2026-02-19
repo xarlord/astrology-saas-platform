@@ -90,7 +90,7 @@ class AIUsageModel {
       .count('* as count')
       .groupBy('type');
 
-    return results.reduce((acc, row: any) => {
+    return results.reduce((acc: Record<string, number>, row: any) => {
       acc[row.type] = parseInt(row.count, 10);
       return acc;
     }, {} as Record<string, number>);
@@ -106,7 +106,7 @@ class AIUsageModel {
       .sum('cost as total')
       .groupBy('type');
 
-    return results.reduce((acc, row: any) => {
+    return results.reduce((acc: Record<string, number>, row: any) => {
       acc[row.type] = parseFloat(row.total || '0');
       return acc;
     }, {} as Record<string, number>);

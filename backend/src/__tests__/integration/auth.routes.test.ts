@@ -3,6 +3,8 @@
  * Tests user registration, login, logout, token refresh, and profile management
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { build } from 'express';
 import request from 'supertest';
 import bcrypt from 'bcryptjs';

@@ -3,6 +3,8 @@
  * Tests personality analysis, aspect patterns, and transit analysis endpoints
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import request from 'supertest';
 import { db } from '../db';
 import { cleanDatabase, createTestUser, createTestChart } from './utils';
@@ -19,7 +21,9 @@ describe('Analysis Routes Integration Tests', () => {
 
   beforeAll(async () => {
     // Initialize Express app for testing
+    /* eslint-disable @typescript-eslint/no-var-requires */
     app = require('../../server').default;
+    /* eslint-enable @typescript-eslint/no-var-requires */
 
     // Run migrations
     await db.migrate.latest();

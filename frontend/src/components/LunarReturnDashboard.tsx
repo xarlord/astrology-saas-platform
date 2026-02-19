@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { LunarReturnChart, getCurrentLunarReturn, getNextLunarReturn } from '@services/lunarReturn.api';
+import { LunarReturnChart, getCurrentLunarReturn, getNextLunarReturn, calculateLunarReturnChart } from '@/services/lunarReturn.api';
 import './LunarReturn.css';
 
 interface LunarReturnDashboardProps {

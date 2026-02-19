@@ -3,6 +3,8 @@
  * Comprehensive test suite for AI-powered astrological interpretations
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // Set test environment before importing anything
 process.env.NODE_ENV = 'test';
 process.env.OPENAI_API_KEY = 'test-api-key'; // Set a test API key
@@ -41,7 +43,7 @@ import openaiService from '../../modules/ai/services/openai.service';
 import OpenAI from 'openai';
 
 // Get the mocked constructor to set up our implementation
-const MockedOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
+const _MockedOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
 
 describe('OpenAI Service', () => {
   beforeEach(() => {
