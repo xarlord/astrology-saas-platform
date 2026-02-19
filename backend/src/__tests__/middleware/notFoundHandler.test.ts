@@ -3,7 +3,7 @@
  * Tests 404 error handling middleware
  */
 
-n/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response } from 'express';
 import { notFoundHandler } from '../../middleware/notFoundHandler';
 

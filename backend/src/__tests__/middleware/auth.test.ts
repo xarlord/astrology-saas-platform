@@ -3,7 +3,7 @@
  * Tests JWT token verification, user authentication, and token generation
  */
 
-n/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { authenticate, optionalAuthenticate, generateToken, generateRefreshToken } from '../middleware/auth';

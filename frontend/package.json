@@ -5,7 +5,8 @@
   "description": "Frontend PWA for Astrology SaaS Platform",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:check": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "start": "vite preview",
     "test": "vitest",

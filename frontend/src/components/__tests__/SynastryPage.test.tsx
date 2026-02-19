@@ -7,10 +7,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/**
-/* eslint-disable @typescript-eslint/no-unused-vars */
- * * Synastry Page Component Tests
- * */
+/*
+ * Component Tests
  */
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';

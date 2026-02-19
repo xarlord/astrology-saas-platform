@@ -41,19 +41,33 @@ export async function getPersonalityAnalysis(req: Request, res: Response): Promi
 
   const { planets, houses, aspects } = chart.calculated_data;
 
+  // Helper function to convert decimal degrees to DMS
+  const longitudeToDMS = (longitude: number) => {
+    const degrees = Math.floor(longitude);
+    const minutesFloat = (longitude - degrees) * 60;
+    const minutes = Math.floor(minutesFloat);
+    const seconds = Math.round((minutesFloat - minutes) * 60);
+    return { degree: degrees, minute: minutes, second: seconds };
+  };
+
   // Convert planets object to array format for interpretation service
-  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => ({
-    planet,
-    sign: data.sign,
-    longitude: data.longitude,
-    latitude: data.latitude,
-    speed: data.speed,
-    house: houses.findIndex((h: any) => {
-      // Simple house calculation based on longitude
-      const houseSize = 30;
-      return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
-    }) + 1,
-  }));
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => {
+    const dms = longitudeToDMS(data.longitude);
+    return {
+      planet,
+      sign: data.sign,
+      longitude: data.longitude,
+      latitude: data.latitude,
+      speed: data.speed,
+      ...dms, // degree, minute, second
+      retrograde: data.speed < 0, // Negative speed indicates retrograde
+      house: houses.findIndex((h: any) => {
+        // Simple house calculation based on longitude
+        const houseSize = 30;
+        return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
+      }) + 1,
+    };
+  });
 
   // Use interpretation service to generate complete analysis
   const analysis = generateCompletePersonalityAnalysis({

@@ -3,7 +3,7 @@
  * Testing lunar return calculations, chart generation, and monthly forecasts
  */
 
-n/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   calculateNextLunarReturn,
   calculateLunarReturnChart,

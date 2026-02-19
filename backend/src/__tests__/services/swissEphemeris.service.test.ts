@@ -3,7 +3,7 @@
  * Tests planetary position calculations, house calculations, and aspect detection
  */
 
-n/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { swissEphemeris } from '../services';
 import { toJulianDay, normalizeDegree, angularDistance, assertPlanetPosition, assertAspect, assertHouseCusp } from './utils';
 

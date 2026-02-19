@@ -3,7 +3,7 @@
  * Tests request/response logging
  */
 
-n/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import logger from '../../utils/logger';
 import { requestLogger } from '../../middleware/requestLogger';

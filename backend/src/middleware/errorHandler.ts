@@ -99,11 +99,14 @@ export const asyncHandler = (
     try {
       await fn(req, res, next);
     } catch (err) {
+      // Type guard for Error
+      const error = err instanceof Error ? err : new Error(String(err));
+
       // Enhance error with request context
-      if (!(err instanceof AppError)) {
-        err.message = `Error in ${req.method} ${req.path}: ${err.message}`;
+      if (!(error instanceof AppError)) {
+        error.message = `Error in ${req.method} ${req.path}: ${error.message}`;
       }
-      next(err);
+      next(error);
     }
   };
 };

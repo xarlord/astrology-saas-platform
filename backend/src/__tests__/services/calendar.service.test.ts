@@ -3,7 +3,7 @@
  * Testing calendar calculations, retrograde periods, eclipses, moon phases, and transit intensity
  */
 
-n/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   calculateJulianDay,
   normalizeDegree,
