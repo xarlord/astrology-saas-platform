@@ -141,34 +141,37 @@ app.use(errorHandler);
 // Server Startup
 // ============================================
 
-const server = app.listen(PORT, () => {
-  logger.info(`🚀 Server is running on port ${PORT}`);
-  logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`🌐 Frontend URL: ${FRONTEND_URL}`);
-  logger.info(`💚 Health check: http://localhost:${PORT}/health`);
-});
-
-// ============================================
-// Graceful Shutdown
-// ============================================
-
-const gracefulShutdown = (signal: string) => {
-  logger.info(`${signal} received. Starting graceful shutdown...`);
-
-  server.close(() => {
-    logger.info('Server closed successfully');
-    process.exit(0);
+// Only start server if this file is run directly (not when imported by tests)
+if (require.main === module) {
+  const server = app.listen(PORT, () => {
+    logger.info(`🚀 Server is running on port ${PORT}`);
+    logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`🌐 Frontend URL: ${FRONTEND_URL}`);
+    logger.info(`💚 Health check: http://localhost:${PORT}/health`);
   });
 
-  // Force shutdown after 10 seconds
-  setTimeout(() => {
-    logger.error('Forced shutdown after timeout');
-    process.exit(1);
-  }, 10000);
-};
+  // ============================================
+  // Graceful Shutdown
+  // ============================================
 
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+  const gracefulShutdown = (signal: string) => {
+    logger.info(`${signal} received. Starting graceful shutdown...`);
+
+    server.close(() => {
+      logger.info('Server closed successfully');
+      process.exit(0);
+    });
+
+    // Force shutdown after 10 seconds
+    setTimeout(() => {
+      logger.error('Forced shutdown after timeout');
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+}
 
 // ============================================
 // Unhandled Rejections

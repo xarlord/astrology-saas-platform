@@ -42,7 +42,7 @@ describe('Analysis Routes Integration Tests', () => {
 
   beforeEach(async () => {
     // Clean analysis cache
-    await db('chart_analysis_cache').del();
+    await db('ai_cache').del();
   });
 
   describe('GET /api/analysis/:chartId/personality', () => {
@@ -200,7 +200,7 @@ describe('Analysis Routes Integration Tests', () => {
         .expect(200);
 
       // Check cache
-      const cached = await db('chart_analysis_cache')
+      const cached = await db('ai_cache')
         .where({
           chart_id: testChart.id,
           analysis_type: 'personality',
@@ -469,7 +469,7 @@ describe('Analysis Routes Integration Tests', () => {
         .expect(200);
 
       // Verify cache exists
-      const cachedBefore = await db('chart_analysis_cache')
+      const cachedBefore = await db('ai_cache')
         .where({ chart_id: testChart.id })
         .first();
       expect(cachedBefore).toBeDefined();
@@ -483,7 +483,7 @@ describe('Analysis Routes Integration Tests', () => {
       expect(response.body).toHaveProperty('success', true);
 
       // Verify cache cleared
-      const cachedAfter = await db('chart_analysis_cache')
+      const cachedAfter = await db('ai_cache')
         .where({ chart_id: testChart.id })
         .first();
       expect(cachedAfter).toBeUndefined();

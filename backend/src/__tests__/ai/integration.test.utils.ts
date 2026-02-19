@@ -11,7 +11,7 @@ import bcrypt from 'bcryptjs';
 export async function cleanDatabase(database: any) {
   const tables = [
     'refresh_tokens',
-    'chart_analysis_cache',
+    'ai_cache',
     'charts',
     'users',
   ];

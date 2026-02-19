@@ -82,7 +82,7 @@ export async function seed(knex: Knex): Promise<void> {
     language: 'en',
   }));
 
-  await knex('interpretations').insert(planetSignData);
+  await knex('interpretations').insert(planetSignData).onConflict(['type', 'key']).ignore();
 
   // Seed aspect interpretations
   const aspectData = Object.entries(aspectInterpretations).map(([key, data]) => ({
@@ -92,7 +92,7 @@ export async function seed(knex: Knex): Promise<void> {
     language: 'en',
   }));
 
-  await knex('interpretations').insert(aspectData);
+  await knex('interpretations').insert(aspectData).onConflict(['type', 'key']).ignore();
 
   // Seed house interpretations
   const houseData = Object.entries(houseInterpretations).map(([key, data]) => ({
@@ -102,5 +102,5 @@ export async function seed(knex: Knex): Promise<void> {
     language: 'en',
   }));
 
-  await knex('interpretations').insert(houseData);
+  await knex('interpretations').insert(houseData).onConflict(['type', 'key']).ignore();
 }
