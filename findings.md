@@ -8,6 +8,71 @@
 
 ## Open Findings
 
+### 🔴 Critical Findings (Accessibility & UI/UX)
+
+#### Finding 11: Accessibility Compliance - WCAG 2.1 AA
+**ID:** FIND-011
+**Priority:** Critical
+**Status:** Open
+**Source:** Accessibility Audit Report
+**Date:** 2026-02-19
+
+**Issue:**
+Platform achieves only 73% WCAG 2.1 AA compliance with 4 critical violations affecting accessibility.
+
+**Location:**
+- All form components (missing ARIA attributes)
+- AppLayout.tsx (missing skip navigation)
+- ChartWheel.tsx (inaccessible to screen readers)
+
+**Impact:**
+- Screen reader users cannot use forms effectively
+- Keyboard users must tab through entire navigation on each page
+- Chart visualization completely inaccessible to assistive technology
+
+**Recommendation:**
+Implement critical accessibility fixes:
+1. Add ARIA attributes to all forms (aria-required, aria-invalid, aria-describedby)
+2. Implement skip navigation link
+3. Add ARIA labels to ChartWheel SVG elements
+4. Fix focus indicators
+
+**Estimated Effort:** 4-5 hours
+
+**Related Documentation:** `ACCESSIBILITY_AUDIT_REPORT.md`
+
+---
+
+#### Finding 12: UI/UX Design Issues
+**ID:** FIND-012
+**Priority:** High
+**Status:** Open
+**Source:** UI/UX Review Report
+**Date:** 2026-02-19
+
+**Issue:**
+Platform scores 7.8/10 on UI/UX review with 6 critical and high-priority issues.
+
+**Impact:**
+- Poor error visual feedback
+- Missing active state indicators on mobile navigation
+- Touch targets smaller than 44x44px minimum on mobile
+- Missing loading and empty states
+
+**Recommendation:**
+Address critical UI/UX issues before production deployment:
+1. Add visual error states with icons and color
+2. Implement active states for mobile navigation
+3. Increase touch target sizes to meet WCAG standards
+4. Add skeleton loading screens
+5. Implement empty states with CTAs
+
+**Estimated Effort:** 8-12 hours
+
+**Related Documentation:** `UI_UX_REVIEW_REPORT.md`
+
+---
+
 ### 🔴 Critical Findings (Must Fix)
 
 #### Finding 1: JWT Token Expiration Too Long ✅ RESOLVED
