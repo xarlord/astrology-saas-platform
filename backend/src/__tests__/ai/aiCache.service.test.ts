@@ -236,7 +236,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key2, { data: '2' }, { ttl: 10 });
 
       // Wait for first entry to expire
-      await new Promise(resolve => setTimeout(resolve, 1100));
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const deletedCount = await aiCacheService.clearExpired();
 

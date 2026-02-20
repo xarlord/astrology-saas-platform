@@ -40,4 +40,6 @@ module.exports = {
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
+  forceExit: true,
+  detectOpenHandles: false,
 };

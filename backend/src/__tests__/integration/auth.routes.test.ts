@@ -102,6 +102,7 @@ describe('Authentication Routes Integration Tests', () => {
         .send(userData);
 
       expect(response.body).toHaveProperty('success', false);
+      expect([400, 409]).toContain(response.status);
     });
 
     it('should hash password before storing', async () => {

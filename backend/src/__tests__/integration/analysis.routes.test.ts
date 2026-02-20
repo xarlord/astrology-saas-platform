@@ -57,7 +57,7 @@ describe('Analysis Routes Integration Tests', () => {
 
     it('should return 401 without authentication', async () => {
       const response = await request(app)
-        .get(`/api/analysis/${testChart.id}/personality`)
+        .get('/api/analysis/00000000-0000-0000-0000-000000000001/personality')
         .expect(401);
 
       expect(response.body).toHaveProperty('success', false);
@@ -72,7 +72,7 @@ describe('Analysis Routes Integration Tests', () => {
 
     it('should return 401 without authentication', async () => {
       const response = await request(app)
-        .get(`/api/analysis/${testChart.id}/aspects`)
+        .get('/api/analysis/00000000-0000-0000-0000-000000000001/aspects')
         .expect(401);
 
       expect(response.body).toHaveProperty('success', false);
