@@ -288,7 +288,7 @@ describe('Service Worker Event Handlers', () => {
       const allCacheKeys = ['api-cache-v1', 'images-cache-v1', 'static-cache-v1', 'old-cache-v1'];
 
       const cachesToDelete = allCacheKeys.filter(
-        (cache) => !currentCaches.includes(cache as any)
+        (cache) => !currentCaches.includes(cache)
       );
 
       expect(cachesToDelete).toContain('old-cache-v1');

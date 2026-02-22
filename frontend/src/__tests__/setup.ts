@@ -33,6 +33,30 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }));
 
+// Mock navigator.serviceWorker for PWA tests
+Object.defineProperty(navigator, 'serviceWorker', {
+  value: {
+    register: vi.fn().mockResolvedValue({
+      installing: null,
+      waiting: null,
+      active: {
+        scriptURL: 'http://localhost/sw.js',
+        state: 'activated',
+      },
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }),
+    ready: Promise.resolve({
+      showNotification: vi.fn(),
+      getNotifications: vi.fn().mockResolvedValue([]),
+    }),
+    controller: null,
+    adding: true,
+  },
+  writable: true,
+  configurable: true,
+});
+
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
