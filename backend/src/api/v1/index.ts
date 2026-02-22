@@ -23,6 +23,26 @@ import healthRoutes from '../../routes/health.routes';
 
 const router = Router();
 
+// v1 API root endpoint
+router.get('/', (_req, res) => {
+  res.json({
+    version: 'v1',
+    status: 'active',
+    endpoints: {
+      auth: '/api/v1/auth',
+      users: '/api/v1/users',
+      charts: '/api/v1/charts',
+      analysis: '/api/v1/analysis',
+      transits: '/api/v1/transits',
+      calendar: '/api/v1/calendar',
+      'lunar-return': '/api/v1/lunar-return',
+      synastry: '/api/v1/synastry',
+      'solar-returns': '/api/v1/solar-returns',
+      health: '/health'
+    }
+  });
+});
+
 // Health check (no versioning)
 router.use('/health', healthRoutes);
 

@@ -10,5 +10,4 @@ export {
   getProfile,
   updateProfile,
   updatePreferences,
-  changePassword,
 } from '../modules/auth/controllers/auth.controller';

@@ -9,7 +9,7 @@ import { createElement } from 'react';
 /**
  * Lazy load a component with error handling
  */
-export function lazyLoadComponent<T extends ComponentType<any>>(
+export function lazyLoadComponent<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>
 ): T {
   return lazy(() => importFn().catch((error) => {
@@ -31,7 +31,7 @@ export function lazyLoadComponent<T extends ComponentType<any>>(
 /**
  * Lazy load with retry logic
  */
-export function lazyLoadWithRetry<T extends ComponentType<any>>(
+export function lazyLoadWithRetry<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
   maxRetries = 3
 ): T {

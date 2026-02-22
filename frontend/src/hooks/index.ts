@@ -3,8 +3,8 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authService, chartService, analysisService, transitService, type BirthData } from '../services';
-import { useAuthStore, useChartsStore } from '../store';
+import { chartService, analysisService, transitService, type BirthData } from '../services';
+import { useAuthStore, useChartStore } from '../stores';
 
 // PWA Hooks
 export { useServiceWorkerUpdate } from './useServiceWorkerUpdate';
@@ -37,14 +37,14 @@ export function useAuth() {
  * Use Charts Hook
  */
 export function useCharts() {
-  const { charts, currentChart, pagination, fetchCharts, fetchChart, createChart, updateChart, deleteChart, calculateChart, isLoading, error, clearError } = useChartsStore();
+  const { charts, currentChart, pagination, loadCharts, loadChart, createChart, updateChart, deleteChart, calculateChart, isLoading, error, clearError } = useChartStore();
 
   return {
     charts,
     currentChart,
     pagination,
-    fetchCharts,
-    fetchChart,
+    fetchCharts: loadCharts,
+    fetchChart: loadChart,
     createChart,
     updateChart,
     deleteChart,
@@ -132,7 +132,7 @@ export function useCreateChart() {
   return useMutation({
     mutationFn: (data: BirthData) => createChart(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['charts'] });
+      void queryClient.invalidateQueries({ queryKey: ['charts'] });
     },
   });
 }
@@ -146,9 +146,9 @@ export function useCalculateChart() {
   return useMutation({
     mutationFn: (chartId: string) => chartService.calculateChart(chartId),
     onSuccess: (_, chartId) => {
-      queryClient.invalidateQueries({ queryKey: ['charts'] });
-      queryClient.invalidateQueries({ queryKey: ['chart', chartId] });
-      queryClient.invalidateQueries({ queryKey: ['analysis', chartId] });
+      void queryClient.invalidateQueries({ queryKey: ['charts'] });
+      void queryClient.invalidateQueries({ queryKey: ['chart', chartId] });
+      void queryClient.invalidateQueries({ queryKey: ['analysis', chartId] });
     },
   });
 }

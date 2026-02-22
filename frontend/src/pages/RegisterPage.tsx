@@ -14,10 +14,16 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+
+    if (!agreeToTerms) {
+      alert('Please agree to the Terms of Service and Privacy Policy');
+      return;
+    }
 
     if (password !== confirmPassword) {
       alert('Passwords do not match');
@@ -25,7 +31,7 @@ export default function RegisterPage() {
     }
 
     try {
-      await register(name, email, password);
+      await register({ name, email, password });
       navigate('/dashboard');
     } catch (err) {
       // Error is handled by the store
@@ -50,7 +56,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={(e) => { void handleSubmit(e); }}>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Full Name
@@ -64,6 +70,7 @@ export default function RegisterPage() {
               onChange={(e) => setName(e.target.value)}
               className="input"
               placeholder="Your full name"
+              data-testid="name-input"
             />
           </div>
 
@@ -81,6 +88,7 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="input"
               placeholder="you@example.com"
+              data-testid="register-email-input"
             />
           </div>
 
@@ -98,6 +106,7 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="input"
               placeholder="Create a password (min 8 chars, uppercase, lowercase, number)"
+              data-testid="register-password-input"
             />
           </div>
 
@@ -115,13 +124,37 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input"
               placeholder="Confirm your password"
+              data-testid="confirm-password-input"
             />
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="terms"
+              type="checkbox"
+              required
+              checked={agreeToTerms}
+              onChange={(e) => setAgreeToTerms(e.target.checked)}
+              className="h-4 w-4 text-primary-600 focus:ring-primary border-gray-300 rounded"
+              data-testid="terms-checkbox"
+            />
+            <label htmlFor="terms" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+              I agree to the{' '}
+              <Link to="/terms" className="text-primary-600 hover:text-primary-500">
+                Terms of Service
+              </Link>
+              {' '}and{' '}
+              <Link to="/privacy" className="text-primary-600 hover:text-primary-500">
+                Privacy Policy
+              </Link>
+            </label>
           </div>
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !agreeToTerms}
             className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            data-testid="register-submit-button"
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>

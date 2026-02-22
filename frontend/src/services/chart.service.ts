@@ -3,64 +3,97 @@
  */
 
 import api from './api';
+import type { Chart, BirthData, ApiResponse } from './api.types';
+import {
+  transformChart,
+  transformCharts,
+  birthDataToAPI,
+  type APIChart,
+  type BirthData as FrontendBirthData,
+} from '@/utils/apiTransformers';
 
-export interface BirthData {
-  name: string;
-  type?: 'natal' | 'synastry' | 'composite' | 'transit' | 'progressed';
-  birth_date: string;
-  birth_time: string;
-  birth_time_unknown?: boolean;
-  birth_place_name: string;
-  birth_latitude: number;
-  birth_longitude: number;
-  birth_timezone: string;
-  house_system?: 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
-  zodiac?: 'tropical' | 'sidereal';
-  sidereal_mode?: string;
+// Re-export types from api.types for consumers
+export type { Chart, BirthData } from './api.types';
+
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
+  totalPages: number;
 }
 
-export interface Chart {
-  id: string;
-  name: string;
-  type: string;
-  birth_date: string;
-  birth_time: string;
-  birth_place_name: string;
-  calculated_data?: any;
-  created_at: string;
+interface ChartListResponse {
+  charts: Chart[];
+  pagination: PaginationInfo;
+}
+
+interface ChartResponse {
+  chart: Chart;
 }
 
 export const chartService = {
   /**
    * Create new chart
    */
-  async createChart(data: BirthData): Promise<{ chart: Chart }> {
-    const response = await api.post('/charts', data);
-    return response.data.data;
+  async createChart(data: BirthData): Promise<ChartResponse> {
+    // Transform frontend BirthData to API format
+    const apiData = birthDataToAPI(data as unknown as FrontendBirthData);
+    const response = await api.post<ApiResponse<{ chart: APIChart }>>('/charts', apiData);
+
+    // Transform API response back to frontend format
+    const apiChart = response.data.data.chart;
+    return {
+      chart: transformChart(apiChart) as unknown as Chart,
+    };
   },
 
   /**
    * Get user's charts
    */
-  async getCharts(page = 1, limit = 20): Promise<{ charts: Chart[]; pagination: any }> {
-    const response = await api.get('/charts', { params: { page, limit } });
-    return response.data.data;
+  async getCharts(page = 1, limit = 20): Promise<ChartListResponse> {
+    const response = await api.get<ApiResponse<{ charts: APIChart[]; pagination: PaginationInfo }>>(
+      '/charts',
+      { params: { page, limit } }
+    );
+
+    // Transform API charts to frontend format
+    const apiCharts = response.data.data.charts;
+    return {
+      charts: transformCharts(apiCharts) as unknown as Chart[],
+      pagination: {
+        ...response.data.data.pagination,
+        totalPages: response.data.data.pagination.pages,
+      },
+    };
   },
 
   /**
    * Get specific chart
    */
-  async getChart(id: string): Promise<{ chart: Chart }> {
-    const response = await api.get(`/charts/${id}`);
-    return response.data.data;
+  async getChart(id: string): Promise<ChartResponse> {
+    const response = await api.get<ApiResponse<{ chart: APIChart }>>(`/charts/${id}`);
+
+    // Transform API chart to frontend format
+    const apiChart = response.data.data.chart;
+    return {
+      chart: transformChart(apiChart) as unknown as Chart,
+    };
   },
 
   /**
    * Update chart
    */
-  async updateChart(id: string, data: Partial<BirthData>): Promise<{ chart: Chart }> {
-    const response = await api.put(`/charts/${id}`, data);
-    return response.data.data;
+  async updateChart(id: string, data: Partial<BirthData>): Promise<ChartResponse> {
+    // Transform frontend BirthData to API format
+    const apiData = birthDataToAPI(data as unknown as FrontendBirthData);
+    const response = await api.put<ApiResponse<{ chart: APIChart }>>(`/charts/${id}`, apiData);
+
+    // Transform API response back to frontend format
+    const apiChart = response.data.data.chart;
+    return {
+      chart: transformChart(apiChart) as unknown as Chart,
+    };
   },
 
   /**
@@ -73,8 +106,13 @@ export const chartService = {
   /**
    * Calculate chart
    */
-  async calculateChart(id: string): Promise<{ chart: Chart }> {
-    const response = await api.post(`/charts/${id}/calculate`);
-    return response.data.data;
+  async calculateChart(id: string): Promise<ChartResponse> {
+    const response = await api.post<ApiResponse<{ chart: APIChart }>>(`/charts/${id}/calculate`);
+
+    // Transform API chart to frontend format
+    const apiChart = response.data.data.chart;
+    return {
+      chart: transformChart(apiChart) as unknown as Chart,
+    };
   },
 };

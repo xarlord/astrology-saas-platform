@@ -9,7 +9,9 @@ export { LoginForm, RegisterForm } from './AuthenticationForms';
 // Basic Symbols & Badges
 export { PlanetSymbol } from './PlanetSymbol';
 export { AspectSymbol } from './AspectSymbol';
-export { ZodiacBadge } from './ZodiacBadge';
+
+// Astrology Components (New)
+export * from './astrology';
 
 // Chart & Analysis
 export { ChartWheel, ChartWheelLegend } from './ChartWheel';
@@ -82,4 +84,8 @@ export { AIInterpretationDisplay } from './AIInterpretationDisplay';
 export { SkeletonLoader, SkeletonGrid } from './SkeletonLoader';
 export { EmptyState, EmptyStates } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
+
+// Error Handling
+export { ErrorBoundary } from './ErrorBoundary';
+export { default as ErrorFallback } from './ErrorFallback';
 

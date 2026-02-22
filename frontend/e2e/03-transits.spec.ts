@@ -11,17 +11,17 @@ test.describe('Transit Dashboard', () => {
     await page.goto('/login');
     await page.fill('[name="email"]', process.env.TEST_USER_EMAIL || 'test@example.com');
     await page.fill('[name="password"]', process.env.TEST_USER_PASSWORD || 'test123');
-    await page.click('button[type="submit"]');
+    await page.getByRole('button', { type: 'submit' }).click();
     await page.waitForURL(/.*dashboard/);
   });
 
   test('should display today\'s transits', async ({ page }) => {
     // Navigate to transits page
-    await page.click('a:has-text("Transit"), [href*="transit"]');
+    await page.getByRole('link', { name: /transit/i }).or(page.locator('a[href*="transit"]')).first().click();
     await expect(page).toHaveURL(/.*transit/);
 
     // Select "Today" view
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     // Wait for transits to load
     await page.waitForSelector('.transit-card, .transit-list', { timeout: 5000 });
@@ -45,7 +45,7 @@ test.describe('Transit Dashboard', () => {
     await page.goto('/transits');
 
     // Select "This Week" view
-    await page.click('button:has-text("Week"), [data-range="week"]');
+    await page.getByRole('button', { name: /week/i }).or(page.locator('[data-range="week"]')).first().click();
 
     // Wait for transits
     await page.waitForSelector('.transit-card, .week-transits', { timeout: 5000 });
@@ -55,14 +55,14 @@ test.describe('Transit Dashboard', () => {
     expect(await dateGroups.count()).toBeGreaterThan(0);
 
     // Verify date headers
-    await expect(page.locator('text=Monday|Tuesday|Wednesday|Thursday|Friday')).toBeVisible();
+    await expect(page.getByText(/Monday|Tuesday|Wednesday|Thursday|Friday/i)).toBeVisible();
   });
 
   test('should view monthly transits', async ({ page }) => {
     await page.goto('/transits');
 
     // Select "This Month" view
-    await page.click('button:has-text("Month"), [data-range="month"]');
+    await page.getByRole('button', { name: /month/i }).or(page.locator('[data-range="month"]')).first().click();
 
     // Wait for calendar
     await page.waitForSelector('.transit-calendar, .calendar-grid', { timeout: 5000 });
@@ -83,10 +83,10 @@ test.describe('Transit Dashboard', () => {
     await page.goto('/transits');
 
     // Select calendar view
-    await page.click('button:has-text("Month"), [data-range="month"]');
+    await page.getByRole('button', { name: /month/i }).or(page.locator('[data-range="month"]')).first().click();
 
     // Click next month button
-    const nextButton = page.locator('button:has-text("Next"), [aria-label="Next"], .calendar-next');
+    const nextButton = page.getByRole('button', { name: /next/i }).or(page.getByLabel('Next')).or(page.locator('.calendar-next'));
     if (await nextButton.count() > 0) {
       const currentMonth = await page.locator('.calendar-month, [data-month]').textContent();
 
@@ -100,7 +100,7 @@ test.describe('Transit Dashboard', () => {
     }
 
     // Click previous month button
-    const prevButton = page.locator('button:has-text("Prev"), [aria-label="Previous"], .calendar-prev');
+    const prevButton = page.getByRole('button', { name: /prev|previous/i }).or(page.getByLabel('Previous')).or(page.locator('.calendar-prev'));
     if (await prevButton.count() > 0) {
       await prevButton.first().click();
 
@@ -113,7 +113,7 @@ test.describe('Transit Dashboard', () => {
     await page.goto('/transits');
 
     // Select today's transits
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     // Wait for transits to load
     await page.waitForSelector('.transit-card', { timeout: 5000 });
@@ -125,20 +125,20 @@ test.describe('Transit Dashboard', () => {
     await expect(page.locator('.transit-detail, .modal, [data-testid="transit-detail"]')).toBeVisible();
 
     // Verify detail content
-    await expect(page.locator('text=interpretation|meaning|influence')).toBeVisible();
+    await expect(page.getByText(/interpretation|meaning|influence/i)).toBeVisible();
 
     // Should have planet descriptions
     await expect(page.locator('.transiting-planet-desc, .natal-planet-desc')).toBeVisible();
 
     // Close detail view
-    await page.click('button:has-text("Close"), .modal-close, [aria-label="Close"]');
+    await page.getByRole('button', { name: /close/i }).or(page.locator('.modal-close')).or(page.getByLabel('Close')).first().click();
   });
 
   test('should filter transits by intensity', async ({ page }) => {
     await page.goto('/transits');
 
     // Select today view
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     // Look for intensity filter
     const intensityFilter = page.locator('[name="intensity"], .intensity-filter');
@@ -162,7 +162,7 @@ test.describe('Transit Dashboard', () => {
     await page.goto('/transits');
 
     // Select today view
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     // Look for planet filter
     const planetFilter = page.locator('[name="planet"], .planet-filter');
@@ -186,7 +186,7 @@ test.describe('Transit Dashboard', () => {
     await page.goto('/transits');
 
     // Look for custom range option
-    const customRangeButton = page.locator('button:has-text("Custom"), [data-range="custom"]');
+    const customRangeButton = page.getByRole('button', { name: /custom/i }).or(page.locator('[data-range="custom"]'));
     if (await customRangeButton.count() > 0) {
       await customRangeButton.first().click();
 
@@ -323,7 +323,7 @@ test.describe('Transit Dashboard', () => {
       await page.click('button:has-text("Apply"), button:has-text("Show")');
 
       // Should show validation error
-      await expect(page.locator('text=90 days|too long|maximum range')).toBeVisible();
+      await expect(page.getByText(/90 days|too long|maximum range/i)).toBeVisible();
     }
   });
 });
@@ -339,7 +339,7 @@ test.describe('Transit Interpretations', () => {
 
   test('should provide meaningful transit interpretations', async ({ page }) => {
     await page.goto('/transits');
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     // Wait for transits
     await page.waitForSelector('.transit-card', { timeout: 5000 });
@@ -351,15 +351,15 @@ test.describe('Transit Interpretations', () => {
     await expect(page.locator('.interpretation, .transit-meaning')).toBeVisible();
 
     // Should have practical advice
-    await expect(page.locator('text=advice|recommendation|suggestion')).toBeVisible();
+    await expect(page.getByText(/advice|recommendation|suggestion/i)).toBeVisible();
 
     // Should have time period
-    await expect(page.locator('text=active|period|duration')).toBeVisible();
+    await expect(page.getByText(/active|period|duration/i)).toBeVisible();
   });
 
   test('should show transit intensity visually', async ({ page }) => {
     await page.goto('/transits');
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     await page.waitForSelector('.transit-card', { timeout: 5000 });
 
@@ -376,7 +376,7 @@ test.describe('Transit Interpretations', () => {
 
   test('should allow saving favorite transits', async ({ page }) => {
     await page.goto('/transits');
-    await page.click('button:has-text("Today"), [data-range="today"]');
+    await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
 
     await page.waitForSelector('.transit-card', { timeout: 5000 });
 

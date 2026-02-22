@@ -16,7 +16,7 @@ import {
  */
 function getZodiacSign(degree: number): string {
   const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-                 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+    'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
   const normalizedDegree = ((degree % 360) + 360) % 360;
   return signs[Math.floor(normalizedDegree / 30)];
 }
@@ -139,15 +139,32 @@ export async function getAspectPatterns(req: Request, res: Response): Promise<vo
   const { planets, houses, aspects } = chart.calculated_data;
   const houseArray = houses.houses || houses; // Handle both formats
 
+  // Helper function to convert decimal degrees to DMS
+  const longitudeToDMS = (longitude: number) => {
+    const degrees = Math.floor(longitude);
+    const minutesFloat = (longitude - degrees) * 60;
+    const minutes = Math.floor(minutesFloat);
+    const seconds = Math.round((minutesFloat - minutes) * 60);
+    return { degree: degrees, minute: minutes, second: seconds };
+  };
+
   // Convert planets object to array format for interpretation service
-  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => ({
-    planet,
-    sign: data.sign,
-    longitude: data.longitude,
-    latitude: data.latitude,
-    speed: data.speed,
-    retrograde: data.speed < 0,
-  }));
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => {
+    const dms = longitudeToDMS(data.longitude);
+    return {
+      planet,
+      sign: data.sign,
+      longitude: data.longitude,
+      latitude: data.latitude,
+      speed: data.speed,
+      ...dms,
+      retrograde: data.speed < 0,
+      house: houseArray.findIndex((h: any) => {
+        const houseSize = 30;
+        return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
+      }) + 1,
+    };
+  });
 
   const housesArray = houseArray.map((h: any, i: number) => ({
     house: i + 1,
@@ -279,7 +296,7 @@ function buildPlanetsInHouses(planets: any, houses: any) {
   return planetHousePositions;
 }
 
-function findHouseForPosition(longitude: number, houseCusps: Array<{cusp: number}>): number {
+function findHouseForPosition(longitude: number, houseCusps: Array<{ cusp: number }>): number {
   for (let i = 0; i < houseCusps.length; i++) {
     const currentCusp = houseCusps[i].cusp;
     const nextCusp = houseCusps[(i + 1) % 12].cusp;

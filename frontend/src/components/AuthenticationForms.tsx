@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 import React, { useState } from 'react';
 import { useAuth } from '../hooks';
 import { EyeIcon, EyeSlashIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
@@ -68,11 +64,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     if (!validate()) return;
 
     try {
-      await login(formData.email, formData.password);
+      await login({ email: formData.email, password: formData.password });
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { message?: string };
       setErrors({
-        email: error.message || 'Login failed. Please check your credentials.',
+        email: err.message ?? 'Login failed. Please check your credentials.',
       });
     }
   };
@@ -123,7 +120,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-6" data-testid="login-form">
           {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -141,6 +138,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 aria-required="true"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? emailErrorId : undefined}
+                data-testid="email-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -186,6 +184,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 aria-required="true"
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
+                data-testid="password-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -207,6 +206,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
+                data-testid="password-visibility-toggle"
               >
                 {showPassword ? (
                   <EyeSlashIcon className="w-5 h-5" />
@@ -221,6 +221,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             <div className="mt-2 text-right">
               <a
                 href="/forgot-password"
+                data-testid="forgot-password-link"
                 className="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
               >
                 Forgot password?
@@ -232,6 +233,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <button
             type="submit"
             disabled={isLoading}
+            data-testid="submit-button"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
@@ -276,6 +278,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         <div className="mt-6 grid grid-cols-2 gap-4">
           <button
             type="button"
+            data-testid="google-auth-button"
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -300,6 +303,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           </button>
           <button
             type="button"
+            data-testid="apple-auth-button"
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -383,11 +387,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     if (!validate()) return;
 
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register({ name: formData.name, email: formData.email, password: formData.password });
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { message?: string };
       setErrors({
-        email: error.message || 'Registration failed. Please try again.',
+        email: err.message ?? 'Registration failed. Please try again.',
       });
     }
   };
@@ -446,7 +451,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-5" data-testid="register-form">
           {/* Name Field */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -464,6 +469,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={!!errors.name}
                 aria-describedby={errors.name ? nameErrorId : undefined}
+                data-testid="name-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -501,6 +507,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? emailErrorId : undefined}
+                data-testid="register-email-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -538,6 +545,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
+                data-testid="register-password-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -559,6 +567,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
+                data-testid="password-visibility-toggle"
               >
                 {showPassword ? (
                   <EyeSlashIcon className="w-5 h-5" />
@@ -592,6 +601,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={!!errors.confirmPassword}
                 aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
+                data-testid="confirm-password-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -630,6 +640,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               type="checkbox"
               id="terms"
               required
+              data-testid="terms-checkbox"
               className="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
             />
             <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
@@ -648,6 +659,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           <button
             type="submit"
             disabled={isLoading}
+            data-testid="register-submit-button"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
@@ -692,6 +704,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         <div className="mt-6 grid grid-cols-2 gap-4">
           <button
             type="button"
+            data-testid="google-auth-button"
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -716,6 +729,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           </button>
           <button
             type="button"
+            data-testid="apple-auth-button"
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">

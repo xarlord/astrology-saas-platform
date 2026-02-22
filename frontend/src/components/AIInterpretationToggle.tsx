@@ -3,17 +3,14 @@
  * Allows users to enable/disable AI enhancements
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-
 import React, { useState } from 'react';
 import { useAIInterpretation } from '../hooks/useAIInterpretation';
 import { Sparkles, Info } from 'lucide-react';
 import './AIInterpretationToggle.css';
 
 interface AIInterpretationToggleProps {
-  onInterpretationGenerated?: (interpretation: any) => void;
-  chartData?: any;
+  onInterpretationGenerated?: (interpretation: { interpretation: string; ai: boolean; source: string }) => void;
+  chartData?: { chartId: string; birthData: unknown };
 }
 
 export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
@@ -45,7 +42,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   const handleToggle = (checked: boolean) => {
     setEnabled(checked);
     if (checked && chartData) {
-      handleGenerate();
+      void handleGenerate();
     }
   };
 

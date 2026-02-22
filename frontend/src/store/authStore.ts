@@ -5,16 +5,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authService } from '../services';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar_url?: string;
-  timezone: string;
-  plan: string;
-  preferences: Record<string, any>;
-}
+import type { User, UserPreferences } from '../services/api.types';
+import type { AxiosError } from 'axios';
 
 interface AuthState {
   user: User | null;
@@ -29,8 +21,21 @@ interface AuthState {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
-  updatePreferences: (preferences: Record<string, any>) => Promise<void>;
+  updatePreferences: (preferences: Partial<UserPreferences>) => Promise<void>;
   clearError: () => void;
+}
+
+interface ApiErrorResponse {
+  error?: { message?: string };
+  message?: string;
+}
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  const axiosError = error as AxiosError<ApiErrorResponse>;
+  return axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -57,9 +62,9 @@ export const useAuthStore = create<AuthState>()(
           // Store tokens in localStorage for API interceptor
           localStorage.setItem('accessToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Login failed',
+            error: getErrorMessage(error, 'Login failed'),
             isLoading: false,
           });
         }
@@ -78,9 +83,9 @@ export const useAuthStore = create<AuthState>()(
           });
           localStorage.setItem('accessToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Registration failed',
+            error: getErrorMessage(error, 'Registration failed'),
             isLoading: false,
           });
         }
@@ -111,9 +116,9 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await authService.updateProfile(data);
           set({ user: response.user, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Update failed',
+            error: getErrorMessage(error, 'Update failed'),
             isLoading: false,
           });
         }
@@ -124,9 +129,9 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await authService.updatePreferences(preferences);
           set({ user: response.user, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Update failed',
+            error: getErrorMessage(error, 'Update failed'),
             isLoading: false,
           });
         }

@@ -72,7 +72,7 @@ test.describe('PWA Functionality', () => {
       await page.waitForTimeout(1000);
 
       // Check if offline banner is displayed
-      const offlineBanner = page.locator('text=/offline|no internet|connection lost/i');
+      const offlineBanner = page.getByText(/offline|no internet|connection lost/i);
       const isVisible = await offlineBanner.count() > 0;
 
       // Offline banner should be visible (or some offline indicator)
@@ -186,7 +186,7 @@ test.describe('PWA Functionality', () => {
 
       // If permission is default, UI might be shown
       if (permissionState === 'default') {
-        const permissionUI = page.locator('text=/enable notifications|allow notifications|turn on notifications/i');
+        const permissionUI = page.getByText(/enable notifications|allow notifications|turn on notifications/i);
         const isVisible = await permissionUI.count() > 0;
 
         if (isVisible) {

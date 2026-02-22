@@ -1,9 +1,55 @@
 /**
  * Synastry API Service
  * Handles API calls for synastry and compatibility calculations
+ * Includes timeout handling, error recovery, and retry logic
  */
 
 import api from './api';
+
+// Error class for synastry-specific errors
+export class SynastryServiceError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public statusCode?: number,
+    public retryable = false
+  ) {
+    super(message);
+    this.name = 'SynastryServiceError';
+  }
+}
+
+// Configuration
+const SYNASTRY_TIMEOUT = 60000; // 60 seconds for complex calculations
+const MAX_RETRIES = 2;
+const RETRY_DELAY = 2000;
+
+// Helper: delay for retry
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper: retry with exponential backoff
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries = MAX_RETRIES
+): Promise<T> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxRetries - 1) throw error;
+
+      // Only retry on timeout or 5xx errors
+      if (error instanceof SynastryServiceError) {
+        if (!error.retryable && error.statusCode && error.statusCode < 500) {
+          throw error;
+        }
+      }
+
+      await delay(RETRY_DELAY * Math.pow(2, attempt));
+    }
+  }
+  throw new SynastryServiceError('Max retries exceeded', 'MAX_RETRIES');
+}
 
 // Types
 export interface SynastryAspect {
@@ -89,19 +135,55 @@ export interface SynastryReport {
 
 /**
  * Compare two charts and calculate synastry
+ * @throws SynastryServiceError on failure
+ * @param retryAttempts Number of retry attempts for timeout errors
  */
-export async function compareCharts(chart1Id: string, chart2Id: string): Promise<SynastryChart> {
-  const response = await api.post('/synastry/compare', { chart1Id, chart2Id });
-  return response.data.data;
+export async function compareCharts(
+  chart1Id: string,
+  chart2Id: string,
+  retryAttempts = MAX_RETRIES
+): Promise<SynastryChart> {
+  return retryWithBackoff(async () => {
+    try {
+      const response = await api.post<{ data: SynastryChart }>(
+        '/synastry/compare',
+        { chart1Id, chart2Id },
+        { timeout: SYNASTRY_TIMEOUT }
+      );
+
+      if (!response.data?.data) {
+        throw new SynastryServiceError(
+          'Invalid response from synastry API',
+          'INVALID_RESPONSE'
+        );
+      }
+
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof SynastryServiceError) throw error;
+
+      const isTimeout = error instanceof Error &&
+        (error.message.includes('timeout') || error.message.includes('ECONNABORTED'));
+
+      throw new SynastryServiceError(
+        error instanceof Error ? error.message : 'Failed to compare charts',
+        'COMPARE_FAILED',
+        undefined,
+        isTimeout // Retryable if it's a timeout
+      );
+    }
+  }, retryAttempts);
 }
 
 /**
  * Calculate compatibility scores between two charts
+ * @throws SynastryServiceError on failure
  */
 export async function getCompatibility(
   chart1Id: string,
   chart2Id: string,
-  includeComposite = false
+  includeComposite = false,
+  signal?: AbortSignal
 ): Promise<{
   chart1Id: string;
   chart2Id: string;
@@ -109,12 +191,55 @@ export async function getCompatibility(
   elementalBalance: ElementalBalance;
   compositeChart?: CompositeChart;
 }> {
-  const response = await api.post('/synastry/compatibility', {
-    chart1Id,
-    chart2Id,
-    includeComposite,
+  return retryWithBackoff(async () => {
+    try {
+      const response = await api.post<
+        { data: {
+          chart1Id: string;
+          chart2Id: string;
+          scores: CompatibilityScores;
+          elementalBalance: ElementalBalance;
+          compositeChart?: CompositeChart;
+        }}
+      >(
+        '/synastry/compatibility',
+        { chart1Id, chart2Id, includeComposite },
+        {
+          timeout: SYNASTRY_TIMEOUT,
+          signal, // Allow cancellation via AbortController
+        }
+      );
+
+      if (!response.data?.data) {
+        throw new SynastryServiceError(
+          'Invalid response from compatibility API',
+          'INVALID_RESPONSE'
+        );
+      }
+
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof SynastryServiceError) throw error;
+
+      const isTimeout = error instanceof Error &&
+        (error.message.includes('timeout') || error.message.includes('ECONNABORTED'));
+
+      throw new SynastryServiceError(
+        error instanceof Error ? error.message : 'Failed to calculate compatibility',
+        'COMPATIBILITY_FAILED',
+        undefined,
+        isTimeout
+      );
+    }
   });
-  return response.data.data;
+}
+
+/**
+ * Create an AbortController for cancellation
+ * Useful for cancelling long-running synastry calculations
+ */
+export function createSynastryController(): AbortController {
+  return new AbortController();
 }
 
 /**
@@ -154,7 +279,15 @@ export async function getSynastryReports(page = 1, limit = 10): Promise<{
     totalPages: number;
   };
 }> {
-  const response = await api.get('/synastry/reports', {
+  const response = await api.get<{ data: {
+    reports: SynastryReport[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  } }>('/synastry/reports', {
     params: { page, limit },
   });
   return response.data.data;
@@ -164,7 +297,7 @@ export async function getSynastryReports(page = 1, limit = 10): Promise<{
  * Get a specific synastry report
  */
 export async function getSynastryReport(id: string): Promise<SynastryReport> {
-  const response = await api.get(`/synastry/reports/${id}`);
+  const response = await api.get<{ data: SynastryReport }>(`/synastry/reports/${id}`);
   return response.data.data;
 }
 

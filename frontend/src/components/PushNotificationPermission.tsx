@@ -68,7 +68,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
             <div className="push-notification-actions">
               <button
                 className="push-notification-button primary"
-                onClick={handleSubscribe}
+                onClick={() => void handleSubscribe()}
                 disabled={subscribing}
               >
                 {subscribing ? 'Enabling...' : 'Enable Notifications'}
@@ -87,7 +87,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
       {isSubscribed && (
         <div className="push-notification-success">
           <span>Notifications enabled</span>
-          <button className="push-notification-test" onClick={handleTest}>
+          <button className="push-notification-test" onClick={() => void handleTest()}>
             Send Test
           </button>
         </div>

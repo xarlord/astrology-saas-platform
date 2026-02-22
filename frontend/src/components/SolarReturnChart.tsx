@@ -3,7 +3,7 @@
  * Visualizes the solar return chart wheel with planets, houses, and aspects
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Loader2, ZoomIn, ZoomOut, Download } from 'lucide-react';
 import './SolarReturnChart.css';
 
@@ -118,20 +118,14 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   showHouses = true,
 }) => {
   const [zoom, setZoom] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null);
-  const [hoveredAspect, setHoveredAspect] = useState<Aspect | null>(null);
+  const [loading, _setLoading] = useState(false);
+  const [selectedPlanet, _setSelectedPlanet] = useState<string | null>(null);
+  const [hoveredAspect, _setHoveredAspect] = useState<Aspect | null>(null);
 
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (canvasRef.current && chartData) {
-      drawChart();
-    }
-  }, [chartData, zoom, showAspects, showHouses]);
-
-  const drawChart = () => {
+  const drawChart = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -163,7 +157,13 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
     // Draw labels
     drawLabels(ctx, centerX, centerY, radius);
-  };
+  }, [chartData, zoom, showAspects, showHouses, selectedPlanet, hoveredAspect]);
+
+  useEffect(() => {
+    if (canvasRef.current && chartData) {
+      drawChart();
+    }
+  }, [drawChart, chartData]);
 
   const drawZodiacWheel = (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) => {
     const signs = Object.keys(ZODIAC_SYMBOLS);
@@ -375,15 +375,15 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       </div>
 
       <div className="chart-controls">
-        <button onClick={handleZoomOut} disabled={zoom <= 0.5}>
+        <button onClick={() => void handleZoomOut()} disabled={zoom <= 0.5}>
           <ZoomOut size={18} />
         </button>
         <span className="zoom-level">{Math.round(zoom * 100)}%</span>
-        <button onClick={handleZoomIn} disabled={zoom >= 2}>
+        <button onClick={() => void handleZoomIn()} disabled={zoom >= 2}>
           <ZoomIn size={18} />
         </button>
 
-        <button onClick={handleDownload} title="Download as PNG">
+        <button onClick={() => void handleDownload()} title="Download as PNG">
           <Download size={18} />
           Download
         </button>

@@ -1,0 +1,711 @@
+
+> @astrology-saas/frontend@1.0.0 test:run
+> vitest run
+
+
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Users/plner/MVP_Projects/frontend[39m
+
+ [32m✓[39m src/__tests__/serviceWorker/sw.test.ts [2m ([22m[2m24 tests[22m[2m)[22m[90m 23[2mms[22m[39m
+ [32m✓[39m src/components/ChartWheel.accessibility.test.tsx [2m ([22m[2m28 tests[22m[2m)[22m[33m 364[2mms[22m[39m
+[90mstderr[2m | src/__tests__/serviceWorkerRegistration.test.ts[2m > [22m[2mService Worker Registration[2m > [22m[2mregisterSW[2m > [22m[2mshould return null when service workers are not supported[22m[39m
+Service worker registration failed: TypeError: Cannot read properties of undefined (reading 'register')
+    at Module.registerSW [90m(C:\Users\plner\MVP_Projects\frontend\[39msrc\utils\serviceWorkerRegistration.ts:39:56[90m)[39m
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\__tests__\serviceWorkerRegistration.test.ts:159:28
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+
+[90mstderr[2m | src/__tests__/serviceWorkerRegistration.test.ts[2m > [22m[2mService Worker Registration[2m > [22m[2mregisterSW[2m > [22m[2mshould call onRegistrationError when registration fails[22m[39m
+Service worker registration failed: Error: Registration failed
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\__tests__\serviceWorkerRegistration.test.ts:168:21
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+[90mstdout[2m | src/__tests__/serviceWorkerRegistration.test.ts[2m > [22m[2mService Worker Registration[2m > [22m[2mregisterSW[2m > [22m[2mshould detect offline events[22m[39m
+App is offline
+App is offline
+App is offline
+App is offline
+App is offline
+App is offline
+App is offline
+
+ [32m✓[39m src/__tests__/serviceWorkerRegistration.test.ts [2m ([22m[2m13 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/LunarHistoryView.test.tsx[2m > [22m[2mLunarHistoryView[2m > [22m[2mError State[2m > [22m[2mshould display error message when API fails[22m[39m
+Error loading history: { response: { data: { error: [32m'Failed to load history'[39m } } }
+
+[90mstderr[2m | src/components/__tests__/LunarHistoryView.test.tsx[2m > [22m[2mLunarHistoryView[2m > [22m[2mError State[2m > [22m[2mshould show retry button on error[22m[39m
+Error loading history: Error: API Error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\components\__tests__\LunarHistoryView.test.tsx:91:51
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+ [32m✓[39m src/components/__tests__/ChartWheel.test.tsx [2m ([22m[2m35 tests[22m[2m)[22m[33m 497[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/LunarForecastView.test.tsx[2m > [22m[2mLunarForecastView[2m > [22m[2mError State[2m > [22m[2mshould display error message when API fails[22m[39m
+Error loading forecast: { response: { data: { error: [32m'Failed to load forecast'[39m } } }
+
+ [33m❯[39m src/components/ui/__tests__/UIComponents.test.tsx [2m ([22m[2m0 test[22m[2m)[22m
+[90mstderr[2m | src/__tests__/hooks/useAIInterpretation.test.tsx[2m > [22m[2museAIInterpretation Hook[2m > [22m[2mshould set error state on generation failure[22m[39m
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Users\plner\MVP_Projects\node_modules\@testing-library\react\dist\pure.js:307:5)
+    at QueryClientProvider (file:///C:/Users/plner/MVP_Projects/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:20:3)
+    at C:\Users\plner\MVP_Projects\frontend\src\__tests__\hooks\useAIInterpretation.test.tsx:35:15
+
+[90mstderr[2m | src/components/__tests__/SynastryPage.test.tsx[2m > [22m[2mSynastryPage[2m > [22m[2mhandles API error when loading reports[22m[39m
+Error loading reports: { response: { data: { error: [32m'Failed to load reports'[39m } } }
+
+[90mstderr[2m | src/__tests__/components/solarReturn.test.tsx[2m > [22m[2mSolarReturnDashboard[2m > [22m[2mrenders loading state initially[22m[39m
+Warning: An update to SolarReturnDashboard inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SolarReturnDashboard (C:\Users\plner\MVP_Projects\frontend\src\components\SolarReturnDashboard.tsx:14:33)
+Warning: An update to SolarReturnDashboard inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SolarReturnDashboard (C:\Users\plner\MVP_Projects\frontend\src\components\SolarReturnDashboard.tsx:14:33)
+
+ [32m✓[39m src/components/__tests__/SynastryPage.test.tsx [2m ([22m[2m16 tests[22m[2m)[22m[33m 691[2mms[22m[39m
+[90mstderr[2m | src/__tests__/hooks/useAIInterpretation.test.tsx[2m > [22m[2museAIInterpretation Hook[2m > [22m[2mshould handle network errors gracefully[22m[39m
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Users\plner\MVP_Projects\node_modules\@testing-library\react\dist\pure.js:307:5)
+    at QueryClientProvider (file:///C:/Users/plner/MVP_Projects/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:20:3)
+    at C:\Users\plner\MVP_Projects\frontend\src\__tests__\hooks\useAIInterpretation.test.tsx:35:15
+
+[90mstderr[2m | src/__tests__/components/calendar.test.tsx[2m > [22m[2mCalendarView Component[2m > [22m[2mshould display error state[22m[39m
+Error fetching calendar: Error: API Error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\__tests__\components\calendar.test.tsx:132:44
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+
+[90mstderr[2m | src/__tests__/hooks/useAIInterpretation.test.tsx[2m > [22m[2museAIInterpretation Hook[2m > [22m[2mshould clear error on successful generation[22m[39m
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Users\plner\MVP_Projects\node_modules\@testing-library\react\dist\pure.js:307:5)
+    at QueryClientProvider (file:///C:/Users/plner/MVP_Projects/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:20:3)
+    at C:\Users\plner\MVP_Projects\frontend\src\__tests__\hooks\useAIInterpretation.test.tsx:35:15
+
+[90mstderr[2m | src/__tests__/hooks/useAIInterpretation.test.tsx[2m > [22m[2museAIInterpretation Hook[2m > [22m[2mshould clear error on successful generation[22m[39m
+Warning: An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at TestComponent (C:\Users\plner\MVP_Projects\node_modules\@testing-library\react\dist\pure.js:307:5)
+    at QueryClientProvider (file:///C:/Users/plner/MVP_Projects/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:20:3)
+    at C:\Users\plner\MVP_Projects\frontend\src\__tests__\hooks\useAIInterpretation.test.tsx:35:15
+
+ [32m✓[39m src/__tests__/hooks/useAIInterpretation.test.tsx [2m ([22m[2m10 tests[22m[2m)[22m[33m 619[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/SynastryCalculator.test.tsx[2m > [22m[2mSynastryCalculator[2m > [22m[2mhandles API error gracefully[22m[39m
+Error calculating synastry: { response: { data: { error: [32m'Failed to calculate compatibility'[39m } } }
+
+ [32m✓[39m src/components/__tests__/SynastryCalculator.test.tsx [2m ([22m[2m14 tests[22m[2m)[22m[33m 1151[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/LunarHistoryView.test.tsx [2m ([22m[2m19 tests[22m[2m)[22m[33m 1141[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/LunarForecastView.test.tsx [2m ([22m[2m17 tests[22m[2m)[22m[33m 1420[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/CalendarView.test.tsx[2m > [22m[2mCalendarView Component[2m > [22m[2mError Handling[2m > [22m[2mshould display error message when API fails[22m[39m
+Error fetching calendar: Error: API Error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\components\__tests__\CalendarView.test.tsx:302:51
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+[90mstderr[2m | src/components/__tests__/CalendarView.test.tsx[2m > [22m[2mCalendarView Component[2m > [22m[2mError Handling[2m > [22m[2mshould show retry button on error[22m[39m
+Error fetching calendar: Error: API Error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\components\__tests__\CalendarView.test.tsx:312:51
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+[90mstderr[2m | src/components/__tests__/CalendarView.test.tsx[2m > [22m[2mCalendarView Component[2m > [22m[2mError Handling[2m > [22m[2mshould retry loading when retry button is clicked[22m[39m
+Error fetching calendar: Error: API Error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\components\__tests__\CalendarView.test.tsx:323:55
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+ [33m❯[39m src/components/__tests__/AppLayout.test.tsx [2m ([22m[2m43 tests[22m [2m|[22m [31m43 failed[39m[2m)[22m[90m 64[2mms[22m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render layout with all main sections[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render top navigation bar[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render sidebar navigation[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render footer[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould display user avatar with initial[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould display user name[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould have notification bell[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould show notification badge[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render quick actions section[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render my charts section[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render tools section[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render upgrade banner[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould render user menu button[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould show profile link in dropdown[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould show settings link in dropdown[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould show logout button[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould call logout when logout is clicked[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mMobile Navigation[2m > [22mshould render mobile menu button[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mMobile Navigation[2m > [22mshould render mobile bottom navigation[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mMobile Navigation[2m > [22mshould have home, charts, transits, and learn tabs[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render product links[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render resources links[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render company links[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render legal links[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould display copyright[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render social media links[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mNavigation Links[2m > [22mshould have correct href attributes[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mNavigation Links[2m > [22mshould render desktop navigation links[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mResponsive Behavior[2m > [22mshould show sidebar on large screens[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mResponsive Behavior[2m > [22mshould hide mobile bottom navigation on large screens[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mAccessibility[2m > [22mshould have proper ARIA labels[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mAccessibility[2m > [22mshould have semantic HTML structure[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mAccessibility[2m > [22mshould have accessible navigation[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mContent Rendering[2m > [22mshould render children content[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mContent Rendering[2m > [22mshould render multiple children[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTheme Support[2m > [22mshould support dark mode classes[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTheme Support[2m > [22mshould have dark mode sidebar[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Interactions[2m > [22mshould have close button on mobile[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Interactions[2m > [22mshould render upgrade card in sidebar footer[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mLogo Display[2m > [22mshould render logo in sidebar[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mLogo Display[2m > [22mshould render logo in top nav[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mEdge Cases[2m > [22mshould render layout successfully with user[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mEdge Cases[2m > [22mshould render user avatar initials[39m
+[31m     → useAuthStore.mockReturnValue is not a function[39m
+ [32m✓[39m src/components/__tests__/DailyWeatherModal.test.tsx [2m ([22m[2m42 tests[22m[2m)[22m[33m 1855[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/CalendarView.test.tsx[2m > [22m[2mCalendarView Component[2m > [22m[2mResponsive Design[2m > [22m[2mshould adapt to mobile viewport[22m[39m
+Warning: An update to CalendarView inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at CalendarView (C:\Users\plner\MVP_Projects\frontend\src\components\CalendarView.tsx:34:25)
+Warning: An update to CalendarView inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at CalendarView (C:\Users\plner\MVP_Projects\frontend\src\components\CalendarView.tsx:34:25)
+
+[90mstderr[2m | src/components/__tests__/CalendarView.test.tsx[2m > [22m[2mCalendarView Component[2m > [22m[2mResponsive Design[2m > [22m[2mshould handle different screen sizes[22m[39m
+Warning: An update to CalendarView inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at CalendarView (C:\Users\plner\MVP_Projects\frontend\src\components\CalendarView.tsx:34:25)
+Warning: An update to CalendarView inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at CalendarView (C:\Users\plner\MVP_Projects\frontend\src\components\CalendarView.tsx:34:25)
+
+[90mstderr[2m | src/__tests__/components/calendar.test.tsx[2m > [22m[2mCalendarExport Component[2m > [22m[2mshould show success message after export[22m[39m
+Error: Not implemented: navigation (except hash changes)
+    at module.exports (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\browser\not-implemented.js:9:17)
+    at navigateFetch (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\living\window\navigation.js:77:3)
+    at exports.navigate (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\living\window\navigation.js:55:3)
+    at Timeout._onTimeout (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\living\nodes\HTMLHyperlinkElementUtils-impl.js:81:7)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7) [90mundefined[39m
+Error: Not implemented: navigation (except hash changes)
+    at module.exports (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\browser\not-implemented.js:9:17)
+    at navigateFetch (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\living\window\navigation.js:77:3)
+    at exports.navigate (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\living\window\navigation.js:55:3)
+    at Timeout._onTimeout (C:\Users\plner\MVP_Projects\node_modules\jsdom\lib\jsdom\living\nodes\HTMLHyperlinkElementUtils-impl.js:81:7)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7) [90mundefined[39m
+
+ [32m✓[39m src/__tests__/components/calendar.test.tsx [2m ([22m[2m31 tests[22m[2m)[22m[33m 2044[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/solarReturn.test.tsx [2m ([22m[2m27 tests[22m[2m)[22m[33m 1896[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/CalendarView.test.tsx [2m ([22m[2m34 tests[22m[2m)[22m[33m 2488[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/ReminderSettings.test.tsx [2m ([22m[2m40 tests[22m[2m)[22m[33m 3461[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/EmptyState.test.tsx [2m ([22m[2m27 tests[22m[2m)[22m[33m 545[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/LunarReturnDashboard.test.tsx[2m > [22m[2mLunarReturnDashboard[2m > [22m[2mError State[2m > [22m[2mshould display error message when API fails[22m[39m
+Error loading lunar return data: { response: { data: { error: [32m'Failed to load lunar return data'[39m } } }
+
+[90mstderr[2m | src/components/__tests__/LunarReturnDashboard.test.tsx[2m > [22m[2mLunarReturnDashboard[2m > [22m[2mError State[2m > [22m[2mshould show retry button on error[22m[39m
+Error loading lunar return data: Error: API Error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\components\__tests__\LunarReturnDashboard.test.tsx:75:51
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+[90mstderr[2m | src/__tests__/hooks/usePushNotifications.test.ts[2m > [22m[2musePushNotifications Hook[2m > [22m[2mshould have initial permission state[22m[39m
+Failed to check subscription status: TypeError: Cannot read properties of undefined (reading 'data')
+    at PushNotificationService.getSubscriptions [90m(C:\Users\plner\MVP_Projects\frontend\[39msrc\services\pushNotification.service.ts:50:21[90m)[39m
+    at checkSubscriptionStatus [90m(C:\Users\plner\MVP_Projects\frontend\[39msrc\hooks\usePushNotifications.ts:32:29[90m)[39m
+
+[90mstderr[2m | src/__tests__/hooks/usePushNotifications.test.ts[2m > [22m[2musePushNotifications Hook[2m > [22m[2mshould handle permission denied[22m[39m
+Failed to subscribe to push notifications: Error: Notification permission denied
+    at Object.subscribe [90m(C:\Users\plner\MVP_Projects\frontend\[39msrc\hooks\usePushNotifications.ts:64:15[90m)[39m
+[90m    at runNextTicks (node:internal/process/task_queues:64:5)[39m
+[90m    at processTimers (node:internal/timers:538:9)[39m
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\__tests__\hooks\usePushNotifications.test.ts:149:9
+
+[90mstderr[2m | src/__tests__/hooks/usePushNotifications.test.ts[2m > [22m[2musePushNotifications Hook[2m > [22m[2mshould handle subscription error gracefully[22m[39m
+Failed to check subscription status: Error: Network error
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\__tests__\hooks\usePushNotifications.test.ts:215:42
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:135:14
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:60:26
+    at runTest (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:781:17)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runSuite (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:909:15)
+    at runFiles (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:958:5)
+    at startTests (file:///C:/Users/plner/MVP_Projects/node_modules/[4m@vitest/runner[24m/dist/index.js:967:3)
+    at file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///C:/Users/plner/MVP_Projects/node_modules/[4mvitest[24m/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+
+ [32m✓[39m src/components/__tests__/LunarReturnDashboard.test.tsx [2m ([22m[2m11 tests[22m[2m)[22m[33m 455[2mms[22m[39m
+[90mstderr[2m | src/__tests__/hooks/usePushNotifications.test.ts[2m > [22m[2musePushNotifications Hook[2m > [22m[2mshould handle service worker not registered error[22m[39m
+Failed to subscribe to push notifications: Error: Service worker not registered
+    at Object.subscribe [90m(C:\Users\plner\MVP_Projects\frontend\[39msrc\hooks\usePushNotifications.ts:70:15[90m)[39m
+    at [90mC:\Users\plner\MVP_Projects\frontend\[39msrc\__tests__\hooks\usePushNotifications.test.ts:266:9
+
+ [32m✓[39m src/__tests__/hooks/usePushNotifications.test.ts [2m ([22m[2m10 tests[22m[2m)[22m[33m 382[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/SkeletonLoader.test.tsx [2m ([22m[2m24 tests[22m[2m)[22m[90m 115[2mms[22m[39m
+ [32m✓[39m src/__tests__/utils/lazyLoad.test.ts [2m ([22m[2m7 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32m✓[39m src/__tests__/components/ServiceWorkerUpdateBanner.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[90m 100[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/LunarChartView.test.tsx [2m ([22m[2m27 tests[22m[2m)[22m[33m 509[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22m[2mMobile Bottom Navigation Active States[2m > [22m[2mActive Route Detection[2m > [22m[2mshould highlight Home as active on root path[22m[39m
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [33m❯[39m src/components/__tests__/AppLayout.mobile.test.tsx [2m ([22m[2m21 tests[22m [2m|[22m [31m8 failed[39m[2m)[22m[90m 270[2mms[22m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Charts as active on /charts path[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Transits as active on /transits path[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Learn as active on /learn path[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Profile as active on /profile path[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould match sub-routes (e.g., /charts/natal should highlight Charts)[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mAccessibility[2m > [22mshould have aria-current="page" on active item[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mAccessibility[2m > [22mshould not have aria-current on inactive items[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).not.toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m) // element.hasAttribute("aria-current")[22m
+
+Expected the element not to have attribute:
+[32m  aria-current[31m
+Received:
+[31m  aria-current="page"[31m[39m
+[31m   [33m❯[31m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mSafe Area Support[2m > [22mshould have safe area inset for bottom padding[39m
+[31m     → [2mexpect([22m[31mreceived[31m[2m).toBeInTheDocument()[22m
+
+[31mreceived[31m value must be an HTMLElement or an SVGElement.
+[39m
+ [32m✓[39m src/components/__tests__/KeyboardNavigation.test.tsx [2m ([22m[2m12 tests[22m[2m)[22m[33m 312[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/KeyboardNavigation.test.tsx[2m > [22m[2mKeyboard Navigation Accessibility[2m > [22m[2mSkip Navigation Link[2m > [22m[2mshould render skip navigation link[22m[39m
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [32m✓[39m src/components/__tests__/AstrologicalCalendar.test.tsx [2m ([22m[2m12 tests[22m[2m)[22m[90m 100[2mms[22m[39m
+[90mstderr[2m | src/components/__tests__/AstrologicalCalendar.test.tsx[2m > [22m[2mAstrologicalCalendar Component[2m > [22m[2mRendering[2m > [22m[2mshould render calendar component[22m[39m
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+ [32m✓[39m src/components/__tests__/UserProfile.test.tsx [2m ([22m[2m40 tests[22m[2m)[22m[33m 6522[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/BirthDataForm.test.tsx [2m ([22m[2m30 tests[22m[2m)[22m[33m 6948[2mms[22m[39m
+ [32m✓[39m src/components/__tests__/AuthenticationForms.test.tsx [2m ([22m[2m29 tests[22m[2m)[22m[33m 9338[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/ui/__tests__/UIComponents.test.tsx [2m[ src/components/ui/__tests__/UIComponents.test.tsx ][22m
+[31m[1mReferenceError[22m: jest is not defined[39m
+[36m [2m❯[22m src/components/ui/__tests__/UIComponents.test.tsx:[2m397:14[22m[39m
+    [90m395| [39m  [35mconst[39m defaultProps [33m=[39m {
+    [90m396| [39m    isOpen[33m:[39m [35mtrue[39m[33m,[39m
+    [90m397| [39m    onClose[33m:[39m jest[33m.[39m[34mfn[39m()[33m,[39m
+    [90m   | [39m             [31m^[39m
+    [90m398| [39m    title[33m:[39m [32m'Test Modal'[39m[33m,[39m
+    [90m399| [39m    children[33m:[39m [33m<[39m[33mdiv[39m[33m>[39mModal content[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/52]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 51 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Charts as active on /charts path
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m38:26[22m[39m
+    [90m 36| [39m
+    [90m 37| [39m      [35mconst[39m chartsLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Charts'[39m)[33m;[39m
+    [90m 38| [39m      [34mexpect[39m(chartsLink)[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m[33m,[39m [32m'page'[39m)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m 39| [39m    })[33m;[39m
+    [90m 40| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Transits as active on /transits path
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m45:28[22m[39m
+    [90m 43| [39m
+    [90m 44| [39m      [35mconst[39m transitsLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Transits'[39m)[33m;[39m
+    [90m 45| [39m      [34mexpect[39m(transitsLink)[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m[33m,[39m [32m'page'[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m 46| [39m    })[33m;[39m
+    [90m 47| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Learn as active on /learn path
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m52:25[22m[39m
+    [90m 50| [39m
+    [90m 51| [39m      [35mconst[39m learnLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Learn'[39m)[33m;[39m
+    [90m 52| [39m      [34mexpect[39m(learnLink)[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m[33m,[39m [32m'page'[39m)[33m;[39m
+    [90m   | [39m                        [31m^[39m
+    [90m 53| [39m    })[33m;[39m
+    [90m 54| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould highlight Profile as active on /profile path
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m59:27[22m[39m
+    [90m 57| [39m
+    [90m 58| [39m      [35mconst[39m profileLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Profile'[39m)[33m;[39m
+    [90m 59| [39m      [34mexpect[39m(profileLink)[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m[33m,[39m [32m'page'[39m)[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m 60| [39m    })[33m;[39m
+    [90m 61| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mActive Route Detection[2m > [22mshould match sub-routes (e.g., /charts/natal should highlight Charts)
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m66:26[22m[39m
+    [90m 64| [39m
+    [90m 65| [39m      [35mconst[39m chartsLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Charts'[39m)[33m;[39m
+    [90m 66| [39m      [34mexpect[39m(chartsLink)[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m[33m,[39m [32m'page'[39m)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m 67| [39m    })[33m;[39m
+    [90m 68| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mAccessibility[2m > [22mshould have aria-current="page" on active item
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m, [22m[32m[32m"page"[32m[31m[2m) // element.getAttribute("aria-current") === "page"[22m
+
+Expected the element to have attribute:
+[32m  aria-current="page"[31m
+Received:
+[31m  null[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m136:26[22m[39m
+    [90m134| [39m
+    [90m135| [39m      [35mconst[39m chartsLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Charts'[39m)[33m;[39m
+    [90m136| [39m      [34mexpect[39m(chartsLink)[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m[33m,[39m [32m'page'[39m)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m137| [39m    })[33m;[39m
+    [90m138| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mAccessibility[2m > [22mshould not have aria-current on inactive items
+[31m[1mError[22m: [2mexpect([22m[31melement[31m[2m).not.toHaveAttribute([22m[32m[32m"aria-current"[32m[31m[2m) // element.hasAttribute("aria-current")[22m
+
+Expected the element not to have attribute:
+[32m  aria-current[31m
+Received:
+[31m  aria-current="page"[31m[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m143:28[22m[39m
+    [90m141| [39m
+    [90m142| [39m      [35mconst[39m homeLink [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([32m'Home'[39m)[33m;[39m
+    [90m143| [39m      [34mexpect[39m(homeLink)[33m.[39mnot[33m.[39m[34mtoHaveAttribute[39m([32m'aria-current'[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m144| [39m    })[33m;[39m
+    [90m145| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.mobile.test.tsx[2m > [22mMobile Bottom Navigation Active States[2m > [22mSafe Area Support[2m > [22mshould have safe area inset for bottom padding
+[31m[1mError[22m: [2mexpect([22m[31mreceived[31m[2m).toBeInTheDocument()[22m
+
+[31mreceived[31m value must be an HTMLElement or an SVGElement.
+[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.mobile.test.tsx:[2m179:19[22m[39m
+    [90m177| [39m      [90m// Navigation should have padding-bottom style[39m
+    [90m178| [39m      [35mconst[39m nav [33m=[39m container[33m.[39m[34mquerySelector[39m([32m'[style*="padding-bottom"]'[39m)[33m;[39m
+    [90m179| [39m      [34mexpect[39m(nav)[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m   | [39m                  [31m^[39m
+    [90m180| [39m    })[33m;[39m
+    [90m181| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/52]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render layout with all main sections
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render top navigation bar
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render sidebar navigation
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mRendering[2m > [22mshould render footer
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould display user avatar with initial
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould display user name
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould have notification bell
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTop Navigation[2m > [22mshould show notification badge
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render quick actions section
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render my charts section
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render tools section
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Navigation[2m > [22mshould render upgrade banner
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould render user menu button
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould show profile link in dropdown
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould show settings link in dropdown
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould show logout button
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mUser Menu Dropdown[2m > [22mshould call logout when logout is clicked
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mMobile Navigation[2m > [22mshould render mobile menu button
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mMobile Navigation[2m > [22mshould render mobile bottom navigation
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mMobile Navigation[2m > [22mshould have home, charts, transits, and learn tabs
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render product links
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render resources links
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render company links
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render legal links
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould display copyright
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mFooter[2m > [22mshould render social media links
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mNavigation Links[2m > [22mshould have correct href attributes
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mNavigation Links[2m > [22mshould render desktop navigation links
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mResponsive Behavior[2m > [22mshould show sidebar on large screens
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mResponsive Behavior[2m > [22mshould hide mobile bottom navigation on large screens
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mAccessibility[2m > [22mshould have proper ARIA labels
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mAccessibility[2m > [22mshould have semantic HTML structure
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mAccessibility[2m > [22mshould have accessible navigation
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mContent Rendering[2m > [22mshould render children content
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mContent Rendering[2m > [22mshould render multiple children
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTheme Support[2m > [22mshould support dark mode classes
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mTheme Support[2m > [22mshould have dark mode sidebar
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Interactions[2m > [22mshould have close button on mobile
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mSidebar Interactions[2m > [22mshould render upgrade card in sidebar footer
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mLogo Display[2m > [22mshould render logo in sidebar
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mLogo Display[2m > [22mshould render logo in top nav
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mEdge Cases[2m > [22mshould render layout successfully with user
+[31m[1m[7m FAIL [27m[22m[39m src/components/__tests__/AppLayout.test.tsx[2m > [22mAppLayout Component[2m > [22mEdge Cases[2m > [22mshould render user avatar initials
+[31m[1mTypeError[22m: useAuthStore.mockReturnValue is not a function[39m
+[36m [2m❯[22m src/components/__tests__/AppLayout.test.tsx:[2m60:27[22m[39m
+    [90m 58| [39m
+    [90m 59| [39m    [90m// Mock useAuthStore to return our mock user[39m
+    [90m 60| [39m    (useAuthStore [35mas[39m any)[33m.[39m[34mmockReturnValue[39m({
+    [90m   | [39m                          [31m^[39m
+    [90m 61| [39m      user[33m:[39m mockUser[33m,[39m
+    [90m 62| [39m      isAuthenticated[33m:[39m [35mtrue[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/52]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m26 passed[39m[22m[90m (29)[39m
+[2m      Tests [22m [1m[31m51 failed[39m[22m[2m | [22m[1m[32m600 passed[39m[22m[90m (651)[39m
+[2m   Start at [22m 14:44:25
+[2m   Duration [22m 17.13s[2m (transform 4.19s, setup 28.87s, collect 19.68s, tests 43.35s, environment 82.76s, prepare 12.93s)[22m
+
+npm error Lifecycle script `test:run` failed with error:
+npm error code 1
+npm error path C:\Users\plner\MVP_Projects\frontend
+npm error workspace @astrology-saas/frontend@1.0.0
+npm error location C:\Users\plner\MVP_Projects\frontend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c vitest run

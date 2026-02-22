@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse - Transit Forecast</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#6b3de1",
+              "primary-dark": "#5a32bc",
+              "background-light": "#f6f6f8",
+              "background-dark": "#0B0D17", // Deep Navy
+              "surface-dark": "#141627", // Card Background
+              "accent-blue": "#2563EB",
+              "accent-green": "#10B981",
+              "accent-red": "#EF4444",
+              "accent-gold": "#F5A623",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              'cosmic-glow': 'conic-gradient(from 90deg at 50% 50%, #0B0D17 0%, #1a1635 50%, #0B0D17 100%)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(20, 22, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(107, 61, 225, 0.15);
+        }
+        
+        .glass-panel-hover:hover {
+            border-color: rgba(107, 61, 225, 0.4);
+            background: rgba(30, 32, 55, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-glow {
+            box-shadow: 0 0 15px rgba(107, 61, 225, 0.5);
+        }
+
+        /* Custom Scrollbar for the dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D17; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2f2645; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #433663; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen font-display text-slate-900 dark:text-slate-100 antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden">
+<!-- Background Ambient Effects -->
+<div class="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/20 blur-[120px] pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-accent-blue/10 blur-[100px] pointer-events-none z-0"></div>
+<!-- Sticky Navbar -->
+<header class="sticky top-0 z-50 glass-panel border-b-0 border-b-[#2f2645]">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<!-- Logo -->
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary animate-pulse">
+<span class="material-symbols-outlined text-3xl">public</span>
+</div>
+<h1 class="text-white text-xl font-bold tracking-tight">AstroVerse</h1>
+</div>
+<!-- Navigation -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-400 hover:text-white text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium transition-colors relative after:absolute after:bottom-[-20px] after:left-0 after:w-full after:h-[2px] after:bg-primary after:shadow-[0_0_8px_#6b3de1]" href="#">Transit Forecast</a>
+<a class="text-slate-400 hover:text-white text-sm font-medium transition-colors" href="#">Natal Chart</a>
+<a class="text-slate-400 hover:text-white text-sm font-medium transition-colors" href="#">Synastry</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center gap-2 rounded-xl h-9 px-4 bg-primary/20 hover:bg-primary/30 text-primary-light border border-primary/30 text-sm font-bold transition-all">
+<span class="material-symbols-outlined text-lg">diamond</span>
+<span>Upgrade</span>
+</button>
+<div class="size-9 rounded-full bg-gradient-to-br from-primary to-accent-blue p-[2px]">
+<img alt="User Avatar" class="rounded-full h-full w-full object-cover border-2 border-[#0B0D17]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCniextepGMiTFrSptiIypQFoNCsWhIpeFte5DRvyNE7MGbIF0pdV89aj_9ajRmtKIQdOwJmY-yo8kF0hH7iO2ce0smfCw9au48XiKUOrdS9iL5EqhfdZFC3zS6w2v8IBQL2HLfhatViresNDaBssB1HJssPR8_QHngmjI8Br62ZF24vR33AFZSYkRmUZk3BRpBFlzAT3cv9aY9s22aNUirth_NQQftP-C8Q2Ud2MypFiw8o4k9x6CM4rjdnoThsfzW02ajS4v9GOMp"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="relative z-10 flex-grow py-8 px-6">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Main Feed (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<!-- Header & Date Toggle -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-1">Transit Forecast</h2>
+<p class="text-slate-400">Daily planetary influences for Alex</p>
+</div>
+<!-- Date Range Toggle -->
+<div class="glass-panel p-1 rounded-xl flex items-center self-start md:self-auto">
+<button class="px-4 py-1.5 rounded-lg bg-primary text-white text-sm font-medium shadow-[0_0_10px_rgba(107,61,225,0.4)]">Today</button>
+<button class="px-4 py-1.5 rounded-lg text-slate-400 hover:text-white text-sm font-medium transition-colors">This Week</button>
+<button class="px-4 py-1.5 rounded-lg text-slate-400 hover:text-white text-sm font-medium transition-colors">This Month</button>
+</div>
+</div>
+<!-- Overview Hero Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Energy Meter -->
+<div class="glass-panel rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-8xl">bolt</span>
+</div>
+<div class="flex items-center gap-6 relative z-10">
+<div class="relative size-24 flex-shrink-0">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"></path>
+<path class="text-primary drop-shadow-[0_0_4px_rgba(107,61,225,0.8)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="72, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="text-2xl font-bold text-white">72</span>
+<span class="text-[10px] uppercase tracking-wider text-slate-400">Score</span>
+</div>
+</div>
+<div>
+<div class="text-primary text-sm font-bold uppercase tracking-widest mb-1">Daily Energy</div>
+<h3 class="text-2xl font-bold text-white leading-tight">High Energy Day</h3>
+<p class="text-slate-400 text-sm mt-1">Great for initiating new projects and bold moves.</p>
+</div>
+</div>
+</div>
+<!-- Moon Phase -->
+<div class="glass-panel rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-8xl">nights_stay</span>
+</div>
+<div class="flex items-center gap-6 relative z-10">
+<div class="size-24 rounded-full bg-slate-800 relative flex-shrink-0 shadow-inner border border-slate-700 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-slate-900 rounded-full"></div>
+<!-- Abstract Moon representation -->
+<div class="absolute inset-0 w-full h-full rounded-full bg-gradient-to-r from-transparent via-transparent to-slate-200 opacity-20" style="clip-path: circle(40% at 70% 50%);"></div>
+<div class="absolute inset-0 w-full h-full rounded-full border border-slate-600 opacity-30"></div>
+<span class="material-symbols-outlined text-4xl text-slate-200 relative z-10">dark_mode</span>
+</div>
+<div>
+<div class="text-accent-gold text-sm font-bold uppercase tracking-widest mb-1">Moon Phase</div>
+<h3 class="text-2xl font-bold text-white leading-tight">Waxing Crescent</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-slate-300 text-sm font-medium">Gemini</span>
+<span class="text-slate-500 text-xs">•</span>
+<span class="text-slate-400 text-sm">14% Illumination</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Feed -->
+<div class="relative pl-4">
+<!-- Vertical Glow Line -->
+<div class="absolute left-[27px] top-4 bottom-0 w-[2px] bg-gradient-to-b from-primary via-primary/50 to-transparent timeline-glow z-0"></div>
+<!-- Event 1 -->
+<div class="relative z-10 mb-8 grid grid-cols-[56px_1fr] gap-6 group">
+<!-- Icon/Time Column -->
+<div class="flex flex-col items-center">
+<div class="size-14 rounded-full bg-[#141627] border-2 border-primary shadow-[0_0_15px_rgba(107,61,225,0.4)] flex items-center justify-center text-white mb-2 z-10 relative">
+<span class="material-symbols-outlined">public</span>
+</div>
+<div class="text-xs font-mono text-slate-400 text-center bg-[#0B0D17] px-1 rounded">10:42 AM</div>
+</div>
+<!-- Card Column -->
+<div class="glass-panel glass-panel-hover rounded-xl p-5 border-l-4 border-l-accent-green">
+<div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+<div class="flex items-center gap-3">
+<h3 class="text-lg font-bold text-white">Mars Trine Jupiter</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-accent-green/20 text-accent-green border border-accent-green/30">Trine</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs text-slate-500 font-mono">Orb: 0°12'</span>
+<span class="px-2 py-0.5 rounded-full border border-slate-700 text-slate-300 text-xs bg-slate-800/50">Career</span>
+<span class="px-2 py-0.5 rounded-full border border-slate-700 text-slate-300 text-xs bg-slate-800/50">Expansion</span>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    A surge of confidence boosts your career moves. This is an excellent time to pitch new ideas or ask for a raise. Your energy is infectious and luck is on your side.
+                                </p>
+<!-- Duration Bar -->
+<div class="w-full bg-slate-800/50 h-1.5 rounded-full overflow-hidden flex">
+<div class="w-1/3 bg-transparent"></div>
+<div class="w-1/3 bg-accent-green h-full rounded-full shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono uppercase">
+<span>Start</span>
+<span class="text-accent-green font-bold">Peak Intensity</span>
+<span>End</span>
+</div>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="relative z-10 mb-8 grid grid-cols-[56px_1fr] gap-6 group">
+<div class="flex flex-col items-center">
+<div class="size-14 rounded-full bg-[#141627] border-2 border-accent-red shadow-[0_0_15px_rgba(239,68,68,0.4)] flex items-center justify-center text-white mb-2 z-10 relative">
+<span class="material-symbols-outlined">perm_phone_msg</span>
+</div>
+<div class="text-xs font-mono text-slate-400 text-center bg-[#0B0D17] px-1 rounded">02:15 PM</div>
+</div>
+<div class="glass-panel glass-panel-hover rounded-xl p-5 border-l-4 border-l-accent-red">
+<div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+<div class="flex items-center gap-3">
+<h3 class="text-lg font-bold text-white">Mercury Square Saturn</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-accent-red/20 text-accent-red border border-accent-red/30">Square</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs text-slate-500 font-mono">Orb: 1°05'</span>
+<span class="px-2 py-0.5 rounded-full border border-slate-700 text-slate-300 text-xs bg-slate-800/50">Communication</span>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    Delays in paperwork are likely; be patient. Misunderstandings with authority figures can occur if you aren't clear. Double check your emails before sending.
+                                </p>
+<div class="w-full bg-slate-800/50 h-1.5 rounded-full overflow-hidden flex">
+<div class="w-1/2 bg-transparent"></div>
+<div class="w-1/4 bg-accent-red h-full rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono uppercase">
+<span>Start</span>
+<span class="text-accent-red font-bold">Peak Intensity</span>
+<span>End</span>
+</div>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="relative z-10 mb-8 grid grid-cols-[56px_1fr] gap-6 group">
+<div class="flex flex-col items-center">
+<div class="size-14 rounded-full bg-[#141627] border-2 border-primary shadow-[0_0_15px_rgba(107,61,225,0.4)] flex items-center justify-center text-white mb-2 z-10 relative">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div class="text-xs font-mono text-slate-400 text-center bg-[#0B0D17] px-1 rounded">08:30 PM</div>
+</div>
+<div class="glass-panel glass-panel-hover rounded-xl p-5 border-l-4 border-l-primary">
+<div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+<div class="flex items-center gap-3">
+<h3 class="text-lg font-bold text-white">Venus Conjunction Neptune</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary-light border border-primary/30">Conjunction</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs text-slate-500 font-mono">Orb: 0°45'</span>
+<span class="px-2 py-0.5 rounded-full border border-slate-700 text-slate-300 text-xs bg-slate-800/50">Love</span>
+<span class="px-2 py-0.5 rounded-full border border-slate-700 text-slate-300 text-xs bg-slate-800/50">Creativity</span>
+</div>
+</div>
+<p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    A dreamy evening perfect for romance or artistic endeavors. Your intuition is heightened, and you feel deeply connected to those around you.
+                                </p>
+<div class="w-full bg-slate-800/50 h-1.5 rounded-full overflow-hidden flex">
+<div class="w-2/3 bg-transparent"></div>
+<div class="w-1/4 bg-primary h-full rounded-full shadow-[0_0_8px_rgba(107,61,225,0.6)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono uppercase">
+<span>Start</span>
+<span class="text-primary-light font-bold">Peak Intensity</span>
+<span>End</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- Mini Transit Calendar -->
+<div class="glass-panel rounded-xl p-5">
+<div class="flex items-center justify-between mb-4">
+<h4 class="text-white font-bold text-lg">June 2024</h4>
+<div class="flex gap-1">
+<button class="size-6 flex items-center justify-center rounded hover:bg-white/10 text-slate-400">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="size-6 flex items-center justify-center rounded hover:bg-white/10 text-slate-400">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center mb-2">
+<div class="text-[10px] uppercase text-slate-500 font-bold">S</div>
+<div class="text-[10px] uppercase text-slate-500 font-bold">M</div>
+<div class="text-[10px] uppercase text-slate-500 font-bold">T</div>
+<div class="text-[10px] uppercase text-slate-500 font-bold">W</div>
+<div class="text-[10px] uppercase text-slate-500 font-bold">T</div>
+<div class="text-[10px] uppercase text-slate-500 font-bold">F</div>
+<div class="text-[10px] uppercase text-slate-500 font-bold">S</div>
+</div>
+<div class="grid grid-cols-7 gap-1">
+<!-- Empty days -->
+<div class="aspect-square rounded"></div>
+<div class="aspect-square rounded"></div>
+<!-- Calendar Days with intensity coloring -->
+<div class="aspect-square rounded bg-accent-blue/20 text-slate-300 flex items-center justify-center text-xs">1</div>
+<div class="aspect-square rounded bg-accent-blue/30 text-slate-300 flex items-center justify-center text-xs">2</div>
+<div class="aspect-square rounded bg-accent-blue/10 text-slate-300 flex items-center justify-center text-xs">3</div>
+<div class="aspect-square rounded bg-primary/40 text-white font-bold flex items-center justify-center text-xs border border-primary/50">4</div>
+<div class="aspect-square rounded bg-primary/60 text-white font-bold flex items-center justify-center text-xs shadow-[0_0_8px_rgba(107,61,225,0.4)] border border-primary">5</div>
+<div class="aspect-square rounded bg-accent-blue/20 text-slate-300 flex items-center justify-center text-xs">6</div>
+<div class="aspect-square rounded bg-accent-blue/10 text-slate-300 flex items-center justify-center text-xs">7</div>
+<div class="aspect-square rounded bg-accent-blue/20 text-slate-300 flex items-center justify-center text-xs">8</div>
+<div class="aspect-square rounded bg-primary/20 text-slate-200 flex items-center justify-center text-xs">9</div>
+<div class="aspect-square rounded bg-accent-blue/10 text-slate-300 flex items-center justify-center text-xs">10</div>
+<div class="aspect-square rounded bg-accent-blue/20 text-slate-300 flex items-center justify-center text-xs">11</div>
+<div class="aspect-square rounded bg-accent-blue/30 text-slate-300 flex items-center justify-center text-xs">12</div>
+</div>
+</div>
+<!-- Planetary Positions -->
+<div class="glass-panel rounded-xl p-0 overflow-hidden">
+<div class="p-4 border-b border-white/5">
+<h4 class="text-white font-bold text-base flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">share</span>
+                                Planetary Positions
+                            </h4>
+</div>
+<div class="flex flex-col">
+<!-- Row 1 -->
+<div class="flex items-center justify-between p-3 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-gold">sunny</span>
+<span class="text-slate-200 text-sm font-medium">Sun</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-slate-400 text-xs font-mono">15° Leo</span>
+<span class="text-xs bg-slate-800 text-slate-400 px-1.5 rounded">5H</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center justify-between p-3 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-300">dark_mode</span>
+<span class="text-slate-200 text-sm font-medium">Moon</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-slate-400 text-xs font-mono">22° Gemini</span>
+<span class="text-xs bg-slate-800 text-slate-400 px-1.5 rounded">3H</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center justify-between p-3 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-blue">public</span>
+<span class="text-slate-200 text-sm font-medium">Mercury</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-accent-red text-[10px] font-bold border border-accent-red px-1 rounded uppercase">Rx</span>
+<span class="text-slate-400 text-xs font-mono">10° Virgo</span>
+<span class="text-xs bg-slate-800 text-slate-400 px-1.5 rounded">6H</span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="flex items-center justify-between p-3 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-light">favorite</span>
+<span class="text-slate-200 text-sm font-medium">Venus</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-slate-400 text-xs font-mono">04° Libra</span>
+<span class="text-xs bg-slate-800 text-slate-400 px-1.5 rounded">7H</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Insight Card -->
+<div class="glass-panel rounded-xl p-5 border border-primary/30 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-light">auto_awesome</span>
+<h4 class="text-white font-bold">Personalized Insight</h4>
+</div>
+<ul class="space-y-3 mb-6">
+<li class="flex gap-3 items-start text-sm text-slate-300">
+<span class="text-primary mt-1 text-[10px]">●</span>
+<span>Avoid signing contracts today. The Mercury square suggests fine print issues.</span>
+</li>
+<li class="flex gap-3 items-start text-sm text-slate-300">
+<span class="text-primary mt-1 text-[10px]">●</span>
+<span>Focus on internal review and strategy rather than execution.</span>
+</li>
+<li class="flex gap-3 items-start text-sm text-slate-300">
+<span class="text-primary mt-1 text-[10px]">●</span>
+<span>Meditate on the color blue to calm mental overactivity.</span>
+</li>
+</ul>
+<button class="w-full py-3 rounded-lg bg-gradient-to-r from-primary to-accent-blue text-white font-bold text-sm shadow-[0_4px_14px_rgba(107,61,225,0.4)] hover:shadow-[0_6px_20px_rgba(107,61,225,0.6)] hover:-translate-y-0.5 transition-all">
+                            View Full Report
+                        </button>
+</div>
+<!-- Footer Links -->
+<div class="flex flex-wrap gap-4 text-xs text-slate-500 justify-center">
+<a class="hover:text-slate-300" href="#">Help Center</a>
+<span>•</span>
+<a class="hover:text-slate-300" href="#">Privacy</a>
+<span>•</span>
+<a class="hover:text-slate-300" href="#">Terms</a>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

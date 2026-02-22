@@ -4,6 +4,7 @@
 
 import { create } from 'zustand';
 import { chartService, Chart, BirthData } from '../services';
+import type { AxiosError } from 'axios';
 
 interface ChartsState {
   charts: Chart[];
@@ -27,6 +28,19 @@ interface ChartsState {
   clearError: () => void;
 }
 
+interface ApiErrorResponse {
+  error?: { message?: string };
+  message?: string;
+}
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  const axiosError = error as AxiosError<ApiErrorResponse>;
+  return axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback;
+}
+
 export const useChartsStore = create<ChartsState>((set) => ({
   charts: [],
   currentChart: null,
@@ -43,9 +57,9 @@ export const useChartsStore = create<ChartsState>((set) => ({
         pagination: response.pagination,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.response?.data?.error?.message || 'Failed to fetch charts',
+        error: getErrorMessage(error, 'Failed to fetch charts'),
         isLoading: false,
       });
     }
@@ -59,9 +73,9 @@ export const useChartsStore = create<ChartsState>((set) => ({
         currentChart: response.chart,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.response?.data?.error?.message || 'Failed to fetch chart',
+        error: getErrorMessage(error, 'Failed to fetch chart'),
         isLoading: false,
       });
     }
@@ -76,9 +90,9 @@ export const useChartsStore = create<ChartsState>((set) => ({
         currentChart: response.chart,
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.response?.data?.error?.message || 'Failed to create chart',
+        error: getErrorMessage(error, 'Failed to create chart'),
         isLoading: false,
       });
       throw error;
@@ -94,9 +108,9 @@ export const useChartsStore = create<ChartsState>((set) => ({
         currentChart: state.currentChart?.id === id ? response.chart : state.currentChart,
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.response?.data?.error?.message || 'Failed to update chart',
+        error: getErrorMessage(error, 'Failed to update chart'),
         isLoading: false,
       });
     }
@@ -111,9 +125,9 @@ export const useChartsStore = create<ChartsState>((set) => ({
         currentChart: state.currentChart?.id === id ? null : state.currentChart,
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.response?.data?.error?.message || 'Failed to delete chart',
+        error: getErrorMessage(error, 'Failed to delete chart'),
         isLoading: false,
       });
     }
@@ -128,9 +142,9 @@ export const useChartsStore = create<ChartsState>((set) => ({
         currentChart: state.currentChart?.id === id ? response.chart : state.currentChart,
         isLoading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({
-        error: error.response?.data?.error?.message || 'Failed to calculate chart',
+        error: getErrorMessage(error, 'Failed to calculate chart'),
         isLoading: false,
       });
     }

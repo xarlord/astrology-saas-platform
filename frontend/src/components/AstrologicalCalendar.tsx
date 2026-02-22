@@ -32,6 +32,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
     if (!events) return [];
 
     return events.data.filter((event) => {
+      if (!event.event_date) return false;
       const eventDate = new Date(event.event_date);
       return (
         eventDate.getDate() === date.getDate() &&
@@ -76,9 +77,9 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
                     {event.event_type.includes('retrograde') && '⇄'}
                     {(event.event_type.includes('eclipse') && (event.event_type === 'solar_eclipse' ? '🌑' : '🌕'))}
                   </span>
-                  {event.event_data?.sign && (
+                  {(event.event_data as { sign?: string } | null)?.sign && (
                     <span className="event-sign">
-                      {capitalize(event.event_data.sign)}
+                      {capitalize((event.event_data as { sign?: string }).sign!)}
                     </span>
                   )}
                 </div>
@@ -145,8 +146,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
         <EmptyState
           icon="🌙"
           title="No events this month"
-          description={`There are no major astrological events scheduled for ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}.`}
-          description="Check adjacent months for upcoming moon phases, retrogrades, and eclipses."
+          description={`There are no major astrological events scheduled for ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}. Check adjacent months for upcoming moon phases, retrogrades, and eclipses.`}
         />
       </div>
     );

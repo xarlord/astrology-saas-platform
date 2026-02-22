@@ -24,7 +24,7 @@ export function usePushNotifications(): UsePushNotificationsResult {
   const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
-    checkSubscriptionStatus();
+    void checkSubscriptionStatus();
   }, []);
 
   const checkSubscriptionStatus = async () => {
@@ -93,7 +93,7 @@ export function usePushNotifications(): UsePushNotificationsResult {
       });
 
       setIsSubscribed(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to subscribe to push notifications:', error);
       throw error;
     } finally {

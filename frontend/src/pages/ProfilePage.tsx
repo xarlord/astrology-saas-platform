@@ -5,8 +5,15 @@
 import { SkeletonLoader, EmptyState } from '../components';
 import { useState, useEffect } from 'react';
 
+interface ProfileData {
+  // Placeholder interface - expand as needed
+  id?: string;
+  name?: string;
+  email?: string;
+}
+
 export default function ProfilePage() {
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +33,7 @@ export default function ProfilePage() {
       }
     };
 
-    loadProfile();
+    void loadProfile();
   }, []);
 
   if (isLoading) {

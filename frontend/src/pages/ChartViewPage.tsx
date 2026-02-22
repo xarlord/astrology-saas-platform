@@ -2,13 +2,51 @@
  * Chart View Page Component
  */
 
-import { SkeletonLoader, EmptyState } from '../components';
+import { SkeletonLoader, EmptyState, ChartWheel } from '../components';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import { chartService } from '../services';
+import type { Chart, PlanetPosition, CalculatedChartData } from '../services/api.types';
+import type { ChartData, PlanetPosition as WheelPlanetPosition, HouseCusp as WheelHouseCusp, Aspect as WheelAspect } from '../components/ChartWheel';
+
+// Convert API's CalculatedChartData to ChartWheel's ChartData format
+function toWheelData(data: CalculatedChartData): ChartData {
+  return {
+    planets: data.planets.map((p): WheelPlanetPosition => ({
+      planet: p.planet,
+      sign: p.sign,
+      degree: p.degree,
+      minute: p.minute,
+      second: 0, // API doesn't provide seconds
+      house: p.house,
+      retrograde: p.retrograde,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      speed: p.speed,
+    })),
+    houses: data.houses.map((h): WheelHouseCusp => ({
+      house: h.house,
+      sign: h.sign,
+      degree: h.longitude % 30,
+      minute: 0,
+      second: 0,
+    })),
+    aspects: data.aspects.map((a): WheelAspect => ({
+      planet1: a.planet1,
+      planet2: a.planet2,
+      type: a.type as WheelAspect['type'],
+      degree: a.degree,
+      minute: 0,
+      orb: a.orb,
+      applying: a.applying,
+      separating: !a.applying,
+    })),
+  };
+}
 
 export default function ChartViewPage() {
   const { chartId } = useParams<{ chartId: string }>();
-  const [chartData, setChartData] = useState<any>(null);
+  const [chartData, setChartData] = useState<Chart | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,19 +57,18 @@ export default function ChartViewPage() {
       try {
         setIsLoading(true);
         setError(null);
-        // TODO: Implement actual chart data fetching
-        // For now, simulating loading
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setChartData(null); // No chart data yet
-      } catch (err) {
-        setError('Failed to load chart data');
+        const { chart } = await chartService.getChart(chartId);
+        setChartData(chart);
+      } catch (err: unknown) {
+        const axiosError = err as { response?: { data?: { error?: { message?: string } } } };
+        setError(axiosError.response?.data?.error?.message ?? 'Failed to load chart data');
         console.error('Chart loading error:', err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadChart();
+    void loadChart();
   }, [chartId]);
 
   if (isLoading) {
@@ -109,48 +146,84 @@ export default function ChartViewPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow">
         <div className="container mx-auto px-4 py-4">
-          <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
+          <Link to="/dashboard" className="text-primary-600 hover:text-primary-700 inline-flex items-center gap-2">
             ← Back to Dashboard
-          </a>
-          <h1 className="text-2xl font-bold mt-4">Natal Chart</h1>
+          </Link>
+          <h1 className="text-2xl font-bold mt-4" data-testid="chart-name">{chartData?.name || 'Natal Chart'}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1" data-testid="chart-info">
+            Born {chartData?.birth_data?.birth_date} at {chartData?.birth_data?.birth_time} in {chartData?.birth_data?.birth_place_name}
+          </p>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Chart Wheel */}
-          <div className="card">
-            <h2 className="text-xl font-bold mb-4">Chart Wheel</h2>
-            <div className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-              <p className="text-gray-500">Chart wheel visualization</p>
+        {chartData?.calculated_data ? (
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Chart Wheel */}
+            <div className="card">
+              <h2 className="text-xl font-bold mb-4">Chart Wheel</h2>
+              <div className="aspect-square flex items-center justify-center">
+                <ChartWheel
+                  data={toWheelData(chartData.calculated_data)}
+                />
+              </div>
+            </div>
+
+            {/* Planetary Positions */}
+            <div className="card">
+              <h2 className="text-xl font-bold mb-4">Planetary Positions</h2>
+              <div className="space-y-2" data-testid="planetary-positions">
+                {chartData.calculated_data.planets?.map((planet: PlanetPosition) => (
+                  <div key={planet.planet} className="flex justify-between py-2 border-b dark:border-gray-700">
+                    <span className="font-medium">{planet.planet}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {planet.sign} {planet.degree}°{planet.minute}'
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+        ) : (
+          <EmptyState
+            icon="📊"
+            title="Chart not calculated"
+            description="This chart hasn't been calculated yet. Click the button below to generate your natal chart."
+            actionText="Calculate Chart"
+            onAction={() => {
+              void (async () => {
+                try {
+                  setIsLoading(true);
+                  await chartService.calculateChart(chartId!);
+                  const { chart } = await chartService.getChart(chartId!);
+                  setChartData(chart);
+                } catch (err) {
+                  setError('Failed to calculate chart');
+                } finally {
+                  setIsLoading(false);
+                }
+              })();
+            }}
+            secondaryActionText="Back to Dashboard"
+            onSecondaryAction={() => window.location.href = '/dashboard'}
+          />
+        )}
 
-          {/* Planetary Positions */}
-          <div className="card">
-            <h2 className="text-xl font-bold mb-4">Planetary Positions</h2>
-            <div className="space-y-2">
-              <div className="flex justify-between py-2 border-b dark:border-gray-700">
-                <span className="font-medium">Sun</span>
-                <span className="text-gray-600 dark:text-gray-400">Loading...</span>
-              </div>
-              <div className="flex justify-between py-2 border-b dark:border-gray-700">
-                <span className="font-medium">Moon</span>
-                <span className="text-gray-600 dark:text-gray-400">Loading...</span>
-              </div>
-              <div className="flex justify-between py-2 border-b dark:border-gray-700">
-                <span className="font-medium">Mercury</span>
-                <span className="text-gray-600 dark:text-gray-400">Loading...</span>
-              </div>
-              {/* More planets... */}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <a href={`/analysis/${chartId}`} className="btn-primary">
+        <div className="mt-8 flex gap-4">
+          <Link
+            to={`/analysis/${chartId}`}
+            className="btn-primary"
+            data-testid="view-analysis-link"
+          >
             View Analysis →
-          </a>
+          </Link>
+          <Link
+            to={`/charts/${chartId}/edit`}
+            className="btn-secondary"
+            data-testid="edit-chart-link"
+          >
+            Edit Chart
+          </Link>
         </div>
       </main>
     </div>

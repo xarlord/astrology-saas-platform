@@ -29,17 +29,24 @@ interface ChartData {
   }[];
 }
 
+interface AIInterpretationData {
+  interpretation?: string;
+  enhanced?: string;
+  ai: boolean;
+  source?: string;
+}
+
 export default function AnalysisPage() {
   const { chartId } = useParams<{ chartId: string }>();
   const [chartData, setChartData] = useState<ChartData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [aiInterpretation, setAIInterpretation] = useState<any>(null);
+  const [aiInterpretation, setAIInterpretation] = useState<AIInterpretationData | null>(null);
 
   useEffect(() => {
     // TODO: Fetch chart data from API
     // For now, using placeholder data
     setChartData({
-      id: chartId || '1',
+      id: chartId ?? '1',
       planets: [
         { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
         { planet: 'moon', sign: 'taurus', degree: 10, house: 2 },
@@ -55,8 +62,12 @@ export default function AnalysisPage() {
     setLoading(false);
   }, [chartId]);
 
-  const handleAIInterpretation = (interpretation: any) => {
-    setAIInterpretation(interpretation);
+  const handleAIInterpretation = (interpretation: { interpretation: string; ai: boolean; source?: string }) => {
+    setAIInterpretation({
+      ai: interpretation.ai,
+      interpretation: interpretation.interpretation,
+      source: interpretation.source,
+    });
   };
 
   if (loading) {
@@ -118,7 +129,7 @@ export default function AnalysisPage() {
         {/* AI Toggle Section */}
         <div className="mb-6">
           <AIInterpretationToggle
-            chartData={chartData}
+            chartData={chartData ? { chartId: chartData.id, birthData: chartData } : undefined}
             onInterpretationGenerated={handleAIInterpretation}
           />
         </div>
@@ -138,7 +149,7 @@ export default function AnalysisPage() {
                 overview: {
                   sunSign: {
                     planet: 'sun',
-                    sign: chartData.planets.find(p => p.planet === 'sun')?.sign || 'aries',
+                    sign: chartData.planets.find(p => p.planet === 'sun')?.sign ?? 'aries',
                     keywords: ['core identity', 'vitality', 'self-expression'],
                     general: 'Your Sun sign represents your core identity and life purpose.',
                     strengths: ['Leadership', 'Confidence', 'Creativity'],
@@ -147,7 +158,7 @@ export default function AnalysisPage() {
                   },
                   moonSign: {
                     planet: 'moon',
-                    sign: chartData.planets.find(p => p.planet === 'moon')?.sign || 'taurus',
+                    sign: chartData.planets.find(p => p.planet === 'moon')?.sign ?? 'taurus',
                     keywords: ['emotions', 'intuition', 'inner needs'],
                     general: 'Your Moon sign reveals your emotional nature and inner world.',
                     strengths: ['Emotional intelligence', 'Nurturing', 'Intuition'],

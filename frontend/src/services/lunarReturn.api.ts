@@ -93,7 +93,7 @@ export async function getNextLunarReturn(): Promise<{
   nextReturn: Date;
   natalMoon: NatalMoon;
 }> {
-  const response = await api.get('/lunar-return/next');
+  const response = await api.get<{ data: { nextReturn: Date; natalMoon: NatalMoon } }>('/lunar-return/next');
   return response.data.data;
 }
 
@@ -104,7 +104,7 @@ export async function getCurrentLunarReturn(): Promise<{
   returnDate: Date;
   daysUntil: number;
 }> {
-  const response = await api.get('/lunar-return/current');
+  const response = await api.get<{ data: { returnDate: Date; daysUntil: number } }>('/lunar-return/current');
   return response.data.data;
 }
 
@@ -112,7 +112,7 @@ export async function getCurrentLunarReturn(): Promise<{
  * Calculate lunar return chart for specific date
  */
 export async function calculateLunarReturnChart(returnDate: Date): Promise<LunarReturnChart> {
-  const response = await api.post('/lunar-return/chart', { returnDate });
+  const response = await api.post<{ data: LunarReturnChart }>('/lunar-return/chart', { returnDate });
   return response.data.data;
 }
 
@@ -120,8 +120,8 @@ export async function calculateLunarReturnChart(returnDate: Date): Promise<Lunar
  * Get monthly lunar forecast
  */
 export async function getLunarMonthForecast(returnDate?: Date): Promise<LunarMonthForecast> {
-  const response = await api.post('/lunar-return/forecast', {
-    returnDate: returnDate || null,
+  const response = await api.post<{ data: LunarMonthForecast }>('/lunar-return/forecast', {
+    returnDate: returnDate ?? null,
   });
   return response.data.data;
 }
@@ -141,7 +141,12 @@ export async function getLunarReturnHistory(
     totalPages: number;
   };
 }> {
-  const response = await api.get('/lunar-return/history', {
+  const response = await api.get<{
+    data: {
+      returns: SavedLunarReturn[];
+      pagination: { page: number; limit: number; total: number; totalPages: number };
+    }
+  }>('/lunar-return/history', {
     params: { page, limit },
   });
   return response.data.data;
@@ -165,7 +170,9 @@ export async function calculateCustomLunarReturn(
   returnDate: Date;
   forecast?: LunarMonthForecast;
 }> {
-  const response = await api.post('/lunar-return/calculate', {
+  const response = await api.post<{
+    data: { chart: LunarReturnChart; returnDate: Date; forecast?: LunarMonthForecast }
+  }>('/lunar-return/calculate', {
     returnDate,
     includeForecast,
   });

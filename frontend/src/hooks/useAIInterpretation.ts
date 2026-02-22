@@ -7,10 +7,36 @@ import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import aiService from '../services/ai.service';
 
+import type { Chart } from '../services/api.types';
+
+interface NatalChartData {
+  chartId: string;
+  birthData: unknown;
+}
+
+interface TransitForecastData {
+  chartId: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface SynastryChartData {
+  chartA: Chart;
+  chartB: Chart;
+}
+
+interface AIInterpretationResult {
+  interpretation: string;
+  enhanced?: string;
+  ai: boolean;
+  source: string;
+  generatedAt?: string;
+}
+
 interface UseAIInterpretationResult {
-  generateNatal: (chartData: any) => Promise<any>;
-  generateTransit: (transitData: any) => Promise<any>;
-  generateCompatibility: (synastryData: any) => Promise<any>;
+  generateNatal: (chartData: NatalChartData) => Promise<AIInterpretationResult>;
+  generateTransit: (transitData: TransitForecastData) => Promise<AIInterpretationResult>;
+  generateCompatibility: (synastryData: SynastryChartData) => Promise<AIInterpretationResult>;
   isGenerating: boolean;
   error: Error | null;
   isAvailable: boolean;
@@ -27,7 +53,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
   });
 
   const natalMutation = useMutation({
-    mutationFn: (chartData: any) => aiService.generateNatal(chartData),
+    mutationFn: (chartData: NatalChartData) => aiService.generateNatal(chartData),
     onSuccess: () => {
       setError(null);
     },
@@ -35,7 +61,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
   });
 
   const transitMutation = useMutation({
-    mutationFn: (transitData: any) => aiService.generateTransit(transitData),
+    mutationFn: (transitData: TransitForecastData) => aiService.generateTransit(transitData),
     onSuccess: () => {
       setError(null);
     },
@@ -43,7 +69,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
   });
 
   const compatibilityMutation = useMutation({
-    mutationFn: (synastryData: any) => aiService.generateCompatibility(synastryData),
+    mutationFn: (synastryData: SynastryChartData) => aiService.generateCompatibility(synastryData),
     onSuccess: () => {
       setError(null);
     },
@@ -56,6 +82,6 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     generateCompatibility: compatibilityMutation.mutateAsync,
     isGenerating: natalMutation.isPending,
     error,
-    isAvailable: status?.available || false,
+    isAvailable: status?.available ?? false,
   };
 }

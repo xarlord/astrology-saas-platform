@@ -3,8 +3,6 @@
  * Shows AI-enhanced interpretations with special formatting
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 import React from 'react';
 import { Sparkles, AlertCircle } from 'lucide-react';
 import './AIInterpretationDisplay.css';
@@ -12,7 +10,7 @@ import './AIInterpretationDisplay.css';
 interface AIInterpretationDisplayProps {
   interpretation: {
     ai: boolean;
-    enhanced?: string | Record<string, any>;
+    enhanced?: string | Record<string, unknown>;
     generatedAt?: string;
     model?: string;
   };
@@ -36,7 +34,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
     });
   };
 
-  const renderStructuredContent = (content: Record<string, any>) => {
+  const renderStructuredContent = (content: Record<string, unknown>) => {
     return (
       <div className="ai-structured">
         {Object.entries(content).map(([key, value]) => (
@@ -56,7 +54,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
                   ))}
                 </ul>
               ) : typeof value === 'object' && value !== null ? (
-                renderStructuredContent(value)
+                renderStructuredContent(value as Record<string, unknown>)
               ) : (
                 <span>{String(value)}</span>
               )}

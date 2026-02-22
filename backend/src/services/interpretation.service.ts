@@ -6,5 +6,4 @@
 export {
   generateCompletePersonalityAnalysis,
   generateTransitAnalysis,
-  generateInterpretation,
 } from '../modules/analysis/services/interpretation.service';

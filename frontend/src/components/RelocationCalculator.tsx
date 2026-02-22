@@ -17,12 +17,23 @@ interface Location {
   region?: string;
 }
 
+interface SolarReturnInterpretation {
+  themes: string[];
+  overview?: string;
+}
+
+interface SolarReturnCalculatedData {
+  planets: { planet: string; house: number; sign: string; longitude: number }[];
+  houses?: unknown[];
+  aspects?: unknown[];
+}
+
 interface SolarReturnData {
   id: string;
   year: number;
   returnDate: string;
-  calculatedData: any;
-  interpretation: any;
+  calculatedData: SolarReturnCalculatedData;
+  interpretation: SolarReturnInterpretation;
 }
 
 interface RelocationCalculatorProps {
@@ -32,11 +43,10 @@ interface RelocationCalculatorProps {
 }
 
 export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
-  natalChartId,
   year,
   onRecalculate,
 }) => {
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [_locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation] = useState<Location | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -64,8 +74,10 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       setRelocatedReturn(relocated);
       setShowComparison(true);
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to calculate relocated chart');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message :
+        (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error?.message ?? 'Failed to calculate relocated chart';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -83,7 +95,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         params: { q: searchQuery },
       });
 
-      setLocations(response.data.results);
+      setLocations((response.data as { results: Location[] }).results);
     } catch (err) {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');
@@ -95,8 +107,8 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
   const getHouseChanges = () => {
     if (!originalReturn || !relocatedReturn) return [];
 
-    const originalSun = originalReturn.calculatedData.planets.find((p: any) => p.planet === 'sun');
-    const relocatedSun = relocatedReturn.calculatedData.planets.find((p: any) => p.planet === 'sun');
+    const originalSun = originalReturn.calculatedData.planets.find((p) => p.planet === 'sun');
+    const relocatedSun = relocatedReturn.calculatedData.planets.find((p) => p.planet === 'sun');
 
     if (!originalSun || !relocatedSun) return [];
 
@@ -113,12 +125,12 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       return { added: [], removed: [] };
     }
 
-    const originalThemes = originalReturn.interpretation.themes || [];
-    const relocatedThemes = relocatedReturn.interpretation.themes || [];
+    const originalThemes: string[] = originalReturn.interpretation.themes || [];
+    const relocatedThemes: string[] = relocatedReturn.interpretation.themes || [];
 
     return {
-      added: relocatedThemes.filter((t: string) => !originalThemes.includes(t)),
-      removed: originalThemes.filter((t: string) => !relocatedThemes.includes(t)),
+      added: relocatedThemes.filter((t) => !originalThemes.includes(t)),
+      removed: originalThemes.filter((t) => !relocatedThemes.includes(t)),
     };
   };
 
@@ -154,9 +166,9 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             placeholder="Search for a city..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            onKeyPress={(e) => { if (e.key === 'Enter') void handleSearch(); }}
           />
-          <button onClick={handleSearch} disabled={loading || !searchQuery}>
+          <button onClick={() => void handleSearch()} disabled={loading || !searchQuery}>
             Search
           </button>
         </div>
@@ -177,7 +189,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             <button
               key={index}
               className="location-card"
-              onClick={() => handleLocationSelect(location)}
+              onClick={() => { void handleLocationSelect(location); }}
               disabled={loading}
             >
               <MapPin size={20} />
@@ -198,14 +210,14 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               <h4>Original Location</h4>
               <div className="location-details">
                 <p><strong>Year:</strong> {year}</p>
-                <p><strong>Return Date:</strong> {new Date(originalReturn?.returnDate || '').toLocaleDateString()}</p>
+                <p><strong>Return Date:</strong> {new Date(originalReturn?.returnDate ?? '').toLocaleDateString()}</p>
               </div>
 
               {originalReturn?.interpretation && (
                 <div className="themes-preview">
                   <h5>Themes:</h5>
                   <div className="theme-tags">
-                    {originalReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
+                    {originalReturn.interpretation.themes.slice(0, 3).map((theme, i: number) => (
                       <span key={i} className="theme-tag original">{theme}</span>
                     ))}
                   </div>
@@ -230,7 +242,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                 <div className="themes-preview">
                   <h5>Themes:</h5>
                   <div className="theme-tags">
-                    {relocatedReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
+                    {relocatedReturn.interpretation.themes.slice(0, 3).map((theme, i: number) => (
                       <span key={i} className="theme-tag relocated">{theme}</span>
                     ))}
                   </div>
@@ -262,7 +274,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               <div className="theme-group added">
                 <h5>New Themes:</h5>
                 <div className="theme-tags">
-                  {getThemeChanges().added.map((theme: string, i: number) => (
+                  {getThemeChanges().added.map((theme, i: number) => (
                     <span key={i} className="theme-tag added">{theme}</span>
                   ))}
                 </div>
@@ -273,7 +285,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               <div className="theme-group removed">
                 <h5>Themes No Longer Active:</h5>
                 <div className="theme-tags">
-                  {getThemeChanges().removed.map((theme: string, i: number) => (
+                  {getThemeChanges().removed.map((theme, i: number) => (
                     <span key={i} className="theme-tag removed">{theme}</span>
                   ))}
                 </div>
@@ -305,7 +317,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             longitude: parseFloat(formData.get('longitude') as string),
             timezone: formData.get('timezone') as string,
           };
-          handleLocationSelect(location);
+          void handleLocationSelect(location);
         }}>
           <div className="form-row">
             <label>Location Name</label>

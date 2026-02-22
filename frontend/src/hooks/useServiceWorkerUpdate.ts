@@ -21,7 +21,7 @@ export function useServiceWorkerUpdate(): UseServiceWorkerUpdateResult {
   useEffect(() => {
     let mounted = true;
 
-    registerSW({
+    void registerSW({
       onNeedRefresh: () => {
         if (mounted) {
           setNeedRefresh(true);

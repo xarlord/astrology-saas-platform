@@ -6,9 +6,16 @@ import { SkeletonLoader, EmptyState } from '../components';
 import { useCharts } from '../hooks';
 import { useState, useEffect } from 'react';
 
+interface TransitData {
+  // Placeholder interface - expand as needed
+  id?: string;
+  date?: string;
+  transits?: unknown[];
+}
+
 export default function TransitPage() {
-  const { charts, fetchCharts, isLoading: chartsLoading } = useCharts();
-  const [transitData, setTransitData] = useState<any>(null);
+  useCharts(); // Initialize charts store (auto-loads charts)
+  const [transitData, setTransitData] = useState<TransitData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +36,7 @@ export default function TransitPage() {
       }
     };
 
-    loadTransits();
+    void loadTransits();
   }, []);
 
   if (isLoading) {

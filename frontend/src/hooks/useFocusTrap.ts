@@ -91,7 +91,7 @@ export function useFocusTrap<T extends HTMLElement>({
       container.removeEventListener('keydown', handleKeyDown);
 
       // Return focus to the previous element or specified return element
-      const returnElement = returnFocusRef?.current || previousActiveElementRef.current;
+      const returnElement = returnFocusRef?.current ?? previousActiveElementRef.current;
       if (returnElement) {
         returnElement.focus();
       }

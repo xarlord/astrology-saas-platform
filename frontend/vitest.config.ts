@@ -36,13 +36,12 @@ export default defineConfig({
         'src/types/**',
         'src/assets/**',
       ],
-      // 65% coverage requirement (improved from 35% -> 54% -> 65%)
-      // Target: 80% - continue adding tests for pages
+      // 80% coverage requirement (improved from 35% -> 54% -> 65% -> 80%)
       thresholds: {
-        lines: 65,
+        lines: 80,
         functions: 65,
-        branches: 65,
-        statements: 65,
+        branches: 80,
+        statements: 80,
       },
       perFile: false,
     },

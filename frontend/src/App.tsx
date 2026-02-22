@@ -2,6 +2,7 @@
  * Main App Component
  */
 
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -9,21 +10,32 @@ import { useEffect } from 'react';
 // Components
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
-// Pages
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import ChartCreatePage from './pages/ChartCreatePage';
-import ChartViewPage from './pages/ChartViewPage';
-import AnalysisPage from './pages/AnalysisPage';
-import TransitPage from './pages/TransitPage';
-import ProfilePage from './pages/ProfilePage';
-import SynastryPageWrapper from './pages/SynastryPage';
-import SolarReturnsPage from './pages/SolarReturnsPage';
-import CalendarPage from './pages/CalendarPage';
-import LunarReturnsPage from './pages/LunarReturnsPage';
+// Lazy load pages for code splitting
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const LoginPage = lazy(() => import('./pages/LoginPageNew'));
+const RegisterPage = lazy(() => import('./pages/RegisterPageNew'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const CalendarPage = lazy(() => import('./pages/CalendarPage'));
+const SynastryPage = lazy(() => import('./pages/SynastryPageNew'));
+const TransitForecastPage = lazy(() => import('./pages/TransitForecastPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const SolarReturnsPage = lazy(() => import('./pages/SolarReturnsPage'));
+const LunarReturnsPage = lazy(() => import('./pages/LunarReturnsPage'));
+const ProfileSettingsPage = lazy(() => import('./pages/ProfileSettingsPage'));
+const NatalChartDetailPage = lazy(() => import('./pages/NatalChartDetailPage'));
+const ChartCreationWizardPage = lazy(() => import('./pages/ChartCreationWizardPage'));
+const SavedChartsGalleryPage = lazy(() => import('./pages/SavedChartsGalleryPage'));
+const LearningCenterPage = lazy(() => import('./pages/LearningCenterPage'));
+const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'));
+const DetailedNatalReportPage = lazy(() => import('./pages/DetailedNatalReportPage'));
+const SolarReturnAnnualReportPage = lazy(() => import('./pages/SolarReturnAnnualReportPage'));
+const ChartCreatePage = lazy(() => import('./pages/ChartCreatePage'));
+const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -37,121 +49,184 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // Register service worker for PWA
+  // Register service worker for PWA (production only)
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
+    // Only register service worker in production builds
+    if (import.meta.env.PROD && 'serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((registration) => {
         console.log('Service Worker registered:', registration);
       }).catch((error) => {
-        console.error('Service Worker registration failed:', error);
+        // Service worker failures should not break the app
+        console.warn('Service Worker registration failed (non-critical):', String(error));
       });
     }
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <ServiceWorkerUpdateBanner />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      <ErrorBoundary>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <ServiceWorkerUpdateBanner />
+          <Suspense fallback={<LoadingSpinner fullScreen />}>
+            <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/charts/new"
-            element={
-              <ProtectedRoute>
-                <ChartCreatePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/charts/:id"
-            element={
-              <ProtectedRoute>
-                <ChartViewPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/:chartId"
-            element={
-              <ProtectedRoute>
-                <AnalysisPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/transits"
-            element={
-              <ProtectedRoute>
-                <TransitPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/synastry"
-            element={
-              <ProtectedRoute>
-                <SynastryPageWrapper />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/solar-returns"
-            element={
-              <ProtectedRoute>
-                <SolarReturnsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/solar-returns/:year"
-            element={
-              <ProtectedRoute>
-                <SolarReturnsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/calendar"
-            element={
-              <ProtectedRoute>
-                <CalendarPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/lunar-returns"
-            element={
-              <ProtectedRoute>
-                <LunarReturnsPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/calendar"
+              element={
+                <ProtectedRoute>
+                  <CalendarPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/synastry"
+              element={
+                <ProtectedRoute>
+                  <SynastryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/transits"
+              element={
+                <ProtectedRoute>
+                  <TransitForecastPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <ProfileSettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/lunar-returns"
+              element={
+                <ProtectedRoute>
+                  <LunarReturnsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/solar-returns"
+              element={
+                <ProtectedRoute>
+                  <SolarReturnsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/solar-returns/:year"
+              element={
+                <ProtectedRoute>
+                  <SolarReturnsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/charts/new"
+              element={
+                <ProtectedRoute>
+                  <ChartCreatePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/charts/create"
+              element={
+                <ProtectedRoute>
+                  <ChartCreationWizardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/charts"
+              element={
+                <ProtectedRoute>
+                  <SavedChartsGalleryPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/charts/:id"
+              element={
+                <ProtectedRoute>
+                  <NatalChartDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analysis/:chartId"
+              element={
+                <ProtectedRoute>
+                  <AnalysisPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/learning"
+              element={
+                <ProtectedRoute>
+                  <LearningCenterPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/learning/courses/:id"
+              element={
+                <ProtectedRoute>
+                  <CourseDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports/natal/:chartId"
+              element={
+                <ProtectedRoute>
+                  <DetailedNatalReportPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports/solar-return/:id"
+              element={
+                <ProtectedRoute>
+                  <SolarReturnAnnualReportPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* 404 */}
-          <Route path="*" element={<div className="min-h-screen flex items-center justify-center text-gray-500">Page not found</div>} />
-        </Routes>
+            {/* 404 - Must be last */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
       </div>
+    </ErrorBoundary>
     </QueryClientProvider>
   );
 }

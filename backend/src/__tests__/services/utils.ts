@@ -53,7 +53,7 @@ export function angularDistance(deg1: number, deg2: number): number {
 /**
  * Assert planet position is valid
  */
-export function assertPlanetPosition(position: any, planetName: string) {
+export function assertPlanetPosition(position: any, _planetName: string) {
   expect(position).toBeDefined();
   expect(position).toHaveProperty('longitude');
   expect(position.longitude).toBeGreaterThanOrEqual(0);
@@ -78,7 +78,7 @@ export function assertAspect(aspect: any) {
 /**
  * Assert house cusp is valid
  */
-export function assertHouseCusp(house: any, houseNumber: number) {
+export function assertHouseCusp(house: any, _houseNumber: number) {
   expect(house).toBeDefined();
   expect(house).toHaveProperty('cusp');
   expect(house.cusp).toBeGreaterThanOrEqual(0);

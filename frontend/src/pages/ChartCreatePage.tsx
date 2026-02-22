@@ -28,6 +28,8 @@ export default function ChartCreatePage() {
                 className="input"
                 placeholder="My Natal Chart"
                 defaultValue="Natal Chart"
+                data-testid="chart-name-input"
+                name="name"
               />
             </div>
 
@@ -35,14 +37,14 @@ export default function ChartCreatePage() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Birth Date
               </label>
-              <input type="date" className="input" required />
+              <input type="date" className="input" required data-testid="birth-date-input" name="birth_date" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Birth Time
               </label>
-              <input type="time" className="input" required />
+              <input type="time" className="input" required data-testid="birth-time-input" name="birth_time" />
               <p className="mt-1 text-sm text-gray-500">
                 Exact time needed for accurate house calculations
               </p>
@@ -57,6 +59,8 @@ export default function ChartCreatePage() {
                 className="input"
                 placeholder="Search city or enter coordinates"
                 required
+                data-testid="birth-place-input"
+                name="birth_place"
               />
             </div>
 
@@ -64,7 +68,7 @@ export default function ChartCreatePage() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 House System
               </label>
-              <select className="input">
+              <select className="input" data-testid="house-system-select" name="house_system">
                 <option value="placidus">Placidus</option>
                 <option value="koch">Koch</option>
                 <option value="porphyry">Porphyry</option>
@@ -76,14 +80,14 @@ export default function ChartCreatePage() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Zodiac Type
               </label>
-              <select className="input">
+              <select className="input" data-testid="zodiac-type-select" name="zodiac_type">
                 <option value="tropical">Tropical</option>
                 <option value="sidereal">Sidereal (Fagan-Bradley)</option>
                 <option value="sidereal-lahiri">Sidereal (Lahiri)</option>
               </select>
             </div>
 
-            <button type="submit" className="w-full btn-primary">
+            <button type="submit" className="w-full btn-primary" data-testid="submit-chart-button">
               Generate Chart
             </button>
           </form>

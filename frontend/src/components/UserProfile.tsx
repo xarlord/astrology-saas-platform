@@ -10,7 +10,6 @@ import {
   CheckIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChartWheel } from './';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -62,7 +61,7 @@ export interface Chart {
     zodiac: 'tropical' | 'sidereal';
     sideralMode?: string;
   };
-  calculatedData?: any;
+  calculatedData?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -82,18 +81,18 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     id: user.id,
     email: user.email,
     name: user.name,
-    avatar: user.avatar_url || user.avatar,
-    createdAt: user.createdAt || new Date(),
-    timezone: user.timezone || 'UTC',
+    avatar: user.avatar,
+    createdAt: new Date(user.createdAt ?? Date.now()),
+    timezone: user.timezone ?? 'UTC',
     subscription: {
-      plan: (user.plan as 'free' | 'premium' | 'professional') || 'free',
+      plan: (user.plan as 'free' | 'premium' | 'professional') ?? 'free',
       status: 'active',
     },
     preferences: {
-      theme: user.preferences?.theme || 'auto',
-      defaultHouseSystem: user.preferences?.defaultHouseSystem || 'placidus',
-      defaultZodiac: user.preferences?.defaultZodiac || 'tropical',
-      aspectOrbs: user.preferences?.aspectOrbs || {
+      theme: (user.preferences?.theme as 'light' | 'dark' | 'auto') ?? 'auto',
+      defaultHouseSystem: (user.preferences?.defaultHouseSystem as HouseSystem) ?? 'placidus',
+      defaultZodiac: (user.preferences?.defaultZodiac as 'tropical' | 'sidereal') ?? 'tropical',
+      aspectOrbs: {
         conjunction: 10,
         opposition: 10,
         trine: 8,
@@ -110,30 +109,30 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     name: chart.name,
     type: (chart.type || 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
     birthData: {
-      date: new Date(chart.birth_date || Date.now()),
-      time: chart.birth_time || '00:00',
+      date: new Date(chart.birthData?.birthDate ?? Date.now()),
+      time: chart.birthData?.birthTime ?? '00:00',
       place: {
-        name: chart.birth_place_name || 'Unknown',
-        latitude: 0,
-        longitude: 0,
-        timezone: 'UTC',
+        name: chart.birthData?.birthPlace ?? 'Unknown',
+        latitude: chart.birthData?.latitude ?? 0,
+        longitude: chart.birthData?.longitude ?? 0,
+        timezone: chart.birthData?.timezone ?? 'UTC',
       },
-      timeUnknown: false,
+      timeUnknown: chart.birthData?.unknownTime ?? false,
     },
     settings: {
       houseSystem: 'placidus',
       zodiac: 'tropical',
     },
-    calculatedData: chart.calculated_data,
-    createdAt: new Date(chart.created_at || Date.now()),
-    updatedAt: new Date(chart.created_at || Date.now()),
+    calculatedData: chart.positions ? Object.fromEntries(chart.positions.map(p => [p.name, p])) : undefined,
+    createdAt: new Date(chart.createdAt ?? Date.now()),
+    updatedAt: new Date(chart.createdAt ?? Date.now()),
   }));
 
   const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
-    name: user?.name || '',
-    timezone: user?.timezone || 'UTC',
+    name: user?.name ?? '',
+    timezone: user?.timezone ?? 'UTC',
   });
 
   const tabs = [
@@ -168,7 +167,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
         editData={editData}
         onEditToggle={() => setIsEditing(!isEditing)}
         onDataChange={setEditData}
-        onSave={handleSaveProfile}
+        onSave={() => { void handleSaveProfile(); }}
       />
 
       {/* Tabbed Content */}
@@ -206,7 +205,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
               charts={chartsForDisplay}
               onEditChart={onEditChart}
               onViewChart={onViewChart}
-              onDeleteChart={handleDeleteChart}
+              onDeleteChart={(chartId) => { void handleDeleteChart(chartId); }}
             />
           )}
           {activeTab === 'preferences' && <PreferencesTab user={userProfile} />}

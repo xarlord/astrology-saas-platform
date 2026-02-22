@@ -4,19 +4,20 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SynastryPage from '../components/SynastryPage';
 import { chartService, Chart } from '../services/chart.service';
 import { AppLayout } from '../components/AppLayout';
 import { SkeletonLoader, EmptyState } from '../components';
 
 const SynastryPageWrapper: React.FC = () => {
+  const navigate = useNavigate();
   const [charts, setCharts] = useState<Chart[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadCharts();
+    void loadCharts();
   }, []);
 
   const loadCharts = async () => {
@@ -25,9 +26,10 @@ const SynastryPageWrapper: React.FC = () => {
       setError(null);
       const { charts } = await chartService.getCharts();
       setCharts(charts);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading charts:', err);
-      setError(err.response?.data?.error || 'Failed to load charts');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load charts';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -49,7 +51,7 @@ const SynastryPageWrapper: React.FC = () => {
           title="Unable to load charts"
           description={error}
           actionText="Retry"
-          onAction={loadCharts}
+          onAction={() => { void loadCharts(); }}
         />
       </AppLayout>
     );

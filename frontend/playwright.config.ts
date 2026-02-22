@@ -55,17 +55,31 @@ export default defineConfig({
     /* Test against mobile viewports */
     {
       name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      use: {
+        ...devices['Pixel 5'],
+        // Mobile-specific timeouts for slower execution
+        actionTimeout: 20000,
+        navigationTimeout: 40000,
+      },
     },
     {
       name: 'Mobile Safari',
-      use: { ...devices['iPhone 13'] },
+      use: {
+        ...devices['iPhone 13'],
+        // Mobile-specific timeouts for slower execution
+        actionTimeout: 20000,
+        navigationTimeout: 40000,
+      },
     },
 
     /* Test against tablet viewports */
     {
       name: 'Tablet',
-      use: { ...devices['iPad Pro'] },
+      use: {
+        ...devices['iPad Pro'],
+        actionTimeout: 15000,
+        navigationTimeout: 35000,
+      },
     },
   ],
 

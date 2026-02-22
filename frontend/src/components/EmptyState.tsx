@@ -93,7 +93,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         )}
 
         {/* Actions */}
-        {(actionText || secondaryActionText) && (
+        {(actionText ?? secondaryActionText) && (
           <div className="empty-state-actions">
             {actionText && onAction && (
               <button
