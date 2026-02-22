@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LunarReturnChart, getCurrentLunarReturn, getNextLunarReturn, calculateLunarReturnChart } from '@/services/lunarReturn.api';
+import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
 
 interface LunarReturnDashboardProps {
@@ -30,7 +31,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, []);
 
   const loadData = async () => {
@@ -45,22 +46,23 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
 
       setCurrentReturn(currentData);
       setNextReturn(nextData);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error loading lunar return data:', err);
-      setError(err.response?.data?.error || 'Failed to load lunar return data');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load lunar return data';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const getIntensityColor = (intensity: number): string => {
-    if (intensity <= 3) return 'low';
-    if (intensity <= 6) return 'medium';
-    if (intensity <= 8) return 'high';
+  const _getIntensityColor = (intensity: number): string => {
+    if (intensity <= INTENSITY_THRESHOLDS.LOW_MAX) return 'low';
+    if (intensity <= INTENSITY_THRESHOLDS.MEDIUM_MAX) return 'medium';
+    if (intensity <= INTENSITY_THRESHOLDS.HIGH_MAX) return 'high';
     return 'extreme';
   };
 
-  const getMoonPhaseIcon = (phase: string): string => {
+  const _getMoonPhaseIcon = (phase: string): string => {
     const icons: Record<string, string> = {
       'new': '🌑',
       'waxing-crescent': '🌒',
@@ -71,7 +73,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
       'last-quarter': '🌗',
       'waning-crescent': '🌘',
     };
-    return icons[phase] || '🌙';
+    return icons[phase] ?? '🌙';
   };
 
   if (loading) {
@@ -87,7 +89,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
       <div className="lunar-return-dashboard">
         <div className="error-message">
           <p>{error}</p>
-          <button onClick={loadData} className="retry-button">
+          <button onClick={() => void loadData()} className="retry-button">
             Try Again
           </button>
         </div>
@@ -159,7 +161,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
         <button onClick={onChartClick && (() => {
           // Calculate chart for next return
           if (currentReturn) {
-            calculateLunarReturnChart(currentReturn.returnDate)
+            void calculateLunarReturnChart(currentReturn.returnDate)
               .then(onChartClick)
               .catch(console.error);
           }

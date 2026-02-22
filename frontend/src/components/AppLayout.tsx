@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks';
 import {
   Bars3Icon,
@@ -6,7 +6,6 @@ import {
   HomeIcon,
   StarIcon,
   ClockIcon,
-  TableCellsIcon,
   MoonIcon,
   ArrowUturnLeftIcon,
   Cog6ToothIcon,
@@ -25,6 +24,10 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { logout: _logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Memoized handlers to prevent unnecessary re-renders
+  const handleCloseSidebar = useCallback(() => setSidebarOpen(false), []);
+  const handleOpenSidebar = useCallback(() => setSidebarOpen(true), []);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* WCAG 2.1 AA - Skip Navigation Link */}
@@ -39,18 +42,18 @@ export function AppLayout({ children }: AppLayoutProps) {
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden bg-black/50"
-          onClick={() => setSidebarOpen(false)}
+          onClick={handleCloseSidebar}
           aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar isOpen={sidebarOpen} onClose={handleCloseSidebar} />
 
       {/* Main Content Area */}
       <div className="lg:pl-64">
         {/* Top Navigation Bar */}
-        <TopNav onMenuClick={() => setSidebarOpen(true)} />
+        <TopNav onMenuClick={handleOpenSidebar} />
 
         {/* Page Content */}
         <main
@@ -74,6 +77,10 @@ export function AppLayout({ children }: AppLayoutProps) {
 // Top Navigation Bar
 function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
   const { user, logout } = useAuth();
+
+  const handleLogout = useCallback(() => {
+    void logout();
+  }, [logout]);
 
   return (
     <header className="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
@@ -149,7 +156,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
               </a>
               <hr className="border-gray-200 dark:border-gray-700" />
               <button
-                onClick={() => logout()}
+                onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
                 <ArrowUturnLeftIcon className="w-5 h-5" />
@@ -208,36 +215,36 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 <span className="font-medium">New Chart</span>
               </a>
               <a
-                href="/transits/today"
+                href="/dashboard"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <CalendarIcon className="w-5 h-5" />
-                <span>Today&apos;s Transits</span>
+                <HomeIcon className="w-5 h-5" />
+                <span>Dashboard</span>
               </a>
             </div>
           </section>
 
-          {/* My Charts */}
+          {/* Features */}
           <section>
             <h3 className="px-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-              My Charts
+              Features
             </h3>
             <div className="space-y-1">
               <a
-                href="/charts/natal"
+                href="/calendar"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <StarIcon className="w-5 h-5" />
-                <span>Natal Chart</span>
+                <CalendarIcon className="w-5 h-5" />
+                <span>Calendar</span>
               </a>
               <a
-                href="/compatibility"
+                href="/synastry"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
-                <span>Compatibility</span>
+                <span>Synastry</span>
               </a>
               <a
                 href="/transits"
@@ -249,32 +256,25 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             </div>
           </section>
 
-          {/* Tools */}
+          {/* Returns */}
           <section>
             <h3 className="px-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-              Tools
+              Returns
             </h3>
             <div className="space-y-1">
               <a
-                href="/ephemeris"
+                href="/solar-returns"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <TableCellsIcon className="w-5 h-5" />
-                <span>Ephemeris</span>
+                <StarIcon className="w-5 h-5" />
+                <span>Solar Returns</span>
               </a>
               <a
-                href="/moon-calendar"
+                href="/lunar-returns"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <MoonIcon className="w-5 h-5" />
-                <span>Moon Calendar</span>
-              </a>
-              <a
-                href="/retrograde"
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <ArrowUturnLeftIcon className="w-5 h-5" />
-                <span>Retrograde Calendar</span>
+                <span>Lunar Returns</span>
               </a>
             </div>
           </section>
@@ -303,7 +303,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 }
 
 // Mobile Bottom Navigation
-function MobileBottomNav() {
+const MobileBottomNav = React.memo(function MobileBottomNav() {
   const { user } = useAuth();
   const location = useLocation();
   const [activePath, setActivePath] = useState('/');
@@ -312,12 +312,12 @@ function MobileBottomNav() {
     setActivePath(location.pathname);
   }, [location.pathname]);
 
-  const isActive = (href: string) => {
+  const isActive = useCallback((href: string) => {
     if (href === '/') {
       return activePath === '/';
     }
     return activePath.startsWith(href);
-  };
+  }, [activePath]);
 
   return (
     <nav
@@ -426,10 +426,10 @@ function MobileBottomNav() {
       </div>
     </nav>
   );
-}
+});
 
 // Footer Component
-function Footer() {
+const Footer = React.memo(function Footer() {
   return (
     <footer className="mt-auto border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -552,7 +552,7 @@ function Footer() {
       </div>
     </footer>
   );
-}
+});
 
 // Navigation data
 const navItems = [

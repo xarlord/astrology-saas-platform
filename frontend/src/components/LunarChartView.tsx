@@ -5,6 +5,7 @@
 
 // import React from 'react';
 import { LunarReturnChart, LunarAspect } from '@/services/lunarReturn.api';
+import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
 
 interface LunarChartViewProps {
@@ -14,9 +15,9 @@ interface LunarChartViewProps {
 
 const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
   const getIntensityColor = (intensity: number): string => {
-    if (intensity <= 3) return 'low';
-    if (intensity <= 6) return 'medium';
-    if (intensity <= 8) return 'high';
+    if (intensity <= INTENSITY_THRESHOLDS.LOW_MAX) return 'low';
+    if (intensity <= INTENSITY_THRESHOLDS.MEDIUM_MAX) return 'medium';
+    if (intensity <= INTENSITY_THRESHOLDS.HIGH_MAX) return 'high';
     return 'extreme';
   };
 

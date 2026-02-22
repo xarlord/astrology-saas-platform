@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { PlanetSymbol, AspectSymbol, SkeletonLoader, EmptyState } from './';
+import React, { useState, useCallback, useMemo } from 'react';
+import { PlanetSymbol, AspectSymbol, EmptyState } from './';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -7,6 +7,7 @@ import {
   SunIcon,
   MoonIcon,
 } from '@heroicons/react/24/outline';
+import { INTENSITY_THRESHOLDS, UI, EVENT_COLORS } from '../utils/constants';
 
 // Types based on findings.md
 export interface Transit {
@@ -69,6 +70,18 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
   const [viewMode, setViewMode] = useState<'today' | 'week' | 'calendar' | 'highlights'>('today');
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
+  // Memoized handlers
+  const handleDateSelect = useCallback((date: string) => {
+    setSelectedDate(date);
+    onDateSelect?.(date);
+  }, [onDateSelect]);
+
+  // Reserved for future use when TransitDashboard needs to handle transit clicks internally
+  const _handleTransitClick = useCallback((transit: Transit) => {
+    onTransitClick?.(transit);
+  }, [onTransitClick]);
+  void _handleTransitClick; // Suppress unused warning
+
   return (
     <div className="space-y-6">
       {/* Date Range Selector */}
@@ -90,16 +103,13 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
         <TransitCalendar
           days={data.month}
           selectedDate={selectedDate}
-          onDateSelect={(date) => {
-            setSelectedDate(date);
-            onDateSelect?.(date);
-          }}
+          onDateSelect={handleDateSelect}
         />
       )}
       {viewMode === 'highlights' && (
         <UpcomingHighlights
           highlights={data.highlights}
-          onHighlightClick={(highlight) => {
+          onHighlightClick={(_highlight) => {
             // TransitHighlight doesn't have all Transit fields, so we handle it separately
             // We can't directly pass onTransitClick since the types are incompatible
             // TODO: Implement highlight click handler
@@ -110,6 +120,8 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
   );
 }
 
+type ViewMode = 'today' | 'week' | 'calendar' | 'highlights';
+
 // Date Range Selector Component
 function DateSelector({
   viewMode,
@@ -117,8 +129,8 @@ function DateSelector({
   selectedDate,
   onDateChange,
 }: {
-  viewMode: string;
-  onViewChange: (mode: any) => void;
+  viewMode: ViewMode;
+  onViewChange: (mode: ViewMode) => void;
   selectedDate: string;
   onDateChange: (date: string) => void;
 }) {
@@ -132,13 +144,13 @@ function DateSelector({
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
       {/* View Mode Buttons */}
-      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
-        {viewModes.map((mode) => {
+ ??      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+ ??        {viewModes.map((mode) => {
           const Icon = mode.icon;
           return (
             <button
               key={mode.id}
-              onClick={() => onViewChange(mode.id)}
+              onClick={() => onViewChange(mode.id as ViewMode)}
               className={`
                 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap
                 ${
@@ -190,8 +202,15 @@ function DateSelector({
 
 // Today's Transits Component
 function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onTransitClick?: (transit: Transit) => void }) {
-  // Sort by intensity
-  const sortedTransits = [...transits].sort((a, b) => b.intensity - a.intensity);
+  // Memoized sort by intensity
+  const sortedTransits = useMemo(() => {
+    return [...transits].sort((a, b) => b.intensity - a.intensity);
+  }, [transits]);
+
+  // Memoized click handler wrapper
+  const handleTransitClick = useCallback((transit: Transit) => {
+    onTransitClick?.(transit);
+  }, [onTransitClick]);
 
   return (
     <div className="space-y-4">
@@ -209,7 +228,7 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
       ) : (
         <div className="space-y-4">
           {sortedTransits.map((transit, index) => (
-            <TransitCard key={index} transit={transit} onClick={() => onTransitClick?.(transit)} />
+            <TransitCard key={index} transit={transit} onClick={() => handleTransitClick(transit)} />
           ))}
         </div>
       )}
@@ -219,17 +238,25 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
 
 // Weekly Transits Component
 function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onTransitClick?: (transit: Transit) => void }) {
-  // Group by date
-  const transitsByDate = transits.reduce((acc, transit) => {
-    const date = transit.peakDate.split('T')[0];
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(transit);
-    return acc;
-  }, {} as Record<string, Transit[]>);
+  // Memoized group by date
+  const { transitsByDate, sortedDates } = useMemo(() => {
+    const grouped = transits.reduce((acc, transit) => {
+      const date = transit.peakDate.split('T')[0];
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(transit);
+      return acc;
+    }, {} as Record<string, Transit[]>);
 
-  const sortedDates = Object.keys(transitsByDate).sort();
+    const sorted = Object.keys(grouped).sort();
+    return { transitsByDate: grouped, sortedDates: sorted };
+  }, [transits]);
+
+  // Memoized click handler wrapper
+  const handleTransitClick = useCallback((transit: Transit) => {
+    onTransitClick?.(transit);
+  }, [onTransitClick]);
 
   return (
     <div className="space-y-6">
@@ -252,7 +279,7 @@ function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onT
                 key={index}
                 transit={transit}
                 compact
-                onClick={() => onTransitClick?.(transit)}
+                onClick={() => handleTransitClick(transit)}
               />
             ))}
           </div>
@@ -356,7 +383,7 @@ function TransitCalendar({
 // Calendar Day Component
 function CalendarDay({
   day,
-  date,
+  date: _date,
   data,
   isSelected,
   onClick,
@@ -452,7 +479,7 @@ function TransitCard({
       `}
       style={{
         borderColor: intensityColor,
-        borderWidth: transit.intensity >= 8 ? '2px' : '1px',
+        borderWidth: transit.intensity >= INTENSITY_THRESHOLDS.HIGH_MAX ? '2px' : '1px',
       }}
     >
       <div className="flex items-start justify-between gap-4">
@@ -467,7 +494,7 @@ function TransitCard({
           className="px-2 py-1 rounded text-xs font-medium text-white"
           style={{ backgroundColor: intensityColor }}
         >
-          {transit.intensity}/10
+          {transit.intensity}/{UI.INTENSITY_MAX}
         </div>
       </div>
 
@@ -481,7 +508,7 @@ function TransitCard({
           {/* Themes */}
           {transit.interpretation.themes && transit.interpretation.themes.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
-              {transit.interpretation.themes.slice(0, 3).map((theme, index) => (
+              {transit.interpretation.themes.slice(0, UI.THEMES_DISPLAY_LIMIT).map((theme, index) => (
                 <span
                   key={index}
                   className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-700 dark:text-gray-300"
@@ -517,10 +544,10 @@ function HighlightCard({
         bg-white dark:bg-gray-800 rounded-lg border-2 p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
       `}
-      style={{ borderColor: highlight.color || '#6366F1' }}
+      style={{ borderColor: highlight.color ?? EVENT_COLORS.TRANSIT }}
     >
       {/* Icon */}
-      <div className="text-3xl mb-2">{highlight.icon || '✨'}</div>
+      <div className="text-3xl mb-2">{highlight.icon ?? '✨'}</div>
 
       {/* Title */}
       <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{highlight.title}</h4>
@@ -540,14 +567,14 @@ function HighlightCard({
         <div className="mt-3">
           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
             <span>Intensity</span>
-            <span>{highlight.intensity}/10</span>
+            <span>{highlight.intensity}/{UI.INTENSITY_MAX}</span>
           </div>
           <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full"
               style={{
-                width: `${highlight.intensity * 10}%`,
-                backgroundColor: highlight.color || '#6366F1',
+                width: `${highlight.intensity * (100 / UI.INTENSITY_MAX)}%`,
+                backgroundColor: highlight.color ?? EVENT_COLORS.TRANSIT,
               }}
             />
           </div>
@@ -559,10 +586,10 @@ function HighlightCard({
 
 // Helper functions
 function getIntensityColor(intensity: number): string {
-  if (intensity >= 8) return '#EF4444'; // red
-  if (intensity >= 6) return '#F59E0B'; // amber
-  if (intensity >= 4) return '#6366F1'; // indigo
-  return '#10B981'; // green
+  if (intensity >= INTENSITY_THRESHOLDS.HIGH_MAX) return EVENT_COLORS.CHALLENGING; // red
+  if (intensity >= INTENSITY_THRESHOLDS.GOOD_MIN) return EVENT_COLORS.HIGH_INTENSITY; // amber
+  if (intensity >= INTENSITY_THRESHOLDS.MODERATE_MIN) return EVENT_COLORS.TRANSIT; // indigo
+  return EVENT_COLORS.NEUTRAL; // green
 }
 
 function formatDate(dateStr: string): string {

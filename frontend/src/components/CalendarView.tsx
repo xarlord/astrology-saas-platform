@@ -3,15 +3,12 @@
  * Displays monthly astrological calendar with event badges
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getCalendarMonth } from '../services/calendar.service';
 import { CalendarMonth as CalendarMonthType, AstrologicalEvent } from '../types/calendar.types';
 import { DailyWeatherModal } from './DailyWeatherModal';
+import { INTENSITY_THRESHOLDS, EVENT_COLORS } from '../utils/constants';
 import '../styles/CalendarView.css';
 
 // Helper to convert API response to CalendarMonth type
@@ -21,9 +18,9 @@ function convertToCalendarMonth(response: Awaited<ReturnType<typeof getCalendarM
     year: response.meta.year,
     events: response.data.map(event => ({
       id: event.id,
-      eventType: event.event_type as any,
+      eventType: event.event_type as 'aspect' | 'moon_phase' | 'planetary_motion' | 'eclipse' | 'ingress',
       eventName: event.event_type,
-      startDate: event.event_date.toString(),
+      startDate: (event.event_date ?? new Date()).toString(),
       endDate: event.end_date?.toString(),
       intensity: 5,
       isGlobal: event.user_id === null,
@@ -51,11 +48,9 @@ export function CalendarView({
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchCalendarData();
-  }, [currentMonth, currentYear]);
-
-  const fetchCalendarData = async () => {
+  const fetchCalendarData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     setLoading(true);
     setError(null);
     try {
@@ -68,35 +63,49 @@ export function CalendarView({
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentMonth, currentYear]);
 
-  const handlePrevMonth = () => {
-    if (currentMonth === 1) {
-      setCurrentMonth(12);
-      setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-    }
-  };
+  useEffect(() => {
+    void fetchCalendarData();
+  }, [fetchCalendarData]);
 
-  const handleNextMonth = () => {
-    if (currentMonth === 12) {
-      setCurrentMonth(1);
-      setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-    }
-  };
+  const handlePrevMonth = useCallback(() => {
+    setCurrentMonth((prev) => {
+      if (prev === 1) {
+        setCurrentYear((y) => y - 1);
+        return 12;
+      }
+      return prev - 1;
+    });
+  }, []);
 
-  const handleToday = () => {
+  const handleNextMonth = useCallback(() => {
+    setCurrentMonth((prev) => {
+      if (prev === 12) {
+        setCurrentYear((y) => y + 1);
+        return 1;
+      }
+      return prev + 1;
+    });
+  }, []);
+
+  const handleToday = useCallback(() => {
     const today = new Date();
     setCurrentMonth(today.getMonth() + 1);
     setCurrentYear(today.getFullYear());
-  };
+  }, []);
 
-  const handleDateClick = (date: string) => {
+  const handleDateClick = useCallback((date: string) => {
     setSelectedDate(date);
-  };
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedDate(null);
+  }, []);
+
+  const handleEventClick = useCallback((event: AstrologicalEvent) => {
+    onEventClick?.(event);
+  }, [onEventClick]);
 
   const getDaysInMonth = (month: number, year: number): number => {
     return new Date(year, month, 0).getDate();
@@ -115,9 +124,9 @@ export function CalendarView({
   };
 
   const getEventColor = (intensity: number): string => {
-    if (intensity >= 8) return '#F59E0B'; // yellow/orange - high intensity
-    if (intensity <= 4) return '#EF4444'; // red - challenging
-    return '#10B981'; // green - favorable
+    if (intensity >= INTENSITY_THRESHOLDS.HIGH_MAX) return EVENT_COLORS.HIGH_INTENSITY; // yellow/orange - high intensity
+    if (intensity <= INTENSITY_THRESHOLDS.CHALLENGING_MAX) return EVENT_COLORS.CHALLENGING; // red - challenging
+    return EVENT_COLORS.NEUTRAL; // green - favorable
   };
 
   const monthNames = [
@@ -150,7 +159,7 @@ export function CalendarView({
     return (
       <div className="calendar-view error">
         <p>{error}</p>
-        <button onClick={fetchCalendarData} className="btn-retry">
+        <button onClick={() => void fetchCalendarData()} className="btn-retry">
           Retry
         </button>
       </div>
@@ -232,7 +241,7 @@ export function CalendarView({
                       title={event.eventName}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onEventClick?.(event);
+                        handleEventClick(event);
                       }}
                     >
                       {event.eventType === 'retrograde' && '⇆'}
@@ -273,7 +282,7 @@ export function CalendarView({
         <DailyWeatherModal
           date={selectedDate}
           weather={calendarData.dailyWeather[selectedDate]}
-          onClose={() => setSelectedDate(null)}
+          onClose={handleCloseModal}
         />
       )}
     </div>

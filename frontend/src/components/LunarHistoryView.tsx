@@ -3,8 +3,9 @@
  * Displays past lunar returns
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '@/services/lunarReturn.api';
+import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
 
 interface LunarHistoryViewProps {
@@ -20,24 +21,25 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadHistory();
-  }, [page]);
-
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await getLunarReturnHistory(page, 10);
       setReturns(response.returns);
       setTotalPages(response.pagination.totalPages);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { error?: string } } };
       console.error('Error loading history:', err);
-      setError(err.response?.data?.error || 'Failed to load history');
+      setError(error.response?.data?.error ?? 'Failed to load history');
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
+
+  useEffect(() => {
+    void loadHistory();
+  }, [loadHistory]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this lunar return?')) {
@@ -49,18 +51,19 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
       await deleteLunarReturn(id);
       // Reload the current page
       await loadHistory();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { error?: string } } };
       console.error('Error deleting lunar return:', err);
-      alert(err.response?.data?.error || 'Failed to delete lunar return');
+      alert(error.response?.data?.error ?? 'Failed to delete lunar return');
     } finally {
       setDeletingId(null);
     }
   };
 
   const getIntensityColor = (intensity: number): string => {
-    if (intensity <= 3) return 'low';
-    if (intensity <= 6) return 'medium';
-    if (intensity <= 8) return 'high';
+    if (intensity <= INTENSITY_THRESHOLDS.LOW_MAX) return 'low';
+    if (intensity <= INTENSITY_THRESHOLDS.MEDIUM_MAX) return 'medium';
+    if (intensity <= INTENSITY_THRESHOLDS.HIGH_MAX) return 'high';
     return 'extreme';
   };
 
@@ -95,7 +98,9 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
         </button>
 
         <button
-          onClick={() => handleDelete(lunarReturn.id)}
+          onClick={() => {
+            void handleDelete(lunarReturn.id);
+          }}
           disabled={deletingId === lunarReturn.id}
           className="delete-button"
         >
@@ -115,7 +120,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
     <div className="lunar-history-view">
       {/* Header */}
       <div className="history-header">
-        {onBack && <button onClick={onBack} className="back-button">← Back</button>}
+        {onBack && <button onClick={() => onBack()} className="back-button">← Back</button>}
         <h2>Lunar Return History</h2>
         <p className="subtitle">Your past lunar returns and forecasts</p>
       </div>
@@ -127,7 +132,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
         ) : error ? (
           <div className="error-message">
             <p>{error}</p>
-            <button onClick={loadHistory} className="retry-button">
+            <button onClick={() => void loadHistory()} className="retry-button">
               Try Again
             </button>
           </div>

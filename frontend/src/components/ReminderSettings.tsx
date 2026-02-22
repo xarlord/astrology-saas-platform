@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Bell, Mail, Smartphone, Check, Info } from 'lucide-react';
 import { ReminderFormData, UserReminder } from '../types/calendar.types';
 import { setReminder } from '../services/calendar.service';
+import { TIMEOUTS } from '../utils/constants';
 import '../styles/ReminderSettings.css';
 
 interface ReminderSettingsProps {
@@ -14,11 +15,11 @@ interface ReminderSettingsProps {
   existingReminder?: UserReminder;
 }
 
-export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsProps) {
+export function ReminderSettings({ onSave: _onSave, existingReminder }: ReminderSettingsProps) {
   const [formData, setFormData] = useState<ReminderFormData>({
-    eventType: existingReminder?.eventType || 'all',
-    reminderType: existingReminder?.reminderType || 'email',
-    reminderAdvanceHours: existingReminder?.reminderAdvanceHours || [24],
+    eventType: existingReminder?.eventType ?? 'all',
+    reminderType: existingReminder?.reminderType ?? 'email',
+    reminderAdvanceHours: existingReminder?.reminderAdvanceHours ?? [24],
     isActive: existingReminder?.isActive ?? true,
   });
 
@@ -34,13 +35,14 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
 
     try {
       // TODO: Implement actual API call for reminder settings
-      const response = await setReminder('event-id', new Date());
+      const _response = await setReminder('event-id', new Date());
       setSuccess(true);
 
-      // Reset success message after 3 seconds
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save reminder settings');
+      // Reset success message after timeout
+      setTimeout(() => setSuccess(false), TIMEOUTS.SUCCESS_MESSAGE_DURATION_MS);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save reminder settings';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -107,7 +109,7 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="reminder-form">
+      <form onSubmit={(e) => { void handleSubmit(e); }} className="reminder-form">
         {/* Event Type Selection */}
         <div className="form-section">
           <label className="form-label">Which events?</label>

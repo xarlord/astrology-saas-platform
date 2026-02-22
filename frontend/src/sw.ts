@@ -14,6 +14,7 @@ import { registerRoute, NavigationRoute, setCatchHandler } from 'workbox-routing
 import { NetworkFirst, StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
+import { CACHE, HTTP } from './utils/constants';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -40,11 +41,11 @@ const apiCacheStrategy = new NetworkFirst({
   cacheName: CACHE_NAMES.API,
   plugins: [
     new CacheableResponsePlugin({
-      statuses: [0, 200],
+      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
     }),
     new ExpirationPlugin({
       maxEntries: 50,
-      maxAgeSeconds: 60 * 60 * 24, // 24 hours
+      maxAgeSeconds: CACHE.ONE_DAY_SECONDS,
       purgeOnQuotaError: true,
     }),
   ],
@@ -58,11 +59,11 @@ const imageCacheStrategy = new CacheFirst({
   cacheName: CACHE_NAMES.IMAGES,
   plugins: [
     new CacheableResponsePlugin({
-      statuses: [0, 200],
+      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
     }),
     new ExpirationPlugin({
       maxEntries: 60,
-      maxAgeSeconds: 60 * 60 * 24, // 24 hours
+      maxAgeSeconds: CACHE.ONE_DAY_SECONDS,
       purgeOnQuotaError: true,
     }),
   ],
@@ -76,7 +77,7 @@ const staticCacheStrategy = new StaleWhileRevalidate({
   cacheName: CACHE_NAMES.STATIC,
   plugins: [
     new CacheableResponsePlugin({
-      statuses: [0, 200],
+      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
     }),
   ],
 });

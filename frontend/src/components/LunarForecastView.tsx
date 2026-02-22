@@ -3,13 +3,14 @@
  * Displays the complete monthly lunar forecast
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   LunarMonthForecast,
   getLunarMonthForecast,
   MonthlyPrediction,
   MonthlyRitual,
 } from '@/services/lunarReturn.api';
+import { INTENSITY_THRESHOLDS, UI } from '../utils/constants';
 import './LunarReturn.css';
 
 interface LunarForecastViewProps {
@@ -23,28 +24,29 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'predictions' | 'rituals' | 'journal'>('overview');
 
-  useEffect(() => {
-    loadForecast();
-  }, [returnDate]);
-
-  const loadForecast = async () => {
+  const loadForecast = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await getLunarMonthForecast(returnDate);
       setForecast(data);
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as { response?: { data?: { error?: string } } };
       console.error('Error loading forecast:', err);
-      setError(err.response?.data?.error || 'Failed to load forecast');
+      setError(error.response?.data?.error ?? 'Failed to load forecast');
     } finally {
       setLoading(false);
     }
-  };
+  }, [returnDate]);
+
+  useEffect(() => {
+    void loadForecast();
+  }, [loadForecast]);
 
   const getIntensityColor = (intensity: number): string => {
-    if (intensity <= 3) return 'low';
-    if (intensity <= 6) return 'medium';
-    if (intensity <= 8) return 'high';
+    if (intensity <= INTENSITY_THRESHOLDS.LOW_MAX) return 'low';
+    if (intensity <= INTENSITY_THRESHOLDS.MEDIUM_MAX) return 'medium';
+    if (intensity <= INTENSITY_THRESHOLDS.HIGH_MAX) return 'high';
     return 'extreme';
   };
 
@@ -61,7 +63,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   };
 
   const renderPredictionCard = (prediction: MonthlyPrediction, index: number) => {
-    const likelihoodBars = Array.from({ length: 10 }, (_, i) => i < prediction.likelihood);
+    const likelihoodBars = Array.from({ length: UI.LIKELIHOOD_MAX }, (_, i) => i < prediction.likelihood);
 
     return (
       <div key={index} className="prediction-card">
@@ -75,7 +77,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
                 <span key={i} className={`bar ${i < prediction.likelihood ? 'filled' : ''}`}>■</span>
               ))}
             </div>
-            <span className="number">{prediction.likelihood}/10</span>
+            <span className="number">{prediction.likelihood}/{UI.LIKELIHOOD_MAX}</span>
           </div>
         </div>
         <p className="prediction-text">{prediction.prediction}</p>
@@ -132,7 +134,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
       <div className="lunar-forecast-view">
         <div className="error-message">
           <p>{error}</p>
-          <button onClick={loadForecast} className="retry-button">
+          <button onClick={() => { void loadForecast(); }} className="retry-button">
             Try Again
           </button>
         </div>

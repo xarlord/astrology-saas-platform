@@ -3,32 +3,21 @@
  * Share solar return readings as gifts
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-
 import React, { useState } from 'react';
 import { Gift, Mail, Link, Copy, Check, Share2, Calendar, Lock } from 'lucide-react';
 import axios from 'axios';
+import { TIMEOUTS } from '../utils/constants';
 import './BirthdaySharing.css';
 
 interface SolarReturnData {
   id: string;
   year: number;
   returnDate: string;
-  interpretation: any;
-}
-
-interface SharedLink {
-  id: string;
-  url: string;
-  expiresAt: string;
-  accessCount: number;
-  maxAccesses: number;
+  interpretation: {
+    themes?: string[];
+    sunHouse?: { interpretation: string };
+    [key: string]: unknown;
+  };
 }
 
 interface BirthdaySharingProps {
@@ -50,7 +39,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     password: '',
   });
   const [emailSettings, setEmailSettings] = useState({
-    to: recipientEmail || '',
+    to: recipientEmail ?? '',
     subject: `Your Solar Return Reading for ${solarReturn.year}`,
     message: `I thought you'd enjoy seeing your solar return reading for ${solarReturn.year}. This astrological forecast highlights the themes and energies for your birthday year.`,
     includeChart: true,
@@ -66,7 +55,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await axios.post(`/api/v1/solar-returns/${solarReturn.id}/share`, {
+      const response = await axios.post<{ data: { url: string } }>(`/api/v1/solar-returns/${solarReturn.id}/share`, {
         type: 'link',
         expiresInDays: parseInt(linkSettings.expiresIn),
         maxAccesses: linkSettings.maxAccesses,
@@ -76,8 +65,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       setGeneratedLink(response.data.data.url);
       setSuccess(true);
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to generate share link');
+    } catch (err) {
+      const error = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(error.response?.data?.error?.message ?? 'Failed to generate share link');
     } finally {
       setLoading(false);
     }
@@ -96,8 +86,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       });
 
       setSuccess(true);
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to send email');
+    } catch (err) {
+      const error = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(error.response?.data?.error?.message ?? 'Failed to send email');
     } finally {
       setLoading(false);
     }
@@ -108,9 +99,10 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       try {
         await navigator.clipboard.writeText(generatedLink);
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setTimeout(() => setCopied(false), TIMEOUTS.COPY_FEEDBACK_DURATION_MS);
       } catch (err) {
-        console.error('Failed to copy link:', err);
+        const error = err as Error;
+        console.error('Failed to copy link:', error.message);
       }
     }
   };
@@ -141,11 +133,11 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <div className="preview-themes">
                 {interpretation.themes?.slice(0, 4).map((theme: string, i: number) => (
                   <span key={i} className="preview-theme-tag">{theme}</span>
-              ))}
-              {interpretation.themes?.length > 4 && (
-                <span className="preview-more">+{interpretation.themes.length - 4} more</span>
+                ))}
+              {(interpretation.themes?.length ?? 0) > 4 && (
+                <span className="preview-more">+{(interpretation.themes?.length ?? 0) - 4} more</span>
               )}
-            </div>
+              </div>
             </div>
 
             {interpretation.sunHouse && (
@@ -284,7 +276,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               )}
 
               <button
-                onClick={handleGenerateLink}
+                onClick={() => void handleGenerateLink()}
                 disabled={loading}
                 className="generate-link-btn"
               >
@@ -302,7 +294,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                       readOnly
                       onClick={(e) => (e.target as HTMLInputElement).select()}
                     />
-                    <button onClick={handleCopyLink} className="copy-btn">
+                    <button onClick={() => void handleCopyLink()} className="copy-btn">
                       {copied ? <Check size={18} /> : <Copy size={18} />}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
@@ -364,7 +356,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               </div>
 
               <button
-                onClick={handleSendEmail}
+                onClick={() => void handleSendEmail()}
                 disabled={loading || !emailSettings.to}
                 className="send-email-btn"
               >

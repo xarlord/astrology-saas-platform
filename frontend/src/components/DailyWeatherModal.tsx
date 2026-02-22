@@ -5,10 +5,11 @@
  * WCAG 2.1 AA - Keyboard accessible with focus trap
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { X, Moon, Star, Sparkles } from 'lucide-react';
 import { DailyWeather as DailyWeatherType, AstrologicalEvent } from '../types/calendar.types';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { INTENSITY_THRESHOLDS, EVENT_COLORS, UI } from '../utils/constants';
 import '../styles/DailyWeatherModal.css';
 
 interface DailyWeatherModalProps {
@@ -33,15 +34,15 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
     return () => document.removeEventListener('keydown', handleEscape);
   }, [onClose]);
   const getRatingColor = (rating: number): string => {
-    if (rating >= 7) return '#10B981'; // green
-    if (rating <= 4) return '#EF4444'; // red
-    return '#F59E0B'; // yellow
+    if (rating >= 7) return EVENT_COLORS.NEUTRAL; // green
+    if (rating <= INTENSITY_THRESHOLDS.CHALLENGING_MAX) return EVENT_COLORS.CHALLENGING; // red
+    return EVENT_COLORS.HIGH_INTENSITY; // yellow
   };
 
   const getRatingLabel = (rating: number): string => {
-    if (rating >= 8) return 'Excellent';
-    if (rating >= 6) return 'Good';
-    if (rating >= 4) return 'Moderate';
+    if (rating >= INTENSITY_THRESHOLDS.EXCELLENT_MIN) return 'Excellent';
+    if (rating >= INTENSITY_THRESHOLDS.GOOD_MIN) return 'Good';
+    if (rating >= INTENSITY_THRESHOLDS.MODERATE_MIN) return 'Moderate';
     return 'Challenging';
   };
 
@@ -107,7 +108,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {/* Rating */}
         <div className="rating-section" style={{ backgroundColor: getRatingColor(weather.rating) }}>
           <div className="rating-content">
-            <div className="rating-number">{weather.rating}/10</div>
+            <div className="rating-number">{weather.rating}/{UI.INTENSITY_MAX}</div>
             <div className="rating-label">{getRatingLabel(weather.rating)}</div>
           </div>
         </div>
@@ -239,7 +240,7 @@ function EventCard({ event }: EventCardProps) {
       </div>
       <div
         className="event-intensity"
-        style={{ backgroundColor: event.intensity >= 8 ? '#F59E0B' : event.intensity <= 4 ? '#EF4444' : '#10B981' }}
+        style={{ backgroundColor: event.intensity >= INTENSITY_THRESHOLDS.HIGH_MAX ? EVENT_COLORS.HIGH_INTENSITY : event.intensity <= INTENSITY_THRESHOLDS.CHALLENGING_MAX ? EVENT_COLORS.CHALLENGING : EVENT_COLORS.NEUTRAL }}
       >
         {event.intensity}
       </div>

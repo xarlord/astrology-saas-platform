@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCreateChart, useCalculateChart, useCharts } from '../hooks';
 
@@ -103,7 +102,7 @@ export function BirthDataForm({
   const { currentChart } = useCharts();
 
   // Handle geocoding (place to coordinates)
-  const searchPlace = async (query: string) => {
+  const searchPlace = useCallback(async (query: string) => {
     if (!query || query.length < 3) {
       setPlaceSuggestions([]);
       return;
@@ -116,16 +115,16 @@ export function BirthDataForm({
       );
       const data = await response.json();
 
-      const suggestions = data.map((item: any) => item.display_name);
+      const suggestions = data.map((item: { display_name: string }) => item.display_name);
       setPlaceSuggestions(suggestions);
       setShowPlaceSearch(true);
     } catch (error) {
       console.error('Place search error:', error);
     }
-  };
+  }, []);
 
   // Get coordinates for selected place
-  const getPlaceCoordinates = async (placeName: string) => {
+  const getPlaceCoordinates = useCallback(async (placeName: string) => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`
@@ -145,7 +144,7 @@ export function BirthDataForm({
     } catch (error) {
       console.error('Geocoding error:', error);
     }
-  };
+  }, []);
 
   // Debounced place search
   useEffect(() => {
@@ -156,9 +155,9 @@ export function BirthDataForm({
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [formData.birthPlace]);
+  }, [formData.birthPlace, searchPlace]);
 
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const newErrors: Partial<Record<keyof BirthData, string>> = {};
 
     if (!formData.birthDate) {
@@ -183,9 +182,9 @@ export function BirthDataForm({
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -216,30 +215,32 @@ export function BirthDataForm({
         await calculateChartMutation.mutateAsync(currentChart.id);
         onSuccess?.(currentChart.id);
       }
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { message?: string };
       console.error('Form submission error:', error);
       setErrors({
-        birthDate: error.message || 'Failed to create chart. Please try again.',
+        birthDate: err.message || 'Failed to create chart. Please try again.',
       });
     }
-  };
+  }, [formData, validateForm, createChartMutation, calculateChartMutation, currentChart, onSuccess]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      const { name, value, type } = e.target;
+      const checked = (e.target as HTMLInputElement).checked;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
 
-    // Clear error when user starts typing
-    if (errors[name as keyof BirthData]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
-  };
+      // Clear error when user starts typing
+      if (errors[name as keyof BirthData]) {
+        setErrors((prev) => ({ ...prev, [name]: undefined }));
+      }
+    },
+    [errors]
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -259,6 +260,7 @@ export function BirthDataForm({
                 type="date"
                 id="birthDate"
                 name="birthDate"
+                data-testid="birth-date-input"
                 value={formData.birthDate}
                 onChange={handleChange}
                 max={new Date().toISOString().split('T')[0]}
@@ -290,6 +292,7 @@ export function BirthDataForm({
                 type="time"
                 id="birthTime"
                 name="birthTime"
+                data-testid="birth-time-input"
                 value={formData.birthTime}
                 onChange={handleChange}
                 disabled={formData.timeUnknown}
@@ -346,6 +349,7 @@ export function BirthDataForm({
                 type="text"
                 id="birthPlace"
                 name="birthPlace"
+                data-testid="birth-place-input"
                 value={formData.birthPlace}
                 onChange={handleChange}
                 placeholder="Search city or enter coordinates"
@@ -411,6 +415,7 @@ export function BirthDataForm({
                 type="text"
                 id="chartName"
                 name="chartName"
+                data-testid="chart-name-input"
                 value={formData.chartName}
                 onChange={handleChange}
                 placeholder="My Natal Chart"
@@ -440,6 +445,7 @@ export function BirthDataForm({
             <select
               id="houseSystem"
               name="houseSystem"
+              data-testid="house-system-select"
               value={formData.houseSystem}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400"
@@ -460,6 +466,7 @@ export function BirthDataForm({
             <select
               id="zodiac"
               name="zodiac"
+              data-testid="zodiac-type-select"
               value={formData.zodiac}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400"
@@ -500,6 +507,7 @@ export function BirthDataForm({
       <div className="flex gap-3">
         <button
           type="submit"
+          data-testid="submit-chart-button"
           disabled={createChartMutation.isPending || calculateChartMutation.isPending}
           className="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >

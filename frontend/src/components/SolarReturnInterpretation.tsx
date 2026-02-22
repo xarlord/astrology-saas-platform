@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Star, Calendar, TrendingUp, AlertTriangle, Gift, Lightbulb, Download, Share2 } from 'lucide-react';
+import { INTENSITY_THRESHOLDS, EVENT_COLORS } from '../utils/constants';
 import './SolarReturnInterpretation.css';
 
 interface LuckyDay {
@@ -87,14 +88,14 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
   onDownload,
 }) => {
   const getIntensityColor = (intensity: number) => {
-    if (intensity >= 8) return '#10b981'; // green
-    if (intensity >= 6) return '#f59e0b'; // amber
-    return '#ef4444'; // red
+    if (intensity >= INTENSITY_THRESHOLDS.EXCELLENT_MIN) return EVENT_COLORS.EXCELLENT; // green
+    if (intensity >= INTENSITY_THRESHOLDS.GOOD_MIN) return EVENT_COLORS.GOOD; // amber
+    return EVENT_COLORS.CHALLENGING; // red
   };
 
   const getIntensityLabel = (intensity: number) => {
-    if (intensity >= 8) return 'Excellent';
-    if (intensity >= 6) return 'Good';
+    if (intensity >= INTENSITY_THRESHOLDS.EXCELLENT_MIN) return 'Excellent';
+    if (intensity >= INTENSITY_THRESHOLDS.GOOD_MIN) return 'Good';
     return 'Fair';
   };
 

@@ -3,7 +3,7 @@
  * Main page for synastry/compatibility feature
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SynastryCalculator from './SynastryCalculator';
 import {
   getSynastryReports,
@@ -26,74 +26,89 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    if (view === 'history') {
-      loadReports();
-    }
-  }, [view, page]);
-
-  const loadReports = async () => {
+  const loadReports = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await getSynastryReports(page, 10);
       setReports(data.reports);
       setTotalPages(data.pagination.totalPages);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error loading reports:', err);
-      setError(err.response?.data?.error || 'Failed to load reports');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load reports';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
 
-  const handleDeleteReport = async (id: string) => {
+  useEffect(() => {
+    if (view === 'history') {
+      void loadReports();
+    }
+  }, [view, page, loadReports]);
+
+  const handleDeleteReport = useCallback(async (id: string) => {
     if (!confirm('Are you sure you want to delete this report?')) {
       return;
     }
 
     try {
       await deleteSynastryReport(id);
-      setReports(reports.filter((r) => r.id !== id));
-    } catch (err: any) {
+      setReports((prev) => prev.filter((r) => r.id !== id));
+    } catch (err) {
       console.error('Error deleting report:', err);
       alert('Failed to delete report');
     }
-  };
+  }, []);
 
-  const handleToggleFavorite = async (id: string, isFavorite: boolean) => {
+  const handleToggleFavorite = useCallback(async (id: string, isFavorite: boolean) => {
     try {
       await updateSynastryReport(id, { isFavorite: !isFavorite });
-      setReports(
-        reports.map((r) => (r.id === id ? { ...r, isFavorite: !isFavorite } : r))
+      setReports((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, isFavorite: !isFavorite } : r))
       );
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error updating favorite:', err);
     }
-  };
+  }, []);
 
-  const formatDate = (dateString: string) => {
+  const handleViewChange = useCallback((newView: 'calculator' | 'history') => {
+    setView(newView);
+    setPage(1);
+  }, []);
+
+  const handlePrevPage = useCallback(() => {
+    setPage((prev) => prev - 1);
+  }, []);
+
+  const handleNextPage = useCallback(() => {
+    setPage((prev) => prev + 1);
+  }, []);
+
+  // Memoized helper functions
+  const getChartName = useCallback((chartId: string) => {
+    const chart = charts.find((c) => c.id === chartId);
+    return chart?.name ?? chartId;
+  }, [charts]);
+
+  const getScoreColor = useCallback((score: number): string => {
+    if (score >= 8) return 'excellent';
+    if (score >= 6) return 'good';
+    if (score >= 4) return 'fair';
+    return 'challenging';
+  }, []);
+
+  const formatDate = useCallback((dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
-  };
-
-  const getChartName = (chartId: string) => {
-    const chart = charts.find((c) => c.id === chartId);
-    return chart?.name || chartId;
-  };
-
-  const getScoreColor = (score: number): string => {
-    if (score >= 8) return 'excellent';
-    if (score >= 6) return 'good';
-    if (score >= 4) return 'fair';
-    return 'challenging';
-  };
+  }, []);
 
   return (
-    <div className="synastry-page">
+    <div className="synastry-page" data-testid="synastry-page">
       {/* Header */}
       <div className="page-header">
         <h1>Synastry & Compatibility</h1>
@@ -101,22 +116,18 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
       </div>
 
       {/* View Toggle */}
-      <div className="view-toggle">
+      <div className="view-toggle" data-testid="synastry-view-toggle">
         <button
           className={`toggle-button ${view === 'calculator' ? 'active' : ''}`}
-          onClick={() => {
-            setView('calculator');
-            setPage(1);
-          }}
+          onClick={() => handleViewChange('calculator')}
+          data-testid="synastry-view-calculator"
         >
           Calculator
         </button>
         <button
           className={`toggle-button ${view === 'history' ? 'active' : ''}`}
-          onClick={() => {
-            setView('history');
-            setPage(1);
-          }}
+          onClick={() => handleViewChange('history')}
+          data-testid="synastry-view-history"
         >
           Saved Reports
         </button>
@@ -141,24 +152,24 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
               <p>Compare two charts to save your first compatibility report</p>
               <button
                 className="primary-button"
-                onClick={() => setView('calculator')}
+                onClick={() => handleViewChange('calculator')}
               >
                 Go to Calculator
               </button>
             </div>
           ) : (
             <>
-              <div className="reports-list">
+              <div className="reports-list" data-testid="synastry-reports-list">
                 {reports.map((report) => (
-                  <div key={report.id} className="report-card">
+                  <div key={report.id} className="report-card" data-testid={`synastry-report-${report.id}`}>
                     <div className="report-header">
                       <div className="charts-info">
-                        <h3>
+                        <h3 data-testid={`report-charts-${report.id}`}>
                           {getChartName(report.chart1Id)} + {getChartName(report.chart2Id)}
                         </h3>
                         <span className="report-date">{formatDate(report.createdAt)}</span>
                       </div>
-                      <div className={`score-badge ${getScoreColor(report.overallCompatibility)}`}>
+                      <div className={`score-badge ${getScoreColor(report.overallCompatibility)}`} data-testid={`report-score-${report.id}`}>
                         {report.overallCompatibility}/10
                       </div>
                     </div>
@@ -197,15 +208,17 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
                     <div className="report-actions">
                       <button
                         className={`favorite-button ${report.isFavorite ? 'favorited' : ''}`}
-                        onClick={() => handleToggleFavorite(report.id, report.isFavorite || false)}
+                        onClick={() => { void handleToggleFavorite(report.id, report.isFavorite ?? false); }}
                         title={report.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        data-testid={`report-favorite-${report.id}`}
                       >
                         {report.isFavorite ? '★' : '☆'}
                       </button>
                       <button
                         className="delete-button"
-                        onClick={() => handleDeleteReport(report.id)}
+                        onClick={() => { void handleDeleteReport(report.id); }}
                         title="Delete report"
+                        data-testid={`report-delete-${report.id}`}
                       >
                         Delete
                       </button>
@@ -216,21 +229,23 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="pagination">
+                <div className="pagination" data-testid="synastry-pagination">
                   <button
                     className="pagination-button"
                     disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
+                    onClick={handlePrevPage}
+                    data-testid="pagination-prev"
                   >
                     Previous
                   </button>
-                  <span className="pagination-info">
+                  <span className="pagination-info" data-testid="pagination-info">
                     Page {page} of {totalPages}
                   </span>
                   <button
                     className="pagination-button"
                     disabled={page === totalPages}
-                    onClick={() => setPage(page + 1)}
+                    onClick={handleNextPage}
+                    data-testid="pagination-next"
                   >
                     Next
                   </button>

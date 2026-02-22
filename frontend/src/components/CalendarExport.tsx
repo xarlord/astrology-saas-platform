@@ -3,16 +3,11 @@
  * Allows users to export astrological calendar as iCal file
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-case-declarations */
-
 import { useState } from 'react';
 import { Download, Calendar, FileDown, CheckCircle, AlertCircle } from 'lucide-react';
 import { exportCalendar } from '../services/calendar.service';
 import { CalendarExportParams } from '../types/calendar.types';
+import { TIMEOUTS } from '../utils/constants';
 import '../styles/CalendarExport.css';
 
 interface CalendarExportProps {
@@ -75,10 +70,11 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
       setSuccess(true);
       onExportComplete?.(link.download);
 
-      // Reset success message after 3 seconds
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to export calendar');
+      // Reset success message after timeout
+      setTimeout(() => setSuccess(false), TIMEOUTS.SUCCESS_MESSAGE_DURATION_MS);
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message ?? 'Failed to export calendar');
     } finally {
       setLoading(false);
     }
@@ -90,19 +86,22 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
     let endDate: Date;
 
     switch (range) {
-      case 'this-month':
+      case 'this-month': {
         startDate = new Date(today.getFullYear(), today.getMonth(), 1);
         endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         break;
-      case 'this-quarter':
+      }
+      case 'this-quarter': {
         const quarter = Math.floor(today.getMonth() / 3);
         startDate = new Date(today.getFullYear(), quarter * 3, 1);
         endDate = new Date(today.getFullYear(), quarter * 3 + 3, 0);
         break;
-      case 'this-year':
+      }
+      case 'this-year': {
         startDate = new Date(today.getFullYear(), 0, 1);
         endDate = new Date(today.getFullYear(), 11, 31);
         break;
+      }
     }
 
     setParams({
@@ -217,7 +216,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
 
         {/* Export Button */}
         <div className="export-actions">
-          <button onClick={handleExport} className="btn-export" disabled={loading}>
+          <button onClick={() => void handleExport()} className="btn-export" disabled={loading}>
             {loading ? (
               <>
                 <div className="spinner-small"></div>

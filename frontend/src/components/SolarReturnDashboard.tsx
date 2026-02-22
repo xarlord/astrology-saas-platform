@@ -3,7 +3,7 @@
  * Displays list of user's solar returns by year
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { Calendar, MapPin, Gift, TrendingUp } from 'lucide-react';
 import './SolarReturnDashboard.css';
@@ -40,33 +40,34 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
   const [filter, setFilter] = useState<'all' | 'relocated'>('all');
   const [sortBy, setSortBy] = useState<'year' | 'date'>('year');
 
-  useEffect(() => {
-    fetchSolarReturns();
-  }, [filter]);
-
-  const fetchSolarReturns = async () => {
+  const fetchSolarReturns = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get('/api/v1/solar-returns/history', {
+      const response = await axios.get<{ data: SolarReturn[] }>('/api/v1/solar-returns/history', {
         params: {
           includeRelocated: filter === 'all',
         },
       });
 
       setSolarReturns(response.data.data);
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to load solar returns');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(error.response?.data?.error?.message ?? 'Failed to load solar returns');
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
 
-  const handleCalculateNew = async (year: number) => {
+  useEffect(() => {
+    void fetchSolarReturns();
+  }, [fetchSolarReturns]);
+
+  const handleCalculateNew = useCallback(async (year: number) => {
     try {
       // Get default natal chart
-      const chartsResponse = await axios.get('/api/v1/charts');
+      const chartsResponse = await axios.get<{ data: { id: string }[] }>('/api/v1/charts');
       const defaultChart = chartsResponse.data.data[0];
 
       if (!defaultChart) {
@@ -87,12 +88,14 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       if (onSelectYear) {
         onSelectYear(year);
       }
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to calculate solar return');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to calculate solar return';
+      setError(errorMessage);
     }
-  };
+  }, [fetchSolarReturns, onSelectYear]);
 
-  const getSortedReturns = () => {
+  // Memoized sorted returns
+  const sortedReturns = useMemo(() => {
     const sorted = [...solarReturns];
 
     if (sortBy === 'year') {
@@ -102,9 +105,35 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
         new Date(b.returnDate).getTime() - new Date(a.returnDate).getTime()
       );
     }
-  };
+  }, [solarReturns, sortBy]);
 
-  const getThemeColor = (themes: string[]) => {
+  // Memoized filtered returns
+  const filteredReturns = useMemo(() => {
+    return sortedReturns.filter((sr) => filter === 'all' || sr.isRelocated);
+  }, [sortedReturns, filter]);
+
+  // Memoized handlers
+  const handleFilterChange = useCallback((newFilter: 'all' | 'relocated') => {
+    setFilter(newFilter);
+  }, []);
+
+  const handleSortChange = useCallback((newSortBy: 'year' | 'date') => {
+    setSortBy(newSortBy);
+  }, []);
+
+  const handleCardClick = useCallback((id: string) => {
+    onSelectSolarReturn?.(id);
+  }, [onSelectSolarReturn]);
+
+  const handleCalculateCurrentYear = useCallback(() => {
+    void handleCalculateNew(new Date().getFullYear());
+  }, [handleCalculateNew]);
+
+  const handleCalculateNextYear = useCallback(() => {
+    void handleCalculateNew(new Date().getFullYear() + 1);
+  }, [handleCalculateNew]);
+
+  const getThemeColor = useCallback((themes: string[]) => {
     if (themes.length === 0) return '#666';
 
     const themeColors: Record<string, string> = {
@@ -129,7 +158,11 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
     }
 
     return '#666';
-  };
+  }, []);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
 
   if (loading) {
     return (
@@ -150,7 +183,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       {error && (
         <div className="error-message">
           {error}
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={clearError}>✕</button>
         </div>
       )}
 
@@ -158,13 +191,13 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
         <div className="filters">
           <button
             className={filter === 'all' ? 'active' : ''}
-            onClick={() => setFilter('all')}
+            onClick={() => handleFilterChange('all')}
           >
             All Returns
           </button>
           <button
             className={filter === 'relocated' ? 'active' : ''}
-            onClick={() => setFilter('relocated')}
+            onClick={() => handleFilterChange('relocated')}
           >
             Relocated Only
           </button>
@@ -174,7 +207,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
           <label>Sort by:</label>
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'year' | 'date')}
+            onChange={(e) => handleSortChange(e.target.value as 'year' | 'date')}
           >
             <option value="year">Year</option>
             <option value="date">Return Date</option>
@@ -183,7 +216,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
         <button
           className="calculate-new-btn"
-          onClick={() => handleCalculateNew(new Date().getFullYear())}
+          onClick={handleCalculateCurrentYear}
         >
           <Calendar size={18} />
           Calculate Current Year
@@ -191,15 +224,13 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       </div>
 
       <div className="solar-returns-grid">
-        {getSortedReturns()
-          .filter((sr) => filter === 'all' || sr.isRelocated)
-          .map((solarReturn) => (
+        {filteredReturns.map((solarReturn) => (
           <div
             key={solarReturn.id}
             className="solar-return-card"
-            onClick={() => onSelectSolarReturn?.(solarReturn.id)}
+            onClick={() => handleCardClick(solarReturn.id)}
             style={{
-              borderLeftColor: getThemeColor(solarReturn.interpretation?.themes || []),
+              borderLeftColor: getThemeColor(solarReturn.interpretation?.themes ?? []),
             }}
           >
             <div className="card-header">
@@ -275,7 +306,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
           <p>Calculate your first solar return to see your birthday year forecast</p>
           <button
             className="calculate-first-btn"
-            onClick={() => handleCalculateNew(new Date().getFullYear())}
+            onClick={handleCalculateCurrentYear}
           >
             Calculate Solar Return for {new Date().getFullYear()}
           </button>
@@ -285,7 +316,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       <div className="dashboard-footer">
         <button
           className="archive-link"
-          onClick={() => handleCalculateNew(new Date().getFullYear() + 1)}
+          onClick={handleCalculateNextYear}
         >
           Calculate Next Year →
         </button>
