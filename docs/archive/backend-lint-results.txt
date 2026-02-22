@@ -1,0 +1,492 @@
+
+> @astrology-saas/backend@1.0.0 lint
+> eslint src --ext .ts
+
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\ai\ai.controller.test.ts
+  29:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\ai\aiInterpretation.service.test.ts
+  29:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\ai\integration.test.utils.ts
+  11:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  45:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  45:71  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\ai\openai.service.test.ts
+  171:85  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  235:81  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  284:87  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\auth.utils.ts
+  26:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  54:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  75:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\controllers\analysis.controller.test.ts
+  272:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\analysis.routes.test.ts
+  17:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\auth.utils.ts
+  20:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\calendar.routes.test.ts
+  17:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\chart.routes.test.ts
+  17:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\lunarReturn.routes.test.ts
+  17:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\user.routes.test.ts
+  18:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\integration\utils.ts
+   15:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   48:72  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:89  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   98:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  131:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  162:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\models\chart.model.test.ts
+   45:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   61:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   95:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  165:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  185:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  223:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  266:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  310:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  332:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  375:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  394:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  411:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  427:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  444:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\models\user.model.test.ts
+   40:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   56:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   99:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  187:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  227:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  249:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  264:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  281:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  312:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  333:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  360:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  381:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  423:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  424:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  442:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\notifications\pushNotification.service.test.ts
+  173:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  279:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  325:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  355:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\performance\api.performance.test.ts
+   52:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   52:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   61:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   99:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  168:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  169:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  170:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  497:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  533:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  548:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\performance\calculation.performance.test.ts
+  24:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  24:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\performance\database.performance.test.ts
+   89:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  206:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  271:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\routes\transit.routes.test.ts
+   8:23  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   8:33  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+   8:44  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  12:22  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  16:18  error    'schema' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  16:26  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  16:40  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  16:50  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  16:61  warning  Unexpected any. Specify a different type                                  @typescript-eslint/no-explicit-any
+  20:10  error    'Router' is defined but never used                                        @typescript-eslint/no-unused-vars
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\services\interpretation.service.test.ts
+  374:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\services\lunarReturn.service.test.ts
+  107:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  248:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\services\synastry.service.test.ts
+  412:14  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  413:14  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  418:14  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  419:14  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\services\utils.ts
+  56:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  69:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\utils\helpers.test.ts
+  208:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\__tests__\utils\validators.test.ts
+  359:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  360:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  378:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  379:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  408:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  409:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  427:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  428:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\data\interpretations.ts
+  1961:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\data\solarReturnInterpretations.ts
+  263:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  265:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  308:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  324:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  336:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  363:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  375:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  407:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  429:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  444:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\middleware\auth.ts
+  92:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\middleware\errorHandler.ts
+  45:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\middleware\httpLogger.ts
+  34:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\controllers\aiUsage.controller.ts
+   14:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   28:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   43:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   58:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  124:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\examples\cache-usage-example.ts
+   16:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   38:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  120:64  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\models\aiCache.model.ts
+  13:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\models\aiUsage.model.ts
+   14:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   23:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   93:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\prompts\index.ts
+  22:65  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\services\aiCache.service.ts
+  19:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  78:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  93:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  95:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\services\aiInterpretation.service.ts
+   62:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   63:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   64:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   66:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   69:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   70:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   71:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  148:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  228:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  271:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  318:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  399:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\services\aiUsage.service.ts
+   34:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   78:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  145:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\ai\services\openai.service.ts
+   77:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   88:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  236:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  315:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  389:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  463:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  556:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  622:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  646:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  654:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  668:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  706:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\analysis\controllers\analysis.controller.ts
+   28:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+   55:78  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   76:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   94:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  127:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  152:78  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  162:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  169:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  194:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  220:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  251:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  275:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  276:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  286:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  286:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  315:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  316:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  322:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  325:64  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  337:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  348:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  349:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  359:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  364:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  368:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  372:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  377:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  377:60  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  388:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  388:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  393:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  393:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  399:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  399:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\analysis\services\interpretation.service.ts
+   28:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   29:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   30:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   36:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  479:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\auth\controllers\auth.controller.ts
+  110:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  127:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  150:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\calendar\controllers\calendar.controller.ts
+   19:22  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+   71:76  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:22  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  169:22  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\calendar\models\calendarEvent.model.ts
+  14:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\charts\controllers\chart.controller.ts
+   14:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   63:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   89:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  108:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  134:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  153:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\charts\models\chart.model.ts
+   22:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   49:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  131:74  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\data\interpretations.ts
+   91:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  136:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  147:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  148:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  149:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  151:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  159:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\lunar\controllers\lunarReturn.controller.ts
+   22:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   75:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  169:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  265:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  292:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  308:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  309:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  324:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  365:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  417:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\notifications\controllers\pushNotification.controller.ts
+  11:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  28:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  53:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  64:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\notifications\services\pushNotification.service.ts
+   32:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   58:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  120:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  175:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\notifications\types\web-push.d.ts
+  26:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  33:15  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\shared\services\swissEphemeris.service.ts
+  150:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  234:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  234:62  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\solar\controllers\solarReturn.controller.ts
+   25:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  159:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  186:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  254:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  272:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  303:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\solar\models\solarReturn.model.ts
+   22:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   23:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   24:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:78  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:78  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  111:77  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  165:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\solar\services\solarReturn.service.ts
+  457:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\synastry\controllers\synastry.controller.ts
+   22:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  284:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  331:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  332:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  333:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  334:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  361:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  388:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  415:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  432:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  433:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  448:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  492:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  533:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  557:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\synastry\services\synastry.service.ts
+  151:24  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  157:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  315:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  316:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\transits\controllers\transit.controller.ts
+   16:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+   31:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   51:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   78:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  103:9   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  128:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  144:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  171:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  215:18  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  250:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  267:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  271:43  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  287:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  344:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  350:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\modules\users\controllers\user.controller.ts
+   14:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   31:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   54:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   71:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   88:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  107:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+C:\Users\plner\MVP_Projects\backend\src\modules\users\models\user.model.ts
+   17:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   34:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  149:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\utils\helpers.ts
+  72:55  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\utils\logger.ts
+   42:68  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  219:61  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\backend\src\utils\validators.ts
+  63:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:16  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 350 problems (2 errors, 348 warnings)
+
+npm error Lifecycle script `lint` failed with error:
+npm error code 1
+npm error path C:\Users\plner\MVP_Projects\backend
+npm error workspace @astrology-saas/backend@1.0.0
+npm error location C:\Users\plner\MVP_Projects\backend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c eslint src --ext .ts
