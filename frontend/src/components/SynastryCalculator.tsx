@@ -3,7 +3,7 @@
  * Main component for comparing two charts and calculating compatibility
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   compareCharts,
   getCompatibility,
@@ -27,7 +27,7 @@ interface SynastryCalculatorProps {
   onReportSave?: (report: SynastryChart) => void;
 }
 
-const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onReportSave }) => {
+const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onReportSave: _onReportSave }) => {
   const [chart1, setChart1] = useState<string>('');
   const [chart2, setChart2] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -62,9 +62,10 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
       setSynastryData(synastry);
       setCompatibilityData(compatibility);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error calculating synastry:', err);
-      setError(err.response?.data?.error || 'Failed to calculate compatibility');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to calculate compatibility';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -140,7 +141,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
         </div>
 
         <button
-          onClick={handleCalculate}
+          onClick={() => void handleCalculate()}
           className="calculate-button"
           disabled={!chart1 || !chart2 || chart1 === chart2}
         >
@@ -199,7 +200,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               <div className="overview-tab">
                 {/* Strengths */}
                 <div className="strengths-section">
-                  <h3>Strengths</h3>
+ ??                  <h3>Strengths</h3>
                   <ul className="strengths-list">
                     {synastryData.strengths.map((strength, index) => (
                       <li key={index} className="strength-item">
@@ -207,7 +208,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                         {strength}
                       </li>
                     ))}
-                  </ul>
+ ??                  </ul>
                 </div>
 
                 {/* Challenges */}
@@ -271,14 +272,14 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                         <span className="category-name">
                           {category.charAt(0).toUpperCase() + category.slice(1)}
                         </span>
-                        <span className={`score-value ${getScoreColor(score)}`}>
-                          {score}/10
+                        <span className={`score-value ${getScoreColor(score as number)}`}>
+                          {score as number}/10
                         </span>
                       </div>
                       <div className="score-bar">
                         <div
-                          className={`score-fill ${getScoreColor(score)}`}
-                          style={{ width: `${score * 10}%` }}
+                          className={`score-fill ${getScoreColor(score as number)}`}
+                          style={{ width: `${(score as number) * 10}%` }}
                         ></div>
                       </div>
                     </div>
@@ -301,9 +302,9 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                       >
                         <div className="aspect-header">
                           <div className="planets">
-                            <PlanetSymbol planet={aspect.planet1 as any} />
+                            <PlanetSymbol planet={aspect.planet1} />
                             <span className="aspect-name">{aspect.aspect}</span>
-                            <PlanetSymbol planet={aspect.planet2 as any} />
+                            <PlanetSymbol planet={aspect.planet2} />
                           </div>
                           <div className="orb">
                             {aspect.orb.toFixed(1)}°
@@ -336,8 +337,8 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                 <div className="composite-planets">
                   {Object.entries(compatibilityData.compositeChart.planets).map(([name, planet]) => (
                     <div key={name} className="composite-planet">
-                      <PlanetSymbol planet={name as any} />
-                      <ZodiacBadge sign={planet.sign as any} />
+                      <PlanetSymbol planet={name} />
+                      <ZodiacBadge sign={planet.sign} />
                       <span className="degree">
                         {planet.degree}° {planet.minute}' {planet.second}"
                       </span>

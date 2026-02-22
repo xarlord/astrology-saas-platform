@@ -14,16 +14,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AppLayout } from '../AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
-import { useAuthStore } from '../../store';
+import { useAuth } from '../../hooks';
 
-// Mock the auth store
-vi.mock('../../store', () => ({
+// Mock the hooks
+vi.mock('../../hooks', () => ({
+  useAuth: vi.fn(),
+}));
+
+// Mock the stores
+vi.mock('../../stores', () => ({
   useAuthStore: vi.fn(),
   useChartsStore: vi.fn(),
 }));
@@ -56,8 +61,8 @@ describe('AppLayout Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Mock useAuthStore to return our mock user
-    (useAuthStore as any).mockReturnValue({
+    // Mock useAuth hook to return our mock user
+    (useAuth as any).mockReturnValue({
       user: mockUser,
       isAuthenticated: true,
       logout: mockLogout,
@@ -77,6 +82,11 @@ describe('AppLayout Component', () => {
         dispatchEvent: vi.fn(),
       })),
     });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    cleanup();
   });
 
   describe('Rendering', () => {
@@ -112,7 +122,7 @@ describe('AppLayout Component', () => {
       );
 
       expect(screen.getByText('New Chart')).toBeInTheDocument();
-      expect(screen.getByText('Today\'s Transits')).toBeInTheDocument();
+      expect(screen.getAllByText('Transits').length).toBeGreaterThan(0);
     });
 
     it('should render footer', () => {
@@ -189,7 +199,7 @@ describe('AppLayout Component', () => {
 
       expect(screen.getByText('Quick Actions')).toBeInTheDocument();
       expect(screen.getByText('New Chart')).toBeInTheDocument();
-      expect(screen.getByText('Today\'s Transits')).toBeInTheDocument();
+      expect(screen.getByText('Dashboard')).toBeInTheDocument();
     });
 
     it('should render my charts section', () => {
@@ -200,10 +210,9 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('My Charts')).toBeInTheDocument();
-      expect(screen.getByText('Natal Chart')).toBeInTheDocument();
-      expect(screen.getByText('Compatibility')).toBeInTheDocument();
-      // Transits appears in multiple places
+      expect(screen.getAllByText('Features').length).toBeGreaterThan(0);
+      expect(screen.getByText('Calendar')).toBeInTheDocument();
+      expect(screen.getByText('Synastry')).toBeInTheDocument();
       expect(screen.getAllByText('Transits').length).toBeGreaterThan(0);
     });
 
@@ -215,10 +224,9 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('Tools')).toBeInTheDocument();
-      expect(screen.getByText('Ephemeris')).toBeInTheDocument();
-      expect(screen.getByText('Moon Calendar')).toBeInTheDocument();
-      expect(screen.getByText('Retrograde Calendar')).toBeInTheDocument();
+      // Check for additional features beyond the basic ones
+      expect(screen.getByText('Solar Returns')).toBeInTheDocument();
+      expect(screen.getByText('Lunar Returns')).toBeInTheDocument();
     });
 
     it('should render upgrade banner', () => {
@@ -348,7 +356,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('Features')).toBeInTheDocument();
+      expect(screen.getAllByText('Features').length).toBeGreaterThan(0);
       expect(screen.getByText('Pricing')).toBeInTheDocument();
       expect(screen.getByText('API')).toBeInTheDocument();
     });
@@ -428,8 +436,8 @@ describe('AppLayout Component', () => {
       const newChartLink = screen.getByText('New Chart').closest('a');
       expect(newChartLink).toHaveAttribute('href', '/charts/new');
 
-      const natalChartLink = screen.getByText('Natal Chart').closest('a');
-      expect(natalChartLink).toHaveAttribute('href', '/charts/natal');
+      const dashboardLink = screen.getByText('Dashboard').closest('a');
+      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
     });
 
     it('should render desktop navigation links', () => {

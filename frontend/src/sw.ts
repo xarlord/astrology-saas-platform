@@ -166,7 +166,7 @@ registerRoute(navigationRoute);
   if (event.tag === 'sync-charts') {
     event.waitUntil(
       // Sync chart data
-      (async () => {
+      (() => {
         try {
           // Implement sync logic
           console.log('Syncing chart data...');
@@ -180,7 +180,7 @@ registerRoute(navigationRoute);
 });
 
 // Catch handler for offline fallback
-setCatchHandler(async ({ event }) => {
+setCatchHandler(({ event }) => Promise.resolve().then(() => {
   // For document requests (navigation), return offline HTML page
   if (event.request.destination === 'document') {
     return new Response(
@@ -193,7 +193,7 @@ setCatchHandler(async ({ event }) => {
 
   // For other requests, return error
   return Response.error();
-});
+}));
 
 // Activate event - clean up old caches
 (self as any).addEventListener('activate', (event: any) => {
