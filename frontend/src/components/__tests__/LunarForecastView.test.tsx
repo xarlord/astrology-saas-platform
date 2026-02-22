@@ -258,13 +258,21 @@ describe('LunarForecastView', () => {
 
     describe('Back Button', () => {
       it('should call onBack when back button is clicked', async () => {
+        // Ensure the mock is resolved
+        mockGetLunarMonthForecast.mockResolvedValue(mockForecast);
+
         render(<LunarForecastView onBack={mockOnBack} />);
 
+        // Wait for component to finish loading and render
+        let backButton;
         await waitFor(() => {
-          const backButton = screen.getByText('← Back');
-          userEvent.click(backButton);
-          expect(mockOnBack).toHaveBeenCalledTimes(1);
-        });
+          backButton = screen.getByText('← Back');
+          expect(backButton).toBeInTheDocument();
+        }, { timeout: 3000 });
+
+        // Now click it
+        await userEvent.click(backButton!);
+        expect(mockOnBack).toHaveBeenCalledTimes(1);
       });
     });
   });

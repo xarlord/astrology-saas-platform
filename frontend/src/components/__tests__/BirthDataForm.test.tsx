@@ -526,7 +526,7 @@ describe('BirthDataForm Component', () => {
 
       const errorMessage = screen.getByText('Birth date is required');
       expect(errorMessage).toBeInTheDocument();
-      expect(errorMessage).toHaveClass('text-red-600');
+      expect(errorMessage).toHaveClass('error-text');
     });
 
     it('should show max date constraint for birth date', () => {

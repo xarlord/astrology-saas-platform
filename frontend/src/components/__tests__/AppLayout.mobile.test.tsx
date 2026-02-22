@@ -3,7 +3,7 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { AppLayout } from '../AppLayout';
 
 // Mock the auth hook
@@ -16,11 +16,18 @@ vi.mock('../hooks', () => ({
 
 describe('Mobile Bottom Navigation Active States', () => {
   const renderWithRouter = (ui: React.ReactElement, initialEntries = ['/']) => {
-    return render(
-      <BrowserRouter initialEntries={initialEntries}>
-        {ui}
-      </BrowserRouter>
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: ui,
+        },
+      ],
+      {
+        initialEntries,
+      }
     );
+    return render(<RouterProvider router={router} />);
   };
 
   describe('Active Route Detection', () => {
@@ -174,9 +181,11 @@ describe('Mobile Bottom Navigation Active States', () => {
     it('should have safe area inset for bottom padding', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Navigation should have padding-bottom style
-      const nav = container.querySelector('[style*="padding-bottom"]');
+      // Check for mobile navigation element
+      const nav = container.querySelector('nav[aria-label="Mobile navigation"]');
       expect(nav).toBeInTheDocument();
+      // Verify safe area style is applied
+      expect(nav).toHaveStyle({ paddingBottom: 'env(safe-area-inset-bottom)' });
     });
   });
 
