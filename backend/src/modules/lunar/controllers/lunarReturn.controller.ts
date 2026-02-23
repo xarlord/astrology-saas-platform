@@ -26,6 +26,7 @@ export async function getNextLunarReturn(req: Request, res: Response, next: Next
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     // Get user's natal chart from database
@@ -38,6 +39,7 @@ export async function getNextLunarReturn(req: Request, res: Response, next: Next
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
+      return;
     }
 
     const natalChart: NatalChart = {
@@ -79,6 +81,7 @@ export async function getCurrentLunarReturn(req: Request, res: Response, next: N
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const result = await getServiceCurrentLunarReturn(userId);
@@ -105,6 +108,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const { returnDate } = req.body;
@@ -114,6 +118,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
         success: false,
         error: 'returnDate is required',
       });
+      return;
     }
 
     // Validate date format
@@ -123,6 +128,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
         success: false,
         error: 'Invalid date format',
       });
+      return;
     }
 
     // Get user's natal chart from database
@@ -135,6 +141,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
+      return;
     }
 
     const natalChart: NatalChart = {
@@ -173,6 +180,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const { returnDate } = req.body;
@@ -185,6 +193,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
         success: false,
         error: 'Invalid date format',
       });
+      return;
     }
 
     // Get user's natal chart from database
@@ -197,6 +206,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
+      return;
     }
 
     const natalChart: NatalChart = {
@@ -269,6 +279,7 @@ export async function getLunarReturnHistory(req: Request, res: Response, next: N
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const page = parseInt(req.query.page as string) || 1;
@@ -329,6 +340,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     // Check if lunar return exists and belongs to user
@@ -341,6 +353,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
         success: false,
         error: 'Lunar return not found',
       });
+      return;
     }
 
     await knex('lunar_returns')
@@ -369,6 +382,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const { returnDate, includeForecast = true } = req.body;
@@ -378,6 +392,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
         success: false,
         error: 'returnDate is required',
       });
+      return;
     }
 
     const date = new Date(returnDate);
@@ -386,6 +401,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
         success: false,
         error: 'Invalid date format',
       });
+      return;
     }
 
     // Get user's natal chart from database
@@ -398,6 +414,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
         success: false,
         error: 'Natal chart not found. Please create a birth chart first.',
       });
+      return;
     }
 
     const natalChart: NatalChart = {

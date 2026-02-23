@@ -244,7 +244,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
             animate={{ opacity: 1, scale: 1 }}
           >
             <button
-              onClick={() => void handleCompare}
+              onClick={() => void handleCompare()}
               disabled={!chart1Id || !chart2Id || chart1Id === chart2Id}
               className="relative group px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all text-white font-bold text-lg shadow-glow hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >

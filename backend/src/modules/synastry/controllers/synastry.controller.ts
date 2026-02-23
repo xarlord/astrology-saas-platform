@@ -26,6 +26,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const { chart1Id, chart2Id } = req.body;
@@ -35,6 +36,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
         success: false,
         error: 'chart1Id and chart2Id are required',
       });
+      return;
     }
 
     if (chart1Id === chart2Id) {
@@ -42,6 +44,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
         success: false,
         error: 'Cannot compare a chart with itself',
       });
+      return;
     }
 
     // Fetch both charts from database
@@ -55,6 +58,7 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
         success: false,
         error: 'One or both charts not found',
       });
+      return;
     }
 
     // Build chart objects
@@ -288,6 +292,7 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const { chart1Id, chart2Id, includeComposite = false } = req.body;
@@ -297,6 +302,7 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
         success: false,
         error: 'chart1Id and chart2Id are required',
       });
+      return;
     }
 
     // Fetch both charts
@@ -310,6 +316,7 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
         success: false,
         error: 'One or both charts not found',
       });
+      return;
     }
 
     // Build simplified chart objects for calculation
@@ -392,6 +399,7 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const page = parseInt(req.query.page as string) || 1;
@@ -453,6 +461,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     const report = await knex('synastry_charts')
@@ -464,6 +473,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
         success: false,
         error: 'Synastry report not found',
       });
+      return;
     }
 
     // Fetch aspects
@@ -497,6 +507,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     // Check if report exists and belongs to user
@@ -509,6 +520,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
         success: false,
         error: 'Synastry report not found',
       });
+      return;
     }
 
     await knex('synastry_charts')
@@ -539,6 +551,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
         success: false,
         error: 'Unauthorized',
       });
+      return;
     }
 
     // Check if report exists and belongs to user
@@ -551,6 +564,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
         success: false,
         error: 'Synastry report not found',
       });
+      return;
     }
 
     // Update
