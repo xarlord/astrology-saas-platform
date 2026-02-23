@@ -77,6 +77,8 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
+  // Skip rate limiting in development/test for E2E tests
+  skip: (req) => process.env.NODE_ENV !== 'production',
 });
 
 app.use('/api/', limiter);

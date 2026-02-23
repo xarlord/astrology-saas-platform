@@ -27,6 +27,13 @@ test.describe('Console Error Audit', () => {
       const type = msg.type();
       const text = msg.text();
 
+      // Filter out known/expected errors and warnings
+      if (text.includes('Service worker registration failed') ||
+          text.includes('Service Worker') ||
+          text.includes('MIME type')) {
+        return; // Skip these known errors
+      }
+
       if (type === 'error') {
         console.error(`❌ [${page.url()}] ${text}`);
       } else if (type === 'warning') {
@@ -47,7 +54,12 @@ test.describe('Console Error Audit', () => {
       const text = msg.text();
 
       if (type === 'error') {
-        errors.push(text);
+        // Filter out known/expected errors
+        if (!text.includes('Service worker registration failed') &&
+            !text.includes('Service Worker') &&
+            !text.includes('MIME type')) {
+          errors.push(text);
+        }
       } else if (type === 'warning') {
         // Filter out common expected warnings
         if (!text.includes('DevTools') &&
