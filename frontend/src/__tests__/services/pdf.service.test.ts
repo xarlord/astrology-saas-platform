@@ -195,7 +195,8 @@ describe('PDF Service', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    // Don't restore mocks - jsPDF mock needs to persist across tests
+    // since pdfService is a singleton
   });
 
   describe('generateReport', () => {

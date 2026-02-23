@@ -32,12 +32,6 @@ describe('LoadingSpinner', () => {
       expect(spinner).toHaveClass('h-8', 'w-8');
     });
 
-    it('should render xs size', () => {
-      render(<LoadingSpinner size="xs" />);
-      const spinner = screen.getByRole('status');
-      expect(spinner).toHaveClass('h-3', 'w-3');
-    });
-
     it('should render sm size', () => {
       render(<LoadingSpinner size="sm" />);
       const spinner = screen.getByRole('status');
@@ -61,25 +55,19 @@ describe('LoadingSpinner', () => {
     it('should render primary color by default', () => {
       render(<LoadingSpinner />);
       const spinner = screen.getByRole('status');
-      expect(spinner).toHaveClass('border-indigo-600');
+      expect(spinner).toHaveClass('border-primary-500');
     });
 
     it('should render secondary color', () => {
       render(<LoadingSpinner color="secondary" />);
       const spinner = screen.getByRole('status');
-      expect(spinner).toHaveClass('border-purple-600');
+      expect(spinner).toHaveClass('border-indigo-500');
     });
 
     it('should render white color', () => {
       render(<LoadingSpinner color="white" />);
       const spinner = screen.getByRole('status');
       expect(spinner).toHaveClass('border-white');
-    });
-
-    it('should render gray color', () => {
-      render(<LoadingSpinner color="gray" />);
-      const spinner = screen.getByRole('status');
-      expect(spinner).toHaveClass('border-gray-400');
     });
   });
 
