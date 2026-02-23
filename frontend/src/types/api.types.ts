@@ -1,29 +1,131 @@
 /**
- * API Response Schemas
+ * API Response Types
  * Complete TypeScript interfaces for all API endpoints
  *
- * This file defines the contract between frontend and backend
- * All API responses follow the standard ApiResponse wrapper
+ * This file re-exports types from Zod schemas and maintains backward compatibility.
+ * For new code, import directly from './schemas' for both types and runtime validation.
+ *
+ * @example
+ * // Recommended: Import from schemas for both types and validation
+ * import { User, userSchema, LoginRequest, loginRequestSchema } from './schemas';
+ *
+ * // Legacy: Import just types (still works but no runtime validation)
+ * import { User, LoginRequest } from './api.types';
  */
 
 // ============================================================================
-// BASE API TYPES
+// RE-EXPORT FROM ZOD SCHEMAS
 // ============================================================================
 
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: string;
-}
+// Base API types
+export type {
+  ApiResponse,
+  PaginatedResponse,
+  PaginationMeta,
+  ValidationError,
+  ApiErrorResponse,
+  SimpleErrorResponse,
+  HealthCheckResponse,
+  ServiceHealth,
+  SuccessResponse,
+  DeleteResponse,
+} from './schemas/base.schema';
 
-export interface ApiError {
-  success: false;
-  error: string;
-  message?: string;
-  statusCode: number;
-}
+// Auth types
+export type {
+  User,
+  UserSettings,
+  UserPreferences,
+  NotificationSettings,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  RefreshTokenResponse,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  ChangePasswordRequest,
+  UpdateUserRequest,
+  SubscriptionTier,
+  UserRole,
+} from './schemas/auth.schema';
 
+// Chart types
+export type {
+  Chart,
+  BirthData,
+  CalculatedChart,
+  PlanetPosition,
+  Aspect,
+  House,
+  HouseCusp,
+  ChartAngles,
+  ZodiacPosition,
+  AspectPattern,
+  DignityScore,
+  ZodiacSign,
+  Element,
+  Quality,
+  ChartType,
+  HouseSystem,
+  AspectType,
+  PlanetName,
+  CreateChartRequest,
+  UpdateChartRequest,
+  ChartResponse,
+  ChartsListResponse,
+} from './schemas/chart.schema';
+
+// Transit types
+export type {
+  TransitRequest,
+  TransitResponse,
+  DailyTransit,
+  MajorTransit,
+  LunarPhase,
+  TransitAspect,
+  TransitMood,
+  PlanetaryIngress,
+  TransitForecastRequest,
+  TransitInterpretation,
+  TransitTheme,
+  TransitInfluenceDetail,
+  TransitSignificance,
+  TransitInfluence,
+  EnergyLevel,
+  LunarPhaseType,
+} from './schemas/transit.schema';
+
+// Synastry types
+export type {
+  SynastryRequest,
+  SynastryResponse,
+  SynastryComparison,
+  SynastryAspect,
+  CompatibilityAnalysis,
+  SynastryBreakdown,
+  RelationshipDynamic,
+  SynastryAspectInfluence,
+  SynastrySignificance,
+} from './schemas/synastry.schema';
+
+// Return types
+export type {
+  SolarReturnRequest,
+  SolarReturnResponse,
+  SolarReturnAnalysis,
+  SolarReturnKeyDate,
+  LunarReturnRequest,
+  LunarReturnResponse,
+  LunarReturnAnalysis,
+  ReturnLocation,
+} from './schemas/returns.schema';
+
+// ============================================================================
+// LEGACY TYPES (not in schemas yet)
+// These are maintained for backward compatibility
+// ============================================================================
+
+// Pagination parameters for requests
 export interface PaginationParams {
   page: number;
   limit: number;
@@ -31,229 +133,15 @@ export interface PaginationParams {
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+// API Error type (legacy format)
+export interface ApiError {
+  success: false;
+  error: string;
+  message?: string;
+  statusCode: number;
 }
 
-// ============================================================================
-// AUTHENTICATION TYPES
-// ============================================================================
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  birthDate?: string;
-  birthTime?: string;
-  birthPlace?: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
-
-export interface RefreshTokenResponse {
-  accessToken: string;
-  expiresIn: number;
-}
-
-export interface ForgotPasswordRequest {
-  email: string;
-}
-
-export interface ResetPasswordRequest {
-  token: string;
-  newPassword: string;
-}
-
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
-// ============================================================================
-// USER TYPES
-// ============================================================================
-
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  avatar?: string;
-  role: 'user' | 'admin';
-  subscriptionTier: 'free' | 'pro' | 'lifetime';
-  subscriptionExpiresAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  settings?: UserSettings;
-  preferences?: UserPreferences;
-}
-
-export interface UserSettings {
-  timezone: string;
-  language: string;
-  dateFormat: string;
-  timeFormat: '12h' | '24h';
-  notifications: NotificationSettings;
-}
-
-export interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  dailyDigest: boolean;
-  transitAlerts: boolean;
-  lunarReturns: boolean;
-  solarReturns: boolean;
-}
-
-export interface UserPreferences {
-  defaultChartType: 'natal' | 'draconic' | 'harmonic';
-  defaultOrb: number;
-  defaultHouseSystem: 'placidus' | 'koch' | 'porphyry' | 'equal' | 'whole-sign';
-  showAspects: boolean;
-  showMidpoints: boolean;
-  theme: 'light' | 'dark' | 'system';
-}
-
-export interface UpdateUserRequest {
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-  settings?: Partial<UserSettings>;
-  preferences?: Partial<UserPreferences>;
-}
-
-// ============================================================================
-// CHART TYPES
-// ============================================================================
-
-export interface BirthData {
-  name: string;
-  birthDate: string; // ISO 8601 date string
-  birthTime: string; // HH:MM format
-  birthPlace: string;
-  latitude: number;
-  longitude: number;
-  timezone: string;
-}
-
-export interface Chart {
-  id: string;
-  userId: string;
-  name: string;
-  type: 'natal' | 'draconic' | 'harmonic' | 'composite' | 'synastry';
-  birthData: BirthData;
-  createdAt: string;
-  updatedAt: string;
-  isDefault: boolean;
-  notes?: string;
-}
-
-export interface CreateChartRequest {
-  name: string;
-  type: Chart['type'];
-  birthData: BirthData;
-  isDefault?: boolean;
-  notes?: string;
-}
-
-export interface UpdateChartRequest {
-  name?: string;
-  isDefault?: boolean;
-  notes?: string;
-}
-
-export interface CalculatedChart {
-  chart: Chart;
-  positions: PlanetPosition[];
-  aspects: Aspect[];
-  houses: House[];
-  angles: ChartAngles;
-  patterns: AspectPattern[];
-}
-
-export interface PlanetPosition {
-  planet: string;
-  sign: string;
-  degree: number;
-  minute: number;
-  second: number;
-  house: number;
-  retrograde: boolean;
-  element: 'fire' | 'earth' | 'air' | 'water';
-  quality: 'cardinal' | 'fixed' | 'mutable';
-}
-
-export interface Aspect {
-  id: string;
-  planets: [string, string];
-  type: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semisextile' | 'sesquisquare';
-  degree: number;
-  minute: number;
-  orb: number;
-  applying: boolean;
-  dignities: DignityScore;
-}
-
-export interface DignityScore {
-  rulership: number;
-  exaltation: number;
-  detriment: number;
-  fall: number;
-  triplicity: number;
-  terms: number;
-  face: number;
-}
-
-export interface House {
-  number: number;
-  sign: string;
-  cuspDegree: number;
-  cuspMinute: number;
-  planets: string[];
-}
-
-export interface ChartAngles {
-  ascendant: ZodiacPosition;
-  midheaven: ZodiacPosition;
-  descendant: ZodiacPosition;
-  ic: ZodiacPosition;
-}
-
-export interface ZodiacPosition {
-  sign: string;
-  degree: number;
-  minute: number;
-  second: number;
-  exactDegree: number;
-}
-
-export interface AspectPattern {
-  type: 'grand-trine' | 'grand-cross' | 'tsquare' | 'ystod' | 'kite' | 'mystic-rectangle';
-  planets: string[];
-  aspects: string[];
-  strength: number;
-}
-
-// ============================================================================
-// ANALYSIS TYPES
-// ============================================================================
-
+// Analysis types
 export interface PersonalityAnalysis {
   userId: string;
   chartId: string;
@@ -278,30 +166,6 @@ export interface PersonalitySection {
   associatedHouses: number[];
 }
 
-export interface TransitInterpretation {
-  transitId: string;
-  userId: string;
-  chartId: string;
-  startDate: string;
-  endDate: string;
-  theme: TransitTheme;
-  influence: TransitInfluence;
-  opportunities: string[];
-  challenges: string[];
-  recommendations: string[];
-}
-
-export interface TransitTheme {
-  primary: string;
-  secondary: string[];
-}
-
-export interface TransitInfluence {
-  overall: 'positive' | 'neutral' | 'challenging';
-  intensity: 'low' | 'moderate' | 'high';
-  duration: string;
-}
-
 export interface AspectPatternAnalysis {
   chartId: string;
   patterns: AspectPattern[];
@@ -318,79 +182,7 @@ export interface HemisphereBalance {
   southern: number;
 }
 
-// ============================================================================
-// TRANSIT TYPES
-// ============================================================================
-
-export interface TransitRequest {
-  chartId: string;
-  startDate: string;
-  endDate: string;
-}
-
-export interface TransitResponse {
-  chartId: string;
-  period: {
-    start: string;
-    end: string;
-  };
-  dailyTransits: DailyTransit[];
-  majorTransits: MajorTransit[];
-  lunarPhases: LunarPhase[];
-}
-
-export interface DailyTransit {
-  date: string;
-  aspects: TransitAspect[];
-  mood: TransitMood;
-  keyEvents: string[];
-}
-
-export interface TransitAspect {
-  transitPlanet: string;
-  natalPlanet: string;
-  type: Aspect['type'];
-  degree: number;
-  orb: number;
-  applying: boolean;
-  peakDate: string;
-  influence: 'positive' | 'neutral' | 'challenging';
-}
-
-export interface TransitMood {
-  overall: string;
-  energy: 'low' | 'moderate' | 'high';
-  focus: string[];
-}
-
-export interface MajorTransit {
-  planet: string;
-  type: string;
-  startDate: string;
-  endDate: string;
-  peakDate: string;
-  aspects: TransitAspect[];
-  significance: 'minor' | 'moderate' | 'major';
-  description: string;
-}
-
-export interface LunarPhase {
-  date: string;
-  phase: 'new-moon' | 'waxing-crescent' | 'first-quarter' | 'waxing-gibbous' | 'full-moon' | 'waning-gibbous' | 'last-quarter' | 'waning-crescent';
-  sign: string;
-  degree: number;
-  influence: string;
-}
-
-export interface TransitForecastRequest {
-  chartId: string;
-  duration: number; // days
-}
-
-// ============================================================================
-// CALENDAR TYPES
-// ============================================================================
-
+// Calendar types
 export interface CalendarEvent {
   id: string;
   userId: string;
@@ -453,14 +245,6 @@ export interface CalendarViewResponse {
   planetaryIngresses: PlanetaryIngress[];
 }
 
-export interface PlanetaryIngress {
-  date: string;
-  planet: string;
-  sign: string;
-  degree: number;
-  influence: string;
-}
-
 export interface ExportCalendarRequest {
   format: 'ics' | 'json';
   startDate: string;
@@ -476,148 +260,11 @@ export interface CalendarExportResponse {
   eventCount: number;
 }
 
-// ============================================================================
-// SYNASTRY TYPES
-// ============================================================================
-
-export interface SynastryRequest {
-  chart1Id: string;
-  chart2Id: string;
-}
-
-export interface SynastryResponse {
-  id: string;
-  chart1: Chart;
-  chart2: Chart;
-  compositeChart: CalculatedChart;
-  synastryAspects: SynastryAspect[];
-  compatibilityAnalysis: CompatibilityAnalysis;
-  relationshipDynamics: RelationshipDynamic[];
-  strengths: string[];
-  challenges: string[];
-  recommendations: string[];
-  generatedAt: string;
-}
-
-export interface SynastryAspect {
-  planet1: {
-    planet: string;
-    chart: '1' | '2';
-  };
-  planet2: {
-    planet: string;
-    chart: '1' | '2';
-  };
-  type: Aspect['type'];
-  degree: number;
-  orb: number;
-  influence: 'harmonious' | 'tense' | 'neutral';
-  significance: 'minor' | 'moderate' | 'major';
-  interpretation: string;
-}
-
-export interface CompatibilityAnalysis {
-  overallScore: number;
-  romanticScore: number;
-  communicationScore: number;
-  emotionalScore: number;
-  valuesScore: number;
-  longTermPotential: number;
-  keyFactors: string[];
-}
-
-export interface RelationshipDynamic {
-  category: string;
-  description: string;
-  positiveIndicators: string[];
-  challengingIndicators: string[];
-  advice: string;
-}
-
-// ============================================================================
-// SOLAR RETURN TYPES
-// ============================================================================
-
-export interface SolarReturnRequest {
-  chartId: string;
-  year: number;
-  location?: {
-    latitude: number;
-    longitude: number;
-    placeName: string;
-  };
-}
-
-export interface SolarReturnResponse {
-  id: string;
-  chartId: string;
-  year: number;
-  returnDate: string;
-  location: SolarReturnRequest['location'];
-  solarReturnChart: CalculatedChart;
-  analysis: SolarReturnAnalysis;
-  themes: string[];
-  keyDates: SolarReturnKeyDate[];
-  createdAt: string;
-}
-
-export interface SolarReturnAnalysis {
-  overview: string;
-  dominantThemes: string[];
-  houseEmphasis: number[];
-  majorAspects: Aspect[];
-  recommendations: string[];
-}
-
-export interface SolarReturnKeyDate {
-  date: string;
-  event: string;
-  significance: string;
-  activatedHouses: number[];
-}
-
-// ============================================================================
-// LUNAR RETURN TYPES
-// ============================================================================
-
-export interface LunarReturnRequest {
-  chartId: string;
-  date: string;
-  location?: {
-    latitude: number;
-    longitude: number;
-    placeName: string;
-  };
-}
-
-export interface LunarReturnResponse {
-  id: string;
-  chartId: string;
-  returnDate: string;
-  location: LunarReturnRequest['location'];
-  lunarReturnChart: CalculatedChart;
-  analysis: LunarReturnAnalysis;
-  emotionalThemes: string[];
-  createdAt: string;
-}
-
-export interface LunarReturnAnalysis {
-  emotionalOverview: string;
-  moodThemes: string[];
-  focusAreas: string[];
-  houseEmphasis: number[];
-  aspects: Aspect[];
-  recommendations: string[];
-}
-
-// ============================================================================
-// REPORT GENERATION TYPES
-// ============================================================================
-
+// Report types
 export interface ReportRequest {
   type: 'personality' | 'transit' | 'synastry' | 'solar-return' | 'lunar-return';
   chartId?: string;
-  chart2Id?: string; // for synastry
+  chart2Id?: string;
   startDate?: string;
   endDate?: string;
   year?: number;
@@ -647,17 +294,14 @@ export interface ReportMetadata {
   chartCount: number;
 }
 
-// ============================================================================
-// LEARNING CENTER TYPES
-// ============================================================================
-
+// Learning types
 export interface Course {
   id: string;
   title: string;
   description: string;
   category: 'basics' | 'planets' | 'signs' | 'houses' | 'aspects' | 'transits' | 'advanced';
   level: 'beginner' | 'intermediate' | 'advanced';
-  duration: number; // total minutes
+  duration: number;
   lessons: Lesson[];
   thumbnailUrl?: string;
   createdAt: string;
@@ -670,7 +314,7 @@ export interface Lesson {
   description: string;
   category: 'basics' | 'planets' | 'signs' | 'houses' | 'aspects' | 'transits' | 'advanced';
   level: 'beginner' | 'intermediate' | 'advanced';
-  duration: number; // minutes
+  duration: number;
   order: number;
   videoUrl?: string;
   content?: LessonContent;
@@ -689,7 +333,7 @@ export interface LessonContent {
 export interface LessonSection {
   id: string;
   title: string;
-  content: string; // markdown or HTML
+  content: string;
   diagrams: string[];
   examples: string[];
 }
@@ -752,10 +396,7 @@ export interface LearningPath {
   prerequisites: string[];
 }
 
-// ============================================================================
-// LOCATION/GEOCODING TYPES
-// ============================================================================
-
+// Location/Geocoding types
 export interface GeocodeRequest {
   query: string;
   limit?: number;
@@ -765,8 +406,8 @@ export interface GeocodeResult {
   id: string;
   name: string;
   country: string;
-  admin1?: string; // state/region
-  admin2?: string; // county
+  admin1?: string;
+  admin2?: string;
   latitude: number;
   longitude: number;
   timezone: string;
@@ -791,10 +432,7 @@ export interface TimezoneResponse {
   abbreviation: string;
 }
 
-// ============================================================================
-// NOTIFICATION TYPES
-// ============================================================================
-
+// Notification types
 export interface Notification {
   id: string;
   userId: string;
@@ -821,10 +459,7 @@ export interface MarkNotificationsReadRequest {
   markAll?: boolean;
 }
 
-// ============================================================================
-// PUSH NOTIFICATION TYPES
-// ============================================================================
-
+// Push notification types
 export interface PushSubscription {
   endpoint: string;
   keys: {
@@ -850,10 +485,7 @@ export interface PushNotificationPayload {
   }[];
 }
 
-// ============================================================================
-// AI INTERPRETATION TYPES (Future Feature)
-// ============================================================================
-
+// AI interpretation types
 export interface AIInterpretationRequest {
   type: 'personality' | 'transit' | 'synastry' | 'aspect-pattern';
   chartId?: string;
@@ -870,40 +502,8 @@ export interface AIInterpretationResponse {
   tokens: number;
 }
 
-// ============================================================================
-// HEALTH CHECK TYPES
-// ============================================================================
+// TransitInfluence type (alias for backward compatibility)
+export type { TransitInfluenceDetail as TransitInfluence } from './schemas/transit.schema';
 
-export interface HealthCheckResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  version: string;
-  uptime: number;
-  timestamp: string;
-  services: ServiceHealth[];
-}
-
-export interface ServiceHealth {
-  name: string;
-  status: 'up' | 'down' | 'degraded';
-  latency?: number;
-  message?: string;
-}
-
-// ============================================================================
-// ERROR RESPONSE TYPES
-// ============================================================================
-
-export interface ValidationError {
-  field: string;
-  message: string;
-  value?: unknown;
-}
-
-export interface ErrorResponse {
-  success: false;
-  error: string;
-  message: string;
-  statusCode: number;
-  validationErrors?: ValidationError[];
-  stack?: string; // Only in development
-}
+// ErrorResponse type (alias for backward compatibility)
+export type { ApiErrorResponse as ErrorResponse } from './schemas/base.schema';

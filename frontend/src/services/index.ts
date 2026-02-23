@@ -21,6 +21,13 @@ export { default as locationService } from './location.service';
 export { default as userService } from './user.service';
 export { default as pdfService } from './pdf.service';
 
+// Chart Calculator Service
+export {
+  ChartCalculator,
+  chartCalculator,
+  createChartCalculator,
+} from './chartCalculator.service';
+
 // Synastry service (has named exports)
 export {
   compareCharts,

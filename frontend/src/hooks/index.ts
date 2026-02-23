@@ -13,6 +13,40 @@ export { usePushNotifications } from './usePushNotifications';
 // AI Hooks
 export { useAIInterpretation } from './useAIInterpretation';
 
+// Keyboard Navigation Hooks (WCAG 2.1 AA)
+export {
+  useKeyboardNavigation,
+  useTypeAhead,
+  type UseKeyboardNavigationOptions,
+  type UseKeyboardNavigationReturn,
+  type NavigationDirection,
+} from './useKeyboardNavigation';
+
+export {
+  useFocusTrap,
+  useFocusRestoration,
+  useAnnouncer,
+  useRovingTabIndex,
+  type UseFocusTrapOptions,
+} from './useFocusTrap';
+
+export {
+  useKeyboardShortcuts,
+  useKeyboardShortcut,
+  CommonShortcuts,
+  type KeyboardShortcut,
+} from './useKeyboardShortcuts';
+
+export {
+  useShortcut,
+  useScopedShortcuts,
+  useShortcutsList,
+  createShortcut,
+  AppShortcuts,
+  type ShortcutDefinition,
+  type UseShortcutOptions,
+} from './useShortcut';
+
 // PDF Generation Hooks
 export {
   usePDFGeneration,
@@ -21,6 +55,66 @@ export {
   generateReportFilename,
 } from './usePDFGeneration';
 export type { PDFGenerationState, UsePDFGenerationReturn } from './usePDFGeneration';
+
+// Form Validation Hooks
+export {
+  useFormValidation,
+  useFieldValidation,
+  type FieldConfig,
+  type FormValidationConfig,
+  type UseFormValidationReturn,
+} from './useFormValidation';
+
+// Video Player Hooks
+export {
+  useVideoPlayer,
+  PLAYBACK_RATES,
+  SEEK_JUMP_SECONDS,
+  VOLUME_STEP,
+  COMPLETION_THRESHOLD,
+} from './useVideoPlayer';
+export type {
+  VideoPlayerState,
+  VideoPlayerControls,
+  VideoPlayerOptions,
+  VideoProgress,
+} from './useVideoPlayer';
+
+// Real-Time Optimization Hooks
+export {
+  useRealTimeUpdates,
+  type ConnectionStatus,
+  type WebSocketMessage,
+  type RealTimeUpdateOptions,
+  type RealTimeUpdateState,
+  type RealTimeUpdateActions,
+} from './useRealTimeUpdates';
+
+export {
+  useDebouncedCallback,
+  type DebouncedCallbackOptions,
+  type DebouncedCallbackControl,
+} from './useDebouncedCallback';
+
+export {
+  useThrottledValue,
+  useThrottledValues,
+  type ThrottledValueOptions,
+} from './useThrottledValue';
+
+export {
+  useOptimisticUpdate,
+  type OptimisticUpdateOptions,
+  type OptimisticUpdateState,
+  type OptimisticUpdateActions,
+} from './useOptimisticUpdate';
+
+export {
+  usePolling,
+  type PollingOptions,
+  type PollingState,
+  type PollingActions,
+} from './usePolling';
 
 /**
  * Use Auth Hook
