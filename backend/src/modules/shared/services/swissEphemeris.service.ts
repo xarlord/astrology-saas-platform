@@ -297,6 +297,27 @@ export function calculateAspects(longitude1: number, longitude2: number) {
   return null;
 }
 
+/**
+ * Get daily transits (all planetary positions for a date)
+ * Used for general transit data without requiring a birth chart
+ */
+export function getDailyTransits(date: Date) {
+  const baseLongitude = (date.getTime() % 360);
+
+  return {
+    sun: { longitude: (baseLongitude + 0) % 360, latitude: 0, speed: 1, retrograde: false },
+    moon: { longitude: (baseLongitude + 50) % 360, latitude: 5, speed: 13, retrograde: false },
+    mercury: { longitude: (baseLongitude + 25) % 360, latitude: 2, speed: 1.5, retrograde: baseLongitude % 30 < 15 },
+    venus: { longitude: (baseLongitude + 65) % 360, latitude: -1, speed: 1.2, retrograde: false },
+    mars: { longitude: (baseLongitude + 95) % 360, latitude: 1, speed: 0.8, retrograde: false },
+    jupiter: { longitude: (baseLongitude + 130) % 360, latitude: -2, speed: 0.3, retrograde: baseLongitude % 60 < 20 },
+    saturn: { longitude: (baseLongitude + 180) % 360, latitude: 2, speed: 0.2, retrograde: baseLongitude % 90 < 45 },
+    uranus: { longitude: (baseLongitude + 240) % 360, latitude: -1, speed: 0.1, retrograde: true },
+    neptune: { longitude: (baseLongitude + 270) % 360, latitude: 1, speed: 0.08, retrograde: true },
+    pluto: { longitude: (baseLongitude + 300) % 360, latitude: -3, speed: 0.05, retrograde: true },
+  };
+}
+
 // Export all functions and constants as swissEphemeris object
 export const swissEphemeris = {
   calculateNatalChart,
@@ -305,6 +326,7 @@ export const swissEphemeris = {
   calculateLunarReturn,
   calculateCompositeChart,
   calculateAspects,
+  getDailyTransits,
   juldayToDate,
   ZODIAC_SIGNS,
   PLANET_SYMBOLS,

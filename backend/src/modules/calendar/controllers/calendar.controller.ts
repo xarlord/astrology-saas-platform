@@ -13,10 +13,10 @@ class CalendarController {
    * GET /api/calendar/month/:year/:month
    * Get calendar events for a specific month
    * Includes both personal events and global astrological events
+   * With optional auth: returns only global events for unauthenticated users
    */
   async getMonthEvents(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.user!.id;
       const { year, month } = req.params;
       const { includeGlobal = 'true' } = req.query;
 
@@ -32,14 +32,17 @@ class CalendarController {
         return;
       }
 
-      // Get user's personalized events for the month
-      const personalEvents = await calendarEventModel.findByMonth(
-        userId,
-        yearNum,
-        monthNum
-      );
+      let events: any[] = [];
 
-      let events = [...personalEvents];
+      // Get user's personalized events if authenticated
+      if (req.user?.id) {
+        const personalEvents = await calendarEventModel.findByMonth(
+          req.user.id,
+          yearNum,
+          monthNum
+        );
+        events = [...personalEvents];
+      }
 
       // Include global events if requested
       if (includeGlobal === 'true') {
@@ -54,6 +57,7 @@ class CalendarController {
           year: yearNum,
           month: monthNum,
           total: events.length,
+          isGuest: !req.user?.id,
         },
       });
     } catch (error) {

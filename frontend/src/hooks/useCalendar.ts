@@ -30,10 +30,11 @@ export const useCalendar = () => {
   } = useCalendarStore();
 
   // Load events for selected date
+  // Note: API expects months 1-12, but Date.getMonth() returns 0-11
   useEffect(() => {
     if (selectedDate) {
-      void loadEvents(selectedDate.getFullYear(), selectedDate.getMonth());
-      void loadLunarPhases(selectedDate.getFullYear(), selectedDate.getMonth());
+      void loadEvents(selectedDate.getFullYear(), selectedDate.getMonth() + 1);
+      void loadLunarPhases(selectedDate.getFullYear(), selectedDate.getMonth() + 1);
     }
   }, [selectedDate, loadEvents, loadLunarPhases]);
 

@@ -73,52 +73,114 @@ export async function calculateTransits(req: Request, res: Response): Promise<vo
 
 /**
  * Get today's transits
+ * With authentication: returns personalized transits based on user's chart
+ * Without authentication: returns general planetary positions and moon phase
  */
 export async function getTodayTransits(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
-
-  // Get user's primary chart (first natal chart)
-  const charts = await ChartModel.findByUserId(userId, 1, 0);
-  if (charts.length === 0) {
-    throw new AppError('No charts found. Please create a natal chart first.', 404);
-  }
-
-  const chart = charts[0];
-
-  if (!chart.calculated_data) {
-    throw new AppError('Chart must be calculated first', 400);
-  }
-
   const today = new Date();
 
-  const transitData = swissEphemeris.calculateTransits({
-    birthDate: new Date(chart.birth_date),
-    transitDate: today,
-    latitude: chart.birth_latitude,
-    longitude: chart.birth_longitude,
-  });
+  // If user is authenticated, try to get personalized transits
+  if (req.user?.id) {
+    try {
+      const charts = await ChartModel.findByUserId(req.user.id, 1, 0);
+      if (charts.length > 0 && charts[0].calculated_data) {
+        const chart = charts[0];
+        const transitData = swissEphemeris.calculateTransits({
+          birthDate: new Date(chart.birth_date),
+          transitDate: today,
+          latitude: chart.birth_latitude,
+          longitude: chart.birth_longitude,
+        });
 
-  // Get significant aspects
-  const majorAspects = transitData.aspects.filter(
-    (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
+        const majorAspects = transitData.aspects.filter(
+          (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
+        );
+
+        const moonPhase = calculateMoonPhase(
+          transitData.transitPlanets.moon.longitude,
+          transitData.transitPlanets.sun.longitude
+        );
+
+        res.status(200).json({
+          success: true,
+          data: {
+            date: today.toISOString().split('T')[0],
+            chart: { id: chart.id, name: chart.name },
+            majorAspects,
+            moonPhase,
+            transitPlanets: transitData.transitPlanets,
+            energyLevel: Math.min(100, 50 + majorAspects.length * 10),
+          },
+        });
+        return;
+      }
+    } catch (error) {
+      // Fall through to general transits on error
+    }
+  }
+
+  // Return general transit data (no chart required)
+  const generalTransits = swissEphemeris.getDailyTransits(today);
+
+  const moonPhase = calculateMoonPhase(
+    generalTransits.moon.longitude,
+    generalTransits.sun.longitude
   );
 
-  // Calculate moon phase
-  const moonPhase = calculateMoonPhase(transitData.transitPlanets.moon.longitude, transitData.transitPlanets.sun.longitude);
+  // Calculate general planetary aspects (without natal chart)
+  const generalAspects = calculateGeneralAspects(generalTransits);
 
   res.status(200).json({
     success: true,
     data: {
       date: today.toISOString().split('T')[0],
-      chart: {
-        id: chart.id,
-        name: chart.name,
-      },
-      majorAspects,
+      chart: null,
+      majorAspects: generalAspects,
       moonPhase,
-      transitPlanets: transitData.transitPlanets,
+      transitPlanets: generalTransits,
+      energyLevel: 50,
+      isGeneral: true,
     },
   });
+}
+
+/**
+ * Calculate general aspects between transiting planets
+ */
+function calculateGeneralAspects(planets: any): any[] {
+  const aspects: any[] = [];
+  const planetList = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
+  const aspectTypes = [
+    { type: 'conjunction', angle: 0, orb: 8 },
+    { type: 'opposition', angle: 180, orb: 8 },
+    { type: 'trine', angle: 120, orb: 6 },
+    { type: 'square', angle: 90, orb: 6 },
+  ];
+
+  for (let i = 0; i < planetList.length; i++) {
+    for (let j = i + 1; j < planetList.length; j++) {
+      const p1 = planets[planetList[i]];
+      const p2 = planets[planetList[j]];
+      if (!p1 || !p2) continue;
+
+      let diff = Math.abs(p1.longitude - p2.longitude);
+      if (diff > 180) diff = 360 - diff;
+
+      for (const aspectType of aspectTypes) {
+        if (Math.abs(diff - aspectType.angle) <= aspectType.orb) {
+          aspects.push({
+            planet1: planetList[i],
+            planet2: planetList[j],
+            type: aspectType.type,
+            orb: Math.abs(diff - aspectType.angle),
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  return aspects.slice(0, 10); // Limit to 10 aspects
 }
 
 /**

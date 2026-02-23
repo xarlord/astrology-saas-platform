@@ -5,15 +5,16 @@
 
 import { Router } from 'express';
 import calendarController from '../controllers/calendar.controller';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, optionalAuthenticate } from '../../../middleware/auth';
 
 const router = Router();
 
-// All calendar routes require authentication
-router.use(authenticate);
-
 // GET /api/calendar/month/:year/:month - Get events for a specific month
-router.get('/month/:year/:month', calendarController.getMonthEvents.bind(calendarController));
+// Uses optional auth - returns global events for unauthenticated users
+router.get('/month/:year/:month', optionalAuthenticate, calendarController.getMonthEvents.bind(calendarController));
+
+// All other calendar routes require authentication
+router.use(authenticate);
 
 // POST /api/calendar/events - Create custom calendar event
 router.post('/events', calendarController.createCustomEvent.bind(calendarController));
