@@ -78,7 +78,7 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   // Skip rate limiting in development/test for E2E tests
-  skip: (req) => process.env.NODE_ENV !== 'production',
+  skip: () => process.env.NODE_ENV !== 'production',
 });
 
 app.use('/api/', limiter);
