@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { Gift, Mail, Link, Copy, Check, Share2, Calendar, Lock } from 'lucide-react';
-import axios from 'axios';
+import api from '../services/api';
 import { TIMEOUTS } from '../utils/constants';
 import './BirthdaySharing.css';
 
@@ -55,7 +55,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await axios.post<{ data: { url: string } }>(`/api/v1/solar-returns/${solarReturn.id}/share`, {
+      const response = await api.post<{ data: { url: string } }>(`/solar-returns/${solarReturn.id}/share`, {
         type: 'link',
         expiresInDays: parseInt(linkSettings.expiresIn),
         maxAccesses: linkSettings.maxAccesses,
@@ -78,7 +78,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      await axios.post(`/api/v1/solar-returns/${solarReturn.id}/share/email`, {
+      await api.post(`/solar-returns/${solarReturn.id}/share/email`, {
         to: emailSettings.to,
         subject: emailSettings.subject,
         message: emailSettings.message,

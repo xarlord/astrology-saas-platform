@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { Calendar, MapPin, Gift, TrendingUp } from 'lucide-react';
 import './SolarReturnDashboard.css';
 
@@ -45,7 +45,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await axios.get<{ data: SolarReturn[] }>('/api/v1/solar-returns/history', {
+      const response = await api.get<{ data: SolarReturn[] }>('/solar-returns/history', {
         params: {
           includeRelocated: filter === 'all',
         },
