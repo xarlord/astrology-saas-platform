@@ -8,11 +8,18 @@
  * - Interpretation panel with themes and rituals
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
+import {
+  getNextLunarReturn,
+  getLunarMonthForecast,
+  getLunarReturnHistory,
+  type LunarMonthForecast,
+  type SavedLunarReturn,
+} from '../services/lunarReturn.api';
 
 interface LunarReturn {
   date: Date;
@@ -31,42 +38,6 @@ interface LifeAreaImpact {
   status: 'positive' | 'neutral' | 'negative';
 }
 
-const FORECAST_THEMES = [
-  {
-    id: 1,
-    title: 'Emotional Renewal',
-    icon: 'water_drop',
-    color: 'pisces-teal',
-    description: 'The Moon in your 4th house signals a time to retreat and recharge. Your intuition is heightened.',
-    dominant: true,
-  },
-  {
-    id: 2,
-    title: 'Creative Surge',
-    icon: 'palette',
-    color: 'primary',
-    description: 'With Venus aspecting your Moon, artistic endeavors are favored. Use this energy to create.',
-    dominant: false,
-  },
-  {
-    id: 3,
-    title: 'Family Focus',
-    icon: 'family_restroom',
-    color: 'cosmic-blue',
-    description: 'Domestic matters take center stage. Conversations with family may bring closure.',
-    dominant: false,
-  },
-];
-
-const LIFE_AREAS: LifeAreaImpact[] = [
-  { area: 'Relationships', icon: 'favorite', status: 'positive' },
-  { area: 'Career', icon: 'work', status: 'neutral' },
-  { area: 'Finances', icon: 'payments', status: 'neutral' },
-  { area: 'Health', icon: 'fitness_center', status: 'positive' },
-  { area: 'Spirituality', icon: 'self_improvement', status: 'positive' },
-  { area: 'Creativity', icon: 'brush', status: 'positive' },
-];
-
 const ZODIAC_SYMBOLS: Record<string, string> = {
   Aries: '♈',
   Taurus: '♉',
@@ -84,71 +55,140 @@ const ZODIAC_SYMBOLS: Record<string, string> = {
 
 export const LunarReturnsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { charts: _charts } = useCharts();
+  const { charts } = useCharts();
 
-  const [_selectedChartId, _setSelectedChartId] = useState<string>('');
-  const [selectedMonth, _setSelectedMonth] = useState(new Date());
+  const [selectedChartId, setSelectedChartId] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [journalEntries, setJournalEntries] = useState({
     emotions: '',
     home: '',
     intention: '',
   });
 
-  // Calculate current lunar return data
-  const currentLunarReturn = useMemo((): LunarReturn => {
-    return {
-      date: new Date(),
-      moonSign: 'Pisces',
-      moonDegree: 15,
-      moonMinute: 32,
-      house: 4,
-      illumination: 72,
-      phase: 'Waxing Gibbous',
-      intensity: 72,
-    };
+  // API state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentLunarReturn, setCurrentLunarReturn] = useState<LunarReturn | null>(null);
+  const [forecast, setForecast] = useState<LunarMonthForecast | null>(null);
+  const [pastReturns, setPastReturns] = useState<SavedLunarReturn[]>([]);
+
+  // Fetch lunar return data from API
+  const fetchLunarData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Fetch next lunar return and history in parallel
+      const [nextReturnData, historyData] = await Promise.allSettled([
+        getNextLunarReturn(),
+        getLunarReturnHistory(1, 10),
+      ]);
+
+      // Process next return
+      if (nextReturnData.status === 'fulfilled') {
+        const { nextReturn, natalMoon } = nextReturnData.value;
+        setCurrentLunarReturn({
+          date: new Date(nextReturn),
+          moonSign: natalMoon.sign,
+          moonDegree: natalMoon.degree,
+          moonMinute: natalMoon.minute,
+          house: 4, // Default, would come from chart calculation
+          illumination: 50, // Default
+          phase: 'Waxing', // Default
+          intensity: 70, // Default
+        });
+      }
+
+      // Process history
+      if (historyData.status === 'fulfilled') {
+        setPastReturns(historyData.value.returns || []);
+      }
+
+      // Try to fetch monthly forecast
+      try {
+        const forecastData = await getLunarMonthForecast(new Date());
+        setForecast(forecastData);
+      } catch {
+        // Forecast is optional, use defaults
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load lunar return data';
+      setError(errorMessage);
+      // Set fallback data
+      setCurrentLunarReturn({
+        date: new Date(),
+        moonSign: 'Pisces',
+        moonDegree: 15,
+        moonMinute: 32,
+        house: 4,
+        illumination: 72,
+        phase: 'Waxing Gibbous',
+        intensity: 72,
+      });
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Past returns for timeline
-  const pastReturns = useMemo(() => {
-    const now = new Date();
-    return [
-      {
-        date: new Date(now.getFullYear(), now.getMonth() - 2, 15),
-        sign: 'Aquarius',
-        status: 'past',
-      },
-      {
-        date: new Date(now.getFullYear(), now.getMonth() - 1, 12),
-        sign: 'Pisces',
-        status: 'past',
-      },
-      {
-        date: now,
-        sign: 'Aries',
-        status: 'current',
-      },
-      {
-        date: new Date(now.getFullYear(), now.getMonth() + 1, 10),
-        sign: 'Taurus',
-        status: 'future',
-      },
-      {
-        date: new Date(now.getFullYear(), now.getMonth() + 2, 8),
-        sign: 'Gemini',
-        status: 'future',
-      },
-    ];
-  }, []);
+  // Load data on mount
+  useEffect(() => {
+    void fetchLunarData();
+  }, [fetchLunarData]);
+
+  // Set first chart as selected when charts load
+  useEffect(() => {
+    if (charts.length > 0 && !selectedChartId) {
+      setSelectedChartId(charts[0].id);
+    }
+  }, [charts, selectedChartId]);
+
+  // Generate forecast themes from API data
+  const forecastThemes = forecast ? [
+    {
+      id: 1,
+      title: forecast.emotionalTheme || 'Emotional Renewal',
+      icon: 'water_drop',
+      color: 'pisces-teal',
+      description: forecast.theme || 'A time for emotional growth and reflection.',
+      dominant: true,
+    },
+    ...(forecast.actionAdvice || []).slice(0, 2).map((advice, idx) => ({
+      id: idx + 2,
+      title: advice.slice(0, 30) || 'Focus Area',
+      icon: 'lightbulb',
+      color: 'primary',
+      description: advice,
+      dominant: false,
+    })),
+  ] : [];
+
+  // Generate life areas from predictions
+  const lifeAreas: LifeAreaImpact[] = forecast?.predictions?.map(p => ({
+    area: p.category.charAt(0).toUpperCase() + p.category.slice(1),
+    icon: p.category === 'relationships' ? 'favorite' :
+          p.category === 'career' ? 'work' :
+          p.category === 'finances' ? 'payments' :
+          p.category === 'health' ? 'fitness_center' :
+          p.category === 'spirituality' ? 'self_improvement' : 'brush',
+    status: p.likelihood > 70 ? 'positive' : p.likelihood > 40 ? 'neutral' : 'negative' as const,
+  })) || [
+    { area: 'Relationships', icon: 'favorite', status: 'positive' as const },
+    { area: 'Career', icon: 'work', status: 'neutral' as const },
+    { area: 'Finances', icon: 'payments', status: 'neutral' as const },
+    { area: 'Health', icon: 'fitness_center', status: 'positive' as const },
+    { area: 'Spirituality', icon: 'self_improvement', status: 'positive' as const },
+    { area: 'Creativity', icon: 'brush', status: 'positive' as const },
+  ];
 
   const timeRemaining = useMemo(() => {
+    if (!currentLunarReturn) return { days: 0, hours: 0, minutes: 0 };
     const now = new Date();
-    const nextReturn = new Date(now.getFullYear(), now.getMonth() + 1, 10);
-    const diff = nextReturn.getTime() - now.getTime();
+    const diff = new Date(currentLunarReturn.date).getTime() - now.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return { days, hours, minutes };
-  }, []);
+    return { days: Math.max(0, days), hours: Math.max(0, hours), minutes: Math.max(0, minutes) };
+  }, [currentLunarReturn]);
 
   const getStatusColor = (status: LifeAreaImpact['status']) => {
     switch (status) {
@@ -203,6 +243,27 @@ export const LunarReturnsPage: React.FC = () => {
       </nav>
 
       <main className="flex-1 w-full max-w-[1280px] mx-auto p-6 md:p-8 flex flex-col gap-8">
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-20">
+            <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+            <span className="ml-3 text-slate-400">Loading lunar return data...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
+            <p>{error}</p>
+            <Button variant="outline" size="sm" className="mt-2" onClick={() => void fetchLunarData()}>
+              Retry
+            </Button>
+          </div>
+        )}
+
+        {/* Content - only show when not loading */}
+        {!loading && currentLunarReturn && (
+          <>
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
@@ -581,6 +642,8 @@ export const LunarReturnsPage: React.FC = () => {
             </div>
           </div>
         </div>
+          </>
+        )}
       </main>
     </div>
   );
