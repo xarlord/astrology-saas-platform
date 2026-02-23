@@ -3,32 +3,39 @@
  *
  * Accessible loading spinner with multiple size variants
  * Follows WCAG 2.1 AA guidelines for loading indicators
+ *
+ * Design Specs (Section 2 - Loading States):
+ * - Sizes: sm (16px inline), md (32px default), lg (48px page), xl (64px full screen)
+ * - Colors: Primary (#8B5CF6 cosmic purple), Secondary (#6366F1 indigo), White (#FFFFFF)
  */
 
 import React from 'react';
 import { clsx } from 'clsx';
 
 export interface LoadingSpinnerProps {
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  color?: 'primary' | 'secondary' | 'white' | 'gray';
+  /** Size variant per design specs */
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  /** Color variant per design specs */
+  color?: 'primary' | 'secondary' | 'white';
+  /** Additional CSS classes */
   className?: string;
-  label?: string; // Custom aria-label
+  /** Custom aria-label */
+  label?: string;
+  /** Whether to show as fullscreen overlay */
   fullScreen?: boolean;
 }
 
 const sizeClasses = {
-  xs: 'h-3 w-3 border-2',
-  sm: 'h-4 w-4 border-2',
-  md: 'h-8 w-8 border-3',
-  lg: 'h-12 w-12 border-4',
-  xl: 'h-16 w-16 border-[5px]',
+  sm: 'h-4 w-4 border-2',   // 16px - inline loading
+  md: 'h-8 w-8 border-[3px]', // 32px - default
+  lg: 'h-12 w-12 border-4',   // 48px - page loading
+  xl: 'h-16 w-16 border-[5px]', // 64px - full screen
 };
 
 const colorClasses = {
-  primary: 'border-indigo-600 border-t-transparent',
-  secondary: 'border-purple-600 border-t-transparent',
+  primary: 'border-primary-500 border-t-transparent', // #8B5CF6 cosmic purple
+  secondary: 'border-indigo-500 border-t-transparent', // #6366F1 indigo
   white: 'border-white border-t-transparent',
-  gray: 'border-gray-400 border-t-transparent dark:border-gray-600',
 };
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({

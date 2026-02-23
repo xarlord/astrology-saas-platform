@@ -291,20 +291,29 @@ describe('LoadingSpinner Component', () => {
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
-  it('renders with different sizes', () => {
-    const { rerender } = render(<LoadingSpinner size="xs" />);
-    expect(screen.getByRole('status')).toHaveClass('h-3');
+  it('renders with different sizes per design specs', () => {
+    const { rerender } = render(<LoadingSpinner size="sm" />);
+    expect(screen.getByRole('status')).toHaveClass('h-4');
+
+    rerender(<LoadingSpinner size="md" />);
+    expect(screen.getByRole('status')).toHaveClass('h-8');
+
+    rerender(<LoadingSpinner size="lg" />);
+    expect(screen.getByRole('status')).toHaveClass('h-12');
 
     rerender(<LoadingSpinner size="xl" />);
     expect(screen.getByRole('status')).toHaveClass('h-16');
   });
 
-  it('renders with different colors', () => {
-    const { rerender } = render(<LoadingSpinner color="white" />);
-    expect(screen.getByRole('status')).toHaveClass('border-white');
+  it('renders with different colors per design specs', () => {
+    const { rerender } = render(<LoadingSpinner color="primary" />);
+    expect(screen.getByRole('status')).toHaveClass('border-primary-500');
 
-    rerender(<LoadingSpinner color="gray" />);
-    expect(screen.getByRole('status')).toHaveClass('border-gray-400');
+    rerender(<LoadingSpinner color="secondary" />);
+    expect(screen.getByRole('status')).toHaveClass('border-indigo-500');
+
+    rerender(<LoadingSpinner color="white" />);
+    expect(screen.getByRole('status')).toHaveClass('border-white');
   });
 
   it('renders fullscreen variant', () => {

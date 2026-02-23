@@ -13,6 +13,15 @@ export { usePushNotifications } from './usePushNotifications';
 // AI Hooks
 export { useAIInterpretation } from './useAIInterpretation';
 
+// PDF Generation Hooks
+export {
+  usePDFGeneration,
+  getReportTypeName,
+  getExpectedPageCount,
+  generateReportFilename,
+} from './usePDFGeneration';
+export type { PDFGenerationState, UsePDFGenerationReturn } from './usePDFGeneration';
+
 /**
  * Use Auth Hook
  */

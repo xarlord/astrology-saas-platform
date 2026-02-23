@@ -3,20 +3,38 @@
  *
  * Accessible alert banners for displaying important messages
  * Follows WCAG 2.1 AA guidelines for alert regions
+ *
+ * Design Specs (Section 3 - Error States):
+ * - Types: error (red), warning (yellow), info (blue), success (green)
+ * - Sizes: sm (compact inline), md (standard), lg (page-level)
  */
 
 import React from 'react';
 import { clsx } from 'clsx';
 
 export type AlertVariant = 'info' | 'success' | 'warning' | 'error';
+export type AlertSize = 'sm' | 'md' | 'lg';
 
 export interface AlertProps {
+  /** Alert type variant */
   variant?: AlertVariant;
+  /** Alert size */
+  size?: AlertSize;
+  /** Optional title */
   title?: string;
+  /** Alert content */
   children: React.ReactNode;
+  /** Callback when dismissed */
   onClose?: () => void;
+  /** Additional CSS classes */
   className?: string;
+  /** Whether alert can be dismissed */
   dismissible?: boolean;
+  /** Optional action button */
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 const variantStyles = {
@@ -24,6 +42,12 @@ const variantStyles = {
   success: 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800',
   warning: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800',
   error: 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800',
+};
+
+const sizeStyles = {
+  sm: 'p-2.5 text-xs',
+  md: 'p-4 text-sm',
+  lg: 'p-6 text-base',
 };
 
 const iconMap = {
@@ -51,11 +75,13 @@ const iconMap = {
 
 export const Alert: React.FC<AlertProps> = ({
   variant = 'info',
+  size = 'md',
   title,
   children,
   onClose,
   className,
   dismissible = false,
+  action,
 }) => {
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -66,12 +92,25 @@ export const Alert: React.FC<AlertProps> = ({
     }, 200); // Match animation duration
   };
 
+  const iconSizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-5 h-5',
+    lg: 'w-6 h-6',
+  };
+
+  const titleSizeClasses = {
+    sm: 'text-xs font-medium',
+    md: 'text-sm font-medium',
+    lg: 'text-base font-medium',
+  };
+
   return (
     <div
       className={clsx(
-        'rounded-lg border p-4',
+        'rounded-lg border',
         'transition-all duration-200',
         variantStyles[variant],
+        sizeStyles[size],
         isClosing && 'opacity-0 scale-95',
         className
       )}
@@ -81,14 +120,37 @@ export const Alert: React.FC<AlertProps> = ({
     >
       <div className="flex">
         <div className="flex-shrink-0" aria-hidden="true">
-          {iconMap[variant]}
+          {React.cloneElement(iconMap[variant] as React.ReactElement, {
+            className: iconSizeClasses[size]
+          })}
         </div>
 
         <div className="ml-3 flex-1">
           {title && (
-            <h3 className="text-sm font-medium mb-1">{title}</h3>
+            <h3 className={clsx('mb-1', titleSizeClasses[size])}>{title}</h3>
           )}
-          <div className="text-sm">{children}</div>
+          <div>{children}</div>
+
+          {action && (
+            <button
+              type="button"
+              onClick={action.onClick}
+              className={clsx(
+                'mt-2 inline-flex items-center font-medium',
+                'underline hover:no-underline',
+                'focus:outline-none focus:ring-2 focus:ring-offset-2 rounded',
+                size === 'sm' && 'text-xs',
+                size === 'md' && 'text-sm',
+                size === 'lg' && 'text-base',
+                variant === 'error' && 'focus:ring-red-500',
+                variant === 'warning' && 'focus:ring-yellow-500',
+                variant === 'success' && 'focus:ring-green-500',
+                variant === 'info' && 'focus:ring-blue-500'
+              )}
+            >
+              {action.label}
+            </button>
+          )}
         </div>
 
         {dismissible && onClose && (
@@ -99,15 +161,15 @@ export const Alert: React.FC<AlertProps> = ({
               className={clsx(
                 'inline-flex rounded-md p-1.5',
                 'focus:outline-none focus:ring-2 focus:ring-offset-2',
-                variant === 'error' && 'hover:bg-red-100 focus:ring-red-600',
-                variant === 'warning' && 'hover:bg-yellow-100 focus:ring-yellow-600',
-                variant === 'success' && 'hover:bg-green-100 focus:ring-green-600',
-                variant === 'info' && 'hover:bg-blue-100 focus:ring-blue-600'
+                variant === 'error' && 'hover:bg-red-100 dark:hover:bg-red-900/30 focus:ring-red-600',
+                variant === 'warning' && 'hover:bg-yellow-100 dark:hover:bg-yellow-900/30 focus:ring-yellow-600',
+                variant === 'success' && 'hover:bg-green-100 dark:hover:bg-green-900/30 focus:ring-green-600',
+                variant === 'info' && 'hover:bg-blue-100 dark:hover:bg-blue-900/30 focus:ring-blue-600'
               )}
               aria-label="Dismiss alert"
             >
               <svg
-                className="h-5 w-5"
+                className={clsx(iconSizeClasses[size])}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 aria-hidden="true"
@@ -125,5 +187,36 @@ export const Alert: React.FC<AlertProps> = ({
     </div>
   );
 };
+
+// Sub-components for structured alert content
+export const AlertTitle: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => <h3 className={clsx('font-medium mb-1', className)}>{children}</h3>;
+
+export const AlertDescription: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => <div className={clsx('text-sm opacity-90', className)}>{children}</div>;
+
+export const AlertAction: React.FC<{
+  children: React.ReactNode;
+  onClick: () => void;
+  className?: string;
+}> = ({ children, onClick, className }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={clsx(
+      'mt-2 inline-flex items-center px-3 py-1.5 rounded-md',
+      'text-sm font-medium',
+      'bg-current/10 hover:bg-current/20',
+      'focus:outline-none focus:ring-2 focus:ring-offset-2',
+      className
+    )}
+  >
+    {children}
+  </button>
+);
 
 export default Alert;

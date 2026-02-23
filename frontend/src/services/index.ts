@@ -19,6 +19,7 @@ export { default as learningService } from './learning.service';
 export { reportService } from './report.service';
 export { default as locationService } from './location.service';
 export { default as userService } from './user.service';
+export { default as pdfService } from './pdf.service';
 
 // Synastry service (has named exports)
 export {
