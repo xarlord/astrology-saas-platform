@@ -1,9 +1,17 @@
 /**
  * Solar Return Calculation Service
- * Calculates solar return charts using Swiss Ephemeris
+ * Calculates solar return charts using Swiss Ephemeris (or mock if unavailable)
  */
 
-import { swisseph } from 'swisseph';
+// Try to import swisseph, use mock if unavailable
+let swisseph: any;
+try {
+  swisseph = require('swisseph');
+} catch {
+  console.warn('swisseph module not available, using mock calculations');
+  swisseph = null;
+}
+
 import {
   SolarReturnCalculationParams,
   SolarReturnChartData,

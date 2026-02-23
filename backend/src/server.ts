@@ -124,6 +124,34 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // ============================================
+// Root Route
+// ============================================
+
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      name: 'AstroVerse API',
+      description: 'Astrology SaaS Platform - Natal chart generation, personality analysis, and forecasting',
+      version: '1.0.0',
+      documentation: '/api/v1',
+      health: '/health',
+      endpoints: {
+        auth: '/api/v1/auth',
+        users: '/api/v1/users',
+        charts: '/api/v1/charts',
+        analysis: '/api/v1/analysis',
+        transits: '/api/v1/transits',
+        calendar: '/api/v1/calendar',
+        lunarReturn: '/api/v1/lunar-return',
+        synastry: '/api/v1/synastry',
+        solarReturns: '/api/v1/solar-returns'
+      }
+    }
+  });
+});
+
+// ============================================
 // API Routes (Versioned)
 // ============================================
 
