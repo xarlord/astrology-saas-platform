@@ -457,7 +457,8 @@ const CalendarPage: React.FC = () => {
   const currentYear = selectedDate?.getFullYear() ?? new Date().getFullYear();
 
   // Load events for current month
-  const { data: monthEventsResponse } = useCalendarEvents(currentYear, currentMonth, true);
+  // Note: API expects months 1-12, but Date.getMonth() returns 0-11
+  const { data: monthEventsResponse } = useCalendarEvents(currentYear, currentMonth + 1, true);
   const monthEvents = monthEventsResponse?.data ?? [];
 
   // Calculate daily energy level (simplified)
