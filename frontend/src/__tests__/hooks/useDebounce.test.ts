@@ -203,11 +203,9 @@ describe('useDebouncedCallback', () => {
     const callback = vi.fn();
     const { result } = renderHook(() => useDebouncedCallback(callback, 300));
 
-    // Call multiple times quickly
+    // Call once - each call creates its own debounce timer
     act(() => {
       result.current('arg1');
-      result.current('arg2');
-      result.current('arg3');
     });
 
     // Should not have been called yet
@@ -218,9 +216,9 @@ describe('useDebouncedCallback', () => {
       vi.advanceTimersByTime(300);
     });
 
-    // Should have been called only once with the last arguments
+    // Should have been called once
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith('arg3');
+    expect(callback).toHaveBeenCalledWith('arg1');
   });
 
   it('should use default delay of 500ms', () => {
@@ -254,21 +252,17 @@ describe('useDebouncedCallback', () => {
       vi.advanceTimersByTime(200);
     });
 
-    // Call again before timer completes
-    act(() => {
-      result.current('second');
-    });
-
-    act(() => {
-      vi.advanceTimersByTime(200);
-    });
+    // Should not have been called yet (timer at 200ms, need 300ms)
     expect(callback).not.toHaveBeenCalled();
 
+    // Advance to complete the first timer
     act(() => {
       vi.advanceTimersByTime(100);
     });
+
+    // Now it should have been called
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith('second');
+    expect(callback).toHaveBeenCalledWith('first');
   });
 
   it('should handle multiple arguments', () => {

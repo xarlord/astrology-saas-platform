@@ -14,6 +14,9 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 // Extend Vitest's expect with jest-dom matchers
 expect.extend(matchers);
 
+// Configure global act for React 18 testing
+vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+
 // Cleanup after each test
 afterEach(() => {
   cleanup();

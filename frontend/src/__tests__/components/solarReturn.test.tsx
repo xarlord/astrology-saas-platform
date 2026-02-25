@@ -4,19 +4,52 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import '@testing-library/jest-dom/vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { SolarReturnDashboard } from '../../components/SolarReturnDashboard';
 import { SolarReturnChart } from '../../components/SolarReturnChart';
 import { SolarReturnInterpretation } from '../../components/SolarReturnInterpretation';
 import { RelocationCalculator } from '../../components/RelocationCalculator';
 import { BirthdaySharing } from '../../components/BirthdaySharing';
+import api from '../../services/api';
 import axios from 'axios';
 
-// Mock axios
-vi.mock('axios');
+// Mock the api module
+vi.mock('../../services/api', () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
+}));
 
-// Get mocked axios
+// Mock axios module
+vi.mock('axios', () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    create: vi.fn(() => ({
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { use: vi.fn() },
+        response: { use: vi.fn() },
+      },
+    })),
+  },
+}));
+
+// Get mocked api
+const mockedApi = api as any;
 const mockedAxios = axios as any;
 
 // Mock HTMLCanvasElement
@@ -168,7 +201,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('renders loading state initially', () => {
-    (mockedAxios.get).mockResolvedValue({
+    (mockedApi.get).mockResolvedValue({
       data: { data: [] },
     });
 
@@ -178,7 +211,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('renders solar returns after loading', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    (mockedApi.get).mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -191,7 +224,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('displays empty state when no returns', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    (mockedApi.get).mockResolvedValue({
       data: { data: [] },
     });
 
@@ -204,7 +237,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('filters relocated returns', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    (mockedApi.get).mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -222,28 +255,38 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('calculates new solar return', async () => {
+    // Mock api.get for fetching solar returns history
+    (mockedApi.get).mockResolvedValue({
+      data: { data: mockSolarReturns },
+    });
+
+    // Mock axios.get for fetching charts (used in handleCalculateNew)
     (mockedAxios.get).mockResolvedValue({
       data: { data: [{ id: 'chart-1', name: 'Natal Chart' }] },
     });
 
+    // Mock axios.post for calculating solar return
     (mockedAxios.post).mockResolvedValue({
       data: { data: mockSolarReturns[0] },
     });
 
     render(<SolarReturnDashboard onSelectYear={vi.fn()} />);
 
+    // Wait for initial load to complete
     await waitFor(() => {
-      const calculateButton = screen.getByText(/calculate current year/i);
-      fireEvent.click(calculateButton);
+      expect(screen.getByText('Your Solar Returns')).toBeInTheDocument();
     });
 
+    const calculateButton = screen.getByText(/calculate current year/i);
+    fireEvent.click(calculateButton);
+
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalled();
     });
   });
 
   it('sorts returns by year and date', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    (mockedApi.get).mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -559,7 +602,7 @@ describe('BirthdaySharing', () => {
   });
 
   it('generates share link', async () => {
-    (mockedAxios.post).mockResolvedValue({
+    (mockedApi.post).mockResolvedValue({
       data: { data: { url: 'https://example.com/share/abc123' } },
     });
 
@@ -574,7 +617,7 @@ describe('BirthdaySharing', () => {
   });
 
   it('copies link to clipboard', async () => {
-    (mockedAxios.post).mockResolvedValue({
+    (mockedApi.post).mockResolvedValue({
       data: { data: { url: 'https://example.com/share/abc123' } },
     });
 
@@ -597,7 +640,7 @@ describe('BirthdaySharing', () => {
   });
 
   it('sends email sharing', async () => {
-    (mockedAxios.post).mockResolvedValue({
+    (mockedApi.post).mockResolvedValue({
       data: { success: true },
     });
 

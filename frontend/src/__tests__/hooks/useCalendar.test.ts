@@ -105,8 +105,9 @@ describe('useCalendar', () => {
       renderHook(() => useCalendar());
 
       await waitFor(() => {
-        expect(mockCalendarStore.loadEvents).toHaveBeenCalledWith(2024, 0);
-        expect(mockCalendarStore.loadLunarPhases).toHaveBeenCalledWith(2024, 0);
+        // API expects months 1-12, so January (0) becomes 1
+        expect(mockCalendarStore.loadEvents).toHaveBeenCalledWith(2024, 1);
+        expect(mockCalendarStore.loadLunarPhases).toHaveBeenCalledWith(2024, 1);
       });
     });
   });
