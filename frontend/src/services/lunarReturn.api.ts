@@ -84,6 +84,10 @@ export interface SavedLunarReturn {
   rituals: MonthlyRitual[];
   journalPrompts: string[];
   createdAt: Date;
+  // UI helper properties for timeline display
+  status?: 'past' | 'current' | 'future';
+  sign?: string;
+  date?: Date;
 }
 
 /**

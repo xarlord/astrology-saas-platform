@@ -12,15 +12,18 @@
  * - Action buttons
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
+import { ChartWheel } from '../components';
+import type { PlanetPosition as APIPlanetPosition, CalculatedChartData } from '../services/api.types';
+import type { ChartData, PlanetPosition as WheelPlanetPosition, HouseCusp as WheelHouseCusp, Aspect as WheelAspect } from '../components/ChartWheel';
 
 type DetailTab = 'personality' | 'houses' | 'aspects' | 'report';
 
-interface PlanetPosition {
+interface DisplayPlanet {
   name: string;
   symbol: string;
   sign: string;
@@ -30,7 +33,7 @@ interface PlanetPosition {
   isRetrograde?: boolean;
 }
 
-interface Aspect {
+interface DisplayAspect {
   planet1: string;
   planet2: string;
   type: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile';
@@ -38,32 +41,125 @@ interface Aspect {
   orbMinutes: number;
 }
 
-const PLANETS: PlanetPosition[] = [
-  { name: 'Sun', symbol: 'sunny', sign: 'Capricorn', degree: 24, minute: 50, house: 10 },
-  { name: 'Moon', symbol: 'dark_mode', sign: 'Pisces', degree: 12, minute: 10, house: 5 },
-  { name: 'Mercury', symbol: 'public', sign: 'Aquarius', degree: 5, minute: 22, house: 4, isRetrograde: true },
-  { name: 'Venus', symbol: 'favorite', sign: 'Capricorn', degree: 18, minute: 45, house: 3 },
-  { name: 'Mars', symbol: 'local_fire_department', sign: 'Sagittarius', degree: 29, minute: 1, house: 2 },
-  { name: 'Jupiter', symbol: 'bolt', sign: 'Cancer', degree: 4, minute: 15, house: 9 },
-  { name: 'Saturn', symbol: 'circle', sign: 'Pisces', degree: 15, minute: 30, house: 5 },
-  { name: 'Uranus', symbol: 'explore', sign: 'Virgo', degree: 22, minute: 0, house: 8 },
-  { name: 'Neptune', symbol: 'water_drop', sign: 'Scorpio', degree: 18, minute: 45, house: 7 },
-  { name: 'Pluto', symbol: 'trip_origin', sign: 'Libra', degree: 8, minute: 30, house: 6 },
-];
-
-const ASPECTS: Aspect[] = [
-  { planet1: 'Sun', planet2: 'Mars', type: 'trine', orb: 0, orbMinutes: 12 },
-  { planet1: 'Moon', planet2: 'Jupiter', type: 'square', orb: 2, orbMinutes: 5 },
-  { planet1: 'Venus', planet2: 'Mercury', type: 'sextile', orb: 1, orbMinutes: 30 },
-  { planet1: 'Sun', planet2: 'Saturn', type: 'opposition', orb: 3, orbMinutes: 20 },
-];
-
-const ELEMENT_DATA = {
-  fire: { percentage: 25, signs: ['Aries', 'Leo', 'Sagittarius'] },
-  earth: { percentage: 35, signs: ['Taurus', 'Virgo', 'Capricorn'] },
-  air: { percentage: 20, signs: ['Gemini', 'Libra', 'Aquarius'] },
-  water: { percentage: 20, signs: ['Cancer', 'Scorpio', 'Pisces'] },
+// Planet symbol mapping
+const PLANET_SYMBOLS: Record<string, string> = {
+  Sun: 'sunny',
+  Moon: 'dark_mode',
+  Mercury: 'public',
+  Venus: 'favorite',
+  Mars: 'local_fire_department',
+  Jupiter: 'bolt',
+  Saturn: 'circle',
+  Uranus: 'explore',
+  Neptune: 'water_drop',
+  Pluto: 'trip_origin',
+  Ascendant: 'arrow_upward',
+  MC: 'north',
 };
+
+// Zodiac symbols
+const ZODIAC_SYMBOLS: Record<string, string> = {
+  Aries: '♈',
+  Taurus: '♉',
+  Gemini: '♊',
+  Cancer: '♋',
+  Leo: '♌',
+  Virgo: '♍',
+  Libra: '♎',
+  Scorpio: '♏',
+  Sagittarius: '♐',
+  Capricorn: '♑',
+  Aquarius: '♒',
+  Pisces: '♓',
+};
+
+// Convert API data to ChartWheel format
+function toWheelData(data: CalculatedChartData): ChartData {
+  return {
+    planets: data.planets.map((p): WheelPlanetPosition => ({
+      planet: p.planet,
+      sign: p.sign,
+      degree: p.degree,
+      minute: p.minute,
+      second: 0,
+      house: p.house,
+      retrograde: p.retrograde,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      speed: p.speed,
+    })),
+    houses: data.houses.map((h): WheelHouseCusp => ({
+      house: h.house,
+      sign: h.sign,
+      degree: h.longitude % 30,
+      minute: 0,
+      second: 0,
+    })),
+    aspects: data.aspects.map((a): WheelAspect => ({
+      planet1: a.planet1,
+      planet2: a.planet2,
+      type: a.type as WheelAspect['type'],
+      degree: a.degree,
+      minute: 0,
+      orb: a.orb,
+      applying: a.applying,
+      separating: !a.applying,
+    })),
+  };
+}
+
+// Convert API planets to display format
+function toDisplayPlanets(apiPlanets: APIPlanetPosition[]): DisplayPlanet[] {
+  return apiPlanets.map((p) => ({
+    name: p.planet,
+    symbol: PLANET_SYMBOLS[p.planet] || 'circle',
+    sign: p.sign,
+    degree: p.degree,
+    minute: p.minute,
+    house: p.house,
+    isRetrograde: p.retrograde,
+  }));
+}
+
+// Convert API aspects to display format
+function toDisplayAspects(data: CalculatedChartData): DisplayAspect[] {
+  return data.aspects.map((a) => ({
+    planet1: a.planet1,
+    planet2: a.planet2,
+    type: a.type as DisplayAspect['type'],
+    orb: Math.floor(a.orb),
+    orbMinutes: Math.round((a.orb % 1) * 60),
+  }));
+}
+
+// Calculate elemental balance from planets
+function calculateElementBalance(planets: APIPlanetPosition[]): Record<string, { percentage: number; signs: string[] }> {
+  const elementSigns: Record<string, string[]> = {
+    fire: ['Aries', 'Leo', 'Sagittarius'],
+    earth: ['Taurus', 'Virgo', 'Capricorn'],
+    air: ['Gemini', 'Libra', 'Aquarius'],
+    water: ['Cancer', 'Scorpio', 'Pisces'],
+  };
+
+  const counts: Record<string, number> = { fire: 0, earth: 0, air: 0, water: 0 };
+  const total = planets.length || 1;
+
+  planets.forEach((p) => {
+    for (const [element, signs] of Object.entries(elementSigns)) {
+      if (signs.includes(p.sign)) {
+        counts[element]++;
+        break;
+      }
+    }
+  });
+
+  return {
+    fire: { percentage: Math.round((counts.fire / total) * 100), signs: elementSigns.fire },
+    earth: { percentage: Math.round((counts.earth / total) * 100), signs: elementSigns.earth },
+    air: { percentage: Math.round((counts.air / total) * 100), signs: elementSigns.air },
+    water: { percentage: Math.round((counts.water / total) * 100), signs: elementSigns.water },
+  };
+}
 
 const ZODIAC_COLORS: Record<string, string> = {
   Aries: '#ef4444',
@@ -94,7 +190,7 @@ export const NatalChartDetailPage: React.FC = () => {
   const { currentChart, loadChart, isLoading } = useCharts();
 
   const [activeTab, setActiveTab] = useState<DetailTab>('personality');
-  const [_hoveredPlanet, setHoveredPlanet] = useState<string | null>(null);
+  const [_hoveredPlanet, _setHoveredPlanet] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -102,20 +198,102 @@ export const NatalChartDetailPage: React.FC = () => {
     }
   }, [id, loadChart]);
 
+  // Derive display data from chart's calculated_data
+  const calculatedData = currentChart?.calculated_data;
+
+  const planets = useMemo(() => {
+    if (!calculatedData?.planets) return [];
+    return toDisplayPlanets(calculatedData.planets);
+  }, [calculatedData]);
+
+  const aspects = useMemo(() => {
+    if (!calculatedData) return [];
+    return toDisplayAspects(calculatedData);
+  }, [calculatedData]);
+
+  const elementData = useMemo(() => {
+    if (!calculatedData?.planets) {
+      return {
+        fire: { percentage: 25, signs: ['Aries', 'Leo', 'Sagittarius'] },
+        earth: { percentage: 25, signs: ['Taurus', 'Virgo', 'Capricorn'] },
+        air: { percentage: 25, signs: ['Gemini', 'Libra', 'Aquarius'] },
+        water: { percentage: 25, signs: ['Cancer', 'Scorpio', 'Pisces'] },
+      };
+    }
+    return calculateElementBalance(calculatedData.planets);
+  }, [calculatedData]);
+
+  const wheelData = useMemo(() => {
+    if (!calculatedData) return null;
+    return toWheelData(calculatedData);
+  }, [calculatedData]);
+
+  // Get Big Three from calculated data
+  const bigThree = useMemo(() => {
+    if (!calculatedData?.planets) {
+      return [
+        { name: 'Sun', sign: 'Unknown', desc: 'Chart not calculated' },
+        { name: 'Moon', sign: 'Unknown', desc: 'Chart not calculated' },
+        { name: 'Rising', sign: 'Unknown', desc: 'Chart not calculated' },
+      ];
+    }
+    const sun = calculatedData.planets.find((p: APIPlanetPosition) => p.planet === 'Sun');
+    const moon = calculatedData.planets.find((p: APIPlanetPosition) => p.planet === 'Moon');
+    // Rising sign would come from angles/ascendant - use first house sign as fallback
+    const rising = calculatedData.houses?.[0];
+
+    return [
+      {
+        name: 'Sun',
+        sign: sun?.sign ?? 'Unknown',
+        desc: sun ? `${sun.sign} at ${sun.degree}°${sun.minute}'` : 'Not available',
+      },
+      {
+        name: 'Moon',
+        sign: moon?.sign ?? 'Unknown',
+        desc: moon ? `${moon.sign} at ${moon.degree}°${moon.minute}'` : 'Not available',
+      },
+      {
+        name: 'Rising',
+        sign: rising?.sign || 'Unknown',
+        desc: rising ? `${rising.sign} Ascendant` : 'Not available',
+      },
+    ];
+  }, [calculatedData]);
+
   const _handleDelete = useCallback(() => {
-    // Implement delete confirmation
     console.log('Delete chart:', id);
   }, [id]);
 
   const handleDownload = useCallback(() => {
-    // Implement chart download
-    console.log('Download chart:', id);
-  }, [id]);
+    if (currentChart) {
+      const dataStr = JSON.stringify(currentChart, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentChart.name || 'chart'}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }, [currentChart]);
 
-  const handleShare = useCallback(() => {
-    // Implement chart sharing
-    console.log('Share chart:', id);
-  }, [id]);
+  const handleShare = useCallback(async () => {
+    if (navigator.share && currentChart) {
+      try {
+        await navigator.share({
+          title: currentChart.name || 'Natal Chart',
+          text: `Check out this natal chart for ${currentChart.name}`,
+          url: window.location.href,
+        });
+      } catch {
+        // User cancelled or error
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(window.location.href);
+    }
+  }, [currentChart]);
 
   if (isLoading || !currentChart) {
     return (
@@ -212,7 +390,7 @@ export const NatalChartDetailPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {PLANETS.map((planet) => (
+                  {planets.map((planet) => (
                     <tr
                       key={planet.name}
                       className="group hover:bg-white/5 rounded-lg transition-colors border-b border-white/5 last:border-0"
@@ -254,8 +432,8 @@ export const NatalChartDetailPage: React.FC = () => {
                       <td className="py-3">
                         <div className="flex flex-col">
                           <div className="flex items-center gap-1 text-xs text-slate-300">
-                            <span style={{ color: ZODIAC_COLORS[planet.sign] }}>
-                              {planet.symbol}
+                            <span style={{ color: ZODIAC_COLORS[planet.sign] || '#888' }}>
+                              {ZODIAC_SYMBOLS[planet.sign] || '?'}
                             </span>{' '}
                             {planet.sign.slice(0, 3)}
                           </div>
@@ -341,7 +519,7 @@ export const NatalChartDetailPage: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handleShare}
+                  onClick={() => { void handleShare(); }}
                   className="w-10 h-10 rounded-full"
                 >
                   <span className="material-symbols-outlined text-[20px]">share</span>
@@ -360,132 +538,56 @@ export const NatalChartDetailPage: React.FC = () => {
 
             {/* Chart Wheel Display */}
             <div className="flex-1 flex flex-col items-center justify-center relative p-4 overflow-hidden">
-              <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center rounded-full bg-deep-navy shadow-[0_0_20px_rgba(107,61,225,0.1)]">
-                {/* Outer Ring */}
-                <div className="absolute inset-0 rounded-full border border-white/10 bg-card-dark" />
-
-                {/* Zodiac Ring */}
-                <div className="absolute inset-[10px] rounded-full border-[20px] border-deep-navy flex items-center justify-center overflow-hidden">
-                  <svg className="w-full h-full opacity-80" viewBox="0 0 100 100">
-                    {Object.entries(ZODIAC_COLORS).map(([sign, color], index) => {
-                      const rotation = index * 30;
-                      return (
-                        <circle
-                          key={sign}
-                          cx="50"
-                          cy="50"
-                          fill="none"
-                          r="45"
-                          stroke={color}
-                          strokeDasharray="23 260"
-                          strokeWidth="10"
-                          transform={`rotate(${rotation} 50 50)`}
-                        />
-                      );
-                    })}
-                  </svg>
+              {wheelData ? (
+                <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
+                  <ChartWheel data={wheelData} />
                 </div>
+              ) : (
+                <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center rounded-full bg-deep-navy shadow-[0_0_20px_rgba(107,61,225,0.1)]">
+                  {/* Outer Ring */}
+                  <div className="absolute inset-0 rounded-full border border-white/10 bg-card-dark" />
 
-                {/* Houses Ring */}
-                <div className="absolute inset-[40px] rounded-full border border-white/20 flex items-center justify-center">
-                  {[0, 30, 60, 90, 120, 150].map((rotation) => (
-                    <div
-                      key={rotation}
-                      className="absolute w-full h-[1px] bg-white/10"
-                      style={{ transform: `rotate(${rotation}deg)` }}
-                    />
-                  ))}
-                </div>
-
-                {/* Aspect Lines */}
-                <div className="absolute inset-[80px] rounded-full flex items-center justify-center z-10">
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100">
-                    {/* Trines */}
-                    <line
-                      opacity="0.8"
-                      stroke="#3b82f6"
-                      strokeWidth="0.5"
-                      x1="50"
-                      x2="85"
-                      y1="10"
-                      y2="70"
-                    />
-                    <line
-                      opacity="0.8"
-                      stroke="#3b82f6"
-                      strokeWidth="0.5"
-                      x1="85"
-                      x2="15"
-                      y1="70"
-                      y2="70"
-                    />
-                    {/* Squares */}
-                    <line
-                      opacity="0.8"
-                      stroke="#ef4444"
-                      strokeWidth="0.5"
-                      x1="50"
-                      x2="90"
-                      y1="10"
-                      y2="50"
-                    />
-                    {/* Sextiles */}
-                    <line
-                      opacity="0.6"
-                      stroke="#22c55e"
-                      strokeDasharray="2 1"
-                      strokeWidth="0.5"
-                      x1="10"
-                      x2="30"
-                      y1="50"
-                      y2="85"
-                    />
-                  </svg>
-                </div>
-
-                {/* Planets */}
-                <div
-                  className="absolute top-[10%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-20 hover:scale-125 transition-transform cursor-pointer group"
-                  onMouseEnter={() => setHoveredPlanet('Sun')}
-                  onMouseLeave={() => setHoveredPlanet(null)}
-                >
-                  <div className="w-7 h-7 bg-card-dark border border-orange-400 rounded-full flex items-center justify-center text-orange-400 shadow-lg">
-                    <span className="material-symbols-outlined text-[16px]">sunny</span>
+                  {/* Zodiac Ring */}
+                  <div className="absolute inset-[10px] rounded-full border-[20px] border-deep-navy flex items-center justify-center overflow-hidden">
+                    <svg className="w-full h-full opacity-80" viewBox="0 0 100 100">
+                      {Object.entries(ZODIAC_COLORS).map(([sign, color], index) => {
+                        const rotation = index * 30;
+                        return (
+                          <circle
+                            key={sign}
+                            cx="50"
+                            cy="50"
+                            fill="none"
+                            r="45"
+                            stroke={color}
+                            strokeDasharray="23 260"
+                            strokeWidth="10"
+                            transform={`rotate(${rotation} 50 50)`}
+                          />
+                        );
+                      })}
+                    </svg>
                   </div>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card-dark border border-white/10 px-3 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-                    Sun in Capricorn
-                  </div>
-                </div>
 
-                <div
-                  className="absolute top-[70%] left-[15%] -translate-x-1/2 -translate-y-1/2 z-20 hover:scale-125 transition-transform cursor-pointer group"
-                  onMouseEnter={() => setHoveredPlanet('Moon')}
-                  onMouseLeave={() => setHoveredPlanet(null)}
-                >
-                  <div className="w-7 h-7 bg-card-dark border border-blue-400 rounded-full flex items-center justify-center text-blue-400 shadow-lg">
-                    <span className="material-symbols-outlined text-[16px]">dark_mode</span>
+                  {/* Houses Ring */}
+                  <div className="absolute inset-[40px] rounded-full border border-white/20 flex items-center justify-center">
+                    {[0, 30, 60, 90, 120, 150].map((rotation) => (
+                      <div
+                        key={rotation}
+                        className="absolute w-full h-[1px] bg-white/10"
+                        style={{ transform: `rotate(${rotation}deg)` }}
+                      />
+                    ))}
                   </div>
-                </div>
 
-                <div
-                  className="absolute top-[50%] right-[10%] -translate-x-1/2 -translate-y-1/2 z-20 hover:scale-125 transition-transform cursor-pointer group"
-                  onMouseEnter={() => setHoveredPlanet('Mars')}
-                  onMouseLeave={() => setHoveredPlanet(null)}
-                >
-                  <div className="w-7 h-7 bg-card-dark border border-red-500 rounded-full flex items-center justify-center text-red-500 shadow-lg">
-                    <span className="material-symbols-outlined text-[16px]">
-                      local_fire_department
+                  {/* Inner Hub */}
+                  <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-deep-navy border border-white/10 flex flex-col items-center justify-center z-20">
+                    <span className="text-xs text-slate-500 font-bold tracking-widest uppercase">
+                      {chartName.slice(0, 8)}
                     </span>
                   </div>
                 </div>
-
-                {/* Inner Hub */}
-                <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-deep-navy border border-white/10 flex flex-col items-center justify-center z-20">
-                  <span className="text-xs text-slate-500 font-bold tracking-widest uppercase">
-                    {chartName.slice(0, 8)}
-                  </span>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Bottom Tab Navigation */}
@@ -533,11 +635,7 @@ export const NatalChartDetailPage: React.FC = () => {
                   The Big Three
                 </h4>
                 <div className="space-y-3">
-                  {[
-                    { name: 'Sun', sign: 'Capricorn', desc: 'Ambitious, disciplined, and practical' },
-                    { name: 'Moon', sign: 'Pisces', desc: 'Highly intuitive and empathetic' },
-                    { name: 'Rising', sign: 'Leo', desc: 'Charismatic and bold' },
-                  ].map((item) => (
+                  {bigThree.map((item) => (
                     <div
                       key={item.name}
                       className="bg-card-dark border border-white/5 rounded-xl p-4 hover:border-primary/50 transition-colors cursor-pointer group"
@@ -586,7 +684,7 @@ export const NatalChartDetailPage: React.FC = () => {
                   </button>
                 </div>
                 <div className="bg-card-dark rounded-xl border border-white/5 overflow-hidden">
-                  {ASPECTS.map((aspect, index) => (
+                  {aspects.length > 0 ? aspects.map((aspect, index) => (
                     <div
                       key={index}
                       className="p-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors cursor-pointer flex items-center justify-between group"
@@ -626,7 +724,11 @@ export const NatalChartDetailPage: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="p-4 text-center text-slate-500 text-sm">
+                      No aspects calculated yet
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -636,7 +738,7 @@ export const NatalChartDetailPage: React.FC = () => {
                   Elemental Balance
                 </h4>
                 <div className="space-y-3">
-                  {Object.entries(ELEMENT_DATA).map(([element, data]) => (
+                  {Object.entries(elementData).map(([element, data]) => (
                     <div key={element}>
                       <div className="flex items-center justify-between text-sm mb-1">
                         <span className="text-white capitalize">{element}</span>

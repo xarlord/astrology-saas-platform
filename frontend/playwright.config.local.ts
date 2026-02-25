@@ -1,46 +1,27 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Playwright Local Testing Configuration
- * Tests against already-running local servers (backend:3001, frontend:3000)
- */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  testMatch: /.*\.spec\.ts$/,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: 0,
+  retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: [
-    ['list'],
-    ['html', { outputFolder: 'playwright-report' }],
-  ],
-
+  timeout: 30000,
+  expect: {
+    timeout: 10000,
+  },
+  reporter: 'list',
   use: {
     baseURL: 'http://localhost:3000',
-
-    // Collect trace on failure
-    trace: 'retain-on-failure',
-
-    // Screenshot on failure
+    trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-
-    // Video on failure
-    video: 'retain-on-failure',
-
-    // Action timeout
-    actionTimeout: 10000,
-
-    // Navigation timeout
-    navigationTimeout: 30000,
   },
-
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-
-  // Disable webServer - local servers already running
-  webServer: undefined,
+  // No webServer - use already running frontend
 });

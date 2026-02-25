@@ -157,6 +157,9 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
     // Draw labels
     drawLabels(ctx, centerX, centerY, radius);
+    // Note: Drawing functions are defined below and are stable (don't use React state/props directly)
+    // They only use the parameters passed to them, so they don't need to be in the dependency array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartData, zoom, showAspects, showHouses, selectedPlanet, hoveredAspect]);
 
   useEffect(() => {

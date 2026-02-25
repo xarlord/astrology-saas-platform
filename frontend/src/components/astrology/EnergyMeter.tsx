@@ -35,8 +35,8 @@ const EnergyMeter: React.FC<EnergyMeterProps> = ({
   size = 'md',
   label,
   showValue = true,
-  color, // eslint-disable-line @typescript-eslint/no-unused-vars
-  gradient = true, // eslint-disable-line @typescript-eslint/no-unused-vars
+  color,
+  gradient: _gradient = true,
   'aria-label': ariaLabel = `Energy meter: ${value}%`,
 }) => {
   const circleSize = SIZE_MAP[size];

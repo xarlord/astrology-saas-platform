@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '../services/api';
+import axios from 'axios';
 import { Calendar, MapPin, Gift, TrendingUp } from 'lucide-react';
 import './SolarReturnDashboard.css';
 

@@ -93,10 +93,82 @@ export const SavedChartsGalleryPage: React.FC = () => {
     [deleteChart]
   );
 
-  const handleShare = useCallback((id: string) => {
-    // Implement share functionality
-    console.log('Share chart:', id);
+  const handleShare = useCallback(async (id: string) => {
+    const shareUrl = `${window.location.origin}/charts/${id}`;
+    const chart = charts.find(c => c.id === id);
+    const shareTitle = chart?.name ?? 'Birth Chart';
+
+    // Try native Web Share API first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${shareTitle} - AstroVerse`,
+          text: `Check out this birth chart for ${shareTitle}`,
+          url: shareUrl,
+        });
+        return;
+      } catch {
+        // User cancelled or error - fall through to clipboard
+      }
+    }
+
+    // Fallback: copy to clipboard
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      // Could add a toast notification here
+      alert('Link copied to clipboard!');
+    } catch {
+      // Final fallback: show the URL
+      prompt('Copy this link:', shareUrl);
+    }
+  }, [charts]);
+
+  // Share Modal State
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareChartId, setShareChartId] = useState<string | null>(null);
+
+  const _openShareModal = useCallback((id: string) => {
+    setShareChartId(id);
+    setShareModalOpen(true);
   }, []);
+
+  const closeShareModal = useCallback(() => {
+    setShareModalOpen(false);
+    setShareChartId(null);
+  }, []);
+
+  const copyShareLink = useCallback(async () => {
+    if (!shareChartId) return;
+    const shareUrl = `${window.location.origin}/charts/${shareChartId}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert('Link copied to clipboard!');
+    } catch {
+      console.error('Failed to copy link');
+    }
+  }, [shareChartId]);
+
+  const handleNativeShare = useCallback(async () => {
+    if (!shareChartId) return;
+    const chart = charts.find(c => c.id === shareChartId);
+    const shareTitle = chart?.name ?? 'Birth Chart';
+    const shareUrl = `${window.location.origin}/charts/${shareChartId}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${shareTitle} - AstroVerse`,
+          text: `Check out this birth chart for ${shareTitle}`,
+          url: shareUrl,
+        });
+      } catch {
+        // User cancelled
+      }
+    } else {
+      // Fallback to copy
+      await copyShareLink();
+    }
+  }, [charts, shareChartId, copyShareLink]);
 
   const folders = [
     { id: 'all' as FilterFolder, label: 'All Charts', icon: 'folder_shared' },
@@ -328,7 +400,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   key={chart.id}
                   chart={chart}
                   onDelete={(id) => { void handleDelete(id); }}
-                  onShare={handleShare}
+                  onShare={(id) => { void handleShare(id); }}
                   className={viewMode === 'list' ? 'w-full' : ''}
                 />
               ))}
@@ -356,6 +428,67 @@ export const SavedChartsGalleryPage: React.FC = () => {
           )}
         </main>
       </div>
+
+      {/* Share Modal */}
+      {shareModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#1e1b2e] rounded-2xl p-6 max-w-md w-full shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-white">Share Chart</h3>
+              <button
+                onClick={closeShareModal}
+                className="p-2 text-slate-400 hover:text-white transition-colors"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            {/* Share URL */}
+            <div className="mb-4">
+              <p className="text-sm text-slate-400 mb-2">Share this link:</p>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={`${window.location.origin}/charts/${shareChartId}`}
+                  readOnly
+                  className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
+                />
+                <button
+                  onClick={() => void copyShareLink()}
+                  className="px-3 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[18px]">content_copy</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Social Sharing */}
+            <div className="border-t border-white/10 pt-4 mb-4">
+              <p className="text-sm text-slate-400 mb-2">Share via</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => void handleNativeShare()}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#1877f2]/20 hover:bg-[#1e1b2e] text-white py-2 rounded-lg transition-colors"
+                >
+                  <span className="material-symbols-outlined text-lg">facebook</span>
+                </button>
+                <button
+                  onClick={() => void handleNativeShare()}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#1da4dd] hover:bg-[#1da4dd] text-white py-2 rounded-lg transition-colors"
+                >
+                  <span className="material-symbols-outlined text-lg">group</span>
+                </button>
+                <button
+                  onClick={() => void handleNativeShare()}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#00c6ff] hover:bg-[#00c6ff] text-white py-2 rounded-lg transition-colors"
+                >
+                  <span className="material-symbols-outlined text-lg">alternate_email</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

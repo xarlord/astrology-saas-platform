@@ -131,11 +131,11 @@ export function useShortcut(
   const [isRegistered, setIsRegistered] = useState(false);
   const registeredIdsRef = useRef<string[]>([]);
 
-  // Normalize shortcuts to array
-  const shortcuts = Array.isArray(shortcut) ? shortcut : [shortcut];
-
   // Register shortcuts
   const registerShortcuts = useCallback(() => {
+    // Normalize shortcuts to array
+    const shortcuts = Array.isArray(shortcut) ? shortcut : [shortcut];
+
     const newIds: string[] = [];
 
     shortcuts.forEach((s) => {
@@ -163,7 +163,7 @@ export function useShortcut(
         ...s,
         id,
         key: s.key,
-        priority: s.ctrlKey ?? s.metaKey ? 10 : 1,
+        priority: (s.ctrl ?? false) || (s.meta ?? false) ? 10 : 1,
       };
 
       globalShortcutContext.shortcuts.set(key, registered);
@@ -172,7 +172,7 @@ export function useShortcut(
 
     registeredIdsRef.current = newIds;
     setIsRegistered(newIds.length > 0);
-  }, [shortcuts, preventConflicts, scope]);
+  }, [shortcut, preventConflicts, scope]);
 
   // Unregister shortcuts
   const unregister = useCallback(() => {

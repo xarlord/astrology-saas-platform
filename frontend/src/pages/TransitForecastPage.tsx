@@ -3,7 +3,7 @@
  * Modern transit forecast page with timeline and energy graph
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
@@ -13,6 +13,7 @@ import { transitService } from '../services/transit.service';
 import { chartService } from '../services/chart.service';
 import { AppLayout } from '../components/AppLayout';
 import { SkeletonLoader, EmptyState } from '../components';
+import type { Transit, TransitChart as TransitChartType } from '../services/api.types';
 
 interface Chart {
   id: string;
@@ -29,6 +30,96 @@ interface TransitEvent {
   impact: 'low' | 'moderate' | 'high';
   tags?: string[];
   orb?: number;
+}
+
+interface CurrentTransit {
+  planet: string;
+  sign: string;
+  degree: number;
+  retrograde: boolean;
+}
+
+/**
+ * Transform API Transit type to component TransitEvent type
+ */
+function transformTransitToEvent(transit: Transit): TransitEvent {
+  // Map API impact to component impact
+  const mapImpact = (impact?: string): 'low' | 'moderate' | 'high' => {
+    if (impact === 'positive') return 'high';
+    if (impact === 'negative') return 'moderate';
+    return 'low';
+  };
+
+  // Map API TransitType to component type
+  const mapType = (transitType: string, impact?: string): 'favorable' | 'challenging' | 'neutral' | 'major' => {
+    if (transitType === 'major') return 'major';
+    if (impact === 'positive') return 'favorable';
+    if (impact === 'negative') return 'challenging';
+    return 'neutral';
+  };
+
+  // Generate title from planet and aspect
+  const title = transit.title ?? `${transit.planet}${transit.aspect ? ` ${transit.aspect}` : ''}`;
+
+  // Use peak_date or fall back to start_date
+  const date = transit.peak_date ?? transit.start_date;
+
+  return {
+    id: transit.id,
+    date,
+    title,
+    description: transit.influence?.overall ?? transit.description ?? '',
+    type: mapType(transit.type, transit.impact),
+    impact: mapImpact(transit.impact),
+    tags: transit.aspect ? [transit.aspect] : undefined,
+    orb: transit.intensity,
+  };
+}
+
+/**
+ * Generate energy data points from a single energy level
+ */
+function generateEnergyData(
+  energyLevel: number,
+  startDate: string,
+  endDate: string,
+  transits: Transit[]
+): TransitDataPoint[] {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const days: TransitDataPoint[] = [];
+
+  // Create a map of transit dates for marking major events
+  const transitDates = new Map<string, Transit>();
+  transits.forEach(t => {
+    const peakDate = t.peak_date || t.start_date;
+    if (peakDate) {
+      transitDates.set(peakDate.split('T')[0], t);
+    }
+  });
+
+  // Generate data points for each day
+  const current = new Date(start);
+  while (current <= end) {
+    const dateStr = current.toISOString().split('T')[0];
+    const transit = transitDates.get(dateStr);
+
+    // Add some variance to the energy level based on the day
+    const dayVariance = Math.sin(current.getDate() / 5) * 10;
+    const baseEnergy = Math.max(0, Math.min(100, energyLevel + dayVariance));
+
+    days.push({
+      date: dateStr,
+      energy: Math.round(baseEnergy),
+      isMajorEvent: transit?.type === 'major',
+      eventName: transit?.title ?? `${transit?.planet}${transit?.aspect ? ` ${transit.aspect}` : ''}`,
+      eventDescription: transit?.influence?.overall,
+    });
+
+    current.setDate(current.getDate() + 1);
+  }
+
+  return days;
 }
 
 const TransitForecastPage: React.FC = () => {
@@ -63,9 +154,12 @@ const TransitForecastPage: React.FC = () => {
     bestDay: { date: '', score: 0 },
     worstDay: { date: '', score: 0 },
   });
+  const [currentTransits, setCurrentTransits] = useState<CurrentTransit[]>([]);
+  const [loadingCurrentTransits, setLoadingCurrentTransits] = useState(false);
 
   useEffect(() => {
     void loadCharts();
+    void loadCurrentTransits();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -92,6 +186,28 @@ const TransitForecastPage: React.FC = () => {
     }
   };
 
+  const loadCurrentTransits = useCallback(async () => {
+    try {
+      setLoadingCurrentTransits(true);
+      const data = await transitService.getTodayTransits();
+
+      // Transform transits to current positions
+      const positions: CurrentTransit[] = data.transits.map(transit => ({
+        planet: transit.planet,
+        sign: transit.aspect ?? '',
+        degree: transit.intensity ?? 0,
+        retrograde: false,
+      }));
+
+      setCurrentTransits(positions);
+    } catch (err) {
+      console.error('Error loading current transits:', err);
+      // Don't set main error for sidebar - just log it
+    } finally {
+      setLoadingCurrentTransits(false);
+    }
+  }, []);
+
   const loadTransits = async () => {
     if (!selectedChartId) return;
 
@@ -99,22 +215,33 @@ const TransitForecastPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const data: unknown = await transitService.calculateTransits(selectedChartId, startDate, endDate);
+      // Fetch transit data from API
+      const data: TransitChartType = await transitService.calculateTransits(selectedChartId, startDate, endDate);
 
-      // Transform data to events
-      const transitEvents: TransitEvent[] = (data as { transits?: TransitEvent[] }).transits ?? [];
+      // Transform API Transit[] to component TransitEvent[]
+      const transitEvents: TransitEvent[] = (data.transits || []).map(transformTransitToEvent);
       setEvents(transitEvents);
 
-      // Create energy data for chart
-      const energyPoints: TransitDataPoint[] = (data as { energyLevels?: TransitDataPoint[] }).energyLevels ?? [];
+      // Generate energy data from the single energy_level value
+      const energyPoints = generateEnergyData(
+        data.energy_level || 50,
+        startDate,
+        endDate,
+        data.transits || []
+      );
       setEnergyData(energyPoints);
+
+      // Find best and worst days from energy data
+      const sortedByEnergy = [...energyPoints].sort((a, b) => b.energy - a.energy);
+      const bestDay = sortedByEnergy[0] || { date: '', energy: 0 };
+      const worstDay = sortedByEnergy[sortedByEnergy.length - 1] || { date: '', energy: 0 };
 
       // Calculate summary stats
       setSummaryStats({
         totalTransits: transitEvents.length,
-        majorAspects: transitEvents.filter((e: TransitEvent) => e.type === 'major').length,
-        bestDay: (data as { bestDay?: { date: string; score: number } }).bestDay ?? { date: '', score: 0 },
-        worstDay: (data as { worstDay?: { date: string; score: number } }).worstDay ?? { date: '', score: 0 },
+        majorAspects: transitEvents.filter(e => e.type === 'major').length,
+        bestDay: { date: bestDay.date, score: bestDay.energy },
+        worstDay: { date: worstDay.date, score: worstDay.energy },
       });
     } catch (err) {
       console.error('Error loading transits:', err);
@@ -499,8 +626,30 @@ const TransitForecastPage: React.FC = () => {
                     Current Transits
                   </h4>
                 </div>
-                <div className="p-4 text-slate-400 text-sm">
-                  <p>Planetary positions will be displayed here.</p>
+                <div className="p-4">
+                  {loadingCurrentTransits ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                    </div>
+                  ) : currentTransits.length > 0 ? (
+                    <div className="space-y-3">
+                      {currentTransits.map((transit, index) => (
+                        <div key={index} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2">
+                            <span className="text-primary font-medium">{transit.planet}</span>
+                            {transit.retrograde && (
+                              <span className="text-xs text-amber-400">R</span>
+                            )}
+                          </div>
+                          <span className="text-slate-400">
+                            {transit.sign} {transit.degree > 0 ? `${transit.degree.toFixed(1)}deg` : ''}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-400 text-sm">No current transit data available.</p>
+                  )}
                 </div>
               </div>
 

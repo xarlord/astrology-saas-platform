@@ -133,6 +133,16 @@ const REPORT_TYPE_NAMES: Record<ReportType, string> = {
 class PDFService {
   private doc: jsPDF | null = null;
   private currentY = MARGIN_TOP;
+
+  /**
+   * Ensure doc is not null before operations
+   */
+  private getDoc(): jsPDF {
+    if (!this.doc) {
+      throw new Error('PDF document not initialized');
+    }
+    return this.doc;
+  }
   private pageNumber = 1;
   private totalPages = 1;
 
@@ -154,7 +164,7 @@ class PDFService {
       this.pageNumber = 1;
 
       // Set document properties
-      this.doc.setProperties({
+      this.getDoc().setProperties({
         title: options.title,
         subject: REPORT_TYPE_NAMES[options.reportType],
         creator: 'AstroVerse',
@@ -197,16 +207,16 @@ class PDFService {
       options.onProgress?.(90);
 
       // Add footer to all pages
-      this.totalPages = this.doc.getNumberOfPages();
+      this.totalPages = this.getDoc().getNumberOfPages();
       for (let i = 1; i <= this.totalPages; i++) {
-        this.doc.setPage(i);
+        this.getDoc().setPage(i);
         this.addFooter(i, this.totalPages);
       }
 
       options.onProgress?.(100);
 
       // Generate blob
-      const blob = this.doc.output('blob');
+      const blob = this.getDoc().output('blob');
 
       return {
         success: true,
@@ -225,31 +235,31 @@ class PDFService {
    * Add header section
    */
   private addHeader(options: PDFGenerationOptions): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     // Background gradient effect (simulated with rectangle)
-    this.doc.setFillColor(...COLORS.darkBg);
-    this.doc.rect(0, 0, PAGE_WIDTH, 40, 'F');
+    doc.setFillColor(...COLORS.darkBg);
+    doc.rect(0, 0, PAGE_WIDTH, 40, 'F');
 
     // Logo area
-    this.doc.setFillColor(...COLORS.cosmicPurple);
-    this.doc.circle(MARGIN_LEFT + 8, 15, 5, 'F');
+    doc.setFillColor(...COLORS.cosmicPurple);
+    doc.circle(MARGIN_LEFT + 8, 15, 5, 'F');
 
     // Title
-    this.doc.setFontSize(FONT_SIZES.title);
-    this.doc.setTextColor(...COLORS.white);
-    this.doc.text('AstroVerse', MARGIN_LEFT + 18, 17);
+    doc.setFontSize(FONT_SIZES.title);
+    doc.setTextColor(...COLORS.white);
+    doc.text('AstroVerse', MARGIN_LEFT + 18, 17);
 
     // Report type
-    this.doc.setFontSize(FONT_SIZES.subtitle);
-    this.doc.setTextColor(...COLORS.accentGold);
-    this.doc.text(REPORT_TYPE_NAMES[options.reportType], MARGIN_LEFT, 32);
+    doc.setFontSize(FONT_SIZES.subtitle);
+    doc.setTextColor(...COLORS.accentGold);
+    doc.text(REPORT_TYPE_NAMES[options.reportType], MARGIN_LEFT, 32);
 
     // Custom title if provided
     if (options.subtitle) {
-      this.doc.setFontSize(FONT_SIZES.body);
-      this.doc.setTextColor(...COLORS.white);
-      this.doc.text(options.subtitle, MARGIN_LEFT, 37);
+      doc.setFontSize(FONT_SIZES.body);
+      doc.setTextColor(...COLORS.white);
+      doc.text(options.subtitle, MARGIN_LEFT, 37);
     }
 
     this.currentY = 50;
@@ -259,7 +269,7 @@ class PDFService {
    * Add chart image from HTML element
    */
   private async addChartImage(element: HTMLElement): Promise<void> {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     try {
       const canvas = await html2canvas(element, {
@@ -285,7 +295,7 @@ class PDFService {
       // Center the image
       const x = MARGIN_LEFT + (CONTENT_WIDTH - finalWidth) / 2;
 
-      this.doc.addImage(imgData, 'PNG', x, this.currentY, finalWidth, finalHeight);
+      doc.addImage(imgData, 'PNG', x, this.currentY, finalWidth, finalHeight);
       this.currentY += finalHeight + 10;
     } catch (error) {
       console.error('Failed to capture chart image:', error);
@@ -296,43 +306,43 @@ class PDFService {
    * Add section heading
    */
   private addHeading(text: string): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     this.checkPageBreak(15);
 
-    this.doc.setFontSize(FONT_SIZES.heading);
-    this.doc.setTextColor(...COLORS.cosmicPurple);
-    this.doc.setFont('helvetica', 'bold');
-    this.doc.text(text, MARGIN_LEFT, this.currentY);
+    doc.setFontSize(FONT_SIZES.heading);
+    doc.setTextColor(...COLORS.cosmicPurple);
+    doc.setFont('helvetica', 'bold');
+    doc.text(text, MARGIN_LEFT, this.currentY);
 
     // Underline
-    const textWidth = this.doc.getTextWidth(text);
-    this.doc.setDrawColor(...COLORS.cosmicPurple);
-    this.doc.setLineWidth(0.5);
-    this.doc.line(MARGIN_LEFT, this.currentY + 2, MARGIN_LEFT + textWidth, this.currentY + 2);
+    const textWidth = doc.getTextWidth(text);
+    doc.setDrawColor(...COLORS.cosmicPurple);
+    doc.setLineWidth(0.5);
+    doc.line(MARGIN_LEFT, this.currentY + 2, MARGIN_LEFT + textWidth, this.currentY + 2);
 
     this.currentY += 10;
-    this.doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
   }
 
   /**
    * Add body text
    */
   private addText(text: string, options?: { indent?: number; color?: [number, number, number] }): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     const indent = options?.indent ?? 0;
     const color = options?.color ?? COLORS.textDark;
 
-    this.doc.setFontSize(FONT_SIZES.body);
-    this.doc.setTextColor(...color);
+    doc.setFontSize(FONT_SIZES.body);
+    doc.setTextColor(...color);
 
-    const lines = this.doc.splitTextToSize(text, CONTENT_WIDTH - indent) as string[];
+    const lines = doc.splitTextToSize(text, CONTENT_WIDTH - indent) as string[];
     const lineHeight = 6;
 
     lines.forEach((line) => {
       this.checkPageBreak(lineHeight);
-      this.doc.text(line, MARGIN_LEFT + indent, this.currentY);
+      doc.text(line, MARGIN_LEFT + indent, this.currentY);
       this.currentY += lineHeight;
     });
 
@@ -343,20 +353,20 @@ class PDFService {
    * Add a key-value pair line
    */
   private addKeyValue(key: string, value: string): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     this.checkPageBreak(8);
 
-    this.doc.setFontSize(FONT_SIZES.body);
-    this.doc.setFont('helvetica', 'bold');
-    this.doc.setTextColor(...COLORS.cosmicBlue);
-    this.doc.text(key + ':', MARGIN_LEFT, this.currentY);
+    doc.setFontSize(FONT_SIZES.body);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...COLORS.cosmicBlue);
+    doc.text(key + ':', MARGIN_LEFT, this.currentY);
 
-    this.doc.setFont('helvetica', 'normal');
-    this.doc.setTextColor(...COLORS.textDark);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...COLORS.textDark);
 
-    const keyWidth = this.doc.getTextWidth(key + ': ');
-    this.doc.text(value, MARGIN_LEFT + keyWidth, this.currentY);
+    const keyWidth = doc.getTextWidth(key + ': ');
+    doc.text(value, MARGIN_LEFT + keyWidth, this.currentY);
 
     this.currentY += 7;
   }
@@ -365,21 +375,21 @@ class PDFService {
    * Add bullet point
    */
   private addBullet(text: string): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     this.checkPageBreak(8);
 
     // Bullet character
-    this.doc.setFontSize(FONT_SIZES.body);
-    this.doc.setTextColor(...COLORS.accentGold);
-    this.doc.text('\u2022', MARGIN_LEFT + 3, this.currentY);
+    doc.setFontSize(FONT_SIZES.body);
+    doc.setTextColor(...COLORS.accentGold);
+    doc.text('\u2022', MARGIN_LEFT + 3, this.currentY);
 
     // Text
-    this.doc.setTextColor(...COLORS.textDark);
-    const lines = this.doc.splitTextToSize(text, CONTENT_WIDTH - 10) as string[];
+    doc.setTextColor(...COLORS.textDark);
+    const lines = doc.splitTextToSize(text, CONTENT_WIDTH - 10) as string[];
     lines.forEach((line, index) => {
       if (index > 0) this.checkPageBreak(6);
-      this.doc.text(line, MARGIN_LEFT + 8, this.currentY + index * 6);
+      doc.text(line, MARGIN_LEFT + 8, this.currentY + index * 6);
     });
 
     this.currentY += lines.length * 6 + 2;
@@ -389,7 +399,8 @@ class PDFService {
    * Add planet position table
    */
   private addPlanetTable(positions: PlanetPosition[]): void {
-    if (!this.doc || positions.length === 0) return;
+    const doc = this.getDoc();
+    if (positions.length === 0) return;
 
     this.checkPageBreak(30);
 
@@ -398,22 +409,22 @@ class PDFService {
     const startX = MARGIN_LEFT;
 
     // Header
-    this.doc.setFillColor(...COLORS.cosmicPurple);
-    this.doc.rect(startX, this.currentY - 4, CONTENT_WIDTH, rowHeight, 'F');
+    doc.setFillColor(...COLORS.cosmicPurple);
+    doc.rect(startX, this.currentY - 4, CONTENT_WIDTH, rowHeight, 'F');
 
-    this.doc.setFontSize(FONT_SIZES.small);
-    this.doc.setFont('helvetica', 'bold');
-    this.doc.setTextColor(...COLORS.white);
+    doc.setFontSize(FONT_SIZES.small);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...COLORS.white);
 
     const headers = ['Planet', 'Sign', 'Degree', 'House', 'R'];
     let xPos = startX + 2;
     headers.forEach((header, i) => {
-      this.doc.text(header, xPos, this.currentY);
+      doc.text(header, xPos, this.currentY);
       xPos += colWidths[i];
     });
 
     this.currentY += rowHeight;
-    this.doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
 
     // Rows (limit to prevent overflow)
     const maxRows = Math.min(positions.length, 15);
@@ -424,12 +435,12 @@ class PDFService {
 
       // Alternate row background
       if (i % 2 === 0) {
-        this.doc.setFillColor(245, 245, 250);
-        this.doc.rect(startX, this.currentY - 4, CONTENT_WIDTH, rowHeight, 'F');
+        doc.setFillColor(245, 245, 250);
+        doc.rect(startX, this.currentY - 4, CONTENT_WIDTH, rowHeight, 'F');
       }
 
-      this.doc.setTextColor(...COLORS.textDark);
-      this.doc.setFontSize(FONT_SIZES.small);
+      doc.setTextColor(...COLORS.textDark);
+      doc.setFontSize(FONT_SIZES.small);
 
       xPos = startX + 2;
       const values = [
@@ -441,7 +452,7 @@ class PDFService {
       ];
 
       values.forEach((value, j) => {
-        this.doc.text(value, xPos, this.currentY);
+        doc.text(value, xPos, this.currentY);
         xPos += colWidths[j];
       });
 
@@ -455,7 +466,8 @@ class PDFService {
    * Add aspects table
    */
   private addAspectsTable(aspects: Aspect[]): void {
-    if (!this.doc || aspects.length === 0) return;
+    const doc = this.getDoc();
+    if (aspects.length === 0) return;
 
     this.checkPageBreak(30);
 
@@ -464,22 +476,22 @@ class PDFService {
     const startX = MARGIN_LEFT;
 
     // Header
-    this.doc.setFillColor(...COLORS.cosmicBlue);
-    this.doc.rect(startX, this.currentY - 4, colWidths.reduce((a, b) => a + b, 0), rowHeight, 'F');
+    doc.setFillColor(...COLORS.cosmicBlue);
+    doc.rect(startX, this.currentY - 4, colWidths.reduce((a, b) => a + b, 0), rowHeight, 'F');
 
-    this.doc.setFontSize(FONT_SIZES.small);
-    this.doc.setFont('helvetica', 'bold');
-    this.doc.setTextColor(...COLORS.white);
+    doc.setFontSize(FONT_SIZES.small);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...COLORS.white);
 
     const headers = ['Planet 1', 'Planet 2', 'Aspect', 'Orb'];
     let xPos = startX + 2;
     headers.forEach((header, i) => {
-      this.doc.text(header, xPos, this.currentY);
+      doc.text(header, xPos, this.currentY);
       xPos += colWidths[i];
     });
 
     this.currentY += rowHeight;
-    this.doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica', 'normal');
 
     // Rows (limit to prevent overflow)
     const maxRows = Math.min(aspects.length, 10);
@@ -490,23 +502,24 @@ class PDFService {
 
       // Alternate row background
       if (i % 2 === 0) {
-        this.doc.setFillColor(240, 245, 255);
-        this.doc.rect(startX, this.currentY - 4, colWidths.reduce((a, b) => a + b, 0), rowHeight, 'F');
+        doc.setFillColor(240, 245, 255);
+        doc.rect(startX, this.currentY - 4, colWidths.reduce((a, b) => a + b, 0), rowHeight, 'F');
       }
 
-      this.doc.setTextColor(...COLORS.textDark);
-      this.doc.setFontSize(FONT_SIZES.small);
+      doc.setTextColor(...COLORS.textDark);
+      doc.setFontSize(FONT_SIZES.small);
 
       xPos = startX + 2;
+      const planets = aspect.planets ?? [];
       const values = [
-        aspect.planets[0],
-        aspect.planets[1],
+        planets[0] ?? '',
+        planets[1] ?? '',
         aspect.type.charAt(0).toUpperCase() + aspect.type.slice(1),
         `${aspect.orb.toFixed(1)}\u00B0`,
       ];
 
       values.forEach((value, j) => {
-        this.doc.text(value, xPos, this.currentY);
+        doc.text(value, xPos, this.currentY);
         xPos += colWidths[j];
       });
 
@@ -520,7 +533,8 @@ class PDFService {
    * Add houses summary
    */
   private addHousesSummary(houses: House[]): void {
-    if (!this.doc || houses.length === 0) return;
+    const _doc = this.getDoc();
+    if (houses.length === 0) return;
 
     this.addHeading('House cusps');
 
@@ -536,10 +550,10 @@ class PDFService {
    * Check if page break is needed
    */
   private checkPageBreak(neededHeight: number): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     if (this.currentY + neededHeight > PAGE_HEIGHT - MARGIN_BOTTOM - 15) {
-      this.doc.addPage();
+      doc.addPage();
       this.pageNumber++;
       this.currentY = MARGIN_TOP;
     }
@@ -549,18 +563,18 @@ class PDFService {
    * Add footer to page
    */
   private addFooter(currentPage: number, totalPages: number): void {
-    if (!this.doc) return;
+    const doc = this.getDoc();
 
     const footerY = PAGE_HEIGHT - 12;
 
     // Footer line
-    this.doc.setDrawColor(200, 200, 200);
-    this.doc.setLineWidth(0.3);
-    this.doc.line(MARGIN_LEFT, footerY - 5, PAGE_WIDTH - MARGIN_RIGHT, footerY - 5);
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(MARGIN_LEFT, footerY - 5, PAGE_WIDTH - MARGIN_RIGHT, footerY - 5);
 
     // Footer text
-    this.doc.setFontSize(FONT_SIZES.footer);
-    this.doc.setTextColor(...COLORS.textLight);
+    doc.setFontSize(FONT_SIZES.footer);
+    doc.setTextColor(...COLORS.textLight);
 
     const generatedDate = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -569,10 +583,10 @@ class PDFService {
     });
 
     // Left: Generated date
-    this.doc.text(`Generated: ${generatedDate}`, MARGIN_LEFT, footerY);
+    doc.text(`Generated: ${generatedDate}`, MARGIN_LEFT, footerY);
 
     // Center: Copyright
-    this.doc.text(
+    doc.text(
       '\u00A9 AstroVerse | www.astroverse.app',
       PAGE_WIDTH / 2,
       footerY,
@@ -580,7 +594,7 @@ class PDFService {
     );
 
     // Right: Page number
-    this.doc.text(
+    doc.text(
       `Page ${currentPage} of ${totalPages}`,
       PAGE_WIDTH - MARGIN_RIGHT,
       footerY,

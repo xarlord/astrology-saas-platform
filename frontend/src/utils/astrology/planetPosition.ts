@@ -151,7 +151,7 @@ export function normalizeAngle(angle: number): number {
     normalized += 360;
   }
   // Handle the edge case where angle is exactly 360 or -360
-  if (normalized >= 360 || normalized === -0) {
+  if (normalized >= 360 || Object.is(normalized, -0)) {
     normalized = 0;
   }
   // Ensure we return positive 0, not negative 0
@@ -168,7 +168,7 @@ export function calculatePlanetLongitude(
   latitude: number,
   longitude: number
 ): number {
-  const t = julianCenturies(jd);
+  const _t = julianCenturies(jd);
 
   // Simplified position calculation based on mean anomaly
   // This is an approximation - real ephemeris should be used for production

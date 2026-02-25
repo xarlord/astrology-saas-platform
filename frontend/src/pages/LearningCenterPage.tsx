@@ -5,34 +5,18 @@
  * Reference: stitch-UI/desktop/16-learning-center.html
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
 import { Button } from '../components/ui/Button';
 
-// Types
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  progress: number;
-  totalLessons: number;
-  completedLessons: number;
-  duration: string;
-  status: 'in-progress' | 'locked' | 'not-started';
-}
+// Hooks
+import { useLearning } from '../hooks/useLearning';
 
-interface Lesson {
-  id: string;
-  title: string;
-  thumbnail: string;
-  duration: string;
-  category: string;
-  type: 'video' | 'article';
-}
+// Types
+import type { Course, Lesson } from '../types/api.types';
 
 interface KnowledgeCategory {
   id: string;
@@ -43,66 +27,7 @@ interface KnowledgeCategory {
   items: string[];
 }
 
-// Mock data
-const CURRENT_COURSE: Course = {
-  id: 'master-houses',
-  title: 'New Course: Master the Houses',
-  description: 'Deep dive into the 12 celestial houses. Understand how the positions of planets define specific life areas, from personal identity to public legacy.',
-  thumbnail: 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=800&q=80',
-  progress: 20,
-  totalLessons: 12,
-  completedLessons: 2,
-  duration: '4.5 Hours',
-  status: 'in-progress',
-};
-
-const LEARNING_PATHS: Course[] = [
-  {
-    id: 'astrology-101',
-    title: 'Astrology 101: The Basics',
-    description: 'Learn the planets, signs, and the core language of the cosmos.',
-    thumbnail: '',
-    progress: 67,
-    totalLessons: 12,
-    completedLessons: 8,
-    duration: '4.5 Hours',
-    status: 'in-progress',
-  },
-  {
-    id: 'intermediate-aspects',
-    title: 'Intermediate: Aspects & Transits',
-    description: 'Understand the geometric relationships between planets in motion.',
-    thumbnail: '',
-    progress: 0,
-    totalLessons: 15,
-    completedLessons: 0,
-    duration: '6.2 Hours',
-    status: 'locked',
-  },
-  {
-    id: 'advanced-synastry',
-    title: 'Advanced: Synastry & Electional',
-    description: 'Master relationship charts and timing for major life events.',
-    thumbnail: '',
-    progress: 0,
-    totalLessons: 20,
-    completedLessons: 0,
-    duration: '8.0 Hours',
-    status: 'locked',
-  },
-  {
-    id: 'professional-astrologer',
-    title: 'The Professional Astrologer',
-    description: 'Certification course for those looking to practice professionally.',
-    thumbnail: '',
-    progress: 0,
-    totalLessons: 25,
-    completedLessons: 0,
-    duration: '12.5 Hours',
-    status: 'locked',
-  },
-];
-
+// Static knowledge base categories (these are reference topics, not dynamic data)
 const KNOWLEDGE_BASE: KnowledgeCategory[] = [
   {
     id: 'planets',
@@ -154,44 +79,75 @@ const KNOWLEDGE_BASE: KnowledgeCategory[] = [
   },
 ];
 
-const LATEST_LESSONS: Lesson[] = [
-  {
-    id: 'mercury-retrograde',
-    title: 'Mercury in Retrograde: The Complete Guide',
-    thumbnail: 'https://images.unsplash.com/photo-1614730341194-75c60740a2d3?w=200&q=80',
-    duration: '12 Min',
-    category: 'Planets',
-    type: 'video',
-  },
-  {
-    id: 'trines-sextiles',
-    title: 'Understanding Trines & Sextiles',
-    thumbnail: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=200&q=80',
-    duration: '5 Min',
-    category: 'Aspects',
-    type: 'article',
-  },
-  {
-    id: 'midheaven',
-    title: 'The Midheaven: Your Professional Legacy',
-    thumbnail: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=200&q=80',
-    duration: '18 Min',
-    category: 'Houses',
-    type: 'video',
-  },
-];
-
 const LearningCenterPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredPaths = useMemo(() => {
-    if (!searchQuery) return LEARNING_PATHS;
-    return LEARNING_PATHS.filter(path =>
-      path.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      path.description.toLowerCase().includes(searchQuery.toLowerCase())
+  // Use the learning hook with autoLoad enabled
+  const {
+    courses,
+    isLoading,
+    error,
+    searchCourses,
+    getCourseProgressPercentage,
+    getInProgressCourses,
+  } = useLearning(true);
+
+  // Get current course (first in-progress course, or first course if none in progress)
+  const currentCourse = useMemo(() => {
+    const inProgress = getInProgressCourses();
+    return inProgress.length > 0 ? inProgress[0] : courses[0];
+  }, [courses, getInProgressCourses]);
+
+  // Derive latest lessons from courses
+  const latestLessons = useMemo(() => {
+    const allLessons: (Lesson & { courseTitle?: string })[] = [];
+    courses.forEach(course => {
+      if (course.lessons) {
+        course.lessons.forEach(lesson => {
+          allLessons.push({ ...lesson, courseTitle: course.title });
+        });
+      }
+    });
+    // Sort by creation or order and take first 3
+    return allLessons.slice(0, 3);
+  }, [courses]);
+
+  // Handle search with debounce
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (searchQuery) {
+        void searchCourses(searchQuery);
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, searchCourses]);
+
+  // Filter courses based on search query
+  const filteredCourses = useMemo(() => {
+    if (!searchQuery) return courses;
+    return courses.filter(course =>
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [courses, searchQuery]);
+
+  // Get course status based on progress
+  const getCourseStatus = useCallback((course: Course): 'in-progress' | 'locked' | 'not-started' => {
+    const progress = getCourseProgressPercentage(course.id);
+    if (progress > 0) return 'in-progress';
+    // For now, all courses are unlocked. In future, could check prerequisites
+    return 'not-started';
+  }, [getCourseProgressPercentage]);
+
+  // Format duration
+  const formatDuration = useCallback((minutes: number): string => {
+    if (minutes < 60) return `${minutes} Min`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}.${Math.round(mins / 6)} Hours` : `${hours} Hours`;
+  }, []);
 
   const handleCourseClick = (courseId: string) => {
     navigate(`/learning/courses/${courseId}`);
@@ -204,6 +160,34 @@ const LearningCenterPage: React.FC = () => {
   const handleCategoryClick = (categoryId: string) => {
     navigate(`/learning/categories/${categoryId}`);
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          <p className="text-slate-400">Loading courses...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
+          <span className="material-symbols-outlined text-5xl text-red-400">error</span>
+          <h2 className="text-xl font-bold text-white">Failed to Load Courses</h2>
+          <p className="text-slate-400">{error}</p>
+          <Button variant="primary" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
@@ -255,69 +239,77 @@ const LearningCenterPage: React.FC = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-12">
         {/* Hero Card - Current Course */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div
-            className="rounded-xl overflow-hidden flex flex-col md:flex-row relative group cursor-pointer border border-white/10"
-            onClick={() => handleCourseClick(CURRENT_COURSE.id)}
+        {currentCourse && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none"></div>
-            <div className="w-full md:w-2/5 h-64 md:h-auto overflow-hidden relative">
-              <img
-                src={CURRENT_COURSE.thumbnail}
-                alt={CURRENT_COURSE.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D17]/80 to-transparent flex items-end p-6">
-                <span className="bg-primary/20 backdrop-blur-md text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/30 uppercase tracking-tighter">
-                  Current Path
-                </span>
-              </div>
-            </div>
-            <div className="p-8 flex-1 flex flex-col justify-between bg-white/5 backdrop-blur-sm">
-              <div>
-                <h2 className="text-3xl font-bold text-white mb-2">{CURRENT_COURSE.title}</h2>
-                <p className="text-slate-400 max-w-lg mb-8">{CURRENT_COURSE.description}</p>
-                <div className="space-y-3 mb-8">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400 font-medium">Your Progress</span>
-                    <span className="text-primary font-bold">{CURRENT_COURSE.progress}% Complete</span>
+            <div
+              className="rounded-xl overflow-hidden flex flex-col md:flex-row relative group cursor-pointer border border-white/10"
+              onClick={() => handleCourseClick(currentCourse.id)}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none"></div>
+              <div className="w-full md:w-2/5 h-64 md:h-auto overflow-hidden relative bg-white/5">
+                {currentCourse.thumbnailUrl ? (
+                  <img
+                    src={currentCourse.thumbnailUrl}
+                    alt={currentCourse.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-blue-500/20">
+                    <span className="material-symbols-outlined text-6xl text-primary/50">school</span>
                   </div>
-                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                    <div
-                      className="bg-primary h-full rounded-full shadow-[0_0_10px_rgba(129,61,225,0.6)] transition-all duration-500"
-                      style={{ width: `${CURRENT_COURSE.progress}%` }}
-                    ></div>
-                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D17]/80 to-transparent flex items-end p-6">
+                  <span className="bg-primary/20 backdrop-blur-md text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/30 uppercase tracking-tighter">
+                    Current Path
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="primary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCourseClick(CURRENT_COURSE.id);
-                  }}
-                  leftIcon={<span className="material-symbols-outlined text-[18px]">play_arrow</span>}
-                >
-                  Resume Learning
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCourseClick(CURRENT_COURSE.id);
-                  }}
-                >
-                  View Syllabus
-                </Button>
+              <div className="p-8 flex-1 flex flex-col justify-between bg-white/5 backdrop-blur-sm">
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-2">{currentCourse.title}</h2>
+                  <p className="text-slate-400 max-w-lg mb-8">{currentCourse.description}</p>
+                  <div className="space-y-3 mb-8">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-400 font-medium">Your Progress</span>
+                      <span className="text-primary font-bold">{getCourseProgressPercentage(currentCourse.id)}% Complete</span>
+                    </div>
+                    <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-primary h-full rounded-full shadow-[0_0_10px_rgba(129,61,225,0.6)] transition-all duration-500"
+                        style={{ width: `${getCourseProgressPercentage(currentCourse.id)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCourseClick(currentCourse.id);
+                    }}
+                    leftIcon={<span className="material-symbols-outlined text-[18px]">play_arrow</span>}
+                  >
+                    Resume Learning
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCourseClick(currentCourse.id);
+                    }}
+                  >
+                    View Syllabus
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.section>
+          </motion.section>
+        )}
 
         {/* Learning Paths */}
         <motion.section
@@ -334,51 +326,73 @@ const LearningCenterPage: React.FC = () => {
               See all paths
             </button>
           </div>
-          <div className="flex gap-6 overflow-x-auto pb-4 scroll-smooth">
-            {filteredPaths.map((path) => (
-              <div
-                key={path.id}
-                className={`min-w-[320px] rounded-xl p-6 border-l-4 cursor-pointer transition-all hover:bg-white/5 ${
-                  path.status === 'in-progress'
-                    ? 'bg-white/5 backdrop-blur-sm border-l-primary'
-                    : 'bg-white/5 backdrop-blur-sm border-l-slate-700 opacity-70'
-                }`}
-                onClick={() => handleCourseClick(path.id)}
-              >
-                <div className="flex justify-between items-start mb-4">
+          {filteredCourses.length === 0 ? (
+            <div className="text-center py-12 bg-white/5 rounded-xl border border-white/10">
+              <span className="material-symbols-outlined text-4xl text-slate-500 mb-4">school</span>
+              <p className="text-slate-400">No courses available yet. Check back soon!</p>
+            </div>
+          ) : (
+            <div className="flex gap-6 overflow-x-auto pb-4 scroll-smooth">
+              {filteredCourses.map((course) => {
+                const status = getCourseStatus(course);
+                const progress = getCourseProgressPercentage(course.id);
+                return (
                   <div
-                    className={`p-2 rounded-lg ${
-                      path.status === 'in-progress' ? 'bg-primary/10 text-primary' : 'bg-white/5 text-slate-400'
+                    key={course.id}
+                    className={`min-w-[320px] rounded-xl p-6 border-l-4 cursor-pointer transition-all hover:bg-white/5 ${
+                      status === 'in-progress'
+                        ? 'bg-white/5 backdrop-blur-sm border-l-primary'
+                        : 'bg-white/5 backdrop-blur-sm border-l-slate-700 opacity-70'
                     }`}
+                    onClick={() => handleCourseClick(course.id)}
                   >
-                    <span className="material-symbols-outlined">
-                      {path.status === 'locked' ? 'lock' : 'school'}
-                    </span>
+                    <div className="flex justify-between items-start mb-4">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          status === 'in-progress' ? 'bg-primary/10 text-primary' : 'bg-white/5 text-slate-400'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined">
+                          {status === 'locked' ? 'lock' : 'school'}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide border ${
+                          status === 'in-progress'
+                            ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                            : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                        }`}
+                      >
+                        {status === 'in-progress' ? 'In Progress' : status === 'locked' ? 'Locked' : 'Not Started'}
+                      </span>
+                    </div>
+                    <h4 className="text-white font-bold mb-2">{course.title}</h4>
+                    <p className="text-slate-500 text-sm mb-6">{course.description}</p>
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <div className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">schedule</span>
+                        {formatDuration(course.duration)}
+                      </div>
+                      <span>
+                        {course.lessons?.length || 0} Lessons
+                      </span>
+                    </div>
+                    {progress > 0 && (
+                      <div className="mt-4">
+                        <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className="bg-primary h-full rounded-full transition-all duration-500"
+                            style={{ width: `${progress}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-[10px] text-primary mt-1 inline-block">{progress}% complete</span>
+                      </div>
+                    )}
                   </div>
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide border ${
-                      path.status === 'in-progress'
-                        ? 'bg-green-500/10 text-green-500 border-green-500/20'
-                        : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                    }`}
-                  >
-                    {path.status === 'in-progress' ? 'In Progress' : 'Locked'}
-                  </span>
-                </div>
-                <h4 className="text-white font-bold mb-2">{path.title}</h4>
-                <p className="text-slate-500 text-sm mb-6">{path.description}</p>
-                <div className="flex items-center justify-between text-xs text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">schedule</span>
-                    {path.duration}
-                  </div>
-                  <span>
-                    {path.completedLessons}/{path.totalLessons} Lessons
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </motion.section>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -437,38 +451,46 @@ const LearningCenterPage: React.FC = () => {
                 <h3 className="text-xl font-bold text-white">Latest Lessons</h3>
               </div>
               <div className="space-y-4">
-                {LATEST_LESSONS.map((lesson) => (
-                  <div
-                    key={lesson.id}
-                    className="flex gap-4 group cursor-pointer"
-                    onClick={() => handleLessonClick(lesson.id)}
-                  >
-                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                      <img
-                        src={lesson.thumbnail}
-                        alt={lesson.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                      />
-                    </div>
-                    <div className="flex-1 flex flex-col justify-between py-1">
-                      <div>
-                        <h5 className="text-sm font-bold text-white line-clamp-2 hover:text-primary transition-colors">
-                          {lesson.title}
-                        </h5>
-                        <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
-                          <span>
-                            {lesson.type === 'video' ? 'Video' : 'Article'} • {lesson.duration}
-                          </span>
-                          <span className="text-slate-700">•</span>
-                          <span>{lesson.category}</span>
-                        </div>
+                {latestLessons.length === 0 ? (
+                  <p className="text-slate-500 text-sm text-center py-4">No lessons available yet.</p>
+                ) : (
+                  latestLessons.map((lesson) => (
+                    <div
+                      key={lesson.id}
+                      className="flex gap-4 group cursor-pointer"
+                      onClick={() => handleLessonClick(lesson.id)}
+                    >
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
+                        {lesson.videoUrl ? (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-blue-500/20 relative">
+                            <span className="material-symbols-outlined text-2xl text-white/80">play_circle</span>
+                          </div>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-orange-500/20">
+                            <span className="material-symbols-outlined text-2xl text-white/80">article</span>
+                          </div>
+                        )}
                       </div>
-                      <button className="text-slate-500 hover:text-primary transition-colors flex justify-start">
-                        <span className="material-symbols-outlined text-sm">bookmark</span>
-                      </button>
+                      <div className="flex-1 flex flex-col justify-between py-1">
+                        <div>
+                          <h5 className="text-sm font-bold text-white line-clamp-2 hover:text-primary transition-colors">
+                            {lesson.title}
+                          </h5>
+                          <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+                            <span>
+                              {lesson.videoUrl ? 'Video' : 'Article'} - {formatDuration(lesson.duration)}
+                            </span>
+                            <span className="text-slate-700">-</span>
+                            <span>{lesson.category}</span>
+                          </div>
+                        </div>
+                        <button className="text-slate-500 hover:text-primary transition-colors flex justify-start">
+                          <span className="material-symbols-outlined text-sm">bookmark</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
               <button className="w-full mt-6 py-2 rounded-lg border border-white/5 text-slate-400 text-xs font-bold hover:bg-white/5 transition-colors uppercase tracking-widest">
                 View All Lessons

@@ -75,6 +75,10 @@ Object.defineProperty(window, 'matchMedia', {
 // Mock scrollTo
 window.scrollTo = vi.fn() as any;
 
+// Mock URL.createObjectURL and URL.revokeObjectURL for file downloads
+URL.createObjectURL = vi.fn().mockReturnValue('blob:mock-url');
+URL.revokeObjectURL = vi.fn();
+
 // Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(),

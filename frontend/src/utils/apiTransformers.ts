@@ -104,6 +104,18 @@ export interface APINotificationSettings {
 // ============================================================================
 
 /**
+ * Frontend NotificationSettings interface
+ */
+export interface NotificationSettings {
+  email: boolean;
+  push: boolean;
+  dailyDigest: boolean;
+  transitAlerts: boolean;
+  lunarReturns: boolean;
+  solarReturns: boolean;
+}
+
+/**
  * Frontend BirthData interface
  */
 export interface BirthData {
@@ -296,7 +308,7 @@ export function userToAPI(user: Partial<User>): Partial<APIUser> {
   if (user.firstName) apiUser.first_name = user.firstName;
   if (user.lastName) apiUser.last_name = user.lastName;
   if (user.fullName) apiUser.full_name = user.fullName;
-  if (user.avatar !== undefined) apiUser.avatar_url = user.avatar;
+  if (user.avatar !== undefined) apiUser.avatar_url = user.avatar ?? undefined;
   if (user.subscriptionTier) apiUser.subscription_tier = user.subscriptionTier;
   if (user.subscriptionExpiresAt) apiUser.subscription_expires_at = user.subscriptionExpiresAt;
 
@@ -310,7 +322,7 @@ export function userToAPI(user: Partial<User>): Partial<APIUser> {
 // Import User-related types from types/api.types.ts (frontend domain types)
 type User = import('../types/api.types').User;
 type UserSettings = import('../types/api.types').UserSettings;
-type NotificationSettings = import('../types/api.types').NotificationSettings;
+// NotificationSettings is defined locally above
 
 // ============================================================================
 // HELPER FUNCTIONS

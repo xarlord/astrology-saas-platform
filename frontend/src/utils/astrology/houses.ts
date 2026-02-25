@@ -6,7 +6,6 @@
 import {
   HouseSystem,
   HouseData,
-  ZodiacSign,
   ZODIAC_SIGNS,
 } from './types';
 import {
@@ -82,7 +81,7 @@ export function calculatePlacidusHouses(lst: number, latitude: number): HouseDat
 
   // For Placidus, we need to interpolate between angles
   // This is a simplified implementation
-  const e = 23.44; // Obliquity of ecliptic (approximate)
+  const _e = 23.44; // Obliquity of ecliptic (approximate)
 
   // Calculate intermediate house cusps using Placidus formulas
   // This is a simplified algorithm
@@ -252,13 +251,13 @@ export function calculatePorphyryHouses(lst: number, latitude: number): HouseDat
   const ic = normalizeAngle(mc + 180);
 
   // Calculate quadrant sizes
-  let q1 = angularDistance(asc, ic);
-  let q2 = angularDistance(ic, desc);
-  let q3 = angularDistance(desc, mc);
-  let q4 = angularDistance(mc, asc);
+  const q1 = angularDistance(asc, ic);
+  const q2 = angularDistance(ic, desc);
+  const q3 = angularDistance(desc, mc);
+  const q4 = angularDistance(mc, asc);
 
   // House cusps
-  const cusps: number[] = new Array(12);
+  const cusps: number[] = Array.from({ length: 12 }, () => 0);
 
   cusps[0] = asc; // 1st house
   cusps[3] = ic;  // 4th house

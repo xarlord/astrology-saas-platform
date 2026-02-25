@@ -36,7 +36,9 @@ export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
   delay = 500
 ): T {
   return useCallback(
-    debounce(callback, delay),
+    (...args: Parameters<T>) => {
+      debounce(callback, delay)(...args);
+    },
     [callback, delay]
   ) as T;
 }

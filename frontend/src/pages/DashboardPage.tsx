@@ -56,6 +56,37 @@ const calculateEnergyLevels = (transitsCount: number): {
   };
 };
 
+// Planet display configuration
+const PLANET_CONFIG: Record<string, { icon: string; color: string; bgColor: string }> = {
+  Sun: { icon: 'sunny', color: 'text-orange-400', bgColor: 'bg-orange-500/10' },
+  Moon: { icon: 'dark_mode', color: 'text-blue-400', bgColor: 'bg-blue-500/10' },
+  Mercury: { icon: 'public', color: 'text-slate-400', bgColor: 'bg-slate-500/10' },
+  Venus: { icon: 'favorite', color: 'text-pink-400', bgColor: 'bg-pink-500/10' },
+  Mars: { icon: 'local_fire_department', color: 'text-red-400', bgColor: 'bg-red-500/10' },
+  Jupiter: { icon: 'bolt', color: 'text-purple-400', bgColor: 'bg-purple-500/10' },
+  Saturn: { icon: 'circle', color: 'text-yellow-400', bgColor: 'bg-yellow-500/10' },
+  Uranus: { icon: 'explore', color: 'text-cyan-400', bgColor: 'bg-cyan-500/10' },
+  Neptune: { icon: 'water_drop', color: 'text-indigo-400', bgColor: 'bg-indigo-500/10' },
+  Pluto: { icon: 'trip_origin', color: 'text-rose-400', bgColor: 'bg-rose-500/10' },
+};
+
+// Zodiac signs
+const ZODIAC_SIGNS = [
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+];
+
+// Get zodiac sign from longitude
+const getZodiacSign = (longitude: number): string => {
+  const signIndex = Math.floor(longitude / 30) % 12;
+  return ZODIAC_SIGNS[signIndex];
+};
+
+// Get zodiac degree
+const getZodiacDegree = (longitude: number): number => {
+  return Math.round(longitude % 30);
+};
+
 // Dashboard Page Component
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -80,16 +111,66 @@ const DashboardPage: React.FC = () => {
     sign: 'Taurus',
   });
 
+  // Current planetary positions
+  const [planetaryPositions, setPlanetaryPositions] = useState<{
+    name: string;
+    longitude: number;
+    sign: string;
+    degree: number;
+    retrograde: boolean;
+  }[]>([]);
+
   useEffect(() => {
     // Load today's transits
     void loadTodayTransits();
   }, [loadTodayTransits]);
 
+  // Fetch current planetary positions
+  useEffect(() => {
+    const fetchPositions = async () => {
+      try {
+        const response = await fetch('/api/v1/transits/today');
+        if (response.ok) {
+          const data = await response.json() as {
+            data?: {
+              transitPlanets?: Record<string, {
+                longitude: number;
+                retrograde?: boolean;
+              }>;
+            };
+          };
+          if (data.data?.transitPlanets) {
+            const positions = Object.entries(data.data.transitPlanets)
+              .filter(([key]) => ['sun', 'moon', 'mercury', 'venus', 'mars'].includes(key))
+              .map(([name, pos]) => ({
+                name: name.charAt(0).toUpperCase() + name.slice(1),
+                longitude: pos.longitude,
+                sign: getZodiacSign(pos.longitude),
+                degree: getZodiacDegree(pos.longitude),
+                retrograde: pos.retrograde ?? false,
+              }));
+            setPlanetaryPositions(positions);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch planetary positions:', error);
+        // Use fallback data
+        setPlanetaryPositions([
+          { name: 'Sun', longitude: 330, sign: 'Pisces', degree: 0, retrograde: false },
+          { name: 'Moon', longitude: 45, sign: 'Taurus', degree: 15, retrograde: false },
+          { name: 'Mercury', longitude: 300, sign: 'Aquarius', degree: 0, retrograde: false },
+          { name: 'Venus', longitude: 350, sign: 'Pisces', degree: 20, retrograde: false },
+          { name: 'Mars', longitude: 120, sign: 'Leo', degree: 0, retrograde: false },
+        ]);
+      }
+    };
+    void fetchPositions();
+  }, []);
+
   // Calculate energy levels based on transits
   useEffect(() => {
     const levels = calculateEnergyLevels(transits.length);
     setEnergyLevels(levels);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transits.length]);
 
   // Get recent charts (first 3)
@@ -285,6 +366,50 @@ const DashboardPage: React.FC = () => {
                   </p>
                 </div>
               ))}
+            </motion.div>
+
+            {/* Current Planetary Positions */}
+            <motion.div
+              className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">planet</span>
+                  Current Positions
+                </h3>
+                <button
+                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                  onClick={() => navigate('/transits')}
+                >
+                  View Ephemeris
+                </button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                {planetaryPositions.map((planet) => {
+                  const config = PLANET_CONFIG[planet.name] || PLANET_CONFIG.Sun;
+                  return (
+                    <div
+                      key={planet.name}
+                      className="bg-[#0B0D17] p-3 rounded-xl border border-white/5 hover:border-primary/50 transition-all text-center"
+                    >
+                      <div className={`w-10 h-10 rounded-full ${config.bgColor} ${config.color} flex items-center justify-center mx-auto mb-2`}>
+                        <span className="material-symbols-outlined text-[20px]">{config.icon}</span>
+                      </div>
+                      <p className="text-white text-sm font-medium">{planet.name}</p>
+                      <p className="text-slate-400 text-xs">{planet.sign}</p>
+                      <p className="text-slate-500 text-[10px]">{planet.degree}°</p>
+                      {planet.retrograde && (
+                        <span className="text-[9px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded mt-1 inline-block">
+                          Retro
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </motion.div>
 
             {/* Highlight Card - Major Transit */}

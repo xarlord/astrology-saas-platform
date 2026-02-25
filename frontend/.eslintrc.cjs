@@ -33,7 +33,21 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': [
       'warn',
-      { allowConstantExport: true },
+      { allowConstantExport: true, allowExportNames: [
+        'EmptyStates',
+        'useKeyboardNav',
+        'useAnnounce',
+        'useIsKeyboardUser',
+        'useFocusManager',
+        'parseChaptersFromCues',
+        'detectChaptersFromVideo',
+        'parseTranscriptFromCues',
+        'parseSRT',
+        'parseWebVTT',
+        'formatTranscriptTime',
+        'withErrorBoundary',
+        'withKeyboardAnnouncements',
+      ] },
     ],
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-unused-vars': [

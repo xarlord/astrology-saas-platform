@@ -432,9 +432,12 @@ export function useVideoPlayer(options: VideoPlayerOptions = {}) {
 
   // Cleanup on unmount
   useEffect(() => {
+    // Capture ref value at cleanup setup time
+    const progressUpdateId = progressUpdateRef.current;
+
     return () => {
-      if (progressUpdateRef.current) {
-        cancelAnimationFrame(progressUpdateRef.current);
+      if (progressUpdateId) {
+        cancelAnimationFrame(progressUpdateId);
       }
     };
   }, []);

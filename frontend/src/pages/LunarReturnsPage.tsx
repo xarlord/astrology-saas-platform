@@ -8,7 +8,7 @@
  * - Interpretation panel with themes and rituals
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
@@ -58,7 +58,7 @@ export const LunarReturnsPage: React.FC = () => {
   const { charts } = useCharts();
 
   const [selectedChartId, setSelectedChartId] = useState<string>('');
-  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [selectedMonth, _setSelectedMonth] = useState(new Date());
   const [journalEntries, setJournalEntries] = useState({
     emotions: '',
     home: '',
@@ -101,7 +101,17 @@ export const LunarReturnsPage: React.FC = () => {
 
       // Process history
       if (historyData.status === 'fulfilled') {
-        setPastReturns(historyData.value.returns || []);
+        const returns = historyData.value.returns || [];
+        const now = new Date();
+        // Add computed properties for timeline display
+        const processedReturns = returns.map((ret) => ({
+          ...ret,
+          date: new Date(ret.returnDate),
+          status: new Date(ret.returnDate) < now ? 'past' as const :
+                  new Date(ret.returnDate).toDateString() === now.toDateString() ? 'current' as const : 'future' as const,
+          sign: ret.theme || ret.emotionalTheme || 'Unknown',
+        }));
+        setPastReturns(processedReturns);
       }
 
       // Try to fetch monthly forecast
@@ -171,7 +181,7 @@ export const LunarReturnsPage: React.FC = () => {
           p.category === 'health' ? 'fitness_center' :
           p.category === 'spirituality' ? 'self_improvement' : 'brush',
     status: p.likelihood > 70 ? 'positive' : p.likelihood > 40 ? 'neutral' : 'negative' as const,
-  })) || [
+  })) ?? [
     { area: 'Relationships', icon: 'favorite', status: 'positive' as const },
     { area: 'Career', icon: 'work', status: 'neutral' as const },
     { area: 'Finances', icon: 'payments', status: 'neutral' as const },
@@ -235,7 +245,7 @@ export const LunarReturnsPage: React.FC = () => {
               className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-cosmic-blue p-[1px]"
             >
               <div className="w-full h-full rounded-full bg-surface-dark flex items-center justify-center">
- ??                <span className="material-symbols-outlined text-white">person</span>
+                 <span className="material-symbols-outlined text-white">person</span>
               </div>
             </button>
           </div>
@@ -255,7 +265,7 @@ export const LunarReturnsPage: React.FC = () => {
         {error && !loading && (
           <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
             <p>{error}</p>
-            <Button variant="outline" size="sm" className="mt-2" onClick={() => void fetchLunarData()}>
+            <Button variant="ghost" size="sm" className="mt-2" onClick={() => void fetchLunarData()}>
               Retry
             </Button>
           </div>
@@ -375,7 +385,7 @@ export const LunarReturnsPage: React.FC = () => {
                 </span>
               </div>
             </div>
- ?? 
+ 
             <div className="flex items-center gap-6">
               {/* Mini Wheel SVG */}
               <div className="relative w-24 h-24 flex-shrink-0">
@@ -476,7 +486,7 @@ export const LunarReturnsPage: React.FC = () => {
             </h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {FORECAST_THEMES.map((theme) => (
+            {forecastThemes.map((theme) => (
               <div
                 key={theme.id}
                 className="bg-surface-dark border border-white/5 p-5 rounded-xl hover:border-primary/50 transition-colors group"
@@ -512,7 +522,7 @@ export const LunarReturnsPage: React.FC = () => {
           <div className="lg:col-span-8 flex flex-col gap-4">
             <h3 className="text-xl font-bold text-white">Life Areas Impact</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {LIFE_AREAS.map((area, index) => (
+              {lifeAreas.map((area, index) => (
                 <div
                   key={index}
                   className="p-4 rounded-xl bg-surface-dark/50 border border-white/5 flex items-center justify-between"
@@ -556,7 +566,7 @@ export const LunarReturnsPage: React.FC = () => {
                             ret.status === 'future' && 'text-slate-600'
                           )}
                         >
-                          {ret.date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
+                          {(ret.date ?? ret.returnDate).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
                         </div>
                         <div
                           className={clsx(

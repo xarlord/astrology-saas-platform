@@ -8,7 +8,6 @@ import {
   AspectData,
   AspectDefinition,
   AspectPattern,
-  AspectPatternType,
   PlanetData,
   ASPECT_DEFINITIONS,
   DEFAULT_ORBS,
@@ -114,7 +113,7 @@ export function calculateAspects(
   planets1: PlanetData[],
   planets2: PlanetData[],
   orbs: OrbConfig = DEFAULT_ORBS,
-  includeMinor: boolean = false
+  includeMinor = false
 ): AspectData[] {
   const aspects: AspectData[] = [];
 
@@ -166,7 +165,7 @@ export function calculateAspects(
 export function calculateNatalAspects(
   planets: PlanetData[],
   orbs: OrbConfig = DEFAULT_ORBS,
-  includeMinor: boolean = false
+  includeMinor = false
 ): AspectData[] {
   const aspects: AspectData[] = [];
 
@@ -230,7 +229,7 @@ export function getMajorAspects(): AspectType[] {
 export function detectAspectPatterns(
   planets: PlanetData[],
   aspects: AspectData[],
-  maxOrb: number = 8
+  maxOrb = 8
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
 
@@ -378,6 +377,8 @@ function detectTSquare(
           s !== sq1
       );
 
+      // Using || here is intentional: sq2 is either undefined or a truthy object
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       if (sq2 || (sq1.planet1 === apex &&
         ((sq1.planet2 === opp.planet1) || (sq1.planet2 === opp.planet2)))) {
         const allPlanets = [opp.planet1, opp.planet2, apex];
@@ -615,7 +616,7 @@ function getSignElement(sign: string): 'fire' | 'earth' | 'air' | 'water' {
     water: ['Cancer', 'Scorpio', 'Pisces'],
   };
 
-  for (const [element, signs] of Object.entries(elements) as [string, string[]][]) {
+  for (const [element, signs] of Object.entries(elements)) {
     if (signs.includes(sign)) {
       return element as 'fire' | 'earth' | 'air' | 'water';
     }
