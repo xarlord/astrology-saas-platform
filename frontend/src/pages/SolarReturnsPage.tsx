@@ -3,7 +3,7 @@
  * Main page for solar return feature
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing } from '../components';
@@ -66,19 +66,13 @@ export const SolarReturnsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch specific solar return if year is provided
-  useEffect(() => {
-    if (yearParam) {
-      void fetchSolarReturn(parseInt(yearParam));
-    }
-  }, [yearParam]);
-
-  const fetchSolarReturn = async (year: number) => {
+  const fetchSolarReturn = useCallback(async (year: number) => {
     try {
       setLoading(true);
       setError(null);
 
       const response = await api.get<{ data: SolarReturn }>(`/solar-returns/year/${year}`);
-      setSelectedReturn(response.data.data);
+      setSelectedReturn(response.data?.data ?? null);
       setSelectedYear(year);
     } catch (err: unknown) {
       const axiosError = err as { response?: { status?: number; data?: { error?: { message?: string } } } };
@@ -91,7 +85,14 @@ export const SolarReturnsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  // Fetch specific solar return if year is provided
+  useEffect(() => {
+    if (yearParam) {
+      void fetchSolarReturn(parseInt(yearParam));
+    }
+  }, [yearParam, fetchSolarReturn]);
 
   const handleRecalculate = async (location: RelocationLocation): Promise<SolarReturn | null> => {
     if (!selectedReturn) return null;
@@ -105,8 +106,11 @@ export const SolarReturnsPage: React.FC = () => {
         { location }
       );
 
-      setSelectedReturn(response.data.data);
-      return response.data.data;
+      const returnData = response.data?.data;
+      if (returnData) {
+        setSelectedReturn(returnData);
+      }
+      return returnData ?? null;
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { error?: { message?: string } } } };
       setError(axiosError.response?.data?.error?.message ?? 'Failed to recalculate');

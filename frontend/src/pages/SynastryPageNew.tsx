@@ -38,7 +38,6 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
     if (!propCharts) {
       void loadCharts();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propCharts]);
 
   const loadCharts = async () => {

@@ -12,9 +12,9 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background-dark text-slate-100 font-display antialiased overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 font-display antialiased overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 transition-all duration-300 bg-background-dark/85 backdrop-blur-md border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-br from-[#0B0D17] to-[#141627]/85 backdrop-blur-md border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -68,7 +68,7 @@ export default function LandingPage() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-background-dark/95 backdrop-blur-lg border-t border-white/5">
+          <div className="md:hidden bg-gradient-to-br from-[#0B0D17] to-[#141627]/95 backdrop-blur-lg border-t border-white/5">
             <div className="px-4 py-4 space-y-3">
               <a
                 href="#features"
@@ -113,9 +113,9 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-background-dark">
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-br from-[#0B0D17] to-[#141627]">
         {/* Stars Background */}
-        <div className="absolute inset-0 bg-background-dark">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B0D17] to-[#141627]">
           <div
             className="absolute inset-0 opacity-60"
             style={{
@@ -298,7 +298,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 relative bg-background-dark" id="features">
+      <section className="py-24 relative bg-gradient-to-br from-[#0B0D17] to-[#141627]" id="features">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-primary font-semibold tracking-wide uppercase text-sm mb-3">
@@ -707,7 +707,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-background-dark border-t border-white/5 pt-16 pb-12">
+      <footer className="bg-gradient-to-br from-[#0B0D17] to-[#141627] border-t border-white/5 pt-16 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">

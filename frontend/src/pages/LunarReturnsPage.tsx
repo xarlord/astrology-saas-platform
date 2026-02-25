@@ -214,7 +214,7 @@ export const LunarReturnsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-dark font-display" data-testid="lunar-returns-page">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display" data-testid="lunar-returns-page">
       {/* Top Navigation */}
       <nav className="sticky top-0 z-50 w-full bg-surface-dark/70 backdrop-blur-md border-b border-white/5">
         <div className="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
@@ -644,7 +644,7 @@ export const LunarReturnsPage: React.FC = () => {
                         setJournalEntries((prev) => ({ ...prev, [prompt.key]: e.target.value }))
                       }
                       placeholder="Type your thoughts..."
-                      className="w-full bg-background-dark border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
+                      className="w-full bg-gradient-to-br from-[#0B0D17] to-[#141627] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
                     />
                   </div>
                 ))}

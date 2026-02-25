@@ -72,7 +72,7 @@ export default function AnalysisPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
         <header className="bg-white dark:bg-gray-800 shadow">
           <div className="container mx-auto px-4 py-4">
             <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
@@ -90,7 +90,7 @@ export default function AnalysisPage() {
 
   if (!chartData) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
         <header className="bg-white dark:bg-gray-800 shadow">
           <div className="container mx-auto px-4 py-4">
             <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
@@ -115,7 +115,7 @@ export default function AnalysisPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
       <header className="bg-white dark:bg-gray-800 shadow">
         <div className="container mx-auto px-4 py-4">
           <a href={`/charts/${chartId}`} className="text-primary-600 hover:text-primary-700">

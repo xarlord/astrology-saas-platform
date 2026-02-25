@@ -59,7 +59,7 @@ export default function NotFoundPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-deep-space font-display text-slate-100 relative overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 relative overflow-hidden flex flex-col">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Nebula Gradients */}
@@ -87,7 +87,7 @@ export default function NotFoundPage() {
                 backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBcQ5HiHT4Kj_hVmlM-tDWAllVBRF6YrZNrjGFnaVdRXcEIfZ8JpGBxZyT7khNYmuIrLVMp3Q9VQ-QEhoeGvORXzrqmxxKxoBCXuwtKYoT0LrNDHQq5LP8V5gcPL47qJGWFPWGe5xQkhgJsCRY3Ki91VqiDZPkk-eWajvSK-5-b9ZronBRgXUnI0_ChOkHB8wcgUl2GxVsfkNRO2U-KHRicVUN50FioMaGP9527IB69BWsVIgPVIYFPHN5rxA_VK6_iEJ-z81gKcHSw")'
               }}
             >
-              <div className="absolute inset-0 bg-deep-space/60 mix-blend-multiply" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0B0D17] to-[#141627]/60 mix-blend-multiply" />
             </div>
 
             {/* Broken Wheel SVG */}
@@ -295,7 +295,7 @@ export default function NotFoundPage() {
           border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .bg-deep-space {
+        .bg-gradient-to-br from-[#0B0D17] to-[#141627] {
           background-color: #0B0D17;
         }
 

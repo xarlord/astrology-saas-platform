@@ -39,7 +39,7 @@ export default function LoginPageNew() {
   };
 
   return (
-    <div className="min-h-screen bg-background-dark font-display text-slate-100 antialiased overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 antialiased overflow-hidden">
       <div className="flex min-h-screen w-full flex-col lg:flex-row">
         {/* Left Panel: Cosmic Artwork */}
         <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col justify-between overflow-hidden bg-[#05060e]">
@@ -103,7 +103,7 @@ export default function LoginPageNew() {
         </div>
 
         {/* Right Panel: Login Form */}
-        <div className="flex w-full flex-1 flex-col justify-center bg-background-dark px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
+        <div className="flex w-full flex-1 flex-col justify-center bg-gradient-to-br from-[#0B0D17] to-[#141627] px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-[420px]">
             {/* Mobile Logo (visible only on small screens) */}
             <Link to="/" className="mb-8 flex items-center gap-2 lg:hidden">
@@ -264,7 +264,7 @@ export default function LoginPageNew() {
                   <div className="w-full border-t border-white/10"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-background-dark px-3 text-xs font-medium uppercase tracking-wider text-slate-500 rounded-full">
+                  <span className="bg-gradient-to-br from-[#0B0D17] to-[#141627] px-3 text-xs font-medium uppercase tracking-wider text-slate-500 rounded-full">
                     Or continue with
                   </span>
                 </div>

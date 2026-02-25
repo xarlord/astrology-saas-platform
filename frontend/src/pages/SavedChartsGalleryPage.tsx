@@ -190,7 +190,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
   const storagePercentage = (storageUsed / storageLimit) * 100;
 
   return (
-    <div className="min-h-screen bg-background-dark">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627]">
       {/* Top Navigation */}
       <nav className="fixed top-0 z-50 w-full bg-card-dark/80 backdrop-blur-md border-b border-white/5 px-6 lg:px-12 py-4">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between">

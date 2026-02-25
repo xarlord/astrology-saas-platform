@@ -120,7 +120,7 @@ export const ProfileSettingsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background-dark">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627]">
       {/* Top Navigation */}
       <header className="sticky top-0 z-50 bg-card-dark/80 backdrop-blur-md border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,7 +171,7 @@ export const ProfileSettingsPage: React.FC = () => {
             {/* Avatar Section */}
             <div className="relative shrink-0">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-[3px] bg-gradient-to-tr from-primary via-cosmic-blue to-primary/30 animate-spin-slow relative">
-                <div className="w-full h-full rounded-full bg-background-dark p-1">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-[#0B0D17] to-[#141627] p-1">
                   <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/30 to-cosmic-blue/30 flex items-center justify-center">
                     <span className="material-symbols-outlined text-5xl text-white">person</span>
                   </div>

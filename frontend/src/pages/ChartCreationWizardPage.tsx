@@ -105,21 +105,21 @@ export const ChartCreationWizardPage: React.FC = () => {
     }
   }, [currentStep, personalDetails, birthData]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isStepValid() && currentStep < 3) {
       setCurrentStep((prev) => (prev + 1) as WizardStep);
     }
-  };
+  }, [isStepValid, currentStep]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (currentStep > 1) {
       setCurrentStep((prev) => (prev - 1) as WizardStep);
     } else {
       navigate('/charts');
     }
-  };
+  }, [currentStep, navigate]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!isStepValid()) return;
 
     try {
@@ -139,7 +139,7 @@ export const ChartCreationWizardPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to create chart:', error);
     }
-  };
+  }, [isStepValid, personalDetails.name, birthData.date, birthData.unknownTime, birthData.time, birthData.location, birthData.latitude, birthData.longitude, createChart, navigate]);
 
   const toggleTag = (tag: string) => {
     setPersonalDetails((prev) => ({
@@ -165,7 +165,7 @@ export const ChartCreationWizardPage: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentStep, isStepValid, handleSubmit]);
+  }, [currentStep, isStepValid, handleSubmit, handleNext]);
 
   const STEPS = [
     { number: 1, title: 'Birth Details', icon: 'person' },
@@ -174,7 +174,7 @@ export const ChartCreationWizardPage: React.FC = () => {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-background-dark flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex flex-col overflow-hidden">
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
@@ -534,7 +534,7 @@ export const ChartCreationWizardPage: React.FC = () => {
             </div>
 
             {/* Mini Chart Wheel */}
-            <div className="relative aspect-square w-full rounded-full border border-white/10 flex items-center justify-center bg-background-dark/30 overflow-hidden group">
+            <div className="relative aspect-square w-full rounded-full border border-white/10 flex items-center justify-center bg-gradient-to-br from-[#0B0D17] to-[#141627]/30 overflow-hidden group">
               {/* SVG Wheel */}
               <svg
                 className="w-full h-full p-2 opacity-40 animate-[spin_60s_linear_infinite]"
@@ -548,7 +548,7 @@ export const ChartCreationWizardPage: React.FC = () => {
 
               {/* Center content */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="w-16 h-16 rounded-full bg-background-dark border border-white/10 flex items-center justify-center mb-1 shadow-lg z-10">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0B0D17] to-[#141627] border border-white/10 flex items-center justify-center mb-1 shadow-lg z-10">
                   <span className="material-symbols-outlined text-primary text-[32px]">public</span>
                 </div>
                 <p className="text-[10px] text-slate-500 font-medium">

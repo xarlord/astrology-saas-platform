@@ -78,7 +78,7 @@ export default function RegisterPageNew() {
   };
 
   return (
-    <div className="font-display bg-background-dark text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
+    <div className="font-display bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
       <div className="flex flex-col lg:flex-row min-h-screen w-full">
         {/* Left Panel: Brand & Features */}
         <div
@@ -182,7 +182,7 @@ export default function RegisterPageNew() {
         </div>
 
         {/* Right Panel: Registration Form */}
-        <div className="w-full lg:w-7/12 xl:w-1/2 bg-background-dark flex items-center justify-center p-6 lg:p-12 relative">
+        <div className="w-full lg:w-7/12 xl:w-1/2 bg-gradient-to-br from-[#0B0D17] to-[#141627] flex items-center justify-center p-6 lg:p-12 relative">
           {/* Background glows */}
           <div
             className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"
@@ -250,7 +250,7 @@ export default function RegisterPageNew() {
                     <span className="material-symbols-outlined text-slate-500 text-[20px]">person</span>
                   </div>
                   <input
-                    className="block w-full pl-11 pr-4 py-3 bg-background-dark/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     id="fullname"
                     type="text"
                     required
@@ -272,7 +272,7 @@ export default function RegisterPageNew() {
                     <span className="material-symbols-outlined text-slate-500 text-[20px]">mail</span>
                   </div>
                   <input
-                    className="block w-full pl-11 pr-4 py-3 bg-background-dark/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     id="email"
                     type="email"
                     autoComplete="email"
@@ -295,7 +295,7 @@ export default function RegisterPageNew() {
                     <span className="material-symbols-outlined text-slate-500 text-[20px]">lock</span>
                   </div>
                   <input
-                    className="block w-full pl-11 pr-12 py-3 bg-background-dark/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="block w-full pl-11 pr-12 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
@@ -362,7 +362,7 @@ export default function RegisterPageNew() {
                     </span>
                   </div>
                   <input
-                    className={`block w-full pl-11 pr-12 py-3 bg-background-dark/50 border rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
+                    className={`block w-full pl-11 pr-12 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
                       confirmPassword && !passwordsMatch
                         ? 'border-red-500 focus:border-red-500'
                         : 'border-slate-700'
@@ -399,7 +399,7 @@ export default function RegisterPageNew() {
               <div className="flex items-start gap-3 mt-2 px-1">
                 <div className="flex items-center h-5">
                   <input
-                    className="w-4 h-4 rounded border-slate-600 bg-background-dark/50 text-primary focus:ring-primary focus:ring-offset-background-dark"
+                    className="w-4 h-4 rounded border-slate-600 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 text-primary focus:ring-primary focus:ring-offset-background-dark"
                     id="terms"
                     type="checkbox"
                     checked={agreeToTerms}

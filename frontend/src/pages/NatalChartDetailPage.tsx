@@ -297,7 +297,7 @@ export const NatalChartDetailPage: React.FC = () => {
 
   if (isLoading || !currentChart) {
     return (
-      <div className="min-h-screen bg-deep-navy flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-slate-400">Loading chart...</p>
@@ -318,7 +318,7 @@ export const NatalChartDetailPage: React.FC = () => {
   const birthLocation = currentChart.birthData?.birthPlace ?? '';
 
   return (
-    <div className="min-h-screen bg-deep-navy flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex flex-col overflow-hidden">
       {/* Top Navigation */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/5 bg-card-dark/90 backdrop-blur-md px-6 py-3 z-50">
         <div className="flex items-center gap-8">
@@ -373,7 +373,7 @@ export const NatalChartDetailPage: React.FC = () => {
 
         <div className="flex w-full h-full z-10">
           {/* LEFT SIDEBAR: Planetary Positions */}
-          <aside className="w-80 border-r border-white/5 bg-deep-navy/50 flex flex-col h-full overflow-hidden shrink-0 hidden lg:flex">
+          <aside className="w-80 border-r border-white/5 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 flex flex-col h-full overflow-hidden shrink-0 hidden lg:flex">
             <div className="p-5 border-b border-white/5">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">planet</span>
@@ -382,7 +382,7 @@ export const NatalChartDetailPage: React.FC = () => {
             </div>
             <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
               <table className="w-full text-left border-collapse">
-                <thead className="text-xs text-slate-400 uppercase tracking-wider sticky top-0 bg-deep-navy z-10">
+                <thead className="text-xs text-slate-400 uppercase tracking-wider sticky top-0 bg-gradient-to-br from-[#0B0D17] to-[#141627] z-10">
                   <tr>
                     <th className="pb-3 pl-2 font-medium">Planet</th>
                     <th className="pb-3 font-medium">Pos</th>
@@ -459,7 +459,7 @@ export const NatalChartDetailPage: React.FC = () => {
           </aside>
 
           {/* CENTER STAGE: Chart & Main Info */}
-          <section className="flex-1 flex flex-col h-full min-w-0 bg-deep-navy relative">
+          <section className="flex-1 flex flex-col h-full min-w-0 bg-gradient-to-br from-[#0B0D17] to-[#141627] relative">
             {/* Header Breadcrumbs & Actions */}
             <div className="px-8 py-6 flex flex-wrap justify-between items-start gap-4 z-20">
               <div className="flex flex-col gap-2">
@@ -543,7 +543,7 @@ export const NatalChartDetailPage: React.FC = () => {
                   <ChartWheel data={wheelData} />
                 </div>
               ) : (
-                <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center rounded-full bg-deep-navy shadow-[0_0_20px_rgba(107,61,225,0.1)]">
+                <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center rounded-full bg-gradient-to-br from-[#0B0D17] to-[#141627] shadow-[0_0_20px_rgba(107,61,225,0.1)]">
                   {/* Outer Ring */}
                   <div className="absolute inset-0 rounded-full border border-white/10 bg-card-dark" />
 
@@ -581,7 +581,7 @@ export const NatalChartDetailPage: React.FC = () => {
                   </div>
 
                   {/* Inner Hub */}
-                  <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-deep-navy border border-white/10 flex flex-col items-center justify-center z-20">
+                  <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-gradient-to-br from-[#0B0D17] to-[#141627] border border-white/10 flex flex-col items-center justify-center z-20">
                     <span className="text-xs text-slate-500 font-bold tracking-widest uppercase">
                       {chartName.slice(0, 8)}
                     </span>
@@ -620,7 +620,7 @@ export const NatalChartDetailPage: React.FC = () => {
           </section>
 
           {/* RIGHT SIDEBAR: Insights & Aspects */}
-          <aside className="w-80 xl:w-96 border-l border-white/5 bg-deep-navy/50 flex flex-col h-full overflow-hidden shrink-0 hidden md:flex">
+          <aside className="w-80 xl:w-96 border-l border-white/5 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 flex flex-col h-full overflow-hidden shrink-0 hidden md:flex">
             <div className="p-5 border-b border-white/5">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">auto_awesome</span>

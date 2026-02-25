@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-background-dark font-display text-slate-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="bg-surface-dark border border-white/10 rounded-2xl p-8">
             <div className="text-center mb-6">
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background-dark font-display text-slate-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                   <span className="material-symbols-outlined text-slate-500">mail</span>
                 </div>
                 <input
-                  className="block w-full pl-11 pr-4 py-3 bg-background-dark/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   id="email"
                   type="email"
                   autoComplete="email"
