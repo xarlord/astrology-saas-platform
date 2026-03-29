@@ -141,14 +141,28 @@ export async function getAspectPatterns(req: AuthenticatedRequest, res: Response
   const houseArray = houses.houses || houses; // Handle both formats
 
   // Convert planets object to array format for interpretation service
-  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => ({
-    planet,
-    sign: data.sign,
-    longitude: data.longitude,
-    latitude: data.latitude,
-    speed: data.speed,
-    retrograde: data.speed < 0,
-  }));
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => {
+    const longitude = data.longitude ?? 0;
+    const absLon = Math.abs(longitude) % 360;
+    const totalDegrees = absLon;
+    const degrees = Math.floor(totalDegrees);
+    const minutesFloat = (totalDegrees - degrees) * 60;
+    const minutes = Math.floor(minutesFloat);
+    const seconds = Math.floor((minutesFloat - minutes) * 60);
+
+    return {
+      planet,
+      sign: data.sign,
+      degree: degrees,
+      minute: minutes,
+      second: seconds,
+      house: data.house ?? 1,
+      longitude,
+      latitude: data.latitude ?? 0,
+      speed: data.speed ?? 0,
+      retrograde: (data.speed ?? 0) < 0,
+    };
+  });
 
   const housesArray = houseArray.map((h: any, i: number) => ({
     house: i + 1,

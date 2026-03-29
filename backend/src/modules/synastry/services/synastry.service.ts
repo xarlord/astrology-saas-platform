@@ -148,13 +148,13 @@ export function calculateSynastryAspects(chart1: Chart, chart2: Chart): Synastry
   for (const p1 in planets1) {
     if (!planets1[p1 as Planet]) continue;
 
-    const planet1Pos = planets1[p1 as Planet]!;
+    const planet1Pos = planets1[p1 as Planet] as PlanetPosition;
     const degree1 = planet1Pos.degree + planet1Pos.minute / 60 + planet1Pos.second / 3600;
 
     for (const p2 in planets2) {
       if (!planets2[p2 as Planet]) continue;
 
-      const planet2Pos = planets2[p2 as Planet]!;
+      const planet2Pos = planets2[p2 as Planet] as PlanetPosition;
       const degree2 = planet2Pos.degree + planet2Pos.minute / 60 + planet2Pos.second / 3600;
 
       // Calculate angular distance
@@ -312,8 +312,8 @@ export function calculateCompositeChart(chart1: Chart, chart2: Chart): Composite
   for (const planet in planets1) {
     if (!planets1[planet as Planet] || !planets2[planet as Planet]) continue;
 
-    const p1 = planets1[planet as Planet]!;
-    const p2 = planets2[planet as Planet]!;
+    const p1 = planets1[planet as Planet] as PlanetPosition;
+    const p2 = planets2[planet as Planet] as PlanetPosition;
 
     // Convert to absolute zodiac positions
     const degree1 = signDegreeToAbsolute(p1.sign, p1.degree, p1.minute, p1.second);

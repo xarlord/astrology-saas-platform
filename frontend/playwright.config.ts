@@ -41,6 +41,24 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
+      timeout: 60000,
+    },
+
+    // Console audit (public routes) — runs first, Chromium only
+    {
+      name: 'console-audit',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /00-console-audit\.spec\.ts/,
+    },
+
+    // Console audit (authenticated routes) — uses pre-seeded auth state
+    {
+      name: 'console-audit-authenticated',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'e2e/.auth/user.json',
+      },
+      testMatch: /00-console-audit\.spec\.ts/,
     },
 
     // Authenticated project: uses pre-saved auth state for tests that require login
@@ -87,6 +105,9 @@ export default defineConfig({
       use: { ...devices['iPad Pro'] },
     },
   ],
+
+  // Timeout for setup tests (bcrypt hashing can be slow)
+  timeout: 30000,
 
   // Run your local dev server before starting the tests
   webServer: {

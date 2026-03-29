@@ -1,15 +1,20 @@
 /**
  * Lunar Return Service
  * Calculates lunar return charts and generates monthly forecasts
+ * Uses AstronomyEngineService for real planetary positions via astronomy-engine
  */
 
 import {
-  calculateJulianDay,
-  getZodiacSign,
-  normalizeDegree,
+  AstronomyEngineService,
+  ZODIAC_SIGNS as REAL_ZODIAC_SIGNS,
+} from '../../shared/services/astronomyEngine.service';
+import {
   calculateMoonPhase,
 } from '../../calendar/services/calendar.service';
 import { MoonPhase } from '../../calendar/models/calendar.model';
+
+// Module-level singleton for the real calculation engine
+const astronomyEngine = new AstronomyEngineService();
 
 export interface NatalChart {
   id: string;
@@ -82,7 +87,26 @@ export interface MonthlyRitual {
 }
 
 /**
+ * Normalize angle to 0-360
+ */
+function normalizeAngle(angle: number): number {
+  return ((angle % 360) + 360) % 360;
+}
+
+/**
+ * Convert natal moon position to absolute ecliptic longitude (0-360)
+ */
+function moonPositionToLongitude(moon: { sign: string; degree: number; minute: number; second: number }): number {
+  const signIndex = REAL_ZODIAC_SIGNS.findIndex(
+    s => s.toLowerCase() === moon.sign.toLowerCase()
+  );
+  const signBase = signIndex >= 0 ? signIndex * 30 : 0;
+  return signBase + moon.degree + moon.minute / 60 + moon.second / 3600;
+}
+
+/**
  * Calculate the next lunar return for a given natal moon position
+ * Uses AstronomyEngineService for accurate Moon position tracking
  */
 export function calculateNextLunarReturn(natalMoon: {
   sign: string;
@@ -90,31 +114,25 @@ export function calculateNextLunarReturn(natalMoon: {
   minute: number;
   second: number;
 }): Date {
-  // Synodic month: ~29.530588 days (average time between same moon phases)
-  // const synodicMonthDays = 29.530588; // Removed unused
-
-  // Calculate natal moon position in degrees (0-360)
-  const natalDegree = natalMoon.degree + natalMoon.minute / 60 + natalMoon.second / 3600;
-
-  // Use a simpler approach: estimate days until next lunar return
-  // This is a simplified calculation - for production, use Swiss Ephemeris
+  const natalDegree = moonPositionToLongitude(natalMoon);
   const today = new Date();
-  const currentJD = calculateJulianDay(today);
 
-  // Moon's mean motion: ~13.176 degrees per day
-  const moonDailyMotion = 13.1763966;
+  // Get current Moon position from the real engine
+  const positions = astronomyEngine.calculatePlanetaryPositions(today, 0, 0);
+  const moonPos = positions.get('Moon');
+  if (!moonPos) {
+    // Fallback to simplified calculation if engine fails
+    return calculateNextLunarReturnFallback(natalMoon);
+  }
 
-  // Calculate approximate moon position today (simplified)
-  // Using J2000 epoch + days elapsed * daily motion
-  const daysSinceJ2000 = currentJD - 2451545.0;
-  let currentMoonDegree = (90.0 + moonDailyMotion * daysSinceJ2000) % 360;
-  if (currentMoonDegree < 0) currentMoonDegree += 360;
+  const currentMoonDegree = moonPos.longitude;
 
-  // Calculate degrees to next lunar return
+  // Calculate degrees until next lunar return
   let degreesToReturn = (natalDegree - currentMoonDegree) % 360;
   if (degreesToReturn < 0) degreesToReturn += 360;
 
-  // Convert degrees to days
+  // Moon's mean daily motion: ~13.176 degrees/day
+  const moonDailyMotion = 13.1763966;
   const daysToReturn = degreesToReturn / moonDailyMotion;
 
   const returnDate = new Date(today.getTime() + daysToReturn * 24 * 60 * 60 * 1000);
@@ -123,37 +141,107 @@ export function calculateNextLunarReturn(natalMoon: {
 }
 
 /**
- * Calculate lunar return chart
+ * Fallback: simplified calculation when engine is unavailable
+ */
+function calculateNextLunarReturnFallback(natalMoon: {
+  sign: string;
+  degree: number;
+  minute: number;
+  second: number;
+}): Date {
+  const natalDegree = natalMoon.degree + natalMoon.minute / 60 + natalMoon.second / 3600;
+  const today = new Date();
+  const currentJD = calculateJulianDaySimple(today);
+  const moonDailyMotion = 13.1763966;
+  const daysSinceJ2000 = currentJD - 2451545.0;
+  let currentMoonDegree = (90.0 + moonDailyMotion * daysSinceJ2000) % 360;
+  if (currentMoonDegree < 0) currentMoonDegree += 360;
+  let degreesToReturn = (natalDegree - currentMoonDegree) % 360;
+  if (degreesToReturn < 0) degreesToReturn += 360;
+  const daysToReturn = degreesToReturn / moonDailyMotion;
+  return new Date(today.getTime() + daysToReturn * 24 * 60 * 60 * 1000);
+}
+
+/**
+ * Simple Julian Day calculation (Meeus algorithm)
+ */
+function calculateJulianDaySimple(date: Date): number {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
+  const hour = date.getUTCHours();
+  const minute = date.getUTCMinutes();
+  const second = date.getUTCSeconds();
+
+  let y = year;
+  let m = month;
+  if (m <= 2) {
+    y -= 1;
+    m += 12;
+  }
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  const JD_day = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5;
+  const JD_fraction = (hour + minute / 60 + second / 3600) / 24;
+  return JD_day + JD_fraction;
+}
+
+/**
+ * Calculate lunar return chart using real planetary positions
  */
 export function calculateLunarReturnChart(
   natalChart: NatalChart,
   returnDate: Date
 ): LunarReturnChart {
-  // Get moon position at return time
-  const moonPhase = calculateMoonPhase(returnDate);
+  // Get Moon phase from calendar service (reference-based, accurate)
+  const moonPhaseResult = calculateMoonPhase(returnDate);
 
-  // Calculate moon's position (simplified - in production, use Swiss Ephemeris)
-  const returnJD = calculateJulianDay(returnDate);
-  const daysSinceEpoch = returnJD - 2415020; // J2000.0 epoch
+  // Get Moon's real position at the return time via AstronomyEngineService
+  const positions = astronomyEngine.calculatePlanetaryPositions(
+    returnDate,
+    0, // latitude not needed for ecliptic positions
+    0  // longitude not needed for ecliptic positions
+  );
 
-  // Moon's mean longitude (simplified formula)
-  const moonLongitude = (13.1763966 * daysSinceEpoch + 90.0) % 360;
-  const normalizedDegree = normalizeDegree(moonLongitude);
-  const sign = getZodiacSign(normalizedDegree);
+  const moonPos = positions.get('Moon');
+  let sign: string;
+  let degree: number;
+  let minute: number;
+  let second: number;
 
-  const degree = normalizedDegree % 30;
-  const minute = (degree % 1) * 60;
-  const second = ((degree * 60) % 1) * 60;
+  if (moonPos) {
+    // Use real engine data
+    sign = moonPos.sign.toLowerCase();
+    degree = moonPos.degree;
+    minute = moonPos.minute;
+    second = moonPos.second;
+  } else {
+    // Fallback to simplified calculation
+    const returnJD = calculateJulianDaySimple(returnDate);
+    const daysSinceEpoch = returnJD - 2415020;
+    const moonLongitude = normalizeAngle(13.1763966 * daysSinceEpoch + 90.0);
+    const signIndex = Math.floor(moonLongitude / 30) % 12;
+    sign = REAL_ZODIAC_SIGNS[signIndex].toLowerCase();
+    const posInSign = moonLongitude % 30;
+    degree = Math.floor(posInSign);
+    minute = Math.floor((posInSign - degree) * 60);
+    second = Math.floor(((posInSign - degree) * 60 - minute) * 60);
+  }
 
-  // Calculate house placement (simplified - equal house system)
-  const housePlacement = Math.floor(normalizedDegree / 30) + 1;
+  // Calculate house placement using natal moon longitude
+  const moonLongitude = moonPos ? moonPos.longitude : moonPositionToLongitude({ sign, degree, minute, second });
+  const housePlacement = Math.floor(normalizeAngle(moonLongitude) / 30) + 1;
 
-  // Generate aspects (simplified)
-  const aspects: LunarAspect[] = generateMoonAspects(normalizedDegree, natalChart.moon);
+  // Generate aspects using real planetary positions if available
+  const aspects: LunarAspect[] = generateMoonAspects(
+    moonPos ? moonPos.longitude : moonPositionToLongitude({ sign, degree, minute, second }),
+    natalChart.moon,
+    positions
+  );
 
   // Determine theme and intensity
-  const theme = getLunarReturnTheme(housePlacement, moonPhase.phase);
-  const intensity = calculateLunarIntensity(housePlacement, moonPhase.phase, aspects);
+  const theme = getLunarReturnTheme(housePlacement, moonPhaseResult.phase);
+  const intensity = calculateLunarIntensity(housePlacement, moonPhaseResult.phase, aspects);
 
   return {
     returnDate,
@@ -163,7 +251,7 @@ export function calculateLunarReturnChart(
       minute,
       second,
     },
-    moonPhase: moonPhase.phase,
+    moonPhase: moonPhaseResult.phase,
     housePlacement,
     aspects,
     theme,
@@ -173,24 +261,17 @@ export function calculateLunarReturnChart(
 
 /**
  * Generate aspects between transiting moon and natal planets
+ * Now uses real planetary positions when available
  */
 function generateMoonAspects(
   transitingMoonDegree: number,
-  _natalMoon: { degree: number; minute: number }
+  _natalMoon: { degree: number; minute: number },
+  realPositions?: Map<string, { name: string; longitude: number; sign: string }>
 ): LunarAspect[] {
   const aspects: LunarAspect[] = [];
-  // const natalMoonDegree = natalMoon.degree + natalMoon.minute / 60; // TODO: use this to calculate aspects to natal moon
 
-  // Check aspects with major planets (simplified - in production, use actual natal chart)
-  const natalPlanets = [
-    { name: 'Sun', degree: 120 }, // Example: 120°
-    { name: 'Mercury', degree: 125 },
-    { name: 'Venus', degree: 130 },
-    { name: 'Mars', degree: 90 },
-    { name: 'Jupiter', degree: 200 },
-  ];
-
-  const aspectOrbs = {
+  // Aspect orbs
+  const aspectOrbs: Record<string, number> = {
     conjunction: 10,
     opposition: 8,
     trine: 8,
@@ -198,17 +279,51 @@ function generateMoonAspects(
     sextile: 6,
   };
 
+  // Aspect angles
+  const aspectAngles: Record<string, number> = {
+    conjunction: 0,
+    opposition: 180,
+    trine: 120,
+    square: 90,
+    sextile: 60,
+  };
+
+  // Use real natal planet positions if available, otherwise fallback to simplified
+  const natalPlanets: { name: string; degree: number }[] = [];
+
+  if (realPositions) {
+    // Extract real planetary positions (excluding Moon which is the return planet)
+    for (const [name, pos] of realPositions) {
+      if (name !== 'Moon') {
+        natalPlanets.push({ name, degree: pos.longitude });
+      }
+    }
+  }
+
+  // If no real positions available, use fallback
+  if (natalPlanets.length === 0) {
+    natalPlanets.push(
+      { name: 'Sun', degree: 120 },
+      { name: 'Mercury', degree: 125 },
+      { name: 'Venus', degree: 130 },
+      { name: 'Mars', degree: 90 },
+      { name: 'Jupiter', degree: 200 },
+    );
+  }
+
   for (const planet of natalPlanets) {
     const angularDistance = Math.abs(transitingMoonDegree - planet.degree);
     const normalizedDistance = angularDistance > 180 ? 360 - angularDistance : angularDistance;
 
-    // Check if within orb for any aspect
     for (const [type, orb] of Object.entries(aspectOrbs)) {
-      if (normalizedDistance <= orb) {
+      const targetAngle = aspectAngles[type];
+      const deviation = Math.abs(normalizedDistance - targetAngle);
+
+      if (deviation <= orb) {
         aspects.push({
           planets: ['Moon', planet.name] as [string, string],
           type: type as LunarAspect['type'],
-          orb: Math.round(normalizedDistance * 100) / 100,
+          orb: Math.round(deviation * 100) / 100,
           applying: true, // Simplified
           interpretation: getMoonAspectInterpretation(type, planet.name),
         });
@@ -224,7 +339,7 @@ function generateMoonAspects(
  * Get lunar return theme based on house placement and moon phase
  */
 function getLunarReturnTheme(house: number, moonPhase: MoonPhase): string {
-  const houseThemes = {
+  const houseThemes: Record<number, string> = {
     1: 'Self-Discovery and New Beginnings',
     2: 'Values, Finances, and Possessions',
     3: 'Communication, Learning, and Local Community',
@@ -351,7 +466,6 @@ function generateKeyDates(returnDate: Date, chart: LunarReturnChart): KeyDate[] 
   });
 
   // Find new moon and full moon in the lunar month
-  // const lunarMonth = 29.53; // days - removed unused
   const newMoonDate = new Date(returnDate.getTime() + 29.53 * 0 * 24 * 60 * 60 * 1000);
 
   dates.push({

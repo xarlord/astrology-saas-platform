@@ -155,14 +155,21 @@ router.get(
         return;
       }
 
-      const result = data.result!;
+      const result = data.result;
+      if (!result) {
+        res.status(404).json({ error: 'Place details not found' });
+        return;
+      }
       const addressComponents = result.address_components || [];
 
       // Extract country and admin area from address components
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const country = addressComponents.find((c: any) => c.types.includes('country'));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const adminArea = addressComponents.find((c: any) =>
         c.types.includes('administrative_area_level_1')
       );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const locality = addressComponents.find((c: any) =>
         c.types.includes('locality')
       );
@@ -191,6 +198,7 @@ router.get(
 /**
  * Fallback: Nominatim (OpenStreetMap) autocomplete
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchNominatim(query: string): Promise<any[]> {
   try {
     const url = new URL('https://nominatim.openstreetmap.org/search');
@@ -209,8 +217,10 @@ async function fetchNominatim(query: string): Promise<any[]> {
       },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const results = (await response.json()) as any[];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return results.map((item: any, index: number) => ({
       placeId: `nominatim_${index}_${Date.now()}`,
       description: item.display_name,

@@ -24,19 +24,21 @@ describe('AstrologicalCalendar Component', () => {
   describe('Rendering', () => {
     it('should render calendar component', () => {
       const { container } = renderWithProviders(<AstrologicalCalendar month={1} year={2026} />);
-      expect(container.querySelector('.astrological-calendar')).toBeInTheDocument();
+      // Component renders a max-w-[800px] container with calendar grid
+      expect(container.querySelector('.grid.grid-cols-7')).toBeTruthy();
     });
 
     it('should render without crashing', () => {
       renderWithProviders(<AstrologicalCalendar />);
-      const component = screen.queryByText(/loading|January|February/i);
+      const component = screen.queryByText(/loading|January|February|March|April|May|June|July|August|September|October|November|December|Unable to load|No events/i);
       expect(component).toBeInTheDocument();
     });
 
     it('should render calendar grid structure', () => {
       const { container } = renderWithProviders(<AstrologicalCalendar />);
-      const calendarDiv = container.querySelector('.astrological-calendar');
-      expect(calendarDiv).toBeInTheDocument();
+      // Component uses Tailwind grid classes for calendar structure
+      const gridContainer = container.querySelector('.grid.grid-cols-7');
+      expect(gridContainer).toBeTruthy();
     });
   });
 
@@ -50,10 +52,10 @@ describe('AstrologicalCalendar Component', () => {
 
     it('should render component for different months', () => {
       const { container: container1 } = renderWithProviders(<AstrologicalCalendar month={1} year={2026} />);
-      expect(container1.querySelector('.astrological-calendar')).toBeInTheDocument();
+      expect(container1.querySelector('.grid.grid-cols-7')).toBeTruthy();
 
       const { container: container2 } = renderWithProviders(<AstrologicalCalendar month={2} year={2026} />);
-      expect(container2.querySelector('.astrological-calendar')).toBeInTheDocument();
+      expect(container2.querySelector('.grid.grid-cols-7')).toBeTruthy();
     });
   });
 

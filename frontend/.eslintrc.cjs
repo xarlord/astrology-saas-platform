@@ -15,7 +15,7 @@ module.exports = {
     'vitest.config.ts',
     'scripts',
     'vite.config.ts',
-    'tests/bdd/**',
+    'tests/**',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

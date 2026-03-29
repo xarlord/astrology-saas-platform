@@ -105,10 +105,9 @@ export function BirthDataForm({
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = await response.json();
+      const data: { display_name: string }[] = await response.json();
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      const suggestions = data.map((item: { display_name: string }) => item.display_name);
+      const suggestions = data.map((item) => item.display_name);
       setPlaceSuggestions(suggestions);
       setShowPlaceSearch(true);
     } catch (error) {
@@ -123,15 +122,13 @@ export function BirthDataForm({
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = await response.json();
+      const data: { lat: string; lon: string }[] = await response.json();
 
       if (data?.[0]) {
         setFormData((prev) => ({
           ...prev,
           birthPlace: placeName,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
           latitude: parseFloat(data[0].lat),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
           longitude: parseFloat(data[0].lon),
         }));
         setShowPlaceSearch(false);
@@ -375,7 +372,7 @@ export function BirthDataForm({
                   <button
                     key={index}
                     type="button"
-                    onClick={() => getPlaceCoordinates(place)}
+                    onClick={() => void getPlaceCoordinates(place)}
                     className="w-full text-left px-3 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     {place}

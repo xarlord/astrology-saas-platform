@@ -1,9 +1,12 @@
 /**
  * Solar Return Calculation Service
- * Calculates solar return charts using Swiss Ephemeris
+ * Calculates solar return charts using AstronomyEngineService (real astronomy-engine)
  */
 
-import { swisseph } from 'swisseph';
+import {
+  AstronomyEngineService,
+} from '../../shared/services/astronomyEngine.service';
+import { NatalChartService } from '../../shared/services/natalChart.service';
 import {
   SolarReturnCalculationParams,
   SolarReturnChartData,
@@ -11,7 +14,10 @@ import {
   HouseCusp,
   Aspect,
 } from '../models/types';
-// import solarReturnModel from '../models/solarReturn.model';
+
+// Module-level singletons for the real calculation engines
+const astronomyEngine = new AstronomyEngineService();
+const natalChartService = new NatalChartService();
 
 export class SolarReturnService {
   /**
@@ -26,14 +32,14 @@ export class SolarReturnService {
     // Get natal chart data (would fetch from database in real implementation)
     const natalChart = await this.getNatalChart(natalChartId);
 
-    // Find the exact solar return time
+    // Find the exact solar return time using real engine
     const returnDate = await this.findSolarReturnDate(
       natalChart.sunDegree,
       year,
       location || natalChart.birthLocation
     );
 
-    // Calculate the solar return chart
+    // Calculate the solar return chart using real engine
     const chartData = await this.calculateSolarReturnChart(
       returnDate,
       location || natalChart.birthLocation,
@@ -48,27 +54,25 @@ export class SolarReturnService {
 
   /**
    * Find the exact date/time when Sun returns to natal position
+   * Uses AstronomyEngineService for accurate Sun positions
    */
   private async findSolarReturnDate(
     natalSunDegree: number,
     year: number,
     _location: { latitude: number; longitude: number; timezone: string }
   ): Promise<Date> {
-    // Initialize Swiss Ephemeris
-    swisseph.swe_set_ephe_path('');
-
-    // Search around the birthday (±3 days)
+    // Binary search for exact return time using real Sun positions
     const birthday = new Date(year, 0, 1); // Start from beginning of year
     const searchStart = new Date(birthday.getTime());
     searchStart.setMonth(searchStart.getMonth() + natalSunDegree / 30);
 
-    // Binary search for exact return time
+    // Search around the expected birthday date (±3 days)
     let low = new Date(searchStart.getTime() - 3 * 24 * 60 * 60 * 1000);
     let high = new Date(searchStart.getTime() + 3 * 24 * 60 * 60 * 1000);
 
     for (let i = 0; i < 20; i++) {
       const mid = new Date((low.getTime() + high.getTime()) / 2);
-      const sunPos = await this.calculateSunPosition(mid, _location);
+      const sunPos = this.getSunLongitude(mid);
 
       if (Math.abs(sunPos - natalSunDegree) < 0.0001) {
         return mid;
@@ -85,122 +89,88 @@ export class SolarReturnService {
   }
 
   /**
-   * Calculate Sun position at a given time
+   * Calculate Sun's ecliptic longitude at a given time
+   * Uses AstronomyEngineService for real positions
    */
-  private async calculateSunPosition(
-    date: Date,
-    _location: { latitude: number; longitude: number }
-  ): Promise<number> {
-    const julianDay = this.dateToJulianDay(date);
-    const flags = swisseph.SEFLG_SWIEPH | swisseph.SEFLG_SIDEREAL;
-
-    const result = swisseph.swe_calc_ut(
-      julianDay,
-      swisseph.SE_SUN,
-      flags
-    ) as [number, number, number, number];
-
-    const xx = result[0]; // longitude
-    const error = result[1]; // error code
-
-    if (error !== 0) {
-      throw new Error(`Failed to calculate Sun position: ${error}`);
+  private getSunLongitude(date: Date): number {
+    const positions = astronomyEngine.calculatePlanetaryPositions(date, 0, 0);
+    const sunPos = positions.get('Sun');
+    if (!sunPos) {
+      throw new Error('Failed to calculate Sun position');
     }
-
-    return xx; // Longitude in degrees
+    return sunPos.longitude;
   }
 
   /**
-   * Calculate complete solar return chart
+   * Calculate complete solar return chart using real engine
    */
   private async calculateSolarReturnChart(
     date: Date,
     location: { latitude: number; longitude: number; timezone: string },
     houseSystem: string
   ): Promise<SolarReturnChartData> {
-    const julianDay = this.dateToJulianDay(date);
-    const flags = swisseph.SEFLG_SWIEPH;
-
-    // Calculate planetary positions
-    const planets: PlanetaryPosition[] = [];
-    const planetIds = [
-      swisseph.SE_SUN,
-      swisseph.SE_MOON,
-      swisseph.SE_MERCURY,
-      swisseph.SE_VENUS,
-      swisseph.SE_MARS,
-      swisseph.SE_JUPITER,
-      swisseph.SE_SATURN,
-      swisseph.SE_URANUS,
-      swisseph.SE_NEPTUNE,
-      swisseph.SE_PLUTO,
-    ];
-
-    for (const planetId of planetIds) {
-      const result = swisseph.swe_calc_ut(julianDay, planetId, flags) as [number, number, number, number];
-
-      const error = result[1]; // error code
-
-      if (error === 0) {
-        const longitude = result[0];
-        const sign = this.degreeToSign(longitude);
-        const degree = longitude % 30;
-
-        planets.push({
-          planet: this.getPlanetName(planetId),
-          sign,
-          degree: Math.floor(degree),
-          minute: Math.floor((degree % 1) * 60),
-          second: Math.floor(((degree % 1) * 60 % 1) * 60),
-          house: 0, // Will be calculated after houses
-          retrograde: result[3] < 0, // Speed < 0 means retrograde
-        });
-      }
-    }
-
-    // Calculate houses
-    const houseSystemId = this.getHouseSystemId(houseSystem);
-    const housesResult = swisseph.swe_houses(
-      julianDay,
-      location.latitude,
-      location.longitude,
-      houseSystemId
-    ) as [number[], number, number];
-
-    const houses: HouseCusp[] = housesResult[0].map((cusp, index) => ({
-      house: index + 1,
-      sign: this.degreeToSign(cusp),
-      degree: Math.floor(cusp % 30),
-      minute: Math.floor((cusp % 30 % 1) * 60),
-      second: Math.floor(((cusp % 30 % 1) * 60 % 1) * 60),
-    }));
-
-    // Assign planets to houses
-    planets.forEach(planet => {
-      const planetDegree = this.signToDegree(planet.sign, planet.degree);
-      planet.house = this.getHouseForPlanet(planetDegree, houses);
+    // Use NatalChartService for a complete chart calculation at the return time
+    const houseSystemEnum = this.mapHouseSystem(houseSystem);
+    const natalChart = natalChartService.calculateNatalChart({
+      birthDate: date,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      timezone: location.timezone,
+      houseSystem: houseSystemEnum,
     });
 
-    // Calculate aspects
-    const aspects = this.calculateAspects(planets);
+    // Extract planets from the Map into the expected array format
+    const planets: PlanetaryPosition[] = [];
+    for (const [name, pos] of natalChart.planets) {
+      planets.push({
+        planet: name.toLowerCase(),
+        sign: pos.sign.toLowerCase(),
+        degree: pos.degree,
+        minute: pos.minute,
+        second: pos.second,
+        house: pos.house ?? 0,
+        retrograde: pos.isRetrograde,
+      });
+    }
 
-    // Calculate Ascendant and MC
+    // Extract houses from NatalChartService output
+    const houses: HouseCusp[] = natalChart.houses.cusps.map((cusp) => ({
+      house: cusp.number,
+      sign: cusp.sign.toLowerCase(),
+      degree: cusp.degree,
+      minute: Math.floor((cusp.longitude % 30 - Math.floor(cusp.longitude % 30)) * 60),
+      second: Math.floor(((cusp.longitude % 30 - Math.floor(cusp.longitude % 30)) * 60 - Math.floor((cusp.longitude % 30 - Math.floor(cusp.longitude % 30)) * 60)) * 60),
+    }));
+
+    // Extract aspects from NatalChartService
+    const aspects: Aspect[] = natalChart.aspects.map((a) => ({
+      planet1: a.planet1.toLowerCase(),
+      planet2: a.planet2.toLowerCase(),
+      type: a.type,
+      orb: a.orb,
+      applying: a.applying ?? true,
+    }));
+
+    // Ascendant and MC from houses
+    const ascendantCusp = natalChart.houses.cusps[0];
+    const mcCusp = natalChart.houses.cusps[9];
+
     const ascendant = {
-      sign: this.degreeToSign(housesResult[0][0]),
-      degree: Math.floor(housesResult[0][0] % 30),
-      minute: Math.floor((housesResult[0][0] % 30 % 1) * 60),
-      second: Math.floor(((housesResult[0][0] % 30 % 1) * 60 % 1) * 60),
+      sign: ascendantCusp.sign.toLowerCase(),
+      degree: ascendantCusp.degree,
+      minute: Math.floor((ascendantCusp.longitude % 30 - ascendantCusp.degree) * 60),
+      second: Math.floor(((ascendantCusp.longitude % 30 - ascendantCusp.degree) * 60 - Math.floor((ascendantCusp.longitude % 30 - ascendantCusp.degree) * 60)) * 60),
     };
 
     const mc = {
-      sign: this.degreeToSign(housesResult[0][9]),
-      degree: Math.floor(housesResult[0][9] % 30),
-      minute: Math.floor((housesResult[0][9] % 30 % 1) * 60),
-      second: Math.floor(((housesResult[0][9] % 30 % 1) * 60 % 1) * 60),
+      sign: mcCusp.sign.toLowerCase(),
+      degree: mcCusp.degree,
+      minute: Math.floor((mcCusp.longitude % 30 - mcCusp.degree) * 60),
+      second: Math.floor(((mcCusp.longitude % 30 - mcCusp.degree) * 60 - Math.floor((mcCusp.longitude % 30 - mcCusp.degree) * 60)) * 60),
     };
 
-    // Calculate moon phase
-    const moonPhase = this.calculateMoonPhase(julianDay);
+    // Calculate moon phase using the real Sun and Moon positions
+    const moonPhase = this.calculateMoonPhase(natalChart.planets);
 
     return {
       planets,
@@ -213,63 +183,20 @@ export class SolarReturnService {
   }
 
   /**
-   * Calculate aspects between planets
+   * Calculate moon phase from real planetary positions
    */
-  private calculateAspects(planets: PlanetaryPosition[]): Aspect[] {
-    const aspects: Aspect[] = [];
-    const aspectTypes = [
-      { type: 'conjunction', angle: 0, orb: 10 },
-      { type: 'opposition', angle: 180, orb: 8 },
-      { type: 'trine', angle: 120, orb: 8 },
-      { type: 'square', angle: 90, orb: 8 },
-      { type: 'sextile', angle: 60, orb: 6 },
-    ];
+  private calculateMoonPhase(
+    planets: Map<string, { longitude: number }>
+  ): { phase: string; illumination: number } {
+    const sunPos = planets.get('Sun');
+    const moonPos = planets.get('Moon');
 
-    for (let i = 0; i < planets.length; i++) {
-      for (let j = i + 1; j < planets.length; j++) {
-        const planet1 = planets[i];
-        const planet2 = planets[j];
-
-        // Calculate angular distance
-        const pos1 = this.signToDegree(planet1.sign, planet1.degree);
-        const pos2 = this.signToDegree(planet2.sign, planet2.degree);
-        let distance = Math.abs(pos1 - pos2);
-
-        if (distance > 180) {
-          distance = 360 - distance;
-        }
-
-        // Check for aspects
-        for (const aspectType of aspectTypes) {
-          if (Math.abs(distance - aspectType.angle) <= aspectType.orb) {
-            aspects.push({
-              planet1: planet1.planet,
-              planet2: planet2.planet,
-              type: aspectType.type,
-              orb: Math.abs(distance - aspectType.angle),
-              applying: this.isApplying(pos1, pos2, aspectType.angle),
-            });
-            break;
-          }
-        }
-      }
+    if (!sunPos || !moonPos) {
+      return { phase: 'unknown', illumination: 0 };
     }
 
-    return aspects;
-  }
-
-  /**
-   * Calculate moon phase
-   */
-  private calculateMoonPhase(julianDay: number): {
-    phase: string;
-    illumination: number;
-  } {
-    const sunResult = swisseph.swe_calc_ut(julianDay, swisseph.SE_SUN, swisseph.SEFLG_SWIEPH) as [number, number, number, number];
-    const moonResult = swisseph.swe_calc_ut(julianDay, swisseph.SE_MOON, swisseph.SEFLG_SWIEPH) as [number, number, number, number];
-
-    const sunLongitude = sunResult[0];
-    const moonLongitude = moonResult[0];
+    const sunLongitude = sunPos.longitude;
+    const moonLongitude = moonPos.longitude;
 
     let phaseAngle = moonLongitude - sunLongitude;
     if (phaseAngle < 0) phaseAngle += 360;
@@ -357,106 +284,31 @@ export class SolarReturnService {
   }
 
   /**
-   * Helper: Convert date to Julian Day
+   * Map house system name from request to NatalChartService enum format
    */
-  private dateToJulianDay(date: Date): number {
-    return swisseph.swe_julday(
-      date.getFullYear(),
-      date.getMonth() + 1,
-      date.getDate(),
-      date.getHours() + date.getMinutes() / 60
-    );
-  }
-
-  /**
-   * Helper: Degree to sign
-   */
-  private degreeToSign(degree: number): string {
-    const signs = [
-      'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-      'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
-    ];
-    const signIndex = Math.floor(degree / 30) % 12;
-    return signs[signIndex];
-  }
-
-  /**
-   * Helper: Sign and degree to absolute degree
-   */
-  private signToDegree(sign: string, degree: number): number {
-    const signs = [
-      'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-      'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
-    ];
-    const signIndex = signs.indexOf(sign);
-    return signIndex * 30 + degree;
-  }
-
-  /**
-   * Helper: Get planet name from Swiss Ephemeris ID
-   */
-  private getPlanetName(planetId: number): string {
-    const names: Record<number, string> = {
-      [swisseph.SE_SUN]: 'sun',
-      [swisseph.SE_MOON]: 'moon',
-      [swisseph.SE_MERCURY]: 'mercury',
-      [swisseph.SE_VENUS]: 'venus',
-      [swisseph.SE_MARS]: 'mars',
-      [swisseph.SE_JUPITER]: 'jupiter',
-      [swisseph.SE_SATURN]: 'saturn',
-      [swisseph.SE_URANUS]: 'uranus',
-      [swisseph.SE_NEPTUNE]: 'neptune',
-      [swisseph.SE_PLUTO]: 'pluto',
+  private mapHouseSystem(system: string): 'Placidus' | 'Koch' | 'Equal' | 'WholeSign' {
+    const map: Record<string, 'Placidus' | 'Koch' | 'Equal' | 'WholeSign'> = {
+      placidus: 'Placidus',
+      koch: 'Koch',
+      porphyry: 'Placidus', // fallback
+      equal: 'Equal',
+      equal_house: 'Equal',
+      whole: 'WholeSign',
+      whole_sign: 'WholeSign',
+      campanus: 'Placidus', // fallback
+      regiomontanus: 'Placidus', // fallback
     };
-    return names[planetId] || 'unknown';
-  }
-
-  /**
-   * Helper: Get house system ID from name
-   */
-  private getHouseSystemId(system: string): string {
-    const systems: Record<string, string> = {
-      'placidus': 'P',
-      'koch': 'K',
-      'porphyry': 'O',
-      'equal': 'A',
-      'whole': 'W',
-      'campanus': 'C',
-      'regiomontanus': 'R',
-    };
-    return systems[system] || 'P';
-  }
-
-  /**
-   * Helper: Get house for a planet
-   */
-  private getHouseForPlanet(planetDegree: number, houses: HouseCusp[]): number {
-    for (let i = 0; i < houses.length - 1; i++) {
-      const houseStart = this.signToDegree(houses[i].sign, houses[i].degree);
-      const houseEnd = this.signToDegree(houses[(i + 1) % 12].sign, houses[(i + 1) % 12].degree);
-
-      if (planetDegree >= houseStart && planetDegree < houseEnd) {
-        return i + 1;
-      }
-    }
-    return 12;
-  }
-
-  /**
-   * Helper: Check if aspect is applying
-   */
-  private isApplying(pos1: number, pos2: number, aspectAngle: number): boolean {
-    const distance = Math.abs(pos1 - pos2);
-    return distance < aspectAngle;
+    return map[system.toLowerCase()] ?? 'Placidus';
   }
 
   /**
    * Get natal chart (placeholder - would fetch from database)
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async getNatalChart(_chartId: string): Promise<any> {
     // This would fetch from the database in real implementation
     return {
-      sunDegree: 280.5, // Example: Capricorn 10°30'
+      sunDegree: 280.5, // Example: Capricorn 10d30'
       birthLocation: {
         latitude: 40.7128,
         longitude: -74.0060,
