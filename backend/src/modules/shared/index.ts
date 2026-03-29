@@ -4,7 +4,24 @@
  */
 
 // Legacy calculation service (mock-based, used during migration)
-export * from './services/swissEphemeris.service';
+// NOTE: ZODIAC_SIGNS, PLANET_SYMBOLS, and ZodiacSign are also exported by
+// astronomyEngine.service.ts but with different values (Title Case vs lowercase keys).
+// We re-export from swissEphemeris (the legacy mock version) for backward compatibility.
+// The astronomyEngine versions use Title Case and additional bodies (Chiron, North/South Node).
+export type { ZodiacSign, AspectType } from './services/swissEphemeris.service';
+export {
+  ZODIAC_SIGNS,
+  PLANET_SYMBOLS,
+  ASPECT_TYPES,
+  calculateNatalChart,
+  calculateTransits,
+  calculateCompatibility,
+  calculateLunarReturn,
+  calculateCompositeChart,
+  juldayToDate,
+  calculateAspects,
+  swissEphemeris,
+} from './services/swissEphemeris.service';
 
 // Real calculation engine
 export { AstronomyEngineService } from './services/astronomyEngine.service';
