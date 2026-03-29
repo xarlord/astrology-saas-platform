@@ -130,27 +130,27 @@ describe('ChartWheel Accessibility', () => {
 
       // Should have planetary positions
       expect(screen.getByText(/Planetary Positions/i)).toBeInTheDocument();
-      expect(screen.getByText(/Sun in aries/i)).toBeInTheDocument();
-      expect(screen.getByText(/Moon in taurus/i)).toBeInTheDocument();
-      expect(screen.getByText(/Mercury in aries/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Sun in aries/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/Moon in taurus/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/Mercury in aries/i).length).toBeGreaterThanOrEqual(1);
 
       // Should include retrograde status
-      expect(screen.getByText(/retrograde/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/retrograde/i).length).toBeGreaterThanOrEqual(1);
     });
 
     it('should list all aspects in text format', () => {
       render(<ChartWheel data={mockChartData} />);
 
-      expect(screen.getByText(/Aspects/i)).toBeInTheDocument();
-      expect(screen.getByText(/Sun.*trine.*Moon/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Aspects/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/Sun.*trine.*Moon/i).length).toBeGreaterThanOrEqual(1);
     });
 
     it('should list all house cusps in text format', () => {
       render(<ChartWheel data={mockChartData} />);
 
       expect(screen.getByText(/House Cusps/i)).toBeInTheDocument();
-      expect(screen.getByText(/House 1.*aries/i)).toBeInTheDocument();
-      expect(screen.getByText(/House 2.*taurus/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/House 1.*aries/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/House 2.*taurus/i).length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -164,7 +164,7 @@ describe('ChartWheel Accessibility', () => {
 
     it('should include planet name, sign, degree, and house in aria-label', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
-      const sun = container.querySelector('g[aria-label*="Sun"]');
+      const sun = container.querySelector('g[aria-label^="Sun in"]');
 
       expect(sun?.getAttribute('aria-label')).toContain('Sun');
       expect(sun?.getAttribute('aria-label')).toContain('aries');
@@ -182,20 +182,20 @@ describe('ChartWheel Accessibility', () => {
     it('should be keyboard accessible when interactive', () => {
       const onPlanetClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />
+        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />,
       );
-      const planet = container.querySelector('g[aria-label*="Sun"]');
+      const planet = container.querySelector('g[aria-label^="Sun in"]');
 
-      expect(planet).toHaveAttribute('tabIndex', '0');
+      expect(planet).toHaveAttribute('tabindex', '0');
       expect(planet).toHaveAttribute('role', 'img');
     });
 
     it('should handle Enter and Space keys for planet interaction', () => {
       const onPlanetClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />
+        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />,
       );
-      const planet = container.querySelector('g[aria-label*="Sun"]') as Element;
+      const planet = container.querySelector('g[aria-label^="Sun in"]')!;
 
       // Simulate Enter key
       const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
@@ -232,11 +232,11 @@ describe('ChartWheel Accessibility', () => {
     it('should be keyboard accessible when interactive', () => {
       const onAspectClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} interactive onAspectClick={onAspectClick} />
+        <ChartWheel data={mockChartData} interactive onAspectClick={onAspectClick} />,
       );
       const aspect = container.querySelector('g[aria-label*="trine"]');
 
-      expect(aspect).toHaveAttribute('tabIndex', '0');
+      expect(aspect).toHaveAttribute('tabindex', '0');
       expect(aspect).toHaveAttribute('role', 'img');
     });
   });
@@ -298,7 +298,7 @@ describe('ChartWheel Accessibility', () => {
       expect(svg).toHaveAttribute('role', 'img');
 
       // Interactive elements have labels
-      const interactiveElements = container.querySelectorAll('g[tabIndex="0"]');
+      const interactiveElements = container.querySelectorAll('g[tabindex="0"]');
       interactiveElements.forEach((el) => {
         expect(el).toHaveAttribute('aria-label');
       });
@@ -314,11 +314,11 @@ describe('ChartWheel Accessibility', () => {
           interactive
           onPlanetClick={onPlanetClick}
           onAspectClick={onAspectClick}
-        />
+        />,
       );
 
       // All interactive elements should be focusable
-      const focusableElements = container.querySelectorAll('[tabIndex="0"]');
+      const focusableElements = container.querySelectorAll('[tabindex="0"]');
       expect(focusableElements.length).toBeGreaterThan(0);
     });
   });
@@ -341,15 +341,15 @@ describe('Screen Reader Testing', () => {
   it('should announce planet positions clearly', () => {
     render(<ChartWheel data={mockChartData} />);
 
-    // Text-based alternative should be available
-    expect(screen.getByText(/Sun in aries at 15°30' in House 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Moon in taurus at 20°45' in House 2/i)).toBeInTheDocument();
-    expect(screen.getByText(/Mercury in aries at 5°15' in House 1 \(retrograde\)/i)).toBeInTheDocument();
+    // Text-based alternative should be available (may appear multiple times via sr-only text + aria-labels)
+    expect(screen.getAllByText(/Sun in aries at 15°30' in House 1/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Moon in taurus at 20°45' in House 2/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Mercury in aries at 5°15' in House 1 \(retrograde\)/i).length).toBeGreaterThanOrEqual(1);
   });
 
   it('should announce aspects clearly', () => {
     render(<ChartWheel data={mockChartData} />);
 
-    expect(screen.getByText(/Sun trine Moon \(120°0'\)/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Sun trine Moon \(120°0'\)/i).length).toBeGreaterThanOrEqual(1);
   });
 });

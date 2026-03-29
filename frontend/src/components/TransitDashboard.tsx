@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { PlanetSymbol, AspectSymbol, SkeletonLoader, EmptyState } from './';
+import { useState } from 'react';
+import { PlanetSymbol, AspectSymbol, EmptyState } from './';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -74,7 +74,7 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
       {/* Date Range Selector */}
       <DateSelector
         viewMode={viewMode}
-        onViewChange={setViewMode}
+        onViewChange={(mode) => setViewMode(mode as 'today' | 'week' | 'calendar' | 'highlights')}
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
       />
@@ -99,7 +99,7 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
       {viewMode === 'highlights' && (
         <UpcomingHighlights
           highlights={data.highlights}
-          onHighlightClick={(highlight) => {
+          onHighlightClick={(_highlight) => {
             // TransitHighlight doesn't have all Transit fields, so we handle it separately
             // We can't directly pass onTransitClick since the types are incompatible
             // TODO: Implement highlight click handler
@@ -118,7 +118,7 @@ function DateSelector({
   onDateChange,
 }: {
   viewMode: string;
-  onViewChange: (mode: any) => void;
+  onViewChange: (mode: string) => void;
   selectedDate: string;
   onDateChange: (date: string) => void;
 }) {
@@ -164,6 +164,7 @@ function DateSelector({
             onDateChange(date.toISOString().split('T')[0]);
           }}
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label="Previous day"
         >
           <ChevronLeftIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
         </button>
@@ -171,6 +172,7 @@ function DateSelector({
           type="date"
           value={selectedDate}
           onChange={(e) => onDateChange(e.target.value)}
+          aria-label="Select date"
           className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
         />
         <button
@@ -180,6 +182,7 @@ function DateSelector({
             onDateChange(date.toISOString().split('T')[0]);
           }}
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label="Next day"
         >
           <ChevronRightIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
         </button>
@@ -356,7 +359,7 @@ function TransitCalendar({
 // Calendar Day Component
 function CalendarDay({
   day,
-  date,
+  date: _date,
   data,
   isSelected,
   onClick,
@@ -517,10 +520,10 @@ function HighlightCard({
         bg-white dark:bg-gray-800 rounded-lg border-2 p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
       `}
-      style={{ borderColor: highlight.color || '#6366F1' }}
+      style={{ borderColor: highlight.color ?? '#6366F1' }}
     >
       {/* Icon */}
-      <div className="text-3xl mb-2">{highlight.icon || '✨'}</div>
+      <div className="text-3xl mb-2">{highlight.icon ?? '✨'}</div>
 
       {/* Title */}
       <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{highlight.title}</h4>
@@ -547,7 +550,7 @@ function HighlightCard({
               className="h-full rounded-full"
               style={{
                 width: `${highlight.intensity * 10}%`,
-                backgroundColor: highlight.color || '#6366F1',
+                backgroundColor: highlight.color ?? '#6366F1',
               }}
             />
           </div>

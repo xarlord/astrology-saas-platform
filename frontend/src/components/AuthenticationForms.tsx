@@ -91,26 +91,21 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // Only validate if the field has a value
-    // Use a setTimeout to ensure state has updated before validation
-    setTimeout(() => {
-      const newErrors: Partial<Record<keyof typeof formData, string>> = {};
+    const newErrors: Partial<Record<keyof typeof formData, string>> = {};
 
-      if (name === 'email' && value) {
-        if (!value) {
-          newErrors.email = 'Email is required';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          newErrors.email = 'Please enter a valid email address';
-        }
-      } else if (name === 'password' && value) {
-        if (!value || value.length < 8) {
-          newErrors.password = 'Password must be at least 8 characters';
-        }
+    if (name === 'email' && value) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        newErrors.email = 'Please enter a valid email address';
       }
+    } else if (name === 'password' && value) {
+      if (value.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+    }
 
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-      }
-    }, 0);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    }
   };
 
   return (
@@ -142,7 +137,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 onBlur={handleBlur}
                 data-testid="email-input"
                 aria-required="true"
-                aria-invalid={!!errors.email}
+                aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? emailErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -188,7 +183,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 onBlur={handleBlur}
                 data-testid="password-input"
                 aria-required="true"
-                aria-invalid={!!errors.password}
+                aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -412,34 +407,32 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // Only validate if the field has a value
-    setTimeout(() => {
-      const newErrors: Partial<Record<keyof typeof formData, string>> = {};
+    const newErrors: Partial<Record<keyof typeof formData, string>> = {};
 
-      if (name === 'name' && value) {
-        if (!value.trim() || value.trim().length < 2) {
-          newErrors.name = 'Name must be at least 2 characters';
-        }
-      } else if (name === 'email' && value) {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          newErrors.email = 'Please enter a valid email address';
-        }
-      } else if (name === 'password' && value) {
-        if (value.length < 8) {
-          newErrors.password = 'Password must be at least 8 characters';
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(value)) {
-          newErrors.password =
-            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
-        }
-      } else if (name === 'confirmPassword' && value && formData.password) {
-        if (formData.password !== value) {
-          newErrors.confirmPassword = 'Passwords do not match';
-        }
+    if (name === 'name' && value) {
+      if (!value.trim() || value.trim().length < 2) {
+        newErrors.name = 'Name must be at least 2 characters';
       }
+    } else if (name === 'email' && value) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+    } else if (name === 'password' && value) {
+      if (value.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(value)) {
+        newErrors.password =
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+      }
+    } else if (name === 'confirmPassword' && value && formData.password) {
+      if (formData.password !== value) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
+    }
 
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-      }
-    }, 0);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    }
   };
 
   return (
@@ -471,7 +464,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="name-input"
                 aria-required="true"
-                aria-invalid={!!errors.name}
+                aria-invalid={errors.name ? 'true' : 'false'}
                 aria-describedby={errors.name ? nameErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -509,7 +502,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="register-email-input"
                 aria-required="true"
-                aria-invalid={!!errors.email}
+                aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? emailErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -547,7 +540,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="register-password-input"
                 aria-required="true"
-                aria-invalid={!!errors.password}
+                aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -602,7 +595,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="confirm-password-input"
                 aria-required="true"
-                aria-invalid={!!errors.confirmPassword}
+                aria-invalid={errors.confirmPassword ? 'true' : 'false'}
                 aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors

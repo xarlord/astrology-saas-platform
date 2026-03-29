@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
 import {
   CameraIcon,
@@ -10,7 +10,6 @@ import {
   CheckIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChartWheel } from './';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -62,7 +61,7 @@ export interface Chart {
     zodiac: 'tropical' | 'sidereal';
     sideralMode?: string;
   };
-  calculatedData?: any;
+  calculatedData?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,27 +72,51 @@ interface UserProfileProps {
   onDeleteChart?: (chartId: string) => void;
 }
 
+interface UserData {
+  id: string;
+  email: string;
+  name: string;
+  avatar_url?: string;
+  avatar?: string;
+  createdAt?: Date;
+  timezone?: string;
+  plan?: string;
+  preferences?: {
+    theme?: 'light' | 'dark' | 'auto';
+    defaultHouseSystem?: HouseSystem;
+    defaultZodiac?: 'tropical' | 'sidereal';
+    aspectOrbs?: {
+      conjunction: number;
+      opposition: number;
+      trine: number;
+      square: number;
+      sextile: number;
+    };
+  };
+}
+
 export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserProfileProps) {
   const { user, updateProfile } = useAuth();
   const { charts, deleteChart } = useCharts();
 
   // Convert User to UserProfile if needed
-  const userProfile: UserProfile | undefined = user ? {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    avatar: user.avatar_url || user.avatar,
-    createdAt: user.createdAt || new Date(),
-    timezone: user.timezone || 'UTC',
+  const typedUser = user as UserData | null;
+  const userProfile: UserProfile | undefined = typedUser ? {
+    id: typedUser.id,
+    email: typedUser.email,
+    name: typedUser.name,
+    avatar: typedUser.avatar_url ?? typedUser.avatar,
+    createdAt: typedUser.createdAt ?? new Date(),
+    timezone: typedUser.timezone ?? 'UTC',
     subscription: {
-      plan: (user.plan as 'free' | 'premium' | 'professional') || 'free',
+      plan: (typedUser.plan as 'free' | 'premium' | 'professional') ?? 'free',
       status: 'active',
     },
     preferences: {
-      theme: user.preferences?.theme || 'auto',
-      defaultHouseSystem: user.preferences?.defaultHouseSystem || 'placidus',
-      defaultZodiac: user.preferences?.defaultZodiac || 'tropical',
-      aspectOrbs: user.preferences?.aspectOrbs || {
+      theme: typedUser.preferences?.theme ?? 'auto',
+      defaultHouseSystem: typedUser.preferences?.defaultHouseSystem ?? 'placidus',
+      defaultZodiac: typedUser.preferences?.defaultZodiac ?? 'tropical',
+      aspectOrbs: typedUser.preferences?.aspectOrbs ?? {
         conjunction: 10,
         opposition: 10,
         trine: 8,
@@ -104,16 +127,16 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
   } : undefined;
 
   // Convert service Chart to UserProfile Chart type
-  const chartsForDisplay: Chart[] = (charts || []).map(chart => ({
+  const chartsForDisplay: Chart[] = (charts ?? []).map(chart => ({
     id: chart.id,
     userId: '', // Not available in service Chart type
     name: chart.name,
-    type: (chart.type || 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
+    type: (chart.type ?? 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
     birthData: {
-      date: new Date(chart.birth_date || Date.now()),
-      time: chart.birth_time || '00:00',
+      date: new Date(chart.birth_date ?? Date.now()),
+      time: chart.birth_time ?? '00:00',
       place: {
-        name: chart.birth_place_name || 'Unknown',
+        name: chart.birth_place_name ?? 'Unknown',
         latitude: 0,
         longitude: 0,
         timezone: 'UTC',
@@ -124,16 +147,16 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
       houseSystem: 'placidus',
       zodiac: 'tropical',
     },
-    calculatedData: chart.calculated_data,
-    createdAt: new Date(chart.created_at || Date.now()),
-    updatedAt: new Date(chart.created_at || Date.now()),
+    calculatedData: chart.calculated_data as Record<string, unknown> | undefined,
+    createdAt: new Date(chart.created_at ?? Date.now()),
+    updatedAt: new Date(chart.created_at ?? Date.now()),
   }));
 
   const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
-    name: user?.name || '',
-    timezone: user?.timezone || 'UTC',
+    name: user?.name ?? '',
+    timezone: user?.timezone ?? 'UTC',
   });
 
   const tabs = [
@@ -143,18 +166,20 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     { id: 'subscription' as const, label: 'Subscription', icon: '💳' },
   ];
 
-  const handleSaveProfile = async () => {
-    try {
-      await updateProfile({ name: editData.name, timezone: editData.timezone });
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    }
+  const handleSaveProfile = (): void => {
+    void (async () => {
+      try {
+        await updateProfile({ name: editData.name, timezone: editData.timezone });
+        setIsEditing(false);
+      } catch (error) {
+        console.error('Failed to update profile:', error);
+      }
+    })();
   };
 
-  const handleDeleteChart = async (chartId: string) => {
+  const handleDeleteChart = (chartId: string): void => {
     if (window.confirm('Are you sure you want to delete this chart?')) {
-      await deleteChart(chartId);
+      void deleteChart(chartId);
       onDeleteChart?.(chartId);
     }
   };
@@ -312,7 +337,7 @@ function ProfileHeader({
             <>
               <button
                 type="button"
-                onClick={onSave}
+                onClick={() => { void onSave(); }}
                 className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
                 aria-label="Save"
               >

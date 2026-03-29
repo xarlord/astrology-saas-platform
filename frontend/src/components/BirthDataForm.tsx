@@ -25,7 +25,6 @@ function ErrorMessage({ message, id }: ErrorMessageProps) {
     </p>
   );
 }
-
 // Types
 export interface BirthData {
   birthDate: string;
@@ -116,7 +115,7 @@ export function BirthDataForm({
       );
       const data = await response.json();
 
-      const suggestions = data.map((item: any) => item.display_name);
+      const suggestions = data.map((item: { display_name: string }) => item.display_name);
       setPlaceSuggestions(suggestions);
       setShowPlaceSearch(true);
     } catch (error) {
@@ -216,10 +215,11 @@ export function BirthDataForm({
         await calculateChartMutation.mutateAsync(currentChart.id);
         onSuccess?.(currentChart.id);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Form submission error:', error);
+      const err = error as { message?: string };
       setErrors({
-        birthDate: error.message || 'Failed to create chart. Please try again.',
+        birthDate: err.message ?? 'Failed to create chart. Please try again.',
       });
     }
   };

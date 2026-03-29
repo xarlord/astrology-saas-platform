@@ -1,44 +1,8 @@
 // import React from 'react';
 // import { PlanetSymbol, AspectSymbol } from './';
 
-// Types based on findings.md data models
-export interface PlanetPosition {
-  planet: string;
-  sign: string;
-  degree: number;
-  minute: number;
-  second: number;
-  house: number;
-  retrograde: boolean;
-  latitude: number;
-  longitude: number;
-  speed: number;
-}
-
-export interface HouseCusp {
-  house: number;
-  sign: string;
-  degree: number;
-  minute: number;
-  second: number;
-}
-
-export interface Aspect {
-  planet1: string;
-  planet2: string;
-  type: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile';
-  degree: number;
-  minute: number;
-  orb: number;
-  applying: boolean;
-  separating: boolean;
-}
-
-export interface ChartData {
-  planets: PlanetPosition[];
-  houses: HouseCusp[];
-  aspects: Aspect[];
-}
+import type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
+export type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
 
 interface ChartWheelProps {
   data: ChartData;
@@ -193,11 +157,11 @@ export function ChartWheel({
         role="img"
         aria-label={`Astrological chart wheel with ${data.planets.length} planets`}
         aria-describedby={interactive ? 'chart-description' : undefined}
+        data-testid="chart-wheel"
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         className="max-w-full h-auto"
-        style={{ maxWidth: '100%', height: 'auto' }}
       >
         {/* Hidden description element referenced by aria-describedby */}
         {interactive && (
@@ -377,6 +341,7 @@ export function ChartWheel({
           return (
             <g
               key={planet.planet}
+              data-testid={`planet-${planet.planet}`}
               onClick={interactive ? () => onPlanetClick?.(planet.planet) : undefined}
               className={interactive ? 'cursor-pointer' : ''}
               role="img"
@@ -495,7 +460,7 @@ export function ChartWheelLegend() {
       </div>
       <div>
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Planets</h4>
-        <ul className="space-y-1" role="list">
+        <ul className="space-y-1">
           {Object.entries(PLANET_INFO).slice(0, 5).map(([key, info]) => (
             <li key={key} className="flex items-center gap-2">
               <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
@@ -525,9 +490,9 @@ export function ChartWheelLegend() {
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Zodiac Signs</h4>
         <div className="grid grid-cols-4 gap-1" role="list" aria-label="Zodiac signs">
           {ZODIAC_SIGNS.map((sign) => (
-            <span key={sign.name} style={{ color: sign.color }} className="text-lg" aria-label={`${sign.name} ${sign.symbol}`}>
+            <div key={sign.name} role="listitem" style={{ color: sign.color }} className="text-lg text-center" aria-label={`${sign.name} ${sign.symbol}`}>
               {sign.symbol}
-            </span>
+            </div>
           ))}
         </div>
       </div>

@@ -50,6 +50,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
           <button
             className="absolute top-3 right-3 bg-transparent border-none text-gray-500 cursor-pointer p-1 rounded flex items-center justify-center transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-gray-100"
             onClick={handleDismiss}
+            aria-label="Dismiss notification"
           >
             <X size={18} />
           </button>
