@@ -369,7 +369,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   };
 
   return (
-    <div className="space-y-4" ref={containerRef}>
+    <div role="region" aria-label="Solar Return Chart" className="space-y-4" ref={containerRef}>
       <div className="text-center">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white m-0">Solar Return Chart for {year}</h3>
         {location && <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">{location}</p>}
@@ -394,12 +394,14 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
             <Loader2 size={32} className="animate-spin text-indigo-500" />
-            <p className="mt-2 text-gray-500 dark:text-gray-400">Calculating chart...</p>
+            <p aria-live="polite" className="mt-2 text-gray-500 dark:text-gray-400">Calculating chart...</p>
           </div>
         )}
 
         <canvas
           ref={canvasRef}
+          role="img"
+          aria-label={`Solar return chart showing planetary positions for ${year}${location ? ` at ${location}` : ''}`}
           width={600}
           height={600}
           className="max-w-full h-auto"

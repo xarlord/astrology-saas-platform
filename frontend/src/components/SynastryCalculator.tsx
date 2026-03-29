@@ -89,7 +89,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
   if (loading) {
     return (
-      <div className="max-w-screen-xl mx-auto p-4 md:p-8">
+      <div className="max-w-screen-xl mx-auto p-4 md:p-8" role="region" aria-label="Synastry Chart Calculator" aria-busy="true">
         <div className="flex flex-col items-center justify-center py-16 px-8">
           <div className="w-[50px] h-[50px] border-4 border-gray-200 dark:border-gray-700 border-t-indigo-500 dark:border-t-indigo-400 rounded-full animate-spin mb-4" />
           <p>Calculating compatibility...</p>
@@ -120,7 +120,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto p-4 md:p-8">
+    <div className="max-w-screen-xl mx-auto p-4 md:p-8" role="region" aria-label="Synastry Chart Calculator">
       {/* Chart Selection */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-8 mb-8 shadow-sm">
         <h2 className="m-0 mb-6 text-gray-900 dark:text-white text-center text-xl font-semibold">Compare Two Charts</h2>
@@ -131,6 +131,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               id="chart1"
               value={chart1}
               onChange={(e) => setChart1(e.target.value)}
+              aria-required="true"
               className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
             >
               <option value="">Select a chart...</option>
@@ -150,6 +151,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               id="chart2"
               value={chart2}
               onChange={(e) => setChart2(e.target.value)}
+              aria-required="true"
               className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
             >
               <option value="">Select a chart...</option>
@@ -170,12 +172,12 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
           Calculate Compatibility
         </button>
 
-        {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-center">{error}</div>}
+        {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-center" role="alert">{error}</div>}
       </div>
 
       {/* Results */}
       {synastryData && compatibilityData && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden" aria-live="polite">
           {/* Overall Score */}
           <div className={`flex flex-col md:flex-row items-center gap-8 p-8 bg-gradient-to-br ${scoreGradient[getScoreColor(compatibilityData.scores.overall)]} text-white`}>
             <div className="flex flex-col items-center justify-center w-[120px] h-[120px] bg-white/20 rounded-full shrink-0">

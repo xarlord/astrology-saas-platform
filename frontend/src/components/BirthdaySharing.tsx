@@ -176,7 +176,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div role="region" aria-label="Birthday Sharing" className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
         <Gift size={32} className="text-purple-600" />
         <div>
@@ -193,7 +193,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Success Message */}
       {success && !generatedLink && (
-        <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4">
+        <div aria-live="polite" className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4">
           <Check size={20} className="text-green-600 flex-shrink-0" />
           <div>
             <strong className="text-green-800">Success!</strong>
@@ -213,7 +213,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700">
+        <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700">
           <span>{error}</span>
           <button onClick={() => setError(null)} className="ml-auto text-red-500 hover:text-red-700 font-bold">✕</button>
         </div>
@@ -257,6 +257,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 <select
                   value={linkSettings.expiresIn}
                   onChange={(e) => setLinkSettings({ ...linkSettings, expiresIn: e.target.value })}
+                  aria-label="Link expiration period"
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 >
                   <option value="7">7 days</option>
@@ -272,6 +273,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 <select
                   value={linkSettings.maxAccesses}
                   onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
+                  aria-label="Maximum number of accesses"
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 >
                   <option value={1}>1 time</option>
@@ -301,6 +303,8 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                     value={linkSettings.password}
                     onChange={(e) => setLinkSettings({ ...linkSettings, password: e.target.value })}
                     placeholder="Enter password"
+                    aria-required="true"
+                    aria-label="Share link password"
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                   />
                 </div>
@@ -312,7 +316,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Share2 size={18} />
-                {loading ? 'Generating...' : 'Generate Link'}
+                <span aria-live="polite">{loading ? 'Generating...' : 'Generate Link'}</span>
               </button>
 
               {generatedLink && (
@@ -355,6 +359,8 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   value={emailSettings.to}
                   onChange={(e) => setEmailSettings({ ...emailSettings, to: e.target.value })}
                   placeholder="friend@example.com"
+                  aria-required="true"
+                  aria-label="Recipient email address"
                   required
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 />
@@ -399,7 +405,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Mail size={18} />
-                {loading ? 'Sending...' : 'Send Email'}
+                <span aria-live="polite">{loading ? 'Sending...' : 'Send Email'}</span>
               </button>
             </div>
           )}

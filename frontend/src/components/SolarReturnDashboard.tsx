@@ -136,22 +136,22 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 px-8">
+      <div role="region" aria-label="Solar Return Dashboard" aria-busy="true" className="flex flex-col items-center justify-center py-16 px-8">
         <div className="w-[50px] h-[50px] border-4 border-gray-200 dark:border-gray-700 border-t-indigo-500 dark:border-t-indigo-400 rounded-full animate-spin mb-4" />
-        <p className="text-gray-500 dark:text-gray-400">Loading your solar returns...</p>
+        <p aria-live="polite" className="text-gray-500 dark:text-gray-400">Loading your solar returns...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div role="region" aria-label="Solar Return Dashboard" className="space-y-6">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white m-0">Your Solar Returns</h2>
         <p className="mt-1 text-gray-500 dark:text-gray-400">Birthday year forecasts and themes</p>
       </div>
 
       {error && (
-        <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+        <div role="alert" className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
           {error}
           <button type="button" onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-800 dark:hover:text-red-300">&#10005;</button>
         </div>

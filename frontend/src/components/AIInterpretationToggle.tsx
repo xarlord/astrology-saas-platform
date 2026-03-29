@@ -49,7 +49,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white mb-5">
+    <div role="region" aria-label="AI interpretation controls" aria-busy={isGenerating} className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white mb-5">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2 font-semibold text-base">
           <Sparkles className="animate-pulse" size={18} />
@@ -57,7 +57,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
         </div>
         <button
           type="button"
-          className="bg-white/20 border-none rounded-md px-2 py-1 text-white cursor-pointer transition-colors hover:bg-white/30"
+          className="bg-white/20 border-none rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center text-white cursor-pointer transition-colors hover:bg-white/30"
           onClick={() => setShowInfo(!showInfo)}
           aria-label="Toggle AI info"
         >
@@ -78,30 +78,32 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
       )}
 
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          role="switch"
-          aria-checked={enabled ? "true" : "false"}
-          onClick={() => handleToggle(!enabled)}
-          disabled={isGenerating}
-          aria-label="Enable AI interpretations"
-          className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
-            enabled ? 'bg-white/50' : 'bg-white/30'
-          } ${isGenerating ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-        >
-          <span
-            className={`absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full transition-transform duration-300 ${
-              enabled ? 'translate-x-6' : 'translate-x-0'
-            }`}
-          />
-        </button>
+        <div className="flex items-center justify-center min-w-[44px] min-h-[44px]">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={enabled}
+            onClick={() => handleToggle(!enabled)}
+            disabled={isGenerating}
+            aria-label="Enable AI interpretations"
+            className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+              enabled ? 'bg-white/50' : 'bg-white/30'
+            } ${isGenerating ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          >
+            <span
+              className={`absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full transition-transform duration-300 ${
+                enabled ? 'translate-x-6' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
         <span className="text-sm font-medium">
           {enabled ? 'Enabled' : 'Disabled'}
         </span>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-500/50 rounded-md py-2 px-3 mt-3 text-[13px]">
+        <div role="alert" className="bg-red-500/20 border border-red-500/50 rounded-md py-2 px-3 mt-3 text-[13px]">
           Failed to generate AI interpretation. Using rule-based instead.
         </div>
       )}
