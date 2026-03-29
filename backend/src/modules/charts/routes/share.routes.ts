@@ -5,10 +5,14 @@
 
 import { Router } from 'express';
 import { asyncHandler } from '../../../middleware/errorHandler';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
+import { AppError } from '../../../utils/appError';
 import { chartSharingService } from '../../shared/services/chartSharing.service';
 import { ChartModel } from '../models';
-import { swissEphemeris } from '../../shared';
+import { NatalChartService } from '../../shared/services/natalChart.service';
+import type { HouseSystem } from '../../shared/services/houseCalculation.service';
+
+const natalChartService = new NatalChartService();
 
 const router = Router();
 
@@ -41,14 +45,14 @@ router.get('/:token', asyncHandler(async (req, res) => {
         return null;
       }
 
-      // Calculate if needed
+      // Calculate if needed using real calculation engine
       if (!chart.calculated_data) {
-        return swissEphemeris.calculateNatalChart({
+        return natalChartService.calculateNatalChart({
           birthDate: new Date(chart.birth_date),
           birthTime: chart.birth_time,
           latitude: chart.birth_latitude,
           longitude: chart.birth_longitude,
-          houseSystem: chart.house_system,
+          houseSystem: (chart.house_system || 'Placidus') as HouseSystem,
         });
       }
 
@@ -85,17 +89,24 @@ router.get('/:token', asyncHandler(async (req, res) => {
  * @desc    Get share link statistics
  * @access  Private (requires authentication — only share owner should view stats)
  */
-router.get('/:token/stats', authenticate, asyncHandler(async (req, res) => {
+router.get('/:token/stats', authenticate, asyncHandler(async (req: AuthenticatedRequest, res) => {
   const { token } = req.params;
+
+  const share = await chartSharingService.getShareByToken(token);
+
+  if (!share) {
+    throw new AppError('Share link not found', 404);
+  }
+
+  // Verify ownership: only the share creator can view stats
+  if (share.createdBy !== req.user.id) {
+    throw new AppError('You can only view stats for shares you created', 403);
+  }
 
   const stats = await chartSharingService.getShareStats(token);
 
   if (!stats) {
-    res.status(404).json({
-      success: false,
-      error: 'Share link not found',
-    });
-    return;
+    throw new AppError('Share link not found', 404);
   }
 
   res.status(200).json({
