@@ -2,7 +2,7 @@
  * Refresh Token Model
  */
 
-import db from '../../../config/database';
+import db, { Knex } from '../../../config/database';
 
 export interface RefreshToken {
   id: string;
@@ -27,8 +27,9 @@ export interface CreateRefreshTokenInput {
 /**
  * Create a new refresh token
  */
-export async function createRefreshToken(input: CreateRefreshTokenInput): Promise<RefreshToken> {
-  const [refreshToken] = await db<RefreshToken>('refresh_tokens')
+export async function createRefreshToken(input: CreateRefreshTokenInput, trx?: Knex.Transaction): Promise<RefreshToken> {
+  const query = trx || db;
+  const [refreshToken] = await query<RefreshToken>('refresh_tokens')
     .insert({
       user_id: input.user_id,
       token: input.token,
@@ -68,8 +69,9 @@ export async function findValidRefreshTokens(userId: string): Promise<RefreshTok
 /**
  * Revoke a refresh token
  */
-export async function revokeRefreshToken(token: string): Promise<boolean> {
-  const updated = await db<RefreshToken>('refresh_tokens')
+export async function revokeRefreshToken(token: string, trx?: Knex.Transaction): Promise<boolean> {
+  const query = trx || db;
+  const updated = await query<RefreshToken>('refresh_tokens')
     .where({ token })
     .update({
       revoked: true,

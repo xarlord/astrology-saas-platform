@@ -4,6 +4,7 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
+import db from '../../../db';
 import UserModel from '../../users/models/user.model';
 import { generateToken, generateRefreshToken, AuthenticatedRequest } from '../../../middleware/auth';
 import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
@@ -224,20 +225,29 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
   const newAccessToken = generateToken(tokenPayload);
   const newRefreshToken = generateRefreshToken(tokenPayload);
 
-  // Token rotation: revoke old FIRST, then create new.
-  // If create fails after revoke, user must re-login (acceptable).
-  // Creating new first then revoking old risks both being valid if revoke fails.
-  await RefreshTokenModel.revokeRefreshToken(oldRefreshToken);
-
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
-  await RefreshTokenModel.createRefreshToken({
-    user_id: user.id,
-    token: newRefreshToken,
-    expires_at: expiresAt,
-    user_agent: req.get('user-agent'),
-    ip_address: req.ip,
+  // Token rotation in a transaction: revoke old + create new atomically.
+  // Prevents race condition where two concurrent refresh requests could both succeed.
+  await db.transaction(async (trx) => {
+    // Revoke old token first
+    const revoked = await trx('refresh_tokens')
+      .where({ token: oldRefreshToken })
+      .update({ revoked: true, revoked_at: new Date() });
+
+    if (revoked === 0) {
+      throw new AppError('Refresh token has been revoked', 401);
+    }
+
+    // Create new refresh token
+    await trx('refresh_tokens').insert({
+      user_id: user.id,
+      token: newRefreshToken,
+      expires_at: expiresAt,
+      user_agent: req.get('user-agent') || null,
+      ip_address: req.ip || null,
+    });
   });
 
   res.status(200).json({

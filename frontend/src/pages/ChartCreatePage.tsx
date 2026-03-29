@@ -16,10 +16,11 @@ export default function ChartCreatePage() {
 
         <form className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="chart-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Chart Name
             </label>
             <input
+              id="chart-name"
               type="text"
               className="input"
               placeholder="My Natal Chart"
@@ -28,27 +29,28 @@ export default function ChartCreatePage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="birth-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Birth Date
             </label>
-            <input type="date" className="input" required />
+            <input id="birth-date" type="date" className="input" required />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="birth-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Birth Time
             </label>
-            <input type="time" className="input" required />
+            <input id="birth-time" type="time" className="input" required />
             <p className="mt-1 text-sm text-gray-500">
               Exact time needed for accurate house calculations
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="birth-place" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Birth Place
             </label>
             <input
+              id="birth-place"
               type="text"
               className="input"
               placeholder="Search city or enter coordinates"
@@ -57,10 +59,10 @@ export default function ChartCreatePage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="house-system" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               House System
             </label>
-            <select className="input">
+            <select id="house-system" className="input">
               <option value="placidus">Placidus</option>
               <option value="koch">Koch</option>
               <option value="porphyry">Porphyry</option>
@@ -69,10 +71,10 @@ export default function ChartCreatePage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="zodiac-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Zodiac Type
             </label>
-            <select className="input">
+            <select id="zodiac-type" className="input">
               <option value="tropical">Tropical</option>
               <option value="sidereal">Sidereal (Fagan-Bradley)</option>
               <option value="sidereal-lahiri">Sidereal (Lahiri)</option>

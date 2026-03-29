@@ -12,7 +12,6 @@ import { sanitizeUser } from '../../../utils/helpers';
  * Get current user
  */
 export async function getCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
 
   const user = await UserModel.findById(userId);
@@ -30,7 +29,6 @@ export async function getCurrentUser(req: AuthenticatedRequest, res: Response): 
  * Update current user
  */
 export async function updateCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
   const { name, avatar_url, timezone } = req.body;
 
@@ -54,7 +52,6 @@ export async function updateCurrentUser(req: AuthenticatedRequest, res: Response
  * Get user's charts
  */
 export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 20;
@@ -72,7 +69,6 @@ export async function getUserCharts(req: AuthenticatedRequest, res: Response): P
  * Get user preferences
  */
 export async function getUserPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
 
   const user = await UserModel.findById(userId);
@@ -90,7 +86,6 @@ export async function getUserPreferences(req: AuthenticatedRequest, res: Respons
  * Update user preferences
  */
 export async function updateUserPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
   const preferences = req.body;
 
@@ -110,7 +105,6 @@ export async function updateUserPreferences(req: AuthenticatedRequest, res: Resp
  * Delete user account
  */
 export async function deleteAccount(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
 
   // Soft delete user

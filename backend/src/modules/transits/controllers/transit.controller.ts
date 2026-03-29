@@ -14,7 +14,6 @@ import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
  * Calculate transits for date range
  */
 export async function calculateTransits(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
   const { chartId, startDate, endDate } = req.body;
 
@@ -77,7 +76,6 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
  * Get today's transits
  */
 export async function getTodayTransits(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
 
   // Get user's primary chart (first natal chart)
@@ -128,7 +126,6 @@ export async function getTodayTransits(req: AuthenticatedRequest, res: Response)
  * Get transit calendar data
  */
 export async function getTransitCalendar(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
   const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
   const year = parseInt(req.query.year as string) || new Date().getFullYear();
@@ -200,7 +197,6 @@ export async function getTransitCalendar(req: AuthenticatedRequest, res: Respons
  * Get specific transit details
  */
 export async function getTransitDetails(_req: Request, res: Response): Promise<void> {
-  // const userId = _req.user!.id; // TODO: will be used for DB lookup
   // const { id } = _req.params; // Transit reading ID - TODO: will be used
 
   // TODO: Fetch specific transit reading from database
@@ -216,7 +212,6 @@ export async function getTransitDetails(_req: Request, res: Response): Promise<v
  * Get transit forecast for duration
  */
 export async function getTransitForecast(req: AuthenticatedRequest, res: Response): Promise<void> {
-  if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
   const { duration = 'month' } = req.query; // 'week', 'month', 'quarter', 'year'
 

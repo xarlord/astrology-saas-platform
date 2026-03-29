@@ -5,7 +5,6 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
-import { AppError } from '../../../middleware/errorHandler';
 import calendarEventModel from '../models/calendarEvent.model';
 import globalEventsService from '../services/globalEvents.service';
 import logger from '../../../utils/logger';
@@ -18,7 +17,6 @@ class CalendarController {
    */
   async getMonthEvents(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) throw new AppError('Unauthorized', 401);
       const userId = req.user.id;
       const { year, month } = req.params;
       const { includeGlobal = 'true' } = req.query;
@@ -130,7 +128,6 @@ class CalendarController {
    */
   async createCustomEvent(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) throw new AppError('Unauthorized', 401);
       const userId = req.user.id;
       const { event_type, event_date, event_data, interpretation } = req.body;
 
@@ -170,7 +167,6 @@ class CalendarController {
    */
   async deleteEvent(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      if (!req.user) throw new AppError('Unauthorized', 401);
       const userId = req.user.id;
       const { id } = req.params;
 
