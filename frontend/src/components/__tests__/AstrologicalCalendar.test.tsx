@@ -11,8 +11,7 @@
  * Component Tests
  */
 
-import { screen, fireEvent, waitFor, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderWithProviders } from '../../__tests__/test-utils';
 import AstrologicalCalendar from '../AstrologicalCalendar';

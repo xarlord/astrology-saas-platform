@@ -5,7 +5,7 @@
 
 // import React from 'react';
 import { LunarReturnChart, LunarAspect } from '@/services/lunarReturn.api';
-import './LunarReturn.css';
+
 
 interface LunarChartViewProps {
   chart: LunarReturnChart;

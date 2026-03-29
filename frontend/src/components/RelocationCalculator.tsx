@@ -6,7 +6,6 @@
 import React, { useState } from 'react';
 import { MapPin, Globe, Search, ArrowRight, Info } from 'lucide-react';
 import axios from 'axios';
-import './RelocationCalculator.css';
 
 interface Location {
   name: string;
@@ -17,12 +16,28 @@ interface Location {
   region?: string;
 }
 
+interface PlanetData {
+  planet: string;
+  house: number;
+  [key: string]: unknown;
+}
+
+interface ThemeData {
+  themes: string[];
+  [key: string]: unknown;
+}
+
+interface CalculatedData {
+  planets: PlanetData[];
+  [key: string]: unknown;
+}
+
 interface SolarReturnData {
   id: string;
   year: number;
   returnDate: string;
-  calculatedData: any;
-  interpretation: any;
+  calculatedData: CalculatedData;
+  interpretation: ThemeData;
 }
 
 interface RelocationCalculatorProps {
@@ -31,12 +46,28 @@ interface RelocationCalculatorProps {
   onRecalculate: (location: Location) => Promise<SolarReturnData>;
 }
 
+interface GeocodingResponse {
+  results: Location[];
+}
+
+interface HouseChange {
+  planet: string;
+  originalHouse: number;
+  relocatedHouse: number;
+  change: number;
+}
+
+interface ThemeChanges {
+  added: string[];
+  removed: string[];
+}
+
 export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
-  natalChartId,
+  natalChartId: _natalChartId,
   year,
   onRecalculate,
 }) => {
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [_locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation] = useState<Location | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -64,8 +95,9 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       setRelocatedReturn(relocated);
       setShowComparison(true);
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to calculate relocated chart');
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(apiErr.response?.data?.error?.message ?? 'Failed to calculate relocated chart');
     } finally {
       setLoading(false);
     }
@@ -79,12 +111,12 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       setError(null);
 
       // Use geocoding API (placeholder - would use real geocoding service)
-      const response = await axios.get('https://geocoding-api.example.com/search', {
+      const response = await axios.get<GeocodingResponse>('https://geocoding-api.example.com/search', {
         params: { q: searchQuery },
       });
 
       setLocations(response.data.results);
-    } catch (err) {
+    } catch (_err) {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');
     } finally {
@@ -92,11 +124,11 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
     }
   };
 
-  const getHouseChanges = () => {
+  const getHouseChanges = (): HouseChange[] => {
     if (!originalReturn || !relocatedReturn) return [];
 
-    const originalSun = originalReturn.calculatedData.planets.find((p: any) => p.planet === 'sun');
-    const relocatedSun = relocatedReturn.calculatedData.planets.find((p: any) => p.planet === 'sun');
+    const originalSun = originalReturn.calculatedData.planets.find((p) => p.planet === 'sun');
+    const relocatedSun = relocatedReturn.calculatedData.planets.find((p) => p.planet === 'sun');
 
     if (!originalSun || !relocatedSun) return [];
 
@@ -108,80 +140,88 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
     }];
   };
 
-  const getThemeChanges = () => {
+  const getThemeChanges = (): ThemeChanges => {
     if (!originalReturn?.interpretation || !relocatedReturn?.interpretation) {
       return { added: [], removed: [] };
     }
 
-    const originalThemes = originalReturn.interpretation.themes || [];
-    const relocatedThemes = relocatedReturn.interpretation.themes || [];
+    const originalThemes: string[] = originalReturn.interpretation.themes ?? [];
+    const relocatedThemes: string[] = relocatedReturn.interpretation.themes ?? [];
 
     return {
-      added: relocatedThemes.filter((t: string) => !originalThemes.includes(t)),
-      removed: originalThemes.filter((t: string) => !relocatedThemes.includes(t)),
+      added: relocatedThemes.filter((t) => !originalThemes.includes(t)),
+      removed: originalThemes.filter((t) => !relocatedThemes.includes(t)),
     };
   };
 
+  const themesAdded = getThemeChanges().added;
+  const themesRemoved = getThemeChanges().removed;
+
   return (
-    <div className="relocation-calculator">
-      <div className="calculator-header">
-        <div className="header-icon">
+    <div className="p-8 max-w-[1000px] mx-auto md:p-4">
+      <div className="flex items-center gap-6 mb-8 md:flex-col md:text-center">
+        <div className="w-16 h-16 bg-gradient-to-br from-[#667eea] to-[#764ba2] rounded-2xl flex items-center justify-center text-white">
           <Globe size={32} />
         </div>
         <div>
-          <h2>Solar Return Relocation</h2>
-          <p className="subtitle">Calculate your solar return for different locations</p>
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-1">Solar Return Relocation</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-base">Calculate your solar return for different locations</p>
         </div>
       </div>
 
       {/* Info Banner */}
-      <div className="info-banner">
-        <Info size={20} />
-        <p>
+      <div className="bg-emerald-50 border border-emerald-200 rounded-lg py-4 px-5 flex gap-3 items-start mb-8">
+        <Info size={20} className="text-emerald-700 shrink-0 mt-0.5" />
+        <p className="text-emerald-700 text-[0.925rem] leading-relaxed m-0">
           Relocating for your solar return can shift the house placements and themes for your birthday year.
           Choose a location to see how your solar return changes.
         </p>
       </div>
 
       {/* Search Section */}
-      <div className="search-section">
-        <h3>Choose a Location</h3>
+      <div className="mb-8">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Choose a Location</h3>
 
-        <div className="search-bar">
-          <Search size={20} className="search-icon" />
+        <div className="flex gap-3 items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm">
+          <Search size={20} className="text-gray-400 shrink-0" />
           <input
             type="text"
             placeholder="Search for a city..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            onKeyPress={(e) => { if (e.key === 'Enter') void handleSearch(); }}
+            className="flex-1 border-none outline-none text-base bg-transparent"
           />
-          <button onClick={handleSearch} disabled={loading || !searchQuery}>
+          <button
+            onClick={() => void handleSearch()}
+            disabled={loading || !searchQuery}
+            className="bg-indigo-500 text-white border-none py-2.5 px-5 rounded-md cursor-pointer font-medium transition-colors duration-200 hover:not-disabled:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             Search
           </button>
         </div>
 
         {error && (
-          <div className="error-message">
+          <div className="bg-red-50 border border-red-200 rounded-md py-3 px-4 mt-4 flex justify-between items-center text-red-700 text-sm">
             {error}
-            <button onClick={() => setError(null)}>✕</button>
+            <button onClick={() => setError(null)} className="bg-transparent border-none text-xl cursor-pointer p-0 ml-2">✕</button>
           </div>
         )}
       </div>
 
       {/* Popular Locations */}
-      <div className="popular-locations">
-        <h3>Popular Locations</h3>
-        <div className="locations-grid">
+      <div className="mb-8">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Popular Locations</h3>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 md:grid-cols-1">
           {popularLocations.map((location, index) => (
             <button
               key={index}
-              className="location-card"
-              onClick={() => handleLocationSelect(location)}
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3.5 cursor-pointer flex items-center gap-3 transition-all duration-200 hover:border-indigo-500 hover:shadow-[0_2px_8px_rgba(99,102,241,0.2)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => void handleLocationSelect(location)}
               disabled={loading}
             >
-              <MapPin size={20} />
-              <span>{location.name}</span>
+              <MapPin size={20} className="text-indigo-500 shrink-0" />
+              <span className="text-sm text-gray-800 dark:text-gray-200">{location.name}</span>
             </button>
           ))}
         </div>
@@ -189,24 +229,24 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       {/* Comparison View */}
       {showComparison && relocatedReturn && (
-        <div className="comparison-view">
-          <h3>Relocation Comparison</h3>
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-8 mt-8">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Relocation Comparison</h3>
 
-          <div className="comparison-cards">
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center mb-8 md:grid-cols-1">
             {/* Original */}
-            <div className="comparison-card original">
-              <h4>Original Location</h4>
-              <div className="location-details">
-                <p><strong>Year:</strong> {year}</p>
-                <p><strong>Return Date:</strong> {new Date(originalReturn?.returnDate || '').toLocaleDateString()}</p>
+            <div className="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-5">
+              <h4 className="text-lg font-semibold mb-4 text-gray-500 dark:text-gray-400">Original Location</h4>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Year:</strong> {year}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Return Date:</strong> {new Date(originalReturn?.returnDate ?? '').toLocaleDateString()}</p>
               </div>
 
               {originalReturn?.interpretation && (
-                <div className="themes-preview">
-                  <h5>Themes:</h5>
-                  <div className="theme-tags">
+                <div className="mt-4">
+                  <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Themes:</h5>
+                  <div className="flex flex-wrap gap-1.5">
                     {originalReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="theme-tag original">{theme}</span>
+                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -214,24 +254,24 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             </div>
 
             {/* Arrow */}
-            <div className="comparison-arrow">
+            <div className="flex justify-center text-indigo-500 md:rotate-90 md:my-2 md:mx-auto">
               <ArrowRight size={32} />
             </div>
 
             {/* Relocated */}
-            <div className="comparison-card relocated">
-              <h4>Relocated Chart</h4>
-              <div className="location-details">
-                <p><strong>Location:</strong> {selectedLocation?.name}</p>
-                <p><strong>Return Date:</strong> {new Date(relocatedReturn.returnDate).toLocaleDateString()}</p>
+            <div className="border-2 border-indigo-500 rounded-lg p-5">
+              <h4 className="text-lg font-semibold mb-4 text-indigo-500">Relocated Chart</h4>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Location:</strong> {selectedLocation?.name}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Return Date:</strong> {new Date(relocatedReturn.returnDate).toLocaleDateString()}</p>
               </div>
 
               {relocatedReturn.interpretation && (
-                <div className="themes-preview">
-                  <h5>Themes:</h5>
-                  <div className="theme-tags">
+                <div className="mt-4">
+                  <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Themes:</h5>
+                  <div className="flex flex-wrap gap-1.5">
                     {relocatedReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="theme-tag relocated">{theme}</span>
+                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-gray-600 dark:text-gray-300">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -240,41 +280,41 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
           </div>
 
           {/* House Changes */}
-          <div className="house-changes">
-            <h4>House Placement Changes</h4>
-            <div className="changes-list">
+          <div className="mb-6">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">House Placement Changes</h4>
+            <div className="flex flex-col gap-3">
               {getHouseChanges().map((change, index) => (
-                <div key={index} className="house-change">
-                  <span className="planet-name">{change.planet}</span>
-                  <span className="house-original">House {change.originalHouse}</span>
+                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+                  <span className="font-semibold text-gray-800 dark:text-gray-200 min-w-[80px]">{change.planet}</span>
+                  <span className="text-gray-500 dark:text-gray-400">House {change.originalHouse}</span>
                   <ArrowRight size={16} />
-                  <span className="house-relocated">House {change.relocatedHouse}</span>
+                  <span className="text-indigo-500 font-semibold">House {change.relocatedHouse}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Theme Changes */}
-          <div className="theme-changes">
-            <h4>Theme Changes</h4>
+          <div className="mb-6">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Theme Changes</h4>
 
-            {getThemeChanges().added.length > 0 && (
-              <div className="theme-group added">
-                <h5>New Themes:</h5>
-                <div className="theme-tags">
-                  {getThemeChanges().added.map((theme: string, i: number) => (
-                    <span key={i} className="theme-tag added">{theme}</span>
+            {themesAdded.length > 0 && (
+              <div className="mb-4">
+                <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">New Themes:</h5>
+                <div className="flex flex-wrap gap-1.5">
+                  {themesAdded.map((theme: string, i: number) => (
+                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300">{theme}</span>
                   ))}
                 </div>
               </div>
             )}
 
-            {getThemeChanges().removed.length > 0 && (
-              <div className="theme-group removed">
-                <h5>Themes No Longer Active:</h5>
-                <div className="theme-tags">
-                  {getThemeChanges().removed.map((theme: string, i: number) => (
-                    <span key={i} className="theme-tag removed">{theme}</span>
+            {themesRemoved.length > 0 && (
+              <div>
+                <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Themes No Longer Active:</h5>
+                <div className="flex flex-wrap gap-1.5">
+                  {themesRemoved.map((theme: string, i: number) => (
+                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300">{theme}</span>
                   ))}
                 </div>
               </div>
@@ -282,11 +322,17 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="comparison-actions">
-            <button onClick={() => setShowComparison(false)} className="secondary-btn">
+          <div className="flex justify-center gap-4 pt-6 border-t border-gray-200 dark:border-gray-600 md:flex-col">
+            <button
+              onClick={() => setShowComparison(false)}
+              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 border border-gray-200 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 md:w-full"
+            >
               Close Comparison
             </button>
-            <button onClick={() => window.print()} className="primary-btn">
+            <button
+              onClick={() => window.print()}
+              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-indigo-500 text-white border-none hover:bg-indigo-600 md:w-full"
+            >
               Save Relocated Chart
             </button>
           </div>
@@ -294,40 +340,49 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       )}
 
       {/* Manual Entry */}
-      <details className="manual-entry">
-        <summary>Enter coordinates manually</summary>
-        <form className="manual-form" onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          const location: Location = {
-            name: formData.get('name') as string,
-            latitude: parseFloat(formData.get('latitude') as string),
-            longitude: parseFloat(formData.get('longitude') as string),
-            timezone: formData.get('timezone') as string,
-          };
-          handleLocationSelect(location);
-        }}>
-          <div className="form-row">
-            <label>Location Name</label>
-            <input name="name" type="text" required placeholder="e.g., Paris, France" />
+      <details className="bg-gray-50 dark:bg-gray-800/50 rounded-lg mt-8">
+        <summary className="cursor-pointer p-4 font-semibold text-gray-600 dark:text-gray-300 select-none hover:text-gray-800 dark:hover:text-gray-100">
+          Enter coordinates manually
+        </summary>
+        <form
+          className="p-6 grid gap-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const location: Location = {
+              name: formData.get('name') as string,
+              latitude: parseFloat(formData.get('latitude') as string),
+              longitude: parseFloat(formData.get('longitude') as string),
+              timezone: formData.get('timezone') as string,
+            };
+            void handleLocationSelect(location);
+          }}
+        >
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Location Name</label>
+            <input name="name" type="text" required placeholder="e.g., Paris, France" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
           </div>
 
-          <div className="form-row">
-            <label>Latitude</label>
-            <input name="latitude" type="number" step="0.0001" required placeholder="e.g., 48.8566" />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Latitude</label>
+            <input name="latitude" type="number" step="0.0001" required placeholder="e.g., 48.8566" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
           </div>
 
-          <div className="form-row">
-            <label>Longitude</label>
-            <input name="longitude" type="number" step="0.0001" required placeholder="e.g., 2.3522" />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Longitude</label>
+            <input name="longitude" type="number" step="0.0001" required placeholder="e.g., 2.3522" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
           </div>
 
-          <div className="form-row">
-            <label>Timezone</label>
-            <input name="timezone" type="text" required placeholder="e.g., Europe/Paris" />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Timezone</label>
+            <input name="timezone" type="text" required placeholder="e.g., Europe/Paris" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
           </div>
 
-          <button type="submit" disabled={loading}>
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-indigo-500 text-white border-none py-3 px-6 rounded-lg font-semibold cursor-pointer justify-self-start transition-colors duration-200 hover:not-disabled:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {loading ? 'Calculating...' : 'Calculate Chart'}
           </button>
         </form>

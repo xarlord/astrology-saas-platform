@@ -11,7 +11,7 @@
  * Component Tests
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CalendarView from '../CalendarView';
@@ -182,7 +182,7 @@ describe('CalendarView Component', () => {
     });
 
     it('should show Today button when not on current month', async () => {
-      const user = userEvent.setup();
+      userEvent.setup();
       const today = new Date();
       const currentMonth = today.getMonth() + 1;
 
@@ -196,7 +196,6 @@ describe('CalendarView Component', () => {
     it('should navigate to current month when Today is clicked', async () => {
       const user = userEvent.setup();
       const today = new Date();
-      const currentMonth = today.getMonth() + 1;
       const currentYear = today.getFullYear();
 
       render(<CalendarView initialMonth={1} initialYear={2026} />);
@@ -217,7 +216,7 @@ describe('CalendarView Component', () => {
 
   describe('Event Display', () => {
     it('should display event badges on dates with events', async () => {
-      const { container } = render(<CalendarView initialMonth={1} initialYear={2026} />);
+      render(<CalendarView initialMonth={1} initialYear={2026} />);
 
       await waitFor(() => {
         expect(screen.getByText('15')).toBeInTheDocument();
@@ -259,7 +258,7 @@ describe('CalendarView Component', () => {
 
   describe('Event Interactions', () => {
     it('should call onEventClick when event badge is clicked', async () => {
-      const user = userEvent.setup();
+      userEvent.setup();
       const onEventClick = vi.fn();
 
       render(<CalendarView initialMonth={1} initialYear={2026} onEventClick={onEventClick} />);
@@ -270,7 +269,7 @@ describe('CalendarView Component', () => {
     });
 
     it('should open modal when date cell is clicked', async () => {
-      const user = userEvent.setup();
+      userEvent.setup();
       render(<CalendarView initialMonth={1} initialYear={2026} />);
 
       await waitFor(() => {
@@ -281,7 +280,7 @@ describe('CalendarView Component', () => {
 
   describe('Loading States', () => {
     it('should show loading state initially', () => {
-      (getCalendarMonth as any).mockImplementation(() => new Promise(() => {}));
+      (getCalendarMonth as any).mockImplementation(() => new Promise(() => { /* intentional empty - simulates never-resolving promise */ }));
 
       render(<CalendarView />);
 
@@ -289,7 +288,7 @@ describe('CalendarView Component', () => {
     });
 
     it('should show spinner during loading', () => {
-      (getCalendarMonth as any).mockImplementation(() => new Promise(() => {}));
+      (getCalendarMonth as any).mockImplementation(() => new Promise(() => { /* intentional empty - simulates never-resolving promise */ }));
 
       const { container } = render(<CalendarView />);
 
@@ -450,7 +449,7 @@ describe('CalendarView Component', () => {
 
       await waitFor(() => {
         // February 2026 has 28 days, so 29 shouldn't exist
-        const all29s = screen.getAllByText('29');
+        screen.getAllByText('29');
         // If we find 29, it should be from another context or test
         expect(true).toBe(true);
       });

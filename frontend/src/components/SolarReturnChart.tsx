@@ -3,9 +3,9 @@
  * Visualizes the solar return chart wheel with planets, houses, and aspects
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Loader2, ZoomIn, ZoomOut, Download } from 'lucide-react';
-import './SolarReturnChart.css';
+
 
 interface PlanetaryPosition {
   planet: string;
@@ -118,20 +118,14 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   showHouses = true,
 }) => {
   const [zoom, setZoom] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null);
-  const [hoveredAspect, setHoveredAspect] = useState<Aspect | null>(null);
+  const [loading] = useState(false);
+  const [selectedPlanet] = useState<string | null>(null);
+  const [hoveredAspect] = useState<Aspect | null>(null);
 
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (canvasRef.current && chartData) {
-      drawChart();
-    }
-  }, [chartData, zoom, showAspects, showHouses]);
-
-  const drawChart = () => {
+  const drawChart = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -163,7 +157,14 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
     // Draw labels
     drawLabels(ctx, centerX, centerY, radius);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartData, zoom, showAspects, showHouses]);
+
+  useEffect(() => {
+    if (canvasRef.current && chartData) {
+      drawChart();
+    }
+  }, [chartData, drawChart]);
 
   const drawZodiacWheel = (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) => {
     const signs = Object.keys(ZODIAC_SYMBOLS);
@@ -368,32 +369,32 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   };
 
   return (
-    <div className="solar-return-chart" ref={containerRef}>
-      <div className="chart-header">
-        <h3>Solar Return Chart for {year}</h3>
-        {location && <p className="location">{location}</p>}
+    <div className="space-y-4" ref={containerRef}>
+      <div className="text-center">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white m-0">Solar Return Chart for {year}</h3>
+        {location && <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">{location}</p>}
       </div>
 
-      <div className="chart-controls">
-        <button onClick={handleZoomOut} disabled={zoom <= 0.5}>
+      <div className="flex items-center justify-center gap-2">
+        <button type="button" title="Zoom out" onClick={handleZoomOut} disabled={zoom <= 0.5} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           <ZoomOut size={18} />
         </button>
-        <span className="zoom-level">{Math.round(zoom * 100)}%</span>
-        <button onClick={handleZoomIn} disabled={zoom >= 2}>
+        <span className="text-sm text-gray-500 dark:text-gray-400 min-w-[3rem] text-center">{Math.round(zoom * 100)}%</span>
+        <button type="button" title="Zoom in" onClick={handleZoomIn} disabled={zoom >= 2} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           <ZoomIn size={18} />
         </button>
 
-        <button onClick={handleDownload} title="Download as PNG">
+        <button type="button" onClick={handleDownload} title="Download as PNG" className="flex items-center gap-1 ml-4 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm text-gray-700 dark:text-gray-300 transition-colors">
           <Download size={18} />
           Download
         </button>
       </div>
 
-      <div className="chart-canvas-container">
+      <div className="relative flex justify-center">
         {loading && (
-          <div className="chart-loading">
-            <Loader2 size={32} className="spinner" />
-            <p>Calculating chart...</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
+            <Loader2 size={32} className="animate-spin text-indigo-500" />
+            <p className="mt-2 text-gray-500 dark:text-gray-400">Calculating chart...</p>
           </div>
         )}
 
@@ -401,36 +402,36 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
           ref={canvasRef}
           width={600}
           height={600}
-          className="chart-canvas"
+          className="max-w-full h-auto"
         />
       </div>
 
-      <div className="chart-legend">
-        <h4>Planets</h4>
-        <div className="legend-items">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Planets</h4>
+        <div className="flex flex-wrap gap-3">
           {Object.entries(PLANET_SYMBOLS).map(([name, symbol]) => (
-            <div key={name} className="legend-item">
+            <div key={name} className="flex items-center gap-1.5 text-sm">
               <span
-                className="planet-dot"
+                className="w-3 h-3 rounded-full shrink-0"
                 style={{ backgroundColor: PLANET_COLORS[name] }}
               />
-              <span className="planet-symbol">{symbol}</span>
-              <span className="planet-name">{name}</span>
+              <span className="text-gray-900 dark:text-white">{symbol}</span>
+              <span className="text-gray-500 dark:text-gray-400 capitalize">{name}</span>
             </div>
           ))}
         </div>
 
         {showAspects && (
           <>
-            <h4>Aspects</h4>
-            <div className="legend-items">
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mt-4 mb-3">Aspects</h4>
+            <div className="flex flex-wrap gap-3">
               {Object.entries(ASPECT_COLORS).map(([name, color]) => (
-                <div key={name} className="legend-item">
+                <div key={name} className="flex items-center gap-1.5 text-sm">
                   <span
-                    className="aspect-line"
+                    className="w-4 h-0.5 shrink-0"
                     style={{ backgroundColor: color }}
                   />
-                  <span className="aspect-name">{name}</span>
+                  <span className="text-gray-500 dark:text-gray-400 capitalize">{name}</span>
                 </div>
               ))}
             </div>
@@ -439,15 +440,15 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       </div>
 
       {selectedPlanet && (
-        <div className="planet-info">
-          <h4>{selectedPlanet}</h4>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{selectedPlanet}</h4>
           {chartData.planets
             .filter((p) => p.planet === selectedPlanet)
             .map((planet) => (
-              <div key={planet.planet} className="planet-details">
-                <p><strong>Sign:</strong> {planet.sign} {planet.degree}°{planet.minute}'</p>
-                <p><strong>House:</strong> {planet.house}</p>
-                {planet.retrograde && <p><strong>Retrograde</strong></p>}
+              <div key={planet.planet} className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                <p className="m-0"><strong>Sign:</strong> {planet.sign} {planet.degree}&deg;{planet.minute}&apos;</p>
+                <p className="m-0"><strong>House:</strong> {planet.house}</p>
+                {planet.retrograde && <p className="m-0"><strong>Retrograde</strong></p>}
               </div>
             ))}
         </div>

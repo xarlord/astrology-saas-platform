@@ -10,9 +10,8 @@
 /*
  * Component Tests
  */
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, beforeEach, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import SynastryPage from '../SynastryPage';
 import * as synastryApi from '../../services/synastry.api';
@@ -91,7 +90,7 @@ describe('SynastryPage', () => {
 
   test('displays loading state when loading reports', async () => {
     (synastryApi.getSynastryReports as any).mockImplementation(
-      () => new Promise(() => {}) // Never resolves
+      () => new Promise(() => { /* intentional empty - never resolves */ }) // Never resolves
     );
 
     render(<SynastryPage charts={mockCharts} />);

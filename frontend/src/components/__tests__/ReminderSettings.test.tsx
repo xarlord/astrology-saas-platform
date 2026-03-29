@@ -11,10 +11,11 @@
  * Component Tests
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReminderSettings } from '../ReminderSettings';
+import type { UserReminder } from '../../types/calendar.types';
 
 // Mock the calendar service
 vi.mock('../../services/calendar.service', () => ({
@@ -33,7 +34,8 @@ describe('ReminderSettings Component', () => {
     isActive: true,
     userId: 'user-123',
     createdAt: '2026-01-01T00:00:00Z',
-  };
+    updatedAt: '2026-01-01T00:00:00Z',
+  } as UserReminder;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -419,14 +421,14 @@ describe('ReminderSettings Component', () => {
     });
 
     it('should render mail icon for email option', () => {
-      const { container } = render(<ReminderSettings />);
+      render(<ReminderSettings />);
 
       const emailLabel = screen.getByLabelText('Email').closest('label');
       expect(emailLabel?.querySelector('svg')).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
-      const { container } = render(<ReminderSettings />);
+      render(<ReminderSettings />);
 
       const pushLabel = screen.getByLabelText('Push Notification').closest('label');
       expect(pushLabel?.querySelector('svg')).toBeInTheDocument();
@@ -453,7 +455,7 @@ describe('ReminderSettings Component', () => {
       const user = userEvent.setup();
 
       // Mock console.error to avoid noise in test output
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { /* intentional empty */ });
 
       render(<ReminderSettings />);
 

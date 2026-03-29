@@ -7,18 +7,17 @@ import React, { useState } from 'react';
 import { Bell, Mail, Smartphone, Check, Info } from 'lucide-react';
 import { ReminderFormData, UserReminder } from '../types/calendar.types';
 import { setReminder } from '../services/calendar.service';
-import '../styles/ReminderSettings.css';
 
 interface ReminderSettingsProps {
   onSave?: (reminder: UserReminder) => void;
   existingReminder?: UserReminder;
 }
 
-export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsProps) {
+export function ReminderSettings({ onSave: _onSave, existingReminder }: ReminderSettingsProps) {
   const [formData, setFormData] = useState<ReminderFormData>({
-    eventType: existingReminder?.eventType || 'all',
-    reminderType: existingReminder?.reminderType || 'email',
-    reminderAdvanceHours: existingReminder?.reminderAdvanceHours || [24],
+    eventType: existingReminder?.eventType ?? 'all',
+    reminderType: existingReminder?.reminderType ?? 'email',
+    reminderAdvanceHours: existingReminder?.reminderAdvanceHours ?? [24],
     isActive: existingReminder?.isActive ?? true,
   });
 
@@ -34,13 +33,14 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
 
     try {
       // TODO: Implement actual API call for reminder settings
-      const response = await setReminder('event-id', new Date());
+      await setReminder('event-id', new Date());
       setSuccess(true);
 
       // Reset success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save reminder settings');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message ?? 'Failed to save reminder settings');
     } finally {
       setLoading(false);
     }
@@ -96,26 +96,26 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
   ];
 
   return (
-    <div className="reminder-settings">
-      <div className="settings-header">
-        <div className="header-icon">
+    <div className="max-w-[600px] mx-auto p-6 sm:p-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+      <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
+        <div className="w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-500 rounded-xl shrink-0">
           <Bell size={24} />
         </div>
         <div>
-          <h2>Event Reminders</h2>
-          <p>Get notified about important astrological events</p>
+          <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Event Reminders</h2>
+          <p className="m-0 text-sm text-gray-500">Get notified about important astrological events</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="reminder-form">
+      <form onSubmit={(e) => { void handleSubmit(e); }} className="flex flex-col gap-6">
         {/* Event Type Selection */}
-        <div className="form-section">
-          <label className="form-label">Which events?</label>
-          <div className="event-type-options">
+        <div className="flex flex-col gap-3">
+          <label className="text-sm font-semibold text-gray-700">Which events?</label>
+          <div className="flex flex-col gap-2">
             {eventTypes.map((type) => (
               <label
                 key={type.value}
-                className={`event-type-option ${formData.eventType === type.value ? 'selected' : ''}`}
+                className={`flex p-3 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 ${formData.eventType === type.value ? '!border-indigo-500 !bg-blue-50' : ''}`}
               >
                 <input
                   type="radio"
@@ -123,10 +123,11 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
                   value={type.value}
                   checked={formData.eventType === type.value}
                   onChange={(e) => handleEventTypeChange(e.target.value)}
+                  className="mr-3 accent-indigo-500"
                 />
-                <div className="option-content">
-                  <div className="option-title">{type.label}</div>
-                  <div className="option-description">{type.description}</div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-gray-900 mb-0.5">{type.label}</div>
+                  <div className="text-xs text-gray-500">{type.description}</div>
                 </div>
               </label>
             ))}
@@ -134,11 +135,11 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
         </div>
 
         {/* Reminder Type */}
-        <div className="form-section">
-          <label className="form-label">How would you like to be notified?</label>
-          <div className="reminder-type-options">
+        <div className="flex flex-col gap-3">
+          <label className="text-sm font-semibold text-gray-700">How would you like to be notified?</label>
+          <div className="flex gap-3 sm:flex-col">
             <label
-              className={`reminder-type-option ${formData.reminderType === 'email' ? 'selected' : ''}`}
+              className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 ${formData.reminderType === 'email' ? '!border-indigo-500 !bg-blue-50 !text-blue-500' : ''}`}
             >
               <input
                 type="radio"
@@ -146,13 +147,14 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
                 value="email"
                 checked={formData.reminderType === 'email'}
                 onChange={() => handleReminderTypeChange('email')}
+                className="hidden"
               />
               <Mail size={20} />
-              <span>Email</span>
+              <span className="text-sm font-medium">Email</span>
             </label>
 
             <label
-              className={`reminder-type-option ${formData.reminderType === 'push' ? 'selected' : ''}`}
+              className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 ${formData.reminderType === 'push' ? '!border-indigo-500 !bg-blue-50 !text-blue-500' : ''}`}
             >
               <input
                 type="radio"
@@ -160,51 +162,55 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
                 value="push"
                 checked={formData.reminderType === 'push'}
                 onChange={() => handleReminderTypeChange('push')}
+                className="hidden"
               />
               <Smartphone size={20} />
-              <span>Push Notification</span>
+              <span className="text-sm font-medium">Push Notification</span>
             </label>
           </div>
         </div>
 
         {/* Advance Timing */}
-        <div className="form-section">
-          <label className="form-label">When should we remind you?</label>
-          <div className="advance-hours-options">
+        <div className="flex flex-col gap-3">
+          <label className="text-sm font-semibold text-gray-700">When should we remind you?</label>
+          <div className="flex flex-col gap-2">
             {advanceHoursOptions.map((option) => (
               <label
                 key={option.value}
-                className={`advance-hours-option ${formData.reminderAdvanceHours.includes(option.value) ? 'selected' : ''}`}
+                className={`flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 ${formData.reminderAdvanceHours.includes(option.value) ? '!border-emerald-500 !bg-green-50' : ''}`}
               >
                 <input
                   type="checkbox"
                   checked={formData.reminderAdvanceHours.includes(option.value)}
                   onChange={() => handleAdvanceHoursToggle(option.value)}
+                  className="mr-3 w-[18px] h-[18px] accent-emerald-500"
                 />
-                <span>{option.label}</span>
+                <span className="flex-1 text-sm text-gray-700">{option.label}</span>
                 {formData.reminderAdvanceHours.includes(option.value) && (
-                  <Check size={16} className="check-icon" />
+                  <Check size={16} className="text-emerald-500 shrink-0" />
                 )}
               </label>
             ))}
           </div>
-          <div className="form-hint">
-            <Info size={14} />
+          <div className="flex items-start gap-1.5 px-3 py-2 bg-amber-50 border-l-[3px] border-amber-500 rounded text-[13px] text-amber-800 leading-snug">
+            <Info size={14} className="shrink-0 mt-0.5" />
             <span>Select multiple timing options to receive reminders at different intervals</span>
           </div>
         </div>
 
         {/* Active Toggle */}
-        <div className="form-section">
-          <label className="toggle-label">
+        <div className="flex flex-col gap-3">
+          <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={formData.isActive}
               onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
-              className="toggle-input"
+              className="hidden"
             />
-            <span className="toggle-slider"></span>
-            <span className="toggle-text">
+            <span className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${formData.isActive ? 'bg-indigo-500' : 'bg-gray-200'}`}>
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-sm ${formData.isActive ? 'translate-x-6' : ''}`}></span>
+            </span>
+            <span className="text-sm font-medium text-gray-700">
               Enable reminders {formData.isActive ? 'ON' : 'OFF'}
             </span>
           </label>
@@ -212,18 +218,18 @@ export function ReminderSettings({ onSave, existingReminder }: ReminderSettingsP
 
         {/* Success Message */}
         {success && (
-          <div className="success-message">
+          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-300 rounded-lg text-green-800 text-sm">
             <Check size={20} />
             <span>Reminder settings saved successfully!</span>
           </div>
         )}
 
         {/* Error Message */}
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">{error}</div>}
 
         {/* Submit Button */}
-        <div className="form-actions">
-          <button type="submit" className="btn-submit" disabled={loading}>
+        <div className="flex justify-end pt-2 border-t border-gray-200 mt-2 sm:justify-stretch">
+          <button type="submit" className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed sm:w-full" disabled={loading}>
             {loading ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
