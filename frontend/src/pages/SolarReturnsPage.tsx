@@ -3,12 +3,18 @@
  * Main page for solar return feature
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing } from '../components';
+import api from '../services/api';
+import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing, AppLayout } from '../components';
 import { Calendar, Settings, Share2, ArrowLeft } from 'lucide-react';
-import './SolarReturnsPage.css';
+
+interface RelocationLocation {
+  name: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
+}
 
 interface SolarReturn {
   id: string;
@@ -17,9 +23,13 @@ interface SolarReturn {
   returnLocation: {
     name: string;
   };
-  calculatedData: any;
-  interpretation: any;
+  calculatedData: Record<string, unknown>;
+  interpretation: Record<string, unknown>;
   isRelocated: boolean;
+}
+
+interface SolarReturnApiResponse {
+  data: SolarReturn;
 }
 
 type ViewMode = 'dashboard' | 'chart' | 'interpretation' | 'relocate' | 'share';
@@ -34,49 +44,49 @@ export const SolarReturnsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch specific solar return if year is provided
-  useEffect(() => {
-    if (yearParam) {
-      fetchSolarReturn(parseInt(yearParam));
-    }
-  }, [yearParam]);
-
-  const fetchSolarReturn = async (year: number) => {
+  const fetchSolarReturn = useCallback(async (year: number) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(`/api/v1/solar-returns/year/${year}`);
+      const response = await api.get<SolarReturnApiResponse>(`/v1/solar-returns/year/${year}`);
       setSelectedReturn(response.data.data);
       setSelectedYear(year);
-    } catch (err: any) {
-      if (err.response?.status === 404) {
-        // Solar return doesn't exist, redirect to dashboard
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { status?: number; data?: { error?: { message?: string } } } };
+      if (apiErr.response?.status === 404) {
         navigate('/solar-returns');
       } else {
-        setError(err.response?.data?.error?.message || 'Failed to load solar return');
+        setError(apiErr.response?.data?.error?.message ?? 'Failed to load solar return');
       }
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
-  const handleRecalculate = async (location: any) => {
+  useEffect(() => {
+    if (yearParam) {
+      void fetchSolarReturn(parseInt(yearParam));
+    }
+  }, [yearParam, fetchSolarReturn]);
+
+  const handleRecalculate = async (location: RelocationLocation): Promise<SolarReturn | null> => {
     if (!selectedReturn) return null;
 
     try {
       setLoading(true);
       setError(null);
 
-      const response = await axios.post(
-        `/api/v1/solar-returns/${selectedReturn.id}/recalculate`,
+      const response = await api.post<SolarReturnApiResponse>(
+        `/v1/solar-returns/${selectedReturn.id}/recalculate`,
         { location }
       );
 
       setSelectedReturn(response.data.data);
       return response.data.data;
-    } catch (err: any) {
-      setError(err.response?.data?.error?.message || 'Failed to recalculate');
+    } catch (err: unknown) {
+      const apiErr = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(apiErr.response?.data?.error?.message ?? 'Failed to recalculate');
       throw err;
     } finally {
       setLoading(false);
@@ -85,7 +95,7 @@ export const SolarReturnsPage: React.FC = () => {
 
   const handleSelectYear = (year: number) => {
     navigate(`/solar-returns/${year}`);
-    fetchSolarReturn(year);
+    void fetchSolarReturn(year);
   };
 
   const handleViewModeChange = (mode: ViewMode) => {
@@ -94,16 +104,19 @@ export const SolarReturnsPage: React.FC = () => {
 
   const renderBreadcrumb = () => {
     return (
-      <div className="breadcrumb">
-        <button onClick={() => navigate('/solar-returns')} className="back-link">
+      <div className="flex items-center gap-2 mb-4 text-sm">
+        <button
+          onClick={() => navigate('/solar-returns')}
+          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+        >
           <ArrowLeft size={18} />
           Back to Dashboard
         </button>
 
         {selectedYear && (
           <>
-            <span className="separator">/</span>
-            <span className="current">Solar Return {selectedYear}</span>
+            <span className="text-gray-400">/</span>
+            <span className="text-gray-700 dark:text-gray-300">Solar Return {selectedYear}</span>
           </>
         )}
       </div>
@@ -121,11 +134,15 @@ export const SolarReturnsPage: React.FC = () => {
     ];
 
     return (
-      <div className="view-mode-tabs">
+      <div className="flex gap-2.5 mb-5 border-b-2 border-gray-200 dark:border-gray-700 pb-2.5">
         {tabs.map((tab) => (
           <button
             key={tab.mode}
-            className={viewMode === tab.mode ? 'active' : ''}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              viewMode === tab.mode
+                ? 'bg-indigo-600 text-white'
+                : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+            }`}
             onClick={() => handleViewModeChange(tab.mode)}
           >
             {tab.icon}
@@ -137,18 +154,18 @@ export const SolarReturnsPage: React.FC = () => {
   };
 
   return (
-    <div className="solar-returns-page">
-      <div className="page-header">
-        <div>
-          <h1>Solar Returns</h1>
-          <p className="subtitle">Your birthday year forecasts and themes</p>
-        </div>
+    <AppLayout>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold mb-2">Solar Returns</h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          Your birthday year forecasts and themes
+        </p>
       </div>
 
       {error && (
-        <div className="error-banner">
+        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-sm flex items-center justify-between">
           {error}
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">✕</button>
         </div>
       )}
 
@@ -156,36 +173,35 @@ export const SolarReturnsPage: React.FC = () => {
         <SolarReturnDashboard
           onSelectYear={handleSelectYear}
           onSelectSolarReturn={(id) => {
-            const solarReturn = selectedReturn;
-            // Fetch full details
-            axios.get(`/api/v1/solar-returns/${id}`)
+            void api.get<SolarReturnApiResponse>(`/v1/solar-returns/${id}`)
               .then(res => {
                 setSelectedReturn(res.data.data);
                 setSelectedYear(res.data.data.year);
               })
-              .catch(err => {
-                setError(err.response?.data?.error?.message || 'Failed to load solar return');
+              .catch((err: unknown) => {
+                const apiErr = err as { response?: { data?: { error?: { message?: string } } } };
+                setError(apiErr.response?.data?.error?.message ?? 'Failed to load solar return');
               });
           }}
         />
       ) : (
         <>
           {renderBreadcrumb()}
-
           {renderViewModeTabs()}
 
           {loading && (
-            <div className="loading-container">
-              <div className="spinner"></div>
-              <p>Loading...</p>
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-gray-500">Loading...</p>
             </div>
           )}
 
           {!loading && selectedReturn && (
-            <div className="view-container">
+            <div className="min-h-[400px]">
               {viewMode === 'chart' && selectedReturn.calculatedData && (
                 <SolarReturnChart
-                  chartData={selectedReturn.calculatedData}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                  chartData={selectedReturn.calculatedData as any}
                   year={selectedReturn.year}
                   location={selectedReturn.returnLocation.name}
                   showAspects={true}
@@ -195,11 +211,11 @@ export const SolarReturnsPage: React.FC = () => {
 
               {viewMode === 'interpretation' && selectedReturn.interpretation && (
                 <SolarReturnInterpretation
-                  interpretation={selectedReturn.interpretation}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                  interpretation={selectedReturn.interpretation as any}
                   year={selectedReturn.year}
                   returnDate={selectedReturn.returnDate}
                   onDownload={() => {
-                    // Trigger download of interpretation as PDF/text
                     const blob = new Blob([JSON.stringify(selectedReturn.interpretation, null, 2)], {
                       type: 'application/json',
                     });
@@ -218,7 +234,8 @@ export const SolarReturnsPage: React.FC = () => {
                 <RelocationCalculator
                   natalChartId={selectedReturn.id}
                   year={selectedReturn.year}
-                  onRecalculate={handleRecalculate}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                  onRecalculate={handleRecalculate as any}
                 />
               )}
 
@@ -226,7 +243,6 @@ export const SolarReturnsPage: React.FC = () => {
                 <BirthdaySharing
                   solarReturn={selectedReturn}
                   onShare={() => {
-                    // Show success message
                     alert('Solar return shared successfully!');
                   }}
                 />
@@ -235,7 +251,7 @@ export const SolarReturnsPage: React.FC = () => {
           )}
         </>
       )}
-    </div>
+    </AppLayout>
   );
 };
 

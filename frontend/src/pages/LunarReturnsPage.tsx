@@ -9,9 +9,9 @@ import {
   LunarChartView,
   LunarForecastView,
   LunarHistoryView,
+  AppLayout,
 } from '../components';
 import { LunarReturnChart, SavedLunarReturn } from '../services/lunarReturn.api';
-import './LunarReturnsPage.css';
 
 type ViewMode = 'dashboard' | 'chart' | 'forecast' | 'history';
 
@@ -26,12 +26,10 @@ const LunarReturnsPage: React.FC = () => {
   };
 
   const handleSavedReturnClick = (savedReturn: SavedLunarReturn) => {
-    // Convert SavedLunarReturn to LunarReturnChart format
-    // Since SavedLunarReturn doesn't have the full chart data, we'll create a minimal chart
     const chart: LunarReturnChart = {
       returnDate: new Date(savedReturn.returnDate),
       moonPosition: {
-        sign: 'leo', // Default - actual data would need to be fetched
+        sign: 'leo',
         degree: 15,
         minute: 30,
         second: 0,
@@ -69,11 +67,15 @@ const LunarReturnsPage: React.FC = () => {
     ];
 
     return (
-      <div className="view-mode-tabs">
+      <div className="flex gap-2.5 mb-5 border-b-2 border-gray-200 dark:border-gray-700 pb-2.5 sm:flex-wrap">
         {tabs.map((tab) => (
           <button
             key={tab.mode}
-            className={viewMode === tab.mode ? 'active' : ''}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              viewMode === tab.mode
+                ? 'bg-indigo-600 text-white'
+                : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+            }`}
             onClick={() => setViewMode(tab.mode)}
           >
             {tab.label}
@@ -84,14 +86,19 @@ const LunarReturnsPage: React.FC = () => {
   };
 
   return (
-    <div className="lunar-returns-page">
-      <div className="page-header">
+    <AppLayout>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1>Lunar Returns</h1>
-          <p className="subtitle">Your monthly emotional cycles and forecasts</p>
+          <h2 className="text-3xl font-bold mb-2">Lunar Returns</h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Your monthly emotional cycles and forecasts
+          </p>
         </div>
         {viewMode !== 'dashboard' && (
-          <button onClick={handleBackToDashboard} className="back-button">
+          <button
+            onClick={handleBackToDashboard}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition-colors"
+          >
             ← Back to Dashboard
           </button>
         )}
@@ -99,7 +106,7 @@ const LunarReturnsPage: React.FC = () => {
 
       {renderViewModeTabs()}
 
-      <div className="view-container">
+      <div className="min-h-[400px]">
         {viewMode === 'dashboard' && (
           <LunarReturnDashboard
             onChartClick={handleChartClick}
@@ -129,7 +136,7 @@ const LunarReturnsPage: React.FC = () => {
           />
         )}
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
