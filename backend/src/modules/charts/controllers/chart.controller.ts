@@ -4,7 +4,7 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
-import { AppError } from '../../../middleware/errorHandler';
+import { AppError } from '../../../utils/appError';
 import { ChartModel } from '../models';
 import { NatalChartService } from '../../shared/services/natalChart.service';
 import type { NatalChart } from '../../shared/services/natalChart.service';

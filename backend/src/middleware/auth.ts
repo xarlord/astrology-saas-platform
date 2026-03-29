@@ -6,7 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { AppError } from './errorHandler';
+import { AppError } from '../utils/appError';
 import config from '../config';
 
 interface TokenPayload {

@@ -6,13 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Request, Response, NextFunction } from 'express';
-import {
-  getCalendarEvents,
-  getPersonalTransits,
-  createEvent,
-  updateEvent,
-  deleteEvent,
-} from '../../controllers/calendar.controller';
+import { getMonthEvents, createCustomEvent, deleteEvent } from '../../modules/calendar/controllers/calendar.controller';
 
 // Mock dependencies
 jest.mock('../../modules/calendar/models/calendarEvent.model');
@@ -36,27 +30,15 @@ describe('Calendar Controller Unit Tests', () => {
     jest.clearAllMocks();
   });
 
-  describe('getCalendarEvents', () => {
+  describe('getMonthEvents', () => {
     it('should be a function', () => {
-      expect(typeof getCalendarEvents).toBe('function');
+      expect(typeof getMonthEvents).toBe('function');
     });
   });
 
-  describe('getPersonalTransits', () => {
+  describe('createCustomEvent', () => {
     it('should be a function', () => {
-      expect(typeof getPersonalTransits).toBe('function');
-    });
-  });
-
-  describe('createEvent', () => {
-    it('should be a function', () => {
-      expect(typeof createEvent).toBe('function');
-    });
-  });
-
-  describe('updateEvent', () => {
-    it('should be a function', () => {
-      expect(typeof updateEvent).toBe('function');
+      expect(typeof createCustomEvent).toBe('function');
     });
   });
 

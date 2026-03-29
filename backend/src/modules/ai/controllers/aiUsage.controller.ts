@@ -7,7 +7,7 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import aiUsageService from '../services/aiUsage.service';
 import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
-import { AppError } from '../../../middleware/errorHandler';
+import { AppError } from '../../../utils/appError';
 
 /**
  * Get user's AI usage statistics

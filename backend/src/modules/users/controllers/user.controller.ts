@@ -4,7 +4,7 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
-import { AppError } from '../../../middleware/errorHandler';
+import { AppError } from '../../../utils/appError';
 import { UserModel } from '../models';
 import { sanitizeUser } from '../../../utils/helpers';
 

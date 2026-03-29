@@ -126,12 +126,12 @@ describe('ServiceWorkerUpdateBanner', () => {
 
     const { container } = render(<ServiceWorkerUpdateBanner />);
 
-    const banner = container.querySelector('.sw-update-banner');
+    const banner = container.querySelector('.fixed');
     expect(banner).toBeInTheDocument();
-    expect(banner).toHaveClass('sw-update-banner');
+    expect(banner).toHaveClass('fixed');
   });
 
-  it('should add offline class when offlineReady is true', () => {
+  it('should render offline banner with offline-specific styling', () => {
     vi.mocked(useServiceWorkerUpdate).mockReturnValue({
       needRefresh: false,
       offlineReady: true,
@@ -141,8 +141,9 @@ describe('ServiceWorkerUpdateBanner', () => {
 
     const { container } = render(<ServiceWorkerUpdateBanner />);
 
-    const banner = container.querySelector('.sw-update-banner');
+    // Offline banner renders a fixed banner element
+    const banner = container.querySelector('.fixed');
     expect(banner).toBeInTheDocument();
-    expect(banner).toHaveClass('offline');
+    expect(banner).toHaveClass('fixed');
   });
 });

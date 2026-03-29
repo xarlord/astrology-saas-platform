@@ -13,7 +13,7 @@ import {
   getPlanetsInSigns,
   getHousesAnalysis,
 } from '../../modules/analysis/controllers/analysis.controller';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../utils/appError';
 import ChartModel from '../../modules/charts/models/chart.model';
 import { swissEphemeris } from '../../modules/shared';
 import { generateCompletePersonalityAnalysis } from '../../modules/analysis/services/interpretation.service';

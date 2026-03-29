@@ -6,7 +6,7 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import pushNotificationService from '../services/pushNotification.service';
 import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
-import { AppError } from '../../../middleware/errorHandler';
+import { AppError } from '../../../utils/appError';
 
 export const saveSubscription = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) throw new AppError('Unauthorized', 401);

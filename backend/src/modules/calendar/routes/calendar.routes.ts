@@ -4,8 +4,12 @@
  */
 
 import { Router } from 'express';
-import calendarController from '../controllers/calendar.controller';
-import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
+import { authenticate } from '../../../middleware/auth';
+import {
+  getMonthEvents,
+  createCustomEvent,
+  deleteEvent,
+} from '../controllers/calendar.controller';
 
 const router = Router();
 
@@ -13,18 +17,12 @@ const router = Router();
 router.use(authenticate);
 
 // GET /api/calendar/month/:year/:month - Get events for a specific month
-router.get('/month/:year/:month', (req, res, next) => {
-  calendarController.getMonthEvents(req as AuthenticatedRequest, res).catch(next);
-});
+router.get('/month/:year/:month', getMonthEvents);
 
 // POST /api/calendar/events - Create custom calendar event
-router.post('/events', (req, res, next) => {
-  calendarController.createCustomEvent(req as AuthenticatedRequest, res).catch(next);
-});
+router.post('/events', createCustomEvent);
 
 // DELETE /api/calendar/events/:id - Delete a calendar event
-router.delete('/events/:id', (req, res, next) => {
-  calendarController.deleteEvent(req as AuthenticatedRequest, res).catch(next);
-});
+router.delete('/events/:id', deleteEvent);
 
 export default router;

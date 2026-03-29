@@ -7,6 +7,7 @@ import logger from '../utils/logger';
 import { AppError } from '../utils/appError';
 
 // Re-export AppError for convenience
+/** @deprecated Import AppError from utils/appError instead */
 export { AppError } from '../utils/appError';
 
 interface ErrorWithStatusCode extends Error {
@@ -92,12 +93,12 @@ export const errorHandler = (
  * Async Handler Wrapper
  * Wraps async route handlers to catch errors
  */
-export const asyncHandler = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>
+export const asyncHandler = <R extends Request = Request>(
+  fn: (req: R, res: Response, next: NextFunction) => Promise<unknown>
 ) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      await fn(req, res, next);
+      await fn(req as R, res, next);
     } catch (err) {
       // Type guard for Error
       const error = err instanceof Error ? err : new Error(String(err));

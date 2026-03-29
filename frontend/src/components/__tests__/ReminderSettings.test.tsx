@@ -312,7 +312,7 @@ describe('ReminderSettings Component', () => {
 
       const allEventsRadio = screen.getByDisplayValue('all');
       const allEventsLabel = allEventsRadio.closest('label');
-      expect(allEventsLabel).toHaveClass('selected');
+      expect(allEventsLabel?.className).toContain('border-indigo-500');
     });
 
     it('should highlight selected reminder type', () => {
@@ -320,7 +320,7 @@ describe('ReminderSettings Component', () => {
 
       const emailRadio = screen.getByDisplayValue('email');
       const emailLabel = emailRadio.closest('label');
-      expect(emailLabel).toHaveClass('selected');
+      expect(emailLabel?.className).toContain('border-indigo-500');
     });
 
     it('should show checkmark on selected timing options', () => {
@@ -334,7 +334,7 @@ describe('ReminderSettings Component', () => {
 
       if (oneDayCheckbox) {
         const oneDayLabel = oneDayCheckbox.closest('label');
-        expect(oneDayLabel).toHaveClass('selected');
+        expect(oneDayLabel?.className).toContain('border-emerald-500');
       }
     });
   });
@@ -416,8 +416,9 @@ describe('ReminderSettings Component', () => {
     it('should render bell icon in header', () => {
       const { container } = render(<ReminderSettings />);
 
-      const headerIcon = container.querySelector('.header-icon');
-      expect(headerIcon).toBeInTheDocument();
+      // Bell icon container has bg-blue-50 text-blue-500 class
+      const bellContainer = container.querySelector('.bg-blue-50');
+      expect(bellContainer).toBeInTheDocument();
     });
 
     it('should render mail icon for email option', () => {
@@ -445,7 +446,8 @@ describe('ReminderSettings Component', () => {
     it('should adapt layout for smaller screens', () => {
       const { container } = render(<ReminderSettings />);
 
-      const form = container.querySelector('.reminder-settings');
+      // The component renders a form element inside its root container
+      const form = container.querySelector('form');
       expect(form).toBeInTheDocument();
     });
   });

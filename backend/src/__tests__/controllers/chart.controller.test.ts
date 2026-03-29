@@ -14,7 +14,7 @@ import {
   deleteChart,
   calculateChart,
 } from '../../modules/charts/controllers/chart.controller';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../utils/appError';
 import ChartModel from '../../modules/charts/models/chart.model';
 import { NatalChartService } from '../../modules/shared/services/natalChart.service';
 

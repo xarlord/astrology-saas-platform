@@ -5,7 +5,8 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
-import { errorHandler, AppError, asyncHandler } from '../../middleware/errorHandler';
+import { errorHandler, asyncHandler } from '../../middleware/errorHandler';
+import { AppError } from '../../utils/appError';
 import logger from '../../utils/logger';
 
 // Mock dependencies

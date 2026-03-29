@@ -18,7 +18,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import ChartCreatePage from './pages/ChartCreatePage';
 import ChartViewPage from './pages/ChartViewPage';
-import AnalysisPage from './pages/AnalysisPage';
+import { AnalysisPage } from './pages/AnalysisPage';
 import TransitPage from './pages/TransitPage';
 import ProfilePage from './pages/ProfilePage';
 import SynastryPageWrapper from './pages/SynastryPage';

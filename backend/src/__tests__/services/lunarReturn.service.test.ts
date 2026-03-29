@@ -10,6 +10,9 @@ import {
   generateLunarMonthForecast,
   getCurrentLunarReturn,
 } from '../../modules/lunar/services/lunarReturn.service';
+
+import { MoonPhase, ZodiacSign } from '../../models/calendar.model';
+
 import { MoonPhase, ZodiacSign } from '../../models/calendar.model';
 
 describe('Lunar Return Service', () => {

@@ -235,16 +235,16 @@ describe('Astronomy Engine Service', () => {
       expect(lstNY).not.toBe(lstLondon);
     });
 
-    test('should advance LST by approximately 1 degree per 4 minutes', () => {
+    test('should advance LST by approximately 15 degrees per hour (~1 degree per 4 minutes)', () => {
       const date1 = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
       const date2 = new Date(Date.UTC(2024, 0, 1, 13, 0, 0)); // 1 hour later
 
       const lst1 = service.calculateLocalSiderealTime(date1, 0);
       const lst2 = service.calculateLocalSiderealTime(date2, 0);
 
-      // SiderealTime returns hours; LST advances ~1 sidereal hour per solar hour
+      // LST advances ~15.04 degrees per hour (≈ 1 degree per 4 minutes)
       const diff = lst2 - lst1;
-      expect(diff).toBeCloseTo(1, 0);
+      expect(diff).toBeCloseTo(15, 0);
     });
   });
 

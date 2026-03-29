@@ -26,9 +26,10 @@
     "db:seed": "npm run db:seed --workspace=backend"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "concurrently": "^8.2.2",
-    "prettier": "^3.1.1",
     "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
     "typescript": "^5.3.3"
   },
   "engines": {
@@ -47,5 +48,8 @@
     "saas"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.7"
+  }
 }

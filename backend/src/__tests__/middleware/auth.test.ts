@@ -7,7 +7,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { authenticate, optionalAuthenticate, generateToken, generateRefreshToken } from '../../middleware/auth';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../utils/appError';
 import config from '../../config';
 
 // Mock dependencies

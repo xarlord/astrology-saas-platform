@@ -14,7 +14,7 @@ import {
   deleteAccount,
   getUserCharts,
 } from '../../modules/users/controllers/user.controller';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../utils/appError';
 import UserModel from '../../modules/users/models/user.model';
 import { sanitizeUser } from '../../utils/helpers';
 

@@ -216,7 +216,7 @@ export class PDFGenerationService {
     });
 
     this.browser = await this.browserPromise;
-    return this.browser;
+    return this.browser!;
   }
 
   /**

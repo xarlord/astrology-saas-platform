@@ -210,8 +210,10 @@ describe('UsageMeter', () => {
     it('should apply custom className', () => {
       render(<UsageMeter {...defaultProps} className="custom-class" />);
 
-      const container = screen.getByRole('progressbar').closest('.usage-meter');
-      expect(container).toHaveClass('custom-class');
+      // The progressbar div is a direct child of the root div that receives className
+      const progressBar = screen.getByRole('progressbar');
+      const rootContainer = progressBar.parentElement;
+      expect(rootContainer).toHaveClass('custom-class');
     });
 
     it('should work without onUpgradeClick', () => {

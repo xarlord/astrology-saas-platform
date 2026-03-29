@@ -3,62 +3,85 @@
  * Displays chart personality analysis with AI-enhanced interpretations
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState, AppLayout } from '../components';
 import { PersonalityAnalysis } from '../components';
+import type { PersonalityAnalysisData } from '../components/PersonalityAnalysis';
+import { useChartAnalysis } from '../hooks';
+import { getErrorMessage } from '../utils/errorHandling';
 
-interface ChartData {
-  id: string;
-  planets: {
-    planet: string;
-    sign: string;
-    degree: number;
-    house: number;
-  }[];
-  houses: {
-    house: number;
-    sign: string;
-    degree: number;
-  }[];
-  aspects: {
-    planet1: string;
-    planet2: string;
-    type: string;
-    orb: number;
-  }[];
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+/**
+ * Build a PlanetSignInterpretation from minimal API data (sign name only).
+ * The API returns SignInfo { sign, degree } which lacks interpretation text,
+ * so we provide empty defaults that the component can render gracefully.
+ */
+function toPlanetSignInterpretation(planet: string, signInfo: { sign: string; degree: number }) {
+  return {
+    planet,
+    sign: signInfo.sign,
+    keywords: [],
+    general: `${planet} in ${signInfo.sign} (${signInfo.degree.toFixed(1)} degrees)`,
+    strengths: [],
+    challenges: [],
+    advice: [],
+  };
 }
 
-export default function AnalysisPage() {
+export function AnalysisPage() {
   const { chartId } = useParams<{ chartId: string }>();
   const navigate = useNavigate();
-  const [chartData, setChartData] = useState<ChartData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [aiInterpretation, setAIInterpretation] = useState<Record<string, unknown> | null>(null);
 
-  useEffect(() => {
-    // TODO: Fetch chart data from API
-    // For now, using placeholder data
-    setChartData({
-      id: chartId ?? '1',
-      planets: [
-        { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-        { planet: 'moon', sign: 'taurus', degree: 10, house: 2 },
-      ],
-      houses: [
-        { house: 1, sign: 'aries', degree: 0 },
-        { house: 2, sign: 'taurus', degree: 30 },
-      ],
-      aspects: [
-        { planet1: 'sun', planet2: 'moon', type: 'trine', orb: 5 },
-      ],
-    });
-    setLoading(false);
-  }, [chartId]);
+  const {
+    data: analysisResult,
+    isLoading,
+    error,
+  } = useChartAnalysis(chartId ?? '');
+
+  const analysis = analysisResult?.analysis ?? null;
 
   const handleAIInterpretation = (interpretation: Record<string, unknown>) => {
     setAIInterpretation(interpretation);
   };
+
+  /**
+   * Transform the raw API PersonalityAnalysis into the shape expected
+   * by the PersonalityAnalysis display component (PersonalityAnalysisData).
+   */
+  const buildComponentData = (): PersonalityAnalysisData | null => {
+    if (!analysis) return null;
+
+    return {
+      overview: {
+        sunSign: toPlanetSignInterpretation('sun', analysis.overview.sunSign),
+        moonSign: toPlanetSignInterpretation('moon', analysis.overview.moonSign),
+        ascendantSign: toPlanetSignInterpretation('ascendant', analysis.overview.ascendant),
+      },
+      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => toPlanetSignInterpretation(p.planet, p)),
+      houses: [],
+      aspects: (analysis.majorAspects ?? []).map((a) => ({
+        planet1: a.planet1,
+        planet2: a.planet2,
+        aspect: a.aspect,
+        orb: a.orb,
+        harmonious: false,
+        keywords: [],
+        interpretation: `${a.planet1} ${a.aspect} ${a.planet2}`,
+        expression: '',
+        advice: [],
+      })),
+      patterns: analysis.chartPattern
+        ? [{ type: analysis.chartPattern.name, description: analysis.chartPattern.description, planets: [] }]
+        : undefined,
+    };
+  };
+
+  const componentData = analysis ? buildComponentData() : null;
 
   return (
     <AppLayout>
@@ -66,9 +89,19 @@ export default function AnalysisPage() {
         <h2 className="text-3xl font-bold mb-2">Personality Analysis</h2>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <SkeletonLoader variant="text" count={5} />
-      ) : !chartData ? (
+      ) : error ? (
+        <EmptyState
+          icon="📊"
+          title="Failed to load analysis"
+          description={getErrorMessage(error, 'Unable to load personality analysis. Please try again.')}
+          actionText="Retry"
+          onAction={() => navigate(0)}
+          secondaryActionText="Back to Dashboard"
+          onSecondaryAction={() => navigate('/dashboard')}
+        />
+      ) : !componentData ? (
         <EmptyState
           icon="📊"
           title="No chart data available"
@@ -83,7 +116,7 @@ export default function AnalysisPage() {
           {/* AI Toggle Section */}
           <div className="mb-6">
             <AIInterpretationToggle
-              chartData={chartData as unknown as Record<string, unknown>}
+              chartData={analysis as unknown as Record<string, unknown>}
               onInterpretationGenerated={handleAIInterpretation}
             />
           </div>
@@ -97,60 +130,7 @@ export default function AnalysisPage() {
 
           {/* Traditional Analysis */}
           <div className="card">
-            {chartData && (
-              <PersonalityAnalysis
-                data={{
-                  overview: {
-                    sunSign: {
-                      planet: 'sun',
-                      sign: chartData.planets.find(p => p.planet === 'sun')?.sign ?? 'aries',
-                      keywords: ['core identity', 'vitality', 'self-expression'],
-                      general: 'Your Sun sign represents your core identity and life purpose.',
-                      strengths: ['Leadership', 'Confidence', 'Creativity'],
-                      challenges: ['Ego', 'Stubbornness', 'Impatience'],
-                      advice: ['Embrace your natural leadership abilities', 'Practice patience with others'],
-                    },
-                    moonSign: {
-                      planet: 'moon',
-                      sign: chartData.planets.find(p => p.planet === 'moon')?.sign ?? 'taurus',
-                      keywords: ['emotions', 'intuition', 'inner needs'],
-                      general: 'Your Moon sign reveals your emotional nature and inner world.',
-                      strengths: ['Emotional intelligence', 'Nurturing', 'Intuition'],
-                      challenges: ['Moodiness', 'Sensitivity', 'Insecurity'],
-                      advice: ['Honor your emotional needs', 'Create a safe home environment'],
-                    },
-                  },
-                  planetsInSigns: chartData.planets.map(p => ({
-                    planet: p.planet,
-                    sign: p.sign,
-                    keywords: [`${p.planet} in ${p.sign}`, 'energy', 'expression'],
-                    general: `${p.planet.charAt(0).toUpperCase() + p.planet.slice(1)} in ${p.sign.charAt(0).toUpperCase() + p.sign.slice(1)}`,
-                    strengths: ['Expressive', 'Dynamic'],
-                    challenges: ['Impulsive', 'Restless'],
-                    advice: ['Channel your energy constructively'],
-                  })),
-                  houses: chartData.houses.map(h => ({
-                    house: h.house,
-                    signOnCusp: h.sign,
-                    planetsInHouse: chartData.planets.filter(p => p.house === h.house).map(p => p.planet),
-                    themes: [`${h.sign.charAt(0).toUpperCase() + h.sign.slice(1)} themes`],
-                    interpretation: `House ${h.house} in ${h.sign.charAt(0).toUpperCase() + h.sign.slice(1)}`,
-                    advice: ['Focus on this area of life'],
-                  })),
-                  aspects: chartData.aspects.map(a => ({
-                    planet1: a.planet1,
-                    planet2: a.planet2,
-                    aspect: a.type,
-                    orb: a.orb,
-                    harmonious: ['trine', 'sextile'].includes(a.type),
-                    keywords: [a.type, 'aspect'],
-                    interpretation: `${a.planet1} ${a.type} ${a.planet2}`,
-                    expression: 'This aspect influences your personality',
-                    advice: ['Work with this energy consciously'],
-                  })),
-                }}
-              />
-            )}
+            <PersonalityAnalysis data={componentData} />
           </div>
         </>
       )}

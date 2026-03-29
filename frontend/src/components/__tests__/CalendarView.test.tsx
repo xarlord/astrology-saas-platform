@@ -292,7 +292,7 @@ describe('CalendarView Component', () => {
 
       const { container } = render(<CalendarView />);
 
-      expect(container.querySelector('.spinner')).toBeInTheDocument();
+      expect(container.querySelector('.animate-spin')).toBeInTheDocument();
     });
   });
 
@@ -369,8 +369,9 @@ describe('CalendarView Component', () => {
     it('should adapt to mobile viewport', () => {
       const { container } = render(<CalendarView />);
 
-      const calendarView = container.querySelector('.calendar-view');
-      expect(calendarView).toBeInTheDocument();
+      // Component uses Tailwind responsive classes (w-full, md:p-3, etc.)
+      const responsiveContainer = container.querySelector('.w-full');
+      expect(responsiveContainer).toBeInTheDocument();
     });
 
     it('should handle different screen sizes', () => {
