@@ -11,7 +11,8 @@ export interface CalendarEvent {
   event_type: string;
   event_date: Date;
   end_date?: Date;
-  event_data?: any;
+  event_data?: unknown;
+
   interpretation?: string;
   created_at: Date;
   updated_at: Date;

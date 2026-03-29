@@ -7,6 +7,7 @@ import winston from 'winston';
 import winstonDailyRotateFile from 'winston-daily-rotate-file';
 import config from '../config';
 import path from 'path';
+import { Request, Response, NextFunction } from 'express';
 
 const { combine, timestamp, printf, colorize, errors, json, metadata } = winston.format;
 
@@ -39,7 +40,7 @@ const customLevels = {
 
 // Custom log format with request context
 const contextFormat = printf(({ level, message, timestamp, stack, ...metadata }) => {
-  const { requestId, userId, method, path, ...rest } = metadata as any;
+  const { requestId, userId, method, path, ...rest } = metadata as Record<string, unknown>;
 
   let msg = `${timestamp as string} [${level}]`;
 
@@ -186,7 +187,12 @@ export const createChildLogger = (context: Record<string, unknown>) => {
 /**
  * Log HTTP requests
  */
-export const logHttpRequest = (req: any, _res: any, responseTime: number) => {
+interface HttpRequestWithExtras extends Request {
+  id?: string;
+  startTime?: number;
+}
+
+export const logHttpRequest = (req: HttpRequestWithExtras, _res: Response, responseTime: number) => {
   const { method, originalUrl, statusCode } = req;
   const userId = req.user?.id;
   const requestId = req.id;
@@ -216,7 +222,7 @@ export const winstonStream = {
 /**
  * Request context middleware
  */
-export const addRequestContext = (req: any, res: any, next: any) => {
+export const addRequestContext = (req: HttpRequestWithExtras, res: Response, next: NextFunction) => {
   // Add request ID if not present
   if (!req.id) {
     req.id = Math.random().toString(36).substring(2, 15);

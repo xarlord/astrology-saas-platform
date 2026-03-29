@@ -43,7 +43,7 @@ export const errorHandler = (
     params: req.params,
     isOperational,
     stack: err.stack,
-    userId: (req as any).user?.id, // Add user context if available
+    userId: (req as { user?: { id?: string } }).user?.id,
   });
 
   // Prepare error response

@@ -20,16 +20,27 @@ declare module 'web-push' {
 
   export function generateVAPIDKeys(): VapidKeys;
 
+  interface SendResult {
+    statusCode: number;
+    body: string;
+    headers: Record<string, string>;
+  }
+
+  interface EncryptOptions {
+    contentEncoding?: string;
+    padSize?: number;
+  }
+
   export function sendNotification(
     subscription: PushSubscription,
     payload?: string | Buffer,
-    options?: any
-  ): Promise<any>;
+    options?: EncryptOptions
+  ): Promise<SendResult>;
 
   export function encrypt(
     userPublicKey: string,
     userAuth: string,
     payload: string | Buffer,
-    options?: any
+    options?: EncryptOptions
   ): { ciphertext: Buffer; salt: Buffer; serverPublicKey: Buffer };
 }

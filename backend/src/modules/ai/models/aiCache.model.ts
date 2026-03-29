@@ -10,7 +10,7 @@ import type { Knex } from 'knex';
 export interface AICacheEntry {
   id: string;
   cache_key: string;
-  data: any;
+  data: Record<string, unknown>;
   expires_at: Date | null;
   created_at: Date;
   updated_at: Date;
@@ -18,7 +18,7 @@ export interface AICacheEntry {
 
 export interface CreateCacheData {
   cache_key: string;
-  data: any;
+  data: Record<string, unknown>;
   expires_at?: Date | null;
 }
 
@@ -28,7 +28,7 @@ class AICacheModel {
   /**
    * Set cache entry (insert or update on conflict)
    */
-  async set(cacheKey: string, data: any, ttlSeconds?: number): Promise<AICacheEntry> {
+  async set(cacheKey: string, data: Record<string, unknown>, ttlSeconds?: number): Promise<AICacheEntry> {
     const expiresAt = ttlSeconds
       ? new Date(Date.now() + ttlSeconds * 1000)
       : null;
@@ -54,7 +54,7 @@ class AICacheModel {
    * Get cache entry by key
    * Returns null if not found or expired
    */
-  async get(cacheKey: string): Promise<any | null> {
+  async get(cacheKey: string): Promise<Record<string, unknown> | null> {
     const entry = await knex(this.tableName)
       .where('cache_key', cacheKey)
       .where((builder: Knex.QueryBuilder) =>

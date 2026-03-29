@@ -5,14 +5,25 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import request from 'supertest';
+import type { Knex } from 'knex';
+import type { Application } from 'express';
 
 // Get JWT secret from environment
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-do-not-use-in-production';
 
+interface TestUser {
+  id: string;
+  email: string;
+  name: string;
+  plan: string;
+  password_hash: string;
+  [key: string]: unknown;
+}
+
 /**
  * Clean database tables in correct order (respecting foreign keys)
  */
-export async function cleanDatabase(database: any) {
+export async function cleanDatabase(database: Knex) {
   const tables = [
     'synastry_reports',
     'monthly_forecasts',
@@ -45,7 +56,7 @@ export async function cleanDatabase(database: any) {
 /**
  * Create test user in database
  */
-export async function createTestUser(database: any, overrides: Partial<any> = {}) {
+export async function createTestUser(database: Knex, overrides: Record<string, unknown> = {}) {
   // Use random string to ensure uniqueness even when tests run in quick succession
   const randomSuffix = Math.random().toString(36).substring(2, 15);
   const testEmail = `test-${randomSuffix}@example.com`;
@@ -67,7 +78,7 @@ export async function createTestUser(database: any, overrides: Partial<any> = {}
 /**
  * Create test chart in database
  */
-export async function createTestChart(database: any, userId: string, overrides: Partial<any> = {}) {
+export async function createTestChart(database: Knex, userId: string, overrides: Record<string, unknown> = {}) {
   const [chart] = await database('charts')
     .insert({
       user_id: userId,
@@ -95,7 +106,7 @@ export async function createTestChart(database: any, userId: string, overrides: 
 /**
  * Generate a valid JWT token for a user
  */
-export function generateAuthToken(user: any): string {
+export function generateAuthToken(user: TestUser): string {
   return jwt.sign(
     {
       id: user.id,
@@ -111,7 +122,7 @@ export function generateAuthToken(user: any): string {
 /**
  * Generate a valid refresh token for a user
  */
-export function generateRefreshToken(user: any): string {
+export function generateRefreshToken(user: { id: string; email: string }): string {
   return jwt.sign(
     {
       id: user.id,
@@ -128,10 +139,8 @@ export function generateRefreshToken(user: any): string {
 /**
  * Make an authenticated request
  */
-export function authenticatedRequest(app: any, method: string, url: string, token: string) {
-  const agent = request(app);
-  const httpMethod = method.toLowerCase() as 'get' | 'post' | 'put' | 'delete' | 'patch';
-  return agent[httpMethod](url)
+export function authenticatedRequest(app: Application, method: string, url: string, token: string) {
+  return (request(app) as Record<string, (url: string) => request.Test>)[method.toLowerCase()](url)
     .set('Authorization', `Bearer ${token}`);
 }
 
@@ -159,7 +168,7 @@ export const mockRequest = () => ({
  * Mock response object
  */
 export const mockResponse = () => {
-  const res: any = {
+  const res: Record<string, jest.Mock> = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn().mockReturnThis(),
     send: jest.fn().mockReturnThis(),

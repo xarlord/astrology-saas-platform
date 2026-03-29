@@ -3,7 +3,7 @@
  * Tests for PostgreSQL-based caching system with SHA-256 key generation
  */
 
-import { describe, it, expect, beforeEach, afterEach, afterAll } from '@jest/globals';
+import { describe, it, expect, beforeEach, afterAll } from '@jest/globals';
 import aiCacheService from '../../modules/ai/services/aiCache.service';
 import db from '../../config/database';
 
@@ -14,15 +14,6 @@ describe('AI Cache Service', () => {
       await db('ai_cache').truncate();
     } catch (error) {
       // Table might not exist yet, ignore
-    }
-  });
-
-  afterEach(async () => {
-    // Clean up after each test
-    try {
-      await db('ai_cache').truncate();
-    } catch (error) {
-      // Table might not exist, ignore
     }
   });
 
@@ -65,10 +56,7 @@ describe('AI Cache Service', () => {
       expect(cached).toBeNull();
     });
 
-    it.skip('should handle TTL correctly - not expired immediately - SKIPPED: afterEach cleanup interferes with TTL test', async () => {
-      // NOTE: This test cannot work properly with afterEach truncation
-      // The "should expire cached entries" test above validates TTL functionality correctly
-      // This specific test is redundant and cannot run alongside the cleanup hooks
+    it('should handle TTL correctly - not expired immediately', async () => {
       const key = 'test-key-ttl';
       const data = { test: 'data' };
 

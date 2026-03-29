@@ -88,8 +88,7 @@ export function getPlanetInSignInterpretation(planet: string, sign: string): str
 // ASPECT INTERPRETATIONS
 // ============================================================================
 
-export function getAspectInterpretation(aspect: any): string {
-  const { type, planet1, planet2 } = aspect;
+export function getAspectInterpretation(aspect: { type: string; planet1: string; planet2: string }): string {  const { type, planet1, planet2 } = aspect;
 
   const aspectMeanings: Record<string, string> = {
     conjunction: 'combines energies',
@@ -133,8 +132,7 @@ export function getHouseInterpretation(houseNumber: number, sign: string): strin
 // TRANSIT INTERPRETATIONS
 // ============================================================================
 
-export function getTransitInterpretation(transit: any): string {
-  const { planet1, planet2, type } = transit;
+export function getTransitInterpretation(transit: { planet1: string; planet2: string; type: string }): string {  const { planet1, planet2, type } = transit;
 
   return `Transiting ${planet1} ${type} your natal ${planet2}. This energy influences your current experiences and personal growth.`;
 }
@@ -144,11 +142,11 @@ export function getTransitInterpretation(transit: any): string {
 // ============================================================================
 
 export function generatePersonalityAnalysis(data: {
-  planets: any[];
-  houses: any[];
-  aspects: any[];
+  planets: Planet[];
+  houses: house[];
+  aspects: aspect[];
 }): {
-  overview: any;
+  overview: Record<string, unknown>;
   strengths: string[];
   challenges: string[];
   advice: string[];

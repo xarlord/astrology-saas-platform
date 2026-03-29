@@ -4,6 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
 import {
   calculateSynastryChart,
   calculateCompositeChart,
@@ -17,9 +18,9 @@ import knex from '../../../config/database';
  * Compare two charts and calculate synastry
  * POST /synastry/compare
  */
-export async function compareCharts(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function compareCharts(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user.id;
 
     if (!userId) {
       res.status(401).json({
@@ -283,9 +284,9 @@ export async function compareCharts(req: Request, res: Response, next: NextFunct
  * Calculate compatibility score
  * POST /synastry/compatibility
  */
-export async function getCompatibility(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getCompatibility(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user.id;
 
     if (!userId) {
       res.status(401).json({
@@ -307,8 +308,8 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
 
     // Fetch both charts
     const [chart1Data, chart2Data] = await Promise.all([
-      knex('charts').where({ id: chart1Id }).first(),
-      knex('charts').where({ id: chart2Id }).first(),
+      knex('charts').where({ id: chart1Id }).first() as Promise<Record<string, unknown> | undefined>,
+      knex('charts').where({ id: chart2Id }).first() as Promise<Record<string, unknown> | undefined>,
     ]);
 
     if (!chart1Data || !chart2Data) {
@@ -321,42 +322,42 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
 
     // Build simplified chart objects for calculation
     const chart1: Chart = {
-      id: chart1Data.id,
-      userId: chart1Data.userId,
+      id: chart1Data.id as string,
+      userId: chart1Data.userId as string,
       planets: {},
     };
 
     const chart2: Chart = {
-      id: chart2Data.id,
-      userId: chart2Data.userId,
+      id: chart2Data.id as string,
+      userId: chart2Data.userId as string,
       planets: {},
     };
 
     // Populate planets for both charts
     const planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'] as const;
     planets.forEach((planet) => {
-      const signField = `${planet}Sign` as any;
-      const degreeField = `${planet}Degree` as any;
-      const minuteField = `${planet}Minute` as any;
-      const secondField = `${planet}Second` as any;
+      const signField = `${planet}Sign` as keyof typeof chart1Data;
+      const degreeField = `${planet}Degree` as keyof typeof chart1Data;
+      const minuteField = `${planet}Minute` as keyof typeof chart1Data;
+      const secondField = `${planet}Second` as keyof typeof chart1Data;
 
       if (chart1Data[signField]) {
         chart1.planets[planet] = {
           name: planet,
-          degree: chart1Data[degreeField] || 0,
-          minute: chart1Data[minuteField] || 0,
-          second: chart1Data[secondField] || 0,
-          sign: chart1Data[signField],
+          degree: (chart1Data[degreeField] as number) || 0,
+          minute: (chart1Data[minuteField] as number) || 0,
+          second: (chart1Data[secondField] as number) || 0,
+          sign: chart1Data[signField] as string,
         };
       }
 
       if (chart2Data[signField]) {
         chart2.planets[planet] = {
           name: planet,
-          degree: chart2Data[degreeField] || 0,
-          minute: chart2Data[minuteField] || 0,
-          second: chart2Data[secondField] || 0,
-          sign: chart2Data[signField],
+          degree: (chart2Data[degreeField] as number) || 0,
+          minute: (chart2Data[minuteField] as number) || 0,
+          second: (chart2Data[secondField] as number) || 0,
+          sign: chart2Data[signField] as string,
         };
       }
     });
@@ -365,7 +366,7 @@ export async function getCompatibility(req: Request, res: Response, next: NextFu
     const scores = calculateCategoryScores(chart1, chart2);
     const elementalBalance = calculateElementalBalance(chart1, chart2);
 
-    const result: any = {
+    const result: Record<string, unknown> = {
       chart1Id,
       chart2Id,
       scores,

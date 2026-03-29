@@ -162,7 +162,7 @@ export class SolarReturnModel {
   /**
    * Map database row to SolarReturn interface
    */
-  private mapToSolarReturn(row: any): SolarReturn {
+  private mapToSolarReturn(row: any): SolarReturn | null {
     return {
       id: row.id,
       userId: row.user_id,

@@ -325,7 +325,7 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${planets.map(([name, pos]: [string, any]) => `
+          ${planets.map(([name, pos]: [string, PlanetPosition]) => `
             <tr>
               <td><span class="symbol">${PLANET_SYMBOLS[name] || ''}</span> ${name}</td>
               <td><span class="symbol">${ZODIAC_SYMBOLS[pos.sign] || ''}</span> ${this.capitalize(pos.sign)}</td>
@@ -377,7 +377,7 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${chart.aspects.slice(0, 15).map((aspect: any) => `
+          ${chart.aspects.slice(0, 15).map((aspect: AspectData) => `
             <tr>
               <td>${this.capitalize(aspect.planet1)}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
@@ -490,7 +490,7 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${synastry.aspects.slice(0, 15).map((aspect: any) => `
+          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean; planet1: string | { planet: string }; planet2: string | { planet: string } }) => `
             <tr>
               <td>${this.capitalize(aspect.planet1?.planet || aspect.planet1)}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
@@ -558,7 +558,7 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${solar.keyDates.map((kd: any) => `
+          ${solar.keyDates.map((kd: { date: string; event: string }) => `
             <tr>
               <td>${kd.date}</td>
               <td>${kd.event}</td>

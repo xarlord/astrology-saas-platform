@@ -72,9 +72,16 @@ export interface SynastryInput {
   chartB: NatalChartInput;
 }
 
+export interface ParsedInterpretation {
+  text?: string;
+  generated?: boolean;
+  format?: string;
+  [key: string]: unknown;
+}
+
 export interface InterpretationResult {
   success: boolean;
-  interpretation: any;
+  interpretation: ParsedInterpretation | null;
   generatedAt: string;
   model: string;
   cached?: boolean;
@@ -85,7 +92,7 @@ export interface InterpretationResult {
  * Simple in-memory cache for AI interpretations
  * In production, this should be replaced with Redis or database caching
  */
-const interpretationCache = new Map<string, { data: any; timestamp: number }>();
+const interpretationCache = new Map<string, { data: ParsedInterpretation; timestamp: number }>();
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 class OpenAIService {
@@ -155,7 +162,7 @@ class OpenAIService {
         model: openaiConfig.model,
         cached: false,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('OpenAI natal interpretation error:', error);
       return {
         success: false,
@@ -233,7 +240,7 @@ class OpenAIService {
         model: openaiConfig.model,
         cached: false,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('OpenAI transit forecast error:', error);
       return {
         success: false,
@@ -312,7 +319,7 @@ class OpenAIService {
         model: openaiConfig.model,
         cached: false,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('OpenAI compatibility analysis error:', error);
       return {
         success: false,
@@ -386,7 +393,7 @@ class OpenAIService {
         model: openaiConfig.model,
         cached: false,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('OpenAI lunar return interpretation error:', error);
       return {
         success: false,
@@ -460,7 +467,7 @@ class OpenAIService {
         model: openaiConfig.model,
         cached: false,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('OpenAI solar return interpretation error:', error);
       return {
         success: false,
@@ -553,7 +560,7 @@ class OpenAIService {
   /**
    * Parse AI response into structured format
    */
-  private parseInterpretation(response: string): any {
+  private parseInterpretation(response: string): ParsedInterpretation {
     // Try to parse as JSON first
     try {
       return JSON.parse(response);
@@ -619,31 +626,37 @@ class OpenAIService {
   /**
    * Handle and format errors
    */
-  private handleError(error: any): string {
-    if (error.response) {
-      // OpenAI API error
-      return `API Error: ${error.response.data?.error?.message || 'Unknown API error'}`;
+  private handleError(error: unknown): string {
+    const err = error as Record<string, unknown>;
+    const response = err.response as Record<string, unknown> | undefined;
+    if (response) {
+      const data = response.data as Record<string, { message?: string }> | undefined;
+      return `API Error: ${data?.error?.message || 'Unknown API error'}`;
     }
 
-    if (error.code === 'ENOTFOUND') {
+    if (err.code === 'ENOTFOUND') {
       return 'Network Error: Unable to reach OpenAI API';
     }
 
-    if (error.message?.includes('API key')) {
-      return 'Configuration Error: Invalid or missing API key';
+    if (error instanceof Error) {
+      if (error.message.includes('API key')) {
+        return 'Configuration Error: Invalid or missing API key';
+      }
+
+      if (error.message.includes('quota')) {
+        return 'Quota Exceeded: API rate limit or quota exceeded';
+      }
+
+      return error.message;
     }
 
-    if (error.message?.includes('quota')) {
-      return 'Quota Exceeded: API rate limit or quota exceeded';
-    }
-
-    return error.message || 'Unknown error occurred';
+    return 'Unknown error occurred';
   }
 
   /**
    * Generate cache key from data
    */
-  private getCacheKey(type: string, data: any): string {
+  private getCacheKey(type: string, data: unknown): string {
     const hash = JSON.stringify(data);
     return `${type}:${hash}`;
   }
@@ -651,7 +664,7 @@ class OpenAIService {
   /**
    * Get cached result if available and not expired
    */
-  private getCachedResult(key: string): any | null {
+  private getCachedResult(key: string): ParsedInterpretation | null {
     const cached = interpretationCache.get(key);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
       return cached.data;

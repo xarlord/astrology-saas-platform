@@ -29,7 +29,7 @@ export class PromptBuilder {
   /**
    * Build a prompt from template with parameters
    */
-  static build(template: PromptTemplate, params: Record<string, any>): string {
+  static build(template: PromptTemplate, params: Record<string, string>): string {
     let prompt = template.userPrompt;
 
     // Replace parameters in the prompt

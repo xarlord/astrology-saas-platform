@@ -4,6 +4,7 @@
  */
 
 import request from 'supertest';
+import type { Application } from 'express';
 import { db } from '../db';
 import { cleanDatabase, createTestUser, createTestChart } from '../utils';
 import { mockAuthHeader } from '../auth.utils';
@@ -49,7 +50,7 @@ class APIPerformanceTest {
     this.concurrency = concurrency;
   }
 
-  async run(app: any, authToken?: string, data?: any): Promise<APIPerformanceResult> {
+  async run(app: Application, authToken?: string, data?: Record<string, unknown>): Promise<APIPerformanceResult> {
     const times: number[] = [];
     const startTime = performance.now();
 
@@ -58,7 +59,7 @@ class APIPerformanceTest {
       for (let i = 0; i < this.iterations; i++) {
         const requestStart = performance.now();
 
-        let req: any;
+        let req: request.Test;
         switch (this.method) {
           case 'get':
             req = request(app).get(this.endpoint);
@@ -96,7 +97,7 @@ class APIPerformanceTest {
         for (let i = 0; i < batchSize; i++) {
           const requestStart = performance.now();
 
-          let req: any;
+          let req: request.Test;
           switch (this.method) {
             case 'get':
               req = request(app).get(this.endpoint);
@@ -165,9 +166,9 @@ class APIPerformanceTest {
 }
 
 describe('API Performance Tests', () => {
-  let app: any;
-  let testUser: any;
-  let testChart: any;
+  let app: Application;
+  let testUser: Record<string, unknown>;
+  let testChart: Record<string, unknown>;
   let authToken: string;
 
   beforeAll(async () => {
@@ -494,7 +495,7 @@ describe('API Performance Tests', () => {
 
   describe('Load Testing Summary', () => {
     it('should generate performance baseline report', async () => {
-      const report: any = {
+      const report: { timestamp: string; endpoints: APIPerformanceResult[] } = {
         timestamp: new Date().toISOString(),
         endpoints: [],
       };
@@ -530,7 +531,7 @@ describe('API Performance Tests', () => {
       console.log('\n\n=== PERFORMANCE BASELINE REPORT ===');
       console.log(`Timestamp: ${report.timestamp}`);
       console.log('\nEndpoint Performance:');
-      report.endpoints.forEach((result: any) => {
+      report.endpoints.forEach((result: APIPerformanceResult) => {
         const status = result.passed ? '✅ PASS' : '❌ FAIL';
         console.log(`\n${result.method} ${result.endpoint} ${status}`);
         if (result.avgTime) {
@@ -545,7 +546,7 @@ describe('API Performance Tests', () => {
       });
 
       // All critical endpoints should pass
-      const allPassed = report.endpoints.every((e: any) => e.passed);
+      const allPassed = report.endpoints.every((e: APIPerformanceResult) => e.passed);
       expect(allPassed).toBe(true);
     });
   });

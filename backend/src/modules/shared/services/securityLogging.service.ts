@@ -45,7 +45,7 @@ export interface SecurityEvent {
   user_agent: string | null;
   entity_type: string | null;
   entity_id: string | null;
-  details: Record<string, any> | null;
+  details: Record<string, unknown> | null;
   success: boolean;
   failure_reason: string | null;
   created_at: Date;
@@ -59,7 +59,7 @@ export interface LogEventInput {
   userAgent?: string;
   success?: boolean;
   failureReason?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   entityType?: string;
   entityId?: string;
 }

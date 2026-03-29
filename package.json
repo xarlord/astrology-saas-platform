@@ -50,6 +50,8 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "cookie-parser": "^1.4.7"
+    "astronomy-engine": "^2.1.19",
+    "cookie-parser": "^1.4.7",
+    "puppeteer": "^24.40.0"
   }
 }
