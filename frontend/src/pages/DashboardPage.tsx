@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { useCharts } from '../hooks';
-import { PlanetSymbol, SkeletonGrid, EmptyStates } from '../components';
+import { PlanetSymbol, SkeletonGrid, EmptyStates, AppLayout } from '../components';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -15,56 +15,16 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetchCharts();
+    void fetchCharts();
   }, [isAuthenticated, fetchCharts]);
 
-  const handleLogout = async () => {
-    try {
-      await useAuth().logout();
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-primary-600">Dashboard</h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Welcome back, {user?.name}
-            </p>
-          </div>
-          <nav className="flex gap-4 items-center">
-            <button
-              onClick={() => navigate('/charts/new')}
-              className="btn-primary"
-            >
-              + New Chart
-            </button>
-            <button
-              onClick={() => navigate('/transits')}
-              className="btn-secondary"
-            >
-              Today's Transits
-            </button>
-            <button
-              onClick={handleLogout}
-              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-            >
-              Logout
-            </button>
-          </nav>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
+    <AppLayout>
+      <div data-testid="dashboard">
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2">Your Charts</h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Create and manage your natal charts
+            Welcome back, {user?.name}. Create and manage your natal charts.
           </p>
         </div>
 
@@ -75,11 +35,12 @@ export default function DashboardPage() {
             onAction={() => navigate('/charts/new')}
           />
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="chart-list">
             {charts.map((chart) => (
               <div
                 key={chart.id}
                 onClick={() => navigate(`/charts/${chart.id}`)}
+                data-testid="chart-card"
                 className="card hover:shadow-lg transition-shadow cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-4">
@@ -95,11 +56,11 @@ export default function DashboardPage() {
                 {chart.calculated_data && (
                   <div className="mt-4 pt-4 border-t dark:border-gray-700">
                     <div className="flex gap-2 flex-wrap">
-                      {Object.keys(chart.calculated_data.planets || {}).slice(0, 3).map((planet) => (
+                      {Object.keys((chart.calculated_data as Record<string, Record<string, unknown>>).planets ?? {}).slice(0, 3).map((planet) => (
                         <PlanetSymbol key={planet} planet={planet} size="sm" />
                       ))}
                       <span className="text-xs text-gray-400">
-                        +{Object.keys(chart.calculated_data.planets || {}).length - 3} more
+                        +{Object.keys((chart.calculated_data as Record<string, Record<string, unknown>>).planets ?? {}).length - 3} more
                       </span>
                     </div>
                   </div>
@@ -119,7 +80,7 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 }

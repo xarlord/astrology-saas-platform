@@ -40,8 +40,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // If 401 and not already retrying
-    if (error.response?.status === 401 && originalRequest && !(originalRequest as Record<string, unknown>)._retry) {
-      (originalRequest as Record<string, unknown>)._retry = true;
+    if (error.response?.status === 401 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._retry) {
+      (originalRequest as unknown as Record<string, unknown>)._retry = true;
 
       try {
         const refreshToken = getRefreshToken();
