@@ -12,7 +12,7 @@ import {
   calculateCompositeChart,
   generateCompatibilityReport,
   calculateElementalBalance,
-} from '../../services/synastry.service';
+} from '../../modules/synastry/services/synastry.service';
 import { Chart, PlanetPosition } from '../../models/synastry.model';
 
 describe('Synastry Service', () => {

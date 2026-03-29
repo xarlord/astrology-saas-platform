@@ -29,7 +29,7 @@ router.use(authenticate);
  * @access  Private
  */
 router.post('/calculate', validateBody(calculateTransitsSchema), asyncHandler(async (req, res) => {
-  await TransitController.calculateTransits(req, res);
+  await TransitController.calculateTransits(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -38,7 +38,7 @@ router.post('/calculate', validateBody(calculateTransitsSchema), asyncHandler(as
  * @access  Private
  */
 router.get('/calendar', asyncHandler(async (req, res) => {
-  await TransitController.getTransitCalendar(req, res);
+  await TransitController.getTransitCalendar(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -47,7 +47,7 @@ router.get('/calendar', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/forecast', asyncHandler(async (req, res) => {
-  await TransitController.getTransitForecast(req, res);
+  await TransitController.getTransitForecast(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -56,7 +56,7 @@ router.get('/forecast', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:id', asyncHandler(async (req, res) => {
-  await TransitController.getTransitDetails(req, res);
+  await TransitController.getTransitDetails(req as AuthenticatedRequest, res);
 }));
 
 export { router };

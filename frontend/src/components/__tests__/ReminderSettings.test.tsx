@@ -11,10 +11,11 @@
  * Component Tests
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReminderSettings } from '../ReminderSettings';
+import type { UserReminder } from '../../types/calendar.types';
 
 // Mock the calendar service
 vi.mock('../../services/calendar.service', () => ({
@@ -33,7 +34,8 @@ describe('ReminderSettings Component', () => {
     isActive: true,
     userId: 'user-123',
     createdAt: '2026-01-01T00:00:00Z',
-  };
+    updatedAt: '2026-01-01T00:00:00Z',
+  } as UserReminder;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -310,7 +312,7 @@ describe('ReminderSettings Component', () => {
 
       const allEventsRadio = screen.getByDisplayValue('all');
       const allEventsLabel = allEventsRadio.closest('label');
-      expect(allEventsLabel).toHaveClass('selected');
+      expect(allEventsLabel?.className).toContain('border-indigo-500');
     });
 
     it('should highlight selected reminder type', () => {
@@ -318,7 +320,7 @@ describe('ReminderSettings Component', () => {
 
       const emailRadio = screen.getByDisplayValue('email');
       const emailLabel = emailRadio.closest('label');
-      expect(emailLabel).toHaveClass('selected');
+      expect(emailLabel?.className).toContain('border-indigo-500');
     });
 
     it('should show checkmark on selected timing options', () => {
@@ -332,7 +334,7 @@ describe('ReminderSettings Component', () => {
 
       if (oneDayCheckbox) {
         const oneDayLabel = oneDayCheckbox.closest('label');
-        expect(oneDayLabel).toHaveClass('selected');
+        expect(oneDayLabel?.className).toContain('border-emerald-500');
       }
     });
   });
@@ -414,19 +416,20 @@ describe('ReminderSettings Component', () => {
     it('should render bell icon in header', () => {
       const { container } = render(<ReminderSettings />);
 
-      const headerIcon = container.querySelector('.header-icon');
-      expect(headerIcon).toBeInTheDocument();
+      // Bell icon container has bg-blue-50 text-blue-500 class
+      const bellContainer = container.querySelector('.bg-blue-50');
+      expect(bellContainer).toBeInTheDocument();
     });
 
     it('should render mail icon for email option', () => {
-      const { container } = render(<ReminderSettings />);
+      render(<ReminderSettings />);
 
       const emailLabel = screen.getByLabelText('Email').closest('label');
       expect(emailLabel?.querySelector('svg')).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
-      const { container } = render(<ReminderSettings />);
+      render(<ReminderSettings />);
 
       const pushLabel = screen.getByLabelText('Push Notification').closest('label');
       expect(pushLabel?.querySelector('svg')).toBeInTheDocument();
@@ -443,7 +446,8 @@ describe('ReminderSettings Component', () => {
     it('should adapt layout for smaller screens', () => {
       const { container } = render(<ReminderSettings />);
 
-      const form = container.querySelector('.reminder-settings');
+      // The component renders a form element inside its root container
+      const form = container.querySelector('form');
       expect(form).toBeInTheDocument();
     });
   });
@@ -453,7 +457,7 @@ describe('ReminderSettings Component', () => {
       const user = userEvent.setup();
 
       // Mock console.error to avoid noise in test output
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { /* intentional empty */ });
 
       render(<ReminderSettings />);
 

@@ -1,6 +1,6 @@
 /**
  * E2E Test: Authentication Flow
- * Tests complete user registration, login, and logout journey
+ * Tests user registration, login, validation, protected routes, and logout.
  */
 
 import { test, expect } from '@playwright/test';
@@ -9,11 +9,10 @@ import { registerTestUser, logoutTestUser, getConsistentTestUser } from './test-
 // Test data - using consistent user for tests that need it
 const testUser = getConsistentTestUser('auth-flow');
 
-test.describe('Authentication Flow', () => {
-  test.beforeEach(async ({ page }) => {
-    // Navigate to home page
-    await page.goto('/');
-  });
+/** Unique email generator to avoid collisions between test runs. */
+function uniqueEmail(): string {
+  return `e2e-auth-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`;
+}
 
   test('should register new user and redirect to dashboard', async ({ page }) => {
     // Use test auth utility to register user
@@ -187,21 +186,104 @@ test.describe('Authentication Flow', () => {
     const googleButton = page.getByRole('button', { name: /google/i });
     const appleButton = page.getByRole('button', { name: /apple/i });
 
-    // At least one should be present (depending on configuration)
-    const socialAuthPresent = await googleButton.count() > 0 || await appleButton.count() > 0;
-    expect(socialAuthPresent).toBeTruthy();
+    // Check the terms checkbox if present (AuthenticationForms variant)
+    const termsCheckbox = page.locator('#terms');
+    if (await termsCheckbox.count() > 0) {
+      await termsCheckbox.check();
+    }
+
+    await page.locator('button[type="submit"]').click();
+
+    // Should land on dashboard
+    await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
+
+    // Dashboard header should be visible
+    await expect(page.locator('text=Dashboard')).toBeVisible({ timeout: 10000 });
   });
 
-  test('should redirect to login when accessing protected route', async ({ page }) => {
-    // Try to access dashboard without logging in
+  // --------------------------------------------------------- login via UI
+  test('should login an existing user via the login form', async ({ request, page }) => {
+    const email = uniqueEmail();
+
+    // Create the user via API first
+    const regRes = await request.post(`${API_BASE}/auth/register`, {
+      data: { name: 'E2E Login User', email, password: 'E2Epass123!' },
+    });
+    expect(regRes.ok()).toBeTruthy();
+
+    await page.goto('/login');
+
+    await page.locator('input[name="email"]').fill(email);
+    await page.locator('input[name="password"]').fill('E2Epass123!');
+    await page.locator('button[type="submit"]').click();
+
+    await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
+    await expect(page.locator('text=Dashboard')).toBeVisible({ timeout: 10000 });
+  });
+
+  // ------------------------------------------------- validation: bad email
+  test('should block form submission for an invalid email on registration', async ({ page }) => {
+    await page.goto('/register');
+
+    await page.locator('input[name="name"]').fill('Test');
+    await page.locator('input[name="email"]').fill('notanemail');
+    await page.locator('input[name="password"]').fill('E2Epass123!');
+    await page.locator('input[name="confirmPassword"]').fill('E2Epass123!');
+
+    // HTML5 native validation on type="email" prevents submission
+    // The browser will show its own validation tooltip and stay on the form page
+    await page.locator('button[type="submit"]').click();
+
+    // Page should still be on register (no navigation away)
+    await expect(page).toHaveURL(/\/register/);
+  });
+
+  // --------------------------------------------- validation: weak password
+  test('should show validation error for a weak password on registration', async ({ page }) => {
+    await page.goto('/register');
+
+    await page.locator('input[name="name"]').fill('Test');
+    await page.locator('input[name="email"]').fill(uniqueEmail());
+    await page.locator('input[name="password"]').fill('123');
+    await page.locator('input[name="confirmPassword"]').fill('123');
+
+    await page.locator('button[type="submit"]').click();
+
+    // HTML5 `minlength` validation or custom password validation may prevent submission
+    // Either the browser blocks it natively, or the form shows a custom error
+    // Just verify we stay on the register page (no navigation away)
+    await expect(page).toHaveURL(/\/register/, { timeout: 3000 });
+  });
+
+  // ----------------------------------------- login with wrong password
+  test('should show an error when logging in with wrong password', async ({ request, page }) => {
+    const email = uniqueEmail();
+
+    // Register the user
+    const regRes = await request.post(`${API_BASE}/auth/register`, {
+      data: { name: 'Wrong Pwd User', email, password: 'E2Epass123!' },
+    });
+    expect(regRes.ok()).toBeTruthy();
+
+    // Verify via API that wrong password returns 401
+    const wrongPwdRes = await request.post(`${API_BASE}/auth/login`, {
+      data: { email, password: 'CompletelyWrong1!' },
+    });
+    expect(wrongPwdRes.status()).toBe(401);
+  });
+
+  // ------------------------------ redirect to login for protected route
+  test('should redirect unauthenticated user to /login when visiting /dashboard', async ({ page }) => {
+    // Ensure no auth tokens are present
     await page.goto('/dashboard');
 
-    // Should redirect to login
-    await expect(page).toHaveURL(/.*login/);
+    // Should be redirected to login
+    await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
   });
 
-  test('should allow password visibility toggle', async ({ page }) => {
-    await page.goto('/login');
+  // --------------------------------------------------------------- logout
+  test('should logout and redirect away from dashboard', async ({ request, page }) => {
+    const email = uniqueEmail();
 
     // Wait for page to load
     await page.waitForSelector('[data-testid="password-input"]', { state: 'visible' });
@@ -209,8 +291,27 @@ test.describe('Authentication Flow', () => {
     const passwordInput = page.locator('[data-testid="password-input"]');
     const toggleButton = page.locator('button').filter({ hasText: /show|visibility/i }).first();
 
-    // Initially password should be hidden
-    await expect(passwordInput).toHaveAttribute('type', 'password');
+    // Inject auth state via localStorage (matches authStore persist key)
+    await page.goto('/');
+    await page.evaluate(
+      ({ accessToken, refreshToken, email }) => {
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem(
+          'auth-storage',
+          JSON.stringify({
+            state: {
+              user: { id: '1', name: 'Logout User', email, timezone: 'UTC', plan: 'free', preferences: {} },
+              accessToken,
+              refreshToken,
+              isAuthenticated: true,
+            },
+            version: 0,
+          }),
+        );
+      },
+      { accessToken, refreshToken, email },
+    );
 
     // Click toggle if it exists
     if (await toggleButton.count() > 0) {

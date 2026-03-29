@@ -64,7 +64,7 @@ describe('LunarHistoryView', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetLunarReturnHistory.mockImplementation(() => new Promise(() => {}));
+      mockGetLunarReturnHistory.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
 
       render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 
@@ -311,7 +311,7 @@ describe('LunarHistoryView', () => {
         },
       });
 
-      const { rerender } = render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
+      render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 
       // Wait for initial load
       await waitFor(() => {

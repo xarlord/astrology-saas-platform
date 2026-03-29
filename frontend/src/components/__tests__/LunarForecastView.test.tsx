@@ -73,7 +73,7 @@ describe('LunarForecastView', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetLunarMonthForecast.mockImplementation(() => new Promise(() => {}));
+      mockGetLunarMonthForecast.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
 
       render(<LunarForecastView onBack={mockOnBack} />);
 

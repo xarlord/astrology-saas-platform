@@ -7,6 +7,7 @@ import logger from '../utils/logger';
 import { AppError } from '../utils/appError';
 
 // Re-export AppError for convenience
+/** @deprecated Import AppError from utils/appError instead */
 export { AppError } from '../utils/appError';
 
 interface ErrorWithStatusCode extends Error {
@@ -92,12 +93,12 @@ export const errorHandler = (
  * Async Handler Wrapper
  * Wraps async route handlers to catch errors
  */
-export const asyncHandler = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>
+export const asyncHandler = <R extends Request = Request>(
+  fn: (req: R, res: Response, next: NextFunction) => Promise<unknown>
 ) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      await fn(req, res, next);
+      await fn(req as R, res, next);
     } catch (err) {
       // Type guard for Error
       const error = err instanceof Error ? err : new Error(String(err));
@@ -109,28 +110,6 @@ export const asyncHandler = (
       next(error);
     }
   };
-};
-
-/**
- * 404 Not Found Handler
- */
-export const notFoundHandler = (req: Request, res: Response): void => {
-  res.status(404).json({
-    success: false,
-    error: {
-      message: `Route ${req.method} ${req.path} not found`,
-      statusCode: 404,
-      availableRoutes: [
-        'GET /health',
-        'POST /api/v1/auth/register',
-        'POST /api/v1/auth/login',
-        'GET /api/v1/charts',
-        'POST /api/v1/charts',
-        'GET /api/v1/calendar',
-        // Add more as needed
-      ]
-    }
-  });
 };
 
 /**

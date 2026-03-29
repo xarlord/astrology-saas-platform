@@ -106,8 +106,6 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
             isLoading: false,
           });
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
         }
       },
 
@@ -127,7 +125,7 @@ export const useAuthStore = create<AuthState>()(
       updatePreferences: async (preferences) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await authService.updatePreferences(preferences);
+          const response = await authService.updatePreferences(preferences as UserPreferences);
           set({ user: response.user, isLoading: false });
         } catch (error: unknown) {
           set({
@@ -150,3 +148,19 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Listen for token refresh events from API interceptor
+window.addEventListener('auth:token-refreshed', ((event: CustomEvent<{ accessToken: string }>) => {
+  useAuthStore.setState({ accessToken: event.detail.accessToken });
+}) as EventListener);
+
+// Listen for session expiry events
+window.addEventListener('auth:session-expired', () => {
+  useAuthStore.setState({
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    isAuthenticated: false,
+  });
+  window.location.href = '/login';
+});

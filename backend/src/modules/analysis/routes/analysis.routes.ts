@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import * as AnalysisController from '../controllers/analysis.controller';
 
@@ -18,7 +18,7 @@ router.use(authenticate);
  * @access  Private
  */
 router.get('/:chartId', asyncHandler(async (req, res) => {
-  await AnalysisController.getPersonalityAnalysis(req, res);
+  await AnalysisController.getPersonalityAnalysis(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -27,7 +27,7 @@ router.get('/:chartId', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:chartId/aspects', asyncHandler(async (req, res) => {
-  await AnalysisController.getAspectAnalysis(req, res);
+  await AnalysisController.getAspectAnalysis(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -36,7 +36,7 @@ router.get('/:chartId/aspects', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:chartId/patterns', asyncHandler(async (req, res) => {
-  await AnalysisController.getAspectPatterns(req, res);
+  await AnalysisController.getAspectPatterns(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -45,7 +45,7 @@ router.get('/:chartId/patterns', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:chartId/planets', asyncHandler(async (req, res) => {
-  await AnalysisController.getPlanetsInSigns(req, res);
+  await AnalysisController.getPlanetsInSigns(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -54,7 +54,7 @@ router.get('/:chartId/planets', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:chartId/houses', asyncHandler(async (req, res) => {
-  await AnalysisController.getHousesAnalysis(req, res);
+  await AnalysisController.getHousesAnalysis(req as AuthenticatedRequest, res);
 }));
 
 export { router };

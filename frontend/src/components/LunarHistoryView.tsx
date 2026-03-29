@@ -67,32 +67,44 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
     return 'extreme';
   };
 
+  const getIntensityBadgeClasses = (intensity: number): string => {
+    const color = getIntensityColor(intensity);
+    switch (color) {
+      case 'low': return 'bg-green-200 text-green-800';
+      case 'medium': return 'bg-yellow-200 text-yellow-800';
+      case 'high': return 'bg-orange-200 text-orange-900';
+      case 'extreme': return 'bg-red-200 text-red-900';
+      default: return 'bg-white/20 text-white';
+    }
+  };
+
   const renderReturnCard = (lunarReturn: SavedLunarReturn) => (
-    <div key={lunarReturn.id} className="history-card">
-      <div className="card-header">
-        <div className="date-section">
-          <h4>
+    <div key={lunarReturn.id} className="bg-white rounded-xl shadow-sm shadow-black/10 overflow-hidden">
+      <div className="flex justify-between items-start p-5 bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+        <div>
+          <h4 className="m-0 mb-2 text-xl">
             {new Date(lunarReturn.returnDate).toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
               year: 'numeric',
             })}
           </h4>
-          <p className="theme">{lunarReturn.theme}</p>
+          <p className="m-0 opacity-90">{lunarReturn.theme}</p>
         </div>
-        <div className={`intensity-badge ${getIntensityColor(lunarReturn.intensity)}`}>
+        <div className={`px-3 py-1.5 rounded-full font-semibold ${getIntensityBadgeClasses(lunarReturn.intensity)}`}>
           {lunarReturn.intensity}/10
         </div>
       </div>
 
-      <div className="card-body">
-        <p className="emotional-theme">
-          <strong>Emotional Focus:</strong> {lunarReturn.emotionalTheme}
+      <div className="p-5 flex flex-col gap-4">
+        <p className="text-gray-600 leading-relaxed m-0">
+          <strong className="text-gray-800">Emotional Focus:</strong> {lunarReturn.emotionalTheme}
         </p>
 
         <button
-          onClick={() => onSelect && onSelect(lunarReturn)}
-          className="view-details-button"
+          onClick={() => { if (onSelect) onSelect(lunarReturn); }}
+          type="button"
+          className="px-5 py-2.5 border-none rounded-md font-semibold cursor-pointer transition-all duration-200 bg-indigo-500 text-white hover:bg-indigo-600"
         >
           View Full Details
         </button>
@@ -102,14 +114,15 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
             void handleDelete(lunarReturn.id);
           }}
           disabled={deletingId === lunarReturn.id}
-          className="delete-button"
+          type="button"
+          className="px-5 py-2.5 border border-gray-200 rounded-md font-semibold cursor-pointer transition-all duration-200 bg-gray-50 text-red-500 hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {deletingId === lunarReturn.id ? 'Deleting...' : 'Delete'}
         </button>
       </div>
 
-      <div className="card-footer">
-        <span className="created-date">
+      <div className="px-5 py-3 bg-gray-50 border-t border-gray-100">
+        <span className="text-gray-400 text-sm">
           Created {new Date(lunarReturn.createdAt).toLocaleDateString()}
         </span>
       </div>
@@ -117,7 +130,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
   );
 
   return (
-    <div className="lunar-history-view">
+    <div className="max-w-[900px] mx-auto p-5">
       {/* Header */}
       <div className="history-header">
         {onBack && <button onClick={() => onBack()} className="back-button">← Back</button>}
@@ -126,9 +139,9 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
       </div>
 
       {/* Content */}
-      <div className="history-content">
+      <div className="min-h-[400px]">
         {loading && returns.length === 0 ? (
-          <div className="loading-spinner">Loading history...</div>
+          <div className="py-10 text-center text-gray-400 text-lg">Loading history...</div>
         ) : error ? (
           <div className="error-message">
             <p>{error}</p>
@@ -137,39 +150,41 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
             </button>
           </div>
         ) : returns.length === 0 ? (
-          <div className="empty-state">
-            <span className="icon">🌙</span>
-            <h3>No Lunar Returns Yet</h3>
-            <p>
+          <div className="text-center py-16 px-5 bg-white rounded-xl shadow-sm shadow-black/10">
+            <span className="text-6xl block mb-4">🌙</span>
+            <h3 className="m-0 mb-3 text-gray-800">No Lunar Returns Yet</h3>
+            <p className="text-gray-400 mb-6">
               Your lunar return history will appear here once you start tracking them.
             </p>
-            <button onClick={onBack} className="action-button">
+            <button onClick={onBack} type="button" className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg font-semibold cursor-pointer hover:bg-indigo-600 transition-colors">
               Calculate Your First Lunar Return
             </button>
           </div>
         ) : (
           <>
-            <div className="returns-list">
+            <div className="flex flex-col gap-4 mb-6">
               {returns.map((lunarReturn) => renderReturnCard(lunarReturn))}
             </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="pagination">
+              <div className="flex justify-center items-center gap-4 mt-6">
                 <button
                   onClick={() => setPage(page - 1)}
                   disabled={page === 1}
-                  className="pagination-button"
+                  type="button"
+                  className="px-4 py-2 bg-indigo-500 text-white border-none rounded-md cursor-pointer font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-indigo-600 disabled:hover:bg-gray-300 transition-colors"
                 >
                   Previous
                 </button>
-                <span className="page-info">
+                <span className="text-gray-500 font-medium">
                   Page {page} of {totalPages}
                 </span>
                 <button
                   onClick={() => setPage(page + 1)}
                   disabled={page === totalPages}
-                  className="pagination-button"
+                  type="button"
+                  className="px-4 py-2 bg-indigo-500 text-white border-none rounded-md cursor-pointer font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-indigo-600 disabled:hover:bg-gray-300 transition-colors"
                 >
                   Next
                 </button>

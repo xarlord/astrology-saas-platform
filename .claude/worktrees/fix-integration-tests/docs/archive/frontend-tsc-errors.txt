@@ -1,0 +1,137 @@
+src/assets/animations/framer-motion.ts(255,12): error TS2322: Type '(width: number, x: number) => { x: number; width: number; transition: { type: "spring"; stiffness: number; damping: number; }; }' is not assignable to type 'Variant'.
+  Type '(width: number, x: number) => { x: number; width: number; transition: { type: "spring"; stiffness: number; damping: number; }; }' is not assignable to type 'TargetResolver'.
+    Types of parameters 'x' and 'current' are incompatible.
+      Type 'ResolvedValues$1' is not assignable to type 'number'.
+src/components/AIInterpretationDisplay.tsx(57,41): error TS2345: Argument of type 'object' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type '{}'.
+src/components/AstrologicalCalendar.tsx(35,34): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/components/AstrologicalCalendar.tsx(74,22): error TS2367: This comparison appears to be unintentional because the types 'CalendarEventType' and '"new_moon"' have no overlap.
+src/components/AstrologicalCalendar.tsx(75,22): error TS2367: This comparison appears to be unintentional because the types 'CalendarEventType' and '"full_moon"' have no overlap.
+src/components/AstrologicalCalendar.tsx(77,64): error TS2367: This comparison appears to be unintentional because the types 'CalendarEventType' and '"solar_eclipse"' have no overlap.
+src/components/astrology/AspectGrid.tsx(145,38): error TS18047: 'aspect' is possibly 'null'.
+src/components/astrology/AspectGrid.tsx(147,30): error TS18047: 'aspect' is possibly 'null'.
+src/components/astrology/AspectGrid.tsx(150,26): error TS18047: 'aspect' is possibly 'null'.
+src/components/astrology/ElementalBalance.tsx(96,63): error TS2353: Object literal may only specify known properties, and 'ringColor' does not exist in type 'Properties<string | number, string & {}>'.
+src/components/BirthDataForm.tsx(290,16): error TS2322: Type '{ type: "time"; id: string; name: string; "data-testid": string; value: string; onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void; ... 4 more ...; className: string; }' is not assignable to type 'DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>'.
+  Type '{ type: "time"; id: string; name: string; "data-testid": string; value: string; onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void; ... 4 more ...; className: string; }' is not assignable to type 'InputHTMLAttributes<HTMLInputElement>'.
+    Types of property '"aria-invalid"' are incompatible.
+      Type 'number' is not assignable to type 'boolean | "true" | "false" | "grammar" | "spelling" | undefined'.
+src/components/BirthDataForm.tsx(299,33): error TS18048: 'errors.birthTime' is possibly 'undefined'.
+src/components/BirthdaySharing.tsx(136,16): error TS18048: 'interpretation.themes.length' is possibly 'undefined'.
+src/components/BirthdaySharing.tsx(137,50): error TS18048: 'interpretation.themes' is possibly 'undefined'.
+src/components/CalendarView.tsx(18,5): error TS2322: Type '{ id: string; eventType: "eclipse" | "moon_phase" | "planetary_motion" | "aspect" | "ingress"; eventName: CalendarEventType; startDate: string; endDate: string | undefined; intensity: number; isGlobal: boolean; createdAt: string; }[]' is not assignable to type 'AstrologicalEvent[]'.
+  Type '{ id: string; eventType: "aspect" | "moon_phase" | "planetary_motion" | "eclipse" | "ingress"; eventName: CalendarEventType; startDate: string; endDate: string | undefined; intensity: number; isGlobal: boolean; createdAt: string; }' is not assignable to type 'AstrologicalEvent'.
+    Types of property 'eventType' are incompatible.
+      Type '"eclipse" | "moon_phase" | "planetary_motion" | "aspect" | "ingress"' is not assignable to type 'EventType'.
+        Type '"moon_phase"' is not assignable to type 'EventType'. Did you mean '"moon-phase"'?
+src/components/CalendarView.tsx(22,18): error TS18048: 'event.event_date' is possibly 'undefined'.
+src/components/chart/ChartCard.tsx(86,36): error TS2339: Property 'sun' does not exist on type 'PlanetPosition[]'.
+src/components/chart/ChartCard.tsx(87,37): error TS2339: Property 'moon' does not exist on type 'PlanetPosition[]'.
+src/components/chart/ChartCard.tsx(88,39): error TS2339: Property 'ascendant' does not exist on type 'PlanetPosition[]'.
+src/components/chart/ChartCard.tsx(95,42): error TS2339: Property 'date' does not exist on type 'BirthData'.
+src/components/chart/ChartCard.tsx(96,32): error TS2339: Property 'date' does not exist on type 'BirthData'.
+src/components/chart/ChartCard.tsx(103,37): error TS2339: Property 'location' does not exist on type 'BirthData'.
+src/components/ProtectedRoute.tsx(19,28): error TS2322: Type '{ fullPage: true; }' is not assignable to type 'IntrinsicAttributes & LoadingSpinnerProps'.
+  Property 'fullPage' does not exist on type 'IntrinsicAttributes & LoadingSpinnerProps'.
+src/components/report/ReportActions.tsx(35,9): error TS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?
+src/components/UserProfile.tsx(85,37): error TS2339: Property 'avatar' does not exist on type 'User'.
+src/components/UserProfile.tsx(86,21): error TS2339: Property 'createdAt' does not exist on type 'User'.
+src/components/UserProfile.tsx(113,28): error TS2551: Property 'birth_date' does not exist on type 'Chart'. Did you mean 'birth_data'?
+src/components/UserProfile.tsx(114,19): error TS2339: Property 'birth_time' does not exist on type 'Chart'.
+src/components/UserProfile.tsx(116,21): error TS2339: Property 'birth_place_name' does not exist on type 'Chart'.
+src/hooks/useLearning.ts(94,5): error TS2740: Type 'UserProgress' is missing the following properties from type 'UserProgress': user_id, course_id, completed_lessons, current_lesson, and 2 more.
+src/hooks/useLearning.ts(100,28): error TS2551: Property 'progress_percentage' does not exist on type 'UserProgress'. Did you mean 'progressPercentage'?
+src/hooks/useLearning.ts(106,28): error TS2551: Property 'completed' does not exist on type 'UserProgress'. Did you mean 'completedAt'?
+src/hooks/useLearning.ts(112,28): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(112,46): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(116,33): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(116,52): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/hooks/useLearning.ts(117,31): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(118,21): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(127,28): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(127,46): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(131,33): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(131,52): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/hooks/useLearning.ts(133,21): error TS2339: Property 'lessons' does not exist on type 'Lesson'.
+src/hooks/useLearning.ts(141,5): error TS2322: Type 'Lesson[]' is not assignable to type 'Course[]'.
+  Type 'Lesson' is missing the following properties from type 'Course': lessons, created_at
+src/hooks/useLearning.ts(146,5): error TS2322: Type 'Lesson[]' is not assignable to type 'Course[]'.
+  Type 'Lesson' is missing the following properties from type 'Course': lessons, created_at
+src/hooks/useLearning.ts(151,5): error TS2322: Type 'Lesson[]' is not assignable to type 'Course[]'.
+  Type 'Lesson' is missing the following properties from type 'Course': lessons, created_at
+src/hooks/useLearning.ts(153,30): error TS2551: Property 'completed_at' does not exist on type 'UserProgress'. Did you mean 'completedAt'?
+src/hooks/useLearning.ts(159,5): error TS2322: Type 'Lesson[]' is not assignable to type 'Course[]'.
+  Type 'Lesson' is missing the following properties from type 'Course': lessons, created_at
+src/hooks/useLearning.ts(161,48): error TS2551: Property 'completed_at' does not exist on type 'UserProgress'. Did you mean 'completedAt'?
+src/hooks/useSynastry.ts(104,43): error TS2339: Property 'romance' does not exist on type 'CompatibilityScores'.
+src/hooks/useSynastry.ts(123,43): error TS2339: Property 'romance' does not exist on type 'CompatibilityScores'.
+src/pages/AnalysisPage.tsx(121,13): error TS2322: Type 'ChartData' is not assignable to type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'ChartData'.
+src/pages/CalendarPage.tsx(376,9): error TS2322: Type 'LunarPhaseType' is not assignable to type 'CalendarEventType'.
+  Type '"new-moon"' is not assignable to type 'CalendarEventType'.
+src/pages/CalendarPage.tsx(464,36): error TS2339: Property 'filter' does not exist on type 'MonthEventsResponse'.
+src/pages/CalendarPage.tsx(507,24): error TS2339: Property 'filter' does not exist on type 'MonthEventsResponse'.
+src/pages/CalendarPage.tsx(631,15): error TS2322: Type 'MonthEventsResponse | never[]' is not assignable to type 'readonly CalendarEvent[]'.
+  Type 'MonthEventsResponse' is missing the following properties from type 'readonly CalendarEvent[]': length, concat, join, slice, and 20 more.
+src/pages/CalendarPage.tsx(692,43): error TS2339: Property 'length' does not exist on type 'MonthEventsResponse'.
+src/pages/CalendarPage.tsx(693,29): error TS2339: Property 'slice' does not exist on type 'MonthEventsResponse'.
+src/pages/CalendarPage.tsx(693,46): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/pages/CalendarPage.tsx(693,53): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/pages/ChartCreationWizardPage.tsx(127,9): error TS2561: Object literal may only specify known properties, but 'birthDate' does not exist in type 'BirthData'. Did you mean to write 'birth_date'?
+src/pages/ChartCreationWizardPage.tsx(356,38): error TS2345: Argument of type '(prev: BirthData) => { unknownTime: ChangeEvent<HTMLInputElement>; date: Date | undefined; time: string; location: string; latitude: number; longitude: number; }' is not assignable to parameter of type 'SetStateAction<BirthData>'.
+  Type '(prev: BirthData) => { unknownTime: ChangeEvent<HTMLInputElement>; date: Date | undefined; time: string; location: string; latitude: number; longitude: number; }' is not assignable to type '(prevState: BirthData) => BirthData'.
+    Call signature return types '{ unknownTime: ChangeEvent<HTMLInputElement>; date: Date | undefined; time: string; location: string; latitude: number; longitude: number; }' and 'BirthData' are incompatible.
+      The types of 'unknownTime' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement>' is not assignable to type 'boolean'.
+src/pages/ChartCreationWizardPage.tsx(475,40): error TS2345: Argument of type '(prev: ChartSettings) => { isDefault: ChangeEvent<HTMLInputElement>; chartType: "natal" | "synastry" | "composite" | "transit"; houseSystem: "placidus" | ... 2 more ... | "whole-sign"; zodiacType: "tropical" | "sidereal"; }' is not assignable to parameter of type 'SetStateAction<ChartSettings>'.
+  Type '(prev: ChartSettings) => { isDefault: ChangeEvent<HTMLInputElement>; chartType: "natal" | "synastry" | "composite" | "transit"; houseSystem: "placidus" | ... 2 more ... | "whole-sign"; zodiacType: "tropical" | "sidereal"; }' is not assignable to type '(prevState: ChartSettings) => ChartSettings'.
+    Call signature return types '{ isDefault: ChangeEvent<HTMLInputElement>; chartType: "natal" | "synastry" | "composite" | "transit"; houseSystem: "placidus" | "koch" | "porphyry" | "whole-sign"; zodiacType: "tropical" | "sidereal"; }' and 'ChartSettings' are incompatible.
+      The types of 'isDefault' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement>' is not assignable to type 'boolean'.
+src/pages/ChartViewPage.tsx(129,19): error TS2322: Type '{ chartData: any; }' is not assignable to type 'IntrinsicAttributes & ChartWheelProps'.
+  Property 'chartData' does not exist on type 'IntrinsicAttributes & ChartWheelProps'.
+src/pages/CourseDetailPage.tsx(292,19): error TS2322: Type '{ src: string; title: string; poster: string; onTimeUpdate: (currentTime: any, duration: any) => void; onComplete: () => void; }' is not assignable to type 'IntrinsicAttributes & VideoPlayerProps'.
+  Property 'onTimeUpdate' does not exist on type 'IntrinsicAttributes & VideoPlayerProps'.
+src/pages/CourseDetailPage.tsx(292,34): error TS7006: Parameter 'currentTime' implicitly has an 'any' type.
+src/pages/CourseDetailPage.tsx(292,47): error TS7006: Parameter 'duration' implicitly has an 'any' type.
+src/pages/DashboardPage.tsx(354,66): error TS2367: This comparison appears to be unintentional because the types '"positive" | "negative" | "neutral" | undefined' and '"favorable"' have no overlap.
+src/pages/DashboardPage.tsx(354,113): error TS2367: This comparison appears to be unintentional because the types '"positive" | "negative" | "neutral" | undefined' and '"challenging"' have no overlap.
+src/pages/DetailedNatalReportPage.tsx(263,21): error TS2322: Type '{ name: string; sign: string; house: number; element: string; modality: string; description: string; }' is not assignable to type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+  Property 'name' does not exist on type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+src/pages/DetailedNatalReportPage.tsx(272,21): error TS2322: Type '{ name: string; sign: string; house: number; element: string; modality: string; description: string; }' is not assignable to type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+  Property 'name' does not exist on type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+src/pages/DetailedNatalReportPage.tsx(281,21): error TS2322: Type '{ name: string; sign: string; house: number; element: string; modality: string; description: string; }' is not assignable to type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+  Property 'name' does not exist on type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+src/pages/DetailedNatalReportPage.tsx(334,25): error TS2322: Type '{ key: string; name: string; sign: string; house: number; element: string; modality: string; description: string; hashtags: string[]; layout: string; }' is not assignable to type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+  Property 'name' does not exist on type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+src/pages/DetailedNatalReportPage.tsx(364,19): error TS2322: Type '{ key: string; name: string; sign: string; house: number; element: string; modality: string; description: string; }' is not assignable to type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+  Property 'name' does not exist on type 'IntrinsicAttributes & PlanetaryPositionCardProps'.
+src/pages/DetailedNatalReportPage.tsx(384,27): error TS2322: Type '{ name: string; sign: string; degree: number; house: number; element: string; modality: string; }[]' is not assignable to type 'string[]'.
+  Type '{ name: string; sign: string; degree: number; house: number; element: string; modality: string; }' is not assignable to type 'string'.
+src/pages/DetailedNatalReportPage.tsx(384,51): error TS2322: Type '{ planet1: string; planet2: string; type: string; degree: number; }[]' is not assignable to type 'AspectGridData[]'.
+  Property 'aspect' is missing in type '{ planet1: string; planet2: string; type: string; degree: number; }' but required in type 'AspectGridData'.
+src/pages/ForgotPasswordPage.tsx(8,10): error TS2305: Module '"react-router"' has no exported member 'Link'.
+src/pages/LoginPageNew.tsx(27,13): error TS2554: Expected 2 arguments, but got 1.
+src/pages/LunarReturnsPage.tsx(158,16): error TS2367: This comparison appears to be unintentional because the types '"neutral"' and '"negative"' have no overlap.
+src/pages/NatalChartDetailPage.tsx(132,45): error TS2339: Property 'date' does not exist on type 'BirthData'.
+src/pages/NatalChartDetailPage.tsx(133,39): error TS2339: Property 'date' does not exist on type 'BirthData'.
+src/pages/NatalChartDetailPage.tsx(139,45): error TS2339: Property 'time' does not exist on type 'BirthData'.
+src/pages/NatalChartDetailPage.tsx(140,49): error TS2339: Property 'location' does not exist on type 'BirthData'.
+src/pages/ProfileSettingsPage.tsx(46,32): error TS2339: Property 'changePassword' does not exist on type '{ user: User | null; token: string | null; isAuthenticated: boolean; isLoading: boolean; error: string | null; login: (credentials: LoginCredentials) => Promise<boolean>; ... 8 more ...; hasAtLeastPlan: (plan: "free" | ... 1 more ... | "premium") => boolean; }'.
+src/pages/ProfileSettingsPage.tsx(90,9): error TS2353: Object literal may only specify known properties, and 'bio' does not exist in type '{ name?: string | undefined; avatar_url?: string | undefined; timezone?: string | undefined; }'.
+src/pages/RegisterPageNew.tsx(68,13): error TS2554: Expected 3 arguments, but got 1.
+src/pages/SavedChartsGalleryPage.tsx(62,28): error TS2339: Property 'location' does not exist on type 'BirthData'.
+src/pages/SavedChartsGalleryPage.tsx(73,38): error TS2339: Property 'sun' does not exist on type 'PlanetPosition[]'.
+src/pages/SavedChartsGalleryPage.tsx(74,38): error TS2339: Property 'sun' does not exist on type 'PlanetPosition[]'.
+src/stores/calendarStore.ts(105,23): error TS18048: 'event.event_date' is possibly 'undefined'.
+src/stores/calendarStore.ts(105,40): error TS2551: Property 'toISOString' does not exist on type 'string'. Did you mean 'toString'?
+src/stores/calendarStore.ts(131,15): error TS2322: Type 'string | Date' is not assignable to type 'Date'.
+  Type 'string' is not assignable to type 'Date'.
+src/stores/calendarStore.ts(132,15): error TS2322: Type 'string | undefined' is not assignable to type 'Date | undefined'.
+  Type 'string' is not assignable to type 'Date'.

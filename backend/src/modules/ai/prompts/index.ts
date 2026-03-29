@@ -14,6 +14,16 @@ export * from './natalChart.prompts';
 export * from './transit.prompts';
 export * from './synastry.prompts';
 
+import { NATAL_CHART_PROMPTS } from './natalChart.prompts';
+import { TRANSIT_PROMPTS } from './transit.prompts';
+import { SYNASTRY_PROMPTS } from './synastry.prompts';
+
+const promptTemplates: Record<string, Record<string, PromptTemplate>> = {
+  natal: NATAL_CHART_PROMPTS,
+  transit: TRANSIT_PROMPTS,
+  synastry: SYNASTRY_PROMPTS,
+};
+
 // Prompt utility functions
 export class PromptBuilder {
   /**
@@ -36,14 +46,6 @@ export class PromptBuilder {
    * Get prompt template by name
    */
   static getTemplate(type: string, name: string): PromptTemplate | null {
-    /* eslint-disable @typescript-eslint/no-var-requires */
-    const templates: Record<string, Record<string, PromptTemplate>> = {
-      natal: require('./natalChart.prompts').NATAL_CHART_PROMPTS,
-      transit: require('./transit.prompts').TRANSIT_PROMPTS,
-      synastry: require('./synastry.prompts').SYNASTRY_PROMPTS,
-    };
-    /* eslint-enable @typescript-eslint/no-var-requires */
-
-    return templates[type]?.[name] || null;
+    return promptTemplates[type]?.[name] || null;
   }
 }

@@ -33,8 +33,8 @@ describe('LunarReturnDashboard', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetCurrentLunarReturn.mockImplementation(() => new Promise(() => {}));
-      mockGetNextLunarReturn.mockImplementation(() => new Promise(() => {}));
+      mockGetCurrentLunarReturn.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
+      mockGetNextLunarReturn.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
 
       render(
         <LunarReturnDashboard

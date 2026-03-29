@@ -3,10 +3,11 @@
  */
 
 import { Router } from 'express';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
 import { registerSchema, loginSchema } from '../../../utils/validators';
+import { authRateLimiter } from '../../../middleware/rateLimiter';
 import * as AuthController from '../controllers/auth.controller';
 
 const router = Router();
@@ -16,7 +17,7 @@ const router = Router();
  * @desc    Register a new user
  * @access  Public
  */
-router.post('/register', validateBody(registerSchema), asyncHandler(async (req, res) => {
+router.post('/register', authRateLimiter, validateBody(registerSchema), asyncHandler(async (req, res) => {
   await AuthController.register(req, res);
 }));
 
@@ -25,7 +26,7 @@ router.post('/register', validateBody(registerSchema), asyncHandler(async (req, 
  * @desc    Login user
  * @access  Public
  */
-router.post('/login', validateBody(loginSchema), asyncHandler(async (req, res) => {
+router.post('/login', authRateLimiter, validateBody(loginSchema), asyncHandler(async (req, res) => {
   await AuthController.login(req, res);
 }));
 
@@ -44,7 +45,7 @@ router.post('/logout', authenticate, asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/me', authenticate, asyncHandler(async (req, res) => {
-  await AuthController.getProfile(req, res);
+  await AuthController.getProfile(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -53,7 +54,7 @@ router.get('/me', authenticate, asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.put('/me', authenticate, asyncHandler(async (req, res) => {
-  await AuthController.updateProfile(req, res);
+  await AuthController.updateProfile(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -61,7 +62,7 @@ router.put('/me', authenticate, asyncHandler(async (req, res) => {
  * @desc    Refresh access token
  * @access  Public
  */
-router.post('/refresh', authenticate, asyncHandler(async (req, res) => {
+router.post('/refresh', authRateLimiter, asyncHandler(async (req, res) => {
   await AuthController.refreshToken(req, res);
 }));
 

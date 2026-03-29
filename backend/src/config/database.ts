@@ -33,3 +33,4 @@ const knexConfig: Knex.Config = {
 const db = knex(knexConfig);
 
 export default db;
+export type { Knex };

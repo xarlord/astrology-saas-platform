@@ -1,0 +1,168 @@
+{
+  "iteration": 1,
+  "timestamp": "2026-03-28T01:46:38.549454",
+  "tests": [
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "white_screen": {
+        "is_white_screen": false,
+        "reason": "",
+        "content_metrics": {
+          "bodyText": "Discover Your Cosmic Blueprint\n\nGenerate accurate natal charts, explore personality insights, and receive personalized forecasts\n\nGet Started Free\nSign In\nEverything You Need\n\u2728\nNatal Charts\n\nHigh-precision calculations using Swiss Ephemeris\n\n\ud83d\udd2e\nPersonality Insights\n\nDeep analysis of planetary positions and aspects\n\n\ud83c\udf19\nTransit Forecasts\n\nReal-time predictions with guidance and advice\n\n\u00a9 2026 Astrology SaaS Platform. All rights reserved.",
+          "bodyHTML": 1901,
+          "fullHTML": 156010,
+          "visibleElements": 29,
+          "hasContent": true,
+          "bodyHeight": 856,
+          "viewportHeight": 720
+        }
+      },
+      "title": "Astrology SaaS Platform",
+      "html_size": 156023
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "white_screen": {
+        "is_white_screen": false,
+        "reason": "",
+        "content_metrics": {
+          "bodyText": "Welcome Back\n\nSign in to access your charts\n\nEmail Address\nPassword\nRemember me\nForgot password?\nSign In\nDon't have an account? Sign up",
+          "bodyHTML": 1834,
+          "fullHTML": 155943,
+          "visibleElements": 23,
+          "hasContent": true,
+          "bodyHeight": 720,
+          "viewportHeight": 720
+        }
+      },
+      "title": "Astrology SaaS Platform",
+      "html_size": 155985
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "white_screen": {
+        "is_white_screen": false,
+        "reason": "",
+        "content_metrics": {
+          "bodyText": "Create Account\n\nStart your astrological journey\n\nFull Name\nEmail Address\nPassword\nConfirm Password\nCreate Account\nAlready have an account? Sign in",
+          "bodyHTML": 1980,
+          "fullHTML": 156089,
+          "visibleElements": 24,
+          "hasContent": true,
+          "bodyHeight": 720,
+          "viewportHeight": 720
+        }
+      },
+      "title": "Astrology SaaS Platform",
+      "html_size": 156140
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "white_screen": {
+        "is_white_screen": false,
+        "reason": "",
+        "content_metrics": {
+          "bodyText": "Discover Your Cosmic Blueprint\n\nGenerate accurate natal charts, explore personality insights, and receive personalized forecasts\n\nGet Started Free\nSign In\nEverything You Need\n\u2728\nNatal Charts\n\nHigh-precision calculations using Swiss Ephemeris\n\n\ud83d\udd2e\nPersonality Insights\n\nDeep analysis of planetary positions and aspects\n\n\ud83c\udf19\nTransit Forecasts\n\nReal-time predictions with guidance and advice\n\n\u00a9 2026 Astrology SaaS Platform. All rights reserved.",
+          "bodyHTML": 1901,
+          "fullHTML": 156010,
+          "visibleElements": 29,
+          "hasContent": true,
+          "bodyHeight": 1472,
+          "viewportHeight": 667
+        }
+      },
+      "title": "Astrology SaaS Platform",
+      "html_size": 156023
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "warnings": 0
+  }
+}

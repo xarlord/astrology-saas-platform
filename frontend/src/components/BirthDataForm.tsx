@@ -24,7 +24,6 @@ function ErrorMessage({ message, id }: ErrorMessageProps) {
     </p>
   );
 }
-
 // Types
 export interface BirthData {
   birthDate: string;
@@ -73,17 +72,17 @@ export function BirthDataForm({
   submitLabel = 'Generate Chart'
 }: BirthDataFormProps) {
   const [formData, setFormData] = useState<BirthData>({
-    birthDate: initialData?.birthDate || '',
-    birthTime: initialData?.birthTime || '12:00',
-    timeUnknown: initialData?.timeUnknown || false,
-    birthPlace: initialData?.birthPlace || '',
+    birthDate: initialData?.birthDate ?? '',
+    birthTime: initialData?.birthTime ?? '12:00',
+    timeUnknown: initialData?.timeUnknown ?? false,
+    birthPlace: initialData?.birthPlace ?? '',
     latitude: initialData?.latitude,
     longitude: initialData?.longitude,
     timezone: initialData?.timezone,
-    chartName: initialData?.chartName || 'My Natal Chart',
-    houseSystem: initialData?.houseSystem || 'placidus',
-    zodiac: initialData?.zodiac || 'tropical',
-    siderealMode: initialData?.siderealMode || 'lahiri',
+    chartName: initialData?.chartName ?? 'My Natal Chart',
+    houseSystem: initialData?.houseSystem ?? 'placidus',
+    zodiac: initialData?.zodiac ?? 'tropical',
+    siderealMode: initialData?.siderealMode ?? 'lahiri',
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof BirthData, string>>>({});
@@ -113,7 +112,8 @@ export function BirthDataForm({
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`
       );
-      const data = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const data: { display_name: string }[] = await response.json();
 
       const suggestions = data.map((item: { display_name: string }) => item.display_name);
       setPlaceSuggestions(suggestions);
@@ -129,7 +129,8 @@ export function BirthDataForm({
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`
       );
-      const data = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const data: { lat: string; lon: string }[] = await response.json();
 
       if (data?.[0]) {
         setFormData((prev) => ({
@@ -150,6 +151,7 @@ export function BirthDataForm({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (formData.birthPlace && formData.birthPlace.length >= 3) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         searchPlace(formData.birthPlace);
       }
     }, 500);
@@ -202,7 +204,7 @@ export function BirthDataForm({
         birth_place_name: formData.birthPlace,
         birth_latitude: formData.latitude!,
         birth_longitude: formData.longitude!,
-        birth_timezone: formData.timezone || 'UTC',
+        birth_timezone: formData.timezone ?? 'UTC',
         house_system: formData.houseSystem,
         zodiac: formData.zodiac,
         sidereal_mode: formData.zodiac === 'sidereal' ? formData.siderealMode : undefined,
@@ -218,6 +220,7 @@ export function BirthDataForm({
     } catch (error) {
       const err = error as { message?: string };
       console.error('Form submission error:', error);
+      const err = error as { message?: string };
       setErrors({
         birthDate: err.message || 'Failed to create chart. Please try again.',
       });
@@ -243,7 +246,9 @@ export function BirthDataForm({
   );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit} className="space-y-8">
       {/* Date & Time Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -378,7 +383,7 @@ export function BirthDataForm({
                   <button
                     key={index}
                     type="button"
-                    onClick={() => getPlaceCoordinates(place)}
+                    onClick={() => void getPlaceCoordinates(place)}
                     className="w-full text-left px-3 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     {place}

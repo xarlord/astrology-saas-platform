@@ -1,0 +1,34 @@
+{
+  "name": "astrological-platform-tests",
+  "version": "1.0.0",
+  "description": "BDD test specifications for Astrological Platform",
+  "scripts": {
+    "test": "cucumber-js tests/features/**/*.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --format node_modules/cucumber-pretty",
+    "test:auth": "cucumber-js tests/features/user_authentication.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @auth",
+    "test:chart": "cucumber-js tests/features/natal_chart_management.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @chart",
+    "test:calendar": "cucumber-js tests/features/calendar_feature.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @calendar",
+    "test:lunar": "cucumber-js tests/features/lunar_returns.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @lunar",
+    "test:compatibility": "cucumber-js tests/features/compatibility_analysis.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @compatibility",
+    "test:solar": "cucumber-js tests/features/solar_returns.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @solar",
+    "test:smoke": "cucumber-js tests/features/**/*.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --tags @smoke",
+    "test:report": "cucumber-js tests/features/**/*.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --format json:test-results.json --format html:cucumber-report.html",
+    "test:parallel": "cucumber-js tests/features/**/*.feature --require tests/features/step_definitions/**/*.js --require tests/features/cucumber.conf.js --parallel 4"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.0.0",
+    "@wdio/cucumber-framework": "^8.0.0",
+    "cucumber-html-reporter": "^6.0.0",
+    "cucumber-pretty": "^6.0.0",
+    "puppeteer": "^21.0.0",
+    "chai": "^4.3.10",
+    "chai-as-promised": "^7.1.1"
+  },
+  "cucumber": {
+    "stepDefinitions": [
+      "tests/features/step_definitions/**/*.js"
+    ],
+    "formatOptions": {
+      "snippetInterface": "async-await"
+    }
+  }
+}

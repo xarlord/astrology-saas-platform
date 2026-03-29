@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { EyeIcon, EyeSlashIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -18,7 +19,7 @@ interface ErrorMessageProps {
 
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
-    <p id={id} className="error-message" role="alert" aria-live="assertive">
+    <p id={id} data-testid="error-message" className="error-message" role="alert" aria-live="assertive">
       <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
       <span className="error-text">{message}</span>
     </p>
@@ -86,26 +87,21 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // Only validate if the field has a value
-    // Use a setTimeout to ensure state has updated before validation
-    setTimeout(() => {
-      const newErrors: Partial<Record<keyof typeof formData, string>> = {};
+    const newErrors: Partial<Record<keyof typeof formData, string>> = {};
 
-      if (name === 'email' && value) {
-        if (!value) {
-          newErrors.email = 'Email is required';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          newErrors.email = 'Please enter a valid email address';
-        }
-      } else if (name === 'password' && value) {
-        if (!value || value.length < 8) {
-          newErrors.password = 'Password must be at least 8 characters';
-        }
+    if (name === 'email' && value) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        newErrors.email = 'Please enter a valid email address';
       }
+    } else if (name === 'password' && value) {
+      if (value.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+    }
 
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-      }
-    }, 0);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    }
   };
 
   return (
@@ -135,8 +131,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="email-input"
                 aria-required="true"
-                aria-invalid={!!errors.email}
+                aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? emailErrorId : undefined}
                 data-testid="email-input"
                 className={`
@@ -181,8 +178,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="password-input"
                 aria-required="true"
-                aria-invalid={!!errors.password}
+                aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
                 data-testid="password-input"
                 className={`
@@ -225,7 +223,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 className="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -316,12 +314,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         {/* Sign Up Link */}
         <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Don&apos;t have an account?{' '}
-          <a
-            href="/register"
+          <Link
+            to="/register"
+            data-testid="signup-link"
             className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
@@ -366,9 +365,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(formData.password)) {
       newErrors.password =
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
     }
 
     if (!formData.confirmPassword) {
@@ -409,34 +408,32 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // Only validate if the field has a value
-    setTimeout(() => {
-      const newErrors: Partial<Record<keyof typeof formData, string>> = {};
+    const newErrors: Partial<Record<keyof typeof formData, string>> = {};
 
-      if (name === 'name' && value) {
-        if (!value.trim() || value.trim().length < 2) {
-          newErrors.name = 'Name must be at least 2 characters';
-        }
-      } else if (name === 'email' && value) {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          newErrors.email = 'Please enter a valid email address';
-        }
-      } else if (name === 'password' && value) {
-        if (value.length < 8) {
-          newErrors.password = 'Password must be at least 8 characters';
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-          newErrors.password =
-            'Password must contain at least one uppercase letter, one lowercase letter, and one number';
-        }
-      } else if (name === 'confirmPassword' && value && formData.password) {
-        if (formData.password !== value) {
-          newErrors.confirmPassword = 'Passwords do not match';
-        }
+    if (name === 'name' && value) {
+      if (!value.trim() || value.trim().length < 2) {
+        newErrors.name = 'Name must be at least 2 characters';
       }
+    } else if (name === 'email' && value) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+    } else if (name === 'password' && value) {
+      if (value.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(value)) {
+        newErrors.password =
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+      }
+    } else if (name === 'confirmPassword' && value && formData.password) {
+      if (formData.password !== value) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
+    }
 
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-      }
-    }, 0);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    }
   };
 
   return (
@@ -466,8 +463,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="name-input"
                 aria-required="true"
-                aria-invalid={!!errors.name}
+                aria-invalid={errors.name ? 'true' : 'false'}
                 aria-describedby={errors.name ? nameErrorId : undefined}
                 data-testid="name-input"
                 className={`
@@ -504,8 +502,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="register-email-input"
                 aria-required="true"
-                aria-invalid={!!errors.email}
+                aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? emailErrorId : undefined}
                 data-testid="register-email-input"
                 className={`
@@ -542,8 +541,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="register-password-input"
                 aria-required="true"
-                aria-invalid={!!errors.password}
+                aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
                 data-testid="register-password-input"
                 className={`
@@ -579,7 +579,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             {errors.password && <ErrorMessage message={errors.password} id={passwordErrorId} />}
             {!errors.password && (
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                Must be at least 8 characters with uppercase, lowercase, and number
+                Must be at least 8 characters with uppercase, lowercase, number, and special character
               </p>
             )}
           </div>
@@ -598,8 +598,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="confirm-password-input"
                 aria-required="true"
-                aria-invalid={!!errors.confirmPassword}
+                aria-invalid={errors.confirmPassword ? 'true' : 'false'}
                 aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
                 data-testid="confirm-password-input"
                 className={`
@@ -645,13 +646,13 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             />
             <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
               I agree to the{' '}
-              <a href="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <Link to="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
                 Terms of Service
-              </a>{' '}
+              </Link>{' '}
               and{' '}
-              <a href="/privacy" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <Link to="/privacy" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
                 Privacy Policy
-              </a>
+              </Link>
             </label>
           </div>
 
@@ -742,12 +743,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         {/* Sign In Link */}
         <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Already have an account?{' '}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

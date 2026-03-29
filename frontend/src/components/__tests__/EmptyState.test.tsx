@@ -85,7 +85,7 @@ describe('EmptyState', () => {
         <EmptyState title="Test" size="small" />
       );
 
-      expect(container.querySelector('.empty-state-sm')).toBeInTheDocument();
+      expect(container.querySelector('[role="status"]')?.className).toContain('p-8');
     });
 
     it('renders medium size (default)', () => {
@@ -93,7 +93,7 @@ describe('EmptyState', () => {
         <EmptyState title="Test" size="medium" />
       );
 
-      expect(container.querySelector('.empty-state-md')).toBeInTheDocument();
+      expect(container.querySelector('[role="status"]')?.className).toContain('p-12');
     });
 
     it('renders large size', () => {
@@ -101,7 +101,7 @@ describe('EmptyState', () => {
         <EmptyState title="Test" size="large" />
       );
 
-      expect(container.querySelector('.empty-state-lg')).toBeInTheDocument();
+      expect(container.querySelector('[role="status"]')?.className).toContain('p-16');
     });
   });
 
@@ -149,8 +149,8 @@ describe('EmptyState', () => {
 
     it('icons have aria-hidden to prevent screen reader announcement', () => {
       const { container } = render(<EmptyState title="Test" icon="📭" />);
-      const iconContainer = container.querySelector('.empty-state-icon');
-      expect(iconContainer).toHaveAttribute('aria-hidden', 'true');
+      const iconContainer = container.querySelector('[aria-hidden="true"]');
+      expect(iconContainer).toBeInTheDocument();
     });
   });
 
@@ -163,17 +163,21 @@ describe('EmptyState', () => {
       expect(container.querySelector('.custom-class')).toBeInTheDocument();
     });
 
-    it('renders title with correct styling class', () => {
+    it('renders title with correct styling', () => {
       const { container } = render(<EmptyState title="Test Title" />);
-      expect(container.querySelector('.empty-state-title')).toBeInTheDocument();
+      const title = container.querySelector('h3');
+      expect(title).toBeInTheDocument();
+      expect(title?.textContent).toBe('Test Title');
     });
 
-    it('renders description with correct styling class', () => {
+    it('renders description with correct styling', () => {
       const { container } = render(
         <EmptyState title="Test" description="Test description" />
       );
 
-      expect(container.querySelector('.empty-state-description')).toBeInTheDocument();
+      const description = container.querySelector('p');
+      expect(description).toBeInTheDocument();
+      expect(description?.textContent).toBe('Test description');
     });
   });
 });

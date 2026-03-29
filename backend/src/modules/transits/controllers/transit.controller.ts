@@ -1,19 +1,180 @@
 /**
  * Transit Controller
  * Handles transit calculations and forecasting
+ *
+ * Uses the real AstronomyEngineService for planetary positions and
+ * calculates aspects between natal and transit positions.
  */
 
-import { Request, Response } from 'express';
-import { AppError } from '../../../middleware/errorHandler';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
+import { AppError } from '../../../utils/appError';
 import ChartModel from '../../charts/models/chart.model';
-import { swissEphemeris } from '../../shared';
+import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
+
+// Module-level singleton of the real calculation engine
+const astronomyEngine = new AstronomyEngineService();
+
+// ---------------------------------------------------------------------------
+// Aspect calculation constants (shared with NatalChartService pattern)
+// ---------------------------------------------------------------------------
+
+const ASPECT_ANGLES: Record<string, number> = {
+  conjunction: 0,
+  semisextile: 30,
+  sextile: 60,
+  square: 90,
+  trine: 120,
+  quincunx: 150,
+  opposition: 180,
+};
+
+const ASPECT_ORBS: Record<string, number> = {
+  conjunction: 10,
+  opposition: 8,
+  trine: 8,
+  square: 6,
+  sextile: 4,
+  quincunx: 3,
+  semisextile: 2,
+};
+
+// ---------------------------------------------------------------------------
+// Transit calculation adapter
+// ---------------------------------------------------------------------------
+
+interface TransitResult {
+  transitPlanets: Record<string, { longitude: number; latitude?: number; speed?: number; retrograde?: boolean; sign?: string; degree?: number }>;
+  aspects: Array<{
+    planet1: string;
+    planet2: string;
+    type: string;
+    orb: number;
+    applying?: boolean;
+  }>;
+}
+
+/**
+ * Calculate transits by comparing natal planet positions (from stored chart
+ * data) against current/transit planet positions (from AstronomyEngineService).
+ *
+ * The output shape matches what the old mock `swissEphemeris.calculateTransits`
+ * returned, preserving the frontend contract.
+ */
+function calculateTransitsWithEngine(params: {
+  natalPlanets: Record<string, any>;
+  transitDate: Date;
+  latitude: number;
+  longitude: number;
+}): TransitResult {
+  const { natalPlanets, transitDate, latitude, longitude } = params;
+
+  // Get real transit planet positions from the engine
+  const transitPositions = astronomyEngine.calculatePlanetaryPositions(
+    transitDate,
+    latitude,
+    longitude,
+  );
+
+  // Also get Chiron and Lunar Nodes for completeness
+  const chironPos = astronomyEngine.calculateChiron(transitDate);
+  const lunarNodes = astronomyEngine.calculateLunarNodes(transitDate);
+
+  // Build transitPlanets object with lowercase keys (legacy format)
+  const transitPlanets: TransitResult['transitPlanets'] = {};
+
+  for (const [name, pos] of transitPositions) {
+    transitPlanets[name.toLowerCase()] = {
+      longitude: pos.longitude,
+      latitude: pos.latitude,
+      speed: pos.speed,
+      retrograde: pos.isRetrograde,
+      sign: pos.sign.toLowerCase(),
+      degree: pos.degree,
+    };
+  }
+
+  // Add Chiron
+  transitPlanets['chiron'] = {
+    longitude: chironPos.longitude,
+    sign: chironPos.sign.toLowerCase(),
+    degree: chironPos.degree,
+    retrograde: chironPos.isRetrograde,
+  };
+
+  // Add lunar nodes
+  transitPlanets['northnode'] = {
+    longitude: lunarNodes.northNode.longitude,
+    sign: lunarNodes.northNode.sign.toLowerCase(),
+    degree: lunarNodes.northNode.degree,
+  };
+  transitPlanets['southnode'] = {
+    longitude: lunarNodes.southNode.longitude,
+    sign: lunarNodes.southNode.sign.toLowerCase(),
+    degree: lunarNodes.southNode.degree,
+  };
+
+  // Calculate aspects between natal planets and transit planets
+  const aspects: TransitResult['aspects'] = [];
+
+  for (const [natalName, natalPos] of Object.entries(natalPlanets)) {
+    const natalLon = natalPos?.longitude;
+    if (typeof natalLon !== 'number') continue;
+
+    for (const [transitName, transitPos] of Object.entries(transitPlanets)) {
+      // Skip self-aspects
+      if (natalName === transitName) continue;
+
+      const transitLon = transitPos.longitude;
+
+      // Calculate angular distance
+      let diff = Math.abs(natalLon - transitLon);
+      if (diff > 180) diff = 360 - diff;
+
+      // Check each aspect type
+      for (const [type, angle] of Object.entries(ASPECT_ANGLES)) {
+        const orb = ASPECT_ORBS[type] ?? 6;
+        const deviation = Math.abs(diff - angle);
+
+        if (deviation <= orb) {
+          aspects.push({
+            planet1: natalName,
+            planet2: transitName,
+            type,
+            orb: Math.round(deviation * 100) / 100,
+            applying: isApplying(natalLon, transitLon, diff, angle),
+          });
+          break; // Only one aspect per pair
+        }
+      }
+    }
+  }
+
+  return { transitPlanets, aspects };
+}
+
+/**
+ * Determine if an aspect is applying (tightening) or separating.
+ * Simplified heuristic: if the angular distance is less than the target angle,
+ * the transit planet is approaching the aspect.
+ */
+function isApplying(natalLon: number, transitLon: number, _actualDiff: number, targetAngle: number): boolean {
+  // Simplified: we compare the raw distance to the target angle
+  let diff = Math.abs(natalLon - transitLon);
+  if (diff > 180) diff = 360 - diff;
+  return diff < targetAngle;
+}
+
+// ---------------------------------------------------------------------------
+// Controller functions
+// ---------------------------------------------------------------------------
 
 /**
  * Calculate transits for date range
  */
-export async function calculateTransits(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function calculateTransits(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const userId = req.user.id;
   const { chartId, startDate, endDate } = req.body;
 
   // Get chart
@@ -27,6 +188,9 @@ export async function calculateTransits(req: Request, res: Response): Promise<vo
     throw new AppError('Chart must be calculated first', 400);
   }
 
+  // Get natal planets from stored chart data
+  const natalPlanets = (chart.calculated_data as any).planets ?? {};
+
   // Calculate transits for each day in range
   const transitReadings: any[] = [];
   const start = new Date(startDate);
@@ -39,8 +203,8 @@ export async function calculateTransits(req: Request, res: Response): Promise<vo
   for (let i = 0; i <= maxDays; i++) {
     const transitDate = addDays(start, i);
 
-    const transitData = swissEphemeris.calculateTransits({
-      birthDate: new Date(chart.birth_date),
+    const transitData = calculateTransitsWithEngine({
+      natalPlanets,
       transitDate,
       latitude: chart.birth_latitude,
       longitude: chart.birth_longitude,
@@ -48,7 +212,7 @@ export async function calculateTransits(req: Request, res: Response): Promise<vo
 
     // Filter for significant aspects only
     const majorAspects = transitData.aspects.filter(
-      (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
+      (a) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
     );
 
     if (majorAspects.length > 0) {
@@ -186,8 +350,8 @@ function calculateGeneralAspects(planets: any): any[] {
 /**
  * Get transit calendar data
  */
-export async function getTransitCalendar(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getTransitCalendar(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const userId = req.user.id;
   const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
   const year = parseInt(req.query.year as string) || new Date().getFullYear();
 
@@ -202,16 +366,17 @@ export async function getTransitCalendar(req: Request, res: Response): Promise<v
     throw new AppError('Chart must be calculated first', 400);
   }
 
+  const natalPlanets = (chart.calculated_data as any).planets ?? {};
+
   // Calculate transits for the month
   const calendarData: any[] = [];
-  // const startDate = new Date(year, month - 1, 1); // Not used yet
   const daysInMonth = new Date(year, month, 0).getDate();
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month - 1, day);
 
-    const transitData = swissEphemeris.calculateTransits({
-      birthDate: new Date(chart.birth_date),
+    const transitData = calculateTransitsWithEngine({
+      natalPlanets,
       transitDate: date,
       latitude: chart.birth_latitude,
       longitude: chart.birth_longitude,
@@ -219,18 +384,18 @@ export async function getTransitCalendar(req: Request, res: Response): Promise<v
 
     // Get major aspects
     const majorAspects = transitData.aspects.filter(
-      (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 2
+      (a) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 2
     );
 
     // Moon phase
     const moonPhase = calculateMoonPhase(
-      transitData.transitPlanets.moon.longitude,
-      transitData.transitPlanets.sun.longitude
+      transitData.transitPlanets.moon?.longitude ?? 0,
+      transitData.transitPlanets.sun?.longitude ?? 0
     );
 
     // Check for retrogrades
     const retrogrades = Object.entries(transitData.transitPlanets)
-      .filter(([_, planet]: [string, any]) => planet.retrograde)
+      .filter(([_, planet]) => planet.retrograde)
       .map(([key, _]) => key);
 
     if (majorAspects.length > 0 || moonPhase.phase === 'full' || moonPhase.phase === 'new' || retrogrades.length > 0) {
@@ -257,8 +422,7 @@ export async function getTransitCalendar(req: Request, res: Response): Promise<v
 /**
  * Get specific transit details
  */
-export async function getTransitDetails(_req: Request, res: Response): Promise<void> {
-  // const userId = _req.user!.id; // TODO: will be used for DB lookup
+export async function getTransitDetails(_req: AuthenticatedRequest, res: Response): Promise<void> {
   // const { id } = _req.params; // Transit reading ID - TODO: will be used
 
   // TODO: Fetch specific transit reading from database
@@ -273,8 +437,8 @@ export async function getTransitDetails(_req: Request, res: Response): Promise<v
 /**
  * Get transit forecast for duration
  */
-export async function getTransitForecast(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getTransitForecast(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const userId = req.user.id;
   const { duration = 'month' } = req.query; // 'week', 'month', 'quarter', 'year'
 
   // Get user's primary chart
@@ -287,6 +451,8 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
   if (!chart.calculated_data) {
     throw new AppError('Chart must be calculated first', 400);
   }
+
+  const natalPlanets = (chart.calculated_data as any).planets ?? {};
 
   const now = new Date();
   let endDate = now;
@@ -317,8 +483,8 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
   for (let i = 0; i <= maxDays; i++) {
     const date = addDays(now, i);
 
-    const transitData = swissEphemeris.calculateTransits({
-      birthDate: new Date(chart.birth_date),
+    const transitData = calculateTransitsWithEngine({
+      natalPlanets,
       transitDate: date,
       latitude: chart.birth_latitude,
       longitude: chart.birth_longitude,
@@ -326,11 +492,14 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
 
     // Filter for outer planet aspects
     const outerPlanetAspects = transitData.aspects.filter(
-      (a: any) => outerPlanets.includes(a.planet1) && a.orb <= 1
+      (a) => outerPlanets.includes(a.planet1) || outerPlanets.includes(a.planet2)
     );
 
-    if (outerPlanetAspects.length > 0) {
-      outerPlanetAspects.forEach((aspect: any) => {
+    // Further filter for tighter orbs
+    const tightAspects = outerPlanetAspects.filter((a) => a.orb <= 1);
+
+    if (tightAspects.length > 0) {
+      tightAspects.forEach((aspect) => {
         transitForecast.push({
           date: date.toISOString().split('T')[0],
           ...aspect,
@@ -361,7 +530,9 @@ export async function getTransitForecast(req: Request, res: Response): Promise<v
   });
 }
 
+// ---------------------------------------------------------------------------
 // Helper functions
+// ---------------------------------------------------------------------------
 
 function calculateMoonPhase(moonLong: number, sunLong: number): {
   phase: 'new' | 'waxing-crescent' | 'first-quarter' | 'waxing-gibbous' | 'full' | 'waning-gibbous' | 'last-quarter' | 'waning-crescent';
@@ -420,9 +591,9 @@ function calculateTransitIntensity(aspect: any): number {
   };
 
   const orbFactor = 1 - (aspect.orb / 10); // Tighter aspects are stronger
-  const planetFactor = getPlanetIntensityFactor(aspect.transitPlanet);
+  const planetFactor = getPlanetIntensityFactor(aspect.planet1);
 
-  return Math.round(baseIntensity[aspect.aspect] * orbFactor * planetFactor);
+  return Math.round((baseIntensity[aspect.type] ?? 5) * orbFactor * planetFactor);
 }
 
 function getPlanetIntensityFactor(planet: string): number {

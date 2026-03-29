@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import './EmptyState.css';
 
 export interface EmptyStateProps {
   /**
@@ -55,6 +54,30 @@ export interface EmptyStateProps {
   onSecondaryAction?: () => void;
 }
 
+const containerSizeClasses = {
+  small: 'p-8 px-4',
+  medium: 'p-12 px-6',
+  large: 'p-16 px-8',
+};
+
+const emojiSizeClasses = {
+  small: 'text-4xl',
+  medium: 'text-7xl',
+  large: 'text-8xl',
+};
+
+const titleSizeClasses = {
+  small: 'text-base',
+  medium: 'text-xl',
+  large: 'text-2xl',
+};
+
+const descriptionSizeClasses = {
+  small: 'text-[0.8125rem] mb-4',
+  medium: 'text-sm mb-6',
+  large: 'text-base mb-8',
+};
+
 export const EmptyState: React.FC<EmptyStateProps> = ({
   icon = '📭',
   title,
@@ -66,30 +89,32 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   secondaryActionText,
   onSecondaryAction,
 }) => {
-  const sizeClasses = {
-    small: 'empty-state-sm',
-    medium: 'empty-state-md',
-    large: 'empty-state-lg',
-  };
-
   return (
-    <div className={`empty-state ${sizeClasses[size]} ${className}`} role="status" aria-live="polite">
-      <div className="empty-state-content">
+    <div
+      className={`flex items-center justify-center text-center bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 ${containerSizeClasses[size]} ${className}`}
+      role="status"
+      aria-live="polite"
+    >
+      <div className="max-w-sm">
         {/* Icon */}
-        <div className="empty-state-icon" aria-hidden="true">
+        <div className="mb-6 flex justify-center items-center" aria-hidden="true">
           {typeof icon === 'string' ? (
-            <span className="empty-state-emoji">{icon}</span>
+            <span className={`${emojiSizeClasses[size]} leading-none block`}>{icon}</span>
           ) : (
             icon
           )}
         </div>
 
         {/* Title */}
-        <h3 className="empty-state-title">{title}</h3>
+        <h3 className={`${titleSizeClasses[size]} font-bold text-gray-900 dark:text-gray-50 mb-3 leading-snug`}>
+          {title}
+        </h3>
 
         {/* Description */}
         {description && (
-          <p className="empty-state-description">{description}</p>
+          <p className={`${descriptionSizeClasses[size]} text-gray-500 dark:text-gray-400 leading-relaxed`}>
+            {description}
+          </p>
         )}
 
         {/* Actions */}
@@ -98,7 +123,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             {actionText && onAction && (
               <button
                 onClick={onAction}
-                className="btn-primary empty-state-action-primary"
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-px hover:shadow-[0_4px_6px_-1px_rgba(79,70,229,0.2)] active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
               >
                 {actionText}
               </button>
@@ -106,7 +131,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             {secondaryActionText && onSecondaryAction && (
               <button
                 onClick={onSecondaryAction}
-                className="btn-secondary empty-state-action-secondary"
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 whitespace-nowrap bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-gray-50 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:border-gray-500 dark:focus-visible:outline-indigo-400"
               >
                 {secondaryActionText}
               </button>
@@ -119,6 +144,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 // Pre-configured empty states for common use cases
+// eslint-disable-next-line react-refresh/only-export-components
 export const EmptyStates = {
   // No charts
   NoCharts: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (

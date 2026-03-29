@@ -7,6 +7,12 @@ node_modules/
 coverage/
 .nyc_output/
 
+# Playwright E2E
+frontend/e2e/.auth/
+frontend/playwright-report/
+frontend/test-results/
+frontend/test-results.json
+
 # Production
 dist/
 build/
@@ -50,9 +56,6 @@ temp/
 
 # Build artifacts
 *.tsbuildinfo
-
-# Docker
-.dockerignore
 
 # SSL certificates
 *.pem

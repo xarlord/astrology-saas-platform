@@ -9,12 +9,12 @@ import { Request, Response } from 'express';
 import {
   getCurrentUser,
   updateCurrentUser,
-  getUserCharts,
   getUserPreferences,
   updateUserPreferences,
   deleteAccount,
-} from '../../controllers/user.controller';
-import { AppError } from '../../middleware/errorHandler';
+  getUserCharts,
+} from '../../modules/users/controllers/user.controller';
+import { AppError } from '../../utils/appError';
 import UserModel from '../../modules/users/models/user.model';
 import { sanitizeUser } from '../../utils/helpers';
 

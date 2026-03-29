@@ -50,6 +50,17 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
     return 'extreme';
   };
 
+  const getIntensityClasses = (intensity: number): string => {
+    const color = getIntensityColor(intensity);
+    switch (color) {
+      case 'low': return 'bg-green-600/30';
+      case 'medium': return 'bg-yellow-500/30';
+      case 'high': return 'bg-orange-500/30';
+      case 'extreme': return 'bg-red-500/30';
+      default: return 'bg-white/20';
+    }
+  };
+
   const getCategoryIcon = (category: string): string => {
     const icons: Record<string, string> = {
       relationships: '❤️',
@@ -66,25 +77,25 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
     const likelihoodBars = Array.from({ length: UI.LIKELIHOOD_MAX }, (_, i) => i < prediction.likelihood);
 
     return (
-      <div key={index} className="prediction-card">
-        <div className="prediction-header">
-          <span className="category-icon">{getCategoryIcon(prediction.category)}</span>
-          <h4>{prediction.category}</h4>
-          <div className="likelihood">
-            <span className="label">Likelihood:</span>
-            <div className="likelihood-bar">
+      <div key={index} className="bg-gray-50 p-5 rounded-xl border-l-4 border-indigo-500">
+        <div className="flex items-center gap-3 mb-3 flex-wrap">
+          <span className="text-2xl">{getCategoryIcon(prediction.category)}</span>
+          <h4 className="m-0 text-gray-800 capitalize">{prediction.category}</h4>
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-sm">Likelihood:</span>
+            <div className="flex gap-0.5">
               {likelihoodBars.map((_, i) => (
-                <span key={i} className={`bar ${i < prediction.likelihood ? 'filled' : ''}`}>■</span>
+                <span key={i} className={`text-[0.6rem] ${i < prediction.likelihood ? 'text-indigo-500' : 'text-gray-300'}`}>&#9632;</span>
               ))}
             </div>
             <span className="number">{prediction.likelihood}/{UI.LIKELIHOOD_MAX}</span>
           </div>
         </div>
-        <p className="prediction-text">{prediction.prediction}</p>
+        <p className="text-gray-700 leading-relaxed m-0 mb-3">{prediction.prediction}</p>
         {prediction.advice && prediction.advice.length > 0 && (
-          <ul className="advice-list">
+          <ul className="m-0 pl-5">
             {prediction.advice.map((advice, i) => (
-              <li key={i}>{advice}</li>
+              <li key={i} className="text-gray-500 leading-relaxed mb-1.5">{advice}</li>
             ))}
           </ul>
         )}
@@ -93,28 +104,28 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   };
 
   const renderRitualCard = (ritual: MonthlyRitual, index: number) => (
-    <div key={index} className="ritual-card">
-      <div className="ritual-header">
-        <span className="phase-icon">{ritual.phase === 'new-moon' ? '🌑' : ritual.phase === 'full-moon' ? '🌕' : '🌓'}</span>
-        <h4>{ritual.title}</h4>
-        <span className="phase">{ritual.phase.replace('-', ' ')}</span>
+    <div key={index} className="bg-gray-50 p-6 rounded-xl">
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-4xl">{ritual.phase === 'new-moon' ? '🌑' : ritual.phase === 'full-moon' ? '🌕' : '🌓'}</span>
+        <h4 className="m-0 text-gray-800 grow">{ritual.title}</h4>
+        <span className="px-3 py-1 bg-indigo-500 text-white rounded-full text-sm">{ritual.phase.replace('-', ' ')}</span>
       </div>
-      <p className="ritual-description">{ritual.description}</p>
+      <p className="text-gray-700 leading-relaxed m-0 mb-4">{ritual.description}</p>
       {ritual.materials && ritual.materials.length > 0 && (
-        <div className="materials">
+        <div className="mb-4">
           <strong>Materials needed:</strong>
-          <ul>
+          <ul className="mt-2 pl-5 m-0">
             {ritual.materials.map((material, i) => (
-              <li key={i}>{material}</li>
+              <li key={i} className="text-gray-500 leading-relaxed">{material}</li>
             ))}
           </ul>
         </div>
       )}
-      <div className="ritual-steps">
+      <div className="mt-4">
         <strong>Steps:</strong>
-        <ol>
+        <ol className="mt-2 pl-5 m-0">
           {ritual.steps.map((step, i) => (
-            <li key={i}>{step}</li>
+            <li key={i} className="text-gray-500 leading-loose mb-2">{step}</li>
           ))}
         </ol>
       </div>
@@ -123,8 +134,8 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
 
   if (loading) {
     return (
-      <div className="lunar-forecast-view">
-        <div className="loading-spinner">Loading forecast...</div>
+      <div className="max-w-[1000px] mx-auto p-5">
+        <div className="py-10 text-center text-gray-400 text-lg">Loading forecast...</div>
       </div>
     );
   }
@@ -138,7 +149,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
             Try Again
           </button>
         </div>
-        {onBack && <button onClick={onBack} className="back-button">Back</button>}
+        {onBack && <button onClick={onBack} type="button" className="inline-block px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600 cursor-pointer mb-4 text-sm hover:bg-gray-100 transition-colors">Back</button>}
       </div>
     );
   }
@@ -148,12 +159,12 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   }
 
   return (
-    <div className="lunar-forecast-view">
+    <div className="max-w-[1000px] mx-auto p-5">
       {/* Header */}
-      <div className="forecast-header">
-        {onBack && <button onClick={onBack} className="back-button">← Back</button>}
-        <h2>Lunar Month Forecast</h2>
-        <p className="return-date">
+      <div className="text-center mb-6">
+        {onBack && <button onClick={onBack} type="button" className="inline-block px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600 cursor-pointer mb-4 text-sm hover:bg-gray-100 transition-colors">&larr; Back</button>}
+        <h2 className="text-3xl text-gray-800 m-0 mb-2">Lunar Month Forecast</h2>
+        <p className="text-gray-400 text-lg">
           {new Date(forecast.returnDate).toLocaleDateString('en-US', {
             month: 'long',
             day: 'numeric',
@@ -163,27 +174,39 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
       </div>
 
       {/* Tabs */}
-      <div className="forecast-tabs">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
         <button
-          className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
+          type="button"
+          className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
+            activeTab === 'overview' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+          }`}
           onClick={() => setActiveTab('overview')}
         >
           Overview
         </button>
         <button
-          className={`tab ${activeTab === 'predictions' ? 'active' : ''}`}
+          type="button"
+          className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
+            activeTab === 'predictions' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+          }`}
           onClick={() => setActiveTab('predictions')}
         >
           Predictions
         </button>
         <button
-          className={`tab ${activeTab === 'rituals' ? 'active' : ''}`}
+          type="button"
+          className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
+            activeTab === 'rituals' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+          }`}
           onClick={() => setActiveTab('rituals')}
         >
           Rituals
         </button>
         <button
-          className={`tab ${activeTab === 'journal' ? 'active' : ''}`}
+          type="button"
+          className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
+            activeTab === 'journal' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+          }`}
           onClick={() => setActiveTab('journal')}
         >
           Journal
@@ -191,32 +214,32 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
       </div>
 
       {/* Tab Content */}
-      <div className="tab-content">
+      <div className="bg-white p-6 rounded-xl shadow-sm shadow-black/10">
         {activeTab === 'overview' && (
-          <div className="overview-tab">
+          <div className="space-y-6">
             {/* Theme Card */}
-            <div className="theme-card">
-              <h3>Monthly Theme</h3>
-              <p className="theme-text">{forecast.theme}</p>
-              <div className={`intensity-indicator ${getIntensityColor(forecast.intensity)}`}>
-                <span className="label">Intensity:</span>
-                <span className="value">{forecast.intensity}/10</span>
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl">
+              <h3 className="m-0 mb-3 text-xl">Monthly Theme</h3>
+              <p className="text-lg leading-relaxed mb-4">{forecast.theme}</p>
+              <div className={`inline-block px-4 py-2 rounded-full font-semibold ${getIntensityClasses(forecast.intensity)}`}>
+                <span>Intensity:</span>
+                <span className="ml-1">{forecast.intensity}/10</span>
               </div>
             </div>
 
             {/* Emotional Theme */}
-            <div className="emotional-theme-card">
-              <h3>Emotional Focus</h3>
-              <p>{forecast.emotionalTheme}</p>
+            <div className="bg-gray-50 p-5 rounded-xl">
+              <h3 className="m-0 mb-3 text-gray-800">Emotional Focus</h3>
+              <p className="text-gray-500 leading-relaxed m-0">{forecast.emotionalTheme}</p>
             </div>
 
             {/* Action Advice */}
             {forecast.actionAdvice && forecast.actionAdvice.length > 0 && (
-              <div className="action-advice-card">
-                <h3>Actions to Take This Month</h3>
-                <ul>
+              <div className="bg-gray-50 p-5 rounded-xl">
+                <h3 className="m-0 mb-3 text-gray-800">Actions to Take This Month</h3>
+                <ul className="m-0 pl-5">
                   {forecast.actionAdvice.map((advice, i) => (
-                    <li key={i}>{advice}</li>
+                    <li key={i} className="text-gray-500 leading-loose mb-2">{advice}</li>
                   ))}
                 </ul>
               </div>
@@ -224,20 +247,20 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
 
             {/* Key Dates */}
             {forecast.keyDates && forecast.keyDates.length > 0 && (
-              <div className="key-dates-card">
-                <h3>Key Dates</h3>
-                <div className="key-dates-list">
+              <div>
+                <h3 className="m-0 mb-4 text-gray-800">Key Dates</h3>
+                <div className="flex flex-col gap-3">
                   {forecast.keyDates.map((date, i) => (
-                    <div key={i} className="key-date-item">
-                      <span className="date-badge">{date.type.replace('-', ' ')}</span>
-                      <span className="date">
+                    <div key={i} className="flex flex-col gap-2 p-4 bg-white rounded-lg border-l-4 border-indigo-500">
+                      <span className="inline-block w-fit px-3 py-1 bg-indigo-500 text-white rounded-full text-sm font-semibold">{date.type.replace('-', ' ')}</span>
+                      <span className="text-indigo-500 font-semibold">
                         {new Date(date.date).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                         })}
                       </span>
-                      <p className="description">{date.description}</p>
-                      <p className="significance">{date.significance}</p>
+                      <p className="m-0 text-gray-700 font-medium">{date.description}</p>
+                      <p className="m-0 text-gray-500 text-[0.95rem]">{date.significance}</p>
                     </div>
                   ))}
                 </div>
@@ -247,34 +270,34 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         )}
 
         {activeTab === 'predictions' && (
-          <div className="predictions-tab">
-            <h3>Monthly Predictions</h3>
-            <div className="predictions-grid">
+          <div>
+            <h3 className="m-0 mb-5 text-gray-800">Monthly Predictions</h3>
+            <div className="grid gap-4">
               {forecast.predictions.map((prediction, i) => renderPredictionCard(prediction, i))}
             </div>
           </div>
         )}
 
         {activeTab === 'rituals' && (
-          <div className="rituals-tab">
-            <h3>Monthly Rituals</h3>
-            <div className="rituals-list">
+          <div>
+            <h3 className="m-0 mb-5 text-gray-800">Monthly Rituals</h3>
+            <div className="grid gap-5">
               {forecast.rituals.map((ritual, i) => renderRitualCard(ritual, i))}
             </div>
           </div>
         )}
 
         {activeTab === 'journal' && (
-          <div className="journal-tab">
-            <h3>Journal Prompts</h3>
-            <p className="journal-intro">
+          <div>
+            <h3 className="m-0 mb-3 text-gray-800">Journal Prompts</h3>
+            <p className="text-gray-500 leading-relaxed mb-6">
               Reflect on these questions throughout the lunar month to deepen your self-awareness.
             </p>
-            <div className="journal-prompts-list">
+            <div className="flex flex-col gap-4">
               {forecast.journalPrompts.map((prompt, i) => (
-                <div key={i} className="journal-prompt">
-                  <span className="prompt-number">{i + 1}</span>
-                  <p className="prompt-text">{prompt}</p>
+                <div key={i} className="flex gap-4 p-5 bg-gray-50 rounded-xl">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-500 text-white rounded-full font-semibold">{i + 1}</span>
+                  <p className="m-0 text-gray-700 leading-relaxed">{prompt}</p>
                 </div>
               ))}
             </div>

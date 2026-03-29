@@ -11,7 +11,7 @@
  * Component Tests
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -66,7 +66,7 @@ describe('BirthDataForm Component', () => {
     vi.clearAllMocks();
     // Mock successful fetch responses
     (global.fetch as any).mockResolvedValue({
-      json: async () => [],
+      json: () => Promise.resolve([]),
     });
   });
 
@@ -284,13 +284,13 @@ describe('BirthDataForm Component', () => {
     it('should show place suggestions when typing valid place name', async () => {
       const user = userEvent.setup();
       (global.fetch as any).mockResolvedValue({
-        json: async () => [
+        json: () => Promise.resolve([
           {
             display_name: 'New York, NY, USA',
             lat: '40.7128',
             lon: '-74.0060',
           },
-        ],
+        ]),
       });
 
       renderWithQueryClient(<BirthDataForm />);
@@ -318,13 +318,13 @@ describe('BirthDataForm Component', () => {
     it('should set coordinates when selecting a place suggestion', async () => {
       const user = userEvent.setup();
       (global.fetch as any).mockResolvedValue({
-        json: async () => [
+        json: () => Promise.resolve([
           {
             display_name: 'London, UK',
             lat: '51.5074',
             lon: '-0.1278',
           },
-        ],
+        ]),
       });
 
       renderWithQueryClient(<BirthDataForm />);
@@ -398,7 +398,7 @@ describe('BirthDataForm Component', () => {
       }, { timeout: 2000 });
     });
 
-    it('should show loading state during submission', async () => {
+    it('should show loading state during submission', () => {
       // This test verifies the loading button text when mutations are pending
       // We'll check that the button has the right structure and disabled state
       renderWithQueryClient(<BirthDataForm />);

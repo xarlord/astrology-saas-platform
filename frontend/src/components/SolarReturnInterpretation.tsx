@@ -100,12 +100,12 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
   };
 
   return (
-    <div className="solar-return-interpretation">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="interpretation-header">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2>Your {year} Solar Return</h2>
-          <p className="return-date">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white m-0">Your {year} Solar Return</h2>
+          <p className="flex items-center gap-2 mt-1 text-sm text-gray-500 dark:text-gray-400 m-0">
             <Calendar size={16} />
             Solar Return: {new Date(returnDate).toLocaleDateString('en-US', {
               weekday: 'long',
@@ -116,15 +116,15 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           </p>
         </div>
 
-        <div className="header-actions">
+        <div className="flex gap-2">
           {onDownload && (
-            <button onClick={onDownload} className="action-btn">
+            <button type="button" onClick={onDownload} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition-colors">
               <Download size={18} />
               Save
             </button>
           )}
           {onShare && (
-            <button onClick={onShare} className="action-btn primary">
+            <button type="button" onClick={onShare} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 text-sm font-medium transition-colors">
               <Share2 size={18} />
               Share
             </button>
@@ -133,19 +133,19 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       </div>
 
       {/* Sun House Interpretation */}
-      <section className="interpretation-section sun-house">
-        <div className="section-header">
-          <Star className="section-icon" size={24} />
-          <h3>Sun in {HOUSE_NAMES[interpretation.sunHouse.house]}</h3>
+      <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <Star className="text-amber-500" size={24} />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Sun in {HOUSE_NAMES[interpretation.sunHouse.house]}</h3>
         </div>
 
-        <p className="main-interpretation">{interpretation.sunHouse.interpretation}</p>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed m-0 mb-4">{interpretation.sunHouse.interpretation}</p>
 
-        <div className="focus-areas">
-          <h4>Your Focus This Year:</h4>
-          <div className="focus-tags">
+        <div className="mb-4">
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Your Focus This Year:</h4>
+          <div className="flex flex-wrap gap-2">
             {interpretation.sunHouse.focus.map((focus, index) => (
-              <span key={index} className="focus-tag">
+              <span key={index} className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm">
                 {focus}
               </span>
             ))}
@@ -153,34 +153,36 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         </div>
 
         {interpretation.themes.length > 0 && (
-          <div className="themes-grid">
-            <h4>Yearly Themes:</h4>
-            {interpretation.themes.map((theme, index) => (
-              <div key={index} className="theme-card">
-                {theme}
-              </div>
-            ))}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Yearly Themes:</h4>
+            <div className="flex flex-wrap gap-2">
+              {interpretation.themes.map((theme, index) => (
+                <div key={index} className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300">
+                  {theme}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </section>
 
       {/* Moon Phase */}
-      <section className="interpretation-section moon-phase">
-        <div className="section-header">
-          <div className="moon-icon">{MOON_PHASE_EMOJIS[interpretation.moonPhase.phase]}</div>
-          <h3>Moon Phase: {interpretation.moonPhase.phase.replace('-', ' ')}</h3>
+      <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="text-2xl">{MOON_PHASE_EMOJIS[interpretation.moonPhase.phase]}</div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Moon Phase: {interpretation.moonPhase.phase.replace('-', ' ')}</h3>
         </div>
 
-        <p className="moon-interpretation">{interpretation.moonPhase.interpretation}</p>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed m-0 mb-4">{interpretation.moonPhase.interpretation}</p>
 
-        <div className="moon-energy">
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           <strong>Energy:</strong> {interpretation.moonPhase.energy}
         </div>
 
         {interpretation.moonPhase.advice && interpretation.moonPhase.advice.length > 0 && (
-          <div className="moon-advice">
-            <h4>Moon Phase Advice:</h4>
-            <ul>
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Moon Phase Advice:</h4>
+            <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
               {interpretation.moonPhase.advice.map((advice, index) => (
                 <li key={index}>{advice}</li>
               ))}
@@ -191,28 +193,28 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
 
       {/* Lucky Days */}
       {interpretation.luckyDays && interpretation.luckyDays.length > 0 && (
-        <section className="interpretation-section lucky-days">
-          <div className="section-header">
-            <Star className="section-icon gold" size={24} />
-            <h3>Lucky Days</h3>
+        <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Star className="text-amber-500" size={24} />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Lucky Days</h3>
           </div>
 
-          <div className="lucky-days-list">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {interpretation.luckyDays.slice(0, 10).map((day, index) => (
-              <div key={index} className="lucky-day-card">
-                <div className="day-date">
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {new Date(day.date).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
                   })}
                 </div>
-                <div className="day-reason">{day.reason}</div>
-                <div className="day-intensity">
+                <div className="text-sm text-gray-500 dark:text-gray-400 flex-1 mx-3 truncate">{day.reason}</div>
+                <div className="flex items-center gap-1.5 text-sm">
                   <span
-                    className="intensity-dot"
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: getIntensityColor(day.intensity) }}
                   />
-                  {getIntensityLabel(day.intensity)}
+                  <span className="text-gray-600 dark:text-gray-400">{getIntensityLabel(day.intensity)}</span>
                 </div>
               </div>
             ))}
@@ -222,22 +224,22 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
 
       {/* Challenges */}
       {interpretation.challenges && interpretation.challenges.length > 0 && (
-        <section className="interpretation-section challenges">
-          <div className="section-header">
-            <AlertTriangle className="section-icon warning" size={24} />
-            <h3>Challenges & Growth Opportunities</h3>
+        <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <AlertTriangle className="text-amber-500" size={24} />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Challenges & Growth Opportunities</h3>
           </div>
 
-          <div className="challenges-list">
+          <div className="space-y-4">
             {interpretation.challenges.map((challenge, index) => (
-              <div key={index} className="challenge-card">
-                <div className="challenge-header">
-                  <h4>{challenge.area}</h4>
+              <div key={index} className="p-4 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 rounded-r-lg">
+                <div className="mb-2">
+                  <h4 className="text-base font-semibold text-gray-900 dark:text-white m-0">{challenge.area}</h4>
                 </div>
-                <p className="challenge-description">{challenge.description}</p>
-                <div className="challenge-advice">
-                  <Lightbulb size={16} />
-                  <strong>Advice:</strong> {challenge.advice}
+                <p className="text-sm text-gray-700 dark:text-gray-300 m-0 mb-3">{challenge.description}</p>
+                <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <Lightbulb size={16} className="shrink-0 mt-0.5" />
+                  <span><strong>Advice:</strong> {challenge.advice}</span>
                 </div>
               </div>
             ))}
@@ -247,21 +249,21 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
 
       {/* Opportunities */}
       {interpretation.opportunities && interpretation.opportunities.length > 0 && (
-        <section className="interpretation-section opportunities">
-          <div className="section-header">
-            <TrendingUp className="section-icon success" size={24} />
-            <h3>Opportunities</h3>
+        <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <TrendingUp className="text-green-500" size={24} />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Opportunities</h3>
           </div>
 
-          <div className="opportunities-list">
+          <div className="space-y-4">
             {interpretation.opportunities.map((opportunity, index) => (
-              <div key={index} className="opportunity-card">
-                <div className="opportunity-header">
-                  <Gift size={20} />
-                  <h4>{opportunity.area}</h4>
+              <div key={index} className="p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-r-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Gift size={20} className="text-green-500" />
+                  <h4 className="text-base font-semibold text-gray-900 dark:text-white m-0">{opportunity.area}</h4>
                 </div>
-                <p className="opportunity-description">{opportunity.description}</p>
-                <div className="opportunity-timing">
+                <p className="text-sm text-gray-700 dark:text-gray-300 m-0 mb-2">{opportunity.description}</p>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   <strong>Timing:</strong> {opportunity.timing}
                 </div>
               </div>
@@ -272,13 +274,13 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
 
       {/* General Advice */}
       {interpretation.advice && interpretation.advice.length > 0 && (
-        <section className="interpretation-section advice">
-          <div className="section-header">
-            <Lightbulb className="section-icon" size={24} />
-            <h3>Your Advice for {year}</h3>
+        <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Lightbulb className="text-indigo-500" size={24} />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Your Advice for {year}</h3>
           </div>
 
-          <ul className="advice-list">
+          <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
             {interpretation.advice.map((advice, index) => (
               <li key={index}>{advice}</li>
             ))}
@@ -288,11 +290,11 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
 
       {/* Keywords */}
       {interpretation.keywords && interpretation.keywords.length > 0 && (
-        <section className="interpretation-section keywords">
-          <h3>Keywords for {year}</h3>
-          <div className="keywords-cloud">
+        <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0 mb-3">Keywords for {year}</h3>
+          <div className="flex flex-wrap gap-2">
             {interpretation.keywords.map((keyword, index) => (
-              <span key={index} className="keyword-item">
+              <span key={index} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">
                 {keyword}
               </span>
             ))}
@@ -301,8 +303,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       )}
 
       {/* Footer */}
-      <div className="interpretation-footer">
-        <p className="disclaimer">
+      <div className="text-center pt-4">
+        <p className="text-sm text-gray-400 dark:text-gray-500 italic max-w-2xl mx-auto">
           This solar return reading is based on your natal chart and the exact return of the Sun to its natal position.
           The influences described are potentials that you can work with during this birthday year.
         </p>

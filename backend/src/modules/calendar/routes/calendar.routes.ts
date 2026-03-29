@@ -17,9 +17,9 @@ router.get('/month/:year/:month', optionalAuthenticate, calendarController.getMo
 router.use(authenticate);
 
 // POST /api/calendar/events - Create custom calendar event
-router.post('/events', calendarController.createCustomEvent.bind(calendarController));
+router.post('/events', createCustomEvent);
 
 // DELETE /api/calendar/events/:id - Delete a calendar event
-router.delete('/events/:id', calendarController.deleteEvent.bind(calendarController));
+router.delete('/events/:id', deleteEvent);
 
 export default router;

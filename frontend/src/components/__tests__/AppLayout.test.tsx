@@ -332,7 +332,7 @@ describe('AppLayout Component', () => {
     });
 
     it('should have home, charts, transits, and learn tabs', () => {
-      const { container } = render(
+      render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
@@ -464,7 +464,7 @@ describe('AppLayout Component', () => {
   describe('Responsive Behavior', () => {
     it('should show sidebar on large screens', () => {
       // Mock large screen
-      (window.matchMedia as any).mockImplementation(query => ({
+      (window.matchMedia as any).mockImplementation((query: string) => ({
         matches: query === '(min-width: 1024px)',
         media: query,
         onchange: null,

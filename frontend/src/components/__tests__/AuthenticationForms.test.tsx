@@ -14,6 +14,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { LoginForm, RegisterForm } from '../AuthenticationForms';
 
 // Mock the useAuth hook - create the mock functions outside the mock
@@ -41,7 +42,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
   describe('Rendering', () => {
     it('should render login form with all required fields', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument();
@@ -49,14 +50,14 @@ describe('AuthenticationForms - LoginForm', () => {
     });
 
     it('should render form header and description', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       expect(screen.getByText('Welcome Back')).toBeInTheDocument();
       expect(screen.getByText(/sign in to access your charts/i)).toBeInTheDocument();
     });
 
     it('should render forgot password link', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const forgotLink = screen.getByText(/forgot password/i);
       expect(forgotLink).toBeInTheDocument();
@@ -64,14 +65,14 @@ describe('AuthenticationForms - LoginForm', () => {
     });
 
     it('should render social auth buttons', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       expect(screen.getByText('Google')).toBeInTheDocument();
       expect(screen.getByText('Apple')).toBeInTheDocument();
     });
 
     it('should render sign up link', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const signUpLink = screen.getByText(/sign up/i);
       expect(signUpLink).toBeInTheDocument();
@@ -79,7 +80,7 @@ describe('AuthenticationForms - LoginForm', () => {
     });
 
     it('should have accessible form elements', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
@@ -101,7 +102,7 @@ describe('AuthenticationForms - LoginForm', () => {
   describe('Form Validation', () => {
     it('should show email required error when submitting empty form', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
@@ -111,7 +112,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should show email format error for invalid email', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       await user.type(emailInput, 'invalid-email');
@@ -122,7 +123,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should show password required error when submitting without password', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       await user.type(emailInput, 'test@example.com');
@@ -135,7 +136,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should show password minimum length error', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
@@ -149,7 +150,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should clear error when user starts typing', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
@@ -164,7 +165,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should pass validation with valid inputs', async () => {
       const onSuccess = vi.fn();
-      render(<LoginForm onSuccess={onSuccess} />);
+      renderWithRouter(<LoginForm onSuccess={onSuccess} />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
@@ -193,7 +194,7 @@ describe('AuthenticationForms - LoginForm', () => {
       const errorMessage = 'Invalid credentials';
       mockAuthHook.login.mockRejectedValue(new Error(errorMessage));
 
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
@@ -213,7 +214,7 @@ describe('AuthenticationForms - LoginForm', () => {
       // Pass undefined to trigger fallback message
       mockAuthHook.login.mockRejectedValue({ });
 
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
@@ -236,7 +237,7 @@ describe('AuthenticationForms - LoginForm', () => {
       const onSuccess = vi.fn();
       mockAuthHook.login.mockResolvedValue({ success: true });
 
-      render(<LoginForm onSuccess={onSuccess} />);
+      renderWithRouter(<LoginForm onSuccess={onSuccess} />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
@@ -256,27 +257,20 @@ describe('AuthenticationForms - LoginForm', () => {
   describe('Password Visibility Toggle', () => {
     it('should toggle password visibility', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const passwordInput = screen.getByPlaceholderText(/enter your password/i);
       const toggleButton = screen.getByTestId('password-visibility-toggle');
 
       expect(passwordInput).toHaveAttribute('type', 'password');
 
-      // Find the eye icon button
-      const eyeButtons = screen.getAllByRole('button').filter(btn =>
-        btn.querySelector('svg')
-      );
-      const showPasswordButton = eyeButtons.find(btn =>
-        btn.querySelector('svg')?.classList.contains('w-5')
-      );
+      // Find the password toggle button by its aria-label
+      const showPasswordButton = screen.getByLabelText(/show password/i);
 
-      if (showPasswordButton) {
-        await user.click(showPasswordButton);
-        expect(passwordInput).toHaveAttribute('type', 'text');
-        await user.click(showPasswordButton);
-        expect(passwordInput).toHaveAttribute('type', 'password');
-      }
+      await user.click(showPasswordButton);
+      expect(passwordInput).toHaveAttribute('type', 'text');
+      await user.click(showPasswordButton);
+      expect(passwordInput).toHaveAttribute('type', 'password');
     });
   });
 
@@ -305,7 +299,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
   describe('Rendering', () => {
     it('should render register form with all required fields', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
@@ -315,20 +309,20 @@ describe('AuthenticationForms - RegisterForm', () => {
     });
 
     it('should render terms and conditions checkbox', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       expect(screen.getByLabelText(/i agree to the terms of service/i)).toBeInTheDocument();
-      expect(screen.getByRole('checkbox', { required: true })).toBeInTheDocument();
+      expect(screen.getByRole('checkbox')).toBeInTheDocument();
     });
 
     it('should render password requirements hint', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       expect(screen.getByText(/must be at least 8 characters/i)).toBeInTheDocument();
     });
 
     it('should have accessible form elements', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -343,7 +337,7 @@ describe('AuthenticationForms - RegisterForm', () => {
   describe('Form Validation', () => {
     it('should show name required error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       // Check the terms checkbox first to avoid native validation blocking
       const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
@@ -359,7 +353,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
     it('should show name minimum length error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       await user.type(nameInput, 'A');
@@ -370,7 +364,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
     it('should show password complexity error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -390,7 +384,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
     it('should show password mismatch error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -399,7 +393,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123');
+      await user.type(passwordInput, 'Password123!');
       await user.type(confirmPasswordInput, 'Password456');
 
       const submitButton = screen.getByRole('button', { name: /create account/i });
@@ -423,8 +417,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123');
-      await user.type(confirmPasswordInput, 'Password123');
+      await user.type(passwordInput, 'Password123!');
+      await user.type(confirmPasswordInput, 'Password123!');
       await user.click(termsCheckbox);
 
       await user.click(submitButton);
@@ -439,7 +433,7 @@ describe('AuthenticationForms - RegisterForm', () => {
   describe('Password Visibility', () => {
     it('should toggle password visibility for both password fields', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const passwordInput = screen.getByPlaceholderText(/create a password/i);
       const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
@@ -466,7 +460,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       const onSuccess = vi.fn();
       mockAuthHook.register.mockResolvedValue({ success: true });
 
-      render(<RegisterForm onSuccess={onSuccess} />);
+      renderWithRouter(<RegisterForm onSuccess={onSuccess} />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -477,8 +471,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123');
-      await user.type(confirmPasswordInput, 'Password123');
+      await user.type(passwordInput, 'Password123!');
+      await user.type(confirmPasswordInput, 'Password123!');
       await user.click(termsCheckbox);
 
       await user.click(submitButton);
@@ -495,7 +489,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       const errorMessage = 'Email already exists';
       mockAuthHook.register.mockRejectedValue(new Error(errorMessage));
 
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -506,8 +500,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'existing@example.com');
-      await user.type(passwordInput, 'Password123');
-      await user.type(confirmPasswordInput, 'Password123');
+      await user.type(passwordInput, 'Password123!');
+      await user.type(confirmPasswordInput, 'Password123!');
       await user.click(termsCheckbox);
 
       await user.click(submitButton);

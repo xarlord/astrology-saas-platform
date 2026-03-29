@@ -31,46 +31,58 @@ describe('Mobile Bottom Navigation Active States', () => {
   };
 
   describe('Active Route Detection', () => {
-    it('should highlight Home as active on root path', () => {
+    it('should highlight Home as active on root path', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
       const homeLink = screen.getByLabelText('Home');
-      expect(homeLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(homeLink).toHaveAttribute('aria-current', 'page');
+      });
     });
 
-    it('should highlight Charts as active on /charts path', () => {
+    it('should highlight Charts as active on /charts path', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/charts']);
 
       const chartsLink = screen.getByLabelText('Charts');
-      expect(chartsLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(chartsLink).toHaveAttribute('aria-current', 'page');
+      });
     });
 
-    it('should highlight Transits as active on /transits path', () => {
+    it('should highlight Transits as active on /transits path', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/transits']);
 
       const transitsLink = screen.getByLabelText('Transits');
-      expect(transitsLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(transitsLink).toHaveAttribute('aria-current', 'page');
+      });
     });
 
-    it('should highlight Learn as active on /learn path', () => {
+    it('should highlight Learn as active on /learn path', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/learn']);
 
       const learnLink = screen.getByLabelText('Learn');
-      expect(learnLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(learnLink).toHaveAttribute('aria-current', 'page');
+      });
     });
 
-    it('should highlight Profile as active on /profile path', () => {
+    it('should highlight Profile as active on /profile path', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/profile']);
 
       const profileLink = screen.getByLabelText('Profile');
-      expect(profileLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(profileLink).toHaveAttribute('aria-current', 'page');
+      });
     });
 
-    it('should match sub-routes (e.g., /charts/natal should highlight Charts)', () => {
+    it('should match sub-routes (e.g., /charts/natal should highlight Charts)', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/charts/natal']);
 
       const chartsLink = screen.getByLabelText('Charts');
-      expect(chartsLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(chartsLink).toHaveAttribute('aria-current', 'page');
+      });
     });
   });
 
@@ -136,18 +148,22 @@ describe('Mobile Bottom Navigation Active States', () => {
       expect(screen.getByLabelText('Profile')).toBeInTheDocument();
     });
 
-    it('should have aria-current="page" on active item', () => {
+    it('should have aria-current="page" on active item', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/charts']);
 
       const chartsLink = screen.getByLabelText('Charts');
-      expect(chartsLink).toHaveAttribute('aria-current', 'page');
+      await waitFor(() => {
+        expect(chartsLink).toHaveAttribute('aria-current', 'page');
+      });
     });
 
-    it('should not have aria-current on inactive items', () => {
+    it('should not have aria-current on inactive items', async () => {
       renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/charts']);
 
       const homeLink = screen.getByLabelText('Home');
-      expect(homeLink).not.toHaveAttribute('aria-current');
+      await waitFor(() => {
+        expect(homeLink).not.toHaveAttribute('aria-current');
+      });
     });
   });
 

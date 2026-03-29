@@ -36,25 +36,27 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
+  // intentional empty - test mock
+  constructor() { /* intentional empty */ }
+  disconnect() { /* intentional empty */ }
+  observe() { /* intentional empty */ }
   takeRecords() {
     return [];
   }
-  unobserve() {}
+  unobserve() { /* intentional empty */ }
 } as any;
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
+  // intentional empty - test mock
+  constructor() { /* intentional empty */ }
+  disconnect() { /* intentional empty */ }
+  observe() { /* intentional empty */ }
+  unobserve() { /* intentional empty */ }
 } as any;
 
 // Mock window.scrollTo
-window.scrollTo = vi.fn();
+window.scrollTo = vi.fn() as any;
 
 // Mock window.URL.createObjectURL and revokeObjectURL
 global.URL.createObjectURL = vi.fn(() => 'mock-url');

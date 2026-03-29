@@ -1,0 +1,101 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>AstroVerse Test Report</title>
+            <style>
+                body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+                h1 { color: #333; border-bottom: 2px solid #4F46E5; padding-bottom: 10px; }
+                .summary { display: flex; gap: 20px; margin: 20px 0; }
+                .summary-card { flex: 1; padding: 15px; border-radius: 8px; text-align: center; }
+                .test-result { border-radius: 4px; }
+            </style>
+        </head>
+        <body>
+            <h1>AstroVerse Browser Test Report</h1>
+            <p>Generated: 2026-03-22 22:21:36</p>
+            <p>Base URL: http://localhost:3000</p>
+
+            <div class="summary">
+                <div class="summary-card" style="background: #DBEAFE;">
+                    <h2>8</h2>
+                    <p>Total Tests</p>
+                </div>
+                <div class="summary-card" style="background: #D1FAE5;">
+                    <h2>6</h2>
+                    <p>Passed</p>
+                </div>
+                <div class="summary-card" style="background: #FEE2E2;">
+                    <h2>2</h2>
+                    <p>Failed</p>
+                </div>
+                <div class="summary-card" style="background: #FEF3C7;">
+                    <h2>0</h2>
+                    <p>Warnings</p>
+                </div>
+            </div>
+
+            <h2>Test Results</h2>
+            
+            <div class="test-result" style="border-left: 4px solid #10B981; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #10B981;">Home Page - PASSED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:20:55.287950</p>
+                <p><strong>title:</strong> Astrology SaaS Platform</p><p><strong>url:</strong> http://localhost:3000/</p><p><strong>errors_found:</strong> 0</p>
+                
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #10B981; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #10B981;">Login Page - PASSED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:20:56.152085</p>
+                <p><strong>title:</strong> Astrology SaaS Platform</p><p><strong>url:</strong> http://localhost:3000/login</p><p><strong>errors_found:</strong> 0</p>
+                
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #10B981; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #10B981;">Register Page - PASSED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:20:56.849639</p>
+                <p><strong>title:</strong> Astrology SaaS Platform</p><p><strong>url:</strong> http://localhost:3000/register</p><p><strong>errors_found:</strong> 0</p>
+                
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #EF4444; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #EF4444;">Navigation Test - FAILED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:20:57.552179</p>
+                <p><strong>nav_links_found:</strong> 0</p>
+                <p style="color: red;">Error: 'Locator' object is not callable</p>
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #EF4444; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #EF4444;">Login Form Test - FAILED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:20:58.173883</p>
+                <p><strong>email_input_found:</strong> False</p><p><strong>password_input_found:</strong> False</p><p><strong>submit_button_found:</strong> False</p>
+                <p style="color: red;">Error: Locator.clear: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("input[type=\"email\"], input[name=\"email\"]").first
+</p>
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #10B981; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #10B981;">Registration Form Test - PASSED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:21:28.924862</p>
+                <p><strong>name_input_found:</strong> False</p><p><strong>email_input_found:</strong> False</p><p><strong>password_input_found:</strong> False</p><p><strong>submit_button_found:</strong> False</p>
+                
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #10B981; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #10B981;">Responsive Design Test - PASSED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:21:30.303314</p>
+                <p><strong>mobile_viewport:</strong> {'size': {'width': 375, 'height': 667}, 'screenshot': 'C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-mobile_20260322_222131.png'}</p><p><strong>tablet_viewport:</strong> {'size': {'width': 768, 'height': 1024}, 'screenshot': 'C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-tablet_20260322_222133.png'}</p><p><strong>desktop_viewport:</strong> {'size': {'width': 1280, 'height': 720}, 'screenshot': 'C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-desktop_20260322_222135.png'}</p>
+                
+            </div>
+            
+            <div class="test-result" style="border-left: 4px solid #10B981; padding: 10px; margin: 10px 0; background: #f9f9f9;">
+                <h3 style="margin: 0; color: #10B981;">Basic Accessibility Test - PASSED</h3>
+                <p style="margin: 5px 0; color: #666;">2026-03-22T22:21:35.155709</p>
+                <p><strong>html_lang:</strong> en</p><p><strong>page_title:</strong> Astrology SaaS Platform</p><p><strong>h1_count:</strong> 0</p><p><strong>images_without_alt:</strong> 0</p><p><strong>inputs_without_labels:</strong> 0</p>
+                
+            </div>
+            
+        </body>
+        </html>
+        

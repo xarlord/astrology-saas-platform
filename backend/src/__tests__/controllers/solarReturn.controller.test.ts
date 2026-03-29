@@ -6,15 +6,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Request, Response } from 'express';
-import {
-  calculateSolarReturn,
-  getSolarReturnById,
-  getSolarReturnByYear,
-} from '../../controllers/solarReturn.controller';
+import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
+
+const { calculateSolarReturn, getSolarReturnById, getSolarReturnByYear } = solarReturnController;
 
 // Mock dependencies
 jest.mock('../../modules/solar/services/solarReturn.service');
 jest.mock('../../modules/solar/models/solarReturn.model');
+jest.mock('../../data/solarReturnInterpretations');
 
 describe('Solar Return Controller', () => {
   let mockRequest: Partial<Request>;

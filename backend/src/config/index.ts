@@ -59,12 +59,12 @@ const config: Config = {
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
 
   database: {
-    url: process.env.DATABASE_URL || 'postgresql://user:password@localhost:5432/astrology_db',
+    url: process.env.DATABASE_URL || 'postgresql://postgres:astrology123@localhost:5434/astrology_saas',
     host: process.env.DATABASE_HOST || 'localhost',
-    port: parseInt(process.env.DATABASE_PORT || '5432', 10),
-    name: process.env.DATABASE_NAME || 'astrology_db',
-    user: process.env.DATABASE_USER || 'user',
-    password: process.env.DATABASE_PASSWORD || 'password',
+    port: parseInt(process.env.DATABASE_PORT || '5434', 10),
+    name: process.env.DATABASE_NAME || 'astrology_saas',
+    user: process.env.DATABASE_USER || 'postgres',
+    password: process.env.DATABASE_PASSWORD || 'astrology123',
   },
 
   jwt: {

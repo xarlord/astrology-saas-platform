@@ -87,7 +87,7 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
       {/* Date Range Selector */}
       <DateSelector
         viewMode={viewMode}
-        onViewChange={setViewMode}
+        onViewChange={(mode) => setViewMode(mode as 'today' | 'week' | 'calendar' | 'highlights')}
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
       />
@@ -176,6 +176,7 @@ function DateSelector({
             onDateChange(date.toISOString().split('T')[0]);
           }}
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label="Previous day"
         >
           <ChevronLeftIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
         </button>
@@ -183,6 +184,7 @@ function DateSelector({
           type="date"
           value={selectedDate}
           onChange={(e) => onDateChange(e.target.value)}
+          aria-label="Select date"
           className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
         />
         <button
@@ -192,6 +194,7 @@ function DateSelector({
             onDateChange(date.toISOString().split('T')[0]);
           }}
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label="Next day"
         >
           <ChevronRightIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
         </button>

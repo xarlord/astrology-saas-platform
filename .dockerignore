@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.env*
+*.md
+docs/
+.claude/
+.planning/
+.github/
+tests/
+nginx/
+scripts/
+reports/
+.dockerignore
+**/test-results/
+**/screenshots/
+**/coverage/

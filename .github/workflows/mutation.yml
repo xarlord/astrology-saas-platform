@@ -1,0 +1,88 @@
+name: Mutation Testing
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Scope of mutation testing (backend, frontend, all)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - backend
+          - frontend
+
+jobs:
+  mutation-backend:
+    if: ${{ github.event.inputs.scope == 'all' || github.event.inputs.scope == 'backend' || github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run mutation tests (Backend)
+        run: npm run test:mutation:backend
+        continue-on-error: true
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - name: Upload mutation report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report-backend
+          path: |
+            backend/reports/mutation/
+            !backend/reports/mutation/.gitignore
+          retention-days: 30
+
+  mutation-frontend:
+    if: ${{ github.event.inputs.scope == 'all' || github.event.inputs.scope == 'frontend' || github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run mutation tests (Frontend)
+        run: npm run test:mutation:frontend
+        continue-on-error: true
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - name: Upload mutation report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-report-frontend
+          path: |
+            frontend/reports/mutation/
+            !frontend/reports/mutation/.gitignore
+          retention-days: 30
+
+  mutation-summary:
+    needs: [mutation-backend, mutation-frontend]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check mutation test results
+        run: |
+          echo "## Mutation Testing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Mutation tests have completed. Check the artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Reports Available" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: Download \`mutation-report-backend\` artifact" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: Download \`mutation-report-frontend\` artifact" >> $GITHUB_STEP_SUMMARY

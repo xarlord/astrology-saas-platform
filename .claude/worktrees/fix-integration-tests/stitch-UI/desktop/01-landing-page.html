@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse - Your Cosmic Blueprint</title>
+<meta content="Unlock the secrets of your natal chart with AI-powered insights and hyper-personalized transit forecasts." name="description"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7b3be3",
+                        "primary-dark": "#5e2cb5",
+                        "accent": "#F5A623",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#0B0D17", 
+                        "surface-dark": "#15192b",
+                        "glass": "rgba(255, 255, 255, 0.05)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'nebula': 'radial-gradient(circle at 50% 50%, rgba(123, 59, 227, 0.15) 0%, rgba(11, 13, 23, 0) 50%)',
+                        'glow-primary': 'conic-gradient(from 180deg at 50% 50%, #7b3be3 0deg, #A78BFA 180deg, #7b3be3 360deg)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Utilities for Glassmorphism & Glows */
+        .glass-card {
+            background: rgba(19, 22, 37, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-nav {
+            background: rgba(11, 13, 23, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(123, 59, 227, 0.5);
+        }
+
+        .btn-glow {
+            box-shadow: 0 0 20px rgba(123, 59, 227, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-glow:hover {
+            box-shadow: 0 0 30px rgba(123, 59, 227, 0.6);
+            transform: translateY(-1px);
+        }
+
+        /* Subtle animated background stars */
+        .stars-bg {
+            background-color: #0B0D17;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-slate-100 font-display antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-20">
+<!-- Logo -->
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary animate-pulse">
+<span class="material-symbols-outlined text-4xl">pentagon</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-white">AstroVerse</span>
+</div>
+<!-- Desktop Menu -->
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="#features">Features</a>
+<a class="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="#testimonials">Testimonials</a>
+<a class="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="#pricing">Pricing</a>
+</div>
+<!-- CTA Buttons -->
+<div class="hidden md:flex items-center gap-4">
+<a class="text-sm font-medium text-white hover:text-primary transition-colors" href="#">Sign In</a>
+<button class="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-[0_0_15px_rgba(123,59,227,0.3)] hover:shadow-[0_0_25px_rgba(123,59,227,0.5)]">
+                        Get Started
+                    </button>
+</div>
+<!-- Mobile menu button -->
+<div class="md:hidden flex items-center">
+<button class="text-slate-300 hover:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden stars-bg">
+<!-- Nebula Effect -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-nebula opacity-60 pointer-events-none"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+<!-- Hero Content -->
+<div class="text-center lg:text-left space-y-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm">
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-xs font-medium text-primary-200 uppercase tracking-wider">v2.0 Now Available</span>
+</div>
+<h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.1] text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-slate-400 drop-shadow-lg">
+                        Discover Your <br/>
+<span class="text-primary text-glow">Cosmic Blueprint</span>
+</h1>
+<p class="text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                        Unlock the secrets of your natal chart with AI-powered insights and hyper-personalized transit forecasts. Align your life with the stars.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+<button class="btn-glow flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-xl text-base font-bold tracking-wide">
+                            Get Started Free
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white border border-slate-700 hover:border-primary/50 hover:bg-white/5 backdrop-blur-sm transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">play_circle</span>
+                            Watch Demo
+                        </button>
+</div>
+<div class="pt-8 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500">
+<div class="flex -space-x-2">
+<img alt="User Avatar" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#0B0D17]" data-alt="Portrait of a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiNT-ipFXLCwACXlAnyX9g6kDBhT4MiS_799zyc2g8ybMXAUUGLuMyquG12cm6ABFGdjWCRMtaEZMfLQiiD7435v0aFOJp1eLZ0-IzoFWJwnOkVEsMK1yazpfbRPW7nr2_DIQ3J9sxmuW2Vtdyc8DhI1S5vZDlur2k3S-ozbweq23E0jGhCNWvTdYoDyH6ry7eiRGF9K2b9qBp5lg8UUXGh9eGddjvk_1IQwZ8sZUnxPKd2gBNeLR_oA7a-7HccWxHEgyyKrjez3u7"/>
+<img alt="User Avatar" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#0B0D17]" data-alt="Portrait of a man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsxOUZOuRyHQu36eBm1mnhAnWotNFYoXgoOTlV3-iDr1AAANEMRRjtqtcNGN1dVXSVnPyrhq5btQBCLs2wUeEFWTDunhEALMwQR5YDVFUIErVZ8eGYgVl6yT35ua1w_ptFmH4tGwEfO-GuG-6yLxKfVbmqMigFv5dEM1FbVRa-rfWW7QZ3Mh2tHWAmqSeHyRPyhhZRV05f9pdjnKz0r4XtA-K654N37bqIJYiRhuqzoVbEa_3YiPyiDqys8omUHxtBL39dTl0q06-n"/>
+<img alt="User Avatar" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#0B0D17]" data-alt="Portrait of a smiling woman with curly hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMk58smEaqkR_FzG21stmfTnhknIkFjd6bwmw2Xh3rXHzgEZ9Kme3LY6alpUyFu3W6KvouEHLGrRzft4zyfnyhzSkWhzTaRtSQoQ38rPxAyvEirB_OyKVT89UFd3ndT4uZkmnYfbpsO9y7OzzxOoN8waxjBCOdbRC_mJJargEJ6-ucKrUtVqfecuoOW6NyDdhG7FjKxkXoDQEC2xN8EipKj7APfH2WTqZGKE5O4BhzIresABcFtCFWe5UCjg7OH4rXVZ9tYc0BcF-f"/>
+</div>
+<p>Trusted by <span class="text-white font-semibold">50,000+</span> enthusiasts</p>
+</div>
+</div>
+<!-- Hero Image/Visual -->
+<div class="relative lg:h-[600px] flex items-center justify-center">
+<!-- Background Glow behind image -->
+<div class="absolute w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
+<!-- 3D Wheel Representation -->
+<div class="relative w-full aspect-square max-w-[600px] animate-[spin_60s_linear_infinite]">
+<div class="absolute inset-0 bg-[url('https://cdn.midjourney.com/3910545c-057d-41a6-b9b5-680456108151/0_1.png')] bg-contain bg-center bg-no-repeat opacity-90 drop-shadow-[0_0_30px_rgba(123,59,227,0.4)]" data-alt="Glowing astrological zodiac wheel chart" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBCTsCxWCP1swyyZf1EW6u7OsmMeqKYbb4othgBcP_TtMrDmCE7NKYOgHlWMZnDHKvw8lWAM1StrywzIuT_KRsNEedt_TDzofWGUGCOW-pR7_QUae9UV7mQTRnEosC3woL7co6fiHer9JUm8dBJ4XNE0Fv0NGaAZw2yIhxt9v5pbQRUjSlxP6qtsFuJUUcTXbwSuliR31-mr3thFvd2Tikk4uam8MzgJ00-Exc1aPvwnFZefFTcVsErD9_bWl8udMRAL_FUuCC7AYtA'); mask-image: radial-gradient(circle, black 60%, transparent 100%); -webkit-mask-image: radial-gradient(circle, black 60%, transparent 100%); mix-blend-mode: screen;"></div>
+</div>
+<!-- Floating Card Overlay 1 -->
+<div class="absolute top-1/4 right-0 glass-card p-4 rounded-xl border-l-4 border-l-primary animate-[bounce_4s_infinite]">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider">Current Transit</p>
+<p class="font-bold text-white">Mercury Retrograde</p>
+</div>
+</div>
+</div>
+<!-- Floating Card Overlay 2 -->
+<div class="absolute bottom-1/4 left-0 glass-card p-4 rounded-xl border-l-4 border-l-accent animate-[bounce_5s_infinite]">
+<div class="flex items-center gap-3">
+<div class="bg-accent/20 p-2 rounded-lg text-accent">
+<span class="material-symbols-outlined">wb_sunny</span>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider">Sun Sign</p>
+<p class="font-bold text-white">Leo (Fire)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="py-24 relative bg-background-dark" id="features">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<h2 class="text-primary font-semibold tracking-wide uppercase text-sm mb-3">Features</h2>
+<h3 class="text-3xl md:text-5xl font-bold text-white mb-6">Everything You Need to <br/>Align with the Stars</h3>
+<p class="text-slate-400 text-lg">Our comprehensive suite of astrological tools helps you navigate life's cosmic currents with precision.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="group glass-card p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-3xl text-primary">timelapse</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-3">Natal Charts</h4>
+<p class="text-slate-400 leading-relaxed">Deep dive analysis of your birth chart with precise planetary positions calculated to the second.</p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="group glass-card p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-3xl text-primary">psychology</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-3">Personality Insights</h4>
+<p class="text-slate-400 leading-relaxed">Psychological profiling based on elemental balances and modalities. Understand your true self.</p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="group glass-card p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-3xl text-primary">calendar_month</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-3">Transit Forecasts</h4>
+<p class="text-slate-400 leading-relaxed">Predictive planning tools to navigate retrogrades and transits. Know when to act and when to pause.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Social Proof Section -->
+<section class="py-24 relative overflow-hidden" id="testimonials">
+<!-- Background decorative elements -->
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-900/10 rounded-full blur-[120px]"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+<div class="max-w-2xl">
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Trusted by 50,000+ <br/>Astrology Enthusiasts</h2>
+<div class="flex items-center gap-2">
+<div class="flex text-accent">
+<span class="material-symbols-outlined fill-current text-xl">star</span>
+<span class="material-symbols-outlined fill-current text-xl">star</span>
+<span class="material-symbols-outlined fill-current text-xl">star</span>
+<span class="material-symbols-outlined fill-current text-xl">star</span>
+<span class="material-symbols-outlined fill-current text-xl">star</span>
+</div>
+<span class="text-white font-bold text-lg">4.9/5</span>
+<span class="text-slate-500 text-sm ml-2">Average Rating</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center text-white hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="grid md:grid-cols-3 gap-6">
+<!-- Testimonial 1 -->
+<div class="glass-card p-6 rounded-xl flex flex-col justify-between h-full">
+<div>
+<div class="text-primary mb-4">
+<span class="material-symbols-outlined text-4xl">format_quote</span>
+</div>
+<p class="text-slate-300 text-lg leading-relaxed mb-6">"AstroVerse completely changed how I plan my month. The transit accuracy is scary good! I feel so much more aligned."</p>
+</div>
+<div class="flex items-center gap-3 pt-4 border-t border-white/5">
+<img alt="Elena R." class="size-10 rounded-full object-cover" data-alt="Portrait of a smiling young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjmOX8On5c0sHF3HWyOOIybQWDtbT_Zfy_CE4jQZO29fVu9ZaufncaQamtgctpTOhrjrYSyPvbDf3LpG2VZIIi7LvCOHAkZno2xoDpnNQ24Bw1ReTtylDK_02Fnn0-DRqcQSvOvDUBIt_A-M8cE9iiR7Vwqhs6S5Lgga1X7QfZ8qMl51pUrWtqGXsMpTdEjHm3Igvch_yk2OOzNKIc_HwPVX9BYfLjp0dJ2_YuCHwIIK2mmGFzRyuAH5fy8J6vv6amP9zbg_RfCMId"/>
+<div>
+<p class="text-white font-semibold text-sm">Elena R.</p>
+<p class="text-slate-500 text-xs">Professional Astrologer</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="glass-card p-6 rounded-xl flex flex-col justify-between h-full">
+<div>
+<div class="text-primary mb-4">
+<span class="material-symbols-outlined text-4xl">format_quote</span>
+</div>
+<p class="text-slate-300 text-lg leading-relaxed mb-6">"Finally, an astrology app that combines beautiful design with deep data. Highly recommend the Pro plan for detailed reports."</p>
+</div>
+<div class="flex items-center gap-3 pt-4 border-t border-white/5">
+<img alt="Marcus T." class="size-10 rounded-full object-cover" data-alt="Portrait of a man with short hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzgXONST5iDpipGxC8sINf6t5KxJVEqciK1adWFABCS6SBSBiyTfqzHvZzXiugyUYBHMGzba9QfgFXyga6k2F7d7Lz0gHzlWYpNXDjYssPva7r5qxeTibbHZJpYvB9SyhxiDa14vS97PsOQolQFB9XxqkaGEu9LB8SUnF5Pyi-tVbJctDcrVOZp5BxdHq0KGxZuShtdPs99pPYhBp3GMmjVC54wZm_MaxuKn5HK7K-vYRqyLH2SGGr5YsEUFv0JBW-FsGjeMVq6oQF"/>
+<div>
+<p class="text-white font-semibold text-sm">Marcus T.</p>
+<p class="text-slate-500 text-xs">AstroVerse Pro User</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="glass-card p-6 rounded-xl flex flex-col justify-between h-full">
+<div>
+<div class="text-primary mb-4">
+<span class="material-symbols-outlined text-4xl">format_quote</span>
+</div>
+<p class="text-slate-300 text-lg leading-relaxed mb-6">"The natal chart breakdown is so detailed, it felt like a professional reading. The UI is absolutely stunning."</p>
+</div>
+<div class="flex items-center gap-3 pt-4 border-t border-white/5">
+<img alt="Sarah L." class="size-10 rounded-full object-cover" data-alt="Portrait of a woman smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxl1fXODoPxcHqQVyg452TrRfJ7bdeuHqoO-u5HxZZ11yJ5zHfdlg2KnfzLpjqZZhXpq9tBspxemVQpIwBQ46_vc_pSWQOqgQuawLk871kxbKZGRxmFcEs3Cpy0-kR64CpmPMW-uYSU13PGWeOYqhY-fpnEWhi62qEIcRBEdaK5RBZ3NNbr8Ss3BKM5-DhEWaIOwNF607KLjvVF4-IV5kRLhH1XC6LbfhgEEPKhol0QnxM3fE2brM3qee9RfP0WN3lGMO_OZR9BMqr"/>
+<div>
+<p class="text-white font-semibold text-sm">Sarah L.</p>
+<p class="text-slate-500 text-xs">Enthusiast</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="py-24 bg-[#0F111E]" id="pricing">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Invest in Your Journey</h2>
+<p class="text-slate-400 text-lg">Choose the plan that best fits your path to self-discovery.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
+<!-- Free Plan -->
+<div class="glass-card rounded-2xl p-8 border border-white/5 hover:border-white/10 transition-colors">
+<h3 class="text-xl font-semibold text-white mb-2">Seeker</h3>
+<div class="flex items-baseline mb-6">
+<span class="text-4xl font-bold text-white">Free</span>
+<span class="text-slate-500 ml-2">/forever</span>
+</div>
+<p class="text-slate-400 text-sm mb-6 h-10">Perfect for getting started with your basic natal placement.</p>
+<button class="w-full block text-center py-3 px-4 rounded-lg bg-slate-800 text-white hover:bg-slate-700 font-semibold mb-8 transition-colors">Start Free</button>
+<ul class="space-y-4 text-sm text-slate-300">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            Basic Natal Chart
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            Daily Horoscope
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            Moon Phase Tracker
+                        </li>
+</ul>
+</div>
+<!-- Pro Plan -->
+<div class="relative glass-card rounded-2xl p-8 border border-primary z-10 scale-105 shadow-2xl shadow-primary/20">
+<div class="absolute top-0 right-0 left-0 -mt-4 flex justify-center">
+<span class="bg-primary text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full shadow-lg">Most Popular</span>
+</div>
+<h3 class="text-xl font-semibold text-white mb-2">Mystic</h3>
+<div class="flex items-baseline mb-6">
+<span class="text-4xl font-bold text-white">$9.99</span>
+<span class="text-slate-500 ml-2">/mo</span>
+</div>
+<p class="text-slate-300 text-sm mb-6 h-10">Unlock deep insights and predictive transit tools.</p>
+<button class="w-full block text-center py-3 px-4 rounded-lg bg-primary text-white hover:bg-primary-dark font-semibold mb-8 btn-glow">Get Pro Access</button>
+<ul class="space-y-4 text-sm text-white font-medium">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent text-base">check_circle</span>
+                            Everything in Seeker
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent text-base">check_circle</span>
+                            Full Transit Forecasts
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent text-base">check_circle</span>
+                            Synastry (Compatibility)
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent text-base">check_circle</span>
+                            Personality Reports
+                        </li>
+</ul>
+</div>
+<!-- Enterprise Plan -->
+<div class="glass-card rounded-2xl p-8 border border-white/5 hover:border-white/10 transition-colors">
+<h3 class="text-xl font-semibold text-white mb-2">Oracle</h3>
+<div class="flex items-baseline mb-6">
+<span class="text-4xl font-bold text-white">$29.99</span>
+<span class="text-slate-500 ml-2">/mo</span>
+</div>
+<p class="text-slate-400 text-sm mb-6 h-10">For professional astrologers and deep researchers.</p>
+<button class="w-full block text-center py-3 px-4 rounded-lg bg-slate-800 text-white hover:bg-slate-700 font-semibold mb-8 transition-colors">Contact Sales</button>
+<ul class="space-y-4 text-sm text-slate-300">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            Everything in Mystic
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            Unlimited Charts
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            PDF Export Reports
+                        </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-base">check</span>
+                            API Access
+                        </li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-background-dark border-t border-white/5 pt-16 pb-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+<div class="col-span-2 lg:col-span-2">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-3xl text-primary">pentagon</span>
+<span class="text-2xl font-bold text-white">AstroVerse</span>
+</div>
+<p class="text-slate-400 text-sm mb-6 max-w-xs">Connecting you to the cosmos through data-driven astrology. Discover your purpose today.</p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-surface-dark flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all" href="#">
+<!-- Using text representation for social icons as material symbols doesn't have brand icons standard -->
+<span class="font-bold text-xs">X</span>
+</a>
+<a class="w-10 h-10 rounded-full bg-surface-dark flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all" href="#">
+<span class="font-bold text-xs">IG</span>
+</a>
+<a class="w-10 h-10 rounded-full bg-surface-dark flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary transition-all" href="#">
+<span class="font-bold text-xs">LI</span>
+</a>
+</div>
+</div>
+<div>
+<h4 class="text-white font-semibold mb-4">Product</h4>
+<ul class="space-y-2 text-sm text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Features</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Pricing</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">API</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Integration</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-semibold mb-4">Company</h4>
+<ul class="space-y-2 text-sm text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">About</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-semibold mb-4">Stay Aligned</h4>
+<p class="text-xs text-slate-500 mb-4">Subscribe to our newsletter for weekly transit updates.</p>
+<form class="flex flex-col gap-2">
+<input class="bg-surface-dark border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Enter your email" type="email"/>
+<button class="bg-primary hover:bg-primary-dark text-white rounded-lg px-4 py-2 text-sm font-semibold transition-colors" type="submit">Subscribe</button>
+</form>
+</div>
+</div>
+<div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-slate-500 text-sm">© 2024 AstroVerse Inc. All rights reserved.</p>
+<div class="flex gap-6 text-sm text-slate-500">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

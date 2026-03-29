@@ -63,6 +63,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
         password: linkSettings.password,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       setGeneratedLink(response.data.data.url);
       setSuccess(true);
     } catch (err) {
@@ -111,12 +112,12 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     const { interpretation, year, returnDate } = solarReturn;
 
     return (
-      <div className="share-preview">
-        <div className="preview-header">
-          <Gift size={24} />
+      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <div className="flex items-center gap-3 mb-3">
+          <Gift size={24} className="text-purple-600" />
           <div>
-            <h3>Solar Return Reading for {year}</h3>
-            <p className="preview-date">
+            <h3 className="font-semibold text-gray-800 text-lg">Solar Return Reading for {year}</h3>
+            <p className="text-sm text-gray-500">
               {new Date(returnDate).toLocaleDateString('en-US', {
                 month: 'long',
                 day: 'numeric',
@@ -127,10 +128,10 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
         </div>
 
         {interpretation && (
-          <div className="preview-content">
-            <div className="preview-section">
-              <h4>Themes for {year}:</h4>
-              <div className="preview-themes">
+          <div className="space-y-3">
+            <div>
+              <h4 className="font-medium text-gray-700 mb-1">Themes for {year}:</h4>
+              <div className="flex flex-wrap gap-2">
                 {interpretation.themes?.slice(0, 4).map((theme: string, i: number) => (
                   <span key={i} className="preview-theme-tag">{theme}</span>
                 ))}
@@ -141,16 +142,16 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
             </div>
 
             {interpretation.sunHouse && (
-              <div className="preview-section">
-                <h4>Your Focus:</h4>
-                <p className="preview-text">{interpretation.sunHouse.interpretation.slice(0, 150)}...</p>
+              <div>
+                <h4 className="font-medium text-gray-700 mb-1">Your Focus:</h4>
+                <p className="text-sm text-gray-600">{interpretation.sunHouse.interpretation.slice(0, 150)}...</p>
               </div>
             )}
           </div>
         )}
 
-        <div className="preview-footer">
-          <p className="preview-note">
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <p className="flex items-center gap-2 text-xs text-gray-400">
             <Lock size={14} />
             This is a gift from a friend who cares about your journey.
           </p>
@@ -160,33 +161,36 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
   };
 
   return (
-    <div className="birthday-sharing">
-      <div className="sharing-header">
-        <Gift size={32} />
+    <div role="region" aria-label="Birthday Sharing" className="max-w-2xl mx-auto p-6">
+      <div className="flex items-center gap-3 mb-6">
+        <Gift size={32} className="text-purple-600" />
         <div>
-          <h2>Share as Gift</h2>
-          <p className="subtitle">Send this solar return reading to someone special</p>
+          <h2 className="text-xl font-bold text-gray-800">Share as Gift</h2>
+          <p className="text-sm text-gray-500">Send this solar return reading to someone special</p>
         </div>
       </div>
 
       {/* Preview */}
-      <div className="sharing-preview">
-        <h3>Preview</h3>
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">Preview</h3>
         {getShareablePreview()}
       </div>
 
       {/* Success Message */}
       {success && !generatedLink && (
-        <div className="success-message">
-          <Check size={20} />
+        <div aria-live="polite" className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4">
+          <Check size={20} className="text-green-600 flex-shrink-0" />
           <div>
-            <strong>Success!</strong>
-            <p>{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
+            <strong className="text-green-800">Success!</strong>
+            <p className="text-sm text-green-700">{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
           </div>
-          <button onClick={() => {
-            setSuccess(false);
-            if (onShare) onShare();
-          }}>
+          <button
+            onClick={() => {
+              setSuccess(false);
+              if (onShare) onShare();
+            }}
+            className="ml-auto rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+          >
             Done
           </button>
         </div>
@@ -194,25 +198,33 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div className="error-message">
-          {error}
-          <button onClick={() => setError(null)}>✕</button>
+        <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700">
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="ml-auto text-red-500 hover:text-red-700 font-bold">✕</button>
         </div>
       )}
 
       {/* Share Method Selection */}
       {!success && (
         <>
-          <div className="share-method-tabs">
+          <div className="flex gap-2 mb-6">
             <button
-              className={shareMethod === 'link' ? 'active' : ''}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                shareMethod === 'link'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
               onClick={() => setShareMethod('link')}
             >
               <Link size={18} />
               Share Link
             </button>
             <button
-              className={shareMethod === 'email' ? 'active' : ''}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                shareMethod === 'email'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
               onClick={() => setShareMethod('email')}
             >
               <Mail size={18} />
@@ -222,14 +234,16 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
           {/* Link Sharing */}
           {shareMethod === 'link' && (
-            <div className="sharing-form">
-              <h3>Link Settings</h3>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-700">Link Settings</h3>
 
-              <div className="form-group">
-                <label>Link Expiration</label>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Link Expiration</label>
                 <select
                   value={linkSettings.expiresIn}
                   onChange={(e) => setLinkSettings({ ...linkSettings, expiresIn: e.target.value })}
+                  aria-label="Link expiration period"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 >
                   <option value="7">7 days</option>
                   <option value="14">14 days</option>
@@ -239,11 +253,13 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 </select>
               </div>
 
-              <div className="form-group">
-                <label>Maximum Accesses</label>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Maximum Accesses</label>
                 <select
                   value={linkSettings.maxAccesses}
                   onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
+                  aria-label="Maximum number of accesses"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 >
                   <option value={1}>1 time</option>
                   <option value={5}>5 times</option>
@@ -253,24 +269,28 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 </select>
               </div>
 
-              <div className="form-group checkbox">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="requirePassword"
                   checked={linkSettings.requirePassword}
                   onChange={(e) => setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })}
+                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="requirePassword">Require password</label>
+                <label htmlFor="requirePassword" className="text-sm text-gray-700">Require password</label>
               </div>
 
               {linkSettings.requirePassword && (
-                <div className="form-group">
-                  <label>Password</label>
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-gray-700">Password</label>
                   <input
                     type="password"
                     value={linkSettings.password}
                     onChange={(e) => setLinkSettings({ ...linkSettings, password: e.target.value })}
                     placeholder="Enter password"
+                    aria-required="true"
+                    aria-label="Share link password"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                   />
                 </div>
               )}
@@ -278,21 +298,24 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <button
                 onClick={() => void handleGenerateLink()}
                 disabled={loading}
-                className="generate-link-btn"
+                className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Share2 size={18} />
-                {loading ? 'Generating...' : 'Generate Link'}
+                <span aria-live="polite">{loading ? 'Generating...' : 'Generate Link'}</span>
               </button>
 
               {generatedLink && (
-                <div className="generated-link">
-                  <label>Your Share Link:</label>
-                  <div className="link-display">
+                <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                  <label htmlFor="share-link-input" className="block text-sm font-medium text-gray-700">Your Share Link:</label>
+                  <div className="flex gap-2">
                     <input
+                      id="share-link-input"
                       type="text"
                       value={generatedLink}
                       readOnly
+                      title="Generated share link"
                       onClick={(e) => (e.target as HTMLInputElement).select()}
+                      className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                     />
                     <button onClick={() => void handleCopyLink()} className="copy-btn">
                       {copied ? <Check size={18} /> : <Copy size={18} />}
@@ -300,9 +323,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                     </button>
                   </div>
 
-                  <div className="link-info">
-                    <p><Calendar size={14} /> Expires: {linkSettings.expiresIn} days</p>
-                    <p><Lock size={14} /> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
+                  <div className="space-y-1 text-xs text-gray-500">
+                    <p className="flex items-center gap-1"><Calendar size={14} /> Expires: {linkSettings.expiresIn} days</p>
+                    <p className="flex items-center gap-1"><Lock size={14} /> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
                   </div>
                 </div>
               )}
@@ -311,57 +334,63 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
           {/* Email Sharing */}
           {shareMethod === 'email' && (
-            <div className="sharing-form">
-              <h3>Email Settings</h3>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-700">Email Settings</h3>
 
-              <div className="form-group">
-                <label>Recipient Email</label>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Recipient Email</label>
                 <input
                   type="email"
                   value={emailSettings.to}
                   onChange={(e) => setEmailSettings({ ...emailSettings, to: e.target.value })}
                   placeholder="friend@example.com"
+                  aria-required="true"
+                  aria-label="Recipient email address"
                   required
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 />
               </div>
 
-              <div className="form-group">
-                <label>Subject</label>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Subject</label>
                 <input
                   type="text"
                   value={emailSettings.subject}
                   onChange={(e) => setEmailSettings({ ...emailSettings, subject: e.target.value })}
                   placeholder="Your Solar Return Reading"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 />
               </div>
 
-              <div className="form-group">
-                <label>Personal Message</label>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Personal Message</label>
                 <textarea
                   value={emailSettings.message}
                   onChange={(e) => setEmailSettings({ ...emailSettings, message: e.target.value })}
                   placeholder="Add a personal message..."
                   rows={4}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 />
               </div>
 
-              <div className="form-group checkbox">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="includeChart"
                   checked={emailSettings.includeChart}
                   onChange={(e) => setEmailSettings({ ...emailSettings, includeChart: e.target.checked })}
+                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="includeChart">Include chart visualization</label>
+                <label htmlFor="includeChart" className="text-sm text-gray-700">Include chart visualization</label>
               </div>
 
               <button
                 onClick={() => void handleSendEmail()}
                 disabled={loading || !emailSettings.to}
-                className="send-email-btn"
+                className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Mail size={18} />
-                {loading ? 'Sending...' : 'Send Email'}
+                <span aria-live="polite">{loading ? 'Sending...' : 'Send Email'}</span>
               </button>
             </div>
           )}

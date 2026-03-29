@@ -36,6 +36,11 @@ export interface AIInterpretationResponse {
   generatedAt?: string;
 }
 
+type NatalChartData = Record<string, unknown>;
+type TransitData = Record<string, unknown>;
+type ChartData = Record<string, unknown>;
+type UsageStats = Record<string, unknown>;
+
 class AIService {
   /**
    * Generate AI natal interpretation

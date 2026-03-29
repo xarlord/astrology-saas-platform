@@ -5,62 +5,32 @@
 
 import api from './api';
 
-export interface NatalMoon {
-  sign: string;
-  degree: number;
-  minute: number;
-  second: number;
+import type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn } from '../types/lunar-return.types';
+
+export type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn };
+
+interface NextLunarReturnResponse {
+  nextReturn: Date;
+  natalMoon: NatalMoon;
 }
 
-export interface MoonPosition {
-  sign: string;
-  degree: number;
-  minute: number;
-  second: number;
-}
-
-export interface LunarAspect {
-  planets: [string, string];
-  type: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile';
-  orb: number;
-  applying: boolean;
-  interpretation: string;
-}
-
-export interface LunarReturnChart {
+interface CurrentLunarReturnResponse {
   returnDate: Date;
-  moonPosition: MoonPosition;
-  moonPhase: string;
-  housePlacement: number;
-  aspects: LunarAspect[];
-  theme: string;
-  intensity: number;
+  daysUntil: number;
 }
 
-export interface KeyDate {
-  date: Date;
-  type: 'new-moon' | 'full-moon' | 'eclipse' | 'aspect-exact';
-  description: string;
-  significance: string;
+interface LunarReturnHistoryResponse {
+  returns: SavedLunarReturn[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
-export interface MonthlyPrediction {
-  category: 'relationships' | 'career' | 'finances' | 'health' | 'creativity' | 'spirituality';
-  prediction: string;
-  likelihood: number;
-  advice: string[];
-}
-
-export interface MonthlyRitual {
-  phase: 'new-moon' | 'full-moon' | 'quarter-moon';
-  title: string;
-  description: string;
-  materials?: string[];
-  steps: string[];
-}
-
-export interface LunarMonthForecast {
-  userId: string;
+interface CustomLunarReturnResponse {
+  chart: LunarReturnChart;
   returnDate: Date;
   theme: string;
   intensity: number;
@@ -127,7 +97,8 @@ export async function getLunarMonthForecast(returnDate?: Date): Promise<LunarMon
   const response = await api.post<{ data: LunarMonthForecast }>('/lunar-return/forecast', {
     returnDate: returnDate ?? null,
   });
-  return response.data.data;
+  const responseData = response.data as { data: LunarMonthForecast };
+  return responseData.data;
 }
 
 /**
@@ -153,7 +124,8 @@ export async function getLunarReturnHistory(
   }>('/lunar-return/history', {
     params: { page, limit },
   });
-  return response.data.data;
+  const responseData = response.data as { data: LunarReturnHistoryResponse };
+  return responseData.data;
 }
 
 /**
@@ -180,7 +152,8 @@ export async function calculateCustomLunarReturn(
     returnDate,
     includeForecast,
   });
-  return response.data.data;
+  const responseData = response.data as { data: CustomLunarReturnResponse };
+  return responseData.data;
 }
 
 export default {

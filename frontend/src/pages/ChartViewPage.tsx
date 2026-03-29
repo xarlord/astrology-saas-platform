@@ -1,5 +1,6 @@
 /**
  * Chart View Page Component
+ * Displays a single natal chart with wheel visualization, planetary positions, and analysis link.
  */
 
 import { SkeletonLoader, EmptyState, ChartWheel } from '../components';
@@ -51,8 +52,10 @@ export default function ChartViewPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadChart = async () => {
-      if (!chartId) return;
+    if (!chartId) {
+      setLocalError('No chart ID provided.');
+      return;
+    }
 
       try {
         setIsLoading(true);
@@ -71,7 +74,11 @@ export default function ChartViewPage() {
     void loadChart();
   }, [chartId]);
 
-  if (isLoading) {
+  const displayError = localError ?? error;
+  const displayLoading = isLoading && !currentChart;
+
+  // No chart ID at all
+  if (!chartId) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
         <header className="bg-white dark:bg-gray-800 shadow">

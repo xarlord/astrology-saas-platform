@@ -4,7 +4,7 @@
  */
 
 import { performance } from 'perf_hooks';
-import { swissEphemerisService } from '../../services/swissEphemeris.service';
+import { swissEphemerisService } from '../../modules/shared/services/swissEphemeris.service';
 import { mockChartData } from '../utils';
 
 /**

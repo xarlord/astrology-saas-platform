@@ -8,7 +8,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing } from '../components';
 import { Calendar, Settings, Share2, ArrowLeft } from 'lucide-react';
-import './SolarReturnsPage.css';
+
+interface RelocationLocation {
+  name: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
+}
 
 interface SolarReturnInterpretationData {
   themes?: string[];
@@ -162,7 +168,11 @@ export const SolarReturnsPage: React.FC = () => {
         {tabs.map((tab) => (
           <button
             key={tab.mode}
-            className={viewMode === tab.mode ? 'active' : ''}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              viewMode === tab.mode
+                ? 'bg-indigo-600 text-white'
+                : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+            }`}
             onClick={() => handleViewModeChange(tab.mode)}
             data-testid={`solar-returns-view-${tab.mode}`}
           >
@@ -184,9 +194,9 @@ export const SolarReturnsPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="error-banner">
+        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-sm flex items-center justify-between">
           {error}
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">✕</button>
         </div>
       )}
 
@@ -209,18 +219,17 @@ export const SolarReturnsPage: React.FC = () => {
       ) : (
         <>
           {renderBreadcrumb()}
-
           {renderViewModeTabs()}
 
           {loading && (
-            <div className="loading-container">
-              <div className="spinner"></div>
-              <p>Loading...</p>
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-gray-500">Loading...</p>
             </div>
           )}
 
           {!loading && selectedReturn && (
-            <div className="view-container">
+            <div className="min-h-[400px]">
               {viewMode === 'chart' && selectedReturn.calculatedData && (
                 <SolarReturnChart
                   chartData={{
@@ -280,7 +289,6 @@ export const SolarReturnsPage: React.FC = () => {
                   year={selectedReturn.year}
                   returnDate={selectedReturn.returnDate}
                   onDownload={() => {
-                    // Trigger download of interpretation as PDF/text
                     const blob = new Blob([JSON.stringify(selectedReturn.interpretation, null, 2)], {
                       type: 'application/json',
                     });
@@ -334,7 +342,6 @@ export const SolarReturnsPage: React.FC = () => {
                 <BirthdaySharing
                   solarReturn={selectedReturn}
                   onShare={() => {
-                    // Show success message
                     alert('Solar return shared successfully!');
                   }}
                 />
@@ -343,7 +350,7 @@ export const SolarReturnsPage: React.FC = () => {
           )}
         </>
       )}
-    </div>
+    </AppLayout>
   );
 };
 

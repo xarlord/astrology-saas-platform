@@ -4,8 +4,9 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
+import db from '../../../db';
 import UserModel from '../../users/models/user.model';
-import { generateToken, generateRefreshToken } from '../../../middleware/auth';
+import { generateToken, generateRefreshToken, AuthenticatedRequest } from '../../../middleware/auth';
 import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
 import * as RefreshTokenModel from '../models/refreshToken.model';
 
@@ -106,8 +107,9 @@ export async function login(req: Request, res: Response): Promise<void> {
 /**
  * Get current user profile
  */
-export async function getProfile(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
 
   const user = await UserModel.findById(userId);
   if (!user) {
@@ -123,8 +125,9 @@ export async function getProfile(req: Request, res: Response): Promise<void> {
 /**
  * Update user profile
  */
-export async function updateProfile(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { name, avatar_url, timezone } = req.body;
 
   const user = await UserModel.update(userId, {
@@ -146,8 +149,9 @@ export async function updateProfile(req: Request, res: Response): Promise<void> 
 /**
  * Update user preferences
  */
-export async function updatePreferences(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updatePreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const preferences = req.body;
 
   const user = await UserModel.updatePreferences(userId, preferences);
@@ -221,20 +225,30 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
   const newAccessToken = generateToken(tokenPayload);
   const newRefreshToken = generateRefreshToken(tokenPayload);
 
-  // Token rotation: Create new refresh token and revoke old one
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
-  await RefreshTokenModel.createRefreshToken({
-    user_id: user.id,
-    token: newRefreshToken,
-    expires_at: expiresAt,
-    user_agent: req.get('user-agent'),
-    ip_address: req.ip,
-  });
+  // Token rotation in a transaction: revoke old + create new atomically.
+  // Prevents race condition where two concurrent refresh requests could both succeed.
+  await db.transaction(async (trx) => {
+    // Revoke old token first
+    const revoked = await trx('refresh_tokens')
+      .where({ token: oldRefreshToken })
+      .update({ revoked: true, revoked_at: new Date() });
 
-  // Revoke old refresh token
-  await RefreshTokenModel.revokeRefreshToken(oldRefreshToken);
+    if (revoked === 0) {
+      throw new AppError('Refresh token has been revoked', 401);
+    }
+
+    // Create new refresh token
+    await trx('refresh_tokens').insert({
+      user_id: user.id,
+      token: newRefreshToken,
+      expires_at: expiresAt,
+      user_agent: req.get('user-agent') || null,
+      ip_address: req.ip || null,
+    });
+  });
 
   res.status(200).json({
     success: true,

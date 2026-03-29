@@ -20,7 +20,7 @@ describe('Validators', () => {
       const data = {
         name: 'John Doe',
         email: 'john@example.com',
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error, value } = registerSchema.validate(data);
@@ -32,7 +32,7 @@ describe('Validators', () => {
     it('should require name', () => {
       const data = {
         email: 'john@example.com',
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error } = registerSchema.validate(data);
@@ -45,7 +45,7 @@ describe('Validators', () => {
       const data = {
         name: 'J',
         email: 'john@example.com',
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error } = registerSchema.validate(data);
@@ -56,7 +56,7 @@ describe('Validators', () => {
     it('should require email', () => {
       const data = {
         name: 'John Doe',
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error } = registerSchema.validate(data);
@@ -68,7 +68,7 @@ describe('Validators', () => {
       const data = {
         name: 'John Doe',
         email: 'invalid-email',
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error } = registerSchema.validate(data);
@@ -99,7 +99,7 @@ describe('Validators', () => {
       expect(error).toBeDefined();
     });
 
-    it('should require password with uppercase, lowercase, and number', () => {
+    it('should require password with uppercase, lowercase, number, and special character', () => {
       const data = {
         name: 'John Doe',
         email: 'john@example.com',
@@ -116,7 +116,7 @@ describe('Validators', () => {
     it('should validate valid login data', () => {
       const data = {
         email: 'john@example.com',
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error, value } = loginSchema.validate(data);
@@ -127,7 +127,7 @@ describe('Validators', () => {
 
     it('should require email', () => {
       const data = {
-        password: 'Password123',
+        password: 'Password123!',
       };
 
       const { error } = loginSchema.validate(data);

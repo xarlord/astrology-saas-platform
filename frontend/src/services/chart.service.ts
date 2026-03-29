@@ -69,7 +69,7 @@ export const chartService = {
   },
 
   /**
-   * Get specific chart
+   * Get chart by ID
    */
   async getChart(id: string): Promise<ChartResponse> {
     const response = await api.get<ApiResponse<{ chart: APIChart }>>(`/charts/${id}`);

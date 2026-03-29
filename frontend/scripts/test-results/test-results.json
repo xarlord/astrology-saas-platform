@@ -1,0 +1,48 @@
+[
+  {
+    "name": "Home Page Test",
+    "timestamp": "2026-03-22T22:29:33.538498",
+    "status": "failed",
+    "details": {
+      "title": "Astrology SaaS Platform",
+      "url": "http://localhost:3000/"
+    },
+    "error": "'SimpleBrowserTester' object can't be awaited"
+  },
+  {
+    "name": "Login Page Test",
+    "timestamp": "2026-03-22T22:29:34.432372",
+    "status": "failed",
+    "details": {
+      "title": "Astrology SaaS Platform",
+      "url": "http://localhost:3000/login"
+    },
+    "error": "'SimpleBrowserTester' object can't be awaited"
+  },
+  {
+    "name": "Register Page Test",
+    "timestamp": "2026-03-22T22:29:35.567059",
+    "status": "failed",
+    "details": {
+      "title": "Astrology SaaS Platform",
+      "url": "http://localhost:3000/register"
+    },
+    "error": "'SimpleBrowserTester' object can't be awaited"
+  },
+  {
+    "name": "Navigation Test",
+    "timestamp": "2026-03-22T22:29:36.705642",
+    "status": "failed",
+    "details": {
+      "nav_links_found": 0
+    },
+    "error": "'Locator' object is not callable"
+  },
+  {
+    "name": "Forms Test",
+    "timestamp": "2026-03-22T22:29:38.621622",
+    "status": "failed",
+    "details": {},
+    "error": "'Locator' object is not callable"
+  }
+]

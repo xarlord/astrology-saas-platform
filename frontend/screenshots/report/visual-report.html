@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>AstroVerse Visual Test Report</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; background: #0f172a; color: #e2e8f0; }
+  h1 { color: #818cf8; } h2 { color: #a5b4fc; margin-top: 2em; }
+  .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 1em 0; }
+  .card { background: #1e293b; border-radius: 8px; padding: 16px; text-align: center; }
+  .card .number { font-size: 2em; font-weight: bold; }
+  .card .label { color: #94a3b8; font-size: 0.9em; }
+  .pass { color: #34d399; } .fail { color: #f87171; } .warn { color: #fbbf24; }
+  table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; }
+  th { background: #1e293b; color: #94a3b8; font-weight: 600; }
+  tr:hover { background: #1e293b; }
+  tr.error td { color: #f87171; }
+  code { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  a { color: #818cf8; }
+  .timestamp { color: #64748b; font-size: 0.85em; }
+</style></head><body>
+<h1>AstroVerse Visual Regression Test Report</h1>
+<p class="timestamp">Generated: 2026-03-28T08:00:48.802Z</p>
+<p>Base URL: <code>http://localhost:3000</code></p>
+
+<div class="summary">
+  <div class="card"><div class="number">33</div><div class="label">Total</div></div>
+  <div class="card"><div class="number pass">33</div><div class="label">Captured</div></div>
+  <div class="card"><div class="number fail">0</div><div class="label">Errors</div></div>
+  <div class="card"><div class="number warn">3</div><div class="label">Viewports</div></div>
+</div>
+
+<h2>Screenshots</h2>
+<table>
+  <tr><th>Page</th><th>Viewport</th><th>Path</th><th>Status</th><th>Screenshot</th></tr>
+  <tr>
+      <td>Home</td>
+      <td>desktop</td>
+      <td><code>/</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/home-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Login</td>
+      <td>desktop</td>
+      <td><code>/login</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/login-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Register</td>
+      <td>desktop</td>
+      <td><code>/register</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/register-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Dashboard (redirect)</td>
+      <td>desktop</td>
+      <td><code>/dashboard</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/dashboard-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>New Chart (redirect)</td>
+      <td>desktop</td>
+      <td><code>/charts/new</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/new-chart-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Transits (redirect)</td>
+      <td>desktop</td>
+      <td><code>/transits</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/transits-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Synastry (redirect)</td>
+      <td>desktop</td>
+      <td><code>/synastry</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/synastry-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Solar Returns (redirect)</td>
+      <td>desktop</td>
+      <td><code>/solar-returns</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/solar-returns-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Calendar (redirect)</td>
+      <td>desktop</td>
+      <td><code>/calendar</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/calendar-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Lunar Returns (redirect)</td>
+      <td>desktop</td>
+      <td><code>/lunar-returns</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/lunar-returns-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Profile (redirect)</td>
+      <td>desktop</td>
+      <td><code>/profile</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/profile-redirect-desktop.png">View</a></td>
+    </tr>
+<tr>
+      <td>Home</td>
+      <td>tablet</td>
+      <td><code>/</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/home-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Login</td>
+      <td>tablet</td>
+      <td><code>/login</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/login-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Register</td>
+      <td>tablet</td>
+      <td><code>/register</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/register-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Dashboard (redirect)</td>
+      <td>tablet</td>
+      <td><code>/dashboard</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/dashboard-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>New Chart (redirect)</td>
+      <td>tablet</td>
+      <td><code>/charts/new</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/new-chart-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Transits (redirect)</td>
+      <td>tablet</td>
+      <td><code>/transits</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/transits-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Synastry (redirect)</td>
+      <td>tablet</td>
+      <td><code>/synastry</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/synastry-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Solar Returns (redirect)</td>
+      <td>tablet</td>
+      <td><code>/solar-returns</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/solar-returns-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Calendar (redirect)</td>
+      <td>tablet</td>
+      <td><code>/calendar</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/calendar-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Lunar Returns (redirect)</td>
+      <td>tablet</td>
+      <td><code>/lunar-returns</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/lunar-returns-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Profile (redirect)</td>
+      <td>tablet</td>
+      <td><code>/profile</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/profile-redirect-tablet.png">View</a></td>
+    </tr>
+<tr>
+      <td>Home</td>
+      <td>mobile</td>
+      <td><code>/</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/home-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Login</td>
+      <td>mobile</td>
+      <td><code>/login</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/login-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Register</td>
+      <td>mobile</td>
+      <td><code>/register</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/register-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Dashboard (redirect)</td>
+      <td>mobile</td>
+      <td><code>/dashboard</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/dashboard-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>New Chart (redirect)</td>
+      <td>mobile</td>
+      <td><code>/charts/new</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/new-chart-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Transits (redirect)</td>
+      <td>mobile</td>
+      <td><code>/transits</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/transits-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Synastry (redirect)</td>
+      <td>mobile</td>
+      <td><code>/synastry</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/synastry-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Solar Returns (redirect)</td>
+      <td>mobile</td>
+      <td><code>/solar-returns</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/solar-returns-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Calendar (redirect)</td>
+      <td>mobile</td>
+      <td><code>/calendar</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/calendar-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Lunar Returns (redirect)</td>
+      <td>mobile</td>
+      <td><code>/lunar-returns</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/lunar-returns-redirect-mobile.png">View</a></td>
+    </tr>
+<tr>
+      <td>Profile (redirect)</td>
+      <td>mobile</td>
+      <td><code>/profile</code></td>
+      <td>OK</td>
+      <td><a href="../screenshots/profile-redirect-mobile.png">View</a></td>
+    </tr>
+  
+</table>
+
+<h2>Viewports Tested</h2>
+<table>
+  <tr><th>Name</th><th>Width</th><th>Height</th></tr>
+  <tr><td>desktop</td><td>1280px</td><td>720px</td></tr>
+<tr><td>tablet</td><td>768px</td><td>1024px</td></tr>
+<tr><td>mobile</td><td>375px</td><td>812px</td></tr>
+</table>
+</body></html>

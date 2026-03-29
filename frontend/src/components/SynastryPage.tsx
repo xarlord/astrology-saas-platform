@@ -12,7 +12,6 @@ import {
   SynastryReport,
 } from '../services/synastry.api';
 import { Chart } from '../services/chart.service';
-import './SynastryPage.css';
 
 interface SynastryPageProps {
   charts: Chart[];
@@ -110,9 +109,9 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
   return (
     <div className="synastry-page" data-testid="synastry-page">
       {/* Header */}
-      <div className="page-header">
-        <h1>Synastry & Compatibility</h1>
-        <p>Compare two charts to discover relationship dynamics and compatibility</p>
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white m-0">Synastry & Compatibility</h1>
+        <p className="mt-2 text-gray-500 dark:text-gray-400">Compare two charts to discover relationship dynamics and compatibility</p>
       </div>
 
       {/* View Toggle */}
@@ -138,18 +137,18 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
 
       {/* History View */}
       {view === 'history' && (
-        <div className="history-view">
+        <div className="space-y-4">
           {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
+            <div className="flex flex-col items-center justify-center py-16 px-8">
+              <div className="w-[50px] h-[50px] border-4 border-gray-200 dark:border-gray-700 border-t-indigo-500 dark:border-t-indigo-400 rounded-full animate-spin mb-4" />
               <p>Loading reports...</p>
             </div>
           ) : error ? (
-            <div className="error-message">{error}</div>
+            <div className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-center">{error}</div>
           ) : reports.length === 0 ? (
-            <div className="empty-state">
-              <h3>No saved reports yet</h3>
-              <p>Compare two charts to save your first compatibility report</p>
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No saved reports yet</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">Compare two charts to save your first compatibility report</p>
               <button
                 className="primary-button"
                 onClick={() => handleViewChange('calculator')}
@@ -167,29 +166,29 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
                         <h3 data-testid={`report-charts-${report.id}`}>
                           {getChartName(report.chart1Id)} + {getChartName(report.chart2Id)}
                         </h3>
-                        <span className="report-date">{formatDate(report.createdAt)}</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{formatDate(report.createdAt)}</span>
                       </div>
                       <div className={`score-badge ${getScoreColor(report.overallCompatibility)}`} data-testid={`report-score-${report.id}`}>
                         {report.overallCompatibility}/10
                       </div>
                     </div>
 
-                    <div className="report-body">
-                      <p className="theme">{report.relationshipTheme}</p>
+                    <div className="px-6 pb-6 space-y-4">
+                      <p className="text-gray-700 dark:text-gray-300 m-0">{report.relationshipTheme}</p>
 
-                      <div className="report-highlights">
-                        <div className="highlight-section">
-                          <h4>Strengths</h4>
-                          <ul>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Strengths</h4>
+                          <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
                             {report.strengths.slice(0, 3).map((strength, index) => (
                               <li key={index}>{strength}</li>
                             ))}
                           </ul>
                         </div>
 
-                        <div className="highlight-section">
-                          <h4>Challenges</h4>
-                          <ul>
+                        <div>
+                          <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Challenges</h4>
+                          <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
                             {report.challenges.slice(0, 3).map((challenge, index) => (
                               <li key={index}>{challenge}</li>
                             ))}
@@ -198,21 +197,21 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
                       </div>
 
                       {report.notes && (
-                        <div className="report-notes">
-                          <h4>Notes</h4>
-                          <p>{report.notes}</p>
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                          <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Notes</h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 m-0">{report.notes}</p>
                         </div>
                       )}
                     </div>
 
-                    <div className="report-actions">
+                    <div className="flex items-center gap-2 px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                       <button
                         className={`favorite-button ${report.isFavorite ? 'favorited' : ''}`}
                         onClick={() => { void handleToggleFavorite(report.id, report.isFavorite ?? false); }}
                         title={report.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                         data-testid={`report-favorite-${report.id}`}
                       >
-                        {report.isFavorite ? '★' : '☆'}
+                        {report.isFavorite ? '\u2605' : '\u2606'}
                       </button>
                       <button
                         className="delete-button"
@@ -231,7 +230,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
               {totalPages > 1 && (
                 <div className="pagination" data-testid="synastry-pagination">
                   <button
-                    className="pagination-button"
+                    type="button"
+                    className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                     disabled={page === 1}
                     onClick={handlePrevPage}
                     data-testid="pagination-prev"
@@ -242,7 +242,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
                     Page {page} of {totalPages}
                   </span>
                   <button
-                    className="pagination-button"
+                    type="button"
+                    className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                     disabled={page === totalPages}
                     onClick={handleNextPage}
                     data-testid="pagination-next"

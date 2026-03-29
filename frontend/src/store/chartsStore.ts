@@ -15,7 +15,7 @@ interface ChartsState {
     page: number;
     limit: number;
     total: number;
-    pages: number;
+    totalPages: number;
   } | null;
 
   // Actions
@@ -95,7 +95,7 @@ export const useChartsStore = create<ChartsState>((set) => ({
         error: getErrorMessage(error, 'Failed to create chart'),
         isLoading: false,
       });
-      throw error;
+      throw err;
     }
   },
 

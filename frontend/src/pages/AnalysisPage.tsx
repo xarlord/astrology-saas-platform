@@ -3,30 +3,33 @@
  * Displays chart personality analysis with AI-enhanced interpretations
  */
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState } from '../components';
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState, AppLayout } from '../components';
 import { PersonalityAnalysis } from '../components';
+import type { PersonalityAnalysisData } from '../components/PersonalityAnalysis';
+import { useChartAnalysis } from '../hooks';
+import { getErrorMessage } from '../utils/errorHandling';
 
-interface ChartData {
-  id: string;
-  planets: {
-    planet: string;
-    sign: string;
-    degree: number;
-    house: number;
-  }[];
-  houses: {
-    house: number;
-    sign: string;
-    degree: number;
-  }[];
-  aspects: {
-    planet1: string;
-    planet2: string;
-    type: string;
-    orb: number;
-  }[];
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+/**
+ * Build a PlanetSignInterpretation from minimal API data (sign name only).
+ * The API returns SignInfo { sign, degree } which lacks interpretation text,
+ * so we provide empty defaults that the component can render gracefully.
+ */
+function toPlanetSignInterpretation(planet: string, signInfo: { sign: string; degree: number }) {
+  return {
+    planet,
+    sign: signInfo.sign,
+    keywords: [],
+    general: `${planet} in ${signInfo.sign} (${signInfo.degree.toFixed(1)} degrees)`,
+    strengths: [],
+    challenges: [],
+    advice: [],
+  };
 }
 
 interface AIInterpretationData {
@@ -196,9 +199,21 @@ export default function AnalysisPage() {
                 })),
               }}
             />
+          </div>
+
+          {/* AI Interpretation Display */}
+          {aiInterpretation && (
+            <div className="mb-6">
+              <AIInterpretationDisplay interpretation={aiInterpretation as { ai: boolean; enhanced?: string | Record<string, unknown>; generatedAt?: string; model?: string }} />
+            </div>
           )}
-        </div>
-      </main>
-    </div>
+
+          {/* Traditional Analysis */}
+          <div className="card">
+            <PersonalityAnalysis data={componentData} />
+          </div>
+        </>
+      )}
+    </AppLayout>
   );
 }

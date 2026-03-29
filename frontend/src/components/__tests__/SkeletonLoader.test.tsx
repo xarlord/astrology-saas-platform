@@ -10,32 +10,38 @@ describe('SkeletonLoader', () => {
   describe('Rendering', () => {
     it('renders with default card variant', () => {
       const { container } = render(<SkeletonLoader />);
-      expect(container.querySelector('.skeleton-card')).toBeInTheDocument();
+      // Card variant renders a container with rounded-lg and p-6
+      expect(container.querySelector('.rounded-lg.p-6')).toBeInTheDocument();
     });
 
     it('renders list variant', () => {
       const { container } = render(<SkeletonLoader variant="list" />);
-      expect(container.querySelector('.skeleton-list')).toBeInTheDocument();
+      // List variant renders rounded-full elements (planet symbols)
+      expect(container.querySelector('.rounded-full.w-10.h-10')).toBeInTheDocument();
     });
 
     it('renders text variant', () => {
       const { container } = render(<SkeletonLoader variant="text" />);
-      expect(container.querySelector('.skeleton-text')).toBeInTheDocument();
+      // Text variant renders animated pulse bars
+      expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
     });
 
     it('renders calendar variant', () => {
       const { container } = render(<SkeletonLoader variant="calendar" />);
-      expect(container.querySelector('.skeleton-calendar')).toBeInTheDocument();
+      // Calendar has a 7-column grid
+      expect(container.querySelector('.grid.grid-cols-7')).toBeInTheDocument();
     });
 
     it('renders chart variant', () => {
       const { container } = render(<SkeletonLoader variant="chart" />);
-      expect(container.querySelector('.skeleton-chart')).toBeInTheDocument();
+      // Chart variant renders two-column grid
+      expect(container.querySelector('.grid.lg\\:grid-cols-2')).toBeInTheDocument();
     });
 
     it('renders multiple skeletons when count is specified', () => {
       const { container } = render(<SkeletonLoader count={3} />);
-      expect(container.querySelectorAll('.skeleton-card')).toHaveLength(3);
+      // Each card has rounded-lg and p-6
+      expect(container.querySelectorAll('.rounded-lg.p-6')).toHaveLength(3);
     });
 
     it('applies custom className', () => {
@@ -71,69 +77,88 @@ describe('SkeletonLoader', () => {
   describe('Card Skeleton Structure', () => {
     it('renders card header with title and badge', () => {
       const { container } = render(<SkeletonLoader variant="card" />);
-      expect(container.querySelector('.skeleton-card-header')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-title')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-badge')).toBeInTheDocument();
+      // Card header has flex justify-between with two animated bars
+      const header = container.querySelector('.flex.justify-between');
+      expect(header).toBeInTheDocument();
+      // Title bar (w-3/5) and badge bar (w-12)
+      expect(header?.querySelector('.w-3\\/5')).toBeInTheDocument();
+      expect(header?.querySelector('.w-12')).toBeInTheDocument();
     });
 
     it('renders card body with lines', () => {
       const { container } = render(<SkeletonLoader variant="card" />);
-      expect(container.querySelector('.skeleton-card-body')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-line')).toBeInTheDocument();
+      // Card body has full-width animated lines
+      const bodyLines = container.querySelectorAll('.animate-pulse.rounded.w-full.h-4');
+      expect(bodyLines.length).toBeGreaterThan(0);
     });
 
     it('renders card footer with symbols', () => {
       const { container } = render(<SkeletonLoader variant="card" />);
-      expect(container.querySelector('.skeleton-card-footer')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-symbol')).toBeInTheDocument();
+      // Card footer has border-t separator and rounded-full symbols
+      const footer = container.querySelector('.border-t');
+      expect(footer).toBeInTheDocument();
+      expect(footer?.querySelectorAll('.rounded-full').length).toBeGreaterThan(0);
     });
   });
 
   describe('List Skeleton Structure', () => {
     it('renders list item with header', () => {
       const { container } = render(<SkeletonLoader variant="list" />);
-      expect(container.querySelector('.skeleton-list-item')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-list-header')).toBeInTheDocument();
+      // List has rounded-full icons and text bars
+      expect(container.querySelector('.animate-pulse.rounded.w-full.h-4')).toBeInTheDocument();
     });
 
     it('renders large symbols for list items', () => {
       const { container } = render(<SkeletonLoader variant="list" />);
-      expect(container.querySelector('.skeleton-symbol-lg')).toBeInTheDocument();
+      // List variant has multiple rounded-full w-10 h-10 icons
+      expect(container.querySelectorAll('.rounded-full.w-10.h-10').length).toBeGreaterThan(0);
     });
   });
 
   describe('Calendar Skeleton Structure', () => {
     it('renders calendar header with navigation', () => {
       const { container } = render(<SkeletonLoader variant="calendar" />);
-      expect(container.querySelector('.skeleton-calendar-header')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-button')).toBeInTheDocument();
+      // Calendar has two buttons (prev/next) and a title bar
+      const header = container.querySelector('.flex.justify-between');
+      expect(header).toBeInTheDocument();
+      // Navigation buttons (rounded-md w-24)
+      expect(container.querySelectorAll('.rounded-md.w-24').length).toBeGreaterThanOrEqual(2);
     });
 
     it('renders weekday headers', () => {
       const { container } = render(<SkeletonLoader variant="calendar" />);
-      expect(container.querySelector('.skeleton-calendar-weekdays')).toBeInTheDocument();
-      expect(container.querySelectorAll('.skeleton-weekday')).toHaveLength(7);
+      // 7 weekday headers (Sun, Mon, etc.)
+      const weekdays = container.querySelectorAll('.grid-cols-7 .text-center');
+      expect(weekdays.length).toBe(7);
     });
 
     it('renders calendar grid with days', () => {
       const { container } = render(<SkeletonLoader variant="calendar" />);
-      expect(container.querySelector('.skeleton-calendar-grid')).toBeInTheDocument();
-      expect(container.querySelectorAll('.skeleton-day')).toHaveLength(35);
+      // 35 day cells in the grid
+      const grids = container.querySelectorAll('.grid.grid-cols-7');
+      // Second grid is the days grid (first is weekdays)
+      expect(grids.length).toBeGreaterThanOrEqual(2);
+      // Last grid should have 35 children
+      const dayGrid = grids[grids.length - 1];
+      expect(dayGrid.children.length).toBe(35);
     });
   });
 
   describe('Chart Skeleton Structure', () => {
     it('renders chart wheel with circles', () => {
       const { container } = render(<SkeletonLoader variant="chart" />);
-      expect(container.querySelector('.skeleton-wheel')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-circle')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-circle-inner')).toBeInTheDocument();
+      // Chart has aspect-square container with two nested circles
+      expect(container.querySelector('.aspect-square')).toBeInTheDocument();
+      // Two concentric circles (w-4/5 and w-3/5)
+      expect(container.querySelector('.w-4\\/5')).toBeInTheDocument();
+      expect(container.querySelector('.w-3\\/5')).toBeInTheDocument();
     });
 
     it('renders planetary positions', () => {
       const { container } = render(<SkeletonLoader variant="chart" />);
-      expect(container.querySelector('.skeleton-positions')).toBeInTheDocument();
-      expect(container.querySelector('.skeleton-position')).toBeInTheDocument();
+      // 5 position rows with border-b
+      const positions = container.querySelectorAll('.border-b');
+      expect(positions.length).toBeGreaterThan(0);
     });
   });
 });
@@ -143,16 +168,17 @@ describe('SkeletonGrid', () => {
     const { container } = render(<SkeletonGrid count={3} />);
     const grid = container.querySelector('.grid');
     expect(grid).toBeInTheDocument();
-    expect(grid).toHaveClass('md:grid-cols-2', 'lg:grid-cols-3');
+    expect(grid?.className).toContain('md:grid-cols-2');
+    expect(grid?.className).toContain('lg:grid-cols-3');
   });
 
   it('renders specified number of skeletons', () => {
     const { container } = render(<SkeletonGrid count={5} />);
-    expect(container.querySelectorAll('.skeleton-card')).toHaveLength(5);
+    expect(container.querySelectorAll('.rounded-lg.p-6')).toHaveLength(5);
   });
 
   it('renders default 3 skeletons when count not specified', () => {
     const { container } = render(<SkeletonGrid />);
-    expect(container.querySelectorAll('.skeleton-card')).toHaveLength(3);
+    expect(container.querySelectorAll('.rounded-lg.p-6')).toHaveLength(3);
   });
 });

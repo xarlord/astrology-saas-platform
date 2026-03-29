@@ -12,11 +12,11 @@ import {
   getAspectPatterns,
   getPlanetsInSigns,
   getHousesAnalysis,
-} from '../../controllers/analysis.controller';
-import { AppError } from '../../middleware/errorHandler';
+} from '../../modules/analysis/controllers/analysis.controller';
+import { AppError } from '../../utils/appError';
 import ChartModel from '../../modules/charts/models/chart.model';
 import { swissEphemeris } from '../../modules/shared';
-import { generateCompletePersonalityAnalysis } from '../../services/interpretation.service';
+import { generateCompletePersonalityAnalysis } from '../../modules/analysis/services/interpretation.service';
 
 // Mock dependencies
 jest.mock('../../modules/charts/models/chart.model', () => ({
@@ -38,7 +38,7 @@ jest.mock('../../modules/shared', () => ({
   },
 }));
 
-jest.mock('../../services/interpretation.service', () => ({
+jest.mock('../../modules/analysis/services/interpretation.service', () => ({
   generateCompletePersonalityAnalysis: jest.fn(),
 }));
 

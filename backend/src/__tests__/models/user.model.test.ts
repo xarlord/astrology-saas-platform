@@ -4,7 +4,7 @@
  */
 
 import knex from '../../config/database';
-import { UserModel, User, CreateUserData, UpdateUserData } from '../../models/user.model';
+import UserModel, { User, CreateUserData, UpdateUserData } from '../../modules/users/models/user.model';
 
 // Mock database
 jest.mock('../../config/database');

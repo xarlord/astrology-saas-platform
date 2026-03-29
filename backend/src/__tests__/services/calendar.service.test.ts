@@ -15,7 +15,7 @@ import {
   getSeasonalIngresses,
   calculateTransitIntensity,
   generateICalFormat,
-} from '../../services/calendar.service';
+} from '../../modules/calendar/services/calendar.service';
 
 describe('Calendar Service', () => {
   describe('Julian Day Calculation', () => {

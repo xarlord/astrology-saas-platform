@@ -5,8 +5,15 @@
  * exports to avoid ambiguity (e.g., MoonPhase, Planet, PlanetPosition).
  */
 
-export { ChartModel } from './chart.model';
-export { UserModel } from './user.model';
+// Charts
+export { default as ChartModel } from '../modules/charts/models/chart.model';
+export type { Chart, CreateChartData, UpdateChartData } from '../modules/charts/models/chart.model';
+
+// Users
+export { default as UserModel } from '../modules/users/models/user.model';
+export type { User, CreateUserData, UpdateUserData } from '../modules/users/models/user.model';
+
+// Auth
 export * from '../modules/auth/models/refreshToken.model';
 
 // Calendar model — authoritative source for MoonPhase, Planet
@@ -30,7 +37,24 @@ export {
 } from '../modules/lunar/models/lunarReturn.model';
 
 export * from '../modules/notifications/models/pushSubscription.model';
+
+// Solar
 export * from '../modules/solar/models/solarReturn.model';
-export * from '../modules/synastry/models/synastry.model';
+
+// Synastry - only unique exports
+export type {
+  SynastryChart,
+  SynastryAspect,
+  CompositePlanet,
+  CompositeChart,
+  CompatibilityScores,
+  ElementalBalance,
+  CompatibilityReport,
+  SynastryComparisonRequest,
+  SynastryComparisonResponse,
+  SynastryRequest,
+} from '../modules/synastry/models/synastry.model';
+
+// AI
 export * from '../modules/ai/models/aiCache.model';
 export * from '../modules/ai/models/aiUsage.model';

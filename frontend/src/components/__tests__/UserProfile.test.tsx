@@ -11,7 +11,7 @@
  * Component Tests
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UserProfile } from '../UserProfile';
@@ -126,7 +126,7 @@ describe('UserProfile Component', () => {
       clearError: vi.fn(),
     });
     vi.mocked(useCharts).mockReturnValue({
-      charts: mockCharts,
+      charts: mockCharts as any,
       deleteChart: mockDeleteChart,
       currentChart: null,
       pagination: null,
@@ -601,7 +601,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       mockUpdateProfile.mockRejectedValue(new Error('Update failed'));
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { /* intentional empty */ });
 
       render(<UserProfile />);
 

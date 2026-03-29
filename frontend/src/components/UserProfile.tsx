@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
 import {
   CameraIcon,
@@ -72,6 +72,29 @@ interface UserProfileProps {
   onDeleteChart?: (chartId: string) => void;
 }
 
+interface UserData {
+  id: string;
+  email: string;
+  name: string;
+  avatar_url?: string;
+  avatar?: string;
+  createdAt?: Date;
+  timezone?: string;
+  plan?: string;
+  preferences?: {
+    theme?: 'light' | 'dark' | 'auto';
+    defaultHouseSystem?: HouseSystem;
+    defaultZodiac?: 'tropical' | 'sidereal';
+    aspectOrbs?: {
+      conjunction: number;
+      opposition: number;
+      trine: number;
+      square: number;
+      sextile: number;
+    };
+  };
+}
+
 export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserProfileProps) {
   const { user, updateProfile } = useAuth();
   const { charts, deleteChart } = useCharts();
@@ -103,11 +126,11 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
   } : undefined;
 
   // Convert service Chart to UserProfile Chart type
-  const chartsForDisplay: Chart[] = (charts || []).map(chart => ({
+  const chartsForDisplay: Chart[] = (charts ?? []).map(chart => ({
     id: chart.id,
     userId: '', // Not available in service Chart type
     name: chart.name,
-    type: (chart.type || 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
+    type: (chart.type ?? 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
     birthData: {
       date: new Date(chart.birthData?.birthDate ?? Date.now()),
       time: chart.birthData?.birthTime ?? '00:00',
@@ -142,18 +165,20 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     { id: 'subscription' as const, label: 'Subscription', icon: '💳' },
   ];
 
-  const handleSaveProfile = async () => {
-    try {
-      await updateProfile({ name: editData.name, timezone: editData.timezone });
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    }
+  const handleSaveProfile = (): void => {
+    void (async () => {
+      try {
+        await updateProfile({ name: editData.name, timezone: editData.timezone });
+        setIsEditing(false);
+      } catch (error) {
+        console.error('Failed to update profile:', error);
+      }
+    })();
   };
 
-  const handleDeleteChart = async (chartId: string) => {
+  const handleDeleteChart = (chartId: string): void => {
     if (window.confirm('Are you sure you want to delete this chart?')) {
-      await deleteChart(chartId);
+      void deleteChart(chartId);
       onDeleteChart?.(chartId);
     }
   };
@@ -311,7 +336,7 @@ function ProfileHeader({
             <>
               <button
                 type="button"
-                onClick={onSave}
+                onClick={() => { void onSave(); }}
                 className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
                 aria-label="Save"
               >

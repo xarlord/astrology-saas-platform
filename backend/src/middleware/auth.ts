@@ -5,7 +5,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppError } from './errorHandler';
+import crypto from 'crypto';
+import { AppError } from '../utils/appError';
 import config from '../config';
 
 interface TokenPayload {
@@ -22,6 +23,15 @@ declare global {
       user?: TokenPayload;
     }
   }
+}
+
+/**
+ * Typed request for authenticated routes.
+ * Use this in controllers behind `authenticate` middleware
+ * to avoid non-null assertions on req.user.
+ */
+export interface AuthenticatedRequest extends Request {
+  user: TokenPayload;
 }
 
 /**
@@ -99,9 +109,6 @@ export const generateToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): strin
  */
 export const generateRefreshToken = (_payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
   // Generate a cryptographically secure random token
-  /* eslint-disable @typescript-eslint/no-var-requires */
-  const crypto = require('crypto');
-  /* eslint-enable @typescript-eslint/no-var-requires */
   const randomBytes = crypto.randomBytes(32);
   return randomBytes.toString('base64url');
 };

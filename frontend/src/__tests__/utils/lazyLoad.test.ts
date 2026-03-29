@@ -11,6 +11,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { lazyLoadComponent, lazyLoadWithRetry } from '../../utils/lazyLoad';
 
 describe('Lazy Load Utilities', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe('lazyLoadComponent', () => {
     let consoleSpy: ReturnType<typeof vi.spyOn>;
 
@@ -35,9 +39,7 @@ describe('Lazy Load Utilities', () => {
 
     it('should handle import errors with fallback', async () => {
       const importFn = vi.fn().mockRejectedValue(new Error('Network error'));
-
       const LazyComponent = lazyLoadComponent(importFn);
-
       expect(LazyComponent).toBeDefined();
       expect(typeof LazyComponent).toBe('object');
     });
@@ -115,11 +117,9 @@ describe('Lazy Load Utilities', () => {
     it('should lazy load component with retry logic', async () => {
       const mockComponent = vi.fn().mockReturnValue('Retry Component');
       const importFn = vi.fn().mockResolvedValue({ default: mockComponent });
-
       const LazyComponent = lazyLoadWithRetry(importFn, 3);
-
       expect(LazyComponent).toBeDefined();
-      expect(typeof LazyComponent).toBe('object');
+      expect(typeof LazyComponent).toBe('function');
     });
 
     it('should retry on failure', async () => {
@@ -131,25 +131,20 @@ describe('Lazy Load Utilities', () => {
         .mockResolvedValueOnce({ default: mockComponent });
 
       const LazyComponent = lazyLoadWithRetry(importFn, 3);
-
       expect(LazyComponent).toBeDefined();
       expect(importFn).toBeDefined();
     });
 
     it('should throw error after max retries', async () => {
       const importFn = vi.fn().mockRejectedValue(new Error('Persistent error'));
-
       const LazyComponent = lazyLoadWithRetry(importFn, 2);
-
       expect(LazyComponent).toBeDefined();
       expect(importFn).toBeDefined();
     });
 
     it('should use default max retries of 3', async () => {
       const importFn = vi.fn().mockResolvedValue({ default: () => 'Component' });
-
       const LazyComponent = lazyLoadWithRetry(importFn);
-
       expect(LazyComponent).toBeDefined();
     });
 

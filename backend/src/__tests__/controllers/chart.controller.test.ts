@@ -13,10 +13,10 @@ import {
   updateChart,
   deleteChart,
   calculateChart,
-} from '../../controllers/chart.controller';
-import { AppError } from '../../middleware/errorHandler';
+} from '../../modules/charts/controllers/chart.controller';
+import { AppError } from '../../utils/appError';
 import ChartModel from '../../modules/charts/models/chart.model';
-import { swissEphemeris } from '../../modules/shared';
+import { NatalChartService } from '../../modules/shared/services/natalChart.service';
 
 // Mock dependencies
 jest.mock('../../modules/charts/models/chart.model', () => ({
@@ -32,16 +32,15 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
   },
 }));
 
-jest.mock('../../modules/shared', () => ({
-  swissEphemeris: {
-    calculateNatalChart: jest.fn(),
-    calculateTransits: jest.fn(),
-    PLANET_SYMBOLS: {
-      sun: '☉',
-      moon: '☽',
-      mercury: '☿',
-    },
-  },
+// Mock the real calculation service (requires astronomy-engine native dep)
+jest.mock('../../modules/shared/services/natalChart.service');
+
+// Mock the transitive dependencies that NatalChartService imports
+jest.mock('../../modules/shared/services/astronomyEngine.service', () => ({
+  AstronomyEngineService: jest.fn().mockImplementation(() => ({})),
+}));
+jest.mock('../../modules/shared/services/houseCalculation.service', () => ({
+  HouseCalculationService: jest.fn().mockImplementation(() => ({})),
 }));
 
 describe('Chart Controller', () => {
@@ -396,7 +395,7 @@ describe('Chart Controller', () => {
 
       await calculateChart(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(swissEphemeris.calculateNatalChart).not.toHaveBeenCalled();
+      expect(NatalChartService.prototype.calculateNatalChart).not.toHaveBeenCalled();
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
@@ -413,36 +412,69 @@ describe('Chart Controller', () => {
         birth_time: '14:30:00',
         birth_latitude: 40.7128,
         birth_longitude: -74.0060,
+        birth_place_name: 'New York, NY',
+        birth_timezone: 'America/New_York',
         house_system: 'placidus',
         calculated_data: null,
       };
 
-      const calculatedData = {
-        jd: 2451545.0,
-        planets: { sun: { sign: 'capricorn', position: 295.5 } },
-        houses: { houses: [{ cusp: 300, sign: 'aquarius' }] },
+      // Mock NatalChartService.calculateNatalChart to return a NatalChart-shaped object
+      const mockNatalChart = {
+        birthData: {
+          date: new Date('1990-01-15'),
+          latitude: 40.7128,
+          longitude: -74.006,
+        },
+        julianDay: 2447902.5,
+        localSiderealTime: 45.2,
+        planets: new Map([
+          ['Sun', { name: 'Sun', longitude: 295.5, latitude: 0, speed: 1, sign: 'Capricorn', signIndex: 9, degree: 25, minute: 30, second: 0, isRetrograde: false, house: 4, distance: 0.985 }],
+        ]),
+        houses: {
+          system: 'Placidus',
+          cusps: Array.from({ length: 12 }, (_, i) => ({ number: i + 1, longitude: i * 30, sign: ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'][i], degree: 0 })),
+          ascendant: 15,
+          midheaven: 90,
+          descendant: 195,
+          imumCoeli: 270,
+        },
         aspects: [],
+        elements: { fire: 1, earth: 2, air: 3, water: 4 },
+        modalities: { cardinal: 3, fixed: 4, mutable: 3 },
       };
 
       const updatedChart = {
         id: '456',
-        calculated_data: calculatedData,
+        calculated_data: expect.any(Object),
       };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
-      (swissEphemeris.calculateNatalChart as jest.Mock).mockReturnValue(calculatedData);
+      (NatalChartService.prototype.calculateNatalChart as jest.Mock).mockReturnValue(mockNatalChart);
       (ChartModel.updateCalculatedData as jest.Mock).mockResolvedValue(updatedChart);
 
       await calculateChart(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(swissEphemeris.calculateNatalChart).toHaveBeenCalledWith({
-        birthDate: new Date(mockChart.birth_date),
-        birthTime: mockChart.birth_time,
-        latitude: mockChart.birth_latitude,
-        longitude: mockChart.birth_longitude,
-        houseSystem: mockChart.house_system,
-      });
-      expect(ChartModel.updateCalculatedData).toHaveBeenCalledWith('456', '123', calculatedData);
+      expect(NatalChartService.prototype.calculateNatalChart).toHaveBeenCalledWith(
+        expect.objectContaining({
+          birthDate: expect.any(Date),
+          birthTime: '14:30:00',
+          latitude: 40.7128,
+          longitude: -74.006,
+          houseSystem: 'Placidus',
+        })
+      );
+      // Verify adapted data is stored (contains legacy-format fields)
+      expect(ChartModel.updateCalculatedData).toHaveBeenCalledWith(
+        '456',
+        '123',
+        expect.objectContaining({
+          jd: 2447902.5,
+          planets: expect.any(Object),
+          houses: expect.any(Array),
+          ascendant: 15,
+          midheaven: 90,
+        })
+      );
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 

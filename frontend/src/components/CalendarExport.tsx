@@ -112,40 +112,40 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
   };
 
   return (
-    <div className="calendar-export">
-      <div className="export-header">
-        <div className="header-icon">
+    <div className="max-w-[600px] mx-auto p-6 sm:p-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+      <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
+        <div className="w-12 h-12 flex items-center justify-center bg-amber-100 text-amber-500 rounded-xl shrink-0">
           <FileDown size={24} />
         </div>
         <div>
-          <h2>Export Calendar</h2>
-          <p>Download your astrological calendar as an iCal file</p>
+          <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Export Calendar</h2>
+          <p className="m-0 text-sm text-gray-500">Download your astrological calendar as an iCal file</p>
         </div>
       </div>
 
-      <div className="export-content">
+      <div className="flex flex-col gap-6">
         {/* Quick Select */}
-        <div className="export-section">
-          <label className="section-label">Quick Select</label>
-          <div className="quick-select-buttons">
+        <div className="flex flex-col gap-3">
+          <label className="text-sm font-semibold text-gray-700">Quick Select</label>
+          <div className="flex gap-2 flex-wrap sm:flex-col">
             <button
               type="button"
               onClick={() => handleQuickSelect('this-month')}
-              className="btn-quick-select"
+              className="px-4 py-2 bg-white border border-gray-200 rounded-md text-[13px] font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-blue-50 hover:text-indigo-500 sm:w-full"
             >
               This Month
             </button>
             <button
               type="button"
               onClick={() => handleQuickSelect('this-quarter')}
-              className="btn-quick-select"
+              className="px-4 py-2 bg-white border border-gray-200 rounded-md text-[13px] font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-blue-50 hover:text-indigo-500 sm:w-full"
             >
               This Quarter
             </button>
             <button
               type="button"
               onClick={() => handleQuickSelect('this-year')}
-              className="btn-quick-select"
+              className="px-4 py-2 bg-white border border-gray-200 rounded-md text-[13px] font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-blue-50 hover:text-indigo-500 sm:w-full"
             >
               This Year
             </button>
@@ -153,54 +153,55 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         </div>
 
         {/* Custom Date Range */}
-        <div className="export-section">
-          <label className="section-label">Custom Date Range</label>
-          <div className="date-range-inputs">
-            <div className="date-input-group">
-              <label htmlFor="startDate">From</label>
+        <div className="flex flex-col gap-3">
+          <label className="text-sm font-semibold text-gray-700">Custom Date Range</label>
+          <div className="flex gap-4 sm:flex-col sm:gap-3">
+            <div className="flex-1 flex flex-col gap-1">
+              <label htmlFor="startDate" className="text-xs font-medium text-gray-500">From</label>
               <input
                 id="startDate"
                 type="date"
                 value={params.startDate}
                 onChange={(e) => setParams({ ...params, startDate: e.target.value })}
-                className="date-input"
+                className="px-3 py-2.5 border border-gray-200 rounded-md text-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-indigo-500 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
               />
             </div>
 
-            <div className="date-input-group">
-              <label htmlFor="endDate">To</label>
+            <div className="flex-1 flex flex-col gap-1">
+              <label htmlFor="endDate" className="text-xs font-medium text-gray-500">To</label>
               <input
                 id="endDate"
                 type="date"
                 value={params.endDate}
                 min={params.startDate}
                 onChange={(e) => setParams({ ...params, endDate: e.target.value })}
-                className="date-input"
+                className="px-3 py-2.5 border border-gray-200 rounded-md text-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-indigo-500 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
               />
             </div>
           </div>
         </div>
 
         {/* Options */}
-        <div className="export-section">
-          <label className="checkbox-label">
+        <div className="flex flex-col gap-3">
+          <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={params.includePersonal}
               onChange={(e) => setParams({ ...params, includePersonal: e.target.checked })}
               id="includePersonal"
+              className="w-[18px] h-[18px] accent-indigo-500 cursor-pointer"
             />
-            <span className="checkbox-text">Include my personal transits</span>
+            <span className="text-sm text-gray-700">Include my personal transits</span>
           </label>
-          <div className="form-hint">
-            <AlertCircle size={14} />
+          <div className="flex items-start gap-1.5 px-3 py-2 bg-green-50 border-l-[3px] border-emerald-500 rounded bg-[#f0fdf4] text-[13px] text-green-800 leading-snug">
+            <AlertCircle size={14} className="shrink-0 mt-0.5" />
             <span>Uncheck to export only global astrological events (retrogrades, eclipses, moon phases)</span>
           </div>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="success-message">
+          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-300 rounded-lg text-green-800 text-sm">
             <CheckCircle size={20} />
             <span>Calendar exported successfully!</span>
           </div>
@@ -208,7 +209,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
 
         {/* Error Message */}
         {error && (
-          <div className="error-message">
+          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">
             <AlertCircle size={20} />
             <span>{error}</span>
           </div>
@@ -219,7 +220,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
           <button onClick={() => void handleExport()} className="btn-export" disabled={loading}>
             {loading ? (
               <>
-                <div className="spinner-small"></div>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 Exporting...
               </>
             ) : (
@@ -232,8 +233,8 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         </div>
 
         {/* Info */}
-        <div className="export-info">
-          <div className="info-item">
+        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-2 text-[13px] text-blue-800">
             <Calendar size={16} />
             <span>Compatible with Google Calendar, Outlook, Apple Calendar, and more</span>
           </div>

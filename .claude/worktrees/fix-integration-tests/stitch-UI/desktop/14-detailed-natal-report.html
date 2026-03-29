@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse Detailed Natal Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6b3de1",
+                        "accent-gold": "#F5A623",
+                        "soft-lavender": "#A78BFA",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0B0D17",
+                        "card-dark": "#161220",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(47, 38, 69, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(167, 139, 250, 0.1);
+        }
+        .chart-grid {
+            background-image: radial-gradient(circle at 2px 2px, rgba(107, 61, 225, 0.15) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen selection:bg-primary/30">
+<!-- Main Navigation -->
+<header class="sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/80 backdrop-blur-md px-6 lg:px-20 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="text-primary size-8">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-white uppercase tracking-widest">AstroVerse</h1>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="#">Natal Reports</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Compatibility</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Transits</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-soft-lavender">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFaZUM2LCzzR80Cdtd37KhhZUxp-XPXy1Oh1ICAkCLQf1gXFsrzKrMB4vcB5ZzBzwHSNSbuu4_MWie243npNyCkYvqOW-ZKr5rMNIEPM-YnhKKrfjzsfA5Dt7lTs7G_Td-3fNdfXzmevm-CJD8u9ACgy_quFTsCCkyytuHdS-OieFyrpHVaB6AnM8Pf2-cM2PLwXyzyCcltOecFfZe9QsZCVra2R0vt5OXL0ZxiXyXdieektgqFk6T58QYm17SwY0GN2QW85AOpi-1"/>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 lg:px-20 py-10 flex gap-8">
+<!-- Left Content Area -->
+<div class="flex-1 space-y-12">
+<!-- Report Header -->
+<section>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<span class="text-accent-gold text-xs font-bold uppercase tracking-widest mb-2 block">Premium Natal Report</span>
+<h2 class="text-4xl font-bold text-white mb-2">Sarah Mitchell</h2>
+<div class="flex items-center gap-4 text-soft-lavender text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Jan 14, 1992</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">schedule</span> 14:42 (EST)</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">location_on</span> New York, USA</span>
+</div>
+</div>
+</div>
+<!-- Tabs Navigation -->
+<div class="mt-10 flex border-b border-primary/20 gap-8">
+<button class="pb-4 border-b-2 border-primary text-white font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">insights</span> Summary
+                    </button>
+<button class="pb-4 border-b-2 border-transparent text-slate-400 hover:text-soft-lavender transition-colors font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">language</span> Planets
+                    </button>
+<button class="pb-4 border-b-2 border-transparent text-slate-400 hover:text-soft-lavender transition-colors font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">home</span> Houses
+                    </button>
+<button class="pb-4 border-b-2 border-transparent text-slate-400 hover:text-soft-lavender transition-colors font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">grid_view</span> Aspects
+                    </button>
+</div>
+</section>
+<!-- Big Three Hero Section -->
+<section class="glass-card rounded-xl p-8 overflow-hidden relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+<h3 class="text-xl font-bold text-white mb-8 flex items-center gap-2">
+<span class="text-accent-gold material-symbols-outlined">stars</span> The Big Three
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Sun Card -->
+<div class="flex flex-col items-center text-center p-6 rounded-xl bg-primary/5 border border-primary/10">
+<div class="relative mb-6">
+<div class="absolute inset-0 bg-accent-gold/20 blur-xl rounded-full"></div>
+<div class="size-20 rounded-full bg-gradient-to-tr from-accent-gold to-yellow-200 flex items-center justify-center text-background-dark shadow-lg shadow-accent-gold/20 relative z-10">
+<span class="material-symbols-outlined text-4xl">light_mode</span>
+</div>
+</div>
+<h4 class="text-lg font-bold text-white">Sun in Capricorn</h4>
+<div class="flex gap-2 mt-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-soft-lavender font-bold uppercase tracking-wider">Earth</span>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-soft-lavender font-bold uppercase tracking-wider">Cardinal</span>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed">Your core identity is driven by ambition, structure, and a deep sense of responsibility. You build for the long term.</p>
+</div>
+<!-- Moon Card -->
+<div class="flex flex-col items-center text-center p-6 rounded-xl bg-primary/5 border border-primary/10">
+<div class="relative mb-6">
+<div class="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+<div class="size-20 rounded-full bg-gradient-to-tr from-primary to-soft-lavender flex items-center justify-center text-white shadow-lg shadow-primary/20 relative z-10">
+<span class="material-symbols-outlined text-4xl">dark_mode</span>
+</div>
+</div>
+<h4 class="text-lg font-bold text-white">Moon in Pisces</h4>
+<div class="flex gap-2 mt-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-soft-lavender font-bold uppercase tracking-wider">Water</span>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-soft-lavender font-bold uppercase tracking-wider">Mutable</span>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed">Emotionally intuitive and deeply empathetic. Your inner world is a vast ocean of creative and psychic sensitivity.</p>
+</div>
+<!-- Rising Card -->
+<div class="flex flex-col items-center text-center p-6 rounded-xl bg-primary/5 border border-primary/10">
+<div class="relative mb-6">
+<div class="absolute inset-0 bg-orange-500/20 blur-xl rounded-full"></div>
+<div class="size-20 rounded-full bg-gradient-to-tr from-orange-500 to-accent-gold flex items-center justify-center text-white shadow-lg shadow-orange-500/20 relative z-10">
+<span class="material-symbols-outlined text-4xl">trending_up</span>
+</div>
+</div>
+<h4 class="text-lg font-bold text-white">Rising in Leo</h4>
+<div class="flex gap-2 mt-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-soft-lavender font-bold uppercase tracking-wider">Fire</span>
+<span class="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-soft-lavender font-bold uppercase tracking-wider">Fixed</span>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed">You meet the world with charisma and warmth. Others see you as a natural leader with a radiant, creative presence.</p>
+</div>
+</div>
+</section>
+<!-- Elemental Balance & Summary Visualization -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="glass-card rounded-xl p-6">
+<h3 class="text-lg font-bold text-white mb-6">Elemental Balance</h3>
+<div class="space-y-4">
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider">
+<span class="text-orange-400">Fire</span>
+<span class="text-slate-400">35%</span>
+</div>
+<div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-orange-500" style="width: 35%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider">
+<span class="text-emerald-400">Earth</span>
+<span class="text-slate-400">45%</span>
+</div>
+<div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500" style="width: 45%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider">
+<span class="text-sky-400">Air</span>
+<span class="text-slate-400">10%</span>
+</div>
+<div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-sky-500" style="width: 10%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold uppercase tracking-wider">
+<span class="text-blue-400">Water</span>
+<span class="text-slate-400">10%</span>
+</div>
+<div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500" style="width: 10%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-6 chart-grid flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-primary text-5xl mb-4">auto_graph</span>
+<p class="text-white font-medium text-center">Chart Strength Overview</p>
+<p class="text-slate-400 text-sm text-center mt-2 px-8">Your chart shows a high concentration of Cardinal energy, indicating a natural drive to start new projects and lead.</p>
+</div>
+</div>
+<!-- Planets Breakdown -->
+<section>
+<h3 class="text-2xl font-bold text-white mb-8">Personal Planets</h3>
+<div class="space-y-6">
+<!-- Venus Card -->
+<div class="glass-card rounded-xl p-6 border-l-4 border-l-primary flex gap-6">
+<div class="hidden sm:flex flex-col items-center">
+<div class="size-14 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">favorite</span>
+</div>
+<div class="mt-2 text-[10px] font-bold text-slate-400 uppercase">Venus</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="text-lg font-bold text-white">Venus in Sagittarius</h4>
+<p class="text-accent-gold text-sm font-medium">5th House of Creativity &amp; Romance</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-medium text-soft-lavender border border-white/10 italic">#Freedom</span>
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-medium text-soft-lavender border border-white/10 italic">#Adventure</span>
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-medium text-soft-lavender border border-white/10 italic">#Optimism</span>
+</div>
+</div>
+<p class="text-slate-300 leading-relaxed text-sm">
+                                With Venus in Sagittarius in your 5th house, you approach love as a grand adventure. You are attracted to people who expand your horizons or come from different cultures. In creative pursuits, you are bold and take risks, finding joy in exploring new forms of expression.
+                            </p>
+</div>
+</div>
+<!-- Mars Card -->
+<div class="glass-card rounded-xl p-6 border-l-4 border-l-accent-gold flex gap-6">
+<div class="hidden sm:flex flex-col items-center">
+<div class="size-14 rounded-lg bg-accent-gold/20 flex items-center justify-center text-accent-gold">
+<span class="material-symbols-outlined text-3xl">bolt</span>
+</div>
+<div class="mt-2 text-[10px] font-bold text-slate-400 uppercase">Mars</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="text-lg font-bold text-white">Mars in Scorpio</h4>
+<p class="text-primary text-sm font-medium">4th House of Home &amp; Roots</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-medium text-soft-lavender border border-white/10 italic">#Power</span>
+<span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-medium text-soft-lavender border border-white/10 italic">#Depth</span>
+</div>
+</div>
+<p class="text-slate-300 leading-relaxed text-sm">
+                                Mars in Scorpio is one of the strongest placements for drive and determination. In the 4th house, this energy is often directed towards protecting your inner sanctum or family. You have an incredible willpower that you often keep hidden until it is time to act.
+                            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Aspects Matrix -->
+<section class="glass-card rounded-xl p-8 overflow-x-auto">
+<h3 class="text-xl font-bold text-white mb-6">Aspect Grid Matrix</h3>
+<table class="w-full text-center border-collapse">
+<thead>
+<tr>
+<th class="p-2"></th>
+<th class="p-2 text-soft-lavender text-xs uppercase">Sun</th>
+<th class="p-2 text-soft-lavender text-xs uppercase">Moon</th>
+<th class="p-2 text-soft-lavender text-xs uppercase">Merc</th>
+<th class="p-2 text-soft-lavender text-xs uppercase">Venu</th>
+<th class="p-2 text-soft-lavender text-xs uppercase">Mars</th>
+<th class="p-2 text-soft-lavender text-xs uppercase">Jupi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="p-4 text-left font-bold text-white text-xs uppercase">Sun</td>
+<td class="p-4 bg-primary/10 border border-white/5"></td>
+<td class="p-4 border border-white/5 text-primary"><span class="material-symbols-outlined text-sm">change_history</span></td>
+<td class="p-4 border border-white/5 text-accent-gold"><span class="material-symbols-outlined text-sm">join_inner</span></td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 border border-white/5 text-red-500"><span class="material-symbols-outlined text-sm">square</span></td>
+<td class="p-4 border border-white/5"></td>
+</tr>
+<tr>
+<td class="p-4 text-left font-bold text-white text-xs uppercase">Moon</td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 bg-primary/10 border border-white/5"></td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 border border-white/5 text-blue-400"><span class="material-symbols-outlined text-sm">star</span></td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 border border-white/5 text-primary"><span class="material-symbols-outlined text-sm">change_history</span></td>
+</tr>
+<tr>
+<td class="p-4 text-left font-bold text-white text-xs uppercase">Merc</td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 bg-primary/10 border border-white/5"></td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 border border-white/5"></td>
+<td class="p-4 border border-white/5 text-accent-gold"><span class="material-symbols-outlined text-sm">join_inner</span></td>
+</tr>
+</tbody>
+</table>
+<div class="mt-6 flex flex-wrap gap-4 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-accent-gold">join_inner</span> Conjunction</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-red-500">square</span> Square</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-primary">change_history</span> Trine</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-blue-400">star</span> Sextile</span>
+</div>
+</section>
+</div>
+<!-- Right Floating Sidebar -->
+<aside class="w-80 hidden xl:block sticky top-32 h-fit space-y-6">
+<div class="glass-card rounded-xl p-6 border border-primary/30 relative overflow-hidden">
+<div class="absolute -top-4 -right-4 size-20 bg-primary/20 blur-2xl rounded-full"></div>
+<h4 class="text-white font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">diamond</span> Premium Actions
+                </h4>
+<div class="space-y-3">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined">download</span> Download PDF Report
+                    </button>
+<button class="w-full bg-white/10 hover:bg-white/15 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all border border-white/10">
+<span class="material-symbols-outlined">print</span> Order Printed Chart
+                    </button>
+<button class="w-full bg-white/10 hover:bg-white/15 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all border border-white/10">
+<span class="material-symbols-outlined">share</span> Share Report
+                    </button>
+</div>
+<div class="mt-8 pt-6 border-t border-white/10">
+<div class="bg-primary/10 rounded-lg p-4">
+<p class="text-[10px] font-bold text-soft-lavender uppercase tracking-widest mb-1">Current Transit</p>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-gold">bolt</span>
+<div>
+<p class="text-xs text-white font-bold">Jupiter Retrograde</p>
+<p class="text-[10px] text-slate-400">May affect career choices.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Ad/Upsell Card -->
+<div class="rounded-xl overflow-hidden relative group aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Celestial map of the universe with stars and galaxies" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxA64RvLY2XhwGjSGdDyxCyU5hEfoSMtO_yUMAyp1FuREcsQimNp1ODyDxcvJ89cLssLkcYkfVrTVwdwACoQNvDgW4NccDR8hnuyXjlY9sSjG92kqyx_4RDd_X7PNoTxDhZIWkCXad7_DlzExxQVkhzj0ESBLgn7XR7CLF2TvnaaqrCBahFzo9AEgZWarP345sdmkk2boksgsJL52HfgXQ6d14JJ1OkLNtgckxneOXYrUrBCPi5dehUnqm7jo9x09YV4mF1geRJcjo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40 to-transparent p-6 flex flex-col justify-end">
+<h5 class="text-white font-bold text-lg mb-1">Synastry Guide</h5>
+<p class="text-slate-300 text-xs mb-4">Unlock compatibility secrets for your relationships.</p>
+<button class="text-xs font-bold text-accent-gold uppercase tracking-widest flex items-center gap-1 group/btn">
+                        Learn More <span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</aside>
+</main>
+<footer class="mt-20 border-t border-primary/20 py-10 px-6 lg:px-20 text-center">
+<div class="flex flex-col items-center gap-4">
+<div class="text-primary size-6 opacity-50">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
+</svg>
+</div>
+<p class="text-slate-500 text-xs tracking-widest uppercase">© 2024 AstroVerse • Cosmic Intelligence for the Modern Soul</p>
+<div class="flex gap-6 text-slate-400 text-xs">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -196,9 +196,9 @@ describe('ChartWheel Accessibility', () => {
     it('should be keyboard accessible when interactive', () => {
       const onPlanetClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />
+        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />,
       );
-      const planet = container.querySelector('g[aria-label*="Sun"]');
+      const planet = container.querySelector('g[aria-label^="Sun in"]');
 
       // Check for tabIndex (React uses camelCase)
       expect(planet).toHaveAttribute('tabindex', '0');
@@ -208,7 +208,7 @@ describe('ChartWheel Accessibility', () => {
     it('should handle Enter and Space keys for planet interaction', () => {
       const onPlanetClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />
+        <ChartWheel data={mockChartData} interactive onPlanetClick={onPlanetClick} />,
       );
       const planet = container.querySelector('g[aria-label*="Sun"]');
       if (!planet) throw new Error('Planet element not found');
@@ -248,7 +248,7 @@ describe('ChartWheel Accessibility', () => {
     it('should be keyboard accessible when interactive', () => {
       const onAspectClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} interactive onAspectClick={onAspectClick} />
+        <ChartWheel data={mockChartData} interactive onAspectClick={onAspectClick} />,
       );
       const aspect = container.querySelector('g[aria-label*="trine"]');
 
@@ -314,7 +314,7 @@ describe('ChartWheel Accessibility', () => {
       expect(svg).toHaveAttribute('role', 'img');
 
       // Interactive elements have labels
-      const interactiveElements = container.querySelectorAll('g[tabIndex="0"]');
+      const interactiveElements = container.querySelectorAll('g[tabindex="0"]');
       interactiveElements.forEach((el) => {
         expect(el).toHaveAttribute('aria-label');
       });
@@ -330,7 +330,7 @@ describe('ChartWheel Accessibility', () => {
           interactive
           onPlanetClick={onPlanetClick}
           onAspectClick={onAspectClick}
-        />
+        />,
       );
 
       // All interactive elements should be focusable

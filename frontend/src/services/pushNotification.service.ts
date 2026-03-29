@@ -5,6 +5,10 @@
 
 import api from './api';
 
+interface ApiResponse<T> {
+  data: T;
+}
+
 export interface PushSubscription {
   id: string;
   endpoint: string;
