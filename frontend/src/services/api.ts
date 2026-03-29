@@ -13,15 +13,37 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Send cookies (CSRF cookie)
 });
 
-// Request interceptor - Add auth token
+// CSRF token management
+let csrfToken: string | null = null;
+
+async function fetchCsrfToken(): Promise<string> {
+  const { data } = await axios.get(`${API_URL}/api/v1/csrf-token`, { withCredentials: true });
+  const token: string = data.data.token;
+  csrfToken = token;
+  return token;
+}
+
+// Request interceptor - Add auth token + CSRF token
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Add CSRF token for mutating requests
+    if (config.method && !['get', 'head', 'options'].includes(config.method.toLowerCase())) {
+      if (!csrfToken) {
+        await fetchCsrfToken();
+      }
+      if (csrfToken) {
+        config.headers['x-csrf-token'] = csrfToken;
+      }
+    }
+
     return config;
   },
   (error) => {
@@ -29,7 +51,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle token refresh
+// Response interceptor - Handle token refresh + CSRF retry
 api.interceptors.response.use(
   (response) => response,
   async (error: unknown) => {
@@ -38,6 +60,21 @@ api.interceptors.response.use(
     }
 
     const originalRequest = error.config;
+
+    // CSRF token invalid — refresh and retry once
+    if (error.response?.status === 403 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._csrfRetry) {
+      const errorCode = error.response?.data?.code;
+      if (errorCode === 'CSRF_TOKEN_INVALID' || errorCode === 'CSRF_VALIDATION_ERROR') {
+        (originalRequest as unknown as Record<string, unknown>)._csrfRetry = true;
+        try {
+          const newToken = await fetchCsrfToken();
+          originalRequest.headers['x-csrf-token'] = newToken;
+          return api(originalRequest);
+        } catch {
+          return Promise.reject(error);
+        }
+      }
+    }
 
     // If 401 and not already retrying
     if (error.response?.status === 401 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._retry) {
