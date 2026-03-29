@@ -138,12 +138,15 @@ describe('Keyboard Navigation Accessibility', () => {
 
   describe('Modal Keyboard Accessibility', () => {
     const mockWeather: DailyWeather = {
+      date: '2026-01-15',
+      color: '#4CAF50',
       rating: 8,
       summary: 'Great day for creativity and expression',
       moonPhase: {
         phase: 'full',
         sign: 'cancer',
         illumination: 100,
+        degree: 15,
       },
       globalEvents: [],
       personalTransits: [],
@@ -170,7 +173,7 @@ describe('Keyboard Navigation Accessibility', () => {
         <DailyWeatherModal
           date="2026-02-20"
           weather={mockWeather}
-          onClose={() => {}}
+          onClose={() => { /* intentional empty */ }}
         />
       );
 
@@ -185,7 +188,7 @@ describe('Keyboard Navigation Accessibility', () => {
         <DailyWeatherModal
           date="2026-02-20"
           weather={mockWeather}
-          onClose={() => {}}
+          onClose={() => { /* intentional empty */ }}
         />
       );
 

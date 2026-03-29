@@ -21,7 +21,7 @@ export function useCreateCalendarEvent() {
     event_type: string;
     event_date: Date;
     end_date?: Date;
-    event_data?: any;
+    event_data?: Record<string, unknown>;
     interpretation?: string;
   }) => {
     return await calendarService.createCustomEvent(event);
@@ -31,7 +31,7 @@ export function useCreateCalendarEvent() {
     mutateAsync: mutation,
     // Invalidate and refetch calendar events after creating a new one
     invalidate: () => {
-      queryClient.invalidateQueries({ queryKey: ['calendar'] });
+      void queryClient.invalidateQueries({ queryKey: ['calendar'] });
     },
   };
 }
@@ -46,7 +46,7 @@ export function useDeleteCalendarEvent() {
   return {
     mutateAsync: mutation,
     invalidate: () => {
-      queryClient.invalidateQueries({ queryKey: ['calendar'] });
+      void queryClient.invalidateQueries({ queryKey: ['calendar'] });
     },
   };
 }

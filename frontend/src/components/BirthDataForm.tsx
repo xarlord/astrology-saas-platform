@@ -1,12 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-
 import { useState, useEffect } from 'react';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCreateChart, useCalculateChart, useCharts } from '../hooks';
@@ -73,17 +64,17 @@ export function BirthDataForm({
   submitLabel = 'Generate Chart'
 }: BirthDataFormProps) {
   const [formData, setFormData] = useState<BirthData>({
-    birthDate: initialData?.birthDate || '',
-    birthTime: initialData?.birthTime || '12:00',
-    timeUnknown: initialData?.timeUnknown || false,
-    birthPlace: initialData?.birthPlace || '',
+    birthDate: initialData?.birthDate ?? '',
+    birthTime: initialData?.birthTime ?? '12:00',
+    timeUnknown: initialData?.timeUnknown ?? false,
+    birthPlace: initialData?.birthPlace ?? '',
     latitude: initialData?.latitude,
     longitude: initialData?.longitude,
     timezone: initialData?.timezone,
-    chartName: initialData?.chartName || 'My Natal Chart',
-    houseSystem: initialData?.houseSystem || 'placidus',
-    zodiac: initialData?.zodiac || 'tropical',
-    siderealMode: initialData?.siderealMode || 'lahiri',
+    chartName: initialData?.chartName ?? 'My Natal Chart',
+    houseSystem: initialData?.houseSystem ?? 'placidus',
+    zodiac: initialData?.zodiac ?? 'tropical',
+    siderealMode: initialData?.siderealMode ?? 'lahiri',
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof BirthData, string>>>({});
@@ -113,8 +104,10 @@ export function BirthDataForm({
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`
       );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const data = await response.json();
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const suggestions = data.map((item: { display_name: string }) => item.display_name);
       setPlaceSuggestions(suggestions);
       setShowPlaceSearch(true);
@@ -129,13 +122,16 @@ export function BirthDataForm({
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`
       );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const data = await response.json();
 
       if (data?.[0]) {
         setFormData((prev) => ({
           ...prev,
           birthPlace: placeName,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
           latitude: parseFloat(data[0].lat),
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
           longitude: parseFloat(data[0].lon),
         }));
         setShowPlaceSearch(false);
@@ -150,6 +146,7 @@ export function BirthDataForm({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (formData.birthPlace && formData.birthPlace.length >= 3) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         searchPlace(formData.birthPlace);
       }
     }, 500);
@@ -202,7 +199,7 @@ export function BirthDataForm({
         birth_place_name: formData.birthPlace,
         birth_latitude: formData.latitude!,
         birth_longitude: formData.longitude!,
-        birth_timezone: formData.timezone || 'UTC',
+        birth_timezone: formData.timezone ?? 'UTC',
         house_system: formData.houseSystem,
         zodiac: formData.zodiac,
         sidereal_mode: formData.zodiac === 'sidereal' ? formData.siderealMode : undefined,
@@ -230,6 +227,7 @@ export function BirthDataForm({
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -237,11 +235,13 @@ export function BirthDataForm({
 
     // Clear error when user starts typing
     if (errors[name as keyof BirthData]) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
   return (
+    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Date & Time Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">

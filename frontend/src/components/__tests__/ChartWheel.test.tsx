@@ -12,11 +12,12 @@
  */
 
 import { render, screen, fireEvent } from '@testing-library/react';
+import type { ChartData } from '../ChartWheel';
 import { describe, it, expect, vi } from 'vitest';
 import { ChartWheel, ChartWheelLegend } from '../ChartWheel';
 
 describe('ChartWheel Component', () => {
-  const mockChartData = {
+  const mockChartData: ChartData = {
     planets: [
       {
         planet: 'sun',
@@ -85,7 +86,6 @@ describe('ChartWheel Component', () => {
         type: 'conjunction',
         degree: 5,
         minute: 0,
-        second: 0,
         orb: 5,
         applying: true,
         separating: false,
@@ -96,7 +96,6 @@ describe('ChartWheel Component', () => {
         type: 'square',
         degree: 90,
         minute: 0,
-        second: 0,
         orb: 3,
         applying: false,
         separating: true,
@@ -181,7 +180,7 @@ describe('ChartWheel Component', () => {
     });
 
     it('should not render retrograde indicator for non-retrograde planets', () => {
-      const { container } = render(<ChartWheel data={mockChartData} />);
+      render(<ChartWheel data={mockChartData as any} />);
 
       // Sun and Moon should not have Rx
       const planetsWithoutRetrograde = mockChartData.planets.filter(p => !p.retrograde);
@@ -355,7 +354,7 @@ describe('ChartWheel Component', () => {
 
   describe('Empty Data', () => {
     it('should render wheel with no planets', () => {
-      const emptyData = {
+      const emptyData: ChartData = {
         planets: [],
         houses: mockChartData.houses,
         aspects: [],
@@ -372,7 +371,7 @@ describe('ChartWheel Component', () => {
     });
 
     it('should render wheel with no aspects', () => {
-      const noAspectsData = {
+      const noAspectsData: ChartData = {
         planets: mockChartData.planets,
         houses: mockChartData.houses,
         aspects: [],
@@ -385,7 +384,7 @@ describe('ChartWheel Component', () => {
     });
 
     it('should handle missing planet info gracefully', () => {
-      const invalidPlanetData = {
+      const invalidPlanetData: ChartData = {
         planets: [
           {
             planet: 'invalid-planet',
@@ -432,7 +431,7 @@ describe('ChartWheel Component', () => {
     });
 
     it('should render all planets', () => {
-      const { container } = render(<ChartWheelLegend />);
+      render(<ChartWheelLegend />);
 
       expect(screen.getByText('Sun')).toBeInTheDocument();
       expect(screen.getByText('Moon')).toBeInTheDocument();
@@ -482,8 +481,8 @@ describe('ChartWheel Component', () => {
 
       expect(smallFontSize).not.toBe(largeFontSize);
       // Small wheel: 400 * 0.035 ≈ 14, Large wheel: 800 * 0.035 ≈ 28
-      expect(parseFloat(smallFontSize || '0')).toBeCloseTo(14, 0);
-      expect(parseFloat(largeFontSize || '0')).toBeCloseTo(28, 0);
+      expect(parseFloat(smallFontSize ?? '0')).toBeCloseTo(14, 0);
+      expect(parseFloat(largeFontSize ?? '0')).toBeCloseTo(28, 0);
     });
   });
 

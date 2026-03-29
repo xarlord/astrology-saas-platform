@@ -12,7 +12,7 @@ import {
   getTransitCalendar,
   getTransitDetails,
   getTransitForecast,
-} from '../../controllers/transit.controller';
+} from '../../modules/transits/controllers/transit.controller';
 import { AppError } from '../../middleware/errorHandler';
 import ChartModel from '../../modules/charts/models/chart.model';
 import { swissEphemeris } from '../../modules/shared';

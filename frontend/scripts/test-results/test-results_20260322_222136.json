@@ -1,0 +1,117 @@
+{
+  "timestamp": "20260322_222136",
+  "base_url": "http://localhost:3000",
+  "total_tests": 8,
+  "passed": 6,
+  "failed": 2,
+  "warnings": 0,
+  "results": [
+    {
+      "name": "Home Page",
+      "url": "http://localhost:3000",
+      "timestamp": "2026-03-22T22:20:55.287950",
+      "status": "passed",
+      "details": {
+        "title": "Astrology SaaS Platform",
+        "url": "http://localhost:3000/",
+        "errors_found": 0
+      },
+      "screenshot": "C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-page_20260322_222056.png"
+    },
+    {
+      "name": "Login Page",
+      "url": "http://localhost:3000/login",
+      "timestamp": "2026-03-22T22:20:56.152085",
+      "status": "passed",
+      "details": {
+        "title": "Astrology SaaS Platform",
+        "url": "http://localhost:3000/login",
+        "errors_found": 0
+      },
+      "screenshot": "C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\login-page_20260322_222056.png"
+    },
+    {
+      "name": "Register Page",
+      "url": "http://localhost:3000/register",
+      "timestamp": "2026-03-22T22:20:56.849639",
+      "status": "passed",
+      "details": {
+        "title": "Astrology SaaS Platform",
+        "url": "http://localhost:3000/register",
+        "errors_found": 0
+      },
+      "screenshot": "C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\register-page_20260322_222057.png"
+    },
+    {
+      "name": "Navigation Test",
+      "timestamp": "2026-03-22T22:20:57.552179",
+      "status": "failed",
+      "details": {
+        "nav_links_found": 0
+      },
+      "error": "'Locator' object is not callable"
+    },
+    {
+      "name": "Login Form Test",
+      "timestamp": "2026-03-22T22:20:58.173883",
+      "status": "failed",
+      "details": {
+        "email_input_found": false,
+        "password_input_found": false,
+        "submit_button_found": false
+      },
+      "error": "Locator.clear: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"input[type=\\\"email\\\"], input[name=\\\"email\\\"]\").first\n"
+    },
+    {
+      "name": "Registration Form Test",
+      "timestamp": "2026-03-22T22:21:28.924862",
+      "status": "passed",
+      "details": {
+        "name_input_found": false,
+        "email_input_found": false,
+        "password_input_found": false,
+        "submit_button_found": false
+      }
+    },
+    {
+      "name": "Responsive Design Test",
+      "timestamp": "2026-03-22T22:21:30.303314",
+      "status": "passed",
+      "details": {
+        "mobile_viewport": {
+          "size": {
+            "width": 375,
+            "height": 667
+          },
+          "screenshot": "C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-mobile_20260322_222131.png"
+        },
+        "tablet_viewport": {
+          "size": {
+            "width": 768,
+            "height": 1024
+          },
+          "screenshot": "C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-tablet_20260322_222133.png"
+        },
+        "desktop_viewport": {
+          "size": {
+            "width": 1280,
+            "height": 720
+          },
+          "screenshot": "C:\\Users\\plner\\AstroVerse-UI-Overhaul\\frontend\\scripts\\screenshots\\home-desktop_20260322_222135.png"
+        }
+      }
+    },
+    {
+      "name": "Basic Accessibility Test",
+      "timestamp": "2026-03-22T22:21:35.155709",
+      "status": "passed",
+      "details": {
+        "html_lang": "en",
+        "page_title": "Astrology SaaS Platform",
+        "h1_count": 0,
+        "images_without_alt": 0,
+        "inputs_without_labels": 0
+      }
+    }
+  ]
+}

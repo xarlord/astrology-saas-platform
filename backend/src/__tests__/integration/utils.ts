@@ -129,7 +129,7 @@ export function generateRefreshToken(user: any): string {
  * Make an authenticated request
  */
 export function authenticatedRequest(app: any, method: string, url: string, token: string) {
-  return request(app)[method.toLowerCase()](url)
+  return (request(app) as any)[method.toLowerCase()](url)
     .set('Authorization', `Bearer ${token}`);
 }
 

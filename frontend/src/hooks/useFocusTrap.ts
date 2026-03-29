@@ -33,6 +33,8 @@ export function useFocusTrap<T extends HTMLElement>({
     previousActiveElementRef.current = document.activeElement as HTMLElement;
 
     const container = containerRef.current;
+    // Capture return focus ref value at effect time
+    const returnFocusTarget = returnFocusRef?.current ?? null;
 
     // Get all focusable elements within the container
     const getFocusableElements = (): HTMLElement[] => {
@@ -91,7 +93,7 @@ export function useFocusTrap<T extends HTMLElement>({
       container.removeEventListener('keydown', handleKeyDown);
 
       // Return focus to the previous element or specified return element
-      const returnElement = returnFocusRef?.current || previousActiveElementRef.current;
+      const returnElement = returnFocusTarget ?? previousActiveElementRef.current;
       if (returnElement) {
         returnElement.focus();
       }

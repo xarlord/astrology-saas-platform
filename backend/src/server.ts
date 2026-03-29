@@ -8,7 +8,6 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
 
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
@@ -19,8 +18,7 @@ import { csrfMiddleware } from './middleware/csrf';
 // Import API router with versioning
 import apiRouter from './api';
 
-// Load environment variables
-dotenv.config();
+// config/index.ts loads dotenv — no need to call dotenv.config() here
 
 const app: Application = express();
 const PORT = process.env.PORT || 3001;

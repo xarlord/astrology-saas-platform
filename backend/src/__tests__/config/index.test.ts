@@ -107,9 +107,20 @@ describe('Application Configuration', () => {
     });
 
     it('should default FRONTEND_URL to localhost:3000', () => {
+      const originalFrontendUrl = process.env.FRONTEND_URL;
       delete process.env.FRONTEND_URL;
+      // Mock dotenv to not reload .env
+      jest.doMock('dotenv', () => ({ config: jest.fn() }));
+      // Clear require cache to get fresh config
+      Object.keys(require.cache).forEach(key => {
+        if (key.includes('config')) delete require.cache[key];
+      });
 
       const config = require('../../config').default;
+
+      // Restore env
+      if (originalFrontendUrl) process.env.FRONTEND_URL = originalFrontendUrl;
+      jest.dontMock('dotenv');
 
       expect(config.frontendUrl).toBe('http://localhost:3000');
     });

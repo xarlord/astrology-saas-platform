@@ -3,13 +3,9 @@
  * Testing CalendarView, DailyWeatherModal, ReminderSettings, and CalendarExport components
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/require-await */
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -305,10 +301,11 @@ describe('ReminderSettings Component', () => {
     const user = userEvent.setup();
     render(<ReminderSettings />);
 
-    const oneDayCheckbox = screen.getByLabelText(/1 day before/i);
-    await user.click(oneDayCheckbox);
+    // "1 hour before" is not checked by default, so clicking it should check it
+    const oneHourCheckbox = screen.getByLabelText(/1 hour before/i);
+    await user.click(oneHourCheckbox);
 
-    expect(oneDayCheckbox).toBeChecked();
+    expect(oneHourCheckbox).toBeChecked();
   });
 
   test('should allow toggling active state', () => {

@@ -65,6 +65,30 @@ export default {
           pluto: '#8B0000',
         },
       },
+      keyframes: {
+        slideIn: {
+          from: { transform: 'translateY(100%)', opacity: '0' },
+          to: { transform: 'translateY(0)', opacity: '1' },
+        },
+        fadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        slideUp: {
+          from: { transform: 'translateY(20px)', opacity: '0' },
+          to: { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideUpMobile: {
+          from: { transform: 'translateY(100%)', opacity: '0' },
+          to: { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
+      animation: {
+        'slide-in': 'slideIn 0.3s ease-out',
+        'fade-in': 'fadeIn 0.2s ease-in',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'slide-up-mobile': 'slideUpMobile 0.3s ease-out',
+      },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Playfair Display', 'serif'],

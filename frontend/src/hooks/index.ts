@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authService, chartService, analysisService, transitService, type BirthData } from '../services';
+import { chartService, analysisService, transitService, type BirthData } from '../services';
 import { useAuthStore, useChartsStore } from '../store';
 
 // PWA Hooks
@@ -132,7 +132,7 @@ export function useCreateChart() {
   return useMutation({
     mutationFn: (data: BirthData) => createChart(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['charts'] });
+      void queryClient.invalidateQueries({ queryKey: ['charts'] });
     },
   });
 }
@@ -146,9 +146,9 @@ export function useCalculateChart() {
   return useMutation({
     mutationFn: (chartId: string) => chartService.calculateChart(chartId),
     onSuccess: (_, chartId) => {
-      queryClient.invalidateQueries({ queryKey: ['charts'] });
-      queryClient.invalidateQueries({ queryKey: ['chart', chartId] });
-      queryClient.invalidateQueries({ queryKey: ['analysis', chartId] });
+      void queryClient.invalidateQueries({ queryKey: ['charts'] });
+      void queryClient.invalidateQueries({ queryKey: ['chart', chartId] });
+      void queryClient.invalidateQueries({ queryKey: ['analysis', chartId] });
     },
   });
 }

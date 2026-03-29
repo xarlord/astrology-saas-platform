@@ -15,12 +15,32 @@ export interface TransitReading {
   housePositions: Record<string, number>;
 }
 
+interface TransitsResponse {
+  data: TransitReading;
+}
+
+interface TodayTransitsResponse {
+  data: TransitReading;
+}
+
+interface TransitCalendarResponse {
+  data: TransitReading[];
+}
+
+interface TransitForecastResponse {
+  data: TransitReading[];
+}
+
+interface TransitDetailsResponse {
+  data: TransitReading;
+}
+
 export const transitService = {
   /**
    * Calculate transits for date range
    */
-  async calculateTransits(chartId: string, startDate: string, endDate: string): Promise<any> {
-    const { data } = await api.post('/transits/calculate', {
+  async calculateTransits(chartId: string, startDate: string, endDate: string): Promise<TransitReading> {
+    const { data } = await api.post<TransitsResponse>('/transits/calculate', {
       chartId,
       startDate,
       endDate,
@@ -31,16 +51,16 @@ export const transitService = {
   /**
    * Get today's transits
    */
-  async getTodayTransits(): Promise<any> {
-    const { data } = await api.get('/transits/today');
+  async getTodayTransits(): Promise<TransitReading> {
+    const { data } = await api.get<TodayTransitsResponse>('/transits/today');
     return data.data;
   },
 
   /**
    * Get transit calendar
    */
-  async getTransitCalendar(month: number, year: number): Promise<any> {
-    const { data } = await api.get('/transits/calendar', {
+  async getTransitCalendar(month: number, year: number): Promise<TransitReading[]> {
+    const { data } = await api.get<TransitCalendarResponse>('/transits/calendar', {
       params: { month, year },
     });
     return data.data;
@@ -49,8 +69,8 @@ export const transitService = {
   /**
    * Get transit forecast
    */
-  async getTransitForecast(duration: 'week' | 'month' | 'quarter' | 'year' = 'month'): Promise<any> {
-    const { data } = await api.get('/transits/forecast', {
+  async getTransitForecast(duration: 'week' | 'month' | 'quarter' | 'year' = 'month'): Promise<TransitReading[]> {
+    const { data } = await api.get<TransitForecastResponse>('/transits/forecast', {
       params: { duration },
     });
     return data.data;
@@ -59,8 +79,8 @@ export const transitService = {
   /**
    * Get transit details
    */
-  async getTransitDetails(id: string): Promise<any> {
-    const { data } = await api.get(`/transits/${id}`);
+  async getTransitDetails(id: string): Promise<TransitReading> {
+    const { data } = await api.get<TransitDetailsResponse>(`/transits/${id}`);
     return data.data;
   },
 };

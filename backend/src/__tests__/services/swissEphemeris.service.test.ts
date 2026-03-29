@@ -4,7 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { swissEphemeris } from '../../services/swissEphemeris.service';
+import { swissEphemeris } from '../../modules/shared/services/swissEphemeris.service';
 import { toJulianDay, normalizeDegree, angularDistance, assertPlanetPosition, assertAspect, assertHouseCusp } from './utils';
 
 describe('Swiss Ephemeris Service', () => {

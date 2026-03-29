@@ -1,0 +1,5 @@
+# Claude Code local settings
+settings.local.json
+
+# Hook logs
+hooks/logs/

@@ -166,13 +166,15 @@ registerRoute(navigationRoute);
   if (event.tag === 'sync-charts') {
     event.waitUntil(
       // Sync chart data
-      (async () => {
+      (() => {
         try {
           // Implement sync logic
           console.log('Syncing chart data...');
           // TODO: Implement actual sync with backend
+          return Promise.resolve();
         } catch (error) {
           console.error('Sync failed:', error);
+          return Promise.reject(error);
         }
       })()
     );
@@ -180,19 +182,23 @@ registerRoute(navigationRoute);
 });
 
 // Catch handler for offline fallback
-setCatchHandler(async ({ event }) => {
+setCatchHandler(({ event }) => {
   // For document requests (navigation), return offline HTML page
   if (event.request.destination === 'document') {
-    return new Response(
-      '<!DOCTYPE html><html><head><title>Offline</title><style>body{font-family:system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;color:#333;background:#f5f5f5}h1{margin-bottom:16px}</style></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>',
-      {
-        headers: { 'Content-Type': 'text/html' },
-      }
-    );
+    return new Promise<Response>((resolve) => {
+      resolve(new Response(
+        '<!DOCTYPE html><html><head><title>Offline</title><style>body{font-family:system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;color:#333;background:#f5f5f5}h1{margin-bottom:16px}</style></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>',
+        {
+          headers: { 'Content-Type': 'text/html' },
+        }
+      ));
+    });
   }
 
   // For other requests, return error
-  return Response.error();
+  return new Promise<Response>((resolve) => {
+    resolve(Response.error());
+  });
 });
 
 // Activate event - clean up old caches

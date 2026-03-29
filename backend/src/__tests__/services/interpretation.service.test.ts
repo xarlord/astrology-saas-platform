@@ -7,7 +7,7 @@
 import {
   generateCompletePersonalityAnalysis,
   generateTransitAnalysis,
-} from '../../services/interpretation.service';
+} from '../../modules/analysis/services/interpretation.service';
 import {
   getPlanetInSignInterpretation,
   getAspectInterpretation,

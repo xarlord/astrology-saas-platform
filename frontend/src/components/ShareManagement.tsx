@@ -164,7 +164,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                 </div>
                 <div className="flex gap-2 sm:w-auto w-full">
                   <button
-                    className="inline-flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/10 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
+                    className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/10 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
                     onClick={() => { void copyToClipboard(link.shareToken); }}
                     aria-label={`Copy share link ${copiedToken === link.shareToken ? '(copied!)' : ''}`}
                   >
@@ -178,7 +178,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                     )}
                   </button>
                   <button
-                    className="inline-flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
+                    className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
                     onClick={() => { void handleRevokeShare(link.id); }}
                     disabled={isLoading}
                     aria-label="Revoke share link"
@@ -228,7 +228,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-white/50 cursor-pointer p-0 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-white/50 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white"
                     onClick={() => setShowPasswords((p) => ({ ...p, new: !p.new }))}
                     aria-label={showPasswords.new ? 'Hide password' : 'Show password'}
                   >

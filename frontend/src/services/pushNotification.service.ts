@@ -5,6 +5,10 @@
 
 import api from './api';
 
+interface ApiResponse<T> {
+  data: T;
+}
+
 export interface PushSubscription {
   id: string;
   endpoint: string;
@@ -30,7 +34,7 @@ class PushNotificationService {
    * Get VAPID public key
    */
   async getVapidPublicKey(): Promise<string> {
-    const response = await api.get('/notifications/vapid-key');
+    const response = await api.get<ApiResponse<{ publicKey: string}>>('/notifications/vapid-key');
     return response.data.data.publicKey;
   }
 
@@ -38,7 +42,7 @@ class PushNotificationService {
    * Subscribe to push notifications
    */
   async subscribe(subscription: SubscribePayload): Promise<PushSubscription> {
-    const response = await api.post('/notifications/subscribe', subscription);
+    const response = await api.post<ApiResponse<PushSubscription>>('/notifications/subscribe', subscription);
     return response.data.data;
   }
 
@@ -46,7 +50,7 @@ class PushNotificationService {
    * Get all user subscriptions
    */
   async getSubscriptions(): Promise<PushSubscription[]> {
-    const response = await api.get('/notifications/subscriptions');
+    const response = await api.get<ApiResponse<PushSubscription[]>>('/notifications/subscriptions');
     return response.data.data;
   }
 

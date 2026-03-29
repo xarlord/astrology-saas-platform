@@ -1,0 +1,1715 @@
+{
+  "iteration": 7,
+  "timestamp": "2026-03-24T02:55:49.063552",
+  "tests": [
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Home",
+      "url": "http://localhost:3000/",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-home.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    },
+    {
+      "test": "Page Load: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-login.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 155942
+    },
+    {
+      "test": "Form: Login",
+      "url": "http://localhost:3000/login",
+      "status": "passed",
+      "fields_tested": [
+        {
+          "name": "email",
+          "value": "test@example.com",
+          "selector": "input[name=\"email\"]",
+          "status": "filled"
+        },
+        {
+          "name": "password",
+          "value": "TestPassword123!",
+          "selector": "input[name=\"password\"]",
+          "status": "filled"
+        }
+      ],
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\form-login.png"
+    },
+    {
+      "test": "Page Load: Register",
+      "url": "http://localhost:3000/register",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-register.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156088
+    },
+    {
+      "test": "Navigation",
+      "url": "http://localhost:3000",
+      "links_tested": [
+        {
+          "href": "/register",
+          "text": "Get Started Free",
+          "navigated_to": "http://localhost:3000/register",
+          "status": "success"
+        },
+        {
+          "href": "/login",
+          "text": "Sign In",
+          "navigated_to": "http://localhost:3000/login",
+          "status": "success"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Button Clicks",
+      "url": "http://localhost:3000/login",
+      "buttons_tested": [
+        {
+          "selector": "button[type=\"submit\"]",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        },
+        {
+          "selector": "button:has-text(\"Sign\")",
+          "text": "Sign In",
+          "status": "clicked",
+          "navigated_to": "http://localhost:3000/login"
+        }
+      ],
+      "status": "passed",
+      "screenshot": "bug_hunter/screenshots\\buttons-tested.png"
+    },
+    {
+      "test": "Accessibility",
+      "url": "http://localhost:3000",
+      "checks": [
+        {
+          "name": "HTML lang attribute",
+          "value": "en",
+          "status": "pass"
+        },
+        {
+          "name": "Page title",
+          "value": "Astrology SaaS Platform",
+          "status": "pass"
+        },
+        {
+          "name": "H1 heading",
+          "value": "1 found",
+          "status": "pass"
+        },
+        {
+          "name": "Images with alt",
+          "value": "0/0",
+          "status": "pass"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "test": "Page Load: Mobile",
+      "url": "http://localhost:3000",
+      "status": "passed",
+      "errors": [],
+      "screenshot": "bug_hunter/screenshots\\page-mobile.png",
+      "title": "Astrology SaaS Platform",
+      "html_size": 156007
+    }
+  ],
+  "errors": [
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:49.203816",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:49.204010",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.205409",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.206877",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.207218",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.207430",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.207631",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:49.931793",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:49.932082",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.940622",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.944130",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.944490",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.944776",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:49.945057",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:50.621455",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:50.621718",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:50.629873",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:50.633203",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:50.633459",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:50.633631",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:50.633775",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:51.356277",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:51.356568",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:51.366645",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:51.369391",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:51.369773",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:51.369994",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:51.370224",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:52.045949",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:52.046091",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.055633",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.056589",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.056790",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.056926",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.057034",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:52.708100",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:52.708288",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.717852",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.719708",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.719898",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.720033",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:52.720175",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:53.302398",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:53.302690",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.315210",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.316857",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.317208",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.317581",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.317828",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:53.967505",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:53.967803",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.979354",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.980714",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.980968",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.981188",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:53.981346",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:54.577307",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:54.577613",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:54.584870",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:54.588881",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:54.589023",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:54.589133",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:54.589238",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:55.211220",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:55.211385",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:55.219660",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:55.222191",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:55.222505",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:55.222799",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:55.223073",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:57.007798",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:57.008043",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.017946",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.020549",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.020956",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.021311",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.021587",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:57.659071",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "\u26a0\ufe0f React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": "http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=3838a86d:4435",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Cause: React warning (non-breaking) | Fix: Review React best practices | Files: React components",
+      "severity": "medium",
+      "timestamp": "2026-03-24T02:55:57.659320",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "The script has an unsupported MIME type ('text/html').",
+      "location": ":0",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.666857",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.670422",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.670741",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/utils/serviceWorkerRegistration.ts:57",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.671084",
+      "fixed": false
+    },
+    {
+      "error_type": "console_error",
+      "message": "Service worker registration failed: SecurityError: Failed to register a ServiceWorker for scope ('http://localhost:3000/') with script ('http://localhost:3000/sw.js'): The script has an unsupported MIME type ('text/html').",
+      "location": "http://localhost:3000/src/hooks/useServiceWorkerUpdate.ts:26",
+      "stack": "",
+      "suggestion": "[ANALYSIS] Unknown error - Check DevTools console and server logs",
+      "severity": "high",
+      "timestamp": "2026-03-24T02:55:57.671450",
+      "fixed": false
+    }
+  ],
+  "summary": {
+    "total": 56,
+    "passed": 56,
+    "failed": 0,
+    "warnings": 0
+  }
+}

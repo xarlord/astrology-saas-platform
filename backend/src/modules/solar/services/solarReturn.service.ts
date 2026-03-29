@@ -10,7 +10,6 @@ import {
   PlanetaryPosition,
   HouseCusp,
   Aspect,
-  HouseCusp as HouseCuspType,
 } from '../models/types';
 // import solarReturnModel from '../models/solarReturn.model';
 
@@ -431,7 +430,7 @@ export class SolarReturnService {
   /**
    * Helper: Get house for a planet
    */
-  private getHouseForPlanet(planetDegree: number, houses: HouseCuspType[]): number {
+  private getHouseForPlanet(planetDegree: number, houses: HouseCusp[]): number {
     for (let i = 0; i < houses.length - 1; i++) {
       const houseStart = this.signToDegree(houses[i].sign, houses[i].degree);
       const houseEnd = this.signToDegree(houses[(i + 1) % 12].sign, houses[(i + 1) % 12].degree);

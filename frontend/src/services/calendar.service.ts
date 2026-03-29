@@ -5,13 +5,19 @@
 
 import api from './api';
 
+interface ApiResponse<T> {
+  data: T;
+}
+
+export type CalendarEventData = Record<string, unknown>;
+
 export interface CalendarEvent {
   id: string;
   user_id: string | null;
   event_type: string;
   event_date: Date;
   end_date?: Date;
-  event_data?: any;
+  event_data?: CalendarEventData;
   interpretation?: string;
 }
 
@@ -29,10 +35,10 @@ class CalendarService {
    * Get calendar events for a specific month
    */
   async getMonthEvents(year: number, month: number, includeGlobal = true): Promise<MonthEventsResponse> {
-    const response = await api.get(`/calendar/month/${year}/${month}`, {
+    const response = await api.get<ApiResponse<MonthEventsResponse>>(`/calendar/month/${year}/${month}`, {
       params: { includeGlobal: includeGlobal.toString() },
     });
-    return response.data;
+    return response.data.data;
   }
 
   /**
@@ -42,11 +48,11 @@ class CalendarService {
     event_type: string;
     event_date: Date;
     end_date?: Date;
-    event_data?: any;
+    event_data?: CalendarEventData;
     interpretation?: string;
   }): Promise<{ data: CalendarEvent }> {
-    const response = await api.post('/calendar/events', event);
-    return response.data;
+    const response = await api.post<ApiResponse<{ data: CalendarEvent }>>('/calendar/events', event);
+    return response.data.data;
   }
 
   /**
@@ -60,7 +66,7 @@ class CalendarService {
    * Export calendar data
    */
   async exportCalendar(year: number, month: number): Promise<Blob> {
-    const response = await api.get(`/calendar/export/${year}/${month}`, {
+    const response = await api.get<Blob>(`/calendar/export/${year}/${month}`, {
       responseType: 'blob',
     });
     return response.data;

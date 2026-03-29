@@ -4,7 +4,7 @@
  */
 
 import knex from '../../config/database';
-import { ChartModel, Chart, CreateChartData, UpdateChartData } from '../../models/chart.model';
+import ChartModel, { Chart, CreateChartData, UpdateChartData } from '../../modules/charts/models/chart.model';
 
 // Mock database
 jest.mock('../../config/database');

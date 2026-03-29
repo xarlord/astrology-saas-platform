@@ -5,93 +5,15 @@
 
 import api from './api';
 
-// Types
-export interface SynastryAspect {
-  planet1: string;
-  planet2: string;
-  aspect: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile';
-  orb: number;
-  applying: boolean;
-  interpretation: string;
-  weight: number;
-  soulmateIndicator: boolean;
-}
-
-export interface CompatibilityScores {
-  overall: number;
-  romantic: number;
-  communication: number;
-  emotional: number;
-  intellectual: number;
-  spiritual: number;
-  values: number;
-}
-
-export interface ElementalBalance {
-  fire: number;
-  earth: number;
-  air: number;
-  water: number;
-  balance: 'well-balanced' | 'balanced' | 'imbalanced';
-}
-
-export interface SynastryChart {
-  id: string;
-  chart1Id: string;
-  chart2Id: string;
-  synastryAspects: SynastryAspect[];
-  overallCompatibility: number;
-  relationshipTheme: string;
-  strengths: string[];
-  challenges: string[];
-  advice: string;
-}
-
-export interface CompositeChart {
-  chart1Id: string;
-  chart2Id: string;
-  planets: Record<string, {
-      name: string;
-      degree: number;
-      minute: number;
-      second: number;
-      sign: string;
-    }>;
-  interpretation: string;
-}
-
-export interface CompatibilityReport {
-  user1Id: string;
-  user2Id: string;
-  scores: CompatibilityScores;
-  elementalBalance: ElementalBalance;
-  relationshipDynamics: string[];
-  strengths: string[];
-  challenges: string[];
-  growthOpportunities: string[];
-  detailedReport: string;
-}
-
-export interface SynastryReport {
-  id: string;
-  chart1Id: string;
-  chart2Id: string;
-  synastryAspects: SynastryAspect[];
-  overallCompatibility: number;
-  relationshipTheme: string;
-  strengths: string[];
-  challenges: string[];
-  advice: string;
-  isFavorite?: boolean;
-  notes?: string;
-  createdAt: string;
-}
+// Types from central location (imported for local use and re-exported)
+import type { SynastryAspect, CompatibilityScores, ElementalBalance, SynastryChart, CompositeChart, CompatibilityReport, SynastryReport } from '../types/synastry.types';
+export type { SynastryAspect, CompatibilityScores, ElementalBalance, SynastryChart, CompositeChart, CompatibilityReport, SynastryReport };
 
 /**
  * Compare two charts and calculate synastry
  */
 export async function compareCharts(chart1Id: string, chart2Id: string): Promise<SynastryChart> {
-  const response = await api.post('/synastry/compare', { chart1Id, chart2Id });
+  const response = await api.post<{ data: SynastryChart }>('/synastry/compare', { chart1Id, chart2Id });
   return response.data.data;
 }
 
@@ -109,7 +31,13 @@ export async function getCompatibility(
   elementalBalance: ElementalBalance;
   compositeChart?: CompositeChart;
 }> {
-  const response = await api.post('/synastry/compatibility', {
+  const response = await api.post<{ data: {
+    chart1Id: string;
+    chart2Id: string;
+    scores: CompatibilityScores;
+    elementalBalance: ElementalBalance;
+    compositeChart?: CompositeChart;
+  } }>('/synastry/compatibility', {
     chart1Id,
     chart2Id,
     includeComposite,
@@ -154,7 +82,15 @@ export async function getSynastryReports(page = 1, limit = 10): Promise<{
     totalPages: number;
   };
 }> {
-  const response = await api.get('/synastry/reports', {
+  const response = await api.get<{ data: {
+    reports: SynastryReport[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  } }>('/synastry/reports', {
     params: { page, limit },
   });
   return response.data.data;
@@ -164,7 +100,7 @@ export async function getSynastryReports(page = 1, limit = 10): Promise<{
  * Get a specific synastry report
  */
 export async function getSynastryReport(id: string): Promise<SynastryReport> {
-  const response = await api.get(`/synastry/reports/${id}`);
+  const response = await api.get<{ data: SynastryReport }>(`/synastry/reports/${id}`);
   return response.data.data;
 }
 

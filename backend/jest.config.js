@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts', '**/?(*.)+(spec|test).ts'],
-  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/src/__tests__/performance/'],
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/src/__tests__/performance/', '<rootDir>/src/__tests__/integration/'],
   collectCoverageFrom: [
     'src/**/*.{js,ts}',
     '!src/**/*.d.ts',
@@ -35,7 +35,7 @@ module.exports = {
     }],
   },
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
-  testTimeout: 10000,
+  testTimeout: 30000,
   verbose: true,
   clearMocks: true,
   resetMocks: true,

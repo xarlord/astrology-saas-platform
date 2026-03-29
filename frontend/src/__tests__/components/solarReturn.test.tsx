@@ -4,8 +4,6 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -22,8 +20,57 @@ import { RelocationCalculator } from '../../components/RelocationCalculator';
 import { BirthdaySharing } from '../../components/BirthdaySharing';
 import axios from 'axios';
 
-// Mock axios
-vi.mock('axios');
+// Mock axios with proper create/interceptors shape for api.ts
+vi.mock('axios', () => {
+  const mockInstance = {
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    patch: vi.fn(),
+    defaults: { headers: { common: {} } },
+  };
+  return {
+    default: {
+      create: vi.fn(() => mockInstance),
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      delete: vi.fn(),
+    },
+    create: vi.fn(() => mockInstance),
+  };
+});
+
+// Mock the api module to expose the same mock instance
+vi.mock('../../services/api', () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    patch: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
+  __esModule: true,
+}));
+
+// Import the mocked api to use in tests
+import api from '../../services/api';
+const mockApi = api as unknown as {
+  get: ReturnType<typeof vi.fn>;
+  post: ReturnType<typeof vi.fn>;
+  put: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
+  patch: ReturnType<typeof vi.fn>;
+};
 
 // Get mocked axios
 const mockedAxios = axios as any;
@@ -177,7 +224,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('renders loading state initially', () => {
-    (mockedAxios.get).mockResolvedValue({
+    mockApi.get.mockResolvedValue({
       data: { data: [] },
     });
 
@@ -187,7 +234,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('renders solar returns after loading', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    mockApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -200,7 +247,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('displays empty state when no returns', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    mockApi.get.mockResolvedValue({
       data: { data: [] },
     });
 
@@ -213,7 +260,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('filters relocated returns', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    mockApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -231,11 +278,11 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('calculates new solar return', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    mockApi.get.mockResolvedValue({
       data: { data: [{ id: 'chart-1', name: 'Natal Chart' }] },
     });
 
-    (mockedAxios.post).mockResolvedValue({
+    mockApi.post.mockResolvedValue({
       data: { data: mockSolarReturns[0] },
     });
 
@@ -247,12 +294,12 @@ describe('SolarReturnDashboard', () => {
     });
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalled();
+      expect(mockApi.post).toHaveBeenCalled();
     });
   });
 
   it('sorts returns by year and date', async () => {
-    (mockedAxios.get).mockResolvedValue({
+    mockApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 

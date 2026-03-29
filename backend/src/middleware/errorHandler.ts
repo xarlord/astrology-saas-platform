@@ -112,28 +112,6 @@ export const asyncHandler = (
 };
 
 /**
- * 404 Not Found Handler
- */
-export const notFoundHandler = (req: Request, res: Response): void => {
-  res.status(404).json({
-    success: false,
-    error: {
-      message: `Route ${req.method} ${req.path} not found`,
-      statusCode: 404,
-      availableRoutes: [
-        'GET /health',
-        'POST /api/v1/auth/register',
-        'POST /api/v1/auth/login',
-        'GET /api/v1/charts',
-        'POST /api/v1/charts',
-        'GET /api/v1/calendar',
-        // Add more as needed
-      ]
-    }
-  });
-};
-
-/**
  * Validation Error Handler
  * Creates a validation error from Joi or other validation schemas
  */

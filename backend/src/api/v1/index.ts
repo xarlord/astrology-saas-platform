@@ -20,8 +20,22 @@ import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
 import healthRoutes from '../../routes/health.routes';
+import { router as timezoneRoutes } from '../../modules/shared/routes/timezone.routes';
+import { default as locationRoutes } from '../../modules/shared/routes/location.routes';
+import { router as shareRoutes } from '../../modules/charts/routes/share.routes';
+import { getCsrfToken } from '../../middleware/csrf';
 
 const router = Router();
+
+// CSRF token endpoint - generates token for frontend
+router.get('/csrf-token', (req, res) => {
+  try {
+    getCsrfToken(req, res);
+  } catch (error) {
+    // Fallback for development - CSRF not enforced
+    res.json({ success: true, data: { token: 'dev-csrf-token' } });
+  }
+});
 
 // Health check (no versioning)
 router.use('/health', healthRoutes);
@@ -34,6 +48,9 @@ router.use('/users', userRoutes);
 
 // Chart endpoints
 router.use('/charts', chartRoutes);
+
+// Chart sharing (public)
+router.use('/share', shareRoutes);
 
 // Analysis endpoints
 router.use('/analysis', analysisRoutes);
@@ -52,5 +69,11 @@ router.use('/synastry', synastryRoutes);
 
 // Solar return endpoints
 router.use('/solar-returns', solarReturnRoutes);
+
+// Timezone endpoints (public)
+router.use('/timezone', timezoneRoutes);
+
+// Location endpoints (public)
+router.use('/location', locationRoutes);
 
 export default router;

@@ -13,11 +13,10 @@ jest.mock('../../middleware/errorHandler', () => ({
 }));
 
 jest.mock('../../utils/validators', () => ({
-  validateBody: (schema: any) => (req: any, res: any, next: any) => next(),
+  validateBody: (_schema: any) => (req: any, res: any, next: any) => next(),
   calculateTransitsSchema: {},
 }));
 
-import { Router } from 'express';
 import { transitRoutes } from '../../modules/transits';
 
 describe('Transit Routes', () => {

@@ -73,7 +73,7 @@ describe('LunarForecastView', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetLunarMonthForecast.mockImplementation(() => new Promise(() => {}));
+      mockGetLunarMonthForecast.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
 
       render(<LunarForecastView onBack={mockOnBack} />);
 
@@ -261,10 +261,12 @@ describe('LunarForecastView', () => {
         render(<LunarForecastView onBack={mockOnBack} />);
 
         await waitFor(() => {
-          const backButton = screen.getByText('← Back');
-          userEvent.click(backButton);
-          expect(mockOnBack).toHaveBeenCalledTimes(1);
+          expect(screen.getByText('Lunar Month Forecast')).toBeInTheDocument();
         });
+
+        const backButton = screen.getByText('← Back');
+        await userEvent.click(backButton);
+        expect(mockOnBack).toHaveBeenCalledTimes(1);
       });
     });
   });

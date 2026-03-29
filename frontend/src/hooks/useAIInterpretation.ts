@@ -6,11 +6,14 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import aiService from '../services/ai.service';
+import type { AIInterpretationResponse } from '../services/ai.service';
+
+type ChartData = Record<string, unknown>;
 
 interface UseAIInterpretationResult {
-  generateNatal: (chartData: any) => Promise<any>;
-  generateTransit: (transitData: any) => Promise<any>;
-  generateCompatibility: (synastryData: any) => Promise<any>;
+  generateNatal: (chartData: Record<string, unknown>) => Promise<AIInterpretationResponse>;
+  generateTransit: (transitData: Record<string, unknown>) => Promise<AIInterpretationResponse>;
+  generateCompatibility: (synastryData: { chartA: ChartData; chartB: ChartData }) => Promise<AIInterpretationResponse>;
   isGenerating: boolean;
   error: Error | null;
   isAvailable: boolean;
@@ -27,35 +30,35 @@ export function useAIInterpretation(): UseAIInterpretationResult {
   });
 
   const natalMutation = useMutation({
-    mutationFn: (chartData: any) => aiService.generateNatal(chartData),
+    mutationFn: (chartData: Record<string, unknown>) => aiService.generateNatal(chartData),
     onSuccess: () => {
       setError(null);
     },
-    onError: (err) => setError(err),
+    onError: (err: Error) => setError(err),
   });
 
   const transitMutation = useMutation({
-    mutationFn: (transitData: any) => aiService.generateTransit(transitData),
+    mutationFn: (transitData: Record<string, unknown>) => aiService.generateTransit(transitData),
     onSuccess: () => {
       setError(null);
     },
-    onError: (err) => setError(err),
+    onError: (err: Error) => setError(err),
   });
 
   const compatibilityMutation = useMutation({
-    mutationFn: (synastryData: any) => aiService.generateCompatibility(synastryData),
+    mutationFn: (synastryData: { chartA: ChartData; chartB: ChartData }) => aiService.generateCompatibility(synastryData),
     onSuccess: () => {
       setError(null);
     },
-    onError: (err) => setError(err),
+    onError: (err: Error) => setError(err),
   });
 
   return {
     generateNatal: natalMutation.mutateAsync,
     generateTransit: transitMutation.mutateAsync,
     generateCompatibility: compatibilityMutation.mutateAsync,
-    isGenerating: natalMutation.isPending,
+    isGenerating: natalMutation.isPending || transitMutation.isPending || compatibilityMutation.isPending,
     error,
-    isAvailable: status?.available || false,
+    isAvailable: status?.available ?? false,
   };
 }

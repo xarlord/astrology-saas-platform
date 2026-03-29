@@ -10,7 +10,7 @@ import './index.css';
 
 // Import service worker hook only in production
 if (import.meta.env.PROD) {
-  import('./hooks/useServiceWorkerUpdate').then(() => {
+  void import('./hooks/useServiceWorkerUpdate').then(() => {
     console.log('Service worker registration initialized');
   });
 }

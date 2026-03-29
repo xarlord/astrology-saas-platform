@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { AppError } from './errorHandler';
 import config from '../config';
 
@@ -108,9 +109,6 @@ export const generateToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): strin
  */
 export const generateRefreshToken = (_payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
   // Generate a cryptographically secure random token
-  /* eslint-disable @typescript-eslint/no-var-requires */
-  const crypto = require('crypto');
-  /* eslint-enable @typescript-eslint/no-var-requires */
   const randomBytes = crypto.randomBytes(32);
   return randomBytes.toString('base64url');
 };
