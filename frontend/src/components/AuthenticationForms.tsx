@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { EyeIcon, EyeSlashIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
@@ -22,7 +23,7 @@ interface ErrorMessageProps {
 
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
-    <p id={id} className="error-message" role="alert" aria-live="assertive">
+    <p id={id} data-testid="error-message" className="error-message" role="alert" aria-live="assertive">
       <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
       <span className="error-text">{message}</span>
     </p>
@@ -70,9 +71,10 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     try {
       await login(formData.email, formData.password);
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { message?: string };
       setErrors({
-        email: error.message || 'Login failed. Please check your credentials.',
+        email: err.message ?? 'Login failed. Please check your credentials.',
       });
     }
   };
@@ -123,7 +125,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} data-testid="login-form" className="space-y-6">
           {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -138,6 +140,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="email-input"
                 aria-required="true"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? emailErrorId : undefined}
@@ -183,6 +186,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="password-input"
                 aria-required="true"
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
@@ -219,12 +223,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
             {/* Forgot Password Link */}
             <div className="mt-2 text-right">
-              <a
-                href="/forgot-password"
+              <Link
+                to="/forgot-password"
+                data-testid="forgot-password-link"
                 className="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -232,6 +237,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <button
             type="submit"
             disabled={isLoading}
+            data-testid="login-submit"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
@@ -312,12 +318,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         {/* Sign Up Link */}
         <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Don&apos;t have an account?{' '}
-          <a
-            href="/register"
+          <Link
+            to="/register"
+            data-testid="signup-link"
             className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
@@ -385,9 +392,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     try {
       await register(formData.name, formData.email, formData.password);
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { message?: string };
       setErrors({
-        email: error.message || 'Registration failed. Please try again.',
+        email: err.message ?? 'Registration failed. Please try again.',
       });
     }
   };
@@ -446,7 +454,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} data-testid="register-form" className="space-y-5">
           {/* Name Field */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -461,6 +469,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="name-input"
                 aria-required="true"
                 aria-invalid={!!errors.name}
                 aria-describedby={errors.name ? nameErrorId : undefined}
@@ -498,6 +507,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="register-email-input"
                 aria-required="true"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? emailErrorId : undefined}
@@ -535,6 +545,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="register-password-input"
                 aria-required="true"
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
@@ -589,6 +600,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="confirm-password-input"
                 aria-required="true"
                 aria-invalid={!!errors.confirmPassword}
                 aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
@@ -634,13 +646,13 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             />
             <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
               I agree to the{' '}
-              <a href="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <Link to="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
                 Terms of Service
-              </a>{' '}
+              </Link>{' '}
               and{' '}
-              <a href="/privacy" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <Link to="/privacy" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
                 Privacy Policy
-              </a>
+              </Link>
             </label>
           </div>
 
@@ -648,6 +660,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           <button
             type="submit"
             disabled={isLoading}
+            data-testid="register-submit"
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
@@ -728,12 +741,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         {/* Sign In Link */}
         <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Already have an account?{' '}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

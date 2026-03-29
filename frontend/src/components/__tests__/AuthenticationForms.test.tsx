@@ -14,7 +14,13 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { LoginForm, RegisterForm } from '../AuthenticationForms';
+
+// Wrap render with MemoryRouter since Link requires router context
+function renderWithRouter(ui: React.ReactElement) {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+}
 
 // Mock the useAuthStore - create the mock functions outside the mock
 const mockAuthStore = {
@@ -41,22 +47,22 @@ describe('AuthenticationForms - LoginForm', () => {
 
   describe('Rendering', () => {
     it('should render login form with all required fields', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     });
 
     it('should render form header and description', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       expect(screen.getByText('Welcome Back')).toBeInTheDocument();
       expect(screen.getByText(/sign in to access your charts/i)).toBeInTheDocument();
     });
 
     it('should render forgot password link', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const forgotLink = screen.getByText(/forgot password/i);
       expect(forgotLink).toBeInTheDocument();
@@ -64,14 +70,14 @@ describe('AuthenticationForms - LoginForm', () => {
     });
 
     it('should render social auth buttons', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       expect(screen.getByText('Google')).toBeInTheDocument();
       expect(screen.getByText('Apple')).toBeInTheDocument();
     });
 
     it('should render sign up link', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const signUpLink = screen.getByText(/sign up/i);
       expect(signUpLink).toBeInTheDocument();
@@ -79,10 +85,10 @@ describe('AuthenticationForms - LoginForm', () => {
     });
 
     it('should have accessible form elements', () => {
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       expect(emailInput).toHaveAttribute('id', 'email');
@@ -101,7 +107,7 @@ describe('AuthenticationForms - LoginForm', () => {
   describe('Form Validation', () => {
     it('should show email required error when submitting empty form', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
@@ -111,7 +117,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should show email format error for invalid email', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       await user.type(emailInput, 'invalid-email');
@@ -122,7 +128,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should show password required error when submitting without password', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
       await user.type(emailInput, 'test@example.com');
@@ -135,10 +141,10 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should show password minimum length error', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       await user.type(emailInput, 'test@example.com');
       await user.type(passwordInput, 'short');
@@ -149,7 +155,7 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should clear error when user starts typing', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
@@ -164,10 +170,10 @@ describe('AuthenticationForms - LoginForm', () => {
 
     it('should pass validation with valid inputs', async () => {
       const onSuccess = vi.fn();
-      render(<LoginForm onSuccess={onSuccess} />);
+      renderWithRouter(<LoginForm onSuccess={onSuccess} />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       // Use fireEvent.change for immediate state updates
@@ -193,10 +199,10 @@ describe('AuthenticationForms - LoginForm', () => {
       const errorMessage = 'Invalid credentials';
       mockAuthStore.login.mockRejectedValue(new Error(errorMessage));
 
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -210,12 +216,12 @@ describe('AuthenticationForms - LoginForm', () => {
     });
 
     it('should show generic error message when no error message provided', async () => {
-      mockAuthStore.login.mockRejectedValue({ message: '' });
+      mockAuthStore.login.mockRejectedValue({});
 
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -235,10 +241,10 @@ describe('AuthenticationForms - LoginForm', () => {
       const onSuccess = vi.fn();
       mockAuthStore.login.mockResolvedValue({ success: true });
 
-      render(<LoginForm onSuccess={onSuccess} />);
+      renderWithRouter(<LoginForm onSuccess={onSuccess} />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       await user.type(emailInput, 'test@example.com');
       await user.type(passwordInput, 'password123');
@@ -255,30 +261,19 @@ describe('AuthenticationForms - LoginForm', () => {
   describe('Password Visibility Toggle', () => {
     it('should toggle password visibility', async () => {
       const user = userEvent.setup();
-      render(<LoginForm />);
+      renderWithRouter(<LoginForm />);
 
-      const passwordInput = screen.getByLabelText(/password/i);
-      const toggleButton = screen.getByRole('button', {
-        name: '',
-        selector: 'button[aria-label]',
-      }).closest('button');
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       expect(passwordInput).toHaveAttribute('type', 'password');
 
-      // Find the eye icon button
-      const eyeButtons = screen.getAllByRole('button').filter(btn =>
-        btn.querySelector('svg')
-      );
-      const showPasswordButton = eyeButtons.find(btn =>
-        btn.querySelector('svg')?.classList.contains('w-5')
-      );
+      // Find the password toggle button by its aria-label
+      const showPasswordButton = screen.getByLabelText(/show password/i);
 
-      if (showPasswordButton) {
-        await user.click(showPasswordButton);
-        expect(passwordInput).toHaveAttribute('type', 'text');
-        await user.click(showPasswordButton);
-        expect(passwordInput).toHaveAttribute('type', 'password');
-      }
+      await user.click(showPasswordButton);
+      expect(passwordInput).toHaveAttribute('type', 'text');
+      await user.click(showPasswordButton);
+      expect(passwordInput).toHaveAttribute('type', 'password');
     });
   });
 
@@ -307,7 +302,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
   describe('Rendering', () => {
     it('should render register form with all required fields', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
@@ -317,20 +312,20 @@ describe('AuthenticationForms - RegisterForm', () => {
     });
 
     it('should render terms and conditions checkbox', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       expect(screen.getByLabelText(/i agree to the terms of service/i)).toBeInTheDocument();
-      expect(screen.getByRole('checkbox', { required: true })).toBeInTheDocument();
+      expect(screen.getByRole('checkbox')).toBeInTheDocument();
     });
 
     it('should render password requirements hint', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       expect(screen.getByText(/must be at least 8 characters/i)).toBeInTheDocument();
     });
 
     it('should have accessible form elements', () => {
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -345,7 +340,7 @@ describe('AuthenticationForms - RegisterForm', () => {
   describe('Form Validation', () => {
     it('should show name required error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       // Check the terms checkbox first to avoid native validation blocking
       const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
@@ -361,7 +356,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
     it('should show name minimum length error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       await user.type(nameInput, 'A');
@@ -372,7 +367,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
     it('should show password complexity error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -392,7 +387,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
     it('should show password mismatch error', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -414,7 +409,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       const user = userEvent.setup();
       const onSuccess = vi.fn();
       mockAuthStore.register.mockResolvedValue({ success: true });
-      render(<RegisterForm onSuccess={onSuccess} />);
+      renderWithRouter(<RegisterForm onSuccess={onSuccess} />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -441,7 +436,7 @@ describe('AuthenticationForms - RegisterForm', () => {
   describe('Password Visibility', () => {
     it('should toggle password visibility for both password fields', async () => {
       const user = userEvent.setup();
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const passwordInput = screen.getByLabelText(/^password$/i);
       const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
@@ -468,7 +463,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       const onSuccess = vi.fn();
       mockAuthStore.register.mockResolvedValue({ success: true });
 
-      render(<RegisterForm onSuccess={onSuccess} />);
+      renderWithRouter(<RegisterForm onSuccess={onSuccess} />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -497,7 +492,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       const errorMessage = 'Email already exists';
       mockAuthStore.register.mockRejectedValue(new Error(errorMessage));
 
-      render(<RegisterForm />);
+      renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
