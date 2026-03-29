@@ -3,6 +3,7 @@
  */
 
 import Joi from 'joi';
+import { Request, Response, NextFunction } from 'express';
 
 // Auth validators
 export const registerSchema = Joi.object({
@@ -61,7 +62,7 @@ export const paginationSchema = Joi.object({
  * Validate request body against schema
  */
 export function validateBody(schema: Joi.ObjectSchema) {
-  return (req: any, res: any, next: any) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const { error, value } = schema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
@@ -88,7 +89,7 @@ export function validateBody(schema: Joi.ObjectSchema) {
  * Validate request query against schema
  */
 export function validateQuery(schema: Joi.ObjectSchema) {
-  return (req: any, res: any, next: any) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const { error, value } = schema.validate(req.query, {
       abortEarly: false,
       stripUnknown: true,

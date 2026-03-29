@@ -12,6 +12,34 @@ import {
   generateCompletePersonalityAnalysis,
 } from '../services/interpretation.service';
 
+interface PlanetCalcData {
+  longitude: number;
+  latitude: number;
+  speed: number;
+  sign: string;
+  house?: number;
+  position?: number;
+  retrograde?: boolean;
+}
+
+interface HouseCalcData {
+  cusp: number;
+}
+
+interface HouseOutput {
+  house: number;
+  cusp: number;
+  sign: string;
+}
+
+interface AspectData {
+  aspect: string;
+  planet1: string;
+  planet2: string;
+  orb: number;
+  type?: string;
+}
+
 /**
  * Helper: Convert degree to zodiac sign
  */
@@ -40,8 +68,12 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { planets, houses, aspects } = chart.calculated_data;
-  const houseArray = houses.houses || houses; // Handle both formats
+  const { planets, houses, aspects } = chart.calculated_data as {
+    planets: Record<string, PlanetCalcData>;
+    houses: { houses: HouseCalcData[] } | HouseCalcData[];
+    aspects: AspectData[];
+  };
+  const houseArray = (houses as { houses?: HouseCalcData[] }).houses || houses as HouseCalcData[]; // Handle both formats
 
   // Helper function to convert decimal degrees to DMS
   const longitudeToDMS = (longitude: number) => {
@@ -53,7 +85,7 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
   };
 
   // Convert planets object to array format for interpretation service
-  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => {
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, PlanetCalcData]) => {
     const dms = longitudeToDMS(data.longitude);
     return {
       planet,
@@ -63,7 +95,7 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
       speed: data.speed,
       ...dms, // degree, minute, second
       retrograde: data.speed < 0, // Negative speed indicates retrograde
-      house: houseArray.findIndex((h: any) => {
+      house: houseArray.findIndex((h: HouseCalcData) => {
         // Simple house calculation based on longitude
         const houseSize = 30;
         return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
@@ -74,7 +106,7 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
   // Use interpretation service to generate complete analysis
   const analysis = generateCompletePersonalityAnalysis({
     planets: planetsArray,
-    houses: houseArray.map((h: any, i: number) => ({
+    houses: houseArray.map((h: HouseCalcData, i: number) => ({
       house: i + 1,
       cusp: h.cusp,
       sign: getZodiacSign(h.cusp),
@@ -137,11 +169,15 @@ export async function getAspectPatterns(req: AuthenticatedRequest, res: Response
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { planets, houses, aspects } = chart.calculated_data;
-  const houseArray = houses.houses || houses; // Handle both formats
+  const { planets, houses, aspects } = chart.calculated_data as {
+    planets: Record<string, PlanetCalcData>;
+    houses: { houses: HouseCalcData[] } | HouseCalcData[];
+    aspects: AspectData[];
+  };
+  const houseArray = (houses as { houses?: HouseCalcData[] }).houses || houses as HouseCalcData[]; // Handle both formats
 
   // Convert planets object to array format for interpretation service
-  const planetsArray = Object.entries(planets).map(([planet, data]: [string, any]) => {
+  const planetsArray = Object.entries(planets).map(([planet, data]: [string, PlanetCalcData]) => {
     const longitude = data.longitude ?? 0;
     const absLon = Math.abs(longitude) % 360;
     const totalDegrees = absLon;
@@ -164,7 +200,7 @@ export async function getAspectPatterns(req: AuthenticatedRequest, res: Response
     };
   });
 
-  const housesArray = houseArray.map((h: any, i: number) => ({
+  const housesArray: HouseOutput[] = houseArray.map((h: HouseCalcData, i: number) => ({
     house: i + 1,
     cusp: h.cusp,
     sign: getZodiacSign(h.cusp),
@@ -201,7 +237,7 @@ export async function getPlanetsInSigns(req: AuthenticatedRequest, res: Response
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { planets } = chart.calculated_data;
+  const { planets } = chart.calculated_data as { planets: Record<string, PlanetCalcData> };
 
   const planetsInSigns = buildPlanetsInSigns(planets);
 
@@ -227,7 +263,10 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { planets, houses } = chart.calculated_data;
+  const { planets, houses } = chart.calculated_data as {
+    planets: Record<string, PlanetCalcData>;
+    houses: { houses: HouseCalcData[] };
+  };
 
   const housesAnalysis = {
     houses: houses.houses,
@@ -246,7 +285,7 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
 // Helper functions
 
 // Helper function for future use
-export function _buildOverview(planets: any) {
+export function _buildOverview(planets: Record<string, PlanetCalcData>) {
   const sun = planets.sun;
   const moon = planets.moon;
   const ascendant = 'aries'; // Would get from houses
@@ -270,8 +309,8 @@ export function _buildOverview(planets: any) {
   };
 }
 
-function buildPlanetsInSigns(planets: any) {
-  return Object.entries(planets).map(([key, planet]: [string, any]) => ({
+function buildPlanetsInSigns(planets: Record<string, PlanetCalcData>) {
+  return Object.entries(planets).map(([key, planet]: [string, PlanetCalcData]) => ({
     planet: key,
     symbol: swissEphemeris.PLANET_SYMBOLS[key as keyof typeof swissEphemeris.PLANET_SYMBOLS] || key,
     sign: planet.sign,
@@ -281,7 +320,7 @@ function buildPlanetsInSigns(planets: any) {
   }));
 }
 
-function buildPlanetsInHouses(planets: any, houses: any) {
+function buildPlanetsInHouses(planets: Record<string, PlanetCalcData>, houses: { houses: HouseCalcData[] }) {
   const planetHousePositions: Record<string, number> = {};
 
   // For each planet, determine which house it's in
@@ -310,17 +349,17 @@ function findHouseForPosition(longitude: number, houseCusps: Array<{cusp: number
 }
 
 // Helper function for future use
-export function _buildMajorAspects(_aspects: any[]) {
-  return _aspects.filter((a: any) =>
+export function _buildMajorAspects(_aspects: AspectData[]) {
+  return _aspects.filter((a: AspectData) =>
     ['conjunction', 'opposition', 'trine', 'square'].includes(a.aspect)
   ).slice(0, 10); // Top 10
 }
 
 // Helper function for future use
-export function _calculateDominantElements(planets: any) {
+export function _calculateDominantElements(planets: Record<string, PlanetCalcData>) {
   const elements = { fire: 0, earth: 0, air: 0, water: 0 };
 
-  Object.entries(planets).forEach(([/*key*/, planet]: [string, any]) => {
+  Object.entries(planets).forEach(([/*key*/, planet]: [string, PlanetCalcData]) => {
     const sign = planet.sign;
     if (['aries', 'leo', 'sagittarius'].includes(sign)) elements.fire++;
     else if (['taurus', 'virgo', 'capricorn'].includes(sign)) elements.earth++;
@@ -332,7 +371,7 @@ export function _calculateDominantElements(planets: any) {
 }
 
 // Helper function for future use
-export function _identifyChartPattern(_aspects: any[]) {
+export function _identifyChartPattern(_aspects: AspectData[]) {
   // TODO: Implement T-Square, Grand Cross, Grand Trine, Yod detection
   return {
     hasGrandTrine: false,
@@ -343,8 +382,8 @@ export function _identifyChartPattern(_aspects: any[]) {
   };
 }
 
-function groupAspectsByType(aspects: any[]) {
-  const grouped: Record<string, any[]> = {};
+function groupAspectsByType(aspects: AspectData[]) {
+  const grouped: Record<string, AspectData[]> = {};
 
   aspects.forEach(aspect => {
     if (!grouped[aspect.aspect]) grouped[aspect.aspect] = [];
@@ -354,25 +393,25 @@ function groupAspectsByType(aspects: any[]) {
   return grouped;
 }
 
-function buildAspectGrid(_aspects: any[]) {
+function buildAspectGrid(_aspects: AspectData[]) {
   // TODO: Build matrix grid of aspects between planets
   return {};
 }
 
-function getMajorAspects(_aspects: any[]) {
+function getMajorAspects(_aspects: AspectData[]) {
   return _aspects.filter(a => a.orb <= 3); // Tight orbs
 }
 
-function getHarmoniousAspects(_aspects: any[]) {
+function getHarmoniousAspects(_aspects: AspectData[]) {
   return _aspects.filter(a => ['trine', 'sextile'].includes(a.aspect));
 }
 
-function getChallengingAspects(_aspects: any[]) {
+function getChallengingAspects(_aspects: AspectData[]) {
   return _aspects.filter(a => ['square', 'opposition', 'quincunx'].includes(a.aspect));
 }
 
 // Helper function for future use
-export function _identifyPatterns(_planets: any, _aspects: any[]) {
+export function _identifyPatterns(_planets: Record<string, PlanetCalcData>, _aspects: AspectData[]) {
   return {
     stelliums: [],
     grandTrines: [],
@@ -383,18 +422,18 @@ export function _identifyPatterns(_planets: any, _aspects: any[]) {
   };
 }
 
-function calculateHouseRulers(_planets: any, _houses: any) {
+function calculateHouseRulers(_planets: Record<string, PlanetCalcData>, _houses: { houses: HouseCalcData[] }) {
   // TODO: Calculate rulers of each house
   return {};
 }
 
-function identifyEmptyHouses(_planets: any, _houses: any) {
+function identifyEmptyHouses(_planets: Record<string, PlanetCalcData>, _houses: { houses: HouseCalcData[] }) {
   const emptyHouses: number[] = [];
   // TODO: Identify houses with no planets
   return emptyHouses;
 }
 
-function identifyStelliums(_planets: any, _houses: any) {
+function identifyStelliums(_planets: Record<string, PlanetCalcData>, _houses: { houses: HouseCalcData[] }) {
   // TODO: Identify 3+ planets in same sign/house
   return [];
 }

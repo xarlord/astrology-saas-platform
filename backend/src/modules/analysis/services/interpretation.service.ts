@@ -10,6 +10,8 @@ import {
   getAspectInterpretation,
   getHouseInterpretation,
   getTransitInterpretation,
+  type PlanetInSignInterpretation,
+  type TransitInterpretation,
 } from '../../../data/interpretations';
 import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
 
@@ -25,15 +27,15 @@ export interface PersonalityAnalysisRequest {
 
 export interface PersonalityAnalysisResponse {
   overview: {
-    sunSign: any;
-    moonSign: any;
-    ascendantSign?: any;
+    sunSign: PlanetInSignInterpretation | null;
+    moonSign: PlanetInSignInterpretation | null;
+    ascendantSign?: PlanetInSignInterpretation;
   };
   planetsInSigns: Array<{
     planet: string;
     sign: string;
     house: number;
-    interpretation: any;
+    interpretation: PlanetInSignInterpretation;
   }>;
   houses: Array<{
     house: number;
@@ -476,7 +478,7 @@ export interface TransitAnalysisResponse {
     aspect: string;
     orb: number;
     applying: boolean;
-    interpretation: any;
+    interpretation: TransitInterpretation;
   }>;
   highlights: TransitHighlight[];
 }

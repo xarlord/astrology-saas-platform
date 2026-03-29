@@ -50,7 +50,7 @@ export class TransitCacheService {
   private readonly MOON_PHASE_TTL_SECONDS = 43200; // 12 hours (moon changes faster)
 
   // In-memory cache for development (replace with Redis in production)
-  private cache: Map<string, CacheEntry<any>> = new Map();
+  private cache: Map<string, CacheEntry<unknown>> = new Map();
   private stats = { hits: 0, misses: 0 };
 
   /**

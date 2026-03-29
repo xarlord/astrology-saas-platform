@@ -12,7 +12,7 @@ import { logger } from '../utils/logger';
 // Generate a session identifier from the request
 const getSessionIdentifier = (req: Request): string => {
   // Use user ID if authenticated, otherwise use IP + User-Agent
-  const userId = (req as any).user?.id;
+  const userId = (req as { user?: { id?: string } }).user?.id;
   if (userId) {
     return `user:${userId}`;
   }

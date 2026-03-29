@@ -32,7 +32,7 @@ export interface ShareCreationOptions {
 
 export interface ShareAccessResult {
   success: boolean;
-  chart?: any;
+  chart?: Record<string, unknown>;
   error?: string;
 }
 
@@ -121,7 +121,7 @@ export class ChartSharingService {
   async accessSharedChart(
     shareToken: string,
     password?: string,
-    chartDataProvider?: (chartId: string) => Promise<any>
+    chartDataProvider?: (chartId: string) => Promise<Record<string, unknown>>
   ): Promise<ShareAccessResult> {
     // Find share by token
     let sharedChart: SharedChart | null = null;

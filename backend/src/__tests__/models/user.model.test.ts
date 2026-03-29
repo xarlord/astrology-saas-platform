@@ -11,6 +11,18 @@ jest.mock('../../config/database');
 
 const mockKnex = knex as jest.MockedFunction<typeof knex>;
 
+interface MockQueryBuilder {
+  where: jest.Mock;
+  whereNull: jest.Mock;
+  first: jest.Mock;
+  insert: jest.Mock;
+  returning: jest.Mock;
+  update: jest.Mock;
+  orderBy: jest.Mock;
+  limit: jest.Mock;
+  offset: jest.Mock;
+}
+
 describe('User Model', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,13 +43,13 @@ describe('User Model', () => {
         updated_at: new Date(),
       };
 
-      const mockQueryBuilder = {
+      const mockQueryBuilder: MockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
         first: jest.fn().mockResolvedValue(mockUser),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.findById('123');
 
@@ -53,7 +65,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.findById('999');
 
@@ -67,7 +79,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       await UserModel.findById('123');
 
@@ -90,13 +102,13 @@ describe('User Model', () => {
         updated_at: new Date(),
       };
 
-      const mockQueryBuilder = {
+      const mockQueryBuilder: MockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         whereNull: jest.fn().mockReturnThis(),
         first: jest.fn().mockResolvedValue(mockUser),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.findByEmail('test@example.com');
 
@@ -111,7 +123,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.findByEmail('notfound@example.com');
 
@@ -143,7 +155,7 @@ describe('User Model', () => {
         returning: jest.fn().mockResolvedValue([createdUser]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.create(userData);
 
@@ -184,7 +196,7 @@ describe('User Model', () => {
         returning: jest.fn().mockResolvedValue([createdUser]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       await UserModel.create(userData);
 
@@ -224,7 +236,7 @@ describe('User Model', () => {
         returning: jest.fn().mockResolvedValue([updatedUser]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.update('123', updateData);
 
@@ -246,7 +258,7 @@ describe('User Model', () => {
         returning: jest.fn().mockResolvedValue([]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.update('999', { name: 'Updated' });
 
@@ -261,7 +273,7 @@ describe('User Model', () => {
         update: jest.fn().mockResolvedValue(1),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.softDelete('123');
 
@@ -278,7 +290,7 @@ describe('User Model', () => {
         update: jest.fn().mockResolvedValue(0),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.softDelete('999');
 
@@ -309,7 +321,7 @@ describe('User Model', () => {
         returning: jest.fn().mockResolvedValue([updatedUser]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.updatePlan('123', 'premium', 'active', new Date());
 
@@ -330,7 +342,7 @@ describe('User Model', () => {
         returning: jest.fn().mockResolvedValue([{ id: '123' }]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       await UserModel.updatePlan('123', 'premium');
 
@@ -357,7 +369,7 @@ describe('User Model', () => {
         offset: jest.fn().mockResolvedValue(mockCharts),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.getCharts('123', 10, 0);
 
@@ -378,7 +390,7 @@ describe('User Model', () => {
         offset: jest.fn().mockResolvedValue([]),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       await UserModel.getCharts('123');
 
@@ -420,8 +432,8 @@ describe('User Model', () => {
       };
 
       mockKnex
-        .mockReturnValueOnce(findQueryBuilder as any)
-        .mockReturnValueOnce(updateQueryBuilder as any);
+        .mockReturnValueOnce(findQueryBuilder as unknown as ReturnType<typeof knex>)
+        .mockReturnValueOnce(updateQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.updatePreferences('123', { houseSystem: 'whole_sign', theme: 'dark' });
 
@@ -439,7 +451,7 @@ describe('User Model', () => {
         first: jest.fn().mockResolvedValue(null),
       };
 
-      mockKnex.mockReturnValue(mockQueryBuilder as any);
+      mockKnex.mockReturnValue(mockQueryBuilder as unknown as ReturnType<typeof knex>);
 
       const result = await UserModel.updatePreferences('999', { theme: 'dark' });
 

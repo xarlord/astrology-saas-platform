@@ -11,7 +11,7 @@ export interface AIUsage {
   type: 'natal' | 'transit' | 'compatibility' | 'lunar-return' | 'solar-return';
   tokens_used: number;
   cost: number;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   created_at: Date;
 }
 
@@ -20,7 +20,7 @@ export interface CreateAIUsageData {
   type: string;
   tokensUsed: number;
   cost: number;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 class AIUsageModel {
@@ -90,8 +90,8 @@ class AIUsageModel {
       .count('* as count')
       .groupBy('type');
 
-    return results.reduce((acc: Record<string, number>, row: any) => {
-      acc[row.type] = parseInt(row.count, 10);
+    return results.reduce((acc: Record<string, number>, row: { type: string; count: string | number }) => {
+      acc[row.type] = typeof row.count === 'string' ? parseInt(row.count, 10) : row.count;
       return acc;
     }, {} as Record<string, number>);
   }
@@ -106,8 +106,8 @@ class AIUsageModel {
       .sum('cost as total')
       .groupBy('type');
 
-    return results.reduce((acc: Record<string, number>, row: any) => {
-      acc[row.type] = parseFloat(row.total || '0');
+    return results.reduce((acc: Record<string, number>, row: { type: string; total: string | number }) => {
+      acc[row.type] = typeof row.total === 'string' ? parseFloat(row.total) : (row.total || 0);
       return acc;
     }, {} as Record<string, number>);
   }
@@ -131,7 +131,7 @@ class AIUsageModel {
   /**
    * Get daily usage statistics for a user
    */
-  async getDailyUsage(userId: string, days = 30): Promise<any[]> {
+  async getDailyUsage(userId: string, days = 30): Promise<Array<{ date: string; tokens: number; cost: number; requests: number }>> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 

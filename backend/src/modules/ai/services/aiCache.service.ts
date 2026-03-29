@@ -16,7 +16,7 @@ class AICacheService {
   /**
    * Get cached interpretation
    */
-  async get(key: string): Promise<any | null> {
+  async get(key: string): Promise<unknown> {
     try {
       return await aiCacheModel.get(key);
     } catch (error) {
@@ -28,7 +28,7 @@ class AICacheService {
   /**
    * Set cache entry
    */
-  async set(key: string, data: any, options?: CacheOptions): Promise<void> {
+  async set(key: string, data: unknown, options?: CacheOptions): Promise<void> {
     try {
       await aiCacheModel.set(key, data, options?.ttl);
     } catch (error) {
@@ -75,7 +75,7 @@ class AICacheService {
    * Generate cache key from data using SHA-256
    * Creates consistent hash for identical inputs
    */
-  generateKey(data: any): string {
+  generateKey(data: unknown): string {
     const hash = crypto
       .createHash('sha256')
       .update(JSON.stringify(data))
@@ -90,9 +90,9 @@ class AICacheService {
    */
   async getOrGenerate(
     key: string,
-    generator: () => Promise<any>,
+    generator: () => Promise<unknown>,
     options?: CacheOptions
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Try to get from cache
     const cached = await this.get(key);
     if (cached) {

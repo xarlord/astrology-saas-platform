@@ -86,7 +86,7 @@ describe('OpenAI Service', () => {
       birthPlace: 'New York, NY',
     };
 
-    it.skip('should generate natal chart interpretation successfully', async () => {
+    it('should generate natal chart interpretation successfully', async () => {
       const mockResponse = {
         choices: [
           {
@@ -113,7 +113,7 @@ describe('OpenAI Service', () => {
       expect(mockCreate).toHaveBeenCalledTimes(1);
     });
 
-    it.skip('should handle markdown text responses', async () => {
+    it('should handle markdown text responses', async () => {
       const mockResponse = {
         choices: [
           {
@@ -137,7 +137,7 @@ describe('OpenAI Service', () => {
       expect(result.interpretation.generated).toBe(true);
     });
 
-    it.skip('should use cached interpretations on second call', async () => {
+    it('should use cached interpretations on second call', async () => {
       const mockResponse = {
         choices: [
           {
@@ -201,7 +201,7 @@ describe('OpenAI Service', () => {
       forecastEndDate: '2024-03-31',
     };
 
-    it.skip('should generate transit forecast successfully', async () => {
+    it('should generate transit forecast successfully', async () => {
       const mockResponse = {
         choices: [
           {
@@ -249,7 +249,7 @@ describe('OpenAI Service', () => {
       },
     };
 
-    it.skip('should generate compatibility analysis successfully', async () => {
+    it('should generate compatibility analysis successfully', async () => {
       const mockResponse = {
         choices: [
           {
@@ -289,7 +289,7 @@ describe('OpenAI Service', () => {
   });
 
   describe('generateLunarReturnInterpretation', () => {
-    it.skip('should generate lunar return interpretation successfully', async () => {
+    it('should generate lunar return interpretation successfully', async () => {
       const chartData = {
         planets: [{ planet: 'sun', sign: 'cancer', degree: 10, house: 4 }],
       };
@@ -320,7 +320,7 @@ describe('OpenAI Service', () => {
   });
 
   describe('generateSolarReturnInterpretation', () => {
-    it.skip('should generate solar return interpretation successfully', async () => {
+    it('should generate solar return interpretation successfully', async () => {
       const chartData = {
         planets: [{ planet: 'sun', sign: 'leo', degree: 5, house: 5 }],
       };

@@ -356,11 +356,11 @@ describe('Validators', () => {
       });
 
       const middleware = validateBody(schema);
-      const req: any = { body: { name: 'John', age: 30, extra: 'field' } };
-      const res: any = {
+      const req = { body: { name: 'John', age: 30, extra: 'field' } } as unknown as { body: Record<string, unknown> };
+      const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
-      };
+      } as unknown as { status: jest.Mock; json: jest.Mock };
       const next = jest.fn();
 
       middleware(req, res, next);
@@ -375,11 +375,11 @@ describe('Validators', () => {
       });
 
       const middleware = validateBody(schema);
-      const req: any = { body: {} };
-      const res: any = {
+      const req = { body: {} } as unknown as { body: Record<string, unknown> };
+      const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
-      };
+      } as unknown as { status: jest.Mock; json: jest.Mock };
       const next = jest.fn();
 
       middleware(req, res, next);
@@ -405,11 +405,11 @@ describe('Validators', () => {
       });
 
       const middleware = validateQuery(schema);
-      const req: any = { query: {} };
-      const res: any = {
+      const req = { query: {} } as unknown as { query: Record<string, unknown> };
+      const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
-      };
+      } as unknown as { status: jest.Mock; json: jest.Mock };
       const next = jest.fn();
 
       middleware(req, res, next);
@@ -424,11 +424,11 @@ describe('Validators', () => {
       });
 
       const middleware = validateQuery(schema);
-      const req: any = { query: {} };
-      const res: any = {
+      const req = { query: {} } as unknown as { query: Record<string, unknown> };
+      const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
-      };
+      } as unknown as { status: jest.Mock; json: jest.Mock };
       const next = jest.fn();
 
       middleware(req, res, next);

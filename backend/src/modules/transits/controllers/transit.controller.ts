@@ -519,7 +519,7 @@ function calculateMoonPhase(moonLong: number, sunLong: number): {
   };
 }
 
-function calculateTransitIntensity(aspect: any): number {
+function calculateTransitIntensity(aspect: TransitForecastItem): number {
   // Base intensity on aspect type and orb
   const baseIntensity: Record<string, number> = {
     conjunction: 10,

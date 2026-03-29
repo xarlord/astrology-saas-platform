@@ -88,10 +88,11 @@ describe('Astronomy Engine Service', () => {
 
       const sun = positions.get('Sun');
       expect(sun).toBeDefined();
+      if (!sun) return;
 
       // Sun should be in Capricorn or Sagittarius around Jan 1
       // (Capricorn: Dec 22 - Jan 19)
-      expect(['Sagittarius', 'Capricorn']).toContain(sun!.sign);
+      expect(['Sagittarius', 'Capricorn']).toContain(sun.sign);
     });
 
     test('should detect retrograde motion correctly', () => {
@@ -102,8 +103,9 @@ describe('Astronomy Engine Service', () => {
 
       const mercury = positions.get('Mercury');
       expect(mercury).toBeDefined();
+      if (!mercury) return;
       // Mercury should be retrograde around this date
-      expect(mercury!.isRetrograde).toBe(true);
+      expect(mercury.isRetrograde).toBe(true);
     });
 
     test('should calculate different positions for different dates', () => {
@@ -116,8 +118,11 @@ describe('Astronomy Engine Service', () => {
       // Moon moves quickly - should be in different positions
       const moon1 = positions1.get('Moon');
       const moon2 = positions2.get('Moon');
+      expect(moon1).toBeDefined();
+      expect(moon2).toBeDefined();
+      if (!moon1 || !moon2) return;
 
-      expect(moon1!.longitude).not.toBeCloseTo(moon2!.longitude, 0);
+      expect(moon1.longitude).not.toBeCloseTo(moon2.longitude, 0);
     });
 
     test('should calculate positions consistently for same date', () => {
@@ -128,8 +133,11 @@ describe('Astronomy Engine Service', () => {
 
       const sun1 = positions1.get('Sun');
       const sun2 = positions2.get('Sun');
+      expect(sun1).toBeDefined();
+      expect(sun2).toBeDefined();
+      if (!sun1 || !sun2) return;
 
-      expect(sun1!.longitude).toBeCloseTo(sun2!.longitude, 6);
+      expect(sun1.longitude).toBeCloseTo(sun2.longitude, 6);
     });
   });
 

@@ -107,9 +107,9 @@ export async function api(
   for (let attempt = 0; attempt <= retries; attempt++) {
     const res = await fetch(BASE_URL + path, opts);
     const setCookie = res.headers.getSetCookie?.() || [];
-    let json: Record<string, any>;
+    let json: Record<string, unknown>;
     try {
-      json = (await res.json()) as Record<string, any>;
+      json = (await res.json()) as Record<string, unknown>;
     } catch {
       const text = await res.text().catch(() => '');
       json = { success: false, error: { message: text }, status: res.status };
@@ -171,7 +171,7 @@ export async function registerTestUser(): Promise<{
   accessToken: string;
   refreshToken: string;
   cookies: string;
-  user: Record<string, any>;
+  user: Record<string, unknown>;
 }> {
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const testUser = {
@@ -203,8 +203,8 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
   accessToken: string;
   refreshToken: string;
   cookies: string;
-  user: Record<string, any>;
-  chart: Record<string, any>;
+  user: Record<string, unknown>;
+  chart: Record<string, unknown>;
 }> {
   // Retry the whole setup up to 3 times to handle rate limiting
   for (let attempt = 0; attempt < 3; attempt++) {

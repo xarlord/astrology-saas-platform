@@ -11,10 +11,6 @@ import type { PersonalityAnalysisData } from '../components/PersonalityAnalysis'
 import { useChartAnalysis } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 /**
  * Build a PlanetSignInterpretation from minimal API data (sign name only).
  * The API returns SignInfo { sign, degree } which lacks interpretation text,

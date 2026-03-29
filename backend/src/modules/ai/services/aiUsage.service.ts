@@ -3,7 +3,7 @@
  * Tracks OpenAI API usage, calculates costs, and provides usage statistics
  */
 
-import aiUsageModel from '../models/aiUsage.model';
+import aiUsageModel, { AIUsage } from '../models/aiUsage.model';
 import logger from '../../../utils/logger';
 
 // Approximate OpenAI pricing (as of 2024)
@@ -31,7 +31,7 @@ class AIUsageService {
     type: string;
     inputTokens: number;
     outputTokens: number;
-    metadata?: any;
+    metadata?: Record<string, unknown>;
   }): Promise<void> {
     try {
       const model = process.env.OPENAI_MODEL || 'gpt-4-turbo-preview';
@@ -75,7 +75,7 @@ class AIUsageService {
     totalTokens: number;
     byType: Record<string, number>;
     costByType: Record<string, number>;
-    recent: any[];
+    recent: AIUsage[];
   }> {
     try {
       const totalCost = await aiUsageModel.getTotalCost(userId);
@@ -100,7 +100,7 @@ class AIUsageService {
   /**
    * Get usage history with pagination
    */
-  async getUsageHistory(userId: string, limit = 50): Promise<any[]> {
+  async getUsageHistory(userId: string, limit = 50): Promise<AIUsage[]> {
     try {
       return await aiUsageModel.getByUserId(userId, limit);
     } catch (error) {
@@ -112,7 +112,7 @@ class AIUsageService {
   /**
    * Get daily usage statistics
    */
-  async getDailyUsage(userId: string, days = 30): Promise<any[]> {
+  async getDailyUsage(userId: string, days = 30): Promise<Array<{ date: string; tokens: string; cost: string; requests: string }>> {
     try {
       return await aiUsageModel.getDailyUsage(userId, days);
     } catch (error) {
@@ -142,7 +142,7 @@ class AIUsageService {
     userId: string,
     startDate: Date,
     endDate: Date
-  ): Promise<any[]> {
+  ): Promise<AIUsage[]> {
     try {
       return await aiUsageModel.getByDateRange(userId, startDate, endDate);
     } catch (error) {

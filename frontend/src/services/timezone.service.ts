@@ -5,14 +5,8 @@
  * @description Frontend timezone utilities using Luxon
  */
 
-import { DateTime, Info } from 'luxon';
+import { DateTime } from 'luxon';
 import api from './api';
-
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 export interface TimezoneInfo {
   id: string;
@@ -117,8 +111,7 @@ class TimezoneServiceClass {
    * Local timezone search (fallback)
    */
   private localSearchTimezones(query: string): TimezoneSearchResult[] {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-    const zones: string[] = (Info as unknown as { listZones: () => string[] }).listZones();
+    const zones: string[] = (Intl as unknown as Record<string, (key: string) => string[]>).supportedValuesOf?.('timeZone') ?? [];
     const normalizedQuery = query.toLowerCase();
     const results: TimezoneSearchResult[] = [];
 

@@ -3,17 +3,19 @@
  * Tests transit route configuration
  */
 
+import type { Request, Response, NextFunction } from 'express';
+
 // Mock dependencies BEFORE imports
 jest.mock('../../middleware/auth', () => ({
-  authenticate: (req: any, res: any, next: any) => next(),
+  authenticate: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 jest.mock('../../middleware/errorHandler', () => ({
-  asyncHandler: (fn: any) => fn,
+  asyncHandler: <T>(fn: T) => fn,
 }));
 
 jest.mock('../../utils/validators', () => ({
-  validateBody: (_schema: any) => (req: any, res: any, next: any) => next(),
+  validateBody: (_schema: unknown) => (_req: Request, _res: Response, next: NextFunction) => next(),
   calculateTransitsSchema: {},
 }));
 

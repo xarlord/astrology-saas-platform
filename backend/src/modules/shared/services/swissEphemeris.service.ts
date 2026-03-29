@@ -147,7 +147,7 @@ export function calculateTransits(params: {
 /**
  * Calculate compatibility between two charts (mock)
  */
-export function calculateCompatibility(_chart1: any, _chart2: any) {
+export function calculateCompatibility(_chart1: Record<string, unknown>, _chart2: Record<string, unknown>) {
   return {
     overallScore: 75,
     romanticScore: 80,
@@ -231,7 +231,7 @@ export function calculateLunarReturn(params: {
 /**
  * Calculate composite chart (mock)
  */
-export function calculateCompositeChart(chart1: any, chart2: any) {
+export function calculateCompositeChart(chart1: Record<string, unknown>, chart2: Record<string, unknown>) {
   const baseLongitude = ((chart1?.planets?.sun?.longitude || 0) + (chart2?.planets?.sun?.longitude || 0)) / 2;
 
   return {

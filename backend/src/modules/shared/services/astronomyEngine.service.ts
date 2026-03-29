@@ -241,10 +241,10 @@ export class AstronomyEngineService {
    */
   calculateLocalSiderealTime(date: Date, longitude: number): number {
     const time = astronomy.MakeTime(date);
-    // Get Greenwich Sidereal Time in degrees
-    const gst = astronomy.SiderealTime(time);
+    // SiderealTime returns GST in sidereal hours (0–24); convert to degrees
+    const gstDegrees = astronomy.SiderealTime(time) * 15;
     // Local Sidereal Time = GST + observer longitude
-    let lst = gst + longitude;
+    let lst = gstDegrees + longitude;
     lst = this.normalizeAngle(lst);
     return lst; // Return in degrees
   }

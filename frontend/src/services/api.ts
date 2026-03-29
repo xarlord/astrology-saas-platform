@@ -20,7 +20,7 @@ const api = axios.create({
 let csrfToken: string | null = null;
 
 async function fetchCsrfToken(): Promise<string> {
-  const { data } = await axios.get(`${API_URL}/api/v1/csrf-token`, { withCredentials: true });
+  const { data } = await axios.get<{ data: { token: string } }>(`${API_URL}/api/v1/csrf-token`, { withCredentials: true });
   const token: string = data.data.token;
   csrfToken = token;
   return token;
@@ -63,7 +63,7 @@ api.interceptors.response.use(
 
     // CSRF token invalid — refresh and retry once
     if (error.response?.status === 403 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._csrfRetry) {
-      const errorCode = error.response?.data?.code;
+      const errorCode = (error.response?.data as { code?: string } | undefined)?.code;
       if (errorCode === 'CSRF_TOKEN_INVALID' || errorCode === 'CSRF_VALIDATION_ERROR') {
         (originalRequest as unknown as Record<string, unknown>)._csrfRetry = true;
         try {

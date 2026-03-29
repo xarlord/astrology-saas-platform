@@ -20,8 +20,20 @@ function capitalize(str: string): string {
 /**
  * Generate global astrological events for a month
  */
-async function generateGlobalEvents(year: number, month: number): Promise<any[]> {
-  const events: any[] = [];
+interface GlobalEventRow {
+  id: string | null;
+  user_id: string;
+  event_type: string;
+  event_date: Date;
+  end_date?: Date;
+  event_data?: Record<string, unknown>;
+  interpretation?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+async function generateGlobalEvents(year: number, month: number): Promise<GlobalEventRow[]> {
+  const events: GlobalEventRow[] = [];
 
   const startDate = new Date(year, month - 1, 1);
   const endDate = new Date(year, month, 0);

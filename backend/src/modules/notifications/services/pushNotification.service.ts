@@ -4,7 +4,7 @@
  */
 
 import webpush from 'web-push';
-import pushSubscriptionModel from '../models/pushSubscription.model';
+import pushSubscriptionModel, { PushSubscription as PushSubscriptionRecord } from '../models/pushSubscription.model';
 import logger from '../../../utils/logger';
 
 // Configure Web Push
@@ -29,7 +29,7 @@ export interface PushNotificationPayload {
   body: string;
   icon?: string;
   badge?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   actions?: Array<{
     action: string;
     title: string;
@@ -55,7 +55,7 @@ class PushNotificationService {
     endpoint: string;
     keys: { p256dh: string; auth: string };
     userAgent?: string;
-  }): Promise<any> {
+  }): Promise<PushSubscriptionRecord> {
     // Check if subscription already exists
     const existing = await pushSubscriptionModel.findByEndpoint(data.endpoint);
 
@@ -78,7 +78,7 @@ class PushNotificationService {
    * Send notification to a single subscription
    */
   async sendToSubscription(
-    subscription: any,
+    subscription: PushSubscriptionRecord,
     payload: PushNotificationPayload
   ): Promise<void> {
     const pushSubscription = {
@@ -117,15 +117,17 @@ class PushNotificationService {
       try {
         await this.sendToSubscription(subscription, payload);
         sentCount++;
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const err = error instanceof Error ? error : new Error(String(error));
+        const statusCode = (error as { statusCode?: number }).statusCode;
         // If subscription is invalid, delete it
-        if (error.statusCode === 404 || error.statusCode === 410) {
+        if (statusCode === 404 || statusCode === 410) {
           await pushSubscriptionModel.delete(subscription.id);
         }
 
         errors.push({
           endpoint: subscription.endpoint,
-          error: error.message,
+          error: err.message,
         });
 
         logger.error('Failed to send push notification:', error);
@@ -172,7 +174,7 @@ class PushNotificationService {
   /**
    * Get all subscriptions for user
    */
-  async getUserSubscriptions(userId: string): Promise<any[]> {
+  async getUserSubscriptions(userId: string): Promise<PushSubscriptionRecord[]> {
     return pushSubscriptionModel.findByUserId(userId);
   }
 

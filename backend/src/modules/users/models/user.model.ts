@@ -14,7 +14,7 @@ export interface User {
   plan: 'free' | 'premium' | 'professional';
   subscription_status: 'active' | 'canceled' | 'expired';
   subscription_renews_at?: Date;
-  preferences: Record<string, any>;
+  preferences: Record<string, unknown>;
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date;
