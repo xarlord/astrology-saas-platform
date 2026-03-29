@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.env*
+*.md
+__tests__/
+__mocks__/
+migrations/*.ts
+!migrations/
+seeds/*.ts
+!seeds/
+docs/
+coverage/
+*.test.ts
+*.spec.ts

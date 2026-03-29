@@ -57,9 +57,6 @@ temp/
 # Build artifacts
 *.tsbuildinfo
 
-# Docker
-.dockerignore
-
 # SSL certificates
 *.pem
 *.key
