@@ -6,12 +6,15 @@
 import { asyncHandler } from '../../../middleware/errorHandler';
 import aiUsageService from '../services/aiUsage.service';
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
+import { AppError } from '../../../middleware/errorHandler';
 
 /**
  * Get user's AI usage statistics
  */
 export const getUserStats = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
 
   const stats = await aiUsageService.getUserStats(userId);
 
@@ -25,7 +28,8 @@ export const getUserStats = asyncHandler(async (req: Request, res: Response) => 
  * Get user's AI usage history
  */
 export const getUsageHistory = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
   const { limit } = req.query;
 
   const history = await aiUsageService.getUsageHistory(userId, Number(limit) || 50);
@@ -40,7 +44,8 @@ export const getUsageHistory = asyncHandler(async (req: Request, res: Response) 
  * Get daily usage statistics
  */
 export const getDailyUsage = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
   const { days } = req.query;
 
   const dailyUsage = await aiUsageService.getDailyUsage(userId, Number(days) || 30);
@@ -55,7 +60,8 @@ export const getDailyUsage = asyncHandler(async (req: Request, res: Response) =>
  * Get usage by date range
  */
 export const getUsageByDateRange = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
   const { startDate, endDate } = req.query;
 
   if (!startDate || !endDate) {
@@ -121,7 +127,8 @@ export const getPricing = asyncHandler(async (_req: Request, res: Response) => {
  * Check if user is within usage limits
  */
 export const checkUsageLimit = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
   const { limit } = req.query;
 
   if (!limit) {

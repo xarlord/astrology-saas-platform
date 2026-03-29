@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import * as UserController from '../controllers/user.controller';
 
@@ -18,7 +18,7 @@ router.use(authenticate);
  * @access  Private
  */
 router.get('/me', asyncHandler(async (req, res) => {
-  await UserController.getCurrentUser(req, res);
+  await UserController.getCurrentUser(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -27,7 +27,7 @@ router.get('/me', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.put('/me', asyncHandler(async (req, res) => {
-  await UserController.updateCurrentUser(req, res);
+  await UserController.updateCurrentUser(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -36,7 +36,7 @@ router.put('/me', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/me/charts', asyncHandler(async (req, res) => {
-  await UserController.getUserCharts(req, res);
+  await UserController.getUserCharts(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -45,7 +45,7 @@ router.get('/me/charts', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/me/preferences', asyncHandler(async (req, res) => {
-  await UserController.getUserPreferences(req, res);
+  await UserController.getUserPreferences(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -54,7 +54,7 @@ router.get('/me/preferences', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.put('/me/preferences', asyncHandler(async (req, res) => {
-  await UserController.updateUserPreferences(req, res);
+  await UserController.updateUserPreferences(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -63,7 +63,7 @@ router.put('/me/preferences', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.delete('/me', asyncHandler(async (req, res) => {
-  await UserController.deleteAccount(req, res);
+  await UserController.deleteAccount(req as AuthenticatedRequest, res);
 }));
 
 export { router };

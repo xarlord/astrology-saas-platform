@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
 import { calculateTransitsSchema } from '../../../utils/validators';
@@ -20,7 +20,7 @@ router.use(authenticate);
  * @access  Private
  */
 router.post('/calculate', validateBody(calculateTransitsSchema), asyncHandler(async (req, res) => {
-  await TransitController.calculateTransits(req, res);
+  await TransitController.calculateTransits(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -29,7 +29,7 @@ router.post('/calculate', validateBody(calculateTransitsSchema), asyncHandler(as
  * @access  Private
  */
 router.get('/today', asyncHandler(async (req, res) => {
-  await TransitController.getTodayTransits(req, res);
+  await TransitController.getTodayTransits(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -38,7 +38,7 @@ router.get('/today', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/calendar', asyncHandler(async (req, res) => {
-  await TransitController.getTransitCalendar(req, res);
+  await TransitController.getTransitCalendar(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -47,7 +47,7 @@ router.get('/calendar', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/forecast', asyncHandler(async (req, res) => {
-  await TransitController.getTransitForecast(req, res);
+  await TransitController.getTransitForecast(req as AuthenticatedRequest, res);
 }));
 
 /**

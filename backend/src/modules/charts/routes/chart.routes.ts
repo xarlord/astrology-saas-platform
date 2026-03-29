@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import * as ChartController from '../controllers/chart.controller';
 
@@ -18,7 +18,7 @@ router.use(authenticate);
  * @access  Private
  */
 router.post('/', asyncHandler(async (req, res) => {
-  await ChartController.createChart(req, res);
+  await ChartController.createChart(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -27,7 +27,7 @@ router.post('/', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/', asyncHandler(async (req, res) => {
-  await ChartController.getUserCharts(req, res);
+  await ChartController.getUserCharts(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -36,7 +36,7 @@ router.get('/', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:id', asyncHandler(async (req, res) => {
-  await ChartController.getChart(req, res);
+  await ChartController.getChart(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -45,7 +45,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.put('/:id', asyncHandler(async (req, res) => {
-  await ChartController.updateChart(req, res);
+  await ChartController.updateChart(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -54,7 +54,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.delete('/:id', asyncHandler(async (req, res) => {
-  await ChartController.deleteChart(req, res);
+  await ChartController.deleteChart(req as AuthenticatedRequest, res);
 }));
 
 /**
@@ -63,7 +63,7 @@ router.delete('/:id', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.post('/:id/calculate', asyncHandler(async (req, res) => {
-  await ChartController.calculateChart(req, res);
+  await ChartController.calculateChart(req as AuthenticatedRequest, res);
 }));
 
 export { router };

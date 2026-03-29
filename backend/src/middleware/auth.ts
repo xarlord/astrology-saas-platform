@@ -25,6 +25,15 @@ declare global {
 }
 
 /**
+ * Typed request for authenticated routes.
+ * Use this in controllers behind `authenticate` middleware
+ * to avoid non-null assertions on req.user.
+ */
+export interface AuthenticatedRequest extends Request {
+  user: TokenPayload;
+}
+
+/**
  * Verify JWT token and attach user to request
  */
 export const authenticate = (

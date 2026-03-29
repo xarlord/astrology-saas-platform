@@ -2,7 +2,8 @@
  * Chart Controller
  */
 
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../middleware/errorHandler';
 import { ChartModel } from '../models';
 import { swissEphemeris } from '../../shared';
@@ -10,8 +11,9 @@ import { swissEphemeris } from '../../shared';
 /**
  * Create new chart
  */
-export async function createChart(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function createChart(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
 
   const {
     name,
@@ -59,8 +61,9 @@ export async function createChart(req: Request, res: Response): Promise<void> {
 /**
  * Get all user's charts
  */
-export async function getUserCharts(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 20;
   const offset = (page - 1) * limit;
@@ -85,8 +88,9 @@ export async function getUserCharts(req: Request, res: Response): Promise<void> 
 /**
  * Get specific chart
  */
-export async function getChart(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getChart(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { id } = req.params;
 
   const chart = await ChartModel.findByIdAndUserId(id, userId);
@@ -104,8 +108,9 @@ export async function getChart(req: Request, res: Response): Promise<void> {
 /**
  * Update chart
  */
-export async function updateChart(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updateChart(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { id } = req.params;
 
   const { name, house_system, zodiac, sidereal_mode } = req.body;
@@ -130,8 +135,9 @@ export async function updateChart(req: Request, res: Response): Promise<void> {
 /**
  * Delete chart
  */
-export async function deleteChart(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function deleteChart(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { id } = req.params;
 
   const deleted = await ChartModel.softDelete(id, userId);
@@ -149,8 +155,9 @@ export async function deleteChart(req: Request, res: Response): Promise<void> {
 /**
  * Calculate chart
  */
-export async function calculateChart(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function calculateChart(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { id } = req.params;
 
   const chart = await ChartModel.findByIdAndUserId(id, userId);

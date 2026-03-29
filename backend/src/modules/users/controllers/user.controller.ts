@@ -2,7 +2,8 @@
  * User Controller
  */
 
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../middleware/errorHandler';
 import { UserModel } from '../models';
 import { sanitizeUser } from '../../../utils/helpers';
@@ -10,8 +11,9 @@ import { sanitizeUser } from '../../../utils/helpers';
 /**
  * Get current user
  */
-export async function getCurrentUser(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
 
   const user = await UserModel.findById(userId);
   if (!user) {
@@ -27,8 +29,9 @@ export async function getCurrentUser(req: Request, res: Response): Promise<void>
 /**
  * Update current user
  */
-export async function updateCurrentUser(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updateCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { name, avatar_url, timezone } = req.body;
 
   const user = await UserModel.update(userId, {
@@ -50,8 +53,9 @@ export async function updateCurrentUser(req: Request, res: Response): Promise<vo
 /**
  * Get user's charts
  */
-export async function getUserCharts(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 20;
   const offset = (page - 1) * limit;
@@ -67,8 +71,9 @@ export async function getUserCharts(req: Request, res: Response): Promise<void> 
 /**
  * Get user preferences
  */
-export async function getUserPreferences(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getUserPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
 
   const user = await UserModel.findById(userId);
   if (!user) {
@@ -84,8 +89,9 @@ export async function getUserPreferences(req: Request, res: Response): Promise<v
 /**
  * Update user preferences
  */
-export async function updateUserPreferences(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updateUserPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const preferences = req.body;
 
   const user = await UserModel.updatePreferences(userId, preferences);
@@ -103,8 +109,9 @@ export async function updateUserPreferences(req: Request, res: Response): Promis
 /**
  * Delete user account
  */
-export async function deleteAccount(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function deleteAccount(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
 
   // Soft delete user
   await UserModel.softDelete(userId);

@@ -5,7 +5,7 @@
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
 import UserModel from '../../users/models/user.model';
-import { generateToken, generateRefreshToken } from '../../../middleware/auth';
+import { generateToken, generateRefreshToken, AuthenticatedRequest } from '../../../middleware/auth';
 import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
 import * as RefreshTokenModel from '../models/refreshToken.model';
 
@@ -106,8 +106,9 @@ export async function login(req: Request, res: Response): Promise<void> {
 /**
  * Get current user profile
  */
-export async function getProfile(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
 
   const user = await UserModel.findById(userId);
   if (!user) {
@@ -123,8 +124,9 @@ export async function getProfile(req: Request, res: Response): Promise<void> {
 /**
  * Update user profile
  */
-export async function updateProfile(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { name, avatar_url, timezone } = req.body;
 
   const user = await UserModel.update(userId, {
@@ -146,8 +148,9 @@ export async function updateProfile(req: Request, res: Response): Promise<void> 
 /**
  * Update user preferences
  */
-export async function updatePreferences(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function updatePreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const preferences = req.body;
 
   const user = await UserModel.updatePreferences(userId, preferences);

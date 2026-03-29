@@ -3,7 +3,8 @@
  * Handles personality analysis and chart interpretation
  */
 
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../middleware/errorHandler';
 import { ChartModel } from '../models';
 import { swissEphemeris } from '../../shared';
@@ -24,8 +25,9 @@ function getZodiacSign(degree: number): string {
 /**
  * Get personality analysis for a chart
  */
-export async function getPersonalityAnalysis(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { chartId } = req.params;
 
   // Get chart
@@ -90,8 +92,9 @@ export async function getPersonalityAnalysis(req: Request, res: Response): Promi
 /**
  * Get aspect analysis
  */
-export async function getAspectAnalysis(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getAspectAnalysis(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { chartId } = req.params;
 
   const chart = await ChartModel.findByIdAndUserId(chartId, userId);
@@ -123,8 +126,9 @@ export async function getAspectAnalysis(req: Request, res: Response): Promise<vo
 /**
  * Get aspect patterns (Grand Trine, T-Square, etc.)
  */
-export async function getAspectPatterns(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getAspectPatterns(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { chartId } = req.params;
 
   const chart = await ChartModel.findByIdAndUserId(chartId, userId);
@@ -173,8 +177,9 @@ export async function getAspectPatterns(req: Request, res: Response): Promise<vo
 /**
  * Get planets in signs analysis
  */
-export async function getPlanetsInSigns(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getPlanetsInSigns(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { chartId } = req.params;
 
   const chart = await ChartModel.findByIdAndUserId(chartId, userId);
@@ -199,8 +204,9 @@ export async function getPlanetsInSigns(req: Request, res: Response): Promise<vo
 /**
  * Get houses analysis
  */
-export async function getHousesAnalysis(req: Request, res: Response): Promise<void> {
-  const userId = req.user!.id;
+export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response): Promise<void> {
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = req.user.id;
   const { chartId } = req.params;
 
   const chart = await ChartModel.findByIdAndUserId(chartId, userId);

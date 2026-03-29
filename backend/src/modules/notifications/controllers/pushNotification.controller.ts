@@ -5,10 +5,13 @@
 import { asyncHandler } from '../../../middleware/errorHandler';
 import pushNotificationService from '../services/pushNotification.service';
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
+import { AppError } from '../../../middleware/errorHandler';
 
 export const saveSubscription = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) throw new AppError('Unauthorized', 401);
   const { endpoint, keys } = req.body;
-  const userId = req.user!.id;
+  const userId = (req as AuthenticatedRequest).user.id;
 
   const subscription = await pushNotificationService.saveSubscription({
     userId,
@@ -24,8 +27,9 @@ export const saveSubscription = asyncHandler(async (req: Request, res: Response)
 });
 
 export const deleteSubscription = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+  if (!req.user) throw new AppError('Unauthorized', 401);
   const { subscriptionId } = req.params;
-  const userId = req.user!.id;
+  const userId = (req as AuthenticatedRequest).user.id;
 
   // Verify subscription belongs to user
   const subscriptions = await pushNotificationService.getUserSubscriptions(userId);
@@ -50,7 +54,8 @@ export const deleteSubscription = asyncHandler(async (req: Request, res: Respons
 });
 
 export const getSubscriptions = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
 
   const subscriptions = await pushNotificationService.getUserSubscriptions(userId);
 
@@ -61,7 +66,8 @@ export const getSubscriptions = asyncHandler(async (req: Request, res: Response)
 });
 
 export const sendTestNotification = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  if (!req.user) throw new AppError('Unauthorized', 401);
+  const userId = (req as AuthenticatedRequest).user.id;
 
   const result = await pushNotificationService.sendNotification(userId, {
     title: 'Test Notification',

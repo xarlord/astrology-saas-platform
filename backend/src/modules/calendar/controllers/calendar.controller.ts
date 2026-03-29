@@ -3,7 +3,9 @@
  * API endpoints for astrological calendar functionality
  */
 
-import { Response, Request } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../../middleware/auth';
+import { AppError } from '../../../middleware/errorHandler';
 import calendarEventModel from '../models/calendarEvent.model';
 import globalEventsService from '../services/globalEvents.service';
 import logger from '../../../utils/logger';
@@ -14,9 +16,10 @@ class CalendarController {
    * Get calendar events for a specific month
    * Includes both personal events and global astrological events
    */
-  async getMonthEvents(req: Request, res: Response): Promise<void> {
+  async getMonthEvents(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user!.id;
+      if (!req.user) throw new AppError('Unauthorized', 401);
+      const userId = req.user.id;
       const { year, month } = req.params;
       const { includeGlobal = 'true' } = req.query;
 
@@ -125,9 +128,10 @@ class CalendarController {
    * POST /api/calendar/events
    * Create a custom calendar event
    */
-  async createCustomEvent(req: Request, res: Response): Promise<void> {
+  async createCustomEvent(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user!.id;
+      if (!req.user) throw new AppError('Unauthorized', 401);
+      const userId = req.user.id;
       const { event_type, event_date, event_data, interpretation } = req.body;
 
       // Validate required fields
@@ -164,9 +168,10 @@ class CalendarController {
    * DELETE /api/calendar/events/:id
    * Delete a calendar event
    */
-  async deleteEvent(req: Request, res: Response): Promise<void> {
+  async deleteEvent(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user!.id;
+      if (!req.user) throw new AppError('Unauthorized', 401);
+      const userId = req.user.id;
       const { id } = req.params;
 
       // Delete event (only if it belongs to the user)
