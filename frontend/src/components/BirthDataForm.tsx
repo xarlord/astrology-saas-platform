@@ -241,8 +241,9 @@ export function BirthDataForm({
   };
 
   return (
-    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onSubmit={handleSubmit} className="space-y-8">
       {/* Date & Time Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
