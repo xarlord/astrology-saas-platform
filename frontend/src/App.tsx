@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 // Components
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -52,105 +53,107 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <ServiceWorkerUpdateBanner />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+        <ErrorBoundary>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/charts/new"
-            element={
-              <ProtectedRoute>
-                <ChartCreatePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/charts/:id"
-            element={
-              <ProtectedRoute>
-                <ChartViewPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/:chartId"
-            element={
-              <ProtectedRoute>
-                <AnalysisPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/transits"
-            element={
-              <ProtectedRoute>
-                <TransitPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/synastry"
-            element={
-              <ProtectedRoute>
-                <SynastryPageWrapper />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/solar-returns"
-            element={
-              <ProtectedRoute>
-                <SolarReturnsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/solar-returns/:year"
-            element={
-              <ProtectedRoute>
-                <SolarReturnsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/calendar"
-            element={
-              <ProtectedRoute>
-                <CalendarPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/lunar-returns"
-            element={
-              <ProtectedRoute>
-                <LunarReturnsPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/charts/new"
+              element={
+                <ProtectedRoute>
+                  <ChartCreatePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/charts/:id"
+              element={
+                <ProtectedRoute>
+                  <ChartViewPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analysis/:chartId"
+              element={
+                <ProtectedRoute>
+                  <AnalysisPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/transits"
+              element={
+                <ProtectedRoute>
+                  <TransitPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/synastry"
+              element={
+                <ProtectedRoute>
+                  <SynastryPageWrapper />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/solar-returns"
+              element={
+                <ProtectedRoute>
+                  <SolarReturnsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/solar-returns/:year"
+              element={
+                <ProtectedRoute>
+                  <SolarReturnsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/calendar"
+              element={
+                <ProtectedRoute>
+                  <CalendarPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/lunar-returns"
+              element={
+                <ProtectedRoute>
+                  <LunarReturnsPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* 404 */}
-          <Route path="*" element={<div className="min-h-screen flex items-center justify-center text-gray-500">Page not found</div>} />
-        </Routes>
+            {/* 404 */}
+            <Route path="*" element={<div className="min-h-screen flex items-center justify-center text-gray-500">Page not found</div>} />
+          </Routes>
+        </ErrorBoundary>
       </div>
     </QueryClientProvider>
   );
