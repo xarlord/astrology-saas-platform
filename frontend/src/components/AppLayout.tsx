@@ -15,7 +15,7 @@ import {
   ChartBarIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
-import { useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -88,26 +88,26 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             <Bars3Icon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
           </button>
 
-          <a href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">✨</span>
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">
               AstroSaaS
             </span>
-          </a>
+          </Link>
         </div>
 
         {/* Center: Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-1">
           {navItems.map((item) => (
-            <a
+            <NavLink
               key={item.name}
-              href={item.href}
+              to={item.href}
               className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               {item.label}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
@@ -133,20 +133,20 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
             {/* Dropdown Menu */}
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-              <a
-                href="/profile"
+              <Link
+                to="/profile"
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 <UserIcon className="w-5 h-5" />
                 Profile
-              </a>
-              <a
-                href="/settings"
+              </Link>
+              <Link
+                to="/settings"
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 <Cog6ToothIcon className="w-5 h-5" />
                 Settings
-              </a>
+              </Link>
               <hr className="border-gray-200 dark:border-gray-700" />
               <button
                 onClick={() => { void logout(); }}
@@ -177,12 +177,12 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
-          <a href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">✨</span>
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">AstroSaaS</span>
-          </a>
+          </Link>
           <button
             onClick={onClose}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -200,20 +200,20 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               Quick Actions
             </h3>
             <div className="space-y-1">
-              <a
-                href="/charts/new"
+              <Link
+                to="/charts/new"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
               >
                 <PlusIcon className="w-5 h-5" />
                 <span className="font-medium">New Chart</span>
-              </a>
-              <a
-                href="/transits/today"
+              </Link>
+              <Link
+                to="/transits/today"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <CalendarIcon className="w-5 h-5" />
                 <span>Today&apos;s Transits</span>
-              </a>
+              </Link>
             </div>
           </section>
 
@@ -223,29 +223,29 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               My Charts
             </h3>
             <div className="space-y-1">
-              <a
-                href="/charts/natal"
+              <Link
+                to="/charts/natal"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <StarIcon className="w-5 h-5" />
                 <span>Natal Chart</span>
-              </a>
-              <a
-                href="/compatibility"
+              </Link>
+              <Link
+                to="/compatibility"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <span>Compatibility</span>
-              </a>
-              <a
-                href="/transits"
+              </Link>
+              <Link
+                to="/transits"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <ClockIcon className="w-5 h-5" />
                 <span>Transits</span>
-              </a>
+              </Link>
             </div>
           </section>
 
@@ -255,27 +255,27 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               Tools
             </h3>
             <div className="space-y-1">
-              <a
-                href="/ephemeris"
+              <Link
+                to="/ephemeris"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <TableCellsIcon className="w-5 h-5" />
                 <span>Ephemeris</span>
-              </a>
-              <a
-                href="/moon-calendar"
+              </Link>
+              <Link
+                to="/moon-calendar"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <MoonIcon className="w-5 h-5" />
                 <span>Moon Calendar</span>
-              </a>
-              <a
-                href="/retrograde"
+              </Link>
+              <Link
+                to="/retrograde"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <ArrowUturnLeftIcon className="w-5 h-5" />
                 <span>Retrograde Calendar</span>
-              </a>
+              </Link>
             </div>
           </section>
         </div>
@@ -289,12 +289,12 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             <p className="text-xs text-indigo-700 dark:text-indigo-300 mb-3">
               Get unlimited charts and detailed analysis
             </p>
-            <a
-              href="/subscription"
+            <Link
+              to="/subscription"
               className="block text-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
             >
               Upgrade Now
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -331,9 +331,9 @@ function MobileBottomNav() {
         {mobileNavItems.map((item) => {
           const active = isActive(item.href);
           return (
-            <a
+            <Link
               key={item.name}
-              href={item.href}
+              to={item.href}
               className="flex flex-col items-center justify-center flex-1 min-h-[56px] relative transition-all duration-200 group"
               aria-label={item.label}
               aria-current={active ? 'page' : undefined}
@@ -374,13 +374,13 @@ function MobileBottomNav() {
               >
                 {item.label}
               </span>
-            </a>
+            </Link>
           );
         })}
 
         {/* Profile button */}
-        <a
-          href="/profile"
+        <Link
+          to="/profile"
           className={`flex flex-col items-center justify-center flex-1 min-h-[56px] relative transition-all duration-200 group`}
           aria-label="Profile"
           aria-current={activePath === '/profile' ? 'page' : undefined}
@@ -422,7 +422,7 @@ function MobileBottomNav() {
           >
             Profile
           </span>
-        </a>
+        </Link>
       </div>
     </nav>
   );
@@ -439,19 +439,19 @@ function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/features" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/features" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Features
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/pricing" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/pricing" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Pricing
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/api" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/api" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   API
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -461,19 +461,19 @@ function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/learn" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/learn" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Learn Astrology
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/blog" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/blog" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/support" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/support" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Support
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -483,19 +483,19 @@ function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Company</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/careers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/careers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Careers
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -505,19 +505,19 @@ function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/terms" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/terms" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/cookies" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link to="/cookies" className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                   Cookie Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
