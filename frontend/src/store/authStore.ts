@@ -5,6 +5,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authService } from '../services';
+import type { UserPreferences } from '../services/auth.service';
+import { getErrorMessage } from '../utils/errorHandling';
 
 interface User {
   id: string;
@@ -13,7 +15,7 @@ interface User {
   avatar_url?: string;
   timezone: string;
   plan: string;
-  preferences: Record<string, any>;
+  preferences: Record<string, unknown>;
 }
 
 interface AuthState {
@@ -29,9 +31,11 @@ interface AuthState {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
-  updatePreferences: (preferences: Record<string, any>) => Promise<void>;
+  updatePreferences: (preferences: Record<string, unknown>) => Promise<void>;
   clearError: () => void;
 }
+
+
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -54,12 +58,9 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
-          // Store tokens in localStorage for API interceptor
-          localStorage.setItem('accessToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Login failed',
+            error: getErrorMessage(error, 'Login failed'),
             isLoading: false,
           });
         }
@@ -76,11 +77,9 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
-          localStorage.setItem('accessToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Registration failed',
+            error: getErrorMessage(error, 'Registration failed'),
             isLoading: false,
           });
         }
@@ -101,8 +100,6 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
             isLoading: false,
           });
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
         }
       },
 
@@ -111,9 +108,9 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await authService.updateProfile(data);
           set({ user: response.user, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Update failed',
+            error: getErrorMessage(error, 'Update failed'),
             isLoading: false,
           });
         }
@@ -122,11 +119,11 @@ export const useAuthStore = create<AuthState>()(
       updatePreferences: async (preferences) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await authService.updatePreferences(preferences);
+          const response = await authService.updatePreferences(preferences as UserPreferences);
           set({ user: response.user, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
           set({
-            error: error.response?.data?.error?.message || 'Update failed',
+            error: getErrorMessage(error, 'Update failed'),
             isLoading: false,
           });
         }
@@ -145,3 +142,19 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Listen for token refresh events from API interceptor
+window.addEventListener('auth:token-refreshed', ((event: CustomEvent<{ accessToken: string }>) => {
+  useAuthStore.setState({ accessToken: event.detail.accessToken });
+}) as EventListener);
+
+// Listen for session expiry events
+window.addEventListener('auth:session-expired', () => {
+  useAuthStore.setState({
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    isAuthenticated: false,
+  });
+  window.location.href = '/login';
+});

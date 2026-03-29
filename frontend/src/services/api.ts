@@ -3,8 +3,9 @@
  */
 
 import axios from 'axios';
+import { getAccessToken, getRefreshToken } from '../utils/tokenStorage';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
 // Create axios instance
 const api = axios.create({
@@ -17,7 +18,7 @@ const api = axios.create({
 // Request interceptor - Add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,34 +32,39 @@ api.interceptors.request.use(
 // Response interceptor - Handle token refresh
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
 
     // If 401 and not already retrying
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    if (error.response?.status === 401 && originalRequest && !(originalRequest as Record<string, unknown>)._retry) {
+      (originalRequest as Record<string, unknown>)._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = getRefreshToken();
         if (!refreshToken) {
           throw new Error('No refresh token');
         }
 
-        const { data } = await api.post('/auth/refresh', {}, {
-          headers: { Authorization: `Bearer ${refreshToken}` },
+        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh', {
+          refreshToken,
         });
 
         const { accessToken } = data.data;
-        localStorage.setItem('accessToken', accessToken);
+
+        // Update token in Zustand store via a custom event
+        // The authStore listens for this to update its state
+        window.dispatchEvent(new CustomEvent('auth:token-refreshed', { detail: { accessToken } }));
 
         // Retry original request with new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh failed - logout user
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        // Refresh failed - trigger logout
+        window.dispatchEvent(new CustomEvent('auth:session-expired'));
         return Promise.reject(refreshError);
       }
     }
