@@ -9,11 +9,10 @@
 import React, { useState } from 'react';
 import { useAIInterpretation } from '../hooks/useAIInterpretation';
 import { Sparkles, Info } from 'lucide-react';
-import './AIInterpretationToggle.css';
 
 interface AIInterpretationToggleProps {
-  onInterpretationGenerated?: (interpretation: any) => void;
-  chartData?: any;
+  onInterpretationGenerated?: (interpretation: Record<string, unknown>) => void;
+  chartData?: Record<string, unknown>;
 }
 
 export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
@@ -35,7 +34,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
       const interpretation = await generateNatal(chartData);
 
       if (onInterpretationGenerated) {
-        onInterpretationGenerated(interpretation);
+        onInterpretationGenerated(interpretation as unknown as Record<string, unknown>);
       }
     } catch (err) {
       console.error('AI generation failed:', err);
@@ -50,14 +49,15 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   };
 
   return (
-    <div className="ai-toggle-container">
-      <div className="ai-toggle-header">
-        <div className="ai-toggle-title">
-          <Sparkles className="ai-icon" size={18} />
+    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white mb-5">
+      <div className="flex justify-between items-center mb-3">
+        <div className="flex items-center gap-2 font-semibold text-base">
+          <Sparkles className="animate-pulse" size={18} />
           <span>AI-Enhanced Interpretations</span>
         </div>
         <button
-          className="ai-info-button"
+          type="button"
+          className="bg-white/20 border-none rounded-md px-2 py-1 text-white cursor-pointer transition-colors hover:bg-white/30"
           onClick={() => setShowInfo(!showInfo)}
           aria-label="Toggle AI info"
         >
@@ -66,48 +66,55 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
       </div>
 
       {showInfo && (
-        <div className="ai-toggle-info">
-          <p>
+        <div className="bg-white/10 rounded-lg p-3 mb-3 text-sm leading-relaxed">
+          <p className="m-0 mb-2 last:m-0">
             Enable AI to generate personalized, nuanced interpretations powered by GPT-4.
             AI enhances the rule-based readings with deeper insights and specific guidance.
           </p>
-          <p className="ai-note">
+          <p className="m-0 opacity-90 italic">
             <small>Note: AI interpretations take longer to generate and use API credits.</small>
           </p>
         </div>
       )}
 
-      <div className="ai-toggle-controls">
-        <label className="ai-toggle-switch">
-          <input
-            type="checkbox"
-            checked={enabled}
-            onChange={(e) => handleToggle(e.target.checked)}
-            disabled={isGenerating}
-            aria-label="Enable AI interpretations"
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={enabled ? "true" : "false"}
+          onClick={() => handleToggle(!enabled)}
+          disabled={isGenerating}
+          aria-label="Enable AI interpretations"
+          className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+            enabled ? 'bg-white/50' : 'bg-white/30'
+          } ${isGenerating ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        >
+          <span
+            className={`absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full transition-transform duration-300 ${
+              enabled ? 'translate-x-6' : 'translate-x-0'
+            }`}
           />
-          <span className="ai-toggle-slider"></span>
-        </label>
-        <span className="ai-toggle-status">
+        </button>
+        <span className="text-sm font-medium">
           {enabled ? 'Enabled' : 'Disabled'}
         </span>
       </div>
 
       {error && (
-        <div className="ai-toggle-error">
+        <div className="bg-red-500/20 border border-red-500/50 rounded-md py-2 px-3 mt-3 text-[13px]">
           Failed to generate AI interpretation. Using rule-based instead.
         </div>
       )}
 
       {isGenerating && (
-        <div className="ai-toggle-loading">
-          <div className="ai-spinner"></div>
+        <div className="flex items-center gap-2.5 mt-3 text-sm">
+          <div className="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin" />
           <span>Generating AI interpretation...</span>
         </div>
       )}
 
       {enabled && !isGenerating && (
-        <div className="ai-toggle-usage">
+        <div className="mt-3 opacity-80">
           <small>API credits will be used</small>
         </div>
       )}
