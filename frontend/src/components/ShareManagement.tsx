@@ -206,7 +206,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
             <div className="flex justify-between items-center px-6 py-4 border-b border-white/10">
               <h3 id="modal-title" className="m-0 text-lg">Create Share Link</h3>
               <button
-                className="bg-transparent border-none text-white/60 text-2xl cursor-pointer p-0 leading-none hover:text-white"
+                className="bg-transparent border-none text-white/60 text-2xl cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center leading-none hover:text-white"
                 onClick={() => setShowCreateModal(false)}
                 aria-label="Close modal"
               >
