@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import {
   calculateTransits,
   getTodayTransits,
@@ -15,7 +15,36 @@ import {
 } from '../../modules/transits/controllers/transit.controller';
 import { AppError } from '../../middleware/errorHandler';
 import ChartModel from '../../modules/charts/models/chart.model';
-import { swissEphemeris } from '../../modules/shared';
+
+// Helper: build a mock planetary positions Map like AstronomyEngineService returns
+function makeMockPositions(): Map<string, any> {
+  const positions = new Map<string, any>();
+  const planets = [
+    { name: 'Sun', longitude: 280, latitude: 0, speed: 1, isRetrograde: false },
+    { name: 'Moon', longitude: 100, latitude: 5, speed: 13, isRetrograde: false },
+    { name: 'Mercury', longitude: 305, latitude: 2, speed: 1.5, isRetrograde: false },
+    { name: 'Venus', longitude: 340, latitude: -1, speed: 1.2, isRetrograde: false },
+    { name: 'Mars', longitude: 15, latitude: 1, speed: 0.8, isRetrograde: false },
+    { name: 'Jupiter', longitude: 45, latitude: -2, speed: 0.3, isRetrograde: false },
+    { name: 'Saturn', longitude: 350, latitude: 2, speed: 0.2, isRetrograde: false },
+    { name: 'Uranus', longitude: 50, latitude: -1, speed: 0.1, isRetrograde: false },
+    { name: 'Neptune', longitude: 355, latitude: 1, speed: 0.08, isRetrograde: false },
+    { name: 'Pluto', longitude: 300, latitude: -3, speed: 0.05, isRetrograde: false },
+  ];
+  for (const p of planets) {
+    positions.set(p.name, {
+      ...p,
+      name: p.name,
+      distance: 1,
+      sign: 'Aries',
+      signIndex: 0,
+      degree: 0,
+      minute: 0,
+      second: 0,
+    });
+  }
+  return positions;
+}
 
 // Mock dependencies
 jest.mock('../../modules/charts/models/chart.model', () => ({
@@ -26,14 +55,54 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
   },
 }));
 
-jest.mock('../../modules/shared', () => ({
-  swissEphemeris: {
-    calculateTransits: jest.fn(),
-  },
-}));
+jest.mock('../../modules/shared/services/astronomyEngine.service', () => {
+  // Build a proper Map inline (factory is hoisted, so no external references)
+  const positions = new Map<string, any>();
+  const planetData: Array<{ name: string; longitude: number; latitude: number; speed: number; isRetrograde: boolean }> = [
+    { name: 'Sun', longitude: 280, latitude: 0, speed: 1, isRetrograde: false },
+    { name: 'Moon', longitude: 100, latitude: 5, speed: 13, isRetrograde: false },
+    { name: 'Mercury', longitude: 305, latitude: 2, speed: 1.5, isRetrograde: false },
+    { name: 'Venus', longitude: 340, latitude: -1, speed: 1.2, isRetrograde: false },
+    { name: 'Mars', longitude: 15, latitude: 1, speed: 0.8, isRetrograde: false },
+    { name: 'Jupiter', longitude: 45, latitude: -2, speed: 0.3, isRetrograde: false },
+    { name: 'Saturn', longitude: 350, latitude: 2, speed: 0.2, isRetrograde: false },
+    { name: 'Uranus', longitude: 50, latitude: -1, speed: 0.1, isRetrograde: false },
+    { name: 'Neptune', longitude: 355, latitude: 1, speed: 0.08, isRetrograde: false },
+    { name: 'Pluto', longitude: 300, latitude: -3, speed: 0.05, isRetrograde: false },
+  ];
+  for (const p of planetData) {
+    positions.set(p.name, {
+      ...p,
+      name: p.name,
+      distance: 1,
+      sign: 'Aries',
+      signIndex: 0,
+      degree: 0,
+      minute: 0,
+      second: 0,
+    });
+  }
+
+  return {
+    __esModule: true,
+    AstronomyEngineService: jest.fn().mockImplementation(() => ({
+      calculatePlanetaryPositions: jest.fn().mockReturnValue(positions),
+      calculateChiron: jest.fn().mockReturnValue({
+        longitude: 200,
+        sign: 'Libra',
+        degree: 20,
+        isRetrograde: false,
+      }),
+      calculateLunarNodes: jest.fn().mockReturnValue({
+        northNode: { longitude: 150, sign: 'Virgo', degree: 0 },
+        southNode: { longitude: 330, sign: 'Pisces', degree: 0 },
+      }),
+    })),
+  };
+});
 
 describe('Transit Controller', () => {
-  let mockRequest: Partial<Request>;
+  let mockRequest: Partial<any>;
   let mockResponse: Partial<Response>;
   let mockNext: jest.Mock;
 
@@ -61,9 +130,12 @@ describe('Transit Controller', () => {
     it('should calculate transits for date range', async () => {
       const mockChart = {
         id: '456',
+        birth_date: new Date('1990-01-01'),
+        birth_latitude: 40.7,
+        birth_longitude: -74.0,
         calculated_data: {
           jd: 2451545.0,
-          planets: { sun: { longitude: 280 } },
+          planets: { sun: { longitude: 280 }, moon: { longitude: 100 } },
           houses: { houses: [] },
         },
       };
@@ -75,15 +147,10 @@ describe('Transit Controller', () => {
       };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
-      (swissEphemeris.calculateTransits as jest.Mock).mockReturnValue({
-        aspects: [
-          { aspect: 'conjunction', orb: 2, transitPlanet: 'jupiter' },
-        ],
-      });
 
-      await calculateTransits(mockRequest as Request, mockResponse as Response, mockNext);
+      await calculateTransits(mockRequest, mockResponse as Response, mockNext);
 
-      expect(swissEphemeris.calculateTransits).toHaveBeenCalled();
+      expect(ChartModel.findByIdAndUserId).toHaveBeenCalledWith('456', '123');
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -106,8 +173,8 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(calculateTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(calculateTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('Chart not found');
+      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart not found');
     });
 
     it('should throw 400 if chart not calculated', async () => {
@@ -124,8 +191,8 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
 
-      await expect(calculateTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(calculateTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
+      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
     });
   });
 
@@ -134,25 +201,19 @@ describe('Transit Controller', () => {
       const mockChart = {
         id: '456',
         name: 'My Chart',
+        birth_date: new Date('1990-01-01'),
+        birth_latitude: 40.7,
+        birth_longitude: -74.0,
         calculated_data: {
           jd: 2451545.0,
-          planets: { sun: { longitude: 280 } },
+          planets: { sun: { longitude: 280 }, moon: { longitude: 100 } },
           houses: { houses: [] },
         },
       };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      (swissEphemeris.calculateTransits as jest.Mock).mockReturnValue({
-        aspects: [
-          { aspect: 'conjunction', orb: 2, transitPlanet: 'jupiter' },
-        ],
-        transitPlanets: {
-          moon: { longitude: 100, retrograde: false },
-          sun: { longitude: 280, retrograde: false },
-        },
-      });
 
-      await getTodayTransits(mockRequest as Request, mockResponse as Response, mockNext);
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
 
       expect(ChartModel.findByUserId).toHaveBeenCalledWith('123', 1, 0);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -161,8 +222,8 @@ describe('Transit Controller', () => {
     it('should throw 404 if no charts found', async () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
 
-      await expect(getTodayTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getTodayTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('No charts found');
+      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('No charts found');
     });
 
     it('should throw 400 if chart not calculated', async () => {
@@ -173,8 +234,8 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
 
-      await expect(getTodayTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getTodayTransits(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
+      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
     });
   });
 
@@ -182,9 +243,12 @@ describe('Transit Controller', () => {
     it('should get transit calendar for month', async () => {
       const mockChart = {
         id: '456',
+        birth_date: new Date('1990-01-01'),
+        birth_latitude: 40.7,
+        birth_longitude: -74.0,
         calculated_data: {
           jd: 2451545.0,
-          planets: {},
+          planets: { sun: { longitude: 280 } },
           houses: {},
         },
       };
@@ -192,15 +256,8 @@ describe('Transit Controller', () => {
       mockRequest.query = { month: '1', year: '2024' };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      (swissEphemeris.calculateTransits as jest.Mock).mockReturnValue({
-        aspects: [{ aspect: 'conjunction', orb: 1 }],
-        transitPlanets: {
-          moon: { longitude: 100, retrograde: false },
-          sun: { longitude: 280, retrograde: false },
-        },
-      });
 
-      await getTransitCalendar(mockRequest as Request, mockResponse as Response, mockNext);
+      await getTransitCalendar(mockRequest, mockResponse as Response, mockNext);
 
       expect(ChartModel.findByUserId).toHaveBeenCalledWith('123', 1, 0);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -211,7 +268,7 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
 
-      await expect(getTransitCalendar(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(getTransitCalendar(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
     });
   });
 
@@ -219,7 +276,7 @@ describe('Transit Controller', () => {
     it('should return transit details response', async () => {
       mockRequest.params = { id: '789' };
 
-      await getTransitDetails(mockRequest as Request, mockResponse as Response, mockNext);
+      await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -234,9 +291,12 @@ describe('Transit Controller', () => {
       const mockChart = {
         id: '456',
         name: 'My Chart',
+        birth_date: new Date('1990-01-01'),
+        birth_latitude: 40.7,
+        birth_longitude: -74.0,
         calculated_data: {
           jd: 2451545.0,
-          planets: {},
+          planets: { sun: { longitude: 280 } },
           houses: {},
         },
       };
@@ -244,13 +304,8 @@ describe('Transit Controller', () => {
       mockRequest.query = { duration: 'week' };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      (swissEphemeris.calculateTransits as jest.Mock).mockReturnValue({
-        aspects: [
-          { aspect: 'conjunction', orb: 0.5, transitPlanet: 'jupiter' },
-        ],
-      });
 
-      await getTransitForecast(mockRequest as Request, mockResponse as Response, mockNext);
+      await getTransitForecast(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(
@@ -268,7 +323,7 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
 
-      await expect(getTransitForecast(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(getTransitForecast(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
     });
   });
 
@@ -277,7 +332,10 @@ describe('Transit Controller', () => {
       const mockChart = {
         id: '456',
         name: 'Chart',
-        calculated_data: { jd: 2451545.0, planets: {}, houses: {} },
+        birth_date: new Date('1990-01-01'),
+        birth_latitude: 40.7,
+        birth_longitude: -74.0,
+        calculated_data: { jd: 2451545.0, planets: { sun: { longitude: 280 } }, houses: {} },
       };
 
       mockRequest.body = {
@@ -287,11 +345,8 @@ describe('Transit Controller', () => {
       };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
-      (swissEphemeris.calculateTransits as jest.Mock).mockReturnValue({
-        aspects: [],
-      });
 
-      await calculateTransits(mockRequest as Request, mockResponse as Response, mockNext);
+      await calculateTransits(mockRequest, mockResponse as Response, mockNext);
 
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       expect(response.success).toBe(true);
