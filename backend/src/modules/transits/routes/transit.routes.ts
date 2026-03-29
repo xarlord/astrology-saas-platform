@@ -56,7 +56,7 @@ router.get('/forecast', asyncHandler(async (req, res) => {
  * @access  Private
  */
 router.get('/:id', asyncHandler(async (req, res) => {
-  await TransitController.getTransitDetails(req, res);
+  await TransitController.getTransitDetails(req as AuthenticatedRequest, res);
 }));
 
 export { router };
