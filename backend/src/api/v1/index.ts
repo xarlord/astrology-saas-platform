@@ -1,12 +1,6 @@
 /**
  * API v1 Routes
  * Current stable API version
- *
- * NOTE: AI-powered interpretation endpoints are disabled pending resolution of
- * module loading issues. The comprehensive interpretation engine in
- * modules/analysis/services/interpretation.service.ts provides full
- * personality analysis, transit interpretations, and aspect pattern detection.
- * The AI enhancement feature can be re-enabled when needed.
  */
 
 import { Router } from 'express';
@@ -19,10 +13,12 @@ import { calendarRoutes } from '../../modules/calendar';
 import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
+import { pushNotificationRoutes } from '../../modules/notifications';
 import healthRoutes from '../../routes/health.routes';
 import { router as timezoneRoutes } from '../../modules/shared/routes/timezone.routes';
 import { default as locationRoutes } from '../../modules/shared/routes/location.routes';
 import { router as shareRoutes } from '../../modules/charts/routes/share.routes';
+import aiRoutes from '../../modules/ai/routes/ai.routes';
 import { getCsrfToken } from '../../middleware/csrf';
 
 const router = Router();
@@ -75,5 +71,11 @@ router.use('/timezone', timezoneRoutes);
 
 // Location endpoints (public)
 router.use('/location', locationRoutes);
+
+// AI interpretation endpoints
+router.use('/ai', aiRoutes);
+
+// Push notification endpoints
+router.use('/notifications', pushNotificationRoutes);
 
 export default router;
