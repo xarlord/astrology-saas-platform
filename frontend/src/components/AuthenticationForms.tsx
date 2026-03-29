@@ -369,9 +369,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(formData.password)) {
       newErrors.password =
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
     }
 
     if (!formData.confirmPassword) {
@@ -426,9 +426,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       } else if (name === 'password' && value) {
         if (value.length < 8) {
           newErrors.password = 'Password must be at least 8 characters';
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(value)) {
           newErrors.password =
-            'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
         }
       } else if (name === 'confirmPassword' && value && formData.password) {
         if (formData.password !== value) {
@@ -581,7 +581,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             {errors.password && <ErrorMessage message={errors.password} id={passwordErrorId} />}
             {!errors.password && (
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                Must be at least 8 characters with uppercase, lowercase, and number
+                Must be at least 8 characters with uppercase, lowercase, number, and special character
               </p>
             )}
           </div>
