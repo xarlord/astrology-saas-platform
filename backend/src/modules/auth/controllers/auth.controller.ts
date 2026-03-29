@@ -221,7 +221,11 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
   const newAccessToken = generateToken(tokenPayload);
   const newRefreshToken = generateRefreshToken(tokenPayload);
 
-  // Token rotation: Create new refresh token and revoke old one
+  // Token rotation: revoke old FIRST, then create new.
+  // If create fails after revoke, user must re-login (acceptable).
+  // Creating new first then revoking old risks both being valid if revoke fails.
+  await RefreshTokenModel.revokeRefreshToken(oldRefreshToken);
+
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
@@ -232,9 +236,6 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
     user_agent: req.get('user-agent'),
     ip_address: req.ip,
   });
-
-  // Revoke old refresh token
-  await RefreshTokenModel.revokeRefreshToken(oldRefreshToken);
 
   res.status(200).json({
     success: true,
