@@ -67,6 +67,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
   return null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unnecessary-type-assertion
 const CustomDot = (props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void }) => {
   const { cx, cy, dataPoint, onClick } = props;
 

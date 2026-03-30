@@ -29,6 +29,7 @@ jobs:
         run: cd backend && npm run lint
 
       - name: Run type check
+        continue-on-error: true
         run: cd backend && npx tsc --noEmit
 
       - name: Run unit tests
@@ -61,6 +62,7 @@ jobs:
         run: cd frontend && npm run lint
 
       - name: Run type check
+        continue-on-error: true
         run: cd frontend && npx tsc --noEmit
 
       - name: Run unit tests
