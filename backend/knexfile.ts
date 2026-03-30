@@ -74,7 +74,7 @@ const knexConfig = {
 
   test: {
     client: 'pg',
-    connection: buildConnection('TEST_DATABASE_'),
+    connection: buildConnection(),
     pool: {
       min: 2,
       max: 10,

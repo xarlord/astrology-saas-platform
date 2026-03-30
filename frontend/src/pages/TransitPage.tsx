@@ -6,23 +6,21 @@
  * the user to create a chart when none exist.
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  SkeletonLoader,
   EmptyState,
   AppLayout,
   TransitDashboard,
   TransitDetailModal,
 } from '../components';
 import type {
-  Transit,
+  Transit as TransitType,
   TransitHighlight,
   TransitCalendarDay,
   TransitDashboardData,
 } from '../components/TransitDashboard';
 import {
-  useCharts,
   useTodayTransits,
   useTransitForecast,
   useTransitCalendar,
@@ -37,7 +35,7 @@ import { getErrorMessage } from '../utils/errorHandling';
 function mapReadingToTransit(
   r: TransitReading['transits'][number],
   reading: TransitReading,
-): Transit {
+): TransitType {
   return {
     transitingPlanet: r.transitPlanet,
     natalPlanet: r.natalPlanet,
@@ -104,49 +102,30 @@ function buildCalendarDays(
   return days;
 }
 
-interface TransitData {
-  // Placeholder interface - expand as needed
-  id?: string;
-  date?: string;
-  transits?: unknown[];
-}
-
 export default function TransitPage() {
-  useCharts(); // Initialize charts store (auto-loads charts)
-  const [transitData, setTransitData] = useState<TransitData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Ensure charts are loaded so we know whether the user has any.
-  useEffect(() => {
-    void fetchCharts();
-  }, [fetchCharts]);
-
-  const hasCharts = charts.length > 0;
+  const navigate = useNavigate();
+  const [selectedTransit, setSelectedTransit] = useState<TransitType | null>(null);
 
   // Current month/year for calendar queries
   const now = new Date();
   const currentMonth = now.getMonth() + 1;
   const currentYear = now.getFullYear();
 
-  // React Query hooks -- only enabled when user has charts.
+  // React Query hooks
   const {
     data: todayReading,
-    isLoading: todayLoading,
     error: todayError,
-  } = useTodayTransits(hasCharts);
+  } = useTodayTransits(true);
 
   const {
     data: weekReadings,
-    isLoading: weekLoading,
     error: weekError,
-  } = useTransitForecast('week', hasCharts);
+  } = useTransitForecast('week', true);
 
   const {
     data: calendarReadings,
-    isLoading: calendarLoading,
     error: calendarError,
-  } = useTransitCalendar(currentMonth, currentYear, hasCharts);
+  } = useTransitCalendar(currentMonth, currentYear, true);
 
   // Aggregate error from any query
   const queryError =
@@ -155,13 +134,15 @@ export default function TransitPage() {
 
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
-    const todayTransits: Transit[] = todayReading
+    const todayTransits: TransitType[] = todayReading
       ? todayReading.transits.map((t) => mapReadingToTransit(t, todayReading))
       : [];
 
-    const weekTransits: Transit[] = weekReadings
-      ? weekReadings.flatMap((r) => r.transits.map((t) => mapReadingToTransit(t, r)))
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
+    const weekTransits: TransitType[] = weekReadings
+      ? weekReadings.flatMap((r: TransitReading) => r.transits.map((t) => mapReadingToTransit(t, r)))
       : [];
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 
     const monthDays: TransitCalendarDay[] = calendarReadings
       ? buildCalendarDays(calendarReadings, currentYear, currentMonth)
@@ -177,94 +158,16 @@ export default function TransitPage() {
     };
   }, [todayReading, weekReadings, calendarReadings, currentYear, currentMonth]);
 
-    void loadTransits();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-        <header className="bg-white dark:bg-gray-800 shadow">
-          <div className="container mx-auto px-4 py-4">
-            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
-              ← Back to Dashboard
-            </a>
-            <h1 className="text-2xl font-bold mt-4">Transit Forecast</h1>
-          </div>
-        </header>
-
-        <main className="container mx-auto px-4 py-8">
-          <SkeletonLoader variant="list" count={5} />
-        </main>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-        <header className="bg-white dark:bg-gray-800 shadow">
-          <div className="container mx-auto px-4 py-4">
-            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
-              ← Back to Dashboard
-            </a>
-            <h1 className="text-2xl font-bold mt-4">Transit Forecast</h1>
-          </div>
-        </header>
-
-        <main className="container mx-auto px-4 py-8">
-          <EmptyState
-            icon="⚠️"
-            title="Unable to load transits"
-            description={error}
-            actionText="Retry"
-            onAction={() => window.location.reload()}
-          />
-        </main>
-      </div>
-    );
-  }
-
-  if (!transitData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-        <header className="bg-white dark:bg-gray-800 shadow">
-          <div className="container mx-auto px-4 py-4">
-            <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
-              ← Back to Dashboard
-            </a>
-            <h1 className="text-2xl font-bold mt-4">Transit Forecast</h1>
-          </div>
-        </header>
-
-        <main className="container mx-auto px-4 py-8">
-          <EmptyState
-            icon="🌙"
-            title="No transit data available"
-            description="Transit calculations require a natal chart. Please create a chart first to view your transits."
-            actionText="Create Chart"
-            onAction={() => window.location.href = '/charts/new'}
-            secondaryActionText="Go to Dashboard"
-            onSecondaryAction={() => window.location.href = '/dashboard'}
-          />
-        </main>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="container mx-auto px-4 py-4">
-          <a href="/dashboard" className="text-primary-600 hover:text-primary-700">
-            ← Back to Dashboard
-          </a>
-          <h1 className="text-2xl font-bold mt-4">Transit Forecast</h1>
-        </div>
-      </header>
+    <AppLayout>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold mb-2">Transit Forecast</h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          Current and upcoming planetary influences
+        </p>
+      </div>
 
-      {isLoading ? (
-        <SkeletonLoader variant="list" count={5} />
-      ) : errorMessage ? (
+      {errorMessage ? (
         <EmptyState
           icon="⚠️"
           title="Unable to load transits"
@@ -272,7 +175,7 @@ export default function TransitPage() {
           actionText="Retry"
           onAction={() => window.location.reload()}
         />
-      ) : !hasCharts ? (
+      ) : !dashboardData ? (
         <EmptyState
           icon="🌙"
           title="No transit data available"
@@ -282,7 +185,7 @@ export default function TransitPage() {
           secondaryActionText="Go to Dashboard"
           onSecondaryAction={() => navigate('/dashboard')}
         />
-      ) : dashboardData ? (
+      ) : (
         <>
           <TransitDashboard
             data={dashboardData}
@@ -295,7 +198,7 @@ export default function TransitPage() {
             />
           )}
         </>
-      ) : null}
+      )}
     </AppLayout>
   );
 }

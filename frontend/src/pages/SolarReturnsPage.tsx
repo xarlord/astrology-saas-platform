@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing } from '../components';
+import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing, AppLayout } from '../components';
 import { Calendar, Settings, Share2, ArrowLeft } from 'lucide-react';
 
 interface RelocationLocation {
@@ -16,29 +16,6 @@ interface RelocationLocation {
   timezone: string;
 }
 
-interface SolarReturnInterpretationData {
-  themes?: string[];
-  overview?: string;
-  sunHouse?: { house: number; interpretation: string };
-  moonPhase?: { phase: string; interpretation: string };
-  luckyDays?: { date: string; description: string }[];
-  challenges?: { description: string; advice: string }[];
-  opportunities?: { description: string; timing: string }[];
-  advice?: string[];
-  keywords?: string[];
-  [key: string]: unknown;
-}
-
-interface SolarReturnCalculatedData {
-  planets?: { planet: string; name: string; sign: string; degree: number; minute: number; house: number; retrograde?: boolean }[];
-  houses?: { house: number; sign: string; degree: number; minute: number }[];
-  aspects?: { planet1: string; planet2: string; type: string; orb: number; applying: boolean }[];
-  ascendant?: { sign: string; degree: number; minute: number };
-  mc?: { sign: string; degree: number; minute: number };
-  moonPhase?: { phase: string; illumination: number };
-  [key: string]: unknown;
-}
-
 interface SolarReturn {
   id: string;
   year: number;
@@ -46,17 +23,13 @@ interface SolarReturn {
   returnLocation: {
     name: string;
   };
-  calculatedData: SolarReturnCalculatedData;
-  interpretation: SolarReturnInterpretationData;
+  calculatedData: Record<string, unknown>;
+  interpretation: Record<string, unknown>;
   isRelocated: boolean;
 }
 
-interface RelocationLocation {
-  name: string;
-  latitude: number;
-  longitude: number;
-  timezone: string;
-  country?: string;
+interface SolarReturnApiResponse {
+  data: SolarReturn;
 }
 
 type ViewMode = 'dashboard' | 'chart' | 'interpretation' | 'relocate' | 'share';
@@ -71,29 +44,26 @@ export const SolarReturnsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch specific solar return if year is provided
   const fetchSolarReturn = useCallback(async (year: number) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await api.get<{ data: SolarReturn }>(`/solar-returns/year/${year}`);
-      setSelectedReturn(response.data?.data ?? null);
+      const response = await api.get<SolarReturnApiResponse>(`/v1/solar-returns/year/${year}`);
+      setSelectedReturn(response.data.data);
       setSelectedYear(year);
     } catch (err: unknown) {
-      const axiosError = err as { response?: { status?: number; data?: { error?: { message?: string } } } };
-      if (axiosError.response?.status === 404) {
-        // Solar return doesn't exist, redirect to dashboard
+      const apiErr = err as { response?: { status?: number; data?: { error?: { message?: string } } } };
+      if (apiErr.response?.status === 404) {
         navigate('/solar-returns');
       } else {
-        setError(axiosError.response?.data?.error?.message ?? 'Failed to load solar return');
+        setError(apiErr.response?.data?.error?.message ?? 'Failed to load solar return');
       }
     } finally {
       setLoading(false);
     }
   }, [navigate]);
 
-  // Fetch specific solar return if year is provided
   useEffect(() => {
     if (yearParam) {
       void fetchSolarReturn(parseInt(yearParam));
@@ -107,19 +77,16 @@ export const SolarReturnsPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const response = await api.post<{ data: SolarReturn }>(
-        `/solar-returns/${selectedReturn.id}/recalculate`,
+      const response = await api.post<SolarReturnApiResponse>(
+        `/v1/solar-returns/${selectedReturn.id}/recalculate`,
         { location }
       );
 
-      const returnData = response.data?.data;
-      if (returnData) {
-        setSelectedReturn(returnData);
-      }
-      return returnData ?? null;
+      setSelectedReturn(response.data.data);
+      return response.data.data;
     } catch (err: unknown) {
-      const axiosError = err as { response?: { data?: { error?: { message?: string } } } };
-      setError(axiosError.response?.data?.error?.message ?? 'Failed to recalculate');
+      const apiErr = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(apiErr.response?.data?.error?.message ?? 'Failed to recalculate');
       throw err;
     } finally {
       setLoading(false);
@@ -137,16 +104,19 @@ export const SolarReturnsPage: React.FC = () => {
 
   const renderBreadcrumb = () => {
     return (
-      <div className="breadcrumb" data-testid="solar-returns-breadcrumb">
-        <button onClick={() => navigate('/solar-returns')} className="back-link" data-testid="back-to-dashboard">
+      <div className="flex items-center gap-2 mb-4 text-sm">
+        <button
+          onClick={() => navigate('/solar-returns')}
+          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+        >
           <ArrowLeft size={18} />
           Back to Dashboard
         </button>
 
         {selectedYear && (
           <>
-            <span className="separator">/</span>
-            <span className="current" data-testid="current-solar-return-year">Solar Return {selectedYear}</span>
+            <span className="text-gray-400">/</span>
+            <span className="text-gray-700 dark:text-gray-300">Solar Return {selectedYear}</span>
           </>
         )}
       </div>
@@ -164,7 +134,7 @@ export const SolarReturnsPage: React.FC = () => {
     ];
 
     return (
-      <div className="view-mode-tabs" data-testid="solar-returns-view-tabs">
+      <div className="flex gap-2.5 mb-5 border-b-2 border-gray-200 dark:border-gray-700 pb-2.5">
         {tabs.map((tab) => (
           <button
             key={tab.mode}
@@ -174,7 +144,6 @@ export const SolarReturnsPage: React.FC = () => {
                 : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
             onClick={() => handleViewModeChange(tab.mode)}
-            data-testid={`solar-returns-view-${tab.mode}`}
           >
             {tab.icon}
             {tab.label}
@@ -185,12 +154,12 @@ export const SolarReturnsPage: React.FC = () => {
   };
 
   return (
-    <div className="solar-returns-page" data-testid="solar-returns-page">
-      <div className="page-header">
-        <div>
-          <h1>Solar Returns</h1>
-          <p className="subtitle">Your birthday year forecasts and themes</p>
-        </div>
+    <AppLayout>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold mb-2">Solar Returns</h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          Your birthday year forecasts and themes
+        </p>
       </div>
 
       {error && (
@@ -204,15 +173,14 @@ export const SolarReturnsPage: React.FC = () => {
         <SolarReturnDashboard
           onSelectYear={handleSelectYear}
           onSelectSolarReturn={(id) => {
-            // Fetch full details
-            void api.get<{ data: SolarReturn }>(`/solar-returns/${id}`)
+            void api.get<SolarReturnApiResponse>(`/v1/solar-returns/${id}`)
               .then(res => {
                 setSelectedReturn(res.data.data);
                 setSelectedYear(res.data.data.year);
               })
               .catch((err: unknown) => {
-                const axiosError = err as { response?: { data?: { error?: { message?: string } } } };
-                setError(axiosError.response?.data?.error?.message ?? 'Failed to load solar return');
+                const apiErr = err as { response?: { data?: { error?: { message?: string } } } };
+                setError(apiErr.response?.data?.error?.message ?? 'Failed to load solar return');
               });
           }}
         />
@@ -232,32 +200,8 @@ export const SolarReturnsPage: React.FC = () => {
             <div className="min-h-[400px]">
               {viewMode === 'chart' && selectedReturn.calculatedData && (
                 <SolarReturnChart
-                  chartData={{
-                    planets: (selectedReturn.calculatedData.planets ?? []).map(p => ({
-                      planet: p.planet,
-                      sign: p.sign,
-                      degree: p.degree,
-                      minute: p.minute ?? 0,
-                      house: p.house,
-                      retrograde: p.retrograde ?? false,
-                    })),
-                    houses: (selectedReturn.calculatedData.houses ?? []).map(h => ({
-                      house: (h as { house: number }).house,
-                      sign: (h as { sign: string }).sign,
-                      degree: (h as { degree: number }).degree,
-                      minute: (h as { minute?: number }).minute ?? 0,
-                    })),
-                    aspects: (selectedReturn.calculatedData.aspects ?? []).map(a => ({
-                      planet1: (a as { planet1: string }).planet1,
-                      planet2: (a as { planet2: string }).planet2,
-                      type: (a as { type: string }).type,
-                      orb: (a as { orb: number }).orb,
-                      applying: (a as { applying: boolean }).applying,
-                    })),
-                    ascendant: selectedReturn.calculatedData.ascendant ?? { sign: 'Aries', degree: 0, minute: 0 },
-                    mc: selectedReturn.calculatedData.mc ?? { sign: 'Capricorn', degree: 0, minute: 0 },
-                    moonPhase: selectedReturn.calculatedData.moonPhase ?? { phase: 'full', illumination: 100 },
-                  }}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                  chartData={selectedReturn.calculatedData as any}
                   year={selectedReturn.year}
                   location={selectedReturn.returnLocation.name}
                   showAspects={true}
@@ -267,25 +211,8 @@ export const SolarReturnsPage: React.FC = () => {
 
               {viewMode === 'interpretation' && selectedReturn.interpretation && (
                 <SolarReturnInterpretation
-                  interpretation={{
-                    themes: selectedReturn.interpretation.themes ?? [],
-                    sunHouse: (selectedReturn.interpretation.sunHouse ?? {
-                      house: 1,
-                      interpretation: 'Your solar return sun focuses on new beginnings.',
-                      focus: ['self-expression', 'personal identity'],
-                    }) as { house: number; interpretation: string; focus: string[] },
-                    moonPhase: (selectedReturn.interpretation.moonPhase ?? {
-                      phase: 'Full Moon',
-                      interpretation: 'A time of culmination and emotional clarity.',
-                      energy: 'High',
-                      advice: ['Reflect on achievements', 'Release what no longer serves you'],
-                    }) as { phase: string; interpretation: string; energy: string; advice: string[] },
-                    luckyDays: (selectedReturn.interpretation.luckyDays ?? []) as unknown as { date: string; reason: string; intensity: number }[],
-                    challenges: (selectedReturn.interpretation.challenges ?? []) as unknown as { area: string; description: string; advice: string }[],
-                    opportunities: (selectedReturn.interpretation.opportunities ?? []) as unknown as { area: string; description: string; timing: string }[],
-                    advice: selectedReturn.interpretation.advice ?? [],
-                    keywords: selectedReturn.interpretation.keywords ?? [],
-                  }}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                  interpretation={selectedReturn.interpretation as any}
                   year={selectedReturn.year}
                   returnDate={selectedReturn.returnDate}
                   onDownload={() => {
@@ -307,34 +234,8 @@ export const SolarReturnsPage: React.FC = () => {
                 <RelocationCalculator
                   natalChartId={selectedReturn.id}
                   year={selectedReturn.year}
-                  onRecalculate={async (location) => {
-                    const result = await handleRecalculate({
-                      name: location.name,
-                      latitude: location.latitude,
-                      longitude: location.longitude,
-                      timezone: location.timezone,
-                    });
-                    if (!result) throw new Error('Failed to recalculate');
-                    return {
-                      id: result.id,
-                      year: result.year,
-                      returnDate: result.returnDate,
-                      calculatedData: {
-                        planets: (result.calculatedData.planets ?? []).map(p => ({
-                          planet: p.planet,
-                          house: p.house,
-                          sign: p.sign,
-                          longitude: p.degree, // Use degree as longitude approximation
-                        })),
-                        houses: result.calculatedData.houses ?? [],
-                        aspects: result.calculatedData.aspects ?? [],
-                      },
-                      interpretation: {
-                        themes: result.interpretation?.themes ?? [],
-                        overview: result.interpretation?.overview,
-                      },
-                    };
-                  }}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                  onRecalculate={handleRecalculate as any}
                 />
               )}
 
