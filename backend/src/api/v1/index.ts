@@ -19,7 +19,6 @@ import { router as timezoneRoutes } from '../../modules/shared/routes/timezone.r
 import { default as locationRoutes } from '../../modules/shared/routes/location.routes';
 import { router as shareRoutes } from '../../modules/charts/routes/share.routes';
 import aiRoutes from '../../modules/ai/routes/ai.routes';
-import { getCsrfToken } from '../../middleware/csrf';
 
 const router = Router();
 

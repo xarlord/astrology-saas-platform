@@ -149,8 +149,8 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
     };
   };
 
-  const themesAdded = getThemeChanges().added;
-  const themesRemoved = getThemeChanges().removed;
+  const _themesAdded = getThemeChanges().added;
+  const _themesRemoved = getThemeChanges().removed;
 
   return (
     <div className="p-8 max-w-[1000px] mx-auto md:p-4" role="region" aria-label="Relocation Calculator">

@@ -3,15 +3,6 @@
  * Calculates solar return charts using Swiss Ephemeris (or mock if unavailable)
  */
 
-// Try to import swisseph, use mock if unavailable
-let swisseph: any;
-try {
-  swisseph = require('swisseph');
-} catch {
-  console.warn('swisseph module not available, using mock calculations');
-  swisseph = null;
-}
-
 import {
   SolarReturnCalculationParams,
   SolarReturnChartData,
@@ -19,6 +10,8 @@ import {
   HouseCusp,
   Aspect,
 } from '../models/types';
+import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
+import { NatalChartService } from '../../shared/services/natalChart.service';
 
 // Module-level singletons for the real calculation engines
 const astronomyEngine = new AstronomyEngineService();

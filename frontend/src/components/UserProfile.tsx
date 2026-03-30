@@ -72,7 +72,7 @@ interface UserProfileProps {
   onDeleteChart?: (chartId: string) => void;
 }
 
-interface UserData {
+interface _UserData {
   id: string;
   email: string;
   name: string;

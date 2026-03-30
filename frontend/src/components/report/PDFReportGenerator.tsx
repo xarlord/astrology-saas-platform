@@ -215,6 +215,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
   }, [chart, transits, synastry, solarReturn, lunarReturn]);
 
   // Prepare report data based on selected type
+  // eslint-disable @typescript-eslint/no-unsafe-assignment
   const prepareReportData = useCallback((): ReportData | null => {
     switch (selectedReportType) {
       case 'natal':
@@ -260,6 +261,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
       default:
         return null;
     }
+  // eslint-enable @typescript-eslint/no-unsafe-assignment
   }, [selectedReportType, chart, transits, synastry, solarReturn, lunarReturn, chartName, person1Name, person2Name]);
 
   // Handle generate report

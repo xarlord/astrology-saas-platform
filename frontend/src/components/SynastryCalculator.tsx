@@ -105,14 +105,14 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
     challenging: 'from-red-500 to-red-600',
   };
 
-  const scoreValueColor: Record<string, string> = {
+  const _scoreValueColor: Record<string, string> = {
     excellent: 'text-green-500',
     good: 'text-blue-500',
     fair: 'text-amber-500',
     challenging: 'text-red-500',
   };
 
-  const scoreFillBg: Record<string, string> = {
+  const _scoreFillBg: Record<string, string> = {
     excellent: 'bg-gradient-to-r from-green-500 to-green-400',
     good: 'bg-gradient-to-r from-blue-500 to-blue-400',
     fair: 'bg-gradient-to-r from-amber-500 to-amber-400',
