@@ -213,14 +213,14 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               >
                 <PlusIcon className="w-5 h-5" />
                 <span className="font-medium">New Chart</span>
-              </a>
-              <a
-                href="/dashboard"
+              </Link>
+              <Link
+                to="/dashboard"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <HomeIcon className="w-5 h-5" />
                 <span>Dashboard</span>
-              </a>
+              </Link>
             </div>
           </section>
 
@@ -230,24 +230,24 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               Features
             </h3>
             <div className="space-y-1">
-              <a
-                href="/calendar"
+              <Link
+                to="/calendar"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <CalendarIcon className="w-5 h-5" />
                 <span>Calendar</span>
-              </a>
-              <a
-                href="/synastry"
+              </Link>
+              <Link
+                to="/synastry"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <span>Synastry</span>
-              </a>
-              <a
-                href="/transits"
+              </Link>
+              <Link
+                to="/transits"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <ClockIcon className="w-5 h-5" />
@@ -262,20 +262,20 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               Returns
             </h3>
             <div className="space-y-1">
-              <a
-                href="/solar-returns"
+              <Link
+                to="/solar-returns"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <StarIcon className="w-5 h-5" />
                 <span>Solar Returns</span>
-              </a>
-              <a
-                href="/lunar-returns"
+              </Link>
+              <Link
+                to="/lunar-returns"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <MoonIcon className="w-5 h-5" />
                 <span>Lunar Returns</span>
-              </a>
+              </Link>
             </div>
           </section>
         </div>
