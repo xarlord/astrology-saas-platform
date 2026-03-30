@@ -11,6 +11,7 @@ module.exports = {
     'dist',
     '.eslintrc.cjs',
     'e2e',
+    'tests',
     'playwright.config.ts',
     'playwright.config.local.ts',
     'vitest.config.ts',

@@ -215,11 +215,11 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
   }, [chart, transits, synastry, solarReturn, lunarReturn]);
 
   // Prepare report data based on selected type
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   const prepareReportData = useCallback((): ReportData | null => {
     switch (selectedReportType) {
       case 'natal':
         if (!chart) return null;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           chart,
           personality: {
@@ -231,6 +231,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'transit':
         if (!transits) return null;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           transits,
           chartName,
@@ -238,6 +239,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'synastry':
         if (!synastry) return null;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           synastry,
           person1Name,
@@ -246,6 +248,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'solar-return':
         if (!solarReturn) return null;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           solarReturn,
           chartName,
@@ -253,6 +256,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'lunar-return':
         if (!lunarReturn) return null;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           lunarReturn,
           chartName,
@@ -261,7 +265,6 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
       default:
         return null;
     }
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
   }, [selectedReportType, chart, transits, synastry, solarReturn, lunarReturn, chartName, person1Name, person2Name]);
 
   // Handle generate report
