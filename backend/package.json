@@ -19,7 +19,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:rollback": "knex migrate:rollback",
     "db:seed": "knex seed:run",
-    "db:reset": "knex migrate:rollback && knex migrate:latest && knex seed:run"
+    "db:reset": "knex migrate:rollback && knex migrate:latest && knex seed:run",
+    "db:migrate:test": "NODE_ENV=test tsx scripts/migrate.ts"
   },
   "dependencies": {
     "@astrology-saas/shared-types": "*",
@@ -46,7 +47,8 @@
     "uuid": "^9.0.1",
     "web-push": "^3.6.7",
     "winston": "^3.11.0",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston-daily-rotate-file": "^4.7.1",
+    "cookie-parser": "^1.4.6"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

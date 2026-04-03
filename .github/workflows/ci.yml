@@ -164,7 +164,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
+        run: cd .. && npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
@@ -206,7 +206,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
+        run: cd .. && npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -270,7 +270,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
+        run: cd .. && npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -322,7 +322,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
+        run: cd .. && npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -388,7 +388,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
+        run: cd .. && npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
