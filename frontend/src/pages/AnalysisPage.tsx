@@ -3,61 +3,102 @@
  * Displays chart personality analysis with AI-enhanced interpretations
  */
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState, AppLayout } from '../components';
 import { PersonalityAnalysis } from '../components';
+import { analysisService } from '../services/analysis.service';
+import type { PersonalityAnalysisResponse } from '../services/analysis.service';
+import type { PersonalityAnalysisData } from '../components/PersonalityAnalysis';
 
-interface ChartData {
-  id: string;
-  planets: {
-    planet: string;
-    sign: string;
-    degree: number;
-    house: number;
-  }[];
-  houses: {
-    house: number;
-    sign: string;
-    degree: number;
-  }[];
-  aspects: {
-    planet1: string;
-    planet2: string;
-    type: string;
-    orb: number;
-  }[];
+/** Fallback interpretation for missing sign data */
+function fallbackInterpretation(planet: string, sign: string) {
+  return {
+    planet,
+    sign,
+    keywords: [],
+    general: `${planet} in ${sign}`,
+    strengths: [],
+    challenges: [],
+    advice: [],
+  };
+}
+
+/** Map API response to PersonalityAnalysisData shape expected by component */
+function mapAnalysisToComponentData(analysis: PersonalityAnalysisResponse): PersonalityAnalysisData {
+  return {
+    overview: {
+      sunSign: analysis.overview.sunSign ?? fallbackInterpretation('sun', 'unknown'),
+      moonSign: analysis.overview.moonSign ?? fallbackInterpretation('moon', 'unknown'),
+      ...(analysis.overview.ascendantSign && { ascendantSign: analysis.overview.ascendantSign }),
+    },
+    planetsInSigns: analysis.planetsInSigns.map((p) => p.interpretation),
+    houses: analysis.houses.map((h) => ({
+      house: h.house,
+      signOnCusp: h.signOnCusp,
+      planetsInHouse: h.planetsInHouse,
+      themes: h.themes,
+      interpretation: h.interpretation,
+      advice: h.advice,
+    })),
+    aspects: analysis.aspects.map((a) => ({
+      planet1: a.planet1,
+      planet2: a.planet2,
+      aspect: a.aspect,
+      orb: a.orb,
+      harmonious: a.harmonious ?? false,
+      keywords: a.keywords,
+      interpretation: a.interpretation,
+      expression: a.expression,
+      advice: a.advice,
+    })),
+    patterns: analysis.patterns?.map((p) => ({
+      type: p.type,
+      description: p.description,
+      planets: p.planets,
+    })),
+  };
 }
 
 export default function AnalysisPage() {
   const { chartId } = useParams<{ chartId: string }>();
-  const [chartData, setChartData] = useState<ChartData | null>(null);
+  const navigate = useNavigate();
+  const [analysisData, setAnalysisData] = useState<PersonalityAnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-  const [aiInterpretation, setAIInterpretation] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [aiInterpretation, setAIInterpretation] = useState<{ interpretation: string; ai: boolean; source: string } | null>(null);
 
   useEffect(() => {
-    // TODO: Fetch chart data from API
-    // For now, using placeholder data
-    setChartData({
-      id: chartId ?? '1',
-      planets: [
-        { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-        { planet: 'moon', sign: 'taurus', degree: 10, house: 2 },
-      ],
-      houses: [
-        { house: 1, sign: 'aries', degree: 0 },
-        { house: 2, sign: 'taurus', degree: 30 },
-      ],
-      aspects: [
-        { planet1: 'sun', planet2: 'moon', type: 'trine', orb: 5 },
-      ],
-    });
-    setLoading(false);
+    if (!chartId) return;
+
+    let cancelled = false;
+
+    const fetchAnalysis = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const { analysis } = await analysisService.getPersonalityAnalysis(chartId);
+
+        if (!cancelled) {
+          setAnalysisData(mapAnalysisToComponentData(analysis));
+        }
+      } catch (err: unknown) {
+        if (!cancelled) {
+          const message = err instanceof Error ? err.message : 'Failed to load personality analysis';
+          setError(message);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void fetchAnalysis();
+    return () => { cancelled = true; };
   }, [chartId]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleAIInterpretation = (interpretation: any) => {
+  const handleAIInterpretation = (interpretation: { interpretation: string; ai: boolean; source: string }) => {
     setAIInterpretation(interpretation);
   };
 
@@ -70,18 +111,18 @@ export default function AnalysisPage() {
     );
   }
 
-  if (!chartData) {
+  if (error || !analysisData) {
     return (
       <AppLayout>
         <h2 className="text-3xl font-bold mb-6">Personality Analysis</h2>
         <EmptyState
           icon="📊"
-          title="No chart data available"
-          description="Unable to load personality analysis. Please create a chart first."
+          title={error ? 'Failed to load analysis' : 'No chart data available'}
+          description={error ?? 'Unable to load personality analysis. Please create a chart first.'}
           actionText="Create Chart"
-          onAction={() => { window.location.href = '/charts/new'; }}
+          onAction={() => navigate('/charts/new')}
           secondaryActionText="Back to Dashboard"
-          onSecondaryAction={() => { window.location.href = '/dashboard'; }}
+          onSecondaryAction={() => navigate('/dashboard')}
         />
       </AppLayout>
     );
@@ -94,7 +135,7 @@ export default function AnalysisPage() {
       {/* AI Toggle Section */}
       <div className="mb-6">
         <AIInterpretationToggle
-          chartData={chartData}
+          chartData={{ chartId: chartId!, birthData: analysisData }}
           onInterpretationGenerated={handleAIInterpretation}
         />
       </div>
@@ -102,65 +143,13 @@ export default function AnalysisPage() {
       {/* AI Interpretation Display */}
       {aiInterpretation && (
         <div className="mb-6">
-          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
           <AIInterpretationDisplay interpretation={aiInterpretation} />
         </div>
       )}
 
       {/* Traditional Analysis */}
       <div className="card">
-        <PersonalityAnalysis
-          data={{
-            overview: {
-              sunSign: {
-                planet: 'sun',
-                sign: chartData.planets.find(p => p.planet === 'sun')?.sign ?? 'aries',
-                keywords: ['core identity', 'vitality', 'self-expression'],
-                general: 'Your Sun sign represents your core identity and life purpose.',
-                strengths: ['Leadership', 'Confidence', 'Creativity'],
-                challenges: ['Ego', 'Stubbornness', 'Impatience'],
-                advice: ['Embrace your natural leadership abilities', 'Practice patience with others'],
-              },
-              moonSign: {
-                planet: 'moon',
-                sign: chartData.planets.find(p => p.planet === 'moon')?.sign ?? 'taurus',
-                keywords: ['emotions', 'intuition', 'inner needs'],
-                general: 'Your Moon sign reveals your emotional nature and inner world.',
-                strengths: ['Emotional intelligence', 'Nurturing', 'Intuition'],
-                challenges: ['Moodiness', 'Sensitivity', 'Insecurity'],
-                advice: ['Honor your emotional needs', 'Create a safe home environment'],
-              },
-            },
-            planetsInSigns: chartData.planets.map(p => ({
-              planet: p.planet,
-              sign: p.sign,
-              keywords: [`${p.planet} in ${p.sign}`, 'energy', 'expression'],
-              general: `${p.planet.charAt(0).toUpperCase() + p.planet.slice(1)} in ${p.sign.charAt(0).toUpperCase() + p.sign.slice(1)}`,
-              strengths: ['Expressive', 'Dynamic'],
-              challenges: ['Impulsive', 'Restless'],
-              advice: ['Channel your energy constructively'],
-            })),
-            houses: chartData.houses.map(h => ({
-              house: h.house,
-              signOnCusp: h.sign,
-              planetsInHouse: chartData.planets.filter(p => p.house === h.house).map(p => p.planet),
-              themes: [`${h.sign.charAt(0).toUpperCase() + h.sign.slice(1)} themes`],
-              interpretation: `House ${h.house} in ${h.sign.charAt(0).toUpperCase() + h.sign.slice(1)}`,
-              advice: ['Focus on this area of life'],
-            })),
-            aspects: chartData.aspects.map(a => ({
-              planet1: a.planet1,
-              planet2: a.planet2,
-              aspect: a.type,
-              orb: a.orb,
-              harmonious: ['trine', 'sextile'].includes(a.type),
-              keywords: [a.type, 'aspect'],
-              interpretation: `${a.planet1} ${a.type} ${a.planet2}`,
-              expression: 'This aspect influences your personality',
-              advice: ['Work with this energy consciously'],
-            })),
-          }}
-        />
+        <PersonalityAnalysis data={analysisData} />
       </div>
     </AppLayout>
   );

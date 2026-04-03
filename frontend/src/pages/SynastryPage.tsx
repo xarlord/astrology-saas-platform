@@ -15,7 +15,6 @@ const SynastryPageWrapper: React.FC = () => {
   const [charts, setCharts] = useState<Chart[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     void loadCharts();

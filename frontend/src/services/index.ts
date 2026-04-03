@@ -12,6 +12,7 @@ export { apiRequest, handleApiError, isNetworkError, isAuthError } from './api';
 export { authService } from './auth.service';
 export { chartService } from './chart.service';
 export { analysisService } from './analysis.service';
+export type { PersonalityAnalysisResponse, PlanetInSignInterpretation } from './analysis.service';
 export { transitService } from './transit.service';
 export { default as calendarService } from './calendar.service';
 export { default as aiService } from './ai.service';

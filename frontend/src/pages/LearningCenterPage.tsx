@@ -339,7 +339,7 @@ const LearningCenterPage: React.FC = () => {
                 return (
                   <div
                     key={course.id}
-                    className={`min-w-[320px] rounded-xl p-6 border-l-4 cursor-pointer transition-all hover:bg-white/5 ${
+                    className={`min-w-0 rounded-xl p-6 border-l-4 cursor-pointer transition-all hover:bg-white/5 ${
                       status === 'in-progress'
                         ? 'bg-white/5 backdrop-blur-sm border-l-primary'
                         : 'bg-white/5 backdrop-blur-sm border-l-slate-700 opacity-70'

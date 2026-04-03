@@ -5,7 +5,6 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 // Components
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -49,19 +48,6 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // Register service worker for PWA (production only)
-  useEffect(() => {
-    // Only register service worker in production builds
-    if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        console.log('Service Worker registered:', registration);
-      }).catch((error) => {
-        // Service worker failures should not break the app
-        console.warn('Service Worker registration failed (non-critical):', String(error));
-      });
-    }
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
