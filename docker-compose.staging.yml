@@ -28,7 +28,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.production
     container_name: astrology-staging-backend
     depends_on:
       postgres:
@@ -53,13 +53,15 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    command: sh -c "npm run db:migrate && npm run db:seed && node dist/server.js"
+    command: sh -c "npx tsx scripts/migrate.ts && npx knex seed:run && node dist/server.js"
 
   # Frontend
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.production
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3001}
     container_name: astrology-staging-frontend
     depends_on:
       backend:

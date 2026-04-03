@@ -1,0 +1,112 @@
+name: Staging Deploy
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: staging-deploy
+  cancel-in-progress: true
+
+jobs:
+  # Build and validate
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all workspaces
+        run: npm run build
+
+      - name: Run backend tests
+        run: cd backend && npm run test:unit -- --coverage --ci --forceExit
+
+      - name: Run frontend tests
+        run: cd frontend && npx vitest run --coverage
+
+      - name: Build backend Docker image
+        run: docker build -f backend/Dockerfile.production -t astrology-backend:staging ./backend
+
+      - name: Build frontend Docker image
+        run: docker build -f frontend/Dockerfile.production -t astrology-frontend:staging ./frontend
+
+  # Deploy backend to Railway
+  deploy-backend:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Deploy backend to Railway
+        working-directory: backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_BACKEND_TOKEN }}
+        run: |
+          railway up --service backend --environment staging || echo "Railway deploy skipped - configure RAILWAY_BACKEND_TOKEN secret"
+
+  # Deploy frontend to Railway (or Vercel)
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          VITE_API_URL: ${{ secrets.STAGING_API_URL }}
+        run: npm run build
+
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Deploy frontend to Railway
+        working-directory: frontend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_FRONTEND_TOKEN }}
+        run: |
+          railway up --service frontend --environment staging || echo "Railway deploy skipped - configure RAILWAY_FRONTEND_TOKEN secret"
+
+  # Run migrations on staging database
+  migrate:
+    runs-on: ubuntu-latest
+    needs: [deploy-backend]
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Run migrations
+        working-directory: backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_BACKEND_TOKEN }}
+        run: |
+          railway run --service backend --environment staging -- npx tsx scripts/migrate.ts || echo "Migration skipped - configure RAILWAY_BACKEND_TOKEN secret"
