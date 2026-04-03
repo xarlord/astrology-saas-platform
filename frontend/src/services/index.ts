@@ -20,6 +20,7 @@ export { reportService } from './report.service';
 export { default as locationService } from './location.service';
 export { default as userService } from './user.service';
 export { default as pdfService } from './pdf.service';
+export { billingService } from './billing.service';
 
 // Chart Calculator Service
 export {

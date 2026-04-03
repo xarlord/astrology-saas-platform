@@ -35,6 +35,7 @@ const DetailedNatalReportPage = lazy(() => import('./pages/DetailedNatalReportPa
 const SolarReturnAnnualReportPage = lazy(() => import('./pages/SolarReturnAnnualReportPage'));
 const ChartCreatePage = lazy(() => import('./pages/ChartCreatePage'));
 const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
+const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Create React Query client
@@ -211,6 +212,10 @@ function App() {
                   <DetailedNatalReportPage />
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/subscription"
+              element={<SubscriptionPage />}
             />
             <Route
               path="/reports/solar-return/:id"

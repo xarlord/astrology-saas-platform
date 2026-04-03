@@ -172,6 +172,10 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
 // Sidebar Component
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { user } = useAuth();
+  const tier = user?.plan ?? 'free';
+  const isPaid = tier !== 'free';
+
   return (
     <aside
       className={`
@@ -282,20 +286,40 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg p-4">
-            <p className="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-1">
-              Upgrade to Premium
-            </p>
-            <p className="text-xs text-indigo-700 dark:text-indigo-300 mb-3">
-              Get unlimited charts and detailed analysis
-            </p>
-            <Link
-              to="/subscription"
-              className="block text-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              Upgrade Now
-            </Link>
-          </div>
+          {isPaid ? (
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <StarIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                  {tier === 'basic' ? 'Pro Plan' : 'Premium Plan'}
+                </p>
+              </div>
+              <p className="text-xs text-green-700 dark:text-green-300 mb-3">
+                You have access to premium features
+              </p>
+              <Link
+                to="/subscription"
+                className="block text-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Manage Plan
+              </Link>
+            </div>
+          ) : (
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg p-4">
+              <p className="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-1">
+                Upgrade to Premium
+              </p>
+              <p className="text-xs text-indigo-700 dark:text-indigo-300 mb-3">
+                Get unlimited charts and detailed analysis
+              </p>
+              <Link
+                to="/subscription"
+                className="block text-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Upgrade Now
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </aside>
