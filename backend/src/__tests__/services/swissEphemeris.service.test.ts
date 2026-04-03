@@ -294,7 +294,8 @@ describe('Swiss Ephemeris Service', () => {
 
   describe('Utility Functions', () => {
     test('should convert Julian day to date', () => {
-      const jd = 2024.5; // A simpler value that works with the mock
+      // JD 2460310.5 = January 1, 2024 00:00:00 UTC
+      const jd = 2460310.5;
       const date = swissEphemeris.juldayToDate(jd);
 
       expect(date).toBeDefined();
@@ -303,8 +304,8 @@ describe('Swiss Ephemeris Service', () => {
     });
 
     test('should handle different Julian day values', () => {
-      const jd1 = 2024.5;
-      const jd2 = 2025.3;
+      const jd1 = 2460310.5; // Jan 1, 2024
+      const jd2 = 2460676.5; // Jan 1, 2025
 
       const date1 = swissEphemeris.juldayToDate(jd1);
       const date2 = swissEphemeris.juldayToDate(jd2);

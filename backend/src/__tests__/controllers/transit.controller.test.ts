@@ -216,21 +216,21 @@ describe('Transit Controller', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
-    it('should throw 404 if no charts found', async () => {
+    it('should fall back to general transits if no charts found', async () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('No charts found');
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
-    it('should throw 400 if chart not calculated', async () => {
+    it('should fall back to general transits if chart not calculated', async () => {
       const mockChart = {
         id: '456',
         calculated_data: null,
       };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
   });
 

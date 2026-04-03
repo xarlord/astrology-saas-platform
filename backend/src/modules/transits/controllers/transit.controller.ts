@@ -59,7 +59,7 @@ interface TransitResult {
  * Calculate transits by comparing natal planet positions (from stored chart
  * data) against current/transit planet positions (from AstronomyEngineService).
  *
- * The output shape matches what the old mock `swissEphemeris.calculateTransits`
+ * The output shape matches what the old mock `astronomyEngine.calculateTransits`
  * returned, preserving the frontend contract.
  */
 function calculateTransitsWithEngine(params: {
@@ -249,20 +249,22 @@ export async function getTodayTransits(req: Request, res: Response): Promise<voi
       const charts = await ChartModel.findByUserId(req.user.id, 1, 0);
       if (charts.length > 0 && charts[0].calculated_data) {
         const chart = charts[0];
-        const transitData = swissEphemeris.calculateTransits({
-          birthDate: new Date(chart.birth_date),
+        const natalPlanets = (chart.calculated_data as any).planets ?? {};
+
+        const transitData = calculateTransitsWithEngine({
+          natalPlanets,
           transitDate: today,
           latitude: chart.birth_latitude,
           longitude: chart.birth_longitude,
         });
 
         const majorAspects = transitData.aspects.filter(
-          (a: any) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
+          (a) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
         );
 
         const moonPhase = calculateMoonPhase(
-          transitData.transitPlanets.moon.longitude,
-          transitData.transitPlanets.sun.longitude
+          transitData.transitPlanets.moon?.longitude ?? 0,
+          transitData.transitPlanets.sun?.longitude ?? 0
         );
 
         res.status(200).json({
@@ -284,7 +286,7 @@ export async function getTodayTransits(req: Request, res: Response): Promise<voi
   }
 
   // Return general transit data (no chart required)
-  const generalTransits = swissEphemeris.getDailyTransits(today);
+  const generalTransits = astronomyEngine.getDailyTransits(today);
 
   const moonPhase = calculateMoonPhase(
     generalTransits.moon.longitude,
