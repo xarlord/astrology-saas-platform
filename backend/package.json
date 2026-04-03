@@ -16,7 +16,7 @@
     "test:live": "jest --testPathPattern='live/' --testTimeout=60000 --forceExit --verbose",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "db:migrate": "knex migrate:latest",
+    "db:migrate": "tsx scripts/migrate.ts",
     "db:rollback": "knex migrate:rollback",
     "db:seed": "knex seed:run",
     "db:reset": "knex migrate:rollback && knex migrate:latest && knex seed:run"
