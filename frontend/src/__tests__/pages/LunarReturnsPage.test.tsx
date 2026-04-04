@@ -139,6 +139,11 @@ vi.mock('lucide-react', () => ({
   ArrowLeft: () => <span data-testid="arrow-left-icon">Back</span>,
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import { LunarReturnsPage } from '../../pages/LunarReturnsPage';
 

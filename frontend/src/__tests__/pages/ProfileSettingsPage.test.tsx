@@ -85,6 +85,11 @@ vi.mock('../../components/ui/Toggle', () => ({
   ),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import { ProfileSettingsPage } from '../../pages/ProfileSettingsPage';
 

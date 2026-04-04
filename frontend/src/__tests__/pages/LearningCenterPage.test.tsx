@@ -123,6 +123,11 @@ vi.mock('../../hooks/useLearning', () => ({
   })),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import LearningCenterPage from '../../pages/LearningCenterPage';
 

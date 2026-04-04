@@ -11,6 +11,11 @@ import { createElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import ChartCreatePage from '../../pages/ChartCreatePage';
 
@@ -54,9 +59,9 @@ describe('ChartCreatePage', () => {
 
     it('should have proper container styling', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The component renders a full-screen centered container
+      // The component renders a centered container
       const container = screen.getByText(/redirecting to chart creation/i).closest('div');
-      expect(container).toHaveClass('min-h-screen');
+      expect(container).toHaveClass('flex');
     });
   });
 

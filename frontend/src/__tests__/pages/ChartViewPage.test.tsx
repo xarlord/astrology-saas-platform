@@ -56,6 +56,38 @@ vi.mock('../../services', () => ({
   },
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SkeletonLoader: ({ variant }: Record<string, unknown>) => (
+    <div data-testid="skeleton-loader" data-variant={variant}>
+      Loading...
+    </div>
+  ),
+  EmptyState: ({ title, description, actionText, onAction, secondaryActionText, onSecondaryAction }: Record<string, unknown>) => (
+    <div data-testid="empty-state">
+      <h3>{title}</h3>
+      <p>{description}</p>
+      {actionText && (
+        <button onClick={onAction as () => void} data-testid="empty-state-action">
+          {actionText}
+        </button>
+      )}
+      {secondaryActionText && (
+        <button onClick={onSecondaryAction as () => void} data-testid="empty-state-secondary-action">
+          {secondaryActionText}
+        </button>
+      )}
+    </div>
+  ),
+  ChartWheel: ({ data }: Record<string, unknown>) => (
+    <div data-testid="chart-wheel">
+      <span>Chart Wheel</span>
+      <span data-testid="planets-count">{(data as { planets: unknown[] })?.planets?.length || 0} planets</span>
+    </div>
+  ),
+}));
+
 // Import after mocks
 import ChartViewPage from '../../pages/ChartViewPage';
 

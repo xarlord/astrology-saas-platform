@@ -23,6 +23,20 @@ const mockCalculateChart = vi.fn();
 const mockCurrentChart = { id: 'chart-123' };
 
 vi.mock('../hooks', () => ({
+  useCreateChart: () => ({ mutateAsync: mockCreateChart, isPending: false }),
+  useCalculateChart: () => ({ mutateAsync: mockCalculateChart, isPending: false }),
+  useCharts: () => ({ currentChart: mockCurrentChart, charts: [] }),
+}));
+
+// Mock the components barrel to avoid circular import SyntaxError from TransitDashboard
+vi.mock('../', () => ({
+  SkeletonLoader: ({ children }: any) => <div data-testid="skeleton-loader">{children}</div>,
+  EmptyState: ({ children }: any) => <div data-testid="empty-state">{children}</div>,
+  PlanetSymbol: ({ name }: any) => <span data-testid="planet-symbol">{name}</span>,
+  AspectSymbol: ({ name }: any) => <span data-testid="aspect-symbol">{name}</span>,
+}));
+
+// Mock fetch for geocoding API
   useCreateChart: () => ({
     mutateAsync: mockCreateChart,
     isPending: false,

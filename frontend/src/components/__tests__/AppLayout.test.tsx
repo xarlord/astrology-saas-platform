@@ -109,7 +109,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const logo = screen.getAllByText('AstroSaaS');
+      const logo = screen.getAllByText('AstroVerse');
       expect(logo.length).toBeGreaterThan(0);
     });
 
@@ -121,20 +121,19 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('New Chart')).toBeInTheDocument();
+      expect(screen.getAllByText('New Chart').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Transits').length).toBeGreaterThan(0);
     });
 
-    it('should render footer', () => {
-      const { container } = render(
+    it('should render sidebar upgrade banner', () => {
+      render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
 
-      const footer = container.querySelector('footer');
-      expect(footer).toBeInTheDocument();
+      expect(screen.getByText('Upgrade to Premium')).toBeInTheDocument();
     });
   });
 
@@ -198,8 +197,8 @@ describe('AppLayout Component', () => {
       );
 
       expect(screen.getByText('Quick Actions')).toBeInTheDocument();
-      expect(screen.getByText('New Chart')).toBeInTheDocument();
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getAllByText('New Chart').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0);
     });
 
     it('should render my charts section', () => {
@@ -267,24 +266,36 @@ describe('AppLayout Component', () => {
       expect(profileElements.length).toBeGreaterThan(0);
     });
 
-    it('should show settings link in dropdown', () => {
+    it('should show settings link in dropdown', async () => {
+      const user = userEvent.setup();
       render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
+
+      // Click the user menu button to open the dropdown
+      const userMenuBtn = screen.getByText('Test User').closest('button');
+      expect(userMenuBtn).toBeInTheDocument();
+      await user.click(userMenuBtn!);
 
       expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
-    it('should show logout button', () => {
+    it('should show logout button', async () => {
+      const user = userEvent.setup();
       render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
+
+      // Click the user menu button to open the dropdown
+      const userMenuBtn = screen.getByText('Test User').closest('button');
+      expect(userMenuBtn).toBeInTheDocument();
+      await user.click(userMenuBtn!);
 
       expect(screen.getByText('Logout')).toBeInTheDocument();
     });
@@ -297,6 +308,11 @@ describe('AppLayout Component', () => {
         </AppLayout>,
         { wrapper: createWrapper() }
       );
+
+      // Click the user menu button to open the dropdown
+      const userMenuBtn = screen.getByText('Test User').closest('button');
+      expect(userMenuBtn).toBeInTheDocument();
+      await user.click(userMenuBtn!);
 
       const logoutBtn = screen.getByText('Logout');
       await user.click(logoutBtn);
@@ -347,8 +363,8 @@ describe('AppLayout Component', () => {
     });
   });
 
-  describe('Footer', () => {
-    it('should render product links', () => {
+  describe('Sidebar Footer', () => {
+    it('should render upgrade banner with call to action', () => {
       render(
         <AppLayout>
           <div>Content</div>
@@ -356,71 +372,8 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getAllByText('Features').length).toBeGreaterThan(0);
-      expect(screen.getByText('Pricing')).toBeInTheDocument();
-      expect(screen.getByText('API')).toBeInTheDocument();
-    });
-
-    it('should render resources links', () => {
-      render(
-        <AppLayout>
-          <div>Content</div>
-        </AppLayout>,
-        { wrapper: createWrapper() }
-      );
-
-      expect(screen.getByText('Learn Astrology')).toBeInTheDocument();
-      expect(screen.getByText('Blog')).toBeInTheDocument();
-      expect(screen.getByText('Support')).toBeInTheDocument();
-    });
-
-    it('should render company links', () => {
-      render(
-        <AppLayout>
-          <div>Content</div>
-        </AppLayout>,
-        { wrapper: createWrapper() }
-      );
-
-      expect(screen.getByText('About')).toBeInTheDocument();
-      expect(screen.getByText('Careers')).toBeInTheDocument();
-      expect(screen.getByText('Contact')).toBeInTheDocument();
-    });
-
-    it('should render legal links', () => {
-      render(
-        <AppLayout>
-          <div>Content</div>
-        </AppLayout>,
-        { wrapper: createWrapper() }
-      );
-
-      expect(screen.getByText('Privacy Policy')).toBeInTheDocument();
-      expect(screen.getByText('Terms of Service')).toBeInTheDocument();
-      expect(screen.getByText('Cookie Policy')).toBeInTheDocument();
-    });
-
-    it('should display copyright', () => {
-      render(
-        <AppLayout>
-          <div>Content</div>
-        </AppLayout>,
-        { wrapper: createWrapper() }
-      );
-
-      expect(screen.getByText(/© 2026 AstroSaaS/i)).toBeInTheDocument();
-    });
-
-    it('should render social media links', () => {
-      const { container } = render(
-        <AppLayout>
-          <div>Content</div>
-        </AppLayout>,
-        { wrapper: createWrapper() }
-      );
-
-      const socialLinks = container.querySelectorAll('a[href="#"]');
-      expect(socialLinks.length).toBeGreaterThan(0);
+      expect(screen.getByText('Upgrade to Premium')).toBeInTheDocument();
+      expect(screen.getByText('Upgrade Now')).toBeInTheDocument();
     });
   });
 
@@ -433,8 +386,8 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const newChartLink = screen.getByText('New Chart').closest('a');
-      expect(newChartLink).toHaveAttribute('href', '/charts/new');
+      const newChartLink = screen.getAllByText('New Chart')[0].closest('a');
+      expect(newChartLink).toHaveAttribute('href', '/charts/create');
 
       const dashboardLink = screen.getByText('Dashboard').closest('a');
       expect(dashboardLink).toHaveAttribute('href', '/dashboard');
@@ -523,12 +476,11 @@ describe('AppLayout Component', () => {
 
       const header = container.querySelector('header');
       const main = container.querySelector('main');
-      const footer = container.querySelector('footer');
       const aside = container.querySelector('aside');
 
       expect(header).toBeInTheDocument();
       expect(main).toBeInTheDocument();
-      expect(footer).toBeInTheDocument();
+      // Footer was removed in the AstroVerse redesign
       expect(aside).toBeInTheDocument();
     });
 
@@ -575,7 +527,7 @@ describe('AppLayout Component', () => {
   });
 
   describe('Theme Support', () => {
-    it('should support dark mode classes', () => {
+    it('should support dark theme classes', () => {
       const { container } = render(
         <AppLayout>
           <div>Content</div>
@@ -583,11 +535,11 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const darkElements = container.querySelectorAll('.dark\\:bg-gray-800');
+      const darkElements = container.querySelectorAll('.bg-\\[\\#0B0D17\\]');
       expect(darkElements.length).toBeGreaterThan(0);
     });
 
-    it('should have dark mode sidebar', () => {
+    it('should have dark theme sidebar', () => {
       const { container } = render(
         <AppLayout>
           <div>Content</div>
@@ -596,7 +548,7 @@ describe('AppLayout Component', () => {
       );
 
       const sidebar = container.querySelector('aside');
-      expect(sidebar).toHaveClass('dark:bg-gray-800');
+      expect(sidebar).toHaveClass('bg-[#0B0D17]');
     });
   });
 
@@ -650,7 +602,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const logos = screen.getAllByText('AstroSaaS');
+      const logos = screen.getAllByText('AstroVerse');
       expect(logos.length).toBeGreaterThan(0);
     });
   });
@@ -664,8 +616,8 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      // Should still render layout - get all AstroSaaS instances
-      const logos = screen.getAllByText('AstroSaaS');
+      // Should still render layout - get all AstroVerse instances
+      const logos = screen.getAllByText('AstroVerse');
       expect(logos.length).toBeGreaterThan(0);
     });
 

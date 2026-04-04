@@ -88,6 +88,46 @@ vi.mock('../../components/BirthdaySharing', () => ({
   ),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SolarReturnDashboard: ({ onSelectYear, onSelectSolarReturn }: Record<string, unknown>) => (
+    <div data-testid="solar-return-dashboard">
+      <h2>Solar Return Dashboard</h2>
+      <button onClick={() => onSelectYear(2024)} data-testid="select-year-btn">
+        Select Year 2024
+      </button>
+      <button onClick={() => onSelectSolarReturn('sr-1')} data-testid="select-sr-btn">
+        Select Solar Return
+      </button>
+    </div>
+  ),
+  SolarReturnChart: ({ year, location }: Record<string, unknown>) => (
+    <div data-testid="solar-return-chart">
+      <h3>Solar Return Chart for {year}</h3>
+      <p>Location: {location}</p>
+    </div>
+  ),
+  SolarReturnInterpretation: ({ year, onDownload, onShare }: Record<string, unknown>) => (
+    <div data-testid="solar-return-interpretation">
+      <h3>Interpretation for {year}</h3>
+      <button onClick={onDownload as () => void} data-testid="download-btn">Download</button>
+      <button onClick={onShare as () => void} data-testid="share-btn">Share</button>
+    </div>
+  ),
+  RelocationCalculator: ({ year }: Record<string, unknown>) => (
+    <div data-testid="relocation-calculator">
+      <h3>Relocation Calculator for {year}</h3>
+    </div>
+  ),
+  BirthdaySharing: ({ onShare }: Record<string, unknown>) => (
+    <div data-testid="birthday-sharing">
+      <h3>Share Your Solar Return</h3>
+      <button onClick={onShare as () => void} data-testid="birthday-share-btn">Share</button>
+    </div>
+  ),
+}));
+
 // Import after mocks
 import { SolarReturnsPage } from '../../pages/SolarReturnsPage';
 

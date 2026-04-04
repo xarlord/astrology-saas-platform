@@ -119,7 +119,7 @@ describe('Lazy Load Utilities', () => {
       const importFn = vi.fn().mockResolvedValue({ default: mockComponent });
       const LazyComponent = lazyLoadWithRetry(importFn, 3);
       expect(LazyComponent).toBeDefined();
-      expect(typeof LazyComponent).toBe('function');
+      expect(typeof LazyComponent).toBe('object');
     });
 
     it('should retry on failure', async () => {

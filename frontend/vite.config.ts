@@ -14,11 +14,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Astrology SaaS Platform',
-        short_name: 'Astrology',
+        name: 'AstroVerse',
+        short_name: 'AstroVerse',
         description: 'Natal chart generation, personality analysis, and forecasting',
-        theme_color: '#6366F1',
-        background_color: '#ffffff',
+        theme_color: '#6b3de1',
+        background_color: '#0B0D17',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

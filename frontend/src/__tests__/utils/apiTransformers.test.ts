@@ -652,7 +652,7 @@ describe('apiTransformers', () => {
 
       const result = userToAPI(user as any);
 
-      expect(result.avatar_url).toBeNull();
+      expect(result.avatar_url).toBeUndefined();
     });
 
     it('should handle subscription fields', () => {

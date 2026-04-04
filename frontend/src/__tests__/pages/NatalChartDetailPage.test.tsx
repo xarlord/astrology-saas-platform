@@ -59,8 +59,9 @@ vi.mock('../../components/ui/Button', () => ({
   ),
 }));
 
-// Mock ChartWheel component
+// Mock ChartWheel component and AppLayout (barrel)
 vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ChartWheel: ({ data }: any) => (
     <div data-testid="chart-wheel">
       ChartWheel - {data?.planets?.length || 0} planets

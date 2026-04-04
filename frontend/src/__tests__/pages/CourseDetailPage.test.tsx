@@ -61,6 +61,11 @@ vi.mock('../../components/ui/Button', () => ({
   ),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import CourseDetailPage from '../../pages/CourseDetailPage';
 

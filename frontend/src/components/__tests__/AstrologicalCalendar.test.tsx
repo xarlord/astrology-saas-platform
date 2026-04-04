@@ -13,6 +13,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderWithProviders } from '../../__tests__/test-utils';
 import AstrologicalCalendar from '../AstrologicalCalendar';
 
+// Mock the barrel to avoid SyntaxError from circular import in TransitDashboard
+vi.mock('../', () => ({
+  SkeletonLoader: ({ children }: any) => <div data-testid="skeleton-loader">{children}</div>,
+  EmptyState: ({ children }: any) => <div data-testid="empty-state">{children}</div>,
+}));
+
 // Mock the useCalendarEvents hook
 vi.mock('../../hooks/useCalendarEvents', () => ({
   useCalendarEvents: vi.fn(),

@@ -2,7 +2,7 @@
  * Test suite for Mobile Bottom Navigation Active States
  */
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { AppLayout } from '../AppLayout';
 
@@ -58,8 +58,8 @@ describe('Mobile Bottom Navigation Active States', () => {
       });
     });
 
-    it('should highlight Learn as active on /learn path', async () => {
-      renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/learn']);
+    it('should highlight Learn as active on /learning path', async () => {
+      renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/learning']);
 
       const learnLink = screen.getByLabelText('Learn');
       await waitFor(() => {
@@ -91,7 +91,7 @@ describe('Mobile Bottom Navigation Active States', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
       // Check for the active indicator bar (rounded bar at top)
-      const activeBars = container.querySelectorAll('.bg-indigo-600.h-0\\.5');
+      const activeBars = container.querySelectorAll('.bg-primary.h-0\\.5');
       expect(activeBars.length).toBeGreaterThan(0);
     });
 
@@ -99,7 +99,7 @@ describe('Mobile Bottom Navigation Active States', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
       // Active icon container should have indigo background
-      const activeContainer = container.querySelector('.bg-indigo-100');
+      const activeContainer = container.querySelector('.bg-primary\\/20');
       expect(activeContainer).toBeInTheDocument();
     });
 
@@ -107,7 +107,7 @@ describe('Mobile Bottom Navigation Active States', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
       // Active label should have indigo color
-      const activeLabel = container.querySelector('.text-indigo-600');
+      const activeLabel = container.querySelector('.text-primary');
       expect(activeLabel).toBeInTheDocument();
     });
   });
@@ -209,16 +209,16 @@ describe('Mobile Bottom Navigation Active States', () => {
     it('should have dark mode active state styling', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Should have dark mode classes
-      const darkModeClasses = container.querySelectorAll('.dark\\:bg-indigo-900\\/30');
+      // Should have permanent dark theme classes
+      const darkModeClasses = container.querySelectorAll('.bg-\\[\\#141627\\]');
       expect(darkModeClasses.length).toBeGreaterThan(0);
     });
 
     it('should have dark mode active indicator', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Active bar should have dark mode color
-      const darkModeBar = container.querySelectorAll('.dark\\:bg-indigo-400');
+      // Active bar should have primary color
+      const darkModeBar = container.querySelectorAll('.bg-primary.rounded-full');
       expect(darkModeBar.length).toBeGreaterThan(0);
     });
   });
