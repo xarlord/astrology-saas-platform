@@ -220,6 +220,12 @@ describe('Transit Controller', () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
       await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({ isGeneral: true }),
+        }),
+      );
     });
 
     it('should fall back to general transits if chart not calculated', async () => {
@@ -231,6 +237,12 @@ describe('Transit Controller', () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
       await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({ isGeneral: true }),
+        }),
+      );
     });
   });
 

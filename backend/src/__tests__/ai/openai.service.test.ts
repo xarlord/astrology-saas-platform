@@ -57,9 +57,9 @@ import openaiService from '../../modules/ai/services/openai.service';
 
 describe('OpenAI Service', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockCreate.mockClear();
+    MockOpenAI.mockImplementation(() => mockOpenAIInstance);
     openaiService.clearCache();
-    // Default mock behavior
     mockCreate.mockResolvedValue({
       choices: [{ message: { content: 'test response' } }],
       usage: {
