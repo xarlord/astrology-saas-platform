@@ -11,7 +11,7 @@ export interface User {
   password_hash: string;
   avatar_url?: string;
   timezone: string;
-  plan: 'free' | 'premium' | 'professional';
+  plan: 'free' | 'pro' | 'premium';
   subscription_status: 'active' | 'canceled' | 'expired';
   subscription_renews_at?: Date;
   preferences: Record<string, unknown>;
@@ -113,7 +113,7 @@ class UserModel {
    */
   async updatePlan(
     id: string,
-    plan: 'free' | 'premium' | 'professional',
+    plan: 'free' | 'pro' | 'premium',
     status: 'active' | 'canceled' | 'expired' = 'active',
     renewsAt?: Date
   ): Promise<User | null> {
@@ -161,6 +161,21 @@ class UserModel {
       .returning('*');
 
     return updatedUser || null;
+  }
+
+  /**
+   * Update user password directly
+   */
+  async updatePassword(id: string, passwordHash: string): Promise<boolean> {
+    const count = await knex(this.tableName)
+      .where({ id })
+      .whereNull('deleted_at')
+      .update({
+        password_hash: passwordHash,
+        updated_at: new Date(),
+      });
+
+    return count > 0;
   }
 }
 

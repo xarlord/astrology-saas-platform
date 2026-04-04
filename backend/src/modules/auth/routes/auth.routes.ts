@@ -6,8 +6,8 @@ import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
-import { registerSchema, loginSchema } from '../../../utils/validators';
-import { authRateLimiter } from '../../../middleware/rateLimiter';
+import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../../../utils/validators';
+import { authRateLimiter, passwordResetRateLimiter } from '../../../middleware/rateLimiter';
 import * as AuthController from '../controllers/auth.controller';
 
 const router = Router();
@@ -71,15 +71,8 @@ router.post('/refresh', authRateLimiter, asyncHandler(async (req, res) => {
  * @desc    Request password reset
  * @access  Public
  */
-router.post('/forgot-password', asyncHandler(async (_req, res) => {
-  // TODO: Implement forgot password flow
-  res.status(501).json({
-    success: false,
-    error: {
-      message: 'Password reset not implemented yet',
-      statusCode: 501,
-    },
-  });
+router.post('/forgot-password', passwordResetRateLimiter, validateBody(forgotPasswordSchema), asyncHandler(async (req, res) => {
+  await AuthController.forgotPassword(req, res);
 }));
 
 /**
@@ -87,15 +80,8 @@ router.post('/forgot-password', asyncHandler(async (_req, res) => {
  * @desc    Reset password with token
  * @access  Public
  */
-router.post('/reset-password', asyncHandler(async (_req, res) => {
-  // TODO: Implement reset password flow
-  res.status(501).json({
-    success: false,
-    error: {
-      message: 'Password reset not implemented yet',
-      statusCode: 501,
-    },
-  });
+router.post('/reset-password', validateBody(resetPasswordSchema), asyncHandler(async (req, res) => {
+  await AuthController.resetPassword(req, res);
 }));
 
 export { router };

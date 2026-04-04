@@ -9,6 +9,7 @@ import UserModel from '../../users/models/user.model';
 import { generateToken, generateRefreshToken, AuthenticatedRequest } from '../../../middleware/auth';
 import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
 import * as RefreshTokenModel from '../models/refreshToken.model';
+import * as PasswordResetService from '../services/passwordReset.service';
 
 /**
  * Register new user
@@ -256,5 +257,34 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
     },
+  });
+}
+
+/**
+ * Forgot password — request a reset link
+ * Always returns success to prevent email enumeration
+ */
+export async function forgotPassword(req: Request, res: Response): Promise<void> {
+  const { email } = req.body;
+
+  await PasswordResetService.requestPasswordReset(email);
+
+  res.status(200).json({
+    success: true,
+    message: 'If an account with that email exists, a reset link has been sent.',
+  });
+}
+
+/**
+ * Reset password using a valid token
+ */
+export async function resetPassword(req: Request, res: Response): Promise<void> {
+  const { token, password } = req.body;
+
+  await PasswordResetService.resetPassword(token, password);
+
+  res.status(200).json({
+    success: true,
+    message: 'Password has been reset successfully.',
   });
 }

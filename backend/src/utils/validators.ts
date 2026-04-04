@@ -22,6 +22,16 @@ export const refreshTokenSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
 
+export const forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+export const resetPasswordSchema = Joi.object({
+  token: Joi.string().required(),
+  password: Joi.string().min(8).pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:\'"\\\\|,.<>\\/?])')).required()
+    .messages({ 'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' }),
+});
+
 // Chart validators
 export const createChartSchema = Joi.object({
   name: Joi.string().min(1).max(200).required(),
