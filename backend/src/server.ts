@@ -24,6 +24,20 @@ const app: Application = express();
 const PORT = process.env.PORT || 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
+// Build allowed CORS origins from env or defaults
+function getAllowedOrigins(): (string | RegExp)[] {
+  const origins: (string | RegExp)[] = [];
+  if (process.env.ALLOWED_ORIGINS) {
+    origins.push(...process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean));
+  }
+  if (FRONTEND_URL && !origins.includes(FRONTEND_URL)) {
+    origins.push(FRONTEND_URL);
+  }
+  // Always allow local development
+  origins.push('http://localhost:3000', 'http://localhost:5173');
+  return origins;
+}
+
 // ============================================
 // Security Middleware
 // ============================================
@@ -48,7 +62,7 @@ app.use(helmet({
 
 // CORS - Cross-Origin Resource Sharing
 app.use(cors({
-  origin: [FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173'],
+  origin: getAllowedOrigins(),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
