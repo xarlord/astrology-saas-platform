@@ -75,14 +75,14 @@ const knexConfig = {
   staging: {
     client: 'pg',
     connection: process.env.DATABASE_URL
-      ? { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } }
+      ? { connectionString: process.env.DATABASE_URL, ...(process.env.DATABASE_SSL !== 'false' && { ssl: { rejectUnauthorized: false } }) }
       : {
           host: process.env.DATABASE_HOST || 'localhost',
           port: parseInt(process.env.DATABASE_PORT || '5434', 10),
           user: process.env.DATABASE_USER || 'staging_user',
           password: process.env.DATABASE_PASSWORD || 'staging_password',
           database: process.env.DATABASE_NAME || 'astrology_staging',
-          ssl: { rejectUnauthorized: false },
+          ...(process.env.DATABASE_SSL !== 'false' && { ssl: { rejectUnauthorized: false } }),
         },
     pool: {
       min: 2,
