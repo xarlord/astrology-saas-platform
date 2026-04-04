@@ -23,6 +23,7 @@
 
 ## Checklist
 
+- [ ] Review against [Code Review Checklist](../docs/CODE_REVIEW_CHECKLIST.md)
 - [ ] No `console.log` in backend code (use `logger`)
 - [ ] No `require()` in backend source (use `import`)
 - [ ] Frontend uses `import api from '../services/api'` (not raw axios)
