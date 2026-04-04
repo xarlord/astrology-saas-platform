@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { enforceChartLimit } from '../../../middleware/planEnforcement';
 import * as ChartController from '../controllers/chart.controller';
 
 const router = Router();
@@ -17,9 +18,9 @@ router.use(authenticate);
  * @desc    Create a new chart
  * @access  Private
  */
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', enforceChartLimit as any, asyncHandler(async (req, res) => {
   await ChartController.createChart(req as AuthenticatedRequest, res);
-}));
+}) as any);
 
 /**
  * @route   GET /api/charts

@@ -19,6 +19,7 @@ import { router as timezoneRoutes } from '../../modules/shared/routes/timezone.r
 import { default as locationRoutes } from '../../modules/shared/routes/location.routes';
 import { router as shareRoutes } from '../../modules/charts/routes/share.routes';
 import aiRoutes from '../../modules/ai/routes/ai.routes';
+import { billingRoutes } from '../../modules/billing';
 
 const router = Router();
 
@@ -86,5 +87,8 @@ router.use('/ai', aiRoutes);
 
 // Push notification endpoints
 router.use('/notifications', pushNotificationRoutes);
+
+// Billing endpoints
+router.use('/billing', billingRoutes);
 
 export default router;

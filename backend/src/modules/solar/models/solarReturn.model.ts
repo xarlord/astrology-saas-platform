@@ -27,7 +27,7 @@ export class SolarReturnModel {
       })
       .returning('*');
 
-    return this.mapToSolarReturn(solarReturn);
+    return this.mapToSolarReturn(solarReturn)!;
   }
 
   /**
@@ -60,7 +60,7 @@ export class SolarReturnModel {
       .where({ user_id: userId })
       .orderBy('year', 'desc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -72,7 +72,7 @@ export class SolarReturnModel {
       .whereBetween('return_date', [startDate, endDate])
       .orderBy('return_date', 'asc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -84,7 +84,7 @@ export class SolarReturnModel {
       .orderBy('year', 'desc')
       .limit(limit);
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -95,7 +95,7 @@ export class SolarReturnModel {
       .where({ user_id: userId, is_relocated: true })
       .orderBy('year', 'desc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**

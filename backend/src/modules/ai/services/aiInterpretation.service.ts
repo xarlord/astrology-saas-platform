@@ -144,7 +144,7 @@ class AIInterpretationService {
         { ttl: this.CACHE_TTL.NATAL }
       );
 
-      return result;
+      return result as InterpretationResult;
     } catch (error: any) {
       logger.error('AI interpretation failed, falling back to rule-based:', error);
 
@@ -185,7 +185,7 @@ class AIInterpretationService {
         { ttl: this.CACHE_TTL.TRANSIT }
       );
 
-      return result;
+      return result as InterpretationResult;
     } catch (error: any) {
       logger.error('AI transit forecast failed:', error);
       return this.getRuleBasedTransit();
@@ -224,7 +224,7 @@ class AIInterpretationService {
         { ttl: this.CACHE_TTL.COMPATIBILITY }
       );
 
-      return result;
+      return result as InterpretationResult;
     } catch (error: any) {
       logger.error('AI compatibility analysis failed:', error);
       return this.getRuleBasedCompatibility();
@@ -267,7 +267,7 @@ class AIInterpretationService {
         { ttl: this.CACHE_TTL.LUNAR_RETURN }
       );
 
-      return result;
+      return result as InterpretationResult;
     } catch (error: any) {
       logger.error('AI lunar return interpretation failed:', error);
       return {
@@ -314,7 +314,7 @@ class AIInterpretationService {
         { ttl: this.CACHE_TTL.SOLAR_RETURN }
       );
 
-      return result;
+      return result as InterpretationResult;
     } catch (error: any) {
       logger.error('AI solar return interpretation failed:', error);
       return {

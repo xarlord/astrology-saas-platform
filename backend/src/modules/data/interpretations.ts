@@ -142,9 +142,9 @@ export function getTransitInterpretation(transit: { planet1: string; planet2: st
 // ============================================================================
 
 export function generatePersonalityAnalysis(data: {
-  planets: Planet[];
-  houses: house[];
-  aspects: aspect[];
+  planets: any[];
+  houses: any[];
+  aspects: any[];
 }): {
   overview: Record<string, unknown>;
   strengths: string[];

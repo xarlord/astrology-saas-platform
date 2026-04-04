@@ -58,6 +58,24 @@ router.put('/me/preferences', asyncHandler(async (req, res) => {
 }));
 
 /**
+ * @route   GET /api/users/me/email-preferences
+ * @desc    Get email notification preferences
+ * @access  Private
+ */
+router.get('/me/email-preferences', asyncHandler(async (req, res) => {
+  await UserController.getEmailPreferences(req as AuthenticatedRequest, res);
+}));
+
+/**
+ * @route   PUT /api/users/me/email-preferences
+ * @desc    Update email notification preferences
+ * @access  Private
+ */
+router.put('/me/email-preferences', asyncHandler(async (req, res) => {
+  await UserController.updateEmailPreferences(req as AuthenticatedRequest, res);
+}));
+
+/**
  * @route   DELETE /api/users/me
  * @desc    Delete user account
  * @access  Private

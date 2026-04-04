@@ -347,7 +347,7 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
           degree: (chart1Data[degreeField] as number) || 0,
           minute: (chart1Data[minuteField] as number) || 0,
           second: (chart1Data[secondField] as number) || 0,
-          sign: chart1Data[signField] as string,
+          sign: chart1Data[signField] as any as import('../models/synastry.model').ZodiacSign,
         };
       }
 
@@ -357,7 +357,7 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
           degree: (chart2Data[degreeField] as number) || 0,
           minute: (chart2Data[minuteField] as number) || 0,
           second: (chart2Data[secondField] as number) || 0,
-          sign: chart2Data[signField] as string,
+          sign: chart2Data[signField] as any as import('../models/synastry.model').ZodiacSign,
         };
       }
     });

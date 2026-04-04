@@ -10,6 +10,7 @@ import { generateToken, generateRefreshToken, AuthenticatedRequest } from '../..
 import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
 import * as RefreshTokenModel from '../models/refreshToken.model';
 import * as PasswordResetService from '../services/passwordReset.service';
+import { sendWelcomeEmail } from '../../../services/email.service';
 
 /**
  * Register new user
@@ -50,10 +51,13 @@ export async function register(req: Request, res: Response): Promise<void> {
     ip_address: req.ip,
   });
 
+  // Send welcome email (non-blocking)
+  sendWelcomeEmail(user.email, user.name);
+
   res.status(201).json({
     success: true,
     data: {
-      user: sanitizeUser(user),
+      user: sanitizeUser(user as any),
       accessToken,
       refreshToken: refreshTokenValue,
     },
@@ -98,7 +102,7 @@ export async function login(req: Request, res: Response): Promise<void> {
   res.status(200).json({
     success: true,
     data: {
-      user: sanitizeUser(user),
+      user: sanitizeUser(user as any),
       accessToken,
       refreshToken: refreshTokenValue,
     },
@@ -119,7 +123,7 @@ export async function getProfile(req: AuthenticatedRequest, res: Response): Prom
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user) },
+    data: { user: sanitizeUser(user as any) },
   });
 }
 
@@ -143,7 +147,7 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user) },
+    data: { user: sanitizeUser(user as any) },
   });
 }
 
@@ -163,7 +167,7 @@ export async function updatePreferences(req: AuthenticatedRequest, res: Response
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user) },
+    data: { user: sanitizeUser(user as any) },
   });
 }
 

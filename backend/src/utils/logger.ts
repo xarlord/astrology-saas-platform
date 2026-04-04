@@ -233,7 +233,7 @@ export const addRequestContext = (req: HttpRequestWithExtras, res: Response, nex
 
   // Add response listener
   res.on('finish', () => {
-    const responseTime = Date.now() - req.startTime;
+    const responseTime = Date.now() - (req.startTime ?? Date.now());
 
     // Log request completion
     logger.http('Request completed', {

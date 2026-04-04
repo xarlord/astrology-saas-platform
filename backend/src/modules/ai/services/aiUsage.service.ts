@@ -112,7 +112,7 @@ class AIUsageService {
   /**
    * Get daily usage statistics
    */
-  async getDailyUsage(userId: string, days = 30): Promise<Array<{ date: string; tokens: string; cost: string; requests: string }>> {
+  async getDailyUsage(userId: string, days = 30): Promise<Array<{ date: string; tokens: number; cost: number; requests: number }>> {
     try {
       return await aiUsageModel.getDailyUsage(userId, days);
     } catch (error) {

@@ -69,6 +69,14 @@ router.get('/:token', asyncHandler(async (req, res) => {
   }
 
   // Return chart data (without sensitive info)
+  if (!result.chart) {
+    res.status(404).json({
+      success: false,
+      error: 'Chart data not found',
+    });
+    return;
+  }
+
   res.status(200).json({
     success: true,
     data: {

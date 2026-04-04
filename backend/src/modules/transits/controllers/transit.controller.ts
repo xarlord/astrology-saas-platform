@@ -6,12 +6,11 @@
  * calculates aspects between natal and transit positions.
  */
 
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import ChartModel from '../../charts/models/chart.model';
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
-import { swissEphemeris } from '../../shared/services/swissEphemeris.service';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
 import knex from '../../../config/database';
 
@@ -244,11 +243,12 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
  */
 export async function getTodayTransits(req: Request, res: Response): Promise<void> {
   const today = new Date();
+  const _user = (req as any).user;
 
   // If user is authenticated, try to get personalized transits
-  if (req.user?.id) {
+  if (_user?.id) {
     try {
-      const charts = await ChartModel.findByUserId(req.user.id, 1, 0);
+      const charts = await ChartModel.findByUserId(_user.id, 1, 0);
       if (charts.length > 0 && charts[0].calculated_data) {
         const chart = charts[0];
         const natalPlanets = (chart.calculated_data as any).planets ?? {};
@@ -611,7 +611,7 @@ function calculateMoonPhase(moonLong: number, sunLong: number): {
   };
 }
 
-function calculateTransitIntensity(aspect: TransitForecastItem): number {
+function calculateTransitIntensity(aspect: { type: string; orb: number; planet1: string; planet2: string }): number {
   // Base intensity on aspect type and orb
   const baseIntensity: Record<string, number> = {
     conjunction: 10,

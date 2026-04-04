@@ -13,6 +13,8 @@ import {
   updateUserPreferences,
   deleteAccount,
   getUserCharts,
+  getEmailPreferences,
+  updateEmailPreferences,
 } from '../../modules/users/controllers/user.controller';
 import { AppError } from '../../utils/appError';
 import UserModel from '../../modules/users/models/user.model';
@@ -359,6 +361,123 @@ describe('User Controller', () => {
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       expect(response.data).toBeDefined();
       expect(response.data.user).toBeDefined();
+    });
+  });
+
+  describe('getEmailPreferences', () => {
+    it('should return default preferences when none set', async () => {
+      (UserModel.findById as jest.Mock).mockResolvedValue({
+        id: '123',
+        preferences: {},
+      });
+
+      await getEmailPreferences(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext,
+      );
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: {
+            emailNotifications: { marketing: true, transactional: true },
+          },
+        }),
+      );
+    });
+
+    it('should return stored email preferences', async () => {
+      (UserModel.findById as jest.Mock).mockResolvedValue({
+        id: '123',
+        preferences: {
+          emailNotifications: { marketing: false, transactional: true },
+        },
+      });
+
+      await getEmailPreferences(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext,
+      );
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: {
+            emailNotifications: { marketing: false, transactional: true },
+          },
+        }),
+      );
+    });
+
+    it('should throw 404 when user not found', async () => {
+      (UserModel.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(
+        getEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+    });
+  });
+
+  describe('updateEmailPreferences', () => {
+    it('should update email preferences via updatePreferences', async () => {
+      const updatedUser = {
+        id: '123',
+        preferences: {
+          emailNotifications: { marketing: false, transactional: true },
+        },
+      };
+      (UserModel.updatePreferences as jest.Mock).mockResolvedValue(updatedUser);
+
+      mockRequest.body = { marketing: false, transactional: true };
+
+      await updateEmailPreferences(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext,
+      );
+
+      expect(UserModel.updatePreferences).toHaveBeenCalledWith('123', {
+        emailNotifications: { marketing: false, transactional: true },
+      });
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: {
+            emailNotifications: { marketing: false, transactional: true },
+          },
+        }),
+      );
+    });
+
+    it('should use defaults for missing boolean fields', async () => {
+      (UserModel.updatePreferences as jest.Mock).mockResolvedValue({
+        id: '123',
+        preferences: {},
+      });
+
+      mockRequest.body = {};
+
+      await updateEmailPreferences(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext,
+      );
+
+      expect(UserModel.updatePreferences).toHaveBeenCalledWith('123', {
+        emailNotifications: { marketing: true, transactional: true },
+      });
+    });
+
+    it('should throw 404 when user not found after update', async () => {
+      (UserModel.updatePreferences as jest.Mock).mockResolvedValue(null);
+
+      mockRequest.body = { marketing: true };
+
+      await expect(
+        updateEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 });

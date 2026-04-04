@@ -4,6 +4,7 @@
 
 import { Router } from 'express';
 import { db } from '../db';
+import { isRedisConnected, getRedisClient } from '../modules/shared/services/redis.service';
 
 const router = Router();
 const startTime = Date.now();
@@ -23,6 +24,7 @@ router.get('/', (_req, res) => {
       uptime,
       environment: process.env.NODE_ENV || 'development',
       version: '1.0.0',
+      redis: isRedisConnected() ? 'connected' : 'disconnected',
     },
   });
 });
@@ -50,6 +52,48 @@ router.get('/db', async (_req, res) => {
       success: false,
       data: {
         database: 'disconnected',
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+    });
+  }
+});
+
+/**
+ * GET /health/redis
+ * Redis health check endpoint
+ */
+router.get('/redis', async (_req, res) => {
+  try {
+    const client = getRedisClient();
+    if (!client) {
+      res.status(503).json({
+        success: false,
+        data: {
+          redis: 'not_configured',
+          timestamp: new Date().toISOString(),
+        },
+      });
+      return;
+    }
+
+    const start = Date.now();
+    await client.ping();
+    const latency = Date.now() - start;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        redis: 'connected',
+        latencyMs: latency,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      data: {
+        redis: 'disconnected',
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
       },

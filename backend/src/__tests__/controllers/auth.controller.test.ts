@@ -12,6 +12,7 @@ import UserModel from '../../modules/users/models/user.model';
 import { generateToken, generateRefreshToken } from '../../middleware/auth';
 import * as helpers from '../../utils/helpers';
 import * as RefreshTokenModel from '../../modules/auth/models/refreshToken.model';
+import * as EmailService from '../../services/email.service';
 
 // Mock dependencies
 jest.mock('../../modules/users/models/user.model', () => ({
@@ -40,6 +41,13 @@ jest.mock('../../utils/helpers', () => ({
   hashPassword: jest.fn(),
   comparePassword: jest.fn(),
   sanitizeUser: jest.fn(),
+}));
+
+jest.mock('../../services/email.service', () => ({
+  sendWelcomeEmail: jest.fn(),
+  sendPasswordResetEmail: jest.fn(),
+  sendSubscriptionConfirmationEmail: jest.fn(),
+  DEFAULT_EMAIL_PREFS: { marketing: true, transactional: true },
 }));
 
 jest.mock('../../db', () => {
@@ -139,6 +147,12 @@ describe('Authentication Controller', () => {
       expect(generateToken).toHaveBeenCalled();
       expect(generateRefreshToken).toHaveBeenCalled();
       expect(mockResponse.status).toHaveBeenCalledWith(201);
+
+      // Verify welcome email was sent
+      expect(EmailService.sendWelcomeEmail).toHaveBeenCalledWith(
+        userData.email,
+        userData.name,
+      );
     });
 
     it('should throw 409 if user already exists', async () => {

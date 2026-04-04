@@ -39,6 +39,7 @@ export async function cleanDatabase(database: Knex) {
     'interpretations',
     'transit_readings',
     'charts',
+    'password_reset_tokens',
     'refresh_tokens',
     'audit_log',
     'users',

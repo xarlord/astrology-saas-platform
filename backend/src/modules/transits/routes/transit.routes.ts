@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { authenticate, optionalAuthenticate } from '../../../middleware/auth';
+import { authenticate, optionalAuthenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
 import { calculateTransitsSchema } from '../../../utils/validators';
@@ -17,7 +17,7 @@ const router = Router();
  * @access  Public (with optional auth)
  */
 router.get('/today', optionalAuthenticate, asyncHandler(async (req, res) => {
-  await TransitController.getTodayTransits(req, res);
+  await TransitController.getTodayTransits(req as any, res);
 }));
 
 // All other transit routes require authentication

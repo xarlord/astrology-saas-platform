@@ -14,6 +14,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { csrfMiddleware } from './middleware/csrf';
+import { connectRedis, disconnectRedis, isRedisConnected } from './modules/shared/services/redis.service';
 
 // Import API router with versioning
 import apiRouter from './api';
@@ -133,6 +134,7 @@ app.get('/health', (_req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development',
+    redis: isRedisConnected() ? 'connected' : 'disconnected',
     api: {
       versions: ['v1', 'v2'],
       current: 'v1',
@@ -191,21 +193,25 @@ app.use(errorHandler);
 
 // Only start server if this file is run directly (not when imported by tests)
 if (require.main === module) {
-  const server = app.listen(PORT, () => {
+  const server = app.listen(PORT, async () => {
     logger.info(`🚀 Server is running on port ${PORT}`);
     logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
     logger.info(`🌐 Frontend URL: ${FRONTEND_URL}`);
     logger.info(`💚 Health check: http://localhost:${PORT}/health`);
+
+    // Connect to Redis (non-blocking — falls back gracefully)
+    await connectRedis();
   });
 
   // ============================================
   // Graceful Shutdown
   // ============================================
 
-  const gracefulShutdown = (signal: string) => {
+  const gracefulShutdown = async (signal: string) => {
     logger.info(`${signal} received. Starting graceful shutdown...`);
 
-    server.close(() => {
+    server.close(async () => {
+      await disconnectRedis();
       logger.info('Server closed successfully');
       process.exit(0);
     });

@@ -329,9 +329,9 @@ export class PDFGenerationService {
             <tr>
               <td><span class="symbol">${PLANET_SYMBOLS[name] || ''}</span> ${name}</td>
               <td><span class="symbol">${ZODIAC_SYMBOLS[pos.sign] || ''}</span> ${this.capitalize(pos.sign)}</td>
-              <td>${pos.degree}° ${pos.minute || 0}'</td>
+              <td>${pos.degree}° ${(pos as any).minute || 0}'</td>
               <td>${pos.house || '-'}</td>
-              <td>${pos.isRetrograde ? 'R' : ''}</td>
+              <td>${pos.retrograde ? 'R' : ''}</td>
             </tr>
           `).join('')}
         </tbody>
@@ -380,7 +380,7 @@ export class PDFGenerationService {
           ${chart.aspects.slice(0, 15).map((aspect: AspectData) => `
             <tr>
               <td>${this.capitalize(aspect.planet1)}</td>
-              <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
+              <td class="aspect-type ${(aspect as any).harmonious ? 'harmonious' : 'challenging'}">
                 ${ASPECT_SYMBOLS[aspect.type] || aspect.type} ${this.capitalize(aspect.type)}
               </td>
               <td>${this.capitalize(aspect.planet2)}</td>
@@ -490,13 +490,13 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean; planet1: string | { planet: string }; planet2: string | { planet: string } }) => `
+          ${synastry.aspects.slice(0, 15).map((aspect: any) => `
             <tr>
-              <td>${this.capitalize(aspect.planet1?.planet || aspect.planet1)}</td>
-              <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
+              <td>${this.capitalize((aspect.planet1?.planet || aspect.planet1))}</td>
+              <td class="aspect-type ${(aspect as any).harmonious ? 'harmonious' : 'challenging'}">
                 ${ASPECT_SYMBOLS[aspect.type] || aspect.type} ${this.capitalize(aspect.type)}
               </td>
-              <td>${this.capitalize(aspect.planet2?.planet || aspect.planet2)}</td>
+              <td>${this.capitalize((aspect.planet2?.planet || aspect.planet2))}</td>
               <td>${aspect.harmonious ? '✓' : ''}</td>
             </tr>
           `).join('')}

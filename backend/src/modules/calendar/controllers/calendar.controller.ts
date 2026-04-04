@@ -15,14 +15,14 @@ import globalEventsService from '../services/globalEvents.service';
  */
 interface GlobalEventRow {
   id: string | null;
-  user_id: string;
+  user_id: string | null;
   event_type: string;
   event_date: Date;
   end_date?: Date;
   event_data?: Record<string, unknown>;
   interpretation?: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 function capitalize(str: string): string {
@@ -108,7 +108,7 @@ export const getMonthEvents = asyncHandler(
       monthNum
     );
 
-    let events = [...personalEvents];
+    let events: any[] = [...personalEvents];
 
     // Include global events if requested
     if (includeGlobal === 'true') {

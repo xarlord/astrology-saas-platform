@@ -4,14 +4,14 @@
  */
 
 import { Router } from 'express';
-import calendarController from '../controllers/calendar.controller';
+import { getMonthEvents, createCustomEvent, deleteEvent } from '../controllers/calendar.controller';
 import { authenticate, optionalAuthenticate } from '../../../middleware/auth';
 
 const router = Router();
 
 // GET /api/calendar/month/:year/:month - Get events for a specific month
 // Uses optional auth - returns global events for unauthenticated users
-router.get('/month/:year/:month', optionalAuthenticate, calendarController.getMonthEvents.bind(calendarController));
+router.get('/month/:year/:month', optionalAuthenticate, getMonthEvents);
 
 // All other calendar routes require authentication
 router.use(authenticate);

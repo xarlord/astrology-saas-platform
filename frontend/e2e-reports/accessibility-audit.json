@@ -1,0 +1,400 @@
+{
+  "timestamp": "2026-04-04T11:18:42.779Z",
+  "wcagLevel": "2.1 AA",
+  "totalPages": 6,
+  "totalFindings": 18,
+  "bySeverity": {
+    "critical": 0,
+    "serious": 10,
+    "moderate": 8,
+    "minor": 0
+  },
+  "findings": [
+    {
+      "page": "Landing",
+      "url": "http://localhost:5173/",
+      "ruleId": "document-title",
+      "impact": "serious",
+      "description": "Ensure each HTML document contains a non-empty <title> element",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/document-title?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag242"
+      ],
+      "suggestedFix": "Add a meaningful <title> element inside <head>.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ]
+    },
+    {
+      "page": "Landing",
+      "url": "http://localhost:5173/",
+      "ruleId": "html-has-lang",
+      "impact": "serious",
+      "description": "Ensure every HTML document has a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/html-has-lang?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag311"
+      ],
+      "suggestedFix": "Add a lang attribute to the <html> element (e.g., lang=\"en\").",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  The <html> element does not have a lang attribute"
+        }
+      ]
+    },
+    {
+      "page": "Landing",
+      "url": "http://localhost:5173/",
+      "ruleId": "landmark-one-main",
+      "impact": "moderate",
+      "description": "Ensure the document has a main landmark",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/landmark-one-main?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add a <main> or role=\"main\" landmark to the page.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+        }
+      ]
+    },
+    {
+      "page": "Landing",
+      "url": "http://localhost:5173/",
+      "ruleId": "page-has-heading-one",
+      "impact": "moderate",
+      "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add an <h1> element as the primary page heading.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+        }
+      ]
+    },
+    {
+      "page": "Login",
+      "url": "http://localhost:5173/login",
+      "ruleId": "document-title",
+      "impact": "serious",
+      "description": "Ensure each HTML document contains a non-empty <title> element",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/document-title?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag242"
+      ],
+      "suggestedFix": "Add a meaningful <title> element inside <head>.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ]
+    },
+    {
+      "page": "Login",
+      "url": "http://localhost:5173/login",
+      "ruleId": "html-has-lang",
+      "impact": "serious",
+      "description": "Ensure every HTML document has a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/html-has-lang?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag311"
+      ],
+      "suggestedFix": "Add a lang attribute to the <html> element (e.g., lang=\"en\").",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  The <html> element does not have a lang attribute"
+        }
+      ]
+    },
+    {
+      "page": "Login",
+      "url": "http://localhost:5173/login",
+      "ruleId": "landmark-one-main",
+      "impact": "moderate",
+      "description": "Ensure the document has a main landmark",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/landmark-one-main?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add a <main> or role=\"main\" landmark to the page.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+        }
+      ]
+    },
+    {
+      "page": "Login",
+      "url": "http://localhost:5173/login",
+      "ruleId": "page-has-heading-one",
+      "impact": "moderate",
+      "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add an <h1> element as the primary page heading.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+        }
+      ]
+    },
+    {
+      "page": "Register",
+      "url": "http://localhost:5173/register",
+      "ruleId": "document-title",
+      "impact": "serious",
+      "description": "Ensure each HTML document contains a non-empty <title> element",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/document-title?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag242"
+      ],
+      "suggestedFix": "Add a meaningful <title> element inside <head>.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ]
+    },
+    {
+      "page": "Register",
+      "url": "http://localhost:5173/register",
+      "ruleId": "html-has-lang",
+      "impact": "serious",
+      "description": "Ensure every HTML document has a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/html-has-lang?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag311"
+      ],
+      "suggestedFix": "Add a lang attribute to the <html> element (e.g., lang=\"en\").",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  The <html> element does not have a lang attribute"
+        }
+      ]
+    },
+    {
+      "page": "Register",
+      "url": "http://localhost:5173/register",
+      "ruleId": "landmark-one-main",
+      "impact": "moderate",
+      "description": "Ensure the document has a main landmark",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/landmark-one-main?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add a <main> or role=\"main\" landmark to the page.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+        }
+      ]
+    },
+    {
+      "page": "Register",
+      "url": "http://localhost:5173/register",
+      "ruleId": "page-has-heading-one",
+      "impact": "moderate",
+      "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add an <h1> element as the primary page heading.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+        }
+      ]
+    },
+    {
+      "page": "Forgot Password",
+      "url": "http://localhost:5173/forgot-password",
+      "ruleId": "document-title",
+      "impact": "serious",
+      "description": "Ensure each HTML document contains a non-empty <title> element",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/document-title?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag242"
+      ],
+      "suggestedFix": "Add a meaningful <title> element inside <head>.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+        }
+      ]
+    },
+    {
+      "page": "Forgot Password",
+      "url": "http://localhost:5173/forgot-password",
+      "ruleId": "html-has-lang",
+      "impact": "serious",
+      "description": "Ensure every HTML document has a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/html-has-lang?application=playwright",
+      "wcagTags": [
+        "wcag2a",
+        "wcag311"
+      ],
+      "suggestedFix": "Add a lang attribute to the <html> element (e.g., lang=\"en\").",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix any of the following:\n  The <html> element does not have a lang attribute"
+        }
+      ]
+    },
+    {
+      "page": "Forgot Password",
+      "url": "http://localhost:5173/forgot-password",
+      "ruleId": "landmark-one-main",
+      "impact": "moderate",
+      "description": "Ensure the document has a main landmark",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/landmark-one-main?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add a <main> or role=\"main\" landmark to the page.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Document does not have a main landmark"
+        }
+      ]
+    },
+    {
+      "page": "Forgot Password",
+      "url": "http://localhost:5173/forgot-password",
+      "ruleId": "page-has-heading-one",
+      "impact": "moderate",
+      "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one?application=playwright",
+      "wcagTags": [],
+      "suggestedFix": "Add an <h1> element as the primary page heading.",
+      "nodes": [
+        {
+          "html": "<html><head></head><body></body></html>",
+          "target": [
+            "html"
+          ],
+          "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+        }
+      ]
+    },
+    {
+      "page": "Landing (contrast)",
+      "url": "http://localhost:5173/",
+      "ruleId": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+      "wcagTags": [
+        "wcag2aa",
+        "wcag143"
+      ],
+      "suggestedFix": "Increase foreground/background contrast to at least 4.5:1 for normal text or 3:1 for large text.",
+      "nodes": [
+        {
+          "html": "<span class=\"text-slate-500 ml-2\">/forever</span>",
+          "target": [
+            ".hover\\:border-white\\/10.rounded-2xl.p-8:nth-child(1) > .items-baseline.mb-6.flex > .ml-2.text-slate-500"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.84 (foreground color: #64748b, background color: #111422, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+        },
+        {
+          "html": "<span class=\"text-slate-500 ml-2\">/mo</span>",
+          "target": [
+            ".border-primary > .items-baseline.mb-6.flex > .ml-2.text-slate-500"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.84 (foreground color: #64748b, background color: #111422, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+        },
+        {
+          "html": "<span class=\"text-slate-500 ml-2\">/mo</span>",
+          "target": [
+            ".hover\\:border-white\\/10.rounded-2xl.p-8:nth-child(3) > .items-baseline.mb-6.flex > .ml-2.text-slate-500"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.84 (foreground color: #64748b, background color: #111422, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+        }
+      ]
+    },
+    {
+      "page": "Forgot Password (contrast)",
+      "url": "http://localhost:5173/forgot-password",
+      "ruleId": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+      "wcagTags": [
+        "wcag2aa",
+        "wcag143"
+      ],
+      "suggestedFix": "Increase foreground/background contrast to at least 4.5:1 for normal text or 3:1 for large text.",
+      "nodes": [
+        {
+          "html": "<a class=\"text-primary hover:text-primary-light font-medium\" href=\"/login\">Sign In</a>",
+          "target": [
+            ".text-primary"
+          ],
+          "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.86 (foreground color: #6b3de1, background color: #151725, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+        }
+      ]
+    }
+  ]
+}

@@ -30,7 +30,7 @@ class AICacheService {
    */
   async set(key: string, data: unknown, options?: CacheOptions): Promise<void> {
     try {
-      await aiCacheModel.set(key, data, options?.ttl);
+      await aiCacheModel.set(key, data as Record<string, unknown>, options?.ttl);
     } catch (error) {
       logger.error('Cache set error:', error);
     }

@@ -24,6 +24,7 @@ import {
   checkUsageLimit,
 } from '../controllers/aiUsage.controller';
 import { authenticate } from '../../../middleware/auth';
+import { enforceAILimit } from '../../../middleware/planEnforcement';
 
 const router = Router();
 
@@ -33,11 +34,11 @@ router.get('/status', checkStatus);
 // Protected endpoints (authentication required)
 router.use(authenticate);
 
-router.post('/natal', generateNatal);
-router.post('/transit', generateTransit);
-router.post('/compatibility', generateCompatibility);
-router.post('/lunar-return', generateLunarReturn);
-router.post('/solar-return', generateSolarReturn);
+router.post('/natal', enforceAILimit as any, generateNatal as any);
+router.post('/transit', enforceAILimit as any, generateTransit as any);
+router.post('/compatibility', enforceAILimit as any, generateCompatibility as any);
+router.post('/lunar-return', enforceAILimit as any, generateLunarReturn as any);
+router.post('/solar-return', enforceAILimit as any, generateSolarReturn as any);
 
 // Usage tracking endpoints
 router.get('/usage/stats', getUserStats);

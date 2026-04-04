@@ -367,6 +367,35 @@ describe('Interpretation Service', () => {
         expect(Array.isArray(pattern.planets)).toBe(true);
       });
     });
+
+    it('should detect Mystic Rectangle pattern', () => {
+      // Build aspects for a mystic rectangle:
+      // sun(295) opposes mars(115), moon(350) opposes jupiter(170)
+      // sun trine moon, mars trine jupiter
+      // sun sextile jupiter, mars sextile moon
+      const mysticAspects = [
+        { type: 'opposition', planet1: 'sun', planet2: 'mars', orb: 1 },
+        { type: 'opposition', planet1: 'moon', planet2: 'jupiter', orb: 1 },
+        { type: 'trine', planet1: 'sun', planet2: 'moon', orb: 2 },
+        { type: 'trine', planet1: 'mars', planet2: 'jupiter', orb: 2 },
+        { type: 'sextile', planet1: 'sun', planet2: 'jupiter', orb: 2 },
+        { type: 'sextile', planet1: 'mars', planet2: 'moon', orb: 2 },
+      ];
+
+      const result = generateCompletePersonalityAnalysis({
+        planets: [
+          ...mockPlanets,
+          { planet: 'mars', sign: 'aries', position: 115, longitude: 115, house: 4, retrograde: false },
+          { planet: 'jupiter', sign: 'virgo', position: 170, longitude: 170, house: 6, retrograde: false },
+        ],
+        houses: mockHouses,
+        aspects: mysticAspects,
+      });
+
+      const mysticRects = result.patterns.filter(p => p.type === 'Mystic Rectangle');
+      expect(mysticRects.length).toBeGreaterThan(0);
+      expect(mysticRects[0].planets).toHaveLength(4);
+    });
   });
 });
 
