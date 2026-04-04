@@ -188,7 +188,7 @@ describe('EmptyStates Pre-configured', () => {
       const handleClick = vi.fn();
       render(<EmptyStates.NoCharts onAction={handleClick} />);
 
-      expect(screen.getByText('✨')).toBeInTheDocument();
+      expect(screen.getByText('auto_awesome')).toBeInTheDocument();
       expect(screen.getByText('No charts yet')).toBeInTheDocument();
       expect(screen.getByText(/Create your first natal chart/)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Create Your First Chart' })).toBeInTheDocument();
@@ -207,7 +207,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NoTransits />);
 
-      expect(screen.getByText('🌙')).toBeInTheDocument();
+      expect(screen.getByText('dark_mode')).toBeInTheDocument();
       expect(screen.getByText('No major transits today')).toBeInTheDocument();
       expect(screen.getByText(/The cosmos is relatively quiet/)).toBeInTheDocument();
     });
@@ -217,7 +217,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NoCalendarEvents />);
 
-      expect(screen.getByText('📅')).toBeInTheDocument();
+      expect(screen.getByText('calendar_month')).toBeInTheDocument();
       expect(screen.getByText('No events this month')).toBeInTheDocument();
     });
   });
@@ -226,7 +226,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NoSearchResults />);
 
-      expect(screen.getByText('🔍')).toBeInTheDocument();
+      expect(screen.getByText('search')).toBeInTheDocument();
       expect(screen.getByText('No results found')).toBeInTheDocument();
     });
   });
@@ -236,7 +236,7 @@ describe('EmptyStates Pre-configured', () => {
       const handleClick = vi.fn();
       render(<EmptyStates.Error onAction={handleClick} />);
 
-      expect(screen.getByText('⚠️')).toBeInTheDocument();
+      expect(screen.getByText('warning')).toBeInTheDocument();
       expect(screen.getByText('Something went wrong')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
     });
@@ -246,7 +246,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NetworkError />);
 
-      expect(screen.getByText('🌐')).toBeInTheDocument();
+      expect(screen.getByText('wifi_off')).toBeInTheDocument();
       expect(screen.getByText('Connection error')).toBeInTheDocument();
       expect(screen.getByText(/Unable to connect to the server/)).toBeInTheDocument();
     });
@@ -256,7 +256,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NotFound />);
 
-      expect(screen.getByText('🤷')).toBeInTheDocument();
+      expect(screen.getByText('help')).toBeInTheDocument();
       expect(screen.getByText('Page not found')).toBeInTheDocument();
     });
   });
@@ -265,7 +265,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NoAnalyses />);
 
-      expect(screen.getByText('📊')).toBeInTheDocument();
+      expect(screen.getByText('analytics')).toBeInTheDocument();
       expect(screen.getByText('No analyses yet')).toBeInTheDocument();
     });
   });
@@ -274,7 +274,7 @@ describe('EmptyStates Pre-configured', () => {
     it('renders with correct content', () => {
       render(<EmptyStates.NoReminders />);
 
-      expect(screen.getByText('🔔')).toBeInTheDocument();
+      expect(screen.getByText('notifications')).toBeInTheDocument();
       expect(screen.getByText('No reminders set')).toBeInTheDocument();
     });
   });
