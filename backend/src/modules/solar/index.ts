@@ -4,6 +4,6 @@
  */
 
 export * from './controllers/solarReturn.controller';
-export { solarReturnRoutes } from './routes/solarReturn.routes';
+export { SolarReturnRoutes as solarReturnRoutes } from './routes/solarReturn.routes';
 export * from './models';
 export * from './services';

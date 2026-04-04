@@ -24,4 +24,4 @@ router.delete('/subscribe/:subscriptionId', deleteSubscription);
 router.get('/subscriptions', getSubscriptions);
 router.post('/test', sendTestNotification);
 
-export default router;
+export { router as PushNotificationRoutes };

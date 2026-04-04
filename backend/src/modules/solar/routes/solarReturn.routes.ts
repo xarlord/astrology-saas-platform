@@ -4,7 +4,16 @@
  */
 
 import { Router } from 'express';
-import solarReturnController from '../controllers/solarReturn.controller';
+import {
+  calculateSolarReturn,
+  getSolarReturnByYear,
+  getSolarReturnById,
+  getSolarReturnHistory,
+  recalculateSolarReturn,
+  getSolarReturnStats,
+  getAvailableYears,
+  deleteSolarReturn,
+} from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
 import { validateBody } from '../../../utils/validators';
 import Joi from 'joi';
@@ -51,7 +60,7 @@ router.use(authenticate);
 router.post(
   '/calculate',
   validateBody(calculateSchema),
-  solarReturnController.calculateSolarReturn
+  calculateSolarReturn
 );
 
 /**
@@ -61,7 +70,7 @@ router.post(
  */
 router.get(
   '/year/:year',
-  solarReturnController.getSolarReturnByYear
+  getSolarReturnByYear
 );
 
 /**
@@ -71,7 +80,7 @@ router.get(
  */
 router.get(
   '/:id',
-  solarReturnController.getSolarReturnById
+  getSolarReturnById
 );
 
 /**
@@ -81,7 +90,7 @@ router.get(
  */
 router.get(
   '/history',
-  solarReturnController.getSolarReturnHistory
+  getSolarReturnHistory
 );
 
 /**
@@ -92,7 +101,7 @@ router.get(
 router.post(
   '/:id/recalculate',
   validateBody(recalculateSchema),
-  solarReturnController.recalculateSolarReturn
+  recalculateSolarReturn
 );
 
 /**
@@ -102,7 +111,7 @@ router.post(
  */
 router.get(
   '/stats',
-  solarReturnController.getSolarReturnStats
+  getSolarReturnStats
 );
 
 /**
@@ -112,7 +121,7 @@ router.get(
  */
 router.get(
   '/years/available',
-  solarReturnController.getAvailableYears
+  getAvailableYears
 );
 
 /**
@@ -122,7 +131,7 @@ router.get(
  */
 router.delete(
   '/:id',
-  solarReturnController.deleteSolarReturn
+  deleteSolarReturn
 );
 
-export { router as solarReturnRoutes };
+export { router as SolarReturnRoutes };
