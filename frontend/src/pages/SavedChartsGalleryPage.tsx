@@ -14,6 +14,7 @@ import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
 import { ChartCard } from '../components/chart/ChartCard';
+import { AppLayout } from '../components';
 import type { Chart } from '../services/api.types';
 
 type ViewMode = 'grid' | 'list';
@@ -190,47 +191,8 @@ export const SavedChartsGalleryPage: React.FC = () => {
   const storagePercentage = (storageUsed / storageLimit) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627]">
-      {/* Top Navigation */}
-      <nav className="fixed top-0 z-50 w-full bg-card-dark/80 backdrop-blur-md border-b border-white/5 px-6 lg:px-12 py-4">
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-cosmic-blue rounded-lg flex items-center justify-center text-white">
-              <span className="material-symbols-outlined text-xl">auto_awesome</span>
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-100">AstroVerse</h1>
-          </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <a
-              href="/dashboard"
-              className="hover:text-primary transition-colors text-slate-300"
-            >
-              Dashboard
-            </a>
-            <a className="hover:text-primary transition-colors text-slate-300">Horoscopes</a>
-            <a className="text-primary">Saved Charts</a>
-            <a
-              href="/synastry"
-              className="hover:text-primary transition-colors text-slate-300"
-            >
-              Compatibility
-            </a>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-300">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-            <div
-              className="w-10 h-10 rounded-full border-2 border-primary/50 overflow-hidden cursor-pointer bg-primary/20 flex items-center justify-center"
-              onClick={() => navigate('/profile')}
-            >
-              <span className="material-symbols-outlined text-primary">person</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div className="pt-24 pb-12 max-w-[1440px] mx-auto px-6 lg:px-12 flex gap-8">
+    <AppLayout>
+      <div className="pb-12 max-w-[1440px] mx-auto px-6 lg:px-12 flex gap-8">
         {/* Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 gap-8 sticky top-24 h-fit">
           <div className="flex flex-col gap-2">
@@ -489,7 +451,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </AppLayout>
   );
 };
 

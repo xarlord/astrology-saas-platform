@@ -10,6 +10,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
+import { AppLayout } from '../components';
 import { Button } from '../components/ui/Button';
 import ElementalBalance from '../components/astrology/ElementalBalance';
 import PlanetaryPositionCard from '../components/astrology/PlanetaryPositionCard';
@@ -116,51 +117,7 @@ const DetailedNatalReportPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-[#0B0D17]/80 border-b border-primary/20 px-6 lg:px-20 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-lg hover:bg-white/5 transition-colors"
-            >
-              <span className="material-symbols-outlined text-white">arrow_back</span>
-            </button>
-            <div className="text-primary size-8">
-              <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-white uppercase tracking-widest">
-              AstroVerse
-            </h1>
-          </div>
-          <div className="hidden md:flex items-center gap-10">
-            <button onClick={() => navigate('/dashboard')} className="text-sm font-medium text-slate-400 hover:text-primary transition-colors">
-              Dashboard
-            </button>
-            <button className="text-sm font-medium text-primary border-b-2 border-primary pb-1">
-              Natal Reports
-            </button>
-            <button onClick={() => navigate('/synastry')} className="text-sm font-medium text-slate-400 hover:text-primary transition-colors">
-              Compatibility
-            </button>
-            <button onClick={() => navigate('/transits')} className="text-sm font-medium text-slate-400 hover:text-primary transition-colors">
-              Transits
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="p-2 rounded-full hover:bg-primary/10 transition-colors">
-              <span className="material-symbols-outlined text-purple-400">notifications</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       <main className="max-w-7xl mx-auto px-6 lg:px-20 py-10 flex gap-8">
         {/* Left Content Area */}
         <div className="flex-1 space-y-12">
@@ -526,7 +483,7 @@ const DetailedNatalReportPage: React.FC = () => {
           </motion.div>
         </aside>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

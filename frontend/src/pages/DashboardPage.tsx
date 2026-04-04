@@ -18,6 +18,7 @@ import { useTransits } from '../hooks/useTransits';
 import EnergyMeter from '../components/astrology/EnergyMeter';
 import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 
 // Mock daily quote data
 const DAILY_QUOTES = [
@@ -222,63 +223,7 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="border-b border-[#2f2645] bg-[#141627]/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="size-9 bg-gradient-to-br from-primary to-[#8b5cf6] rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-[24px]">auto_awesome</span>
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">AstroVerse</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="primary"
-              onClick={handleCreateChart}
-              leftIcon={<span className="material-symbols-outlined text-[18px]">add</span>}
-              data-testid="new-chart-header-button"
-            >
-              New Chart
-            </Button>
-            <div className="relative group">
-              <button
-                className="flex items-center gap-3 pl-2 cursor-pointer group-hover:opacity-80 transition-opacity"
-                aria-label="User menu"
-              >
-                <div
-                  className="size-10 rounded-full bg-cover bg-center border-2 border-white/10 group-hover:border-primary transition-colors"
-                  style={{ backgroundImage: user?.avatar_url ? `url(${user.avatar_url})` : undefined }}
-                >
-                  {!user?.avatar_url && (
-                    <div className={`size-full rounded-full bg-gradient-to-br ${getAvatarGradient(0)} flex items-center justify-center text-white text-xs font-bold`}>
-                      {getInitials(user?.name ?? 'User')}
-                    </div>
-                  )}
-                </div>
-              </button>
-              {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-48 bg-[#1a1d2e] border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <div className="py-2">
-                  <div className="px-4 py-2 border-b border-white/10">
-                    <p className="text-sm font-medium text-white">{user?.name ?? 'User'}</p>
-                    <p className="text-xs text-slate-400 truncate">{user?.email ?? ''}</p>
-                  </div>
-                  <button
-                    onClick={() => { void handleLogout(); }}
-                    className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
-                    data-testid="logout-button"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">logout</span>
-                    Logout
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       {/* Main Content */}
       <main className="max-w-[1400px] mx-auto px-6 py-8 pb-20">
         {/* Welcome Section */}
@@ -644,7 +589,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

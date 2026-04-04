@@ -10,6 +10,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
+import { AppLayout } from '../components';
 import { Button } from '../components/ui/Button';
 
 // Types
@@ -113,43 +114,12 @@ const SolarReturnAnnualReportPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 relative overflow-x-hidden">
+    <AppLayout>
       {/* Background Decorative Elements */}
       <div className="fixed top-1/4 -left-64 w-[500px] h-[500px] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
       <div className="fixed bottom-1/4 -right-64 w-[600px] h-[600px] bg-amber-400/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-[#0B0D17]/80 border-b border-white/10 px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-amber-400 p-1.5 rounded-lg flex items-center justify-center">
-              <span className="material-symbols-outlined text-[#0B0D17] font-bold">flare</span>
-            </div>
-            <h1 className="text-xl font-extrabold tracking-tight text-white uppercase">AstroVerse</h1>
-          </div>
-          <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => navigate('/dashboard')} className="text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors">
-              Dashboard
-            </button>
-            <button onClick={() => navigate('/solar-returns')} className="text-sm font-medium text-amber-400 border-b-2 border-amber-400 pb-1">
-              Reports
-            </button>
-            <button onClick={() => navigate('/synastry')} className="text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors">
-              Compatibility
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/learning')}
-              className="text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors"
-            >
-              Academy
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <main className="pt-24 pb-20 px-4 md:px-10 max-w-7xl mx-auto space-y-10">
+      <main className="pb-20 px-4 md:px-10 max-w-7xl mx-auto space-y-10">
         {/* Header Section */}
         <motion.header
           className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2"
@@ -462,7 +432,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
           </Button>
         </motion.section>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

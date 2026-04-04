@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 import {
   getNextLunarReturn,
   getLunarMonthForecast,
@@ -214,44 +215,7 @@ export const LunarReturnsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display" data-testid="lunar-returns-page">
-      {/* Top Navigation */}
-      <nav className="sticky top-0 z-50 w-full bg-surface-dark/70 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 text-primary">
-              <span className="material-symbols-outlined text-3xl">dark_mode</span>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-white">AstroVerse</h1>
-          </div>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="/dashboard" className="text-sm font-medium text-slate-400 hover:text-white transition-colors" data-testid="nav-dashboard">
-              Dashboard
-            </a>
-            <a className="text-sm font-medium text-white flex items-center gap-2" data-testid="nav-lunar-returns">
-              <span className="material-symbols-outlined text-primary text-[18px]">bedtime</span>
-              Lunar Returns
-            </a>
-            <a href="/transits" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-              Transits
-            </a>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors text-slate-300">
-              <span className="material-symbols-outlined text-[20px]">search</span>
-            </button>
-            <button
-              onClick={() => navigate('/profile')}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-cosmic-blue p-[1px]"
-            >
-              <div className="w-full h-full rounded-full bg-surface-dark flex items-center justify-center">
-                 <span className="material-symbols-outlined text-white">person</span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </nav>
-
+    <AppLayout data-testid="lunar-returns-page">
       <main className="flex-1 w-full max-w-[1280px] mx-auto p-6 md:p-8 flex flex-col gap-8">
         {/* Loading State */}
         {loading && (
@@ -655,7 +619,7 @@ export const LunarReturnsPage: React.FC = () => {
           </>
         )}
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

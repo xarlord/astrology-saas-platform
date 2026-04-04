@@ -18,6 +18,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Checkbox } from '../components/ui/Checkbox';
 import { CustomDatePicker } from '../components/form/CustomDatePicker';
+import { AppLayout } from '../components';
 
 type WizardStep = 1 | 2 | 3;
 
@@ -174,28 +175,12 @@ export const ChartCreationWizardPage: React.FC = () => {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex flex-col overflow-hidden">
+    <AppLayout>
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-600/10 rounded-full blur-[100px]" />
       </div>
-
-      {/* Top Navigation */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-card-dark/80 backdrop-blur-md z-50 px-6 flex items-center justify-between border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 text-primary flex items-center justify-center bg-primary/10 rounded-lg">
-            <span className="material-symbols-outlined text-[24px]">auto_awesome</span>
-          </div>
-          <h1 className="text-white text-xl font-bold tracking-tight">AstroVerse</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 text-slate-300 transition-colors text-sm font-medium">
-            <span className="material-symbols-outlined text-[20px]">help</span>
-            <span className="hidden sm:inline">Help</span>
-          </button>
-        </div>
-      </header>
 
       {/* Main Content Area */}
       <main className="relative z-10 flex flex-1 flex-col pt-20 pb-6 px-4 sm:px-8 h-screen max-h-screen overflow-hidden">
@@ -624,7 +609,7 @@ export const ChartCreationWizardPage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

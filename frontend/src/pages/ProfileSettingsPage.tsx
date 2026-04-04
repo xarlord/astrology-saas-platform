@@ -14,6 +14,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Toggle } from '../components/ui/Toggle';
+import { AppLayout } from '../components';
 import { TIMEOUTS } from '../utils/constants';
 
 type TabType = 'profile' | 'account' | 'subscription' | 'appearance';
@@ -120,46 +121,7 @@ export const ProfileSettingsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627]">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-50 bg-card-dark/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="text-primary p-1.5 rounded-lg bg-primary/10">
-                <span className="material-symbols-outlined text-2xl">auto_awesome</span>
-              </div>
-              <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                AstroVerse
-              </span>
-            </div>
-
-            {/* Right Nav Actions */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 rounded-full hover:bg-white/5 text-slate-400 hover:text-white transition-colors">
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
-              <div className="h-8 w-[1px] bg-white/10" />
-              <div
-                className="flex items-center gap-3 cursor-pointer group"
-                onClick={() => navigate('/profile')}
-              >
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium text-white group-hover:text-primary transition-colors">
-                    {user?.name ?? 'User'}
-                  </p>
-                  <p className="text-xs text-slate-500">Pro Member</p>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary">person</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Hero Profile Card */}
         <div className="bg-card-dark/80 backdrop-blur-md rounded-2xl p-6 md:p-8 relative overflow-hidden group">
@@ -625,7 +587,7 @@ export const ProfileSettingsPage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

@@ -15,6 +15,7 @@ import { useCalendarEvents } from '../hooks/useCalendarEvents';
 // Components
 import CalendarCell from '../components/astrology/CalendarCell';
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 
 // Types
 import type { CalendarEvent, LunarPhase } from '../services/api.types';
@@ -517,27 +518,9 @@ const CalendarPage: React.FC = () => {
   }, [selectedDate, monthEvents]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="border-b border-[#2f2645] bg-[#141627]/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="size-8 text-primary">
-              <span className="material-symbols-outlined text-3xl">auto_awesome</span>
-            </div>
-            <h1 className="text-white text-xl font-bold tracking-tight">AstroVerse</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-[1px] bg-[#2f2645]"></div>
-            <div className="size-9 rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] flex items-center justify-center text-white text-xs font-bold">
-              U
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       {/* Main Content */}
-      <main className="pt-24 pb-12 px-6 max-w-[1600px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6">
+      <main className="pb-12 px-6 max-w-[1600px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6">
         {/* Left Column: Calendar */}
         <div className="flex-1 flex flex-col gap-6">
           {/* Header & Controls */}
@@ -740,7 +723,7 @@ const CalendarPage: React.FC = () => {
         onClose={() => setIsPanelOpen(false)}
         isOpen={isPanelOpen}
       />
-    </div>
+    </AppLayout>
   );
 };
 

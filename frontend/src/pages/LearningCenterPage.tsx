@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 
 // Components
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 
 // Hooks
 import { useLearning } from '../hooks/useLearning';
@@ -164,77 +165,55 @@ const LearningCenterPage: React.FC = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          <p className="text-slate-400">Loading courses...</p>
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <p className="text-slate-400">Loading courses...</p>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
-          <span className="material-symbols-outlined text-5xl text-red-400">error</span>
-          <h2 className="text-xl font-bold text-white">Failed to Load Courses</h2>
-          <p className="text-slate-400">{error}</p>
-          <Button variant="primary" onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
+            <span className="material-symbols-outlined text-5xl text-red-400">error</span>
+            <h2 className="text-xl font-bold text-white">Failed to Load Courses</h2>
+            <p className="text-slate-400">{error}</p>
+            <Button variant="primary" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-[#0B0D17]/80 border-b border-primary/20 px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary p-2 rounded-lg flex items-center justify-center text-white">
-              <span className="material-symbols-outlined text-[24px]">school</span>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight text-white">The AstroVerse Academy</h1>
-              <p className="text-[10px] uppercase tracking-widest text-primary font-semibold">Premium Learning Hub</p>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="flex-1 max-w-xl mx-12 hidden md:block">
-            <div className="relative group">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
-                search
-              </span>
-              <input
-                type="text"
-                placeholder="Search cosmic secrets (e.g., 'What is a Square aspect?')..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-500 text-sm"
-                aria-label="Search courses and lessons"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="text-slate-400 hover:text-primary transition-colors text-sm font-medium"
-            >
-              Dashboard
-            </button>
-            <button className="relative p-2 rounded-lg hover:bg-white/5 transition-colors">
-              <span className="material-symbols-outlined text-slate-300">notifications</span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full border-2 border-[#0B0D17]"></span>
-            </button>
+    <AppLayout>
+      {/* Search Bar */}
+      <div className="max-w-7xl mx-auto w-full px-6 pt-6">
+        <div className="flex-1 max-w-xl">
+          <div className="relative group">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Search cosmic secrets (e.g., 'What is a Square aspect?')..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-500 text-sm"
+              aria-label="Search courses and lessons"
+            />
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-12">
@@ -522,7 +501,7 @@ const LearningCenterPage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

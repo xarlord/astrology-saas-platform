@@ -17,7 +17,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
-import { ChartWheel } from '../components';
+import { ChartWheel, AppLayout } from '../components';
 import type { PlanetPosition as APIPlanetPosition, CalculatedChartData } from '../services/api.types';
 import type { ChartData, PlanetPosition as WheelPlanetPosition, HouseCusp as WheelHouseCusp, Aspect as WheelAspect } from '../components/ChartWheel';
 
@@ -297,12 +297,14 @@ export const NatalChartDetailPage: React.FC = () => {
 
   if (isLoading || !currentChart) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Loading chart...</p>
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-slate-400">Loading chart...</p>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
@@ -318,51 +320,7 @@ export const NatalChartDetailPage: React.FC = () => {
   const birthLocation = currentChart.birthData?.birthPlace ?? '';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex flex-col overflow-hidden">
-      {/* Top Navigation */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/5 bg-card-dark/90 backdrop-blur-md px-6 py-3 z-50">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3 text-white">
-            <div className="w-8 h-8 text-primary">
-              <span className="material-symbols-outlined text-3xl">token</span>
-            </div>
-            <h2 className="text-white text-xl font-bold tracking-tight">AstroVerse</h2>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <a
-              href="/dashboard"
-              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-            >
-              Dashboard
-            </a>
-            <a className="text-white text-sm font-medium transition-colors">Charts</a>
-            <a
-              href="/transits"
-              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-            >
-              Transits
-            </a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-6">
-          <div className="relative hidden sm:block">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
-              search
-            </span>
-            <input
-              className="bg-card-dark border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64 transition-all"
-              placeholder="Search charts..."
-            />
-          </div>
-          <button
-            onClick={() => navigate('/profile')}
-            className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center"
-          >
-            <span className="material-symbols-outlined text-primary">person</span>
-          </button>
-        </div>
-      </header>
-
+    <AppLayout>
       {/* Main Content Area */}
       <main className="flex flex-1 overflow-hidden relative">
         {/* Background Elements */}
@@ -764,7 +722,7 @@ export const NatalChartDetailPage: React.FC = () => {
           </aside>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

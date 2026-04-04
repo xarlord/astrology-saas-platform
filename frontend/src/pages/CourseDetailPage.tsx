@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 
 // Components
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 import VideoPlayer from '../components/media/VideoPlayer';
 
 // Types
@@ -221,14 +222,14 @@ const CourseDetailPage: React.FC = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
+      <AppLayout>
         <div className="text-center">
           <p className="text-slate-400 mb-4">Course not found</p>
           <Button variant="primary" onClick={() => navigate('/learning')}>
             Back to Learning Center
           </Button>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
@@ -240,39 +241,7 @@ const CourseDetailPage: React.FC = () => {
   const progress = Math.round((completedLessons / totalLessons) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="border-b border-white/10 bg-[#0B0D17]/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/learning')}
-              className="p-2 rounded-lg hover:bg-white/5 transition-colors"
-            >
-              <span className="material-symbols-outlined text-white">arrow_back</span>
-            </button>
-            <div>
-              <h1 className="text-lg font-bold text-white">{course.title}</h1>
-              <p className="text-xs text-slate-400">
-                {course.instructor} • {course.difficulty}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-xs text-slate-400">Progress</p>
-              <p className="text-sm font-bold text-primary">{progress}%</p>
-            </div>
-            <div className="w-32 bg-white/10 h-2 rounded-full overflow-hidden">
-              <div
-                className="bg-primary h-full rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Video Player */}
@@ -529,7 +498,7 @@ const CourseDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
