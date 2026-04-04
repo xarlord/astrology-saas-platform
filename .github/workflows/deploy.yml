@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+
+      - name: Build all packages
+        run: npm run build
+
+      - name: Deploy placeholder
+        run: |
+          echo "Deploy to ${{ github.event.inputs.environment }} environment"
+          echo "TODO: Add Docker Compose deployment steps"
+          echo "Current setup uses docker-compose.dev.yml for local/staging"

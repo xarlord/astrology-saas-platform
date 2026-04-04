@@ -15,8 +15,11 @@ frontend/e2e/.auth/
 frontend/playwright-report/
 frontend/test-results/
 frontend/test-results.json
+frontend/test-results2.json
 **/playwright-report/
 **/test-results/
+**/test-results.json
+.last-run.json
 
 # Production
 dist/
