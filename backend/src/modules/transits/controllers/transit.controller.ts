@@ -11,7 +11,9 @@ import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import ChartModel from '../../charts/models/chart.model';
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
+import { swissEphemeris } from '../../shared/services/swissEphemeris.service';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
+import knex from '../../../config/database';
 
 // Module-level singleton of the real calculation engine
 const astronomyEngine = new AstronomyEngineService();
@@ -422,17 +424,44 @@ export async function getTransitCalendar(req: AuthenticatedRequest, res: Respons
 }
 
 /**
- * Get specific transit details
+ * Get specific transit details by reading ID
  */
-export async function getTransitDetails(_req: AuthenticatedRequest, res: Response): Promise<void> {
-  // const { id } = _req.params; // Transit reading ID - TODO: will be used
+export async function getTransitDetails(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const userId = req.user.id;
+  const { id } = req.params;
 
-  // TODO: Fetch specific transit reading from database
-  // For now, calculate on-demand
+  if (!id) {
+    throw new AppError('Transit reading ID is required', 400);
+  }
+
+  const reading = await knex('transit_readings')
+    .where({ id, user_id: userId })
+    .first();
+
+  if (!reading) {
+    throw new AppError('Transit reading not found', 404);
+  }
+
+  const transitData = typeof reading.transit_data === 'string'
+    ? JSON.parse(reading.transit_data)
+    : reading.transit_data;
 
   res.status(200).json({
     success: true,
-    data: { transit: null },
+    data: {
+      id: reading.id,
+      chartId: reading.chart_id,
+      startDate: reading.start_date,
+      endDate: reading.end_date,
+      transitData,
+      moonPhases: reading.moon_phases
+        ? (typeof reading.moon_phases === 'string'
+          ? JSON.parse(reading.moon_phases)
+          : reading.moon_phases)
+        : null,
+      createdAt: reading.created_at,
+      updatedAt: reading.updated_at,
+    },
   });
 }
 
