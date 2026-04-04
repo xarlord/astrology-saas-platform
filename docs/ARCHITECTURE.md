@@ -320,7 +320,7 @@ Push/PR ──► ci.yml (9 jobs)
 | W12 | **Inconsistent layout wrapping** — only Synastry uses AppLayout | Frontend | Navigation/sidebar only on 1 page | ~~FIXED~~ `42c77c3` |
 | W13 | **Raw `<a>` tags in AppLayout** — full page reloads instead of `<Link>` | Frontend | SPA navigation broken in sidebar | OPEN (16 remaining) |
 | W14 | **No React error boundary** — render crashes take down entire app | Frontend | No graceful error recovery |
-| W15 | **No CD pipeline** — manual Railway deployment only | Infra | No automated deployments |
+| W15 | **No CD pipeline** — no automated deployment pipeline | Infra | No automated deployments |
 | W16 | **No security scanning** — no npm audit, Snyk, or Dependabot | Infra | Vulnerable dependencies undetected |
 
 ### MEDIUM (quality / maintainability)

@@ -306,13 +306,13 @@ npm run dev
 
 ### Option 3: Deploy to Staging (15 minutes)
 
-See [STAGING_DEPLOYMENT.md](STAGING_DEPLOYMENT.md) for Railway/Render deployment.
+See DEPLOYMENT.md fordocs/DEPLOYMENT.md) for deployment options.
 
 ### Option 4: Deploy to Production
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for complete production deployment guide.
 
-**Quick Deploy (Railway):**
+**Quick Deploy (Docker Compose):**
 ```bash
 # 1. Push to GitHub
 git init
@@ -321,11 +321,11 @@ git commit -m "Initial commit"
 git remote add origin https://github.com/YOUR_USERNAME/astrology-saas.git
 git push -u origin main
 
-# 2. Connect Railway
-# Go to railway.app → New Project → Deploy from GitHub
-# Select backend and frontend directories
-# Add PostgreSQL database
-# Configure environment variables
+# 2. Deploy with Docker Compose
+docker compose -f docker-compose.staging.yml up -d --build
+# Configure environment variables in .env.staging
+# Run migrations
+docker compose -f docker-compose.staging.yml exec backend npx knex migrate:latest
 ```
 
 **Production Environment Variables:**

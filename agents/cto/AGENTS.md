@@ -14,7 +14,7 @@ Technical leader and engineering manager. Owns all technical execution, architec
 ## Technical Scope
 - **Backend**: Express 4 + TypeScript + Knex + PostgreSQL
 - **Frontend**: React 18 + Vite 5 + Tailwind 3 + Zustand + React Query + D3
-- **Infrastructure**: Docker, Railway, CI/CD pipelines
+- **Infrastructure**: Docker, CI/CD pipelines
 - **Testing**: Jest (backend), Vitest (frontend), Playwright (E2E)
 - **Integrations**: OpenAI API, Stripe, Swiss Ephemeris, Resend email
 

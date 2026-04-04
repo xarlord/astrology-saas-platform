@@ -403,7 +403,7 @@
   - Windows PowerShell scripts (deploy-staging.ps1, smoke-test.ps1)
 - Environment configuration template (.env.staging.example)
 - Comprehensive STAGING_DEPLOYMENT.md guide with:
-  - Railway deployment instructions
+  - Docker Compose deployment instructions
   - Render deployment instructions
   - Docker deployment instructions
   - Smoke test procedures
@@ -708,7 +708,7 @@ Completed during Phase 2:
    - User acceptance testing
    - Production deployment
 2. **Deploy to Staging:**
-   - Choose deployment option (Railway, Render, or Docker)
+   - Choose deployment option (Docker Compose, Render, or Docker)
    - Copy and configure .env.staging
    - Run deployment script: `./scripts/deploy-staging.sh` (Linux/Mac) or `.\scripts\deploy-staging.ps1` (Windows)
    - Run smoke tests: `./scripts/smoke-test.sh` or `.\scripts\smoke-test.ps1`

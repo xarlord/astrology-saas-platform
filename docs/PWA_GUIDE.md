@@ -1048,7 +1048,7 @@ ls -lh dist/
     Cache-Control = "public, max-age=604800, immutable"
 ```
 
-#### Railway
+#### Docker Compose
 
 **Setup:**
 

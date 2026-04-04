@@ -37,22 +37,7 @@ cd backend && npm run build
 
 ## Deployment Options
 
-### Option 1: Railway (Recommended)
-
-**Backend:**
-1. Connect GitHub repository
-2. Set root directory: `backend`
-3. Build command: `npm run build`
-4. Start command: `npm start`
-5. Add environment variables
-
-**Frontend:**
-1. Connect GitHub repository
-2. Set root directory: `frontend`
-3. Build command: `npm run build`
-4. Static files: `dist`
-
-### Option 2: Docker
+### Option 1: Docker Compose (Recommended)
 
 ```bash
 # Build and start all services
@@ -62,7 +47,7 @@ docker-compose -f docker-compose.staging.yml up -d --build
 docker-compose -f docker-compose.staging.yml up -d --scale backend=3
 ```
 
-### Option 3: Manual Deployment
+### Option 2: Manual Deployment
 
 **Backend (Node.js):**
 ```bash
@@ -107,7 +92,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 ### Frontend (Required)
 
 ```env
-VITE_API_URL=https://api.your-frontend.com
+VITE_API_URL=https://api.your-domain.com
 ```
 
 ---
@@ -143,13 +128,10 @@ curl https://api.your-domain.com/api/v1/health
 ```bash
 # Docker logs
 docker-compose logs -f backend
-
-# Railway logs
-railway logs
 ```
 
 ### Metrics
-- Uptime monitoring: Use Railway dashboard or external service
+- Uptime monitoring: Use external service (UptimeRobot, Pingdom)
 - Error tracking: Integrate Sentry
 - Performance: Enable APM in production
 
@@ -158,9 +140,6 @@ railway logs
 ## Rollback
 
 ```bash
-# Railway
-railway rollback
-
 # Docker
 docker-compose -f docker-compose.staging.yml down
 git checkout <previous-version>

@@ -40,14 +40,14 @@
 - **Size:** 2.1MB (49 precached entries)
 
 ## Pending Items
-- Deploy to Railway production (user requested)
+- Deploy to production (Docker Compose)
 
 ## Recovery Instructions
 
 1. **READ** `.devflow/ui_overhaul_progress.md` - Get full progress
 2. **READ** `.devflow/ui_overhaul_task_plan.md` - Get task details
 3. **RUN** `npm run dev` to start local servers
-4. **DEPLOY** using `./deploy-frontend-railway.sh`
+4. **DEPLOY** using `docker compose -f docker-compose.staging.yml up -d --build`
 
 ## Key Commands
 ```bash
@@ -60,8 +60,8 @@ npm run dev
 # Build for production
 cd frontend && npm run build
 
-# Deploy to Railway
-./deploy-frontend-railway.sh
+# Deploy with Docker Compose
+docker compose -f docker-compose.staging.yml up -d --build
 ```
 
 ---

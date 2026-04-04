@@ -223,7 +223,7 @@ Pass Rate:   92.3%
 ### 5.2 Deployment Options
 
 **Option 1: Cloud Platforms (Recommended)**
-- **Railway**: Easiest, auto-detects Node.js, free tier available
+- **Docker Compose**: Easiest, auto-detects Node.js, free tier available
 - **Render**: Simple deployment, free tier
 - **Vercel/Netlify**: Best for frontend, can connect to external backend
 
@@ -262,7 +262,7 @@ Pass Rate:   92.3%
 
 **Quick Staging Setup:**
 1. Push code to GitHub
-2. Connect Railway/Render account
+2. Connect Docker Compose/Render account
 3. Deploy backend + PostgreSQL
 4. Deploy frontend
 5. Run smoke tests (see TESTING_QUICK_REFERENCE.md)
@@ -452,7 +452,7 @@ INSERT INTO charts (user_id, ...) VALUES ('test-id', ...);
 **Priority: HIGH - Essential for production**
 
 1. **Deploy to Staging** (1-2 hours)
-   - Use Railway or Render
+   - Use Docker Compose or Render
    - Run full smoke tests
    - Verify all features work
 

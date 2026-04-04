@@ -2868,10 +2868,10 @@ npm run test:e2e
 
 ## Deployment
 
-### Railway
+### Docker Compose
 
 ```bash
-# Set environment variables in Railway dashboard
+# Set environment variables in Docker Compose dashboard
 # Deploy using git push
 ```
 

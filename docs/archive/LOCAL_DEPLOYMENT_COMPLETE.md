@@ -382,7 +382,7 @@ taskkill /F /PID <PID_NUMBER>
 4. Optimize performance
 
 ### Long-Term (Production)
-1. Deploy to Railway (15 minutes)
+1. Deploy to Docker Compose (15 minutes)
 2. Set up custom domain
 3. Configure monitoring
 4. Set up error tracking

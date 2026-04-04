@@ -657,7 +657,7 @@ app.use(errorHandler);
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Production (Railway)                      │
+│                    Production (Docker Compose)                      │
 │                                                              │
 │  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐   │
 │  │   CDN       │────>│  Frontend   │────>│  Backend    │   │
