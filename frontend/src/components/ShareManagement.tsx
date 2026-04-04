@@ -3,8 +3,17 @@
  * UI for managing shared chart links
  */
 
-import React, { useState, useCallback } from 'react';
-import { Copy, Eye, EyeOff, Lock, Trash2, Share2, Clock, BarChart2 } from 'lucide-react';
+import React, { useState, useCallback } from "react";
+import {
+  Copy,
+  Eye,
+  EyeOff,
+  Lock,
+  Trash2,
+  Share2,
+  Clock,
+  BarChart2,
+} from "lucide-react";
 
 interface SharedLink {
   id: string;
@@ -20,16 +29,22 @@ interface ShareManagementProps {
   chartId: string;
   chartName: string;
   sharedLinks: SharedLink[];
-  onCreateShare: (options: { password?: string; expiresIn?: number }) => Promise<void>;
+  onCreateShare: (options: {
+    password?: string;
+    expiresIn?: number;
+  }) => Promise<void>;
   onRevokeShare: (shareId: string) => Promise<void>;
-  onUpdateShare: (shareId: string, options: { password?: string }) => Promise<void>;
+  onUpdateShare: (
+    shareId: string,
+    options: { password?: string },
+  ) => Promise<void>;
 }
 
 const EXPIRY_OPTIONS = [
-  { label: '24 hours', value: 24 },
-  { label: '7 days', value: 168 },
-  { label: '30 days', value: 720 },
-  { label: 'Never', value: 0 },
+  { label: "24 hours", value: 24 },
+  { label: "7 days", value: 168 },
+  { label: "30 days", value: 720 },
+  { label: "Never", value: 0 },
 ];
 
 export const ShareManagement: React.FC<ShareManagementProps> = ({
@@ -41,11 +56,14 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
   onUpdateShare: _onUpdateShare,
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [expiresIn, setExpiresIn] = useState(168); // Default 7 days
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
+  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>(
+    {},
+  );
+  const [revokeConfirmId, setRevokeConfirmId] = useState<string | null>(null);
 
   const handleCreateShare = useCallback(async () => {
     setIsLoading(true);
@@ -55,27 +73,28 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
         expiresIn: expiresIn || undefined,
       });
       setShowCreateModal(false);
-      setPassword('');
+      setPassword("");
     } catch (error) {
-      console.error('Failed to create share:', error);
+      console.error("Failed to create share:", error);
     } finally {
       setIsLoading(false);
     }
   }, [password, expiresIn, onCreateShare]);
 
-  const handleRevokeShare = useCallback(async (shareId: string) => {
-    if (!window.confirm('Are you sure you want to revoke this share link? Anyone with the link will no longer be able to access this chart.')) {
-      return;
-    }
-    setIsLoading(true);
-    try {
-      await onRevokeShare(shareId);
-    } catch (error) {
-      console.error('Failed to revoke share:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onRevokeShare]);
+  const handleRevokeShare = useCallback(
+    async (shareId: string) => {
+      setIsLoading(true);
+      try {
+        await onRevokeShare(shareId);
+        setRevokeConfirmId(null);
+      } catch (error) {
+        console.error("Failed to revoke share:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onRevokeShare],
+  );
 
   const copyToClipboard = useCallback(async (token: string) => {
     const shareUrl = `${window.location.origin}/share/${token}`;
@@ -84,17 +103,17 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
       setCopiedToken(token);
       setTimeout(() => setCopiedToken(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   }, []);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -130,63 +149,111 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
             return (
               <li
                 key={link.id}
-                className={`flex justify-between items-center p-4 bg-white/[0.03] rounded-lg border border-white/[0.08] transition-colors hover:border-indigo-500/30 sm:flex-row flex-col sm:items-start gap-4 ${expired ? 'opacity-60' : ''}`}
+                className={`flex justify-between items-center p-4 bg-white/[0.03] rounded-lg border border-white/[0.08] transition-colors hover:border-indigo-500/30 sm:flex-row flex-col sm:items-start gap-4 ${expired ? "opacity-60" : ""}`}
                 role="listitem"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <code className="font-mono text-sm bg-black/30 py-1 px-2 rounded">{link.shareToken.slice(0, 8)}...{link.shareToken.slice(-4)}</code>
+                    <code className="font-mono text-sm bg-black/30 py-1 px-2 rounded">
+                      {link.shareToken.slice(0, 8)}...
+                      {link.shareToken.slice(-4)}
+                    </code>
                     {link.hasPassword && (
-                      <span className="inline-flex items-center gap-1 text-xs py-0.5 px-2 rounded bg-indigo-500/20 text-violet-400" title="Password protected">
+                      <span
+                        className="inline-flex items-center gap-1 text-xs py-0.5 px-2 rounded bg-indigo-500/20 text-violet-400"
+                        title="Password protected"
+                      >
                         <Lock size={12} aria-hidden="true" />
                         Protected
                       </span>
                     )}
                     {expired && (
-                      <span className="inline-flex items-center gap-1 text-xs py-0.5 px-2 rounded bg-red-500/20 text-red-400">Expired</span>
+                      <span className="inline-flex items-center gap-1 text-xs py-0.5 px-2 rounded bg-red-500/20 text-red-400">
+                        Expired
+                      </span>
                     )}
                   </div>
                   <div className="flex flex-wrap gap-4 text-xs text-white/50 sm:flex-row flex-col sm:gap-4 gap-2">
-                    <span className="inline-flex items-center gap-1" title="Access count">
+                    <span
+                      className="inline-flex items-center gap-1"
+                      title="Access count"
+                    >
                       <BarChart2 size={12} aria-hidden="true" />
                       {link.accessCount} views
                     </span>
                     {link.expiresAt && (
-                      <span className="inline-flex items-center gap-1" title="Expires">
+                      <span
+                        className="inline-flex items-center gap-1"
+                        title="Expires"
+                      >
                         <Clock size={12} aria-hidden="true" />
-                        {expired ? 'Expired' : `Expires ${formatDate(link.expiresAt)}`}
+                        {expired
+                          ? "Expired"
+                          : `Expires ${formatDate(link.expiresAt)}`}
                       </span>
                     )}
-                    <span className="inline-flex items-center gap-1" title="Created">
+                    <span
+                      className="inline-flex items-center gap-1"
+                      title="Created"
+                    >
                       Created {formatDate(link.createdAt)}
                     </span>
                   </div>
                 </div>
-                <div className="flex gap-2 sm:w-auto w-full">
-                  <button
-                    className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/10 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
-                    onClick={() => { void copyToClipboard(link.shareToken); }}
-                    aria-label={`Copy share link ${copiedToken === link.shareToken ? '(copied!)' : ''}`}
-                  >
-                    {copiedToken === link.shareToken ? (
-                      <>Copied!</>
-                    ) : (
-                      <>
-                        <Copy size={14} aria-hidden="true" />
-                        Copy Link
-                      </>
-                    )}
-                  </button>
-                  <button
-                    className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
-                    onClick={() => { void handleRevokeShare(link.id); }}
-                    disabled={isLoading}
-                    aria-label="Revoke share link"
-                  >
-                    <Trash2 size={14} aria-hidden="true" />
-                    Revoke
-                  </button>
-                </div>
+                {revokeConfirmId === link.id ? (
+                  <div className="flex gap-2 sm:w-auto w-full items-center">
+                    <span className="text-xs text-white/70 flex-1">
+                      Revoke?
+                    </span>
+                    <button
+                      className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/30 text-red-300 hover:bg-red-500/40 disabled:opacity-60 disabled:cursor-not-allowed"
+                      onClick={() => {
+                        void handleRevokeShare(link.id);
+                      }}
+                      disabled={isLoading}
+                      aria-label="Confirm revoke share link"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/10 text-white hover:bg-white/15"
+                      onClick={() => setRevokeConfirmId(null)}
+                      aria-label="Cancel revoke"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2 sm:w-auto w-full">
+                    <button
+                      className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/10 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
+                      onClick={() => {
+                        void copyToClipboard(link.shareToken);
+                      }}
+                      aria-label={`Copy share link ${copiedToken === link.shareToken ? "(copied!)" : ""}`}
+                    >
+                      {copiedToken === link.shareToken ? (
+                        <>Copied!</>
+                      ) : (
+                        <>
+                          <Copy size={14} aria-hidden="true" />
+                          Copy Link
+                        </>
+                      )}
+                    </button>
+                    <button
+                      className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
+                      onClick={() => {
+                        setRevokeConfirmId(link.id);
+                      }}
+                      disabled={isLoading}
+                      aria-label="Revoke share link"
+                    >
+                      <Trash2 size={14} aria-hidden="true" />
+                      Revoke
+                    </button>
+                  </div>
+                )}
               </li>
             );
           })}
@@ -195,16 +262,25 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
         <div className="text-center p-8 text-white/50">
           <Share2 size={32} className="opacity-30 mb-4" aria-hidden="true" />
           <p className="m-0">No share links created yet</p>
-          <p className="m-0 text-sm mt-2">Create a link to share this chart with others</p>
+          <p className="m-0 text-sm mt-2">
+            Create a link to share this chart with others
+          </p>
         </div>
       )}
 
       {/* Create Share Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/75 flex items-center justify-center z-[1000] p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div
+          className="fixed inset-0 bg-black/75 flex items-center justify-center z-[1000] p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
           <div className="bg-[#1a1a2e] rounded-xl w-full max-w-[400px] border border-white/10 dark:bg-gray-800">
             <div className="flex justify-between items-center px-6 py-4 border-b border-white/10">
-              <h3 id="modal-title" className="m-0 text-lg">Create Share Link</h3>
+              <h3 id="modal-title" className="m-0 text-lg">
+                Create Share Link
+              </h3>
               <button
                 className="bg-transparent border-none text-white/60 text-2xl cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center leading-none hover:text-white"
                 onClick={() => setShowCreateModal(false)}
@@ -215,11 +291,16 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
             </div>
             <div className="p-6">
               <div className="mb-5 last:mb-0">
-                <label htmlFor="share-password" className="block mb-2 text-sm font-medium">Password (optional)</label>
+                <label
+                  htmlFor="share-password"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Password (optional)
+                </label>
                 <div className="relative">
                   <input
                     id="share-password"
-                    type={showPasswords.new ? 'text' : 'password'}
+                    type={showPasswords.new ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Leave empty for no password"
@@ -229,16 +310,31 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                   <button
                     type="button"
                     className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-white/50 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white"
-                    onClick={() => setShowPasswords((p) => ({ ...p, new: !p.new }))}
-                    aria-label={showPasswords.new ? 'Hide password' : 'Show password'}
+                    onClick={() =>
+                      setShowPasswords((p) => ({ ...p, new: !p.new }))
+                    }
+                    aria-label={
+                      showPasswords.new ? "Hide password" : "Show password"
+                    }
                   >
-                    {showPasswords.new ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showPasswords.new ? (
+                      <EyeOff size={16} />
+                    ) : (
+                      <Eye size={16} />
+                    )}
                   </button>
                 </div>
-                <span className="block mt-1 text-xs text-white/50">Password protects access to the shared chart</span>
+                <span className="block mt-1 text-xs text-white/50">
+                  Password protects access to the shared chart
+                </span>
               </div>
               <div className="mb-5 last:mb-0">
-                <label htmlFor="share-expiry" className="block mb-2 text-sm font-medium">Link expires after</label>
+                <label
+                  htmlFor="share-expiry"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Link expires after
+                </label>
                 <select
                   id="share-expiry"
                   value={expiresIn}
@@ -262,10 +358,12 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
               </button>
               <button
                 className="inline-flex items-center gap-2 py-2.5 px-4 text-sm font-medium rounded-md border-none cursor-pointer transition-all bg-gradient-to-br from-indigo-500 to-violet-500 text-white hover:from-indigo-600 hover:to-violet-600 disabled:opacity-60 disabled:cursor-not-allowed"
-                onClick={() => { void handleCreateShare(); }}
+                onClick={() => {
+                  void handleCreateShare();
+                }}
                 disabled={isLoading}
               >
-                {isLoading ? 'Creating...' : 'Create Link'}
+                {isLoading ? "Creating..." : "Create Link"}
               </button>
             </div>
           </div>
