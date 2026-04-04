@@ -41,7 +41,7 @@ export default function DashboardPage() {
                 key={chart.id}
                 onClick={() => navigate(`/charts/${chart.id}`)}
                 data-testid="chart-card"
-                className="card hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-[#141627]/70 backdrop-blur-md rounded-xl border border-[#2f2645] hover:border-primary/30 transition-colors cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-bold">{chart.name}</h3>
@@ -49,9 +49,15 @@ export default function DashboardPage() {
                     {chart.type}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  <p>📅 {new Date(chart.birth_date).toLocaleDateString()}</p>
-                  <p>📍 {chart.birth_place_name}</p>
+                <div className="text-sm text-slate-400 space-y-1">
+                  <p className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }} aria-hidden="true">calendar_today</span>
+                    {new Date(chart.birth_date).toLocaleDateString()}
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }} aria-hidden="true">location_on</span>
+                    {chart.birth_place_name}
+                  </p>
                 </div>
                 {chart.calculated_data && (
                   <div className="mt-4 pt-4 border-t dark:border-gray-700">
@@ -71,11 +77,13 @@ export default function DashboardPage() {
             {/* Add New Chart Card */}
             <div
               onClick={() => navigate('/charts/new')}
-              className="card hover:shadow-lg transition-shadow cursor-pointer border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center min-h-[200px]"
+              className="bg-transparent rounded-xl hover:bg-white/5 transition-colors cursor-pointer border-2 border-dashed border-[#2f2645] flex items-center justify-center min-h-[200px]"
             >
               <div className="text-center">
-                <div className="text-4xl mb-2">➕</div>
-                <p className="font-medium text-gray-600 dark:text-gray-400">Create New Chart</p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-2">
+                  <span className="material-symbols-outlined text-primary" style={{ fontSize: '24px' }} aria-hidden="true">add</span>
+                </div>
+                <p className="font-medium text-slate-300">Create New Chart</p>
               </div>
             </div>
           </div>
