@@ -301,7 +301,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
 
           {/* Actions Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-800/30 p-4 rounded-2xl border border-slate-800">
-            <div className="flex-1 min-w-[300px] relative">
+            <div className="flex-1 min-w-0 sm:min-w-[300px] relative">
               <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                 search
               </span>

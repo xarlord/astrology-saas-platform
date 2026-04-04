@@ -296,7 +296,7 @@ export function TransitCalendar({
       </div>
 
       {/* Calendar Grid */}
-      <div className="min-w-[320px]" role="grid">
+      <div className="min-w-0 sm:min-w-[320px]" role="grid">
         {Array.from({ length: Math.ceil(calendarDays.length / 7) }, (_, weekIdx) => (
           <div key={weekIdx} className="grid grid-cols-7" role="row">
             {calendarDays.slice(weekIdx * 7, weekIdx * 7 + 7).map((day, cellIdx) => {
