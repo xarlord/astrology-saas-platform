@@ -84,6 +84,21 @@ railway variables set RATE_LIMIT_MAX_REQUESTS=100
 echo "⚠️  Please set ALLOWED_ORIGINS with your frontend URL"
 echo "   Run: railway variables set ALLOWED_ORIGINS=https://your-frontend-domain.railway.app"
 
+# Set FRONTEND_URL placeholder
+echo "⚠️  Please set FRONTEND_URL with your frontend URL"
+echo "   Run: railway variables set FRONTEND_URL=https://your-frontend-domain.railway.app"
+
+# Generate CSRF_SECRET if not exists
+CSRF_SECRET=$(railway variables get CSRF_SECRET 2>/dev/null || echo "")
+if [ -z "$CSRF_SECRET" ]; then
+    echo "🔐 Generating CSRF_SECRET..."
+    CSRF_SECRET=$(openssl rand -base64 32)
+    railway variables set CSRF_SECRET="$CSRF_SECRET"
+    echo "✅ CSRF_SECRET generated and set"
+else
+    echo "✅ CSRF_SECRET already set"
+fi
+
 # Deploy backend
 echo "🚀 Deploying backend..."
 railway up
