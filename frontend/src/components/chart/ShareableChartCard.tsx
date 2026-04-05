@@ -63,12 +63,12 @@ function _CompactCardLayout({
         {/* Name and Insight */}
         <div className="text-center space-y-1">
           <div className="font-bold text-white">{name}</div>
-          <p className="text-[12px] italic text-secondary-gray">"Today's cosmic energy supports"</p>
+          <p className="text-[12px] italic text-slate-400">"Today's cosmic energy supports"</p>
           <p className="text-[12px] font-medium text-primary">{sunSign} energy</p>
         </div>
 
         {/* Footer */}
-        <div className="mt-4 text-[10px] text-center text-muted">
+        <div className="mt-4 text-[10px] text-center text-slate-500">
           astroverse.app • daily insight
         </div>
       </div>
