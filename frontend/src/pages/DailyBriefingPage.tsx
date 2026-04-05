@@ -310,7 +310,7 @@ const DailyBriefingPage: React.FC = () => {
           <h2 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">
             Priority Areas
           </h2>
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-3 overflow-x-auto pb-2">
             {MOCK_PRIORITY_AREAS.map((area) => (
               <div
                 key={area.key}
