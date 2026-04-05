@@ -11,7 +11,7 @@
 
 The AstroVerse design system specifies **Material Symbols Outlined** as the sole icon library. Currently:
 - `@heroicons/react` is used in **5 files** (18 icon instances)
-- `lucide-react` is used in **21 files** (80+ icon instances)
+- `lucide-react` is used in **31 files** (120+ icon instances)
 
 This fragmentation causes:
 1. Inconsistent icon styles (heroicons is outline-only, lucide has its own stroke weight)
@@ -95,6 +95,19 @@ This fragmentation causes:
 | `QrCode` | `qr_code_2` | text-[20px] |
 | `FileText` | `description` | text-[18px] |
 | `XCircle` | `cancel` | text-[20px] |
+| `Activity` | `monitor_heart` | text-[18px] |
+| `Brain` | `psychology` | text-[20px] |
+| `Pentagon` | `change_history` | text-[20px] (closest fill match) |
+| `PlayCircle` | `play_circle` | text-[20px] |
+| `Quote` | `format_quote` | text-[18px] |
+| `Printer` | `print` | text-[18px] |
+| `LayoutDashboard` | `dashboard` | text-[20px] |
+| `GraduationCap` | `school` | text-[20px] |
+| `Heart` | `favorite` | text-[20px] |
+| `LogOut` | `logout` | text-[20px] |
+| `User` | `person` | text-[20px] |
+| `Menu` | `menu` | text-[20px] |
+| `Plus` | `add` | text-[20px] |
 
 ---
 
@@ -222,6 +235,37 @@ Remove: `{ Settings, ChevronDown, ChevronUp, Clock, X, Mail, MessageSquare, Shar
 #### 26. `components/ui/VideoModal.tsx`
 Remove: `{ Settings, ChevronDown, ChevronUp, Clock, X }` → `settings`, `expand_more`, `expand_less`, `schedule`, `close`
 
+#### 27. `pages/DailyBriefingPage.tsx` ⚠️ NEW — regression
+Remove: `{ ArrowLeft, ArrowRight, Sparkles, Sun, Moon, Star, TrendingUp, Bell, Activity }` → `arrow_back`, `arrow_forward`, `auto_awesome`, `light_mode`, `dark_mode`, `star`, `trending_up`, `notifications`, `monitor_heart`
+
+> **Note:** This page was created after the Sprint 4 audit. Uses correct cosmic theme tokens (`bg-[#141627]/70 backdrop-blur-md`) but imports lucide-react instead of Material Symbols.
+
+#### 28. `pages/LoginPageNew.tsx`
+Remove: `{ Sparkles, AlertCircle, Mail, Eye, EyeOff, Lock, RefreshCw, ArrowRight }` → `auto_awesome`, `error`, `mail`, `visibility`, `visibility_off`, `lock`, `refresh`, `arrow_forward`
+
+#### 29. `pages/LandingPage.tsx`
+Remove: `{ CheckCircle, Sparkles, Menu, X, Star, ArrowLeft, ArrowRight, Brain, Calendar, Check, Clock, Pentagon, PlayCircle, Quote, Sun }` → `check_circle`, `auto_awesome`, `menu`, `close`, `star`, `arrow_back`, `arrow_forward`, `psychology`, `calendar_month`, `check`, `schedule`, `change_history`, `play_circle`, `format_quote`, `light_mode`
+
+#### 30. `components/AppLayout.tsx` ⚠️ HIGH IMPACT — sidebar/nav shell
+Remove: `{ Sparkles, Plus, Bell, ChevronDown, User, Settings, LogOut, X, LayoutDashboard, Calendar, Heart, RefreshCw, GraduationCap, Sun, Moon, Star, Home, Menu }` → `auto_awesome`, `add`, `notifications`, `expand_more`, `person`, `settings`, `logout`, `close`, `dashboard`, `calendar_month`, `favorite`, `refresh`, `school`, `light_mode`, `dark_mode`, `star`, `home`, `menu`
+
+> **Note:** AppLayout is the authenticated shell — every page uses it. Migrate carefully and verify visually across all pages.
+
+#### 31. `components/chart/PinterestCard.tsx`
+Remove: `{ Sparkles }` → `auto_awesome`
+
+#### 32. `components/chart/LinkedInCard.tsx`
+Remove: `{ Sparkles }` → `auto_awesome`
+
+#### 33. `components/chart/InstagramStoryCard.tsx`
+Remove: `{ Sparkles }` → `auto_awesome`
+
+#### 34. `components/chart/TikTokCard.tsx`
+Remove: `{ Sparkles }` → `auto_awesome`
+
+#### 35. `components/report/MonthlyTransitReportView.tsx`
+Remove: `{ ArrowLeft, Download, Printer, Share2 }` → `arrow_back`, `download`, `print`, `share`
+
 ---
 
 ## Size Convention
@@ -292,7 +336,7 @@ Lucide's `Loader2` is commonly used as a spinner with `className="animate-spin"`
 - [ ] `components/TransitDashboard.tsx`
 - [ ] Remove `@heroicons/react` from `package.json`
 
-### Phase 2: Migrate lucide (21 files)
+### Phase 2: Migrate lucide (31 files)
 - [ ] `components/AIInterpretationToggle.tsx`
 - [ ] `components/AIInterpretationDisplay.tsx`
 - [ ] `pages/SolarReturnsPage.tsx`
@@ -314,6 +358,15 @@ Lucide's `Loader2` is commonly used as a spinner with `className="animate-spin"`
 - [ ] `components/ui/ConfirmModal.tsx`
 - [ ] `components/ui/ShareModal.tsx`
 - [ ] `components/ui/VideoModal.tsx`
+- [ ] `pages/DailyBriefingPage.tsx`
+- [ ] `pages/LoginPageNew.tsx`
+- [ ] `pages/LandingPage.tsx`
+- [ ] `components/AppLayout.tsx`
+- [ ] `components/chart/PinterestCard.tsx`
+- [ ] `components/chart/LinkedInCard.tsx`
+- [ ] `components/chart/InstagramStoryCard.tsx`
+- [ ] `components/chart/TikTokCard.tsx`
+- [ ] `components/report/MonthlyTransitReportView.tsx`
 - [ ] Remove `lucide-react` from `package.json`
 
 ### Phase 3: Cleanup
