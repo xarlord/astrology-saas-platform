@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Bell, Mail, Smartphone, Check, Info } from 'lucide-react';
+
 import { ReminderFormData, UserReminder } from '../types/calendar.types';
 import { setReminder } from '../services/calendar.service';
 
@@ -99,7 +99,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
     <div className="max-w-[600px] mx-auto p-6 sm:p-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-500 rounded-xl shrink-0">
-          <Bell size={24} />
+          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>notifications</span>
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Event Reminders</h2>
@@ -149,7 +149,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 onChange={() => handleReminderTypeChange('email')}
                 className="hidden"
               />
-              <Mail size={20} />
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>mail</span>
               <span className="text-sm font-medium">Email</span>
             </label>
 
@@ -164,7 +164,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 onChange={() => handleReminderTypeChange('push')}
                 className="hidden"
               />
-              <Smartphone size={20} />
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>smartphone</span>
               <span className="text-sm font-medium">Push Notification</span>
             </label>
           </div>
@@ -187,13 +187,13 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 />
                 <span className="flex-1 text-sm text-gray-700">{option.label}</span>
                 {formData.reminderAdvanceHours.includes(option.value) && (
-                  <Check size={16} className="text-emerald-500 shrink-0" />
+                  <span className="material-symbols-outlined text-emerald-500 shrink-0" style={{ fontSize: '16px' }}>check</span>
                 )}
               </label>
             ))}
           </div>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-amber-50 border-l-[3px] border-amber-500 rounded text-[13px] text-amber-800 leading-snug">
-            <Info size={14} className="shrink-0 mt-0.5" />
+            <span className="material-symbols-outlined shrink-0 mt-0.5" style={{ fontSize: '14px' }}>info</span>
             <span>Select multiple timing options to receive reminders at different intervals</span>
           </div>
         </div>
@@ -219,7 +219,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
         {/* Success Message */}
         {success && (
           <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-300 rounded-lg text-green-800 text-sm">
-            <Check size={20} />
+            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>check</span>
             <span>Reminder settings saved successfully!</span>
           </div>
         )}
