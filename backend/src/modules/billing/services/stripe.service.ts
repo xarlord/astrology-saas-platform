@@ -2,18 +2,21 @@
  * Stripe Service - Wraps Stripe SDK for billing operations
  */
 
-// @ts-expect-error -- stripe is an optional peer dependency; types may not be installed
-import Stripe from 'stripe';
+import * as Stripe from 'stripe';
 import config from '../../../config';
 
-let _stripe: Stripe | null = null;
+let _stripe: any = null;
 
-function getStripe(): Stripe {
+function getStripe(): any {
   if (!_stripe) {
     if (!config.stripe.secretKey) {
       throw new Error('STRIPE_SECRET_KEY is not configured');
     }
-    _stripe = new Stripe(config.stripe.secretKey);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    _stripe = Stripe.default(config.stripe.secretKey, {
+      apiVersion: '2024-11-20.acacia',
+    });
   }
   return _stripe;
 }
