@@ -8,26 +8,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import {
-  Sparkles,
-  Plus,
-  Bell,
-  ChevronDown,
-  User,
-  Settings,
-  LogOut,
-  X,
-  LayoutDashboard,
-  Calendar,
-  Heart,
-  RefreshCw,
-  GraduationCap,
-  Sun,
-  Moon,
-  Star,
-  Home,
-  Menu,
-} from 'lucide-react';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -110,12 +90,12 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             className="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
             aria-label="Open main menu"
           >
-            <Menu className="w-6 h-6 text-slate-300" />
+            <span className="material-symbols-outlined text-[24px] text-slate-300">menu</span>
           </button>
 
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="size-8 bg-gradient-to-br from-primary to-[#8b5cf6] rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-              <Sparkles className="w-5 h-5 text-white" />
+              <span className="material-symbols-outlined text-[20px] text-white">auto_awesome</span>
             </div>
             <span className="text-xl font-bold text-white hidden sm:block">AstroVerse</span>
           </Link>
@@ -150,7 +130,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
             aria-label="Create new chart"
           >
-            <Plus className="w-5 h-5" />
+            <span className="material-symbols-outlined text-[20px]">add</span>
             <span className="hidden md:inline">New Chart</span>
           </button>
 
@@ -158,7 +138,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             className="p-2 rounded-lg hover:bg-white/5 relative transition-colors"
             aria-label="1 unread notification"
           >
-            <Bell className="w-6 h-6 text-slate-400" />
+            <span className="material-symbols-outlined text-[24px] text-slate-400">notifications</span>
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true" />
           </button>
 
@@ -179,9 +159,9 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
               <span className="hidden md:block text-sm font-medium text-slate-300">
                 {user?.name ?? 'User'}
               </span>
-              <ChevronDown
-                className={`w-4 h-4 text-slate-500 hidden md:block transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-              />
+              <span
+                className={`material-symbols-outlined text-[16px] text-slate-500 hidden md:inline-block transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+              >expand_more</span>
             </button>
 
             {/* Dropdown Menu */}
@@ -212,7 +192,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary transition-colors"
                     role="menuitem"
                   >
-                    <User className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">person</span>
                     Profile
                   </Link>
                   <Link
@@ -221,7 +201,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary transition-colors"
                     role="menuitem"
                   >
-                    <Settings className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">settings</span>
                     Settings
                   </Link>
                   <hr className="border-[#2f2645] my-1" />
@@ -230,7 +210,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary transition-colors"
                     role="menuitem"
                   >
-                    <LogOut className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">logout</span>
                     Logout
                   </button>
                 </div>
@@ -263,7 +243,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
         <div className="flex items-center justify-between h-16 px-6 border-b border-[#2f2645]">
           <Link to="/dashboard" className="flex items-center gap-2" onClick={onClose}>
             <div className="size-8 bg-gradient-to-br from-primary to-[#8b5cf6] rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-              <Sparkles className="w-5 h-5 text-white" />
+              <span className="material-symbols-outlined text-[20px] text-white">auto_awesome</span>
             </div>
             <span className="text-xl font-bold text-white">AstroVerse</span>
           </Link>
@@ -272,7 +252,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             className="lg:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
             aria-label="Close sidebar"
           >
-            <X className="w-6 h-6 text-slate-400" />
+            <span className="material-symbols-outlined text-[24px] text-slate-400">close</span>
           </button>
         </div>
 
@@ -289,7 +269,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
               >
-                <Plus className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">add</span>
                 <span className="font-medium">New Chart</span>
               </Link>
               <Link
@@ -297,7 +277,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <LayoutDashboard className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">dashboard</span>
                 <span>Dashboard</span>
               </Link>
             </div>
@@ -314,7 +294,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <Calendar className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">calendar_month</span>
                 <span>Calendar</span>
               </Link>
               <Link
@@ -322,7 +302,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <Heart className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">favorite_border</span>
                 <span>Synastry</span>
               </Link>
               <Link
@@ -330,7 +310,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <RefreshCw className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">sync</span>
                 <span>Transits</span>
               </Link>
               <Link
@@ -338,7 +318,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <GraduationCap className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">school</span>
                 <span>Learning Center</span>
               </Link>
             </div>
@@ -355,7 +335,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <Sun className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">light_mode</span>
                 <span>Solar Returns</span>
               </Link>
               <Link
@@ -363,7 +343,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <Moon className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">dark_mode</span>
                 <span>Lunar Returns</span>
               </Link>
             </div>
@@ -375,7 +355,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           {isPaid ? (
             <div className="bg-gradient-to-br from-emerald-900/20 to-green-900/20 rounded-lg p-4 border border-emerald-500/20">
               <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span className="material-symbols-outlined text-[16px] text-emerald-400">auto_awesome</span>
                 <p className="text-sm font-medium text-emerald-300">
                   {tier === 'basic' ? 'Pro Plan' : 'Premium Plan'}
                 </p>
@@ -441,7 +421,6 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
       <div className="flex items-center justify-around">
         {mobileNavItems.map((item) => {
           const active = isActive(item.href);
-          const Icon = item.icon;
           return (
             <Link
               key={item.name}
@@ -470,11 +449,13 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
                   justifyContent: 'center',
                 }}
               >
-                <Icon
-                  className={`w-[22px] h-[22px] transition-all duration-200 ${
+                <span
+                  className={`material-symbols-outlined text-[22px] transition-all duration-200 ${
                     active ? 'scale-110' : 'group-hover:scale-105'
                   }`}
-                />
+                >
+                  {item.icon}
+                </span>
               </span>
 
               {/* Label with active state */}
@@ -550,8 +531,8 @@ const navItems = [
 ];
 
 const mobileNavItems = [
-  { name: 'home', label: 'Home', href: '/dashboard', icon: Home },
-  { name: 'charts', label: 'Charts', href: '/charts', icon: Star },
-  { name: 'transits', label: 'Transits', href: '/transits', icon: RefreshCw },
-  { name: 'learn', label: 'Learn', href: '/learning', icon: GraduationCap },
+  { name: 'home', label: 'Home', href: '/dashboard', icon: 'home' },
+  { name: 'charts', label: 'Charts', href: '/charts', icon: 'star' },
+  { name: 'transits', label: 'Transits', href: '/transits', icon: 'sync' },
+  { name: 'learn', label: 'Learn', href: '/learning', icon: 'school' },
 ];
