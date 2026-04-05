@@ -8,7 +8,7 @@
 
 import React, { useState } from 'react';
 import { useAIInterpretation } from '../hooks/useAIInterpretation';
-import { Sparkles, Info } from 'lucide-react';
+
 
 interface AIInterpretationToggleProps {
   onInterpretationGenerated?: (interpretation: Record<string, unknown>) => void;
@@ -52,7 +52,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
     <div role="region" aria-label="AI interpretation controls" aria-busy={isGenerating} className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white mb-5">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2 font-semibold text-base">
-          <Sparkles className="animate-pulse" size={18} />
+          <span className="material-symbols-outlined animate-pulse" style={{ fontSize: '18px' }}>auto_awesome</span>
           <span>AI-Enhanced Interpretations</span>
         </div>
         <button
@@ -61,7 +61,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
           onClick={() => setShowInfo(!showInfo)}
           aria-label="Toggle AI info"
         >
-          <Info size={16} />
+          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>info</span>
         </button>
       </div>
 
