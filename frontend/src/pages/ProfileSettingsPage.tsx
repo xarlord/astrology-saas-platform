@@ -485,12 +485,30 @@ export const ProfileSettingsPage: React.FC = () => {
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Theme</h3>
-                      <div className="flex gap-3" role="radiogroup" aria-label="Theme">
+                      <div
+                        className="flex gap-3"
+                        role="radiogroup"
+                        aria-label="Theme"
+                        onKeyDown={(e) => {
+                          const themes = ['light', 'dark', 'system'] as const;
+                          const idx = themes.indexOf(appearance.theme);
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const next = themes[(idx + 1) % themes.length];
+                            setAppearance((prev) => ({ ...prev, theme: next }));
+                          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            const prev = themes[(idx - 1 + themes.length) % themes.length];
+                            setAppearance((p) => ({ ...p, theme: prev }));
+                          }
+                        }}
+                      >
                         {(['light', 'dark', 'system'] as const).map((theme) => (
                           <button
                             key={theme}
                             role="radio"
                             aria-checked={appearance.theme === theme}
+                            tabIndex={appearance.theme === theme ? 0 : -1}
                             onClick={() => setAppearance((prev) => ({ ...prev, theme }))}
                             className={clsx(
                               'flex-1 p-4 rounded-xl border transition-all',
@@ -518,12 +536,30 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Interface Density</h3>
-                      <div className="flex gap-3" role="radiogroup" aria-label="Interface density">
+                      <div
+                        className="flex gap-3"
+                        role="radiogroup"
+                        aria-label="Interface density"
+                        onKeyDown={(e) => {
+                          const densities = ['compact', 'comfortable', 'spacious'] as const;
+                          const idx = densities.indexOf(appearance.density);
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const next = densities[(idx + 1) % densities.length];
+                            setAppearance((prev) => ({ ...prev, density: next }));
+                          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            const prev = densities[(idx - 1 + densities.length) % densities.length];
+                            setAppearance((p) => ({ ...p, density: prev }));
+                          }
+                        }}
+                      >
                         {(['compact', 'comfortable', 'spacious'] as const).map((density) => (
                           <button
                             key={density}
                             role="radio"
                             aria-checked={appearance.density === density}
+                            tabIndex={appearance.density === density ? 0 : -1}
                             onClick={() => setAppearance((prev) => ({ ...prev, density }))}
                             className={clsx(
                               'flex-1 px-4 py-3 rounded-xl border text-sm font-medium transition-all',
@@ -553,12 +589,30 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Sidebar Position</h3>
-                      <div className="flex gap-3" role="radiogroup" aria-label="Sidebar position">
+                      <div
+                        className="flex gap-3"
+                        role="radiogroup"
+                        aria-label="Sidebar position"
+                        onKeyDown={(e) => {
+                          const positions = ['left', 'right'] as const;
+                          const idx = positions.indexOf(appearance.sidebarPosition);
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const next = positions[(idx + 1) % positions.length];
+                            setAppearance((prev) => ({ ...prev, sidebarPosition: next }));
+                          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            const prev = positions[(idx - 1 + positions.length) % positions.length];
+                            setAppearance((p) => ({ ...p, sidebarPosition: prev }));
+                          }
+                        }}
+                      >
                         {(['left', 'right'] as const).map((position) => (
                           <button
                             key={position}
                             role="radio"
                             aria-checked={appearance.sidebarPosition === position}
+                            tabIndex={appearance.sidebarPosition === position ? 0 : -1}
                             onClick={() =>
                               setAppearance((prev) => ({ ...prev, sidebarPosition: position }))
                             }

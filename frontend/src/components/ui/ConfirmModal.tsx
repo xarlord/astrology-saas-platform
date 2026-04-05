@@ -104,8 +104,22 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     }
   }, [isOpen]);
 
-  // Handle Enter key (Escape handled by useFocusTrap)
-  // Note: useFocusTrap already handles Escape via onEscape callback and
+  // Handle Enter key for quick confirm (Escape handled by useFocusTrap)
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (e.key === 'Enter' && isConfirmed && !isSubmitting && !isLoading) {
+        void handleConfirm();
+      }
+    },
+    [isOpen, isConfirmed, isSubmitting, isLoading, handleConfirm],
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleKeyDown]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
