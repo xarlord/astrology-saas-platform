@@ -14,7 +14,11 @@
 
 import openaiService from './openai.service';
 import aiCacheService from './aiCache.service';
-import { generateCompletePersonalityAnalysis } from '../../analysis/services/interpretation.service';
+import {
+  generateCompletePersonalityAnalysis,
+  type PersonalityAnalysisResponse,
+  type AspectPattern,
+} from '../../analysis/services/interpretation.service';
 import logger from '../../../utils/logger';
 import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
 
@@ -59,16 +63,16 @@ export interface InterpretationResult {
   generatedAt?: string;
 
   // Natal chart fields
-  overview?: any;
-  planetsInSigns?: any[];
-  houses?: any[];
-  aspects?: any[];
-  patterns?: any[];
+  overview?: PersonalityAnalysisResponse['overview'] | null;
+  planetsInSigns?: PersonalityAnalysisResponse['planetsInSigns'];
+  houses?: PersonalityAnalysisResponse['houses'];
+  aspects?: PersonalityAnalysisResponse['aspects'];
+  patterns?: AspectPattern[];
 
   // Enhancement fields
-  enhanced?: any;
-  interpretation?: any;
-  forecast?: any;
+  enhanced?: Record<string, unknown>;
+  interpretation?: Record<string, unknown> | string;
+  forecast?: Record<string, unknown> | string;
   compatibility?: number;
   analysis?: string;
   insights?: string[];
@@ -145,7 +149,7 @@ class AIInterpretationService {
       );
 
       return result as InterpretationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI interpretation failed, falling back to rule-based:', error);
 
       // Fallback to rule-based
@@ -186,7 +190,7 @@ class AIInterpretationService {
       );
 
       return result as InterpretationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI transit forecast failed:', error);
       return this.getRuleBasedTransit();
     }
@@ -225,7 +229,7 @@ class AIInterpretationService {
       );
 
       return result as InterpretationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI compatibility analysis failed:', error);
       return this.getRuleBasedCompatibility();
     }
@@ -268,7 +272,7 @@ class AIInterpretationService {
       );
 
       return result as InterpretationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI lunar return interpretation failed:', error);
       return {
         interpretation: 'Lunar return interpretation unavailable',
@@ -315,7 +319,7 @@ class AIInterpretationService {
       );
 
       return result as InterpretationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI solar return interpretation failed:', error);
       return {
         interpretation: 'Solar return interpretation unavailable',
@@ -396,13 +400,13 @@ class AIInterpretationService {
         ai: false,
         source: 'rule-based',
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Rule-based natal interpretation failed:', error);
 
       return {
         ai: false,
         source: 'rule-based',
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         overview: null,
         planetsInSigns: [],
         houses: [],

@@ -7,6 +7,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 import { Response, NextFunction } from 'express';
 import {
@@ -67,7 +68,7 @@ jest.mock('../../data/solarReturnInterpretations', () => ({
 // Mock errorHandler -- asyncHandler just calls the handler directly so thrown
 // errors propagate to our try/catch in tests
 jest.mock('../../middleware/errorHandler', () => ({
-  asyncHandler: (fn: Function) => fn,
+  asyncHandler: (fn: (...args: unknown[]) => unknown) => fn,
 }));
 
 // ---------------------------------------------------------------------------

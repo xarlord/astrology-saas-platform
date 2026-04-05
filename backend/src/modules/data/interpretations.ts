@@ -142,9 +142,9 @@ export function getTransitInterpretation(transit: { planet1: string; planet2: st
 // ============================================================================
 
 export function generatePersonalityAnalysis(data: {
-  planets: any[];
-  houses: any[];
-  aspects: any[];
+  planets: Array<{ name: string; sign: string }>;
+  houses: Array<{ cusp: number }>;
+  aspects: Array<Record<string, unknown>>;
 }): {
   overview: Record<string, unknown>;
   strengths: string[];
@@ -153,8 +153,8 @@ export function generatePersonalityAnalysis(data: {
 } {
   const { planets, houses } = data;
 
-  const sun = planets.find((p: any) => p.name === 'sun');
-  const moon = planets.find((p: any) => p.name === 'moon');
+  const sun = planets.find((p: { name: string; sign: string }) => p.name === 'sun');
+  const moon = planets.find((p: { name: string; sign: string }) => p.name === 'moon');
   const ascendant = houses[0]?.cusp || 0;
 
   return {

@@ -3,7 +3,13 @@
  * Comprehensive interpretations for solar return charts
  */
 
-import { SolarReturnInterpretation } from '../modules/solar/models/types';
+import { SolarReturnInterpretation, PlanetaryPosition, Aspect } from '../modules/solar/models/types';
+
+interface SolarReturnChartData {
+  planets?: PlanetaryPosition[];
+  aspects?: Aspect[];
+  moonPhase?: { phase: string; illumination: number };
+}
 
 /**
  * Sun in Houses Interpretations (1-12)
@@ -260,9 +266,9 @@ const MOON_PHASES: Record<string, {
 /**
  * Generate complete solar return interpretation
  */
-export function generateSolarReturnInterpretation(chartData: any, _year: number): SolarReturnInterpretation {
+export function generateSolarReturnInterpretation(chartData: SolarReturnChartData, _year: number): SolarReturnInterpretation {
   // Find Sun's house
-  const sun = chartData.planets?.find((p: any) => p.planet === 'sun');
+  const sun = chartData.planets?.find((p: PlanetaryPosition) => p.planet === 'sun');
   const sunHouse = sun?.house || 1;
 
   // Get sun in house interpretation
@@ -271,7 +277,7 @@ export function generateSolarReturnInterpretation(chartData: any, _year: number)
   // Generate themes
   const themes: string[] = [
     ...sunInHouseData.themes,
-    ...generatePlanetaryThemes(chartData.planets),
+    ...generatePlanetaryThemes(chartData.planets ?? []),
   ];
 
   // Generate challenges
@@ -305,7 +311,7 @@ export function generateSolarReturnInterpretation(chartData: any, _year: number)
 /**
  * Generate planetary themes
  */
-function generatePlanetaryThemes(planets: any[]): string[] {
+function generatePlanetaryThemes(planets: PlanetaryPosition[]): string[] {
   const themes: string[] = [];
 
   for (const planet of planets) {
@@ -321,7 +327,7 @@ function generatePlanetaryThemes(planets: any[]): string[] {
 /**
  * Generate challenges
  */
-function generateChallenges(chartData: any): Array<{
+function generateChallenges(chartData: SolarReturnChartData): Array<{
   area: string;
   description: string;
   advice: string;
@@ -333,7 +339,7 @@ function generateChallenges(chartData: any): Array<{
   }> = [];
 
   // Saturn challenges
-  const saturn = chartData.planets?.find((p: any) => p.planet === 'saturn');
+  const saturn = chartData.planets?.find((p: PlanetaryPosition) => p.planet === 'saturn');
   if (saturn) {
     const saturnChallenges: Record<number, { area: string; description: string; advice: string }> = {
       1: {
@@ -360,7 +366,7 @@ function generateChallenges(chartData: any): Array<{
 /**
  * Generate opportunities
  */
-function generateOpportunities(chartData: any): Array<{
+function generateOpportunities(chartData: SolarReturnChartData): Array<{
   area: string;
   description: string;
   timing: string;
@@ -372,7 +378,7 @@ function generateOpportunities(chartData: any): Array<{
   }> = [];
 
   // Jupiter opportunities
-  const jupiter = chartData.planets?.find((p: any) => p.planet === 'jupiter');
+  const jupiter = chartData.planets?.find((p: PlanetaryPosition) => p.planet === 'jupiter');
   if (jupiter) {
     const jupiterOpportunities: Record<number, { area: string; description: string; timing: string }> = {
       2: {
@@ -404,7 +410,7 @@ function generateOpportunities(chartData: any): Array<{
 /**
  * Generate advice
  */
-function generateAdvice(sunHouse: number, chartData: any): string[] {
+function generateAdvice(sunHouse: number, chartData: SolarReturnChartData): string[] {
   const advice: string[] = [];
 
   const generalAdvice: Record<number, string[]> = {
@@ -426,7 +432,7 @@ function generateAdvice(sunHouse: number, chartData: any): string[] {
 
   // Add specific advice based on challenging aspects
   if (chartData.aspects) {
-    const hardAspects = chartData.aspects.filter((a: any) =>
+    const hardAspects = chartData.aspects.filter((a: Aspect) =>
       a.type === 'square' || a.type === 'opposition'
     );
 
@@ -441,7 +447,7 @@ function generateAdvice(sunHouse: number, chartData: any): string[] {
 /**
  * Generate keywords
  */
-function generateKeywords(sunHouse: number, _chartData: any): string[] {
+function generateKeywords(sunHouse: number, _chartData: SolarReturnChartData): string[] {
   const keywords: string[] = [];
 
   const houseKeywords: Record<number, string[]> = {

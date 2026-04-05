@@ -7,7 +7,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { AppError } from '../../../utils/appError';
-import calendarEventModel from '../models/calendarEvent.model';
+import calendarEventModel, { CalendarEvent } from '../models/calendarEvent.model';
 import globalEventsService from '../services/globalEvents.service';
 
 /**
@@ -108,7 +108,7 @@ export const getMonthEvents = asyncHandler(
       monthNum
     );
 
-    let events: any[] = [...personalEvents];
+    let events: Array<CalendarEvent | GlobalEventRow> = [...personalEvents];
 
     // Include global events if requested
     if (includeGlobal === 'true') {

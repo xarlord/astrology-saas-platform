@@ -31,7 +31,7 @@ export interface UpdateUserData {
   name?: string;
   avatar_url?: string;
   timezone?: string;
-  preferences?: Record<string, any>;
+  preferences?: Record<string, unknown>;
 }
 
 class UserModel {
@@ -146,7 +146,7 @@ class UserModel {
   /**
    * Update user preferences
    */
-  async updatePreferences(id: string, preferences: Record<string, any>): Promise<User | null> {
+  async updatePreferences(id: string, preferences: Record<string, unknown>): Promise<User | null> {
     const user = await this.findById(id);
     if (!user) return null;
 

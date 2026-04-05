@@ -75,12 +75,17 @@ const config: Config = {
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
 
   database: {
-    url: process.env.DATABASE_URL || `postgresql://postgres:${process.env.DATABASE_PASSWORD || 'postgresql'}@localhost:5434/astrology_saas`,
+    url: process.env.DATABASE_URL || `postgresql://postgres:${process.env.DATABASE_PASSWORD || ''}@localhost:5434/astrology_saas`,
     host: process.env.DATABASE_HOST || 'localhost',
     port: parseInt(process.env.DATABASE_PORT || '5434', 10),
     name: process.env.DATABASE_NAME || 'astrology_saas',
     user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'postgresql',
+    password: process.env.DATABASE_PASSWORD || (() => {
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('DATABASE_PASSWORD must be set in production');
+      }
+      return '';
+    })(),
   },
 
   jwt: {

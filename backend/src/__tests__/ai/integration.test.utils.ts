@@ -3,6 +3,8 @@
  * Helper functions for AI integration tests
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import bcrypt from 'bcryptjs';
 
 /**

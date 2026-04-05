@@ -1958,7 +1958,7 @@ export function generatePersonalityAnalysis(chartData: {
         }
         acc[p.house].planetsInHouse.push(p.planet);
         return acc;
-      }, {} as Record<number, any>),
+      }, {} as Record<number, { house: number; planetsInHouse: string[]; interpretation: HouseMeaning | null }>),
     aspects: chartData.aspects.map(a => ({
       ...a,
       interpretation: getAspectInterpretation(a.type),

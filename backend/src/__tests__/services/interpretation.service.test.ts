@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   generateCompletePersonalityAnalysis,
   generateTransitAnalysis,
@@ -400,6 +401,7 @@ describe('Interpretation Service', () => {
 });
 
 // Helper function to calculate intensity score for sorting verification
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function calculateIntensityScore(transit: any): number {
   const aspectIntensity: Record<string, number> = {
     conjunction: 10,

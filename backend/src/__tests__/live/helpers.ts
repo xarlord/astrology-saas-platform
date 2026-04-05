@@ -3,6 +3,8 @@
  * Shared utilities for all live test suites
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export const BASE_URL = 'http://localhost:3001/api/v1';
 
 export const TEST_USER = {

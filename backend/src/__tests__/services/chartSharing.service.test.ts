@@ -4,6 +4,9 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 import { ChartSharingService, chartSharingService } from '../../modules/shared/services/chartSharing.service';
 import type { SharedChart, ShareCreationOptions } from '../../modules/shared/services/chartSharing.service';

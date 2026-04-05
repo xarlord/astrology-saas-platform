@@ -3,6 +3,8 @@
  * Helper functions for mocking authentication in tests
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import jwt from 'jsonwebtoken';
 
 /**

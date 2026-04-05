@@ -57,7 +57,7 @@ export async function register(req: Request, res: Response): Promise<void> {
   res.status(201).json({
     success: true,
     data: {
-      user: sanitizeUser(user as any),
+      user: sanitizeUser(user as unknown as Record<string, unknown>),
       accessToken,
       refreshToken: refreshTokenValue,
     },
@@ -102,7 +102,7 @@ export async function login(req: Request, res: Response): Promise<void> {
   res.status(200).json({
     success: true,
     data: {
-      user: sanitizeUser(user as any),
+      user: sanitizeUser(user as unknown as Record<string, unknown>),
       accessToken,
       refreshToken: refreshTokenValue,
     },
@@ -123,7 +123,7 @@ export async function getProfile(req: AuthenticatedRequest, res: Response): Prom
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user as any) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 
@@ -147,7 +147,7 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user as any) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 
@@ -167,7 +167,7 @@ export async function updatePreferences(req: AuthenticatedRequest, res: Response
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user as any) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 

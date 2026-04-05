@@ -5,7 +5,7 @@
 
 import request from 'supertest';
 import express, { Application } from 'express';
-import healthRoutes from '../../routes/health.routes';
+import { healthRoutes } from '../../routes/health.routes';
 
 // Mock database
 jest.mock('../../db', () => ({

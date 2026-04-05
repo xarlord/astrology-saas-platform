@@ -3,6 +3,7 @@
  */
 
 import db, { Knex } from '../../../config/database';
+import * as bcrypt from 'bcryptjs';
 
 export interface RefreshToken {
   id: string;
@@ -25,14 +26,15 @@ export interface CreateRefreshTokenInput {
 }
 
 /**
- * Create a new refresh token
+ * Create a new refresh token (stores hashed token)
  */
 export async function createRefreshToken(input: CreateRefreshTokenInput, trx?: Knex.Transaction): Promise<RefreshToken> {
   const query = trx || db;
+  const hashedToken = await bcrypt.hash(input.token, 10);
   const [refreshToken] = await query<RefreshToken>('refresh_tokens')
     .insert({
       user_id: input.user_id,
-      token: input.token,
+      token: hashedToken,
       expires_at: input.expires_at,
       user_agent: input.user_agent || null,
       ip_address: input.ip_address || null,
@@ -43,14 +45,21 @@ export async function createRefreshToken(input: CreateRefreshTokenInput, trx?: K
 }
 
 /**
- * Find a refresh token by token value
+ * Find a refresh token by comparing plaintext token against stored hash
  */
 export async function findRefreshToken(token: string): Promise<RefreshToken | null> {
-  const refreshToken = await db<RefreshToken>('refresh_tokens')
-    .where({ token })
-    .first();
+  // First get all non-expired, non-revoked tokens for potential matching
+  const candidates = await db<RefreshToken>('refresh_tokens')
+    .where({ revoked: false })
+    .where('expires_at', '>', new Date())
+    .limit(50);
 
-  return refreshToken || null;
+  for (const candidate of candidates) {
+    const match = await bcrypt.compare(token, candidate.token);
+    if (match) return candidate;
+  }
+
+  return null;
 }
 
 /**
@@ -67,12 +76,15 @@ export async function findValidRefreshTokens(userId: string): Promise<RefreshTok
 }
 
 /**
- * Revoke a refresh token
+ * Revoke a refresh token (looks up by plaintext, revokes the hashed match)
  */
 export async function revokeRefreshToken(token: string, trx?: Knex.Transaction): Promise<boolean> {
+  const record = await findRefreshToken(token);
+  if (!record) return false;
+
   const query = trx || db;
   const updated = await query<RefreshToken>('refresh_tokens')
-    .where({ token })
+    .where({ id: record.id })
     .update({
       revoked: true,
       revoked_at: new Date(),
@@ -85,6 +97,13 @@ export async function revokeRefreshToken(token: string, trx?: Knex.Transaction):
  * Revoke all refresh tokens for a user (except current token)
  */
 export async function revokeAllUserRefreshTokens(userId: string, exceptToken?: string): Promise<number> {
+  // Find the current token record to exclude it
+  let exceptId: string | undefined;
+  if (exceptToken) {
+    const record = await findRefreshToken(exceptToken);
+    exceptId = record?.id;
+  }
+
   const query = db<RefreshToken>('refresh_tokens')
     .where({
       user_id: userId,
@@ -92,8 +111,8 @@ export async function revokeAllUserRefreshTokens(userId: string, exceptToken?: s
     })
     .where('expires_at', '>', new Date());
 
-  if (exceptToken) {
-    query.whereNot('token', exceptToken);
+  if (exceptId) {
+    query.whereNot('id', exceptId);
   }
 
   const updated = await query.update({

@@ -229,6 +229,28 @@ export function calculateCompatibility(chart1: Record<string, unknown>, chart2: 
   const total = harmoniousCount + challengingCount || 1;
   const overallScore = Math.round(50 + (harmoniousCount / total) * 50);
 
+  // Deterministic category scores based on planet-domain associations
+  const romanticPlanets = ['Venus', 'Mars', 'Moon'];
+  const communicationPlanets = ['Mercury', 'Jupiter'];
+  const emotionalPlanets = ['Moon', 'Venus', 'Neptune'];
+  const valuesPlanets = ['Venus', 'Saturn', 'Jupiter'];
+
+  function categoryScore(relevantPlanets: string[]): number {
+    const relevant = crossAspects.filter(
+      a => relevantPlanets.includes(a.planet1.planet) || relevantPlanets.includes(a.planet2.planet)
+    );
+    if (relevant.length === 0) return overallScore; // Fall back to overall if no relevant aspects
+    const harm = relevant.filter(a => a.harmonious).length;
+    const challenge = relevant.filter(a => !a.harmonious).length;
+    const catTotal = harm + challenge || 1;
+    return Math.min(100, Math.max(0, Math.round(50 + (harm / catTotal) * 50)));
+  }
+
+  const romanticScore = categoryScore(romanticPlanets);
+  const communicationScore = categoryScore(communicationPlanets);
+  const emotionalScore = categoryScore(emotionalPlanets);
+  const valuesScore = categoryScore(valuesPlanets);
+
   // Generate strengths and challenges from actual aspects
   const strengths = crossAspects
     .filter(a => a.harmonious)
@@ -242,10 +264,10 @@ export function calculateCompatibility(chart1: Record<string, unknown>, chart2: 
 
   return {
     overallScore,
-    romanticScore: Math.min(100, overallScore + Math.round(Math.random() * 10 - 5)),
-    communicationScore: Math.min(100, overallScore + Math.round(Math.random() * 10 - 5)),
-    emotionalScore: Math.min(100, overallScore + Math.round(Math.random() * 10 - 5)),
-    valuesScore: Math.min(100, overallScore + Math.round(Math.random() * 10 - 5)),
+    romanticScore,
+    communicationScore,
+    emotionalScore,
+    valuesScore,
     aspects: crossAspects,
     strengths,
     challenges,
@@ -349,13 +371,13 @@ export function calculateCompositeChart(chart1: Record<string, unknown>, chart2:
   }
 
   // Calculate composite ascendant and midheaven from chart data
-  const asc1 = (chart1 as any)?.ascendant ?? 0;
-  const asc2 = (chart2 as any)?.ascendant ?? 0;
+  const asc1 = (chart1 as { ascendant?: number })?.ascendant ?? 0;
+  const asc2 = (chart2 as { ascendant?: number })?.ascendant ?? 0;
   let compositeAsc = (asc1 + asc2) / 2;
   if (Math.abs(asc1 - asc2) > 180) compositeAsc = (compositeAsc + 180) % 360;
 
-  const mc1 = (chart1 as any)?.midheaven ?? 90;
-  const mc2 = (chart2 as any)?.midheaven ?? 90;
+  const mc1 = (chart1 as { midheaven?: number })?.midheaven ?? 90;
+  const mc2 = (chart2 as { midheaven?: number })?.midheaven ?? 90;
   let compositeMc = (mc1 + mc2) / 2;
   if (Math.abs(mc1 - mc2) > 180) compositeMc = (compositeMc + 180) % 360;
 

@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import { db } from '../db';
 import { isRedisConnected, getRedisClient } from '../modules/shared/services/redis.service';
+import { getAllQueuesHealth, isQueueReady } from '../modules/jobs';
 
 const router = Router();
 const startTime = Date.now();
@@ -101,4 +102,42 @@ router.get('/redis', async (_req, res) => {
   }
 });
 
-export default router;
+/**
+ * GET /health/queues
+ * Job queue health check endpoint
+ */
+router.get('/queues', async (_req, res) => {
+  try {
+    if (!isQueueReady()) {
+      res.status(503).json({
+        success: false,
+        data: {
+          queues: 'not_initialized',
+          timestamp: new Date().toISOString(),
+        },
+      });
+      return;
+    }
+
+    const health = await getAllQueuesHealth();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        queues: health,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      data: {
+        queues: 'error',
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+    });
+  }
+});
+
+export { router as healthRoutes };

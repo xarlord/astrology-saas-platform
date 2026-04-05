@@ -9,6 +9,7 @@ import cardModel from '../models/card.model';
 import type { GeneratedCard } from '../models/card.model';
 import openaiService from '../../ai/services/openai.service';
 import { cardImageService } from './card-image.service';
+import { AppError } from '../../../utils/appError';
 
 const DAILY_CARD_LIMIT = 10;
 const SHARE_TOKEN_LENGTH = 24;
@@ -34,26 +35,27 @@ export class CardService {
     // Rate limit check
     const dailyCount = await cardModel.countByUserToday(userId);
     if (dailyCount >= DAILY_CARD_LIMIT) {
-      throw new Error(`Daily card generation limit reached (${DAILY_CARD_LIMIT}/day)`);
+      throw new AppError(`Daily card generation limit reached (${DAILY_CARD_LIMIT}/day)`, 429);
     }
 
     // Also check in-memory counter for faster burst protection
     const memCount = this.checkRateLimit(userId);
     if (memCount > DAILY_CARD_LIMIT) {
-      throw new Error(`Daily card generation limit reached (${DAILY_CARD_LIMIT}/day)`);
+      throw new AppError(`Daily card generation limit reached (${DAILY_CARD_LIMIT}/day)`, 429);
     }
 
     // Validate template
     if (options.template && !cardModel.isValidTemplate(options.template)) {
-      throw new Error(
-        `Invalid template: ${options.template}. Valid: ${cardModel.getValidTemplates().join(', ')}`
+      throw new AppError(
+        `Invalid template: ${options.template}. Valid: ${cardModel.getValidTemplates().join(', ')}`,
+        400
       );
     }
 
     // Validate placements
     const placements = options.planet_placements || ['sun', 'moon', 'ascendant'];
     if (placements.length < 3 || placements.length > 5) {
-      throw new Error('Must select between 3 and 5 planet placements');
+      throw new AppError('Must select between 3 and 5 planet placements', 400);
     }
 
     // Generate unique share token

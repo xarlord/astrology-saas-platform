@@ -68,6 +68,14 @@ export const paginationSchema = Joi.object({
   limit: Joi.number().integer().min(1).max(100).default(20),
 });
 
+// Calendar event validators
+export const createCalendarEventSchema = Joi.object({
+  event_type: Joi.string().min(1).max(100).required(),
+  event_date: Joi.date().required(),
+  event_data: Joi.object().unknown(true).max(50).optional(),
+  interpretation: Joi.string().max(5000).optional(),
+});
+
 /**
  * Validate request body against schema
  */

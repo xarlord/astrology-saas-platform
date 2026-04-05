@@ -11,6 +11,7 @@ import { swissEphemeris } from '../../shared';
 import {
   generateCompletePersonalityAnalysis,
 } from '../services/interpretation.service';
+import { HouseCusp, Aspect } from '../../../types/chart';
 
 interface PlanetCalcData {
   longitude: number;
@@ -110,8 +111,8 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
       house: i + 1,
       cusp: h.cusp,
       sign: getZodiacSign(h.cusp),
-    })) as any,
-    aspects: (aspects || []) as any,
+    })) as unknown as HouseCusp[],
+    aspects: (aspects || []) as unknown as Aspect[],
   });
 
   res.status(200).json({
@@ -136,15 +137,15 @@ export async function getAspectAnalysis(req: AuthenticatedRequest, res: Response
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { aspects } = chart.calculated_data;
+  const { aspects } = chart.calculated_data as { aspects: Aspect[] };
 
   const aspectAnalysis = {
     chartId: chart.id,
-    aspectsByType: groupAspectsByType(aspects),
-    aspectGrid: buildAspectGrid(aspects),
-    majorAspects: getMajorAspects(aspects),
-    harmonicAspects: getHarmoniousAspects(aspects),
-    challengingAspects: getChallengingAspects(aspects),
+    aspectsByType: groupAspectsByType(aspects as unknown as AspectData[]),
+    aspectGrid: buildAspectGrid(aspects as unknown as AspectData[]),
+    majorAspects: getMajorAspects(aspects as unknown as AspectData[]),
+    harmonicAspects: getHarmoniousAspects(aspects as unknown as AspectData[]),
+    challengingAspects: getChallengingAspects(aspects as unknown as AspectData[]),
   };
 
   res.status(200).json({
@@ -209,8 +210,8 @@ export async function getAspectPatterns(req: AuthenticatedRequest, res: Response
   // Use interpretation service to detect patterns
   const analysis = generateCompletePersonalityAnalysis({
     planets: planetsArray,
-    houses: housesArray as any,
-    aspects: (aspects || []) as any,
+    houses: housesArray as unknown as HouseCusp[],
+    aspects: (aspects || []) as unknown as Aspect[],
   });
 
   const patterns = analysis.patterns;

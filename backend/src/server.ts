@@ -17,7 +17,7 @@ import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { csrfMiddleware } from './middleware/csrf';
 import { connectRedis, disconnectRedis, isRedisConnected } from './modules/shared/services/redis.service';
-import { registerAllProcessors, shutdownQueues, getAllQueuesHealth } from './modules/jobs';
+import { registerAllProcessors, shutdownQueues } from './modules/jobs';
 import { swaggerSpec } from './config/swagger';
 
 // Import API router with versioning

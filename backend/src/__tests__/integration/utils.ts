@@ -141,6 +141,7 @@ export function generateRefreshToken(user: { id: string; email: string }): strin
  * Make an authenticated request
  */
 export function authenticatedRequest(app: Application, method: string, url: string, token: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (request(app) as any)[method.toLowerCase()](url)
     .set('Authorization', `Bearer ${token}`);
 }

@@ -21,7 +21,7 @@ import { SolarReturnCalculationParams } from '../models/types';
  * POST /api/v1/solar-returns/calculate
  */
 export const calculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -97,7 +97,7 @@ export const calculateSolarReturn = asyncHandler(async (req: Request, res: Respo
  * GET /api/v1/solar-returns/year/:year
  */
 export const getSolarReturnByYear = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -126,7 +126,7 @@ export const getSolarReturnByYear = asyncHandler(async (req: Request, res: Respo
  * GET /api/v1/solar-returns/:id
  */
 export const getSolarReturnById = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -155,7 +155,7 @@ export const getSolarReturnById = asyncHandler(async (req: Request, res: Respons
  * GET /api/v1/solar-returns/history
  */
 export const getSolarReturnHistory = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -182,7 +182,7 @@ export const getSolarReturnHistory = asyncHandler(async (req: Request, res: Resp
  * POST /api/v1/solar-returns/:id/recalculate
  */
 export const recalculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -250,7 +250,7 @@ export const recalculateSolarReturn = asyncHandler(async (req: Request, res: Res
  * GET /api/v1/solar-returns/stats
  */
 export const getSolarReturnStats = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -268,7 +268,7 @@ export const getSolarReturnStats = asyncHandler(async (req: Request, res: Respon
  * DELETE /api/v1/solar-returns/:id
  */
 export const deleteSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -299,7 +299,7 @@ export const deleteSolarReturn = asyncHandler(async (req: Request, res: Response
  * GET /api/v1/solar-returns/years/available
  */
 export const getAvailableYears = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }

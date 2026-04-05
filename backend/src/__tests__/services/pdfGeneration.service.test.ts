@@ -10,6 +10,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 // ---------------------------------------------------------------------------
 // Mock puppeteer BEFORE importing the service under test
@@ -491,6 +492,7 @@ describe('PDFGenerationService', () => {
       // Count the <tr> rows inside the aspect tbody (each aspect creates one)
       const matches = html.match(/<td>Sun<\/td>/g);
       expect(matches).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(matches!.length).toBe(15);
     });
 

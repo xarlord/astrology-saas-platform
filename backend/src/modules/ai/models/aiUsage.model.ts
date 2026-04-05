@@ -90,7 +90,7 @@ class AIUsageModel {
       .count('* as count')
       .groupBy('type');
 
-    return (results as any[]).reduce((acc: Record<string, number>, row: { type: string; count: string | number }) => {
+    return (results as Array<{ type: string; count: string | number }>).reduce((acc: Record<string, number>, row: { type: string; count: string | number }) => {
       acc[row.type] = typeof row.count === 'string' ? parseInt(row.count, 10) : row.count;
       return acc;
     }, {} as Record<string, number>);
@@ -106,7 +106,7 @@ class AIUsageModel {
       .sum('cost as total')
       .groupBy('type');
 
-    return (results as any[]).reduce((acc: Record<string, number>, row: { type: string; total: string | number }) => {
+    return (results as Array<{ type: string; total: string | number }>).reduce((acc: Record<string, number>, row: { type: string; total: string | number }) => {
       acc[row.type] = typeof row.total === 'string' ? parseFloat(row.total) : (row.total || 0);
       return acc;
     }, {} as Record<string, number>);
@@ -143,7 +143,7 @@ class AIUsageModel {
       .sum('cost as cost')
       .count('* as requests')
       .groupBy('date')
-      .orderBy('date', 'desc') as any;
+      .orderBy('date', 'desc') as unknown as Promise<Array<{ date: string; tokens: number; cost: number; requests: number }>>;
   }
 }
 

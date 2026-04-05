@@ -19,7 +19,7 @@ export interface Chart {
   house_system: 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
   zodiac: 'tropical' | 'sidereal';
   sidereal_mode?: string;
-  calculated_data?: any;
+  calculated_data?: Record<string, unknown>;
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date;
@@ -46,7 +46,7 @@ export interface UpdateChartData {
   house_system?: 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
   zodiac?: 'tropical' | 'sidereal';
   sidereal_mode?: string;
-  calculated_data?: any;
+  calculated_data?: Record<string, unknown>;
 }
 
 class ChartModel {
@@ -128,7 +128,7 @@ class ChartModel {
   /**
    * Update calculated data
    */
-  async updateCalculatedData(id: string, userId: string, calculatedData: any): Promise<Chart | null> {
+  async updateCalculatedData(id: string, userId: string, calculatedData: Record<string, unknown>): Promise<Chart | null> {
     const [chart] = await knex(this.tableName)
       .where({ id, user_id: userId })
       .whereNull('deleted_at')

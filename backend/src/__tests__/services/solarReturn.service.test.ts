@@ -411,7 +411,9 @@ describe('SolarReturnService', () => {
 
       const sunPlanet = result.chartData.planets.find(p => p.planet === 'sun');
       expect(sunPlanet).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(sunPlanet!.sign).toBe('capricorn');
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(sunPlanet!.retrograde).toBe(false);
     });
 

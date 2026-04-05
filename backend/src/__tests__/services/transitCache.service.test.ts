@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { TransitCacheService } from '../../modules/shared/services/transitCache.service';
 import type { TransitData } from '../../modules/shared/services/transitCache.service';

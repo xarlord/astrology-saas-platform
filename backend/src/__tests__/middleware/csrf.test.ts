@@ -33,6 +33,7 @@ describe('CSRF Middleware', () => {
       path: '/api/v1/test',
       ip: '127.0.0.1',
       headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       socket: { remoteAddress: '127.0.0.1' } as any,
     };
     mockRes = {

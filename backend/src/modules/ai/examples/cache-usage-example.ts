@@ -8,12 +8,12 @@
 /* eslint-disable no-console */
 
 import aiCacheService from '../services/aiCache.service';
-import openaiService from '../services/openai.service';
+import openaiService, { type NatalChartInput } from '../services/openai.service';
 
 /**
  * Example 1: Basic caching of natal chart interpretation
  */
-export async function getCachedNatalInterpretation(chartData: any) {
+export async function getCachedNatalInterpretation(chartData: NatalChartInput) {
   const cacheKey = aiCacheService.generateKey({
     type: 'natal',
     data: chartData,
@@ -35,7 +35,7 @@ export async function getCachedNatalInterpretation(chartData: any) {
  * Example 2: Cache with custom TTL based on complexity
  */
 export async function getCachedInterpretation(
-  chartData: any,
+  chartData: NatalChartInput,
   complexity: 'simple' | 'medium' | 'complex'
 ) {
   const cacheKey = aiCacheService.generateKey({
@@ -117,7 +117,7 @@ export async function scheduleCacheCleanup() {
 /**
  * Example 7: Cache-aside with fallback
  */
-export async function getInterpretationWithFallback(chartData: any) {
+export async function getInterpretationWithFallback(chartData: NatalChartInput) {
   const cacheKey = aiCacheService.generateKey(chartData);
 
   try {
@@ -147,7 +147,7 @@ async function getChartDataById(_chartId: string) {
   return {};
 }
 
-async function getRuleBasedInterpretation(_chartData: any) {
+async function getRuleBasedInterpretation(_chartData: NatalChartInput) {
   // Implementation would use rule-based system
   return {};
 }

@@ -22,7 +22,7 @@ export async function getCurrentUser(req: AuthenticatedRequest, res: Response): 
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user as any) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 
@@ -45,7 +45,7 @@ export async function updateCurrentUser(req: AuthenticatedRequest, res: Response
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user as any) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 

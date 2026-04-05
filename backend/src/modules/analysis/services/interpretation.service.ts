@@ -11,6 +11,7 @@ import {
   getHouseInterpretation,
   getTransitInterpretation,
   type PlanetInSignInterpretation,
+  type AspectInterpretation,
   type TransitInterpretation,
 } from '../../../data/interpretations';
 import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
@@ -114,7 +115,7 @@ export function generateCompletePersonalityAnalysis(
 
   // Generate aspects analysis
   const aspectsAnalysis = aspects.map((aspect) => {
-    const aspectInterp = getAspectInterpretation(aspect.type) as any;
+    const aspectInterp = getAspectInterpretation(aspect.type) as AspectInterpretation | null;
 
     return {
       planet1: aspect.planet1,
@@ -145,7 +146,7 @@ export function generateCompletePersonalityAnalysis(
             strengths: [],
             challenges: [],
             advice: [],
-          } as any as PlanetInSignInterpretation)
+          } as unknown as PlanetInSignInterpretation)
         : undefined,
     },
     planetsInSigns,

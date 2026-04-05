@@ -5,6 +5,8 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 // ---------------------------------------------------------------------------
 // Mock Registry — mutable object so the jest.mock factories can delegate to

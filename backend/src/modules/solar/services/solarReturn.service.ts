@@ -227,10 +227,11 @@ export class SolarReturnService {
     chartData.aspects
       .filter(a => (a.planet1 === 'jupiter' || a.planet2 === 'jupiter'))
       .filter(a => a.type === 'trine' || a.type === 'sextile')
-      .forEach(aspect => {
-        // Calculate approximate date (simplified)
-        const dayOfYear = Math.floor(Math.random() * 365);
-        const date = new Date(year, 0, 1 + dayOfYear);
+      .forEach((aspect, index) => {
+        // Derive deterministic day from aspect properties (orb-based)
+        const orbAsInt = Math.round((aspect.orb || 0) * 100);
+        const dayOfYear = ((orbAsInt * 7 + index * 73) % 365) + 1;
+        const date = new Date(year, 0, dayOfYear);
 
         luckyDays.push({
           date: date.toISOString().split('T')[0],
@@ -243,9 +244,10 @@ export class SolarReturnService {
     chartData.aspects
       .filter(a => (a.planet1 === 'venus' || a.planet2 === 'venus'))
       .filter(a => a.type === 'trine' || a.type === 'sextile')
-      .forEach(aspect => {
-        const dayOfYear = Math.floor(Math.random() * 365);
-        const date = new Date(year, 0, 1 + dayOfYear);
+      .forEach((aspect, index) => {
+        const orbAsInt = Math.round((aspect.orb || 0) * 100);
+        const dayOfYear = ((orbAsInt * 11 + index * 97) % 365) + 1;
+        const date = new Date(year, 0, dayOfYear);
 
         luckyDays.push({
           date: date.toISOString().split('T')[0],
