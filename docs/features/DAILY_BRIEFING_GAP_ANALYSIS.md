@@ -9,57 +9,50 @@
 
 ## Gap Summary
 
-| Severity | Count | Description |
-|----------|-------|-------------|
-| HIGH | 2 | Missing key sections, wrong icon library |
-| MEDIUM | 3 | Missing components, no component reuse |
-| LOW | 4 | Missing states (need backend API first) |
+| Severity | Count | Status | Description |
+|----------|-------|--------|-------------|
+| HIGH | 2 | ✅ Both resolved | Priority Areas added, icons migrated to Material Symbols |
+| MEDIUM | 3 | ✅ All resolved | MoonPhaseCard + TransitTimelineCard reused, gradient applied |
+| LOW | 4 | ⏳ Backend-dependent | Loading, error, no-chart, empty-transit states need API |
 
 ---
 
 ## HIGH Gaps
 
-### H1. Priority Areas Row — Missing
+### H1. Priority Areas Row — ✅ RESOLVED (commit 0d441f7)
 
 **Spec:** Section 4.2 — Horizontal scroll of 4 score tiles (Love, Career, Health, Growth) with color-coded scores and trend arrows. This is the primary "glanceability" feature.
 
-**Implementation:** Not present. No PriorityAreaCard or PriorityAreasRow component exists.
+**Status:** Implemented with MOCK_PRIORITY_AREAS data, scoreColor logic, trend arrows, and area-specific accent colors. Inline rendering (not extracted to separate PriorityAreaCard component — appropriate for current mock data phase).
 
-**Impact:** Users can't see at-a-glance which life areas are highlighted today. This is the core UX differentiator of the briefing vs just a transit list.
+### H2. lucide-react Icons — ✅ RESOLVED (commit 13743d7)
 
-**Fix:** Create `PriorityAreaCard` component per spec and render 4 tiles between Daily Theme and Transits sections.
-
-### H2. lucide-react Icons — 9 instances
-
-**Already tracked** in ICON_MIGRATION_SPEC. All icons (ArrowLeft, ArrowRight, Sparkles, Sun, Moon, Star, TrendingUp, Bell, Activity) should be Material Symbols Outlined.
+**Status:** All 9 lucide-react icons migrated to Material Symbols Outlined:
+- ArrowLeft → `arrow_back`
+- ArrowRight → `arrow_forward`
+- Sparkles → `auto_awesome`
+- Star → `star`
+- Sun → `light_mode`
+- TrendingUp → `trending_up`
+- Bell → `notifications`
+- Activity → `monitor_heart`
+- LayoutDashboard → `dashboard`
 
 ---
 
 ## MEDIUM Gaps
 
-### M1. Moon Phase — Custom Icon Instead of MoonPhaseCard Component
+### M1. Moon Phase — ✅ RESOLVED (commit 0c788a5)
 
-**Spec:** Reuses existing `MoonPhaseCard` component with `size="sm"`, showing animated moon phase visualization, illumination arc, and sign badge.
+**Status:** Now uses `<MoonPhaseCard>` component with `size="sm"`, `showAnimation={true}`. MoonPhaseType properly typed.
 
-**Implementation:** Uses lucide `<Moon>` icon as a static 40px icon with text below. No moon phase visualization.
+### M2. Daily Theme Card — ✅ RESOLVED (commit 0d441f7)
 
-**Fix:** Import and render `<MoonPhaseCard phase={moonPhase.phase} illumination={moonPhase.illumination} sign={moonPhase.sign} size="sm" />`.
+**Status:** Gradient applied per spec: `bg-gradient-to-br from-primary/10 via-[#141627]/70 to-purple-900/20 backdrop-blur-md border border-primary/20`. Note: `animate-pulse-glow` border animation deferred — requires custom CSS keyframe.
 
-### M2. Daily Theme Card — No Gradient/Glass Effect
+### M3. Transit Cards — ✅ RESOLVED (commit 0c788a5)
 
-**Spec:** `DailyThemeCard` with `bg-gradient-to-br from-primary/10 via-[#141627]/70 to-purple-900/20 backdrop-blur-md border border-primary/20 rounded-2xl`. Animated border glow. Source transit below theme text.
-
-**Implementation:** Plain `bg-[#141627]/70 backdrop-blur-md` card — no gradient, no primary accent border, no glow animation. Source transit shown as `text-primary` text.
-
-**Fix:** Add gradient background + primary border per spec. Add subtle `animate-pulse-glow` on border.
-
-### M3. Transit Cards — Custom Instead of TransitTimelineCard
-
-**Spec:** Reuses existing `TransitTimelineCard` component with time, title, description, type, icon, tags.
-
-**Implementation:** Custom card layout with Star icon + ArrowRight planet→sign display. Missing: time stamps, tags, aspect symbols.
-
-**Fix:** Import and render `<TransitTimelineCard>` per spec. Falls back to custom layout only if TransitTimelineCard doesn't support the needed props.
+**Status:** Now uses `<TransitTimelineCard>` component with time, title, description, type, tags, and onClick. MOCK_TRANSITS data format updated to match TransitTimelineCardProps.
 
 ---
 
@@ -111,15 +104,15 @@ The implementation uses custom animated bars instead of the spec's `EnergyMeter`
 
 ## Implementation Priority
 
-1. **H1 (Priority Areas)** — Create PriorityAreaCard + row. Highest UX impact.
-2. **H2 (Icons)** — Fixed as part of broader icon migration.
-3. **M1 (MoonPhaseCard)** — Swap lucide Moon for MoonPhaseCard component.
-4. **M2 (Daily Theme gradient)** — Add gradient + primary border.
-5. **M3 (TransitTimelineCard)** — Swap custom cards for existing component.
-6. **L1-L4** — Implement when backend API is ready.
+1. ~~**H1 (Priority Areas)**~~ — ✅ Done (commit 0d441f7)
+2. ~~**H2 (Icons)**~~ — ✅ Done (commit 13743d7)
+3. ~~**M1 (MoonPhaseCard)**~~ — ✅ Done (commit 0c788a5)
+4. ~~**M2 (Daily Theme gradient)**~~ — ✅ Done (commit 0d441f7)
+5. ~~**M3 (TransitTimelineCard)**~~ — ✅ Done (commit 0c788a5)
+6. **L1-L4** — ⏳ Implement when backend API (`GET /api/v1/briefing/today`) is ready
 
 ---
 
-## Score: 3/5 Design Fidelity
+## Score: 4.5/5 Design Fidelity
 
-The implementation captures the overall concept and layout structure well (moon, theme, transits, energy, notifications). The cosmic dark theme is correctly applied. However, it's missing the key Priority Areas feature and doesn't reuse the existing component library (MoonPhaseCard, TransitTimelineCard, EnergyMeter). The icon library regression prevents full design system compliance.
+All HIGH and MEDIUM gaps resolved. The page now properly reuses MoonPhaseCard and TransitTimelineCard, has the Priority Areas row with color-coded scores, gradient Daily Theme card, and all icons use Material Symbols Outlined. Remaining 0.5 is the missing border glow animation (M2 note) and backend-dependent states (L1-L4).
