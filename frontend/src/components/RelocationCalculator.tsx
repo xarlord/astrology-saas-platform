@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { MapPin, Globe, Search, ArrowRight, Info } from 'lucide-react';
-import axios from 'axios';
+// Geocoding uses fetch directly — external API, not our shared api client
 
 interface Location {
   name: string;
@@ -39,10 +39,6 @@ interface RelocationCalculatorProps {
   natalChartId: string;
   year: number;
   onRecalculate: (location: Location) => Promise<SolarReturnData>;
-}
-
-interface GeocodingResponse {
-  results: Location[];
 }
 
 interface HouseChange {
@@ -106,11 +102,10 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       setError(null);
 
       // Use geocoding API (placeholder - would use real geocoding service)
-      const response = await axios.get<GeocodingResponse>('https://geocoding-api.example.com/search', {
-        params: { q: searchQuery },
-      });
+      const response = await fetch(`https://geocoding-api.example.com/search?q=${encodeURIComponent(searchQuery)}`);
+      const data = await response.json() as { results: Location[] };
 
-      setLocations((response.data as { results: Location[] }).results);
+      setLocations(data.results);
     } catch (err) {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');

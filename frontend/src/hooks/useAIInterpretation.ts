@@ -6,9 +6,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import aiService from '../services/ai.service';
-import type { AIInterpretationResponse } from '../services/ai.service';
-
-type ChartData = Record<string, unknown>;
 
 import type { Chart } from '../services/api.types';
 

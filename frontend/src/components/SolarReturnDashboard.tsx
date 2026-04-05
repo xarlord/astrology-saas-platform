@@ -5,7 +5,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '../services/api';
-import axios from 'axios';
 import { Calendar, MapPin, Gift, TrendingUp } from 'lucide-react';
 
 interface SolarReturn {
@@ -67,7 +66,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
   const handleCalculateNew = useCallback(async (year: number) => {
     try {
       // Get default natal chart
-      const chartsResponse = await axios.get<{ data: { id: string }[] }>('/api/v1/charts');
+      const chartsResponse = await api.get<{ data: { id: string }[] }>('/v1/charts');
       const defaultChart = chartsResponse.data.data[0];
 
       if (!defaultChart) {

@@ -10,8 +10,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { CheckCircle, Sparkles, AlertCircle, Mail } from 'lucide-react';
-import { ArrowLeft, Sparkles, Sun, Moon, Star, TrendingUp, Bell, Activity } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles, Sun, Moon, Star, TrendingUp, Bell, Activity } from 'lucide-react';
 
 // Hooks
 import { useAuth } from '../hooks/useAuth';

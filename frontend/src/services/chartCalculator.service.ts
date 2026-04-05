@@ -54,8 +54,6 @@ import {
 // Angle utilities
 import {
   calculateAngles,
-  calculatePartOfFortune,
-  isDayBirth,
 } from '../utils/astrology/angles';
 
 /**
@@ -96,7 +94,7 @@ export class ChartCalculator {
     const lst = calculateLST(jd, input.longitude);
 
     // Calculate houses
-    const houses = calculateHouses(lst, input.latitude, input.houseSystem || this.houseSystem);
+    const houses = calculateHouses(lst, input.latitude, input.houseSystem ?? this.houseSystem);
 
     // Assign planets to houses
     const planetsWithHouses = assignPlanetsToHouses(planets, houses);
@@ -506,7 +504,7 @@ export class ChartCalculator {
     }
 
     // Moon returns to same position every ~27.3 days
-    const natalDegree = natalMoon.longitude;
+    const _natalDegree = natalMoon.longitude;
 
     // Approximate lunar return
     const lunarCycle = 27.3 * 24 * 60 * 60 * 1000; // milliseconds

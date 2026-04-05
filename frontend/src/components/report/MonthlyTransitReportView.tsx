@@ -14,6 +14,7 @@ import { Button } from '../ui/Button';
 import MonthlyTransitReport, {
   MONTHLY_TRANSIT_MOCK_DATA,
 } from './MonthlyTransitReport';
+import { ArrowLeft, Download, Printer, Share2 } from 'lucide-react';
 
 // ============================================================================
 // COMPONENT

@@ -6,7 +6,6 @@
 import {
   AngleData,
   ChartAngle,
-  ZodiacSign,
 } from './types';
 import {
   normalizeAngle,

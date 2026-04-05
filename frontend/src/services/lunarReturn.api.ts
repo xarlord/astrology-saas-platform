@@ -9,16 +9,6 @@ import type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, M
 
 export type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn };
 
-interface NextLunarReturnResponse {
-  nextReturn: Date;
-  natalMoon: NatalMoon;
-}
-
-interface CurrentLunarReturnResponse {
-  returnDate: Date;
-  daysUntil: number;
-}
-
 interface LunarReturnHistoryResponse {
   returns: SavedLunarReturn[];
   pagination: {
