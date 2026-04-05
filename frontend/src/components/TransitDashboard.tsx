@@ -1,12 +1,5 @@
 import { useState } from 'react';
 import { PlanetSymbol, AspectSymbol, EmptyState } from './';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CalendarIcon,
-  SunIcon,
-  MoonIcon,
-} from '@heroicons/react/24/outline';
 
 // Types based on findings.md
 export interface Transit {
@@ -123,10 +116,10 @@ function DateSelector({
   onDateChange: (date: string) => void;
 }) {
   const viewModes = [
-    { id: 'today', label: 'Today', icon: SunIcon },
-    { id: 'week', label: 'This Week', icon: CalendarIcon },
-    { id: 'calendar', label: 'This Month', icon: CalendarIcon },
-    { id: 'highlights', label: 'Highlights', icon: MoonIcon },
+    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>light_mode</span> },
+    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>dark_mode</span> },
   ];
 
   return (
@@ -148,7 +141,7 @@ function DateSelector({
                 }
               `}
             >
-              <Icon className="w-4 h-4" />
+              <Icon />
               {mode.label}
             </button>
           );
@@ -166,7 +159,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           aria-label="Previous day"
         >
-          <ChevronLeftIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_left</span>
         </button>
         <input
           type="date"
@@ -184,7 +177,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           aria-label="Next day"
         >
-          <ChevronRightIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_right</span>
         </button>
       </div>
     </div>
