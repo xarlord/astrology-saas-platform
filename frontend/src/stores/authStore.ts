@@ -14,8 +14,7 @@ import type { User, LoginCredentials, RegisterData } from '../services/api.types
 interface AuthState {
   // State
   user: User | null;
-  token: string | null;
-  refreshToken: string | null;
+  token: string | null; // In-memory only (not persisted)
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -38,7 +37,6 @@ export const useAuthStore = create<AuthState>()(
         // Initial state
         user: null,
         token: null,
-        refreshToken: null,
         isAuthenticated: false,
         isLoading: false,
         error: null,
@@ -48,14 +46,13 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: true, error: null });
           try {
             const response = await authService.login(credentials);
-            const { user, accessToken, refreshToken } = response;
+            const { user, accessToken } = response;
 
-            // Zustand persist handles storage — no manual localStorage writes
+            // Store only access token in-memory; refresh token handled via httpOnly cookie
 
             set({
               user,
               token: accessToken,
-              refreshToken,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -74,14 +71,13 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: true, error: null });
           try {
             const response = await authService.register(data);
-            const { user, accessToken, refreshToken } = response;
+            const { user, accessToken } = response;
 
-            // Zustand persist handles storage — no manual localStorage writes
+            // Store only access token in-memory; refresh token handled via httpOnly cookie
 
             set({
               user,
               token: accessToken,
-              refreshToken,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -102,13 +98,10 @@ export const useAuthStore = create<AuthState>()(
           } catch (error) {
             console.error('Logout error:', error);
           } finally {
-            // Zustand persist handles clearing — no manual localStorage removal
-
             // Clear state
             set({
               user: null,
               token: null,
-              refreshToken: null,
               isAuthenticated: false,
               error: null,
             });
@@ -137,7 +130,6 @@ export const useAuthStore = create<AuthState>()(
             set({
               user: null,
               token: null,
-              refreshToken: null,
               isAuthenticated: false,
               isLoading: false,
             });
@@ -190,8 +182,6 @@ export const useAuthStore = create<AuthState>()(
         name: 'auth-storage',
         partialize: (state) => ({
           user: state.user,
-          token: state.token,
-          refreshToken: state.refreshToken,
           isAuthenticated: state.isAuthenticated,
         }),
       },

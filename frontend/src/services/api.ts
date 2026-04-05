@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios';
-import { getAccessToken, getRefreshToken } from '../utils/tokenStorage';
+import { getAccessToken } from '../utils/tokenStorage';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
@@ -91,14 +91,9 @@ api.interceptors.response.use(
       (originalRequest as unknown as Record<string, unknown>)._retry = true;
 
       try {
-        const refreshToken = getRefreshToken();
-        if (!refreshToken) {
-          throw new Error('No refresh token');
-        }
-
-        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh', {
-          refreshToken,
-        });
+        // Call refresh endpoint without sending refreshToken in body
+        // Backend reads refreshToken from httpOnly cookie
+        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh');
 
         const { accessToken } = data.data;
 

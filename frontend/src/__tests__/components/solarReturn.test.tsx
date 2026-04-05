@@ -314,7 +314,9 @@ describe('SolarReturnChart', () => {
     render(<SolarReturnChart chartData={mockChartData} year={2026} />);
 
     const buttons = screen.getAllByRole('button');
-    const zoomButtons = buttons.filter((btn) => btn.querySelector('svg'));
+    const zoomButtons = buttons.filter((btn) =>
+      btn.querySelector('.material-symbols-outlined'),
+    );
 
     expect(zoomButtons.length).toBeGreaterThan(0);
 

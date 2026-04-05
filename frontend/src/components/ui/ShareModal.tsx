@@ -14,6 +14,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { GlobeAltIcon, LockClosedIcon, KeyIcon } from '@heroicons/react/24/outline';
 
 export type ShareVisibility = 'public' | 'private' | 'password';
 
@@ -292,7 +293,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <Globe
+                    <GlobeAltIcon
                       className={clsx(
                         'w-5 h-5 mr-3',
                         visibility === 'public' ? 'text-purple-400' : 'text-gray-400',
@@ -338,7 +339,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <Lock
+                    <LockClosedIcon
                       className={clsx(
                         'w-5 h-5 mr-3',
                         visibility === 'private' ? 'text-purple-400' : 'text-gray-400',
@@ -384,7 +385,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <Key
+                    <KeyIcon
                       className={clsx(
                         'w-5 h-5 mr-3',
                         visibility === 'password' ? 'text-purple-400' : 'text-gray-400',

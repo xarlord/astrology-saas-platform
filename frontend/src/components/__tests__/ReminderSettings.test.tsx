@@ -429,15 +429,23 @@ describe('ReminderSettings Component', () => {
     it('should render mail icon for email option', () => {
       render(<ReminderSettings />);
 
-      const emailLabel = screen.getByLabelText('Email').closest('label');
-      expect(emailLabel?.querySelector('svg')).toBeInTheDocument();
+      const radios = screen.getAllByRole('radio');
+      const emailRadio = radios.find((radio) => {
+        const label = radio.closest('label');
+        return label?.textContent?.includes('Email');
+      });
+      expect(emailRadio?.closest('label')?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
       render(<ReminderSettings />);
 
-      const pushLabel = screen.getByLabelText('Push Notification').closest('label');
-      expect(pushLabel?.querySelector('svg')).toBeInTheDocument();
+      const radios = screen.getAllByRole('radio');
+      const pushRadio = radios.find((radio) => {
+        const label = radio.closest('label');
+        return label?.textContent?.includes('Push Notification');
+      });
+      expect(pushRadio?.closest('label')?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
   });
 
@@ -522,8 +530,16 @@ describe('ReminderSettings Component', () => {
       const user = userEvent.setup();
       render(<ReminderSettings />);
 
-      // Deselect default option
-      await user.click(screen.getByLabelText('1 day before'));
+      // Deselect default option using the working pattern from other tests
+      const checkboxes = screen.getAllByRole('checkbox');
+      const oneDayCheckbox = checkboxes.find((cb) => {
+        const label = cb.closest('label');
+        return label?.textContent?.includes('1 day before');
+      });
+
+      if (oneDayCheckbox) {
+        await user.click(oneDayCheckbox);
+      }
 
       const submitButton = screen.getByRole('button', { name: /save settings/i });
       await user.click(submitButton);
