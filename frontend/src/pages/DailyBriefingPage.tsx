@@ -6,7 +6,7 @@
  * and energy overview in a scrollable single-column layout.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -14,12 +14,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Sparkles,
-  Sun,
-  Moon,
   Star,
+  Sun,
   TrendingUp,
   Bell,
   Activity,
+  LayoutDashboard,
 } from 'lucide-react';
 
 // Hooks
@@ -27,25 +27,25 @@ import { useAuth } from '../hooks/useAuth';
 
 // Components
 import { AppLayout } from '../components';
+import MoonPhaseCard from '../components/astrology/MoonPhaseCard';
+import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
+import type { MoonPhaseType } from '../components/astrology/MoonPhaseCard';
+import type { TransitType } from '../components/astrology/TransitTimelineCard';
 
 // ---------------------------------------------------------------------------
 // Mock Data
 // ---------------------------------------------------------------------------
 
 interface MoonPhaseData {
-  icon: string;
-  phase: string;
+  phase: MoonPhaseType;
   illumination: number;
   sign: string;
-  keywords: string[];
 }
 
 const MOCK_MOON_PHASE: MoonPhaseData = {
-  icon: 'dark_mode',
-  phase: 'Waxing Gibbous',
+  phase: 'waxing-gibbous',
   illumination: 72,
   sign: 'Taurus',
-  keywords: ['calming', 'sensual', 'grounded'],
 };
 
 interface DailyThemeData {
@@ -61,38 +61,36 @@ const MOCK_DAILY_THEME: DailyThemeData = {
     'invites innovation and breakthroughs. A powerful day to lean into the unexpected and let curiosity lead.',
 };
 
-type TransitBadge = 'favorable' | 'challenging' | 'major';
-
 interface TransitCardData {
-  planet: string;
-  sign: string;
+  time: string;
+  title: string;
   description: string;
-  badge: TransitBadge;
-  emoji: string;
+  type: TransitType;
+  tags: string[];
 }
 
 const MOCK_TRANSITS: TransitCardData[] = [
   {
-    planet: 'Venus',
-    sign: 'Pisces',
+    time: 'Today',
+    title: 'Venus in Pisces',
     description:
       'Heightened romance and creativity. Sensitivity is amplified across relationships.',
-    badge: 'favorable',
-    emoji: 'star',
+    type: 'favorable',
+    tags: ['Love', 'Creativity'],
   },
   {
-    planet: 'Mars',
-    sign: 'Gemini',
+    time: 'Today',
+    title: 'Mars in Gemini',
     description: 'Mental energy peaks today. Communication is sharp and persuasive.',
-    badge: 'major',
-    emoji: 'bolt',
+    type: 'major',
+    tags: ['Communication', 'Energy'],
   },
   {
-    planet: 'Neptune',
-    sign: 'Pisces',
-    description: 'Dreamy intuition. Boundaries soften � trust your inner voice.',
-    badge: 'challenging',
-    emoji: 'water',
+    time: 'Tonight',
+    title: 'Neptune in Pisces',
+    description: 'Dreamy intuition. Boundaries soften — trust your inner voice.',
+    type: 'challenging',
+    tags: ['Intuition', 'Boundaries'],
   },
 ];
 
@@ -145,16 +143,6 @@ const trendIcon = (t: PriorityArea['trend']): string => {
 };
 
 // ---------------------------------------------------------------------------
-// Badge color helper
-// ---------------------------------------------------------------------------
-
-const badgeStyles: Record<TransitBadge, string> = {
-  favorable: 'bg-emerald-500/20 text-emerald-300',
-  challenging: 'bg-amber-500/20 text-amber-300',
-  major: 'bg-primary/30 text-white',
-};
-
-// ---------------------------------------------------------------------------
 // Animation variants
 // ---------------------------------------------------------------------------
 
@@ -175,6 +163,9 @@ const cardVariants: Record<string, any> = {
 const DailyBriefingPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const dwellTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasMarkedViewed = useRef(false);
 
   const [moonPhase] = useState<MoonPhaseData>(MOCK_MOON_PHASE);
   const [dailyTheme] = useState<DailyThemeData>(MOCK_DAILY_THEME);
@@ -190,6 +181,39 @@ const DailyBriefingPage: React.FC = () => {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  // Mark briefing as viewed for today
+  const markBriefingViewed = useCallback(() => {
+    if (hasMarkedViewed.current) return;
+    hasMarkedViewed.current = true;
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('dailyBriefingLastViewed', today);
+  }, []);
+
+  // Dwell tracking: 30s timer + scroll-to-bottom detection
+  useEffect(() => {
+    // Start 30s dwell timer
+    dwellTimerRef.current = setTimeout(() => {
+      markBriefingViewed();
+    }, 30_000);
+
+    // Scroll-to-bottom detection
+    const container = scrollRef.current;
+    const handleScroll = () => {
+      if (!container) return;
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      if (scrollHeight - scrollTop - clientHeight < 100) {
+        markBriefingViewed();
+      }
+    };
+
+    container?.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      if (dwellTimerRef.current) clearTimeout(dwellTimerRef.current);
+      container?.removeEventListener('scroll', handleScroll);
+    };
+  }, [markBriefingViewed]);
+
   const greeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good Morning';
@@ -203,7 +227,7 @@ const DailyBriefingPage: React.FC = () => {
         <title>Daily Briefing � AstroVerse</title>
       </Helmet>
 
-      <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-6 pb-24">
+      <div ref={scrollRef} className="max-w-[860px] mx-auto px-4 sm:px-6 py-6 pb-24 overflow-y-auto max-h-[calc(100vh-4rem)]">
         {/* ---- Top Bar ---- */}
         <motion.nav
           className="flex items-center justify-between mb-6"
@@ -246,36 +270,21 @@ const DailyBriefingPage: React.FC = () => {
         </motion.header>
 
         {/* ---- Moon Phase Card ---- */}
-        <motion.section
-          aria-label="Moon phase"
-          className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-5"
+        <motion.div
+          className="mb-5"
           initial="hidden"
           animate="visible"
           custom={1}
           variants={cardVariants}
-          data-testid="briefing-moon-phase"
         >
-          <div className="flex items-start gap-4">
-            <Moon className="w-10 h-10 text-yellow-100" aria-hidden="true" />
-            <div className="flex-1 min-w-0">
-              <h2 className="text-white font-bold text-lg leading-tight">{moonPhase.phase}</h2>
-              <p className="text-slate-400 text-sm mt-0.5">
-                {moonPhase.illumination}% illumination
-              </p>
-              <p className="text-slate-300 text-sm mt-0.5">Moon in {moonPhase.sign}</p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {moonPhase.keywords.map((kw) => (
-                  <span
-                    key={kw}
-                    className="bg-[#1e2136] text-slate-300 text-xs font-medium px-2.5 py-1 rounded-full border border-white/5"
-                  >
-                    {kw}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.section>
+          <MoonPhaseCard
+            phase={moonPhase.phase}
+            illumination={moonPhase.illumination}
+            sign={moonPhase.sign}
+            size="sm"
+            showAnimation={true}
+          />
+        </motion.div>
 
         {/* ---- Daily Theme Card ---- */}
         <motion.section
@@ -342,39 +351,17 @@ const DailyBriefingPage: React.FC = () => {
           </h2>
         </motion.div>
 
-        <div className="space-y-3 mb-6" data-testid="briefing-transits-list">
-          {MOCK_TRANSITS.map((transit, i) => (
-            <motion.section
-              key={transit.planet}
-              aria-label={`${transit.planet} transit`}
-              className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-4"
-              initial="hidden"
-              animate="visible"
-              custom={4 + i}
-              variants={cardVariants}
-              data-testid={`briefing-transit-${transit.planet.toLowerCase()}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-slate-300" />
-                    <span className="text-white font-bold text-sm">{transit.planet}</span>
-                    <ArrowRight className="w-5 h-5" />
-                    <span className="text-white font-bold text-sm">{transit.sign}</span>
-                  </div>
-                  <p className="text-slate-400 text-sm mt-1.5 leading-relaxed">
-                    {transit.description}
-                  </p>
-                </div>
-                <span
-                  className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
-                    badgeStyles[transit.badge]
-                  }`}
-                >
-                  {transit.badge}
-                </span>
-              </div>
-            </motion.section>
+        <div className="space-y-2 mb-6" data-testid="briefing-transits-list">
+          {MOCK_TRANSITS.map((transit) => (
+            <TransitTimelineCard
+              key={transit.title}
+              time={transit.time}
+              title={transit.title}
+              description={transit.description}
+              type={transit.type}
+              tags={transit.tags}
+              onClick={() => navigate('/transits')}
+            />
           ))}
         </div>
 
@@ -469,6 +456,32 @@ const DailyBriefingPage: React.FC = () => {
             </div>
           </motion.section>
         </div>
+
+        {/* ---- Navigation CTAs ---- */}
+        <motion.section
+          className="flex flex-col sm:flex-row gap-3 mb-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.9 }}
+        >
+          <button
+            onClick={() => navigate('/transits')}
+            className="flex-1 flex items-center justify-center gap-2 bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3.5 text-slate-300 hover:text-white hover:border-primary/40 transition-all group"
+            data-testid="briefing-view-transits"
+          >
+            <TrendingUp className="w-[18px] h-[18px] text-primary" />
+            <span className="font-semibold text-sm">View Full Transit Details</span>
+            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </button>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 rounded-2xl px-5 py-3.5 text-white font-semibold text-sm transition-colors"
+            data-testid="briefing-go-dashboard"
+          >
+            <LayoutDashboard className="w-[18px] h-[18px]" />
+            Go to Dashboard
+          </button>
+        </motion.section>
 
         {/* ---- Footer Brand ---- */}
         <motion.footer
