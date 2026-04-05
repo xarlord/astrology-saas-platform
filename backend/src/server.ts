@@ -8,6 +8,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
+import * as path from 'path';
 
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
@@ -15,6 +17,8 @@ import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { csrfMiddleware } from './middleware/csrf';
 import { connectRedis, disconnectRedis, isRedisConnected } from './modules/shared/services/redis.service';
+import { registerAllProcessors, shutdownQueues, getAllQueuesHealth } from './modules/jobs';
+import { swaggerSpec } from './config/swagger';
 
 // Import API router with versioning
 import apiRouter from './api';
@@ -82,6 +86,18 @@ app.use(cookieParser());
 // ============================================
 
 app.use(compression());
+
+// ============================================
+// Static File Serving (uploads)
+// ============================================
+
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads'), {
+  maxAge: '7d',
+  immutable: true,
+}));
+
+// Trust proxy for correct IP resolution behind load balancers/reverse proxies
+app.set('trust proxy', 1);
 
 // CSRF Protection (skips safe methods and test env automatically)
 app.use(csrfMiddleware);
@@ -154,7 +170,7 @@ app.get('/', (_req: Request, res: Response) => {
       name: 'AstroVerse API',
       description: 'Astrology SaaS Platform - Natal chart generation, personality analysis, and forecasting',
       version: '1.0.0',
-      documentation: '/api/v1',
+      documentation: '/api/docs',
       health: '/health',
       endpoints: {
         auth: '/api/v1/auth',
@@ -169,6 +185,18 @@ app.get('/', (_req: Request, res: Response) => {
       }
     }
   });
+});
+
+// ============================================
+// API Documentation (Swagger)
+// ============================================
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// JSON spec endpoint for tooling
+app.get('/api/docs.json', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
 
 // ============================================
@@ -201,6 +229,14 @@ if (require.main === module) {
 
     // Connect to Redis (non-blocking — falls back gracefully)
     await connectRedis();
+
+    // Initialize job queues and register processors
+    if (isRedisConnected()) {
+      registerAllProcessors();
+      logger.info('📋 Job queues initialized');
+    } else {
+      logger.warn('📋 Skipping job queue init — Redis not available');
+    }
   });
 
   // ============================================
@@ -211,6 +247,7 @@ if (require.main === module) {
     logger.info(`${signal} received. Starting graceful shutdown...`);
 
     server.close(async () => {
+      await shutdownQueues();
       await disconnectRedis();
       logger.info('Server closed successfully');
       process.exit(0);
