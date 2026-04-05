@@ -142,7 +142,7 @@ export const ProfileSettingsPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-2 right-2 bg-gold text-background-dark text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-background-dark flex items-center gap-1">
+              <div className="absolute -bottom-2 right-2 bg-amber-400 text-[#0B0D17] text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-[#0B0D17] flex items-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">stars</span>
                 <span>PRO</span>
               </div>
@@ -336,7 +336,7 @@ export const ProfileSettingsPage: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="pt-4 flex justify-end">
+                    <div className="pt-4 flex justify-end" aria-live="polite">
                       <Button
                         variant="primary"
                         size="lg"
@@ -436,7 +436,7 @@ export const ProfileSettingsPage: React.FC = () => {
                     <div className="p-6 rounded-xl bg-gradient-to-br from-surface-dark to-background-dark border border-white/5">
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <p className="text-xs font-bold text-gold uppercase tracking-wider mb-1">
+                          <p className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">
                             Current Plan
                           </p>
                           <h3 className="text-2xl font-bold text-white">Pro Plan ✨</h3>

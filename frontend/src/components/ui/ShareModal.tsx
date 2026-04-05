@@ -519,9 +519,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     >
                       <div className="mt-3 p-4 rounded-lg bg-white flex items-center justify-center">
                         {/* Placeholder for QR code - in real implementation, use a QR library */}
-                        <div className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <QrCode className="w-24 h-24 text-gray-300" />
-                        </div>
+                        <div
+                          className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center"
+                          role="img"
+                          aria-label="QR code for sharing"
+                        >
+                          <QrCode className="w-24 h-24 text-gray-300" aria-hidden="true" />
                       </div>
                       <p className="mt-2 text-xs text-gray-500 text-center">
                         Scan with your phone camera to open

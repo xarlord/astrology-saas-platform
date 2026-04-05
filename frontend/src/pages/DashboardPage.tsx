@@ -277,9 +277,9 @@ const DashboardPage: React.FC = () => {
               <span className="material-symbols-outlined text-[16px]">wb_twilight</span>
               Daily Insights
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              Welcome back, {user?.name ?? 'Stargazer'} ✨
-            </h2>
+            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Welcome back, {user?.name ?? 'Stargazer'} <span aria-hidden="true">✨</span>
+            </h1>
             <p className="text-slate-400 text-lg max-w-2xl">{dailyQuote.text}</p>
             {dailyQuote.author && (
               <p className="text-sm text-slate-500 italic">— {dailyQuote.author}</p>

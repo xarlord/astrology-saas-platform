@@ -154,10 +154,12 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             <span className="hidden md:inline">New Chart</span>
           </button>
 
-          <button className="p-2 rounded-lg hover:bg-white/5 relative transition-colors">
-            <span className="sr-only">Notifications</span>
+          <button
+            className="p-2 rounded-lg hover:bg-white/5 relative transition-colors"
+            aria-label="1 unread notification"
+          >
             <Bell className="w-6 h-6 text-slate-400" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true" />
           </button>
 
           <div className="relative" ref={dropdownRef}>
