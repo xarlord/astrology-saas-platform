@@ -1,20 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks';
-import {
-  Bars3Icon,
-  XMarkIcon,
-  HomeIcon,
-  StarIcon,
-  ClockIcon,
-  TableCellsIcon,
-  MoonIcon,
-  ArrowUturnLeftIcon,
-  Cog6ToothIcon,
-  PlusIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 
 interface AppLayoutProps {
@@ -85,7 +70,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Open main menu"
           >
-            <Bars3Icon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+            <span className="material-symbols-outlined text-gray-600 dark:text-gray-300" style={{ fontSize: '24px' }}>menu</span>
           </button>
 
           <Link to="/" className="flex items-center gap-2">
@@ -137,14 +122,14 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                 to="/profile"
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                <UserIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>
                 Profile
               </Link>
               <Link
                 to="/settings"
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                <Cog6ToothIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>settings</span>
                 Settings
               </Link>
               <hr className="border-gray-200 dark:border-gray-700" />
@@ -152,7 +137,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                 onClick={() => { void logout(); }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
-                <ArrowUturnLeftIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>undo</span>
                 Logout
               </button>
             </div>
@@ -188,7 +173,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Close sidebar"
           >
-            <XMarkIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+            <span className="material-symbols-outlined text-gray-600 dark:text-gray-300" style={{ fontSize: '24px' }}>close</span>
           </button>
         </div>
 
@@ -204,14 +189,14 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/charts/new"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
               >
-                <PlusIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>add</span>
                 <span className="font-medium">New Chart</span>
               </Link>
               <Link
                 to="/transits/today"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <CalendarIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>calendar_today</span>
                 <span>Today&apos;s Transits</span>
               </Link>
             </div>
@@ -227,7 +212,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/charts/natal"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <StarIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>star</span>
                 <span>Natal Chart</span>
               </Link>
               <Link
@@ -243,7 +228,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/transits"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <ClockIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>schedule</span>
                 <span>Transits</span>
               </Link>
             </div>
@@ -259,21 +244,21 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/ephemeris"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <TableCellsIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>table</span>
                 <span>Ephemeris</span>
               </Link>
               <Link
                 to="/moon-calendar"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <MoonIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>dark_mode</span>
                 <span>Moon Calendar</span>
               </Link>
               <Link
                 to="/retrograde"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <ArrowUturnLeftIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>undo</span>
                 <span>Retrograde Calendar</span>
               </Link>
             </div>
@@ -356,13 +341,7 @@ function MobileBottomNav() {
                 `}
                 style={{ minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <item.icon
-                  className={`
-                    w-6 h-6 transition-all duration-200
-                    ${active ? 'scale-110' : 'group-hover:scale-105'}
-                  `}
-                  strokeWidth={active ? 2.5 : 2}
-                />
+                <item.icon />
               </span>
 
               {/* Label with active state */}
@@ -562,8 +541,8 @@ const navItems = [
 ];
 
 const mobileNavItems = [
-  { name: 'home', label: 'Home', href: '/', icon: HomeIcon },
-  { name: 'charts', label: 'Charts', href: '/charts', icon: StarIcon },
-  { name: 'transits', label: 'Transits', href: '/transits', icon: MoonIcon },
-  { name: 'learn', label: 'Learn', href: '/learn', icon: ChartBarIcon },
+  { name: 'home', label: 'Home', href: '/', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>home</span> },
+  { name: 'charts', label: 'Charts', href: '/charts', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>star</span> },
+  { name: 'transits', label: 'Transits', href: '/transits', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>dark_mode</span> },
+  { name: 'learn', label: 'Learn', href: '/learn', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>bar_chart</span> },
 ];
