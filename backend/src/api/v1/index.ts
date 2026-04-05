@@ -14,12 +14,14 @@ import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
 import { pushNotificationRoutes } from '../../modules/notifications';
-import healthRoutes from '../../routes/health.routes';
+import { healthRoutes } from '../../routes/health.routes';
 import { router as timezoneRoutes } from '../../modules/shared/routes/timezone.routes';
-import { default as locationRoutes } from '../../modules/shared/routes/location.routes';
+import { locationRoutes } from '../../modules/shared/routes/location.routes';
 import { router as shareRoutes } from '../../modules/charts/routes/share.routes';
-import aiRoutes from '../../modules/ai/routes/ai.routes';
+import { aiRoutes } from '../../modules/ai/routes/ai.routes';
 import { billingRoutes } from '../../modules/billing';
+import { briefingRoutes } from '../../modules/jobs';
+import { cardRoutes } from '../../modules/cards';
 
 const router = Router();
 
@@ -90,5 +92,11 @@ router.use('/notifications', pushNotificationRoutes);
 
 // Billing endpoints
 router.use('/billing', billingRoutes);
+
+// Daily briefing endpoints
+router.use('/briefing', briefingRoutes);
+
+// Shareable card endpoints
+router.use('/cards', cardRoutes);
 
 export default router;

@@ -42,7 +42,8 @@ async function flush(): Promise<void> {
   if (flushing) return;
   flushing = true;
   while (queue.length > 0) {
-    const task = queue.shift()!;
+    const task = queue.shift();
+    if (!task) break;
     try {
       await task();
     } catch {
@@ -222,6 +223,52 @@ export function sendSubscriptionConfirmationEmail(
       to,
       `Your AstroVerse ${planName} plan is active!`,
       subscriptionConfirmationHtml(userName, planName),
+    ),
+  );
+}
+
+/**
+ * Send monthly transit report notification email (premium feature).
+ * Links to dashboard download rather than attaching PDF (avoids Resend attachment limits).
+ */
+export function sendMonthlyReportEmail(
+  to: string,
+  userName: string,
+  month: string,
+  year: number,
+): void {
+  const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthName = monthNames[parseInt(month)] || month;
+  const dashboardUrl = `${frontendUrl}/dashboard/monthly-report?month=${month}&year=${year}`;
+
+  const html = `
+    <!DOCTYPE html><html><head>${baseStyles()}</head><body>
+    <div class="container">
+      <div class="header"><h1>Your ${monthName} ${year} Transit Report</h1></div>
+      <div class="content">
+        <p>Hi ${userName},</p>
+        <p>Your personalized Monthly Transit Report for <strong>${monthName} ${year}</strong> is ready.</p>
+        <p>This premium report includes:</p>
+        <ul>
+          <li>Monthly cosmic overview</li>
+          <li>Key transit dates with intensity ratings</li>
+          <li>Life area breakdowns (Career, Love, Health, Growth, Communication, Finance)</li>
+          <li>Retrograde periods and their effects</li>
+        </ul>
+        <p style="text-align: center;"><a href="${dashboardUrl}" class="btn">Download Your Report</a></p>
+        <p style="color: #999; font-size: 14px;">This report is available in your AstroVerse dashboard as a downloadable PDF.</p>
+      </div>
+      <div class="footer">AstroVerse Premium &mdash; Your Stars, Your Story</div>
+    </div>
+    </body></html>
+  `;
+
+  enqueue(() =>
+    sendEmail(
+      to,
+      `Your ${monthName} ${year} Transit Report is Ready`,
+      html,
     ),
   );
 }
