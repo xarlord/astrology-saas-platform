@@ -146,7 +146,7 @@ export default function LoginPageNew() {
                   "The stars are aligned for your journey."
                 </blockquote>
                 <div className="mt-6 flex items-center gap-3">
-                  <div className="h-px w-12 bg-gradient-to-r from-accent-gold to-transparent"></div>
+                  <div className="h-px w-12 bg-gradient-to-r from-amber-400 to-transparent"></div>
                   <p className="text-sm font-light text-slate-400">Premium Astrology SaaS</p>
                 </div>
               </div>

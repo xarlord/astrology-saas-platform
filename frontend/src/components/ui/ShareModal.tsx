@@ -525,6 +525,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                           aria-label="QR code for sharing"
                         >
                           <QrCode className="w-24 h-24 text-gray-300" aria-hidden="true" />
+                        </div>
                       </div>
                       <p className="mt-2 text-xs text-gray-500 text-center">
                         Scan with your phone camera to open
