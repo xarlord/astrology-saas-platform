@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
-import { EyeIcon, EyeSlashIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -24,7 +23,7 @@ interface ErrorMessageProps {
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
     <p id={id} data-testid="error-message" className="error-message" role="alert" aria-live="assertive">
-      <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
+      <span className="material-symbols-outlined error-icon" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -137,7 +136,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 onBlur={handleBlur}
                 data-testid="email-input"
                 aria-required="true"
-                aria-invalid={errors.email ? 'true' : 'false'}
+                aria-invalid={errors.email ? 'true' : undefined}
                 aria-describedby={errors.email ? emailErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -152,7 +151,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               />
               {errors.email && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
               <button
@@ -183,7 +182,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 onBlur={handleBlur}
                 data-testid="password-input"
                 aria-required="true"
-                aria-invalid={errors.password ? 'true' : 'false'}
+                aria-invalid={errors.password ? 'true' : undefined}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -198,7 +197,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               />
               {errors.password && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
               <button
@@ -208,9 +207,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
-                  <EyeSlashIcon className="w-5 h-5" />
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility_off</span>
                 ) : (
-                  <EyeIcon className="w-5 h-5" />
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility</span>
                 )}
               </button>
             </div>
@@ -464,7 +463,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="name-input"
                 aria-required="true"
-                aria-invalid={errors.name ? 'true' : 'false'}
+                aria-invalid={errors.name ? 'true' : undefined}
                 aria-describedby={errors.name ? nameErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -479,7 +478,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.name && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -502,7 +501,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="register-email-input"
                 aria-required="true"
-                aria-invalid={errors.email ? 'true' : 'false'}
+                aria-invalid={errors.email ? 'true' : undefined}
                 aria-describedby={errors.email ? emailErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -517,7 +516,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.email && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -540,7 +539,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="register-password-input"
                 aria-required="true"
-                aria-invalid={errors.password ? 'true' : 'false'}
+                aria-invalid={errors.password ? 'true' : undefined}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -555,7 +554,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.password && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
               <button
@@ -565,9 +564,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
-                  <EyeSlashIcon className="w-5 h-5" />
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility_off</span>
                 ) : (
-                  <EyeIcon className="w-5 h-5" />
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility</span>
                 )}
               </button>
             </div>
@@ -595,7 +594,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 onBlur={handleBlur}
                 data-testid="confirm-password-input"
                 aria-required="true"
-                aria-invalid={errors.confirmPassword ? 'true' : 'false'}
+                aria-invalid={errors.confirmPassword ? 'true' : undefined}
                 aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
@@ -610,7 +609,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.confirmPassword && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
               <button
@@ -620,9 +619,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
                 {showConfirmPassword ? (
-                  <EyeSlashIcon className="w-5 h-5" />
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility_off</span>
                 ) : (
-                  <EyeIcon className="w-5 h-5" />
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility</span>
                 )}
               </button>
             </div>
