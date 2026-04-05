@@ -622,7 +622,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 onClick={() => void handleCopy()}
                 className="flex items-center px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-colors"
               >
-                <Copy className="w-4 h-4 mr-1.5" />
+                <span className="material-symbols-outlined text-[16px] mr-1.5">content_copy</span>
                 Copy Link
               </button>
             </div>
