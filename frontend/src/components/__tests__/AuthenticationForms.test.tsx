@@ -445,7 +445,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       expect(confirmPasswordInput).toHaveAttribute('type', 'password');
 
       const buttons = screen.getAllByRole('button');
-      const eyeButtons = buttons.filter(btn => btn.querySelector('svg'));
+      const eyeButtons = buttons.filter(btn => btn.querySelector('.material-symbols-outlined'));
 
       if (eyeButtons.length >= 2) {
         await user.click(eyeButtons[0]);

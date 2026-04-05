@@ -425,14 +425,14 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const emailLabel = screen.getByLabelText('Email').closest('label');
-      expect(emailLabel?.querySelector('svg')).toBeInTheDocument();
+      expect(emailLabel?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
       render(<ReminderSettings />);
 
       const pushLabel = screen.getByLabelText('Push Notification').closest('label');
-      expect(pushLabel?.querySelector('svg')).toBeInTheDocument();
+      expect(pushLabel?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
   });
 
