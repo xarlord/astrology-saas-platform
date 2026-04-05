@@ -112,6 +112,39 @@ const MOCK_ENERGY: EnergyBarData[] = [
 const CURRENT_SEASON = 'Aries Season';
 
 // ---------------------------------------------------------------------------
+// Priority Areas mock data
+// ---------------------------------------------------------------------------
+
+interface PriorityArea {
+  key: string;
+  label: string;
+  icon: string;
+  score: number;
+  trend: 'up' | 'down' | 'stable';
+  accentBg: string;
+  accentText: string;
+}
+
+const MOCK_PRIORITY_AREAS: PriorityArea[] = [
+  { key: 'love', label: 'Love', icon: 'favorite', score: 82, trend: 'up', accentBg: 'bg-pink-500/10', accentText: 'text-pink-400' },
+  { key: 'career', label: 'Career', icon: 'work', score: 65, trend: 'stable', accentBg: 'bg-amber-500/10', accentText: 'text-amber-400' },
+  { key: 'health', label: 'Health', icon: 'self_improvement', score: 74, trend: 'up', accentBg: 'bg-emerald-500/10', accentText: 'text-emerald-400' },
+  { key: 'growth', label: 'Growth', icon: 'school', score: 58, trend: 'down', accentBg: 'bg-blue-500/10', accentText: 'text-blue-400' },
+];
+
+const scoreColor = (s: number): string => {
+  if (s >= 75) return 'text-emerald-400';
+  if (s >= 50) return 'text-amber-400';
+  return 'text-red-400';
+};
+
+const trendIcon = (t: PriorityArea['trend']): string => {
+  if (t === 'up') return 'trending_up';
+  if (t === 'down') return 'trending_down';
+  return 'trending_flat';
+};
+
+// ---------------------------------------------------------------------------
 // Badge color helper
 // ---------------------------------------------------------------------------
 
@@ -177,10 +210,12 @@ const DailyBriefingPage: React.FC = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
+          data-testid="briefing-top-nav"
         >
           <button
             onClick={() => navigate('/dashboard')}
             className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm"
+            data-testid="briefing-back-button"
           >
             <ArrowLeft className="w-[18px] h-[18px]" />
             Back
@@ -199,6 +234,7 @@ const DailyBriefingPage: React.FC = () => {
           animate="visible"
           custom={0}
           variants={cardVariants}
+          data-testid="briefing-welcome"
         >
           <h1 className="text-2xl font-bold text-white leading-tight">
             {greeting()}, {user?.name ?? 'Stargazer'}
@@ -217,6 +253,7 @@ const DailyBriefingPage: React.FC = () => {
           animate="visible"
           custom={1}
           variants={cardVariants}
+          data-testid="briefing-moon-phase"
         >
           <div className="flex items-start gap-4">
             <Moon className="w-10 h-10 text-yellow-100" aria-hidden="true" />
@@ -243,11 +280,12 @@ const DailyBriefingPage: React.FC = () => {
         {/* ---- Daily Theme Card ---- */}
         <motion.section
           aria-label="Daily theme"
-          className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-5"
+          className="bg-gradient-to-br from-primary/10 via-[#141627]/70 to-purple-900/20 backdrop-blur-md border border-primary/20 rounded-2xl p-5 mb-5"
           initial="hidden"
           animate="visible"
           custom={2}
           variants={cardVariants}
+          data-testid="briefing-daily-theme"
         >
           <div className="flex items-center gap-2 mb-3">
             <Star className="w-[18px] h-[18px] text-primary" />
@@ -260,15 +298,51 @@ const DailyBriefingPage: React.FC = () => {
           <p className="text-slate-400 text-sm mt-2 leading-relaxed">{dailyTheme.description}</p>
         </motion.section>
 
+        {/* ---- Priority Areas ---- */}
+        <motion.section
+          aria-label="Priority areas"
+          className="mb-5"
+          initial="hidden"
+          animate="visible"
+          custom={3}
+          variants={cardVariants}
+        >
+          <h2 className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">
+            Priority Areas
+          </h2>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {MOCK_PRIORITY_AREAS.map((area) => (
+              <div
+                key={area.key}
+                className={`${area.accentBg} bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-xl p-4 min-w-[90px] min-h-[100px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform cursor-default`}
+              >
+                <span className={`material-symbols-outlined text-[24px] ${area.accentText}`}>
+                  {area.icon}
+                </span>
+                <span className="text-xs text-slate-400 mt-1">{area.label}</span>
+                <span className={`text-xl font-bold ${scoreColor(area.score)}`}>
+                  {area.score}
+                </span>
+                <span
+                  className={`material-symbols-outlined text-sm ${scoreColor(area.score)}`}
+                  aria-label={area.trend}
+                >
+                  {trendIcon(area.trend)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
         {/* ---- Top Transits Section ---- */}
-        <motion.div initial="hidden" animate="visible" custom={3} variants={cardVariants}>
+        <motion.div initial="hidden" animate="visible" custom={4} variants={cardVariants} data-testid="briefing-transits-heading">
           <h2 className="text-white font-bold text-base mb-3 flex items-center gap-2">
             <TrendingUp className="w-[18px] h-[18px] text-primary" />
             Top Transits Today
           </h2>
         </motion.div>
 
-        <div className="space-y-3 mb-6">
+        <div className="space-y-3 mb-6" data-testid="briefing-transits-list">
           {MOCK_TRANSITS.map((transit, i) => (
             <motion.section
               key={transit.planet}
@@ -278,6 +352,7 @@ const DailyBriefingPage: React.FC = () => {
               animate="visible"
               custom={4 + i}
               variants={cardVariants}
+              data-testid={`briefing-transit-${transit.planet.toLowerCase()}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -313,6 +388,7 @@ const DailyBriefingPage: React.FC = () => {
             animate="visible"
             custom={7}
             variants={cardVariants}
+            data-testid="briefing-notification-prefs"
           >
             <div className="flex items-center gap-2 mb-4">
               <Bell className="w-[18px] h-[18px] text-primary" />
@@ -334,6 +410,7 @@ const DailyBriefingPage: React.FC = () => {
                     aria-checked={notifications[item.key]}
                     aria-label={item.label}
                     onClick={() => toggleNotification(item.key)}
+                    data-testid={`briefing-toggle-${item.key}`}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#141627] ${
                       notifications[item.key] ? 'bg-primary' : 'bg-slate-600'
                     }`}
@@ -357,6 +434,7 @@ const DailyBriefingPage: React.FC = () => {
             animate="visible"
             custom={8}
             variants={cardVariants}
+            data-testid="briefing-energy-overview"
           >
             <div className="flex items-center gap-2 mb-4">
               <Activity className="w-[18px] h-[18px] text-primary" />
