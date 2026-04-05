@@ -148,7 +148,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 // Pre-configured empty states for common use cases
-// eslint-disable-next-line react-refresh/only-export-components
 export const EmptyStates = {
   // No charts
   NoCharts: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (

@@ -66,7 +66,6 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
         },
       );
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       setGeneratedLink(response.data.data.url);
       setSuccess(true);
     } catch (err) {

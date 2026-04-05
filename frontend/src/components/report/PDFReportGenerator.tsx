@@ -216,7 +216,6 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
     switch (selectedReportType) {
       case 'natal':
         if (!chart) return null;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           chart,
           personality: {
@@ -230,7 +229,6 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'transit':
         if (!transits) return null;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           transits,
           chartName,
@@ -238,7 +236,6 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'synastry':
         if (!synastry) return null;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           synastry,
           person1Name,
@@ -247,7 +244,6 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'solar-return':
         if (!solarReturn) return null;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           solarReturn,
           chartName,
@@ -255,7 +251,6 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       case 'lunar-return':
         if (!lunarReturn) return null;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return {
           lunarReturn,
           chartName,

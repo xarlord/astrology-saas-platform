@@ -70,8 +70,8 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         // Spread existing preferences to avoid overwriting
         ...user?.preferences,
         // Using a custom field for onboarding state
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
+        onboardingCompleted: true,
+      } as Record<string, unknown>);
     } catch {
       // Silently fail - also use localStorage as fallback
     }

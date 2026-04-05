@@ -3,8 +3,6 @@
  * Displays monthly astrological events (moon phases, retrogrades, eclipses)
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import React, { useState } from 'react';

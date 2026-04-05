@@ -1,10 +1,10 @@
 /** Compact Card - Daily Insight (800x418) */
-function CompactCardLayout({
+function _CompactCardLayout({
   name,
   sunSign,
   moonSign,
   risingSign,
-  birthDate,
+  birthDate: _birthDate,
   chartWheelSvg,
   variant = 'dark',
 }: Omit<ShareableChartCardProps, 'size' | 'className'>) {

@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
@@ -151,7 +147,6 @@ export function BirthDataForm({
   useEffect(() => {
     const timer = setTimeout(() => {
       if (formData.birthPlace && formData.birthPlace.length >= 3) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         searchPlace(formData.birthPlace);
       }
     }, 500);
@@ -249,7 +244,6 @@ export function BirthDataForm({
 
   return (
     <form
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit}
       className="space-y-8"
     >

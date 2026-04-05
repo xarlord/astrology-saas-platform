@@ -22,22 +22,7 @@ const createMockIcon = (name: string) => {
   return Icon;
 };
 
-// The LandingPage source uses several icons (Pentagon, ArrowRight, PlayCircle,
-// Sun, ArrowLeft, Quote, Clock, Brain, Calendar, Check) that are NOT imported
-// from lucide-react in the source file -- they are bare global references.
-// We must inject them as globals so the source module can find them at runtime.
-vi.stubGlobal('Pentagon', createMockIcon('Pentagon'));
-vi.stubGlobal('ArrowRight', createMockIcon('ArrowRight'));
-vi.stubGlobal('PlayCircle', createMockIcon('PlayCircle'));
-vi.stubGlobal('Sun', createMockIcon('Sun'));
-vi.stubGlobal('ArrowLeft', createMockIcon('ArrowLeft'));
-vi.stubGlobal('Quote', createMockIcon('Quote'));
-vi.stubGlobal('Clock', createMockIcon('Clock'));
-vi.stubGlobal('Brain', createMockIcon('Brain'));
-vi.stubGlobal('Calendar', createMockIcon('Calendar'));
-vi.stubGlobal('Check', createMockIcon('Check'));
-
-// Mock lucide-react icons that ARE imported in the source file
+// Mock lucide-react icons imported in the source file
 vi.mock('lucide-react', () => {
   const createIcon = (name: string) => {
     const Icon = (props: any) =>
@@ -53,6 +38,16 @@ vi.mock('lucide-react', () => {
     Menu: createIcon('Menu'),
     X: createIcon('X'),
     Star: createIcon('Star'),
+    ArrowLeft: createIcon('ArrowLeft'),
+    ArrowRight: createIcon('ArrowRight'),
+    Brain: createIcon('Brain'),
+    Calendar: createIcon('Calendar'),
+    Check: createIcon('Check'),
+    Clock: createIcon('Clock'),
+    Pentagon: createIcon('Pentagon'),
+    PlayCircle: createIcon('PlayCircle'),
+    Quote: createIcon('Quote'),
+    Sun: createIcon('Sun'),
   };
 });
 
