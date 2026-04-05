@@ -3,57 +3,7 @@
  * Displays daily planetary transits in a calendar view
  */
 
-import React, { useState, useMemo } from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Sun,
-  Moon,
-  Circle,
-  Info,
-} from 'lucide-react';
-
-// Custom planet icons (lucide-react doesn't have planet icons)
-const JupiterIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="8" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <path d="M6 9c4 0 8 1 12 3" strokeWidth="1.5" stroke="currentColor" fill="none"/>
-  </svg>
-);
-
-const SaturnIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <ellipse cx="12" cy="12" rx="10" ry="3" strokeWidth="1.5" stroke="currentColor" fill="none" transform="rotate(-20 12 12)"/>
-  </svg>
-);
-
-const UranusIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <line x1="12" y1="2" x2="12" y2="6" strokeWidth="1.5" stroke="currentColor"/>
-    <line x1="12" y1="18" x2="12" y2="22" strokeWidth="1.5" stroke="currentColor"/>
-  </svg>
-);
-
-const NeptuneIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <path d="M8 8l8 8M16 8l-8 8" strokeWidth="1" stroke="currentColor" fill="none"/>
-  </svg>
-);
-
-const PlutoIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
-  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="5" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <path d="M12 7v-3M12 20v-3M7 12h-3M20 12h-3" strokeWidth="1.5" stroke="currentColor"/>
-  </svg>
-);
-
-// Use Circle for inner planets with different colors
-const MercuryIcon = Circle;
-const VenusIcon = Circle;
-const MarsIcon = Circle;
+import { useState, useMemo } from 'react';
 
 // Types
 export interface Transit {
@@ -76,18 +26,18 @@ export interface TransitCalendarProps {
   showRetrogrades?: boolean;
 }
 
-// Planet configuration
+// Material Symbol icon factories for planets (accept optional size in px)
 const PLANET_CONFIG = {
-  sun: { icon: Sun, color: '#FFD700', name: 'Sun' },
-  moon: { icon: Moon, color: '#C0C0C0', name: 'Moon' },
-  mercury: { icon: MercuryIcon, color: '#8B4513', name: 'Mercury' },
-  venus: { icon: VenusIcon, color: '#FF69B4', name: 'Venus' },
-  mars: { icon: MarsIcon, color: '#FF0000', name: 'Mars' },
-  jupiter: { icon: JupiterIcon, color: '#FFA500', name: 'Jupiter' },
-  saturn: { icon: SaturnIcon, color: '#696969', name: 'Saturn' },
-  uranus: { icon: UranusIcon, color: '#40E0D0', name: 'Uranus' },
-  neptune: { icon: NeptuneIcon, color: '#4169E1', name: 'Neptune' },
-  pluto: { icon: PlutoIcon, color: '#8B0000', name: 'Pluto' },
+  sun: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FFD700' }}>light_mode</span>, color: '#FFD700', name: 'Sun' },
+  moon: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#C0C0C0' }}>dark_mode</span>, color: '#C0C0C0', name: 'Moon' },
+  mercury: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#8B4513' }}>circle</span>, color: '#8B4513', name: 'Mercury' },
+  venus: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FF69B4' }}>circle</span>, color: '#FF69B4', name: 'Venus' },
+  mars: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FF0000' }}>circle</span>, color: '#FF0000', name: 'Mars' },
+  jupiter: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FFA500' }}>circle</span>, color: '#FFA500', name: 'Jupiter' },
+  saturn: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#696969' }}>circle</span>, color: '#696969', name: 'Saturn' },
+  uranus: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#40E0D0' }}>circle</span>, color: '#40E0D0', name: 'Uranus' },
+  neptune: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#4169E1' }}>circle</span>, color: '#4169E1', name: 'Neptune' },
+  pluto: { icon: (size: number = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#8B0000' }}>circle</span>, color: '#8B0000', name: 'Pluto' },
 };
 
 // Zodiac signs
@@ -232,7 +182,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_left</span>
           </button>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -242,7 +192,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
           >
-            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_right</span>
           </button>
         </div>
 
@@ -372,10 +322,7 @@ export function TransitCalendar({
                       }}
                       title={`${config.name} in ${transit.sign} ${transit.degree}°${transit.retrograde ? ' (R)' : ''}`}
                     >
-                      <IconComponent
-                        className="w-3 h-3 flex-shrink-0"
-                        style={{ color: config.color }}
-                      />
+                      {IconComponent()}
                       <span className="truncate text-gray-700 dark:text-gray-300">
                         {getZodiacSymbol(transit.sign)}
                       </span>
@@ -465,10 +412,7 @@ export function TransitCalendar({
                       className="w-10 h-10 rounded-full flex items-center justify-center"
                       style={{ backgroundColor: `${config.color}20` }}
                     >
-                      <IconComponent
-                        className="w-5 h-5"
-                        style={{ color: config.color }}
-                      />
+                      {IconComponent(20)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -485,7 +429,7 @@ export function TransitCalendar({
                         {getZodiacSymbol(transit.sign)} {transit.sign} {transit.degree}°
                       </div>
                     </div>
-                    <Info className="w-4 h-4 text-gray-400" />
+                    <span className="material-symbols-outlined text-gray-400" style={{ fontSize: '16px' }}>info</span>
                   </div>
                 );
               })}
