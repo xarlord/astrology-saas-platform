@@ -23,8 +23,12 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
         <div className="flex items-center gap-3">
           <span className="text-2xl leading-none shrink-0">📶</span>
           <div className="flex-1 flex flex-col gap-0.5">
-            <strong className="text-sm font-semibold text-gray-800 dark:text-gray-100">You are offline</strong>
-            <span className="text-xs text-gray-500 dark:text-gray-300">Some features may be unavailable</span>
+            <strong className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+              You are offline
+            </strong>
+            <span className="text-xs text-gray-500 dark:text-gray-300">
+              Some features may be unavailable
+            </span>
           </div>
         </div>
       </div>
@@ -40,14 +44,26 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
       <div className="flex items-center gap-3 sm:flex-row sm:flex-wrap">
         <span className="text-2xl leading-none shrink-0">🔄</span>
         <div className="flex-1 sm:min-w-0">
-          <strong className="text-sm font-semibold text-gray-800 dark:text-gray-100">New version available</strong>
-          <span className="block text-xs text-gray-500 dark:text-gray-300">Refresh to get the latest features</span>
+          <strong className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+            New version available
+          </strong>
+          <span className="block text-xs text-gray-500 dark:text-gray-300">
+            Refresh to get the latest features
+          </span>
         </div>
         <div className="flex gap-2 shrink-0 sm:w-full sm:mt-2">
-          <button type="button" className="px-4 py-2 rounded-md text-[13px] font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 sm:flex-1 sm:py-2.5 sm:px-4" onClick={handleReload}>
+          <button
+            type="button"
+            className="px-4 py-2 rounded-md text-[13px] font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 sm:flex-1 sm:py-2.5 sm:px-4"
+            onClick={handleReload}
+          >
             Later
           </button>
-          <button type="button" className="px-4 py-2 rounded-md text-[13px] font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-blue-500 text-white hover:bg-blue-600 sm:flex-1 sm:py-2.5 sm:px-4" onClick={handleRefresh}>
+          <button
+            type="button"
+            className="px-4 py-2 rounded-md text-[13px] font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-blue-500 text-white hover:bg-blue-600 sm:flex-1 sm:py-2.5 sm:px-4"
+            onClick={handleRefresh}
+          >
             Refresh Now
           </button>
         </div>

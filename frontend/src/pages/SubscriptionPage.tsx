@@ -73,7 +73,10 @@ export default function SubscriptionPage() {
   const [plans, setPlans] = useState<PlanDetail[]>(FALLBACK_PLANS);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'cancel'; text: string } | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: 'success' | 'cancel';
+    text: string;
+  } | null>(null);
 
   // Determine current tier from user object (map backend 'basic' → frontend 'pro')
   const rawTier = user?.plan ?? 'free';
@@ -83,10 +86,16 @@ export default function SubscriptionPage() {
   useEffect(() => {
     const status = searchParams.get('status');
     if (status === 'success') {
-      setStatusMessage({ type: 'success', text: 'Subscription activated successfully! Your plan has been updated.' });
+      setStatusMessage({
+        type: 'success',
+        text: 'Subscription activated successfully! Your plan has been updated.',
+      });
       setSearchParams({}, { replace: true });
     } else if (status === 'cancel') {
-      setStatusMessage({ type: 'cancel', text: 'Checkout was cancelled. No changes were made to your plan.' });
+      setStatusMessage({
+        type: 'cancel',
+        text: 'Checkout was cancelled. No changes were made to your plan.',
+      });
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
@@ -94,43 +103,52 @@ export default function SubscriptionPage() {
   // Fetch plans from backend if available
   useEffect(() => {
     let cancelled = false;
-    billingService.getPlans().then((backendPlans) => {
-      if (!cancelled && backendPlans.length > 0) {
-        setPlans(backendPlans);
-      }
-    }).catch(() => {
-      // Use fallback plans
-    });
-    return () => { cancelled = true; };
+    billingService
+      .getPlans()
+      .then((backendPlans) => {
+        if (!cancelled && backendPlans.length > 0) {
+          setPlans(backendPlans);
+        }
+      })
+      .catch(() => {
+        // Use fallback plans
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handleSubscribe = useCallback(async (plan: PlanDetail) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
+  const handleSubscribe = useCallback(
+    async (plan: PlanDetail) => {
+      if (!isAuthenticated) {
+        navigate('/login');
+        return;
+      }
 
-    if (plan.id === 'free' || plan.id === currentTier) return;
+      if (plan.id === 'free' || plan.id === currentTier) return;
 
-    setLoadingPlan(plan.id);
-    setError(null);
+      setLoadingPlan(plan.id);
+      setError(null);
 
-    try {
-      const baseUrl = window.location.origin + '/subscription';
-      const session = await billingService.createCheckoutSession({
-        priceId: plan.priceId ?? '',
-        successUrl: `${baseUrl}?status=success`,
-        cancelUrl: `${baseUrl}?status=cancel`,
-      });
+      try {
+        const baseUrl = window.location.origin + '/subscription';
+        const session = await billingService.createCheckoutSession({
+          priceId: plan.priceId ?? '',
+          successUrl: `${baseUrl}?status=success`,
+          cancelUrl: `${baseUrl}?status=cancel`,
+        });
 
-      // Redirect to Stripe Checkout
-      window.location.href = session.url;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to start checkout. Please try again.';
-      setError(message);
-      setLoadingPlan(null);
-    }
-  }, [isAuthenticated, currentTier, navigate]);
+        // Redirect to Stripe Checkout
+        window.location.href = session.url;
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to start checkout. Please try again.';
+        setError(message);
+        setLoadingPlan(null);
+      }
+    },
+    [isAuthenticated, currentTier, navigate],
+  );
 
   const handleManage = useCallback(async () => {
     setLoadingPlan('portal');
@@ -185,7 +203,10 @@ export default function SubscriptionPage() {
 
         {/* Error banner */}
         {error && (
-          <div className="mb-6 px-4 py-3 rounded-lg border bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm" role="alert">
+          <div
+            className="mb-6 px-4 py-3 rounded-lg border bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm"
+            role="alert"
+          >
             {error}
           </div>
         )}
@@ -195,10 +216,12 @@ export default function SubscriptionPage() {
           <div className="mb-8 text-center">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
               <StarIcon className="w-4 h-4" />
-              Current plan: {plans.find(p => p.id === currentTier)?.name ?? currentTier}
+              Current plan: {plans.find((p) => p.id === currentTier)?.name ?? currentTier}
             </span>
             <button
-              onClick={() => { void handleManage(); }}
+              onClick={() => {
+                void handleManage();
+              }}
               disabled={loadingPlan === 'portal'}
               className="ml-3 text-sm text-indigo-600 dark:text-indigo-400 hover:underline disabled:opacity-50"
             >
@@ -230,7 +253,9 @@ export default function SubscriptionPage() {
                 )}
 
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{plan.name}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {plan.name}
+                  </h3>
                   <div className="mt-2 flex items-baseline gap-1">
                     {plan.price === 0 ? (
                       <span className="text-3xl font-bold text-gray-900 dark:text-white">Free</span>
@@ -252,8 +277,14 @@ export default function SubscriptionPage() {
 
                 <ul className="flex-1 space-y-2.5 mb-6">
                   {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                      <CheckIcon className="w-4 h-4 mt-0.5 text-green-500 flex-shrink-0" aria-hidden="true" />
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      <CheckIcon
+                        className="w-4 h-4 mt-0.5 text-green-500 flex-shrink-0"
+                        aria-hidden="true"
+                      />
                       {feature}
                     </li>
                   ))}

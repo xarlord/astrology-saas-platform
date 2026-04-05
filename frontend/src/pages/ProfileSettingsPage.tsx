@@ -79,9 +79,12 @@ export const ProfileSettingsPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  const handleNotificationChange = useCallback((key: keyof NotificationSettings, value: boolean) => {
-    setNotifications((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const handleNotificationChange = useCallback(
+    (key: keyof NotificationSettings, value: boolean) => {
+      setNotifications((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
 
   const handleSaveProfile = async () => {
     setSaveStatus('saving');
@@ -213,7 +216,7 @@ export const ProfileSettingsPage: React.FC = () => {
                   'border-b-2 py-4 px-1 text-sm font-medium flex items-center gap-2 transition-colors',
                   activeTab === tab.id
                     ? 'border-primary text-primary'
-                    : 'border-transparent text-slate-400 hover:border-slate-300 hover:text-slate-200'
+                    : 'border-transparent text-slate-400 hover:border-slate-300 hover:text-slate-200',
                 )}
               >
                 <span className="material-symbols-outlined text-[20px]">{tab.icon}</span>
@@ -306,7 +309,9 @@ export const ProfileSettingsPage: React.FC = () => {
                       <Button
                         variant="primary"
                         size="lg"
-                        onClick={() => { void handleSaveProfile(); }}
+                        onClick={() => {
+                          void handleSaveProfile();
+                        }}
                         isLoading={saveStatus === 'saving'}
                         className="flex items-center gap-2"
                         data-testid="save-profile-button"
@@ -358,7 +363,8 @@ export const ProfileSettingsPage: React.FC = () => {
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-red-400">Danger Zone</h3>
                       <p className="text-sm text-slate-400">
-                        Permanently delete your account and all associated data. This action cannot be undone.
+                        Permanently delete your account and all associated data. This action cannot
+                        be undone.
                       </p>
                       <Button variant="danger" size="md">
                         Delete Account
@@ -439,12 +445,16 @@ export const ProfileSettingsPage: React.FC = () => {
                               'flex-1 p-4 rounded-xl border transition-all',
                               appearance.theme === theme
                                 ? 'border-primary bg-primary/20 text-white'
-                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20'
+                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20',
                             )}
                           >
                             <div className="text-center">
                               <span className="material-symbols-outlined text-2xl mb-1">
-                                {theme === 'light' ? 'light_mode' : theme === 'dark' ? 'dark_mode' : 'brightness_4'}
+                                {theme === 'light'
+                                  ? 'light_mode'
+                                  : theme === 'dark'
+                                    ? 'dark_mode'
+                                    : 'brightness_4'}
                               </span>
                               <p className="text-xs capitalize">{theme}</p>
                             </div>
@@ -466,7 +476,7 @@ export const ProfileSettingsPage: React.FC = () => {
                               'flex-1 px-4 py-3 rounded-xl border text-sm font-medium transition-all',
                               appearance.density === density
                                 ? 'border-primary bg-primary/20 text-white'
-                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20'
+                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20',
                             )}
                           >
                             {density}
@@ -479,7 +489,9 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <Toggle
                       checked={appearance.animations}
-                      onChange={(checked) => setAppearance((prev) => ({ ...prev, animations: checked }))}
+                      onChange={(checked) =>
+                        setAppearance((prev) => ({ ...prev, animations: checked }))
+                      }
                       label="Enable Animations"
                       helperText="Smooth transitions and micro-interactions"
                     />
@@ -492,12 +504,14 @@ export const ProfileSettingsPage: React.FC = () => {
                         {(['left', 'right'] as const).map((position) => (
                           <button
                             key={position}
-                            onClick={() => setAppearance((prev) => ({ ...prev, sidebarPosition: position }))}
+                            onClick={() =>
+                              setAppearance((prev) => ({ ...prev, sidebarPosition: position }))
+                            }
                             className={clsx(
                               'flex-1 px-4 py-3 rounded-xl border text-sm font-medium capitalize transition-all',
                               appearance.sidebarPosition === position
                                 ? 'border-primary bg-primary/20 text-white'
-                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20'
+                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20',
                             )}
                           >
                             {position}
@@ -578,8 +592,8 @@ export const ProfileSettingsPage: React.FC = () => {
                     info
                   </span>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Updating your birth data will recalculate your entire profile, including your "Big Three"
-                    and all saved transits.
+                    Updating your birth data will recalculate your entire profile, including your
+                    "Big Three" and all saved transits.
                   </p>
                 </div>
               </div>

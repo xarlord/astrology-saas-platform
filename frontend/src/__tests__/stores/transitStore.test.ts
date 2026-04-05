@@ -117,7 +117,11 @@ describe('transitStore', () => {
 
       const state = useTransitStore.getState();
 
-      expect(transitService.calculateTransits).toHaveBeenCalledWith('chart-1', '2024-02-01', '2024-02-28');
+      expect(transitService.calculateTransits).toHaveBeenCalledWith(
+        'chart-1',
+        '2024-02-01',
+        '2024-02-28',
+      );
       expect(state.transits).toHaveLength(1);
       expect(state.dateRange).toEqual({ start: '2024-02-01', end: '2024-02-28' });
       expect(state.energyLevel).toBe(75);
@@ -156,7 +160,7 @@ describe('transitStore', () => {
 
     it('should set loading state during load', async () => {
       vi.mocked(transitService.calculateTransits).mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve({} as any), 100))
+        () => new Promise((resolve) => setTimeout(() => resolve({} as any), 100)),
       );
 
       const loadPromise = act(async () => {
@@ -171,7 +175,9 @@ describe('transitStore', () => {
     });
 
     it('should handle load transits error', async () => {
-      vi.mocked(transitService.calculateTransits).mockRejectedValueOnce(new Error('Calculation failed'));
+      vi.mocked(transitService.calculateTransits).mockRejectedValueOnce(
+        new Error('Calculation failed'),
+      );
 
       await act(async () => {
         try {
@@ -300,7 +306,9 @@ describe('transitStore', () => {
     });
 
     it('should handle calendar load error', async () => {
-      vi.mocked(transitService.getTransitCalendar).mockRejectedValueOnce(new Error('Calendar error'));
+      vi.mocked(transitService.getTransitCalendar).mockRejectedValueOnce(
+        new Error('Calendar error'),
+      );
 
       await act(async () => {
         try {
@@ -334,7 +342,12 @@ describe('transitStore', () => {
     });
 
     it('should load transit forecast for different durations', async () => {
-      const durations: Array<'week' | 'month' | 'quarter' | 'year'> = ['week', 'month', 'quarter', 'year'];
+      const durations: Array<'week' | 'month' | 'quarter' | 'year'> = [
+        'week',
+        'month',
+        'quarter',
+        'year',
+      ];
 
       for (const duration of durations) {
         vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce({
@@ -351,7 +364,9 @@ describe('transitStore', () => {
     });
 
     it('should handle forecast load error', async () => {
-      vi.mocked(transitService.getTransitForecast).mockRejectedValueOnce(new Error('Forecast error'));
+      vi.mocked(transitService.getTransitForecast).mockRejectedValueOnce(
+        new Error('Forecast error'),
+      );
 
       await act(async () => {
         try {

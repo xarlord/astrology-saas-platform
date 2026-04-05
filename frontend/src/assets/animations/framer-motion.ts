@@ -555,7 +555,10 @@ export const createStagger = (delay = 0.1): Variants => ({
 /**
  * Create fade in direction variant
  */
-export const createFadeInDirection = (direction: 'up' | 'down' | 'left' | 'right', distance = 20): Variants => {
+export const createFadeInDirection = (
+  direction: 'up' | 'down' | 'left' | 'right',
+  distance = 20,
+): Variants => {
   const axis = direction === 'up' || direction === 'down' ? 'y' : 'x';
   const value = direction === 'up' || direction === 'left' ? distance : -distance;
 

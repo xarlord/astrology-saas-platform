@@ -54,7 +54,7 @@ const renderLoginPage = () => {
   return render(
     <BrowserRouter>
       <LoginPage />
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 

@@ -63,7 +63,7 @@ const mockCharts = [
       place: {
         name: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       },
       timeUnknown: false,
@@ -174,11 +174,11 @@ describe('UserProfile Component', () => {
     it('should have accessible tab navigation', () => {
       render(<UserProfile />);
 
-      const tabs = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.match(/account|charts|preferences|subscription/i)
-      );
+      const tabs = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.textContent?.match(/account|charts|preferences|subscription/i));
 
-      tabs.forEach(tab => {
+      tabs.forEach((tab) => {
         expect(tab).toHaveAttribute('type', 'button');
       });
     });
@@ -440,16 +440,16 @@ describe('UserProfile Component', () => {
       const chartsTab = screen.getByRole('button', { name: /my charts/i });
       await user.click(chartsTab);
 
-      const deleteButtons = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.includes('Delete') || btn.querySelector('svg')
-      );
+      const deleteButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.textContent?.includes('Delete') || btn.querySelector('svg'));
 
       if (deleteButtons.length > 0) {
         await user.click(deleteButtons[deleteButtons.length - 1]);
 
         await waitFor(() => {
           expect(window.confirm).toHaveBeenCalledWith(
-            'Are you sure you want to delete this chart?'
+            'Are you sure you want to delete this chart?',
           );
           expect(mockDeleteChart).toHaveBeenCalled();
         });
@@ -465,9 +465,12 @@ describe('UserProfile Component', () => {
       await user.click(chartsTab);
 
       // Wait for chart name to appear
-      await waitFor(() => {
-        expect(screen.getByText('Natal Chart')).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText('Natal Chart')).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
 
       // Verify chart card is rendered - just check for chart name and house system
       expect(screen.getByText('Natal Chart')).toBeInTheDocument();
@@ -570,11 +573,11 @@ describe('UserProfile Component', () => {
     it('should have proper ARIA labels on tabs', () => {
       render(<UserProfile />);
 
-      const tabs = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.match(/account|charts|preferences|subscription/i)
-      );
+      const tabs = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.textContent?.match(/account|charts|preferences|subscription/i));
 
-      tabs.forEach(tab => {
+      tabs.forEach((tab) => {
         expect(tab).toHaveAttribute('type', 'button');
       });
     });
@@ -583,7 +586,7 @@ describe('UserProfile Component', () => {
       render(<UserProfile />);
 
       const inputs = screen.getAllByRole('textbox');
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
         expect(input).toHaveAttribute('type');
       });
     });
@@ -601,7 +604,9 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       mockUpdateProfile.mockRejectedValue(new Error('Update failed'));
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { /* intentional empty */ });
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+        /* intentional empty */
+      });
 
       render(<UserProfile />);
 

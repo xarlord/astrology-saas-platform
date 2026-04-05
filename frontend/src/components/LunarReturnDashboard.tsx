@@ -4,7 +4,12 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { LunarReturnChart, getCurrentLunarReturn, getNextLunarReturn, calculateLunarReturnChart } from '@/services/lunarReturn.api';
+import {
+  LunarReturnChart,
+  getCurrentLunarReturn,
+  getNextLunarReturn,
+  calculateLunarReturnChart,
+} from '@/services/lunarReturn.api';
 import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
 
@@ -64,11 +69,11 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
 
   const _getMoonPhaseIcon = (phase: string): string => {
     const icons: Record<string, string> = {
-      'new': '🌑',
+      new: '🌑',
       'waxing-crescent': '🌒',
       'first-quarter': '🌓',
       'waxing-gibbous': '🌔',
-      'full': '🌕',
+      full: '🌕',
       'waning-gibbous': '🌖',
       'last-quarter': '🌗',
       'waning-crescent': '🌘',
@@ -128,8 +133,8 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
           </div>
           <div className="mt-5 pt-5 border-t border-white/20">
             <p className="opacity-90 leading-relaxed m-0">
-              Your lunar return occurs when the moon returns to its natal position,
-              marking a new emotional cycle.
+              Your lunar return occurs when the moon returns to its natal position, marking a new
+              emotional cycle.
             </p>
           </div>
         </div>
@@ -140,35 +145,52 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
         <div className="bg-white p-6 rounded-xl shadow-sm shadow-black/10 mb-6">
           <h3 className="m-0 mb-4 text-gray-800">Your Natal Moon</h3>
           <div className="flex gap-3 items-center mb-4">
-            <span className="text-2xl font-bold text-indigo-500 capitalize">{nextReturn.natalMoon.sign}</span>
+            <span className="text-2xl font-bold text-indigo-500 capitalize">
+              {nextReturn.natalMoon.sign}
+            </span>
             <span className="text-xl text-gray-500">
               {nextReturn.natalMoon.degree}&deg; {nextReturn.natalMoon.minute}&apos;&quot;
             </span>
           </div>
           <p className="text-gray-500 leading-relaxed m-0">
-            The moon&apos;s position at your birth determines when your emotional cycles
-            reset. Each lunar return brings new opportunities for growth.
+            The moon&apos;s position at your birth determines when your emotional cycles reset. Each
+            lunar return brings new opportunities for growth.
           </p>
         </div>
       )}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 mb-8">
-        <button onClick={onForecastClick} type="button" className="flex items-center gap-3 p-5 border-none rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-gradient-to-br from-indigo-500 to-purple-600 text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/30">
+        <button
+          onClick={onForecastClick}
+          type="button"
+          className="flex items-center gap-3 p-5 border-none rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-gradient-to-br from-indigo-500 to-purple-600 text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/30"
+        >
           <span className="text-2xl">📊</span>
           <span>View Monthly Forecast</span>
         </button>
-        <button onClick={onChartClick && (() => {
-          if (currentReturn) {
-            void calculateLunarReturnChart(currentReturn.returnDate)
-              .then(onChartClick)
-              .catch(console.error);
+        <button
+          onClick={
+            onChartClick &&
+            (() => {
+              if (currentReturn) {
+                void calculateLunarReturnChart(currentReturn.returnDate)
+                  .then(onChartClick)
+                  .catch(console.error);
+              }
+            })
           }
-        })} type="button" className="flex items-center gap-3 p-5 border-2 border-indigo-500 rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-white text-indigo-500 hover:bg-indigo-50">
+          type="button"
+          className="flex items-center gap-3 p-5 border-2 border-indigo-500 rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-white text-indigo-500 hover:bg-indigo-50"
+        >
           <span className="text-2xl">🌗</span>
           <span>View Return Chart</span>
         </button>
-        <button onClick={onHistoryClick} type="button" className="flex items-center gap-3 p-5 border-2 border-gray-300 rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-white text-gray-500 hover:bg-gray-50">
+        <button
+          onClick={onHistoryClick}
+          type="button"
+          className="flex items-center gap-3 p-5 border-2 border-gray-300 rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-white text-gray-500 hover:bg-gray-50"
+        >
           <span className="text-2xl">📚</span>
           <span>View History</span>
         </button>
@@ -181,22 +203,31 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
           <div className="bg-white p-6 rounded-xl text-center shadow-sm shadow-black/10">
             <span className="text-4xl block mb-3">🔄</span>
             <h4 className="my-2 text-gray-800">Every 27.3 Days</h4>
-            <p className="text-gray-500 leading-relaxed m-0">The moon returns to its natal position approximately monthly, starting a new emotional cycle.</p>
+            <p className="text-gray-500 leading-relaxed m-0">
+              The moon returns to its natal position approximately monthly, starting a new emotional
+              cycle.
+            </p>
           </div>
           <div className="bg-white p-6 rounded-xl text-center shadow-sm shadow-black/10">
             <span className="text-4xl block mb-3">🏠</span>
             <h4 className="my-2 text-gray-800">House Placement</h4>
-            <p className="text-gray-500 leading-relaxed m-0">The house shows which life area will be highlighted emotionally this month.</p>
+            <p className="text-gray-500 leading-relaxed m-0">
+              The house shows which life area will be highlighted emotionally this month.
+            </p>
           </div>
           <div className="bg-white p-6 rounded-xl text-center shadow-sm shadow-black/10">
             <span className="text-4xl block mb-3">🌓</span>
             <h4 className="my-2 text-gray-800">Moon Phase</h4>
-            <p className="text-gray-500 leading-relaxed m-0">The phase at your return influences the emotional tone and energy of the month.</p>
+            <p className="text-gray-500 leading-relaxed m-0">
+              The phase at your return influences the emotional tone and energy of the month.
+            </p>
           </div>
           <div className="bg-white p-6 rounded-xl text-center shadow-sm shadow-black/10">
             <span className="text-4xl block mb-3">💫</span>
             <h4 className="my-2 text-gray-800">Intensity</h4>
-            <p className="text-gray-500 leading-relaxed m-0">Some months are more emotionally charged than others based on aspects and phase.</p>
+            <p className="text-gray-500 leading-relaxed m-0">
+              Some months are more emotionally charged than others based on aspects and phase.
+            </p>
           </div>
         </div>
       </div>

@@ -14,7 +14,11 @@ vi.mock('../../services/synastry.api', () => ({
 }));
 
 // Import after mocking
-import { compareCharts, getCompatibility, generateCompatibilityReport } from '../../services/synastry.api';
+import {
+  compareCharts,
+  getCompatibility,
+  generateCompatibilityReport,
+} from '../../services/synastry.api';
 
 const mockChart1 = {
   id: 'chart-1',
@@ -167,7 +171,7 @@ describe('synastryStore', () => {
 
     it('should set loading state during comparison', async () => {
       vi.mocked(compareCharts).mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve({} as any), 100))
+        () => new Promise((resolve) => setTimeout(() => resolve({} as any), 100)),
       );
 
       const comparePromise = act(async () => {
@@ -310,7 +314,9 @@ describe('synastryStore', () => {
     });
 
     it('should handle generateFullReport error', async () => {
-      vi.mocked(generateCompatibilityReport).mockRejectedValueOnce(new Error('Report generation failed'));
+      vi.mocked(generateCompatibilityReport).mockRejectedValueOnce(
+        new Error('Report generation failed'),
+      );
 
       await act(async () => {
         try {

@@ -6,7 +6,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing, AppLayout } from '../components';
+import {
+  SolarReturnDashboard,
+  SolarReturnChart,
+  SolarReturnInterpretation,
+  RelocationCalculator,
+  BirthdaySharing,
+  AppLayout,
+} from '../components';
 import { Calendar, Settings, Share2, ArrowLeft } from 'lucide-react';
 
 interface RelocationLocation {
@@ -39,30 +46,37 @@ export const SolarReturnsPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
-  const [selectedYear, setSelectedYear] = useState<number | null>(yearParam ? parseInt(yearParam) : null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(
+    yearParam ? parseInt(yearParam) : null,
+  );
   const [selectedReturn, setSelectedReturn] = useState<SolarReturn | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSolarReturn = useCallback(async (year: number) => {
-    try {
-      setLoading(true);
-      setError(null);
+  const fetchSolarReturn = useCallback(
+    async (year: number) => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const response = await api.get<SolarReturnApiResponse>(`/v1/solar-returns/year/${year}`);
-      setSelectedReturn(response.data.data);
-      setSelectedYear(year);
-    } catch (err: unknown) {
-      const apiErr = err as { response?: { status?: number; data?: { error?: { message?: string } } } };
-      if (apiErr.response?.status === 404) {
-        navigate('/solar-returns');
-      } else {
-        setError(apiErr.response?.data?.error?.message ?? 'Failed to load solar return');
+        const response = await api.get<SolarReturnApiResponse>(`/v1/solar-returns/year/${year}`);
+        setSelectedReturn(response.data.data);
+        setSelectedYear(year);
+      } catch (err: unknown) {
+        const apiErr = err as {
+          response?: { status?: number; data?: { error?: { message?: string } } };
+        };
+        if (apiErr.response?.status === 404) {
+          navigate('/solar-returns');
+        } else {
+          setError(apiErr.response?.data?.error?.message ?? 'Failed to load solar return');
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
+    },
+    [navigate],
+  );
 
   useEffect(() => {
     if (yearParam) {
@@ -79,7 +93,7 @@ export const SolarReturnsPage: React.FC = () => {
 
       const response = await api.post<SolarReturnApiResponse>(
         `/v1/solar-returns/${selectedReturn.id}/recalculate`,
-        { location }
+        { location },
       );
 
       setSelectedReturn(response.data.data);
@@ -157,15 +171,15 @@ export const SolarReturnsPage: React.FC = () => {
     <AppLayout>
       <div className="mb-8">
         <h2 className="text-3xl font-bold mb-2">Solar Returns</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Your birthday year forecasts and themes
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">Your birthday year forecasts and themes</p>
       </div>
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-sm flex items-center justify-between">
           {error}
-          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">✕</button>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">
+            ✕
+          </button>
         </div>
       )}
 
@@ -173,8 +187,9 @@ export const SolarReturnsPage: React.FC = () => {
         <SolarReturnDashboard
           onSelectYear={handleSelectYear}
           onSelectSolarReturn={(id) => {
-            void api.get<SolarReturnApiResponse>(`/v1/solar-returns/${id}`)
-              .then(res => {
+            void api
+              .get<SolarReturnApiResponse>(`/v1/solar-returns/${id}`)
+              .then((res) => {
                 setSelectedReturn(res.data.data);
                 setSelectedYear(res.data.data.year);
               })
@@ -216,9 +231,12 @@ export const SolarReturnsPage: React.FC = () => {
                   year={selectedReturn.year}
                   returnDate={selectedReturn.returnDate}
                   onDownload={() => {
-                    const blob = new Blob([JSON.stringify(selectedReturn.interpretation, null, 2)], {
-                      type: 'application/json',
-                    });
+                    const blob = new Blob(
+                      [JSON.stringify(selectedReturn.interpretation, null, 2)],
+                      {
+                        type: 'application/json',
+                      },
+                    );
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;

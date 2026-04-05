@@ -186,7 +186,12 @@ describe('CalendarView Component', () => {
       const today = new Date();
       const currentMonth = today.getMonth() + 1;
 
-      render(<CalendarView initialMonth={currentMonth === 1 ? 2 : 1} initialYear={today.getFullYear()} />);
+      render(
+        <CalendarView
+          initialMonth={currentMonth === 1 ? 2 : 1}
+          initialYear={today.getFullYear()}
+        />,
+      );
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /today/i })).toBeInTheDocument();
@@ -280,7 +285,12 @@ describe('CalendarView Component', () => {
 
   describe('Loading States', () => {
     it('should show loading state initially', () => {
-      (getCalendarMonth as any).mockImplementation(() => new Promise(() => { /* intentional empty - simulates never-resolving promise */ }));
+      (getCalendarMonth as any).mockImplementation(
+        () =>
+          new Promise(() => {
+            /* intentional empty - simulates never-resolving promise */
+          }),
+      );
 
       render(<CalendarView />);
 
@@ -288,7 +298,12 @@ describe('CalendarView Component', () => {
     });
 
     it('should show spinner during loading', () => {
-      (getCalendarMonth as any).mockImplementation(() => new Promise(() => { /* intentional empty - simulates never-resolving promise */ }));
+      (getCalendarMonth as any).mockImplementation(
+        () =>
+          new Promise(() => {
+            /* intentional empty - simulates never-resolving promise */
+          }),
+      );
 
       const { container } = render(<CalendarView />);
 
@@ -319,7 +334,8 @@ describe('CalendarView Component', () => {
 
     it('should retry loading when retry button is clicked', async () => {
       const user = userEvent.setup();
-      (getCalendarMonth as any).mockRejectedValueOnce(new Error('API Error'))
+      (getCalendarMonth as any)
+        .mockRejectedValueOnce(new Error('API Error'))
         .mockResolvedValueOnce(mockCalendarData);
 
       render(<CalendarView />);

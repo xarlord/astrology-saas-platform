@@ -26,11 +26,14 @@ export const useReports = () => {
 
   // Generate report wrapper
   const handleGenerateReport = useCallback(
-    async (request: ReportRequest, options?: {
-      onProgress?: (progress: number) => void;
-      onComplete?: (report: Report) => void;
-      onError?: (error: string) => void;
-    }): Promise<Report | null> => {
+    async (
+      request: ReportRequest,
+      options?: {
+        onProgress?: (progress: number) => void;
+        onComplete?: (report: Report) => void;
+        onError?: (error: string) => void;
+      },
+    ): Promise<Report | null> => {
       try {
         const report = await generateReport(request, options);
         return report;
@@ -40,7 +43,7 @@ export const useReports = () => {
         return null;
       }
     },
-    [generateReport]
+    [generateReport],
   );
 
   // Retry report wrapper
@@ -53,22 +56,30 @@ export const useReports = () => {
         return null;
       }
     },
-    [retryReport]
+    [retryReport],
   );
 
   // Get report by ID
-  const getReportById = useCallback((id: string): Report | undefined => {
-    return reports[id];
-  }, [reports]);
+  const getReportById = useCallback(
+    (id: string): Report | undefined => {
+      return reports[id];
+    },
+    [reports],
+  );
 
   // Get reports by type
-  const getReportsByType = useCallback((type: string): Report[] => {
-    return Object.values(reports).filter((r) => r.type === type);
-  }, [reports]);
+  const getReportsByType = useCallback(
+    (type: string): Report[] => {
+      return Object.values(reports).filter((r) => r.type === type);
+    },
+    [reports],
+  );
 
   // Get pending reports
   const getPendingReports = useCallback((): Report[] => {
-    return Object.values(reports).filter((r) => r.status === 'pending' || r.status === 'processing');
+    return Object.values(reports).filter(
+      (r) => r.status === 'pending' || r.status === 'processing',
+    );
   }, [reports]);
 
   // Get completed reports

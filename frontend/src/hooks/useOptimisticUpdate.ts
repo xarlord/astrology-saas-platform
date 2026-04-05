@@ -72,7 +72,7 @@ const DEFAULT_RETRY_DELAY = 1000;
  * ```
  */
 export function useOptimisticUpdate<T>(
-  options: OptimisticUpdateOptions<T>
+  options: OptimisticUpdateOptions<T>,
 ): [OptimisticUpdateState<T>, OptimisticUpdateActions<T>] {
   const {
     currentValue,
@@ -179,7 +179,7 @@ export function useOptimisticUpdate<T>(
     },
     // Note: 'rollback' is intentionally excluded as it would cause circular dependency
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateFn, maxRetries, retryDelay, onSuccess, onError]
+    [updateFn, maxRetries, retryDelay, onSuccess, onError],
   );
 
   /**

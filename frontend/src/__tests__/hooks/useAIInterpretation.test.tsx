@@ -105,9 +105,7 @@ describe('useAIInterpretation Hook', () => {
     });
 
     const interpretation = await result.current.generateNatal({
-      planets: [
-        { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-      ],
+      planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }],
     });
 
     await waitFor(() => {

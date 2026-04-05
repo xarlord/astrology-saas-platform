@@ -104,10 +104,7 @@ export class CacheManager<T = unknown> {
    * Get a value with stale-while-revalidate pattern
    * Returns stale data immediately while revalidating in background
    */
-  async getWithRevalidate(
-    key: string,
-    fetcher: () => Promise<T>
-  ): Promise<T | null> {
+  async getWithRevalidate(key: string, fetcher: () => Promise<T>): Promise<T | null> {
     const entry = this.cache.get(key);
     const now = Date.now();
 

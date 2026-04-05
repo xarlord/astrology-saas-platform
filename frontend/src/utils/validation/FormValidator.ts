@@ -130,8 +130,10 @@ export class FormValidator {
   private registerBuiltInRules(): void {
     // These are placeholders - actual validators should be imported from rules.ts
     // This allows dynamic rule registration from config
-    this.customRules.set('required', () => (value: unknown) =>
-      value === null || value === undefined || value === '' ? 'Required' : undefined
+    this.customRules.set(
+      'required',
+      () => (value: unknown) =>
+        value === null || value === undefined || value === '' ? 'Required' : undefined,
     );
   }
 
@@ -145,9 +147,9 @@ export class FormValidator {
   validateField(
     fieldName: string,
     value: FieldValue,
-    formData: FormData = {}
+    formData: FormData = {},
   ): FieldValidationResult {
-    const fieldSchema = this.schema.fields.find(f => f.name === fieldName);
+    const fieldSchema = this.schema.fields.find((f) => f.name === fieldName);
 
     if (!fieldSchema) {
       return { isValid: true, errors: [] };
@@ -187,7 +189,7 @@ export class FormValidator {
   async validateFieldAsync(
     fieldName: string,
     value: FieldValue,
-    formData: FormData = {}
+    formData: FormData = {},
   ): Promise<FieldValidationResult> {
     // First run sync validation
     const syncResult = this.validateField(fieldName, value, formData);
@@ -196,7 +198,7 @@ export class FormValidator {
       return syncResult;
     }
 
-    const fieldSchema = this.schema.fields.find(f => f.name === fieldName);
+    const fieldSchema = this.schema.fields.find((f) => f.name === fieldName);
 
     if (!fieldSchema?.asyncValidators?.length) {
       return syncResult;
@@ -278,15 +280,11 @@ export class FormValidator {
     let firstErrorField: string | undefined;
 
     // Validate all fields in parallel
-    const fieldNames = this.schema.fields.map(f => f.name);
+    const fieldNames = this.schema.fields.map((f) => f.name);
     const results = await Promise.all(
-      this.schema.fields.map(fieldSchema =>
-        this.validateFieldAsync(
-          fieldSchema.name,
-          formData[fieldSchema.name],
-          formData
-        )
-      )
+      this.schema.fields.map((fieldSchema) =>
+        this.validateFieldAsync(fieldSchema.name, formData[fieldSchema.name], formData),
+      ),
     );
 
     results.forEach((result, index) => {
@@ -332,7 +330,7 @@ export class FormValidator {
     for (const validator of this.schema.crossFieldValidators) {
       // Check if all required fields have values
       const hasAllFields = validator.fields.every(
-        field => formData[field] !== undefined && formData[field] !== ''
+        (field) => formData[field] !== undefined && formData[field] !== '',
       );
 
       if (!hasAllFields) continue;
@@ -359,7 +357,7 @@ export class FormValidator {
     for (const validator of this.schema.crossFieldValidators) {
       // Check if all required fields have values
       const hasAllFields = validator.fields.every(
-        field => formData[field] !== undefined && formData[field] !== ''
+        (field) => formData[field] !== undefined && formData[field] !== '',
       );
 
       if (!hasAllFields) continue;
@@ -412,14 +410,14 @@ export class FormValidator {
    * Get field schema by name
    */
   getFieldSchema(fieldName: string): FieldSchema | undefined {
-    return this.schema.fields.find(f => f.name === fieldName);
+    return this.schema.fields.find((f) => f.name === fieldName);
   }
 
   /**
    * Get all field names
    */
   getFieldNames(): string[] {
-    return this.schema.fields.map(f => f.name);
+    return this.schema.fields.map((f) => f.name);
   }
 
   /**

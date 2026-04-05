@@ -68,7 +68,9 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unnecessary-type-assertion
-const CustomDot = (props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void }) => {
+const CustomDot = (
+  props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void },
+) => {
   const { cx, cy, dataPoint, onClick } = props;
 
   if (!dataPoint || !dataPoint.isMajorEvent) {
@@ -107,7 +109,6 @@ const TransitChart: React.FC<TransitChartProps> = ({
   onDataPointClick,
   'aria-label': ariaLabel = 'Transit energy chart',
 }) => {
-
   // Format date for X-axis
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -142,7 +143,13 @@ const TransitChart: React.FC<TransitChartProps> = ({
             domain={[0, 100]}
             tick={{ fill: '#64748b', fontSize: 12 }}
             stroke="rgba(255, 255, 255, 0.1)"
-            label={{ value: 'Energy', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }}
+            label={{
+              value: 'Energy',
+              angle: -90,
+              position: 'insideLeft',
+              fill: '#64748b',
+              fontSize: 11,
+            }}
           />
 
           {showReferenceLines && (
@@ -159,17 +166,20 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
-            dot={(props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void }) => {
-              const index = 'payload' in props && props.payload && typeof props.payload === 'object' && 'index' in props.payload
-                ? (props.payload.index as number)
-                : 0;
-              return (
-                <CustomDot
-                  {...props}
-                  dataPoint={data[index]}
-                  onClick={onDataPointClick}
-                />
-              );
+            dot={(
+              props: DotProps & {
+                dataPoint?: TransitDataPoint;
+                onClick?: (point: TransitDataPoint) => void;
+              },
+            ) => {
+              const index =
+                'payload' in props &&
+                props.payload &&
+                typeof props.payload === 'object' &&
+                'index' in props.payload
+                  ? (props.payload.index as number)
+                  : 0;
+              return <CustomDot {...props} dataPoint={data[index]} onClick={onDataPointClick} />;
             }}
             activeDot={{ r: 6, fill: color, stroke: '#fff', strokeWidth: 2 }}
             animationDuration={1000}

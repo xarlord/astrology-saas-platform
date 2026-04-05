@@ -11,9 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { AppLayout } from '..';
 import { Button } from '../ui/Button';
-import MonthlyTransitReport, {
-  MONTHLY_TRANSIT_MOCK_DATA,
-} from './MonthlyTransitReport';
+import MonthlyTransitReport, { MONTHLY_TRANSIT_MOCK_DATA } from './MonthlyTransitReport';
 import { ArrowLeft, Download, Printer, Share2 } from 'lucide-react';
 
 // ============================================================================
@@ -51,7 +49,9 @@ const MonthlyTransitReportView: React.FC = () => {
     });
 
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`monthly-transit-report-${MONTHLY_TRANSIT_MOCK_DATA.month.replace(' ', '-').toLowerCase()}.pdf`);
+    pdf.save(
+      `monthly-transit-report-${MONTHLY_TRANSIT_MOCK_DATA.month.replace(' ', '-').toLowerCase()}.pdf`,
+    );
   }, []);
 
   /** Open browser print dialog */
@@ -104,10 +104,10 @@ const MonthlyTransitReportView: React.FC = () => {
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => { void handleDownloadPDF(); }}
-                leftIcon={
-                  <Download className="w-4 h-4" />
-                }
+                onClick={() => {
+                  void handleDownloadPDF();
+                }}
+                leftIcon={<Download className="w-4 h-4" />}
               >
                 Download PDF
               </Button>
@@ -116,9 +116,7 @@ const MonthlyTransitReportView: React.FC = () => {
                 variant="secondary"
                 size="sm"
                 onClick={handlePrint}
-                leftIcon={
-                  <Printer className="w-4 h-4" />
-                }
+                leftIcon={<Printer className="w-4 h-4" />}
               >
                 Print
               </Button>
@@ -126,10 +124,10 @@ const MonthlyTransitReportView: React.FC = () => {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => { void handleShare(); }}
-                leftIcon={
-                  <Share2 className="w-4 h-4" />
-                }
+                onClick={() => {
+                  void handleShare();
+                }}
+                leftIcon={<Share2 className="w-4 h-4" />}
               >
                 Share
               </Button>

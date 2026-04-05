@@ -51,7 +51,9 @@ const SynastryPageWrapper: React.FC = () => {
           title="Unable to load charts"
           description={error}
           actionText="Retry"
-          onAction={() => { void loadCharts(); }}
+          onAction={() => {
+            void loadCharts();
+          }}
         />
       </AppLayout>
     );

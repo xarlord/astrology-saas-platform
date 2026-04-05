@@ -30,6 +30,10 @@ vi.mock('../../hooks', () => ({
   useAuth: () => mockAuthHook,
 }));
 
+function renderWithRouter(ui: React.ReactElement) {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+}
+
 describe('AuthenticationForms - LoginForm', () => {
   beforeEach(() => {
     // Reset mock calls
@@ -205,14 +209,17 @@ describe('AuthenticationForms - LoginForm', () => {
 
       await userEvent.click(submitButton);
 
-      await waitFor(() => {
-        expect(screen.getByText(errorMessage)).toBeInTheDocument();
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(errorMessage)).toBeInTheDocument();
+        },
+        { timeout: 5000 },
+      );
     });
 
     it('should show generic error message when no error message provided', async () => {
       // Pass undefined to trigger fallback message
-      mockAuthHook.login.mockRejectedValue({ });
+      mockAuthHook.login.mockRejectedValue({});
 
       renderWithRouter(<LoginForm />);
 
@@ -226,7 +233,9 @@ describe('AuthenticationForms - LoginForm', () => {
       await userEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Login failed. Please check your credentials.')).toBeInTheDocument();
+        expect(
+          screen.getByText('Login failed. Please check your credentials.'),
+        ).toBeInTheDocument();
       });
     });
   });
@@ -406,7 +415,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       const user = userEvent.setup();
       const onSuccess = vi.fn();
       mockAuthHook.register.mockResolvedValue({ success: true });
-      render(<RegisterForm onSuccess={onSuccess} />);
+      renderWithRouter(<RegisterForm onSuccess={onSuccess} />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
@@ -442,7 +451,7 @@ describe('AuthenticationForms - RegisterForm', () => {
       expect(confirmPasswordInput).toHaveAttribute('type', 'password');
 
       const buttons = screen.getAllByRole('button');
-      const eyeButtons = buttons.filter(btn => btn.querySelector('svg'));
+      const eyeButtons = buttons.filter((btn) => btn.querySelector('svg'));
 
       if (eyeButtons.length >= 2) {
         await user.click(eyeButtons[0]);

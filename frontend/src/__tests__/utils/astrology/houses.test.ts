@@ -25,7 +25,7 @@ import { HouseSystem, ZODIAC_SIGNS } from '@/utils/astrology/types';
 
 describe('House Calculator', () => {
   const testLatitude = 40.7128; // New York
-  const testLongitude = -74.0060;
+  const testLongitude = -74.006;
 
   describe('calculateLST', () => {
     it('should calculate Local Sidereal Time', () => {
@@ -49,7 +49,7 @@ describe('House Calculator', () => {
 
     it('should handle negative longitudes', () => {
       const jd = 2451545.0;
-      const lst = calculateLST(jd, -74.0060);
+      const lst = calculateLST(jd, -74.006);
 
       expect(lst).toBeGreaterThanOrEqual(0);
       expect(lst).toBeLessThan(360);
@@ -350,19 +350,14 @@ describe('House Calculator', () => {
         testTime,
         testLatitude,
         testLongitude,
-        'placidus'
+        'placidus',
       );
 
       expect(houses).toHaveLength(12);
     });
 
     it('should use default house system if not specified', () => {
-      const houses = calculateHousesFromData(
-        testDate,
-        testTime,
-        testLatitude,
-        testLongitude
-      );
+      const houses = calculateHousesFromData(testDate, testTime, testLatitude, testLongitude);
 
       expect(houses).toHaveLength(12);
     });
@@ -376,7 +371,7 @@ describe('House Calculator', () => {
           testTime,
           testLatitude,
           testLongitude,
-          system
+          system,
         );
 
         expect(houses).toHaveLength(12);
@@ -426,7 +421,7 @@ describe('House Calculator', () => {
   describe('House Cusp Consistency', () => {
     it('should have all 12 unique house numbers', () => {
       const houses = calculateHouses(180, testLatitude, 'placidus');
-      const numbers = houses.map(h => h.number);
+      const numbers = houses.map((h) => h.number);
 
       expect(new Set(numbers).size).toBe(12);
       expect(numbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
@@ -436,7 +431,7 @@ describe('House Calculator', () => {
       const houses = calculateHouses(180, testLatitude, 'placidus');
 
       // Each house cusp should be different
-      const cusps = houses.map(h => h.cusp);
+      const cusps = houses.map((h) => h.cusp);
       const uniqueCusps = new Set(cusps);
       expect(uniqueCusps.size).toBeGreaterThan(1);
     });

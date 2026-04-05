@@ -5,7 +5,13 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState, AppLayout } from '../components';
+import {
+  AIInterpretationToggle,
+  AIInterpretationDisplay,
+  SkeletonLoader,
+  EmptyState,
+  AppLayout,
+} from '../components';
 import { PersonalityAnalysis } from '../components';
 import { analysisService } from '../services/analysis.service';
 import type { PersonalityAnalysisResponse } from '../services/analysis.service';
@@ -25,7 +31,9 @@ function fallbackInterpretation(planet: string, sign: string) {
 }
 
 /** Map API response to PersonalityAnalysisData shape expected by component */
-function mapAnalysisToComponentData(analysis: PersonalityAnalysisResponse): PersonalityAnalysisData {
+function mapAnalysisToComponentData(
+  analysis: PersonalityAnalysisResponse,
+): PersonalityAnalysisData {
   return {
     overview: {
       sunSign: analysis.overview.sunSign ?? fallbackInterpretation('sun', 'unknown'),
@@ -66,7 +74,11 @@ export default function AnalysisPage() {
   const [analysisData, setAnalysisData] = useState<PersonalityAnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [aiInterpretation, setAIInterpretation] = useState<{ interpretation: string; ai: boolean; source: string } | null>(null);
+  const [aiInterpretation, setAIInterpretation] = useState<{
+    interpretation: string;
+    ai: boolean;
+    source: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!chartId) return;
@@ -84,7 +96,8 @@ export default function AnalysisPage() {
         }
       } catch (err: unknown) {
         if (!cancelled) {
-          const message = err instanceof Error ? err.message : 'Failed to load personality analysis';
+          const message =
+            err instanceof Error ? err.message : 'Failed to load personality analysis';
           setError(message);
         }
       } finally {
@@ -95,10 +108,16 @@ export default function AnalysisPage() {
     };
 
     void fetchAnalysis();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [chartId]);
 
-  const handleAIInterpretation = (interpretation: { interpretation: string; ai: boolean; source: string }) => {
+  const handleAIInterpretation = (interpretation: {
+    interpretation: string;
+    ai: boolean;
+    source: string;
+  }) => {
     setAIInterpretation(interpretation);
   };
 

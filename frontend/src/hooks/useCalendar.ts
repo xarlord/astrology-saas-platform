@@ -40,16 +40,12 @@ export const useCalendar = () => {
 
   // Navigate to previous month
   const goToPreviousMonth = useCallback(() => {
-    setSelectedDate(
-      new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1)
-    );
+    setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
   }, [selectedDate, setSelectedDate]);
 
   // Navigate to next month
   const goToNextMonth = useCallback(() => {
-    setSelectedDate(
-      new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1)
-    );
+    setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
   }, [selectedDate, setSelectedDate]);
 
   // Navigate to today
@@ -58,9 +54,12 @@ export const useCalendar = () => {
   }, [setSelectedDate]);
 
   // Navigate to specific date
-  const goTo_date = useCallback((date: Date) => {
-    setSelectedDate(date);
-  }, [setSelectedDate]);
+  const goTo_date = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+    },
+    [setSelectedDate],
+  );
 
   // Create event wrapper
   const handleCreateEvent = useCallback(
@@ -72,7 +71,7 @@ export const useCalendar = () => {
         return false;
       }
     },
-    [createEvent]
+    [createEvent],
   );
 
   // Update event wrapper
@@ -85,7 +84,7 @@ export const useCalendar = () => {
         return false;
       }
     },
-    [updateEvent]
+    [updateEvent],
   );
 
   // Delete event wrapper
@@ -98,7 +97,7 @@ export const useCalendar = () => {
         return false;
       }
     },
-    [deleteEvent]
+    [deleteEvent],
   );
 
   // Get events for specific date
@@ -108,35 +107,36 @@ export const useCalendar = () => {
         const eventDate = new Date(event.start_date);
         return (
           eventDate.toDateString() === date.toDateString() ||
-          (event.end_date &&
-            date >= new Date(event.start_date) &&
-            date <= new Date(event.end_date))
+          (event.end_date && date >= new Date(event.start_date) && date <= new Date(event.end_date))
         );
       });
     },
-    [events]
+    [events],
   );
 
   // Get lunar phase for specific date
   const getLunarPhaseForDate = useCallback(
-    (date: Date): typeof lunarPhases[0] | undefined => {
+    (date: Date): (typeof lunarPhases)[0] | undefined => {
       return lunarPhases.find((phase) => {
         const phaseDate = new Date(phase.date);
         return phaseDate.toDateString() === date.toDateString();
       });
     },
-    [lunarPhases]
+    [lunarPhases],
   );
 
   // Toggle event type filter
-  const toggleEventTypeFilter = useCallback((eventType: string) => {
-    const currentFilters = filters.eventTypes;
-    const newFilters = currentFilters.includes(eventType)
-      ? currentFilters.filter((t) => t !== eventType)
-      : [...currentFilters, eventType];
+  const toggleEventTypeFilter = useCallback(
+    (eventType: string) => {
+      const currentFilters = filters.eventTypes;
+      const newFilters = currentFilters.includes(eventType)
+        ? currentFilters.filter((t) => t !== eventType)
+        : [...currentFilters, eventType];
 
-    setFilters({ eventTypes: newFilters });
-  }, [filters.eventTypes, setFilters]);
+      setFilters({ eventTypes: newFilters });
+    },
+    [filters.eventTypes, setFilters],
+  );
 
   return {
     // State

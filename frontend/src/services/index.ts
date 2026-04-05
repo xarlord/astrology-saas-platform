@@ -23,11 +23,7 @@ export { default as pdfService } from './pdf.service';
 export { billingService } from './billing.service';
 
 // Chart Calculator Service
-export {
-  ChartCalculator,
-  chartCalculator,
-  createChartCalculator,
-} from './chartCalculator.service';
+export { ChartCalculator, chartCalculator, createChartCalculator } from './chartCalculator.service';
 
 // Synastry service (has named exports)
 export {

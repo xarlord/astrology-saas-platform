@@ -120,7 +120,14 @@ describe('UsageMeter', () => {
 
     it('should call onUpgradeClick when upgrade clicked', () => {
       const onUpgradeClick = vi.fn();
-      render(<UsageMeter {...defaultProps} currentCount={25} limit={30} onUpgradeClick={onUpgradeClick} />);
+      render(
+        <UsageMeter
+          {...defaultProps}
+          currentCount={25}
+          limit={30}
+          onUpgradeClick={onUpgradeClick}
+        />,
+      );
 
       const upgradeButton = screen.getByText('Upgrade');
       fireEvent.click(upgradeButton);
@@ -217,7 +224,9 @@ describe('UsageMeter', () => {
     });
 
     it('should work without onUpgradeClick', () => {
-      render(<UsageMeter {...defaultProps} currentCount={25} limit={30} onUpgradeClick={undefined} />);
+      render(
+        <UsageMeter {...defaultProps} currentCount={25} limit={30} onUpgradeClick={undefined} />,
+      );
 
       // Should still show warning
       expect(screen.getByText('Approaching storage limit')).toBeInTheDocument();

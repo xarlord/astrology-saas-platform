@@ -21,13 +21,9 @@ export interface ThrottledValueOptions {
  */
 export function useThrottledValue<T>(
   value: T,
-  options: ThrottledValueOptions = {}
+  options: ThrottledValueOptions = {},
 ): [T, () => void, () => void] {
-  const {
-    interval = 100,
-    skipInitialThrottle: _skipInitialThrottle = true,
-    onThrottled,
-  } = options;
+  const { interval = 100, skipInitialThrottle: _skipInitialThrottle = true, onThrottled } = options;
 
   const [throttledValue, setThrottledValue] = useState<T>(value);
   const lastExecutedRef = useRef<number>(Date.now());
@@ -102,7 +98,7 @@ export function useThrottledValue<T>(
  */
 export function useThrottledValues<T extends Record<string, unknown>>(
   values: T,
-  options: ThrottledValueOptions = {}
+  options: ThrottledValueOptions = {},
 ): [T, () => void, () => void] {
   const { interval = 100, skipInitialThrottle: _skipInitialThrottle = true, onThrottled } = options;
 

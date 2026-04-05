@@ -686,31 +686,19 @@ describe('apiTransformers', () => {
   describe('safeTransform', () => {
     it('should transform valid data', () => {
       const data = { value: 42 };
-      const result = safeTransform(
-        data,
-        (d) => ({ transformed: d.value * 2 }),
-        { transformed: 0 }
-      );
+      const result = safeTransform(data, (d) => ({ transformed: d.value * 2 }), { transformed: 0 });
       expect(result).toEqual({ transformed: 84 });
     });
 
     it('should return default value for null input', () => {
       const defaultValue = { transformed: -1 };
-      const result = safeTransform(
-        null,
-        (d: any) => ({ transformed: d.value }),
-        defaultValue
-      );
+      const result = safeTransform(null, (d: any) => ({ transformed: d.value }), defaultValue);
       expect(result).toEqual(defaultValue);
     });
 
     it('should return default value for undefined input', () => {
       const defaultValue = { transformed: -1 };
-      const result = safeTransform(
-        undefined,
-        (d: any) => ({ transformed: d.value }),
-        defaultValue
-      );
+      const result = safeTransform(undefined, (d: any) => ({ transformed: d.value }), defaultValue);
       expect(result).toEqual(defaultValue);
     });
 
@@ -724,7 +712,7 @@ describe('apiTransformers', () => {
           if (typeof d.value !== 'number') throw new Error('Invalid');
           return { transformed: d.value };
         },
-        defaultValue
+        defaultValue,
       );
 
       expect(result).toEqual(defaultValue);
@@ -739,7 +727,7 @@ describe('apiTransformers', () => {
         () => {
           throw new Error('Transform failed');
         },
-        { default: true }
+        { default: true },
       );
 
       expect(consoleSpy).toHaveBeenCalled();

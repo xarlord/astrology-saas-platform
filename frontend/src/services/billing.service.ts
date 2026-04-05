@@ -73,10 +73,9 @@ class BillingService {
    * Get current subscription info for the authenticated user.
    */
   async getSubscription(): Promise<SubscriptionInfo> {
-    const response = await api.get<{ data: SubscriptionInfo }>(
-      `${this.BASE}/subscription`,
-      { timeout: this.TIMEOUT },
-    );
+    const response = await api.get<{ data: SubscriptionInfo }>(`${this.BASE}/subscription`, {
+      timeout: this.TIMEOUT,
+    });
     return response.data.data;
   }
 
@@ -84,10 +83,9 @@ class BillingService {
    * Get available plans with pricing.
    */
   async getPlans(): Promise<PlanDetail[]> {
-    const response = await api.get<{ data: PlanDetail[] }>(
-      `${this.BASE}/plans`,
-      { timeout: this.TIMEOUT },
-    );
+    const response = await api.get<{ data: PlanDetail[] }>(`${this.BASE}/plans`, {
+      timeout: this.TIMEOUT,
+    });
     return response.data.data;
   }
 }

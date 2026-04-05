@@ -20,15 +20,15 @@ export interface MonthlyTransitReportProps {
   /** Overview text */
   overview: string;
   /** Key dates */
-  keyDates: Array<{ date: string; title: string; description: string }>;
+  keyDates: { date: string; title: string; description: string }[];
   /** Life area breakdowns */
-  lifeAreas: Array<{
+  lifeAreas: {
     icon: string;
     name: string;
     favorability: number; // 0-100
     description: string;
     bestDays: string;
-  }>;
+  }[];
   /** Whether to show premium upsell section */
   isPremium?: boolean;
   /** Premium upsell CTA text */
@@ -92,21 +92,24 @@ export const MONTHLY_TRANSIT_MOCK_DATA: MonthlyTransitReportProps = {
       icon: '\uD83D\uDC95',
       name: 'Love & Relationships',
       favorability: 85,
-      description: 'Venus in Pisces brings dreamy romantic energy and deeper emotional connections.',
+      description:
+        'Venus in Pisces brings dreamy romantic energy and deeper emotional connections.',
       bestDays: 'Apr 3, 12, 21',
     },
     {
       icon: '\uD83D\uDCBC',
       name: 'Career & Finances',
       favorability: 72,
-      description: 'Saturn demands discipline but rewards consistent effort with tangible progress.',
+      description:
+        'Saturn demands discipline but rewards consistent effort with tangible progress.',
       bestDays: 'Apr 8, 15, 22',
     },
     {
       icon: '\uD83E\uDDE0',
       name: 'Personal Growth',
       favorability: 90,
-      description: 'Jupiter\u2013Uranus conjunction fuels breakthrough insights and sudden inspiration.',
+      description:
+        'Jupiter\u2013Uranus conjunction fuels breakthrough insights and sudden inspiration.',
       bestDays: 'Apr 5, 14, 26',
     },
     {
@@ -142,9 +145,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
   });
 
   return (
-    <div
-      className={`w-[794px] min-h-[1123px] bg-[#0B0D17] text-white font-sans ${className}`}
-    >
+    <div className={`w-[794px] min-h-[1123px] bg-[#0B0D17] text-white font-sans ${className}`}>
       {/* ── Header Band ──────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-[#6b3de1] to-indigo-600 p-8">
         {/* Brand */}
@@ -155,9 +156,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl font-bold text-white leading-tight">
-          Monthly Transit Report
-        </h1>
+        <h1 className="text-2xl font-bold text-white leading-tight">Monthly Transit Report</h1>
 
         {/* Month / Year */}
         <p className="text-white/70 text-base mt-1">{month}</p>
@@ -175,18 +174,14 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
         {/* Key Dates */}
         <section>
           <div className="bg-[#141627] rounded-xl p-6 border border-white/5">
-            <h2 className="text-lg font-semibold text-white mb-4">
-              Key Dates
-            </h2>
+            <h2 className="text-lg font-semibold text-white mb-4">Key Dates</h2>
 
             <div className="space-y-0">
               {keyDates.map((kd, idx) => (
                 <div
                   key={kd.date}
                   className={`flex gap-4 py-3 ${
-                    idx < keyDates.length - 1
-                      ? 'border-b border-white/5'
-                      : ''
+                    idx < keyDates.length - 1 ? 'border-b border-white/5' : ''
                   } ${idx % 2 !== 0 ? 'bg-[#141627]' : ''}`}
                 >
                   {/* Date column */}
@@ -196,12 +191,8 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
 
                   {/* Description column */}
                   <div className="min-w-0">
-                    <span className="text-sm text-white font-medium">
-                      {kd.title}
-                    </span>
-                    <span className="text-slate-400 text-sm">
-                      {' '}&#8212; {kd.description}
-                    </span>
+                    <span className="text-sm text-white font-medium">{kd.title}</span>
+                    <span className="text-slate-400 text-sm"> &#8212; {kd.description}</span>
                   </div>
                 </div>
               ))}
@@ -211,17 +202,12 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
 
         {/* Life Area Breakdown */}
         <section>
-          <h2 className="text-lg font-semibold text-white mb-2">
-            Life Area Breakdown
-          </h2>
+          <h2 className="text-lg font-semibold text-white mb-2">Life Area Breakdown</h2>
           <div className="h-px bg-white/10 mb-5" />
 
           <div className="space-y-5">
             {lifeAreas.map((area) => (
-              <div
-                key={area.name}
-                className="bg-[#141627] rounded-xl p-5 border border-white/5"
-              >
+              <div key={area.name} className="bg-[#141627] rounded-xl p-5 border border-white/5">
                 {/* Name row with bar */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-semibold text-white flex items-center gap-2">
@@ -246,14 +232,11 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
                 </div>
 
                 {/* Description */}
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  {area.description}
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">{area.description}</p>
 
                 {/* Best days */}
                 <p className="text-xs text-slate-500 mt-1.5">
-                  Best days:{' '}
-                  <span className="text-slate-400">{area.bestDays}</span>
+                  Best days: <span className="text-slate-400">{area.bestDays}</span>
                 </p>
               </div>
             ))}
@@ -272,8 +255,8 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
                 Premium Insights
               </h3>
               <p className="text-slate-400 text-sm leading-relaxed max-w-md mx-auto mb-4">
-                Unlock personalized transits to your natal chart, timing
-                recommendations, and detailed life area analysis&hellip;
+                Unlock personalized transits to your natal chart, timing recommendations, and
+                detailed life area analysis&hellip;
               </p>
               <button
                 type="button"
@@ -292,12 +275,8 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
 
         {/* Footer */}
         <footer className="flex items-center justify-between text-xs text-slate-500 pt-2 pb-4">
-          <span>
-            &#10024; AstroVerse &middot; Monthly Transit Report
-          </span>
-          <span>
-            Generated {generatedDate} &middot; astroverse.com
-          </span>
+          <span>&#10024; AstroVerse &middot; Monthly Transit Report</span>
+          <span>Generated {generatedDate} &middot; astroverse.com</span>
         </footer>
       </div>
     </div>

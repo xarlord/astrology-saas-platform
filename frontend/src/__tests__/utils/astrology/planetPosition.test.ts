@@ -25,7 +25,7 @@ describe('Planet Position Calculator', () => {
   const testDate = new Date('1990-06-15T12:00:00Z');
   const testTime = '12:00';
   const testLatitude = 40.7128; // New York
-  const testLongitude = -74.0060;
+  const testLongitude = -74.006;
 
   describe('normalizeAngle', () => {
     it('should normalize positive angles to 0-360 range', () => {
@@ -159,7 +159,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
 
       expect(position).toHaveProperty('name', 'Sun');
@@ -179,7 +179,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
 
       const expectedSign = getZodiacSign(sunPosition.longitude);
@@ -192,7 +192,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
       expect(sunPosition.retrograde).toBe(false);
     });
@@ -203,7 +203,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
       expect(moonPosition.retrograde).toBe(false);
     });
@@ -214,7 +214,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
       expect(sunPosition.speed).toBeGreaterThan(0);
     });
@@ -226,20 +226,20 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
 
       expect(positions).toHaveLength(10);
-      expect(positions.map(p => p.name)).toContain('Sun');
-      expect(positions.map(p => p.name)).toContain('Moon');
-      expect(positions.map(p => p.name)).toContain('Mercury');
-      expect(positions.map(p => p.name)).toContain('Venus');
-      expect(positions.map(p => p.name)).toContain('Mars');
-      expect(positions.map(p => p.name)).toContain('Jupiter');
-      expect(positions.map(p => p.name)).toContain('Saturn');
-      expect(positions.map(p => p.name)).toContain('Uranus');
-      expect(positions.map(p => p.name)).toContain('Neptune');
-      expect(positions.map(p => p.name)).toContain('Pluto');
+      expect(positions.map((p) => p.name)).toContain('Sun');
+      expect(positions.map((p) => p.name)).toContain('Moon');
+      expect(positions.map((p) => p.name)).toContain('Mercury');
+      expect(positions.map((p) => p.name)).toContain('Venus');
+      expect(positions.map((p) => p.name)).toContain('Mars');
+      expect(positions.map((p) => p.name)).toContain('Jupiter');
+      expect(positions.map((p) => p.name)).toContain('Saturn');
+      expect(positions.map((p) => p.name)).toContain('Uranus');
+      expect(positions.map((p) => p.name)).toContain('Neptune');
+      expect(positions.map((p) => p.name)).toContain('Pluto');
     });
 
     it('should have valid positions for all planets', () => {
@@ -247,7 +247,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         testLatitude,
-        testLongitude
+        testLongitude,
       );
 
       for (const position of positions) {
@@ -277,9 +277,33 @@ describe('Planet Position Calculator', () => {
     ];
 
     const mockPlanets = [
-      { name: 'Sun', longitude: 45, latitude: 0, speed: 1, retrograde: false, sign: 'Taurus' as const, degree: 15 },
-      { name: 'Moon', longitude: 100, latitude: 0, speed: 13, retrograde: false, sign: 'Cancer' as const, degree: 10 },
-      { name: 'Mars', longitude: 350, latitude: 0, speed: 0.5, retrograde: false, sign: 'Pisces' as const, degree: 20 },
+      {
+        name: 'Sun',
+        longitude: 45,
+        latitude: 0,
+        speed: 1,
+        retrograde: false,
+        sign: 'Taurus' as const,
+        degree: 15,
+      },
+      {
+        name: 'Moon',
+        longitude: 100,
+        latitude: 0,
+        speed: 13,
+        retrograde: false,
+        sign: 'Cancer' as const,
+        degree: 10,
+      },
+      {
+        name: 'Mars',
+        longitude: 350,
+        latitude: 0,
+        speed: 0.5,
+        retrograde: false,
+        sign: 'Pisces' as const,
+        degree: 20,
+      },
     ];
 
     it('should assign planets to correct houses', () => {
@@ -382,7 +406,7 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         89.99, // Near North Pole
-        0
+        0,
       );
 
       expect(arcticPositions).toHaveLength(10);
@@ -393,30 +417,20 @@ describe('Planet Position Calculator', () => {
         testDate,
         testTime,
         0,
-        179.99 // Near International Date Line
+        179.99, // Near International Date Line
       );
 
       expect(positions).toHaveLength(10);
     });
 
     it('should handle midnight time', () => {
-      const positions = calculateAllPlanetPositions(
-        testDate,
-        '00:00',
-        testLatitude,
-        testLongitude
-      );
+      const positions = calculateAllPlanetPositions(testDate, '00:00', testLatitude, testLongitude);
 
       expect(positions).toHaveLength(10);
     });
 
     it('should handle noon time', () => {
-      const positions = calculateAllPlanetPositions(
-        testDate,
-        '12:00',
-        testLatitude,
-        testLongitude
-      );
+      const positions = calculateAllPlanetPositions(testDate, '12:00', testLatitude, testLongitude);
 
       expect(positions).toHaveLength(10);
     });

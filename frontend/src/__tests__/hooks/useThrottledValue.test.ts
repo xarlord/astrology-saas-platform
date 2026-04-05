@@ -17,9 +17,7 @@ describe('useThrottledValue', () => {
   });
 
   it('should return initial value immediately', () => {
-    const { result } = renderHook(() =>
-      useThrottledValue('initial', { interval: 100 })
-    );
+    const { result } = renderHook(() => useThrottledValue('initial', { interval: 100 }));
 
     const [throttledValue] = result.current;
     expect(throttledValue).toBe('initial');
@@ -28,7 +26,7 @@ describe('useThrottledValue', () => {
   it('should throttle rapid updates', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100 }),
-      { initialProps: { value: 'initial' } }
+      { initialProps: { value: 'initial' } },
     );
 
     // First update after initial render - should be throttled
@@ -48,7 +46,7 @@ describe('useThrottledValue', () => {
   it('should update immediately when interval has passed', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100 }),
-      { initialProps: { value: 'initial' } }
+      { initialProps: { value: 'initial' } },
     );
 
     // First update - throttled
@@ -76,7 +74,7 @@ describe('useThrottledValue', () => {
   it('should provide flush method', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100 }),
-      { initialProps: { value: 'initial' } }
+      { initialProps: { value: 'initial' } },
     );
 
     // Trigger update - throttled
@@ -95,7 +93,7 @@ describe('useThrottledValue', () => {
   it('should provide cancel method', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100 }),
-      { initialProps: { value: 'initial' } }
+      { initialProps: { value: 'initial' } },
     );
 
     // Trigger update - throttled
@@ -120,7 +118,7 @@ describe('useThrottledValue', () => {
 
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100, onThrottled }),
-      { initialProps: { value: 'initial' } }
+      { initialProps: { value: 'initial' } },
     );
 
     // Trigger throttled update
@@ -132,7 +130,7 @@ describe('useThrottledValue', () => {
   it('should work with numeric values', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100 }),
-      { initialProps: { value: 0 } }
+      { initialProps: { value: 0 } },
     );
 
     expect(result.current[0]).toBe(0);
@@ -149,7 +147,7 @@ describe('useThrottledValue', () => {
   it('should work with object values', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useThrottledValue(value, { interval: 100 }),
-      { initialProps: { value: { x: 0, y: 0 } } }
+      { initialProps: { value: { x: 0, y: 0 } } },
     );
 
     rerender({ value: { x: 10, y: 10 } });
@@ -162,10 +160,9 @@ describe('useThrottledValue', () => {
   });
 
   it('should use default interval of 100ms', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useThrottledValue(value),
-      { initialProps: { value: 'initial' } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useThrottledValue(value), {
+      initialProps: { value: 'initial' },
+    });
 
     rerender({ value: 'update1' });
     rerender({ value: 'update2' });
@@ -197,7 +194,7 @@ describe('useThrottledValues', () => {
   it('should throttle multiple values together', () => {
     const { result, rerender } = renderHook(
       ({ values }) => useThrottledValues(values, { interval: 100 }),
-      { initialProps: { values: { x: 0, y: 0 } } }
+      { initialProps: { values: { x: 0, y: 0 } } },
     );
 
     expect(result.current[0]).toEqual({ x: 0, y: 0 });
@@ -216,7 +213,7 @@ describe('useThrottledValues', () => {
   it('should provide flush and cancel methods', () => {
     const { result, rerender } = renderHook(
       ({ values }) => useThrottledValues(values, { interval: 100 }),
-      { initialProps: { values: { x: 0, y: 0 } } }
+      { initialProps: { values: { x: 0, y: 0 } } },
     );
 
     rerender({ values: { x: 10, y: 10 } });
@@ -230,10 +227,9 @@ describe('useThrottledValues', () => {
   });
 
   it('should return initial values on mount', () => {
-    const { result } = renderHook(
-      ({ values }) => useThrottledValues(values, { interval: 100 }),
-      { initialProps: { values: { x: 0, y: 0 } } }
-    );
+    const { result } = renderHook(({ values }) => useThrottledValues(values, { interval: 100 }), {
+      initialProps: { values: { x: 0, y: 0 } },
+    });
 
     // Initial mount - should use initial values
     expect(result.current[0]).toEqual({ x: 0, y: 0 });

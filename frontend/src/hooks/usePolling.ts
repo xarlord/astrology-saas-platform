@@ -82,7 +82,7 @@ const DEFAULT_MAX_ERRORS = 5;
  */
 export function usePolling<T>(
   pollFn: () => Promise<T>,
-  options: PollingOptions<T> = {}
+  options: PollingOptions<T> = {},
 ): [PollingState<T>, PollingActions] {
   const {
     interval = DEFAULT_INTERVAL,

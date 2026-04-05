@@ -37,7 +37,7 @@ export const useTransits = () => {
         return false;
       }
     },
-    [loadTransits, setDateRange]
+    [loadTransits, setDateRange],
   );
 
   // Load today's transits
@@ -60,7 +60,7 @@ export const useTransits = () => {
         return false;
       }
     },
-    [loadTransitCalendar]
+    [loadTransitCalendar],
   );
 
   // Load transit forecast
@@ -73,7 +73,7 @@ export const useTransits = () => {
         return false;
       }
     },
-    [loadTransitForecast]
+    [loadTransitForecast],
   );
 
   // Get major transits
@@ -87,18 +87,24 @@ export const useTransits = () => {
   }, [transits]);
 
   // Get transits by planet
-  const getTransitsByPlanet = useCallback((planet: string): Transit[] => {
-    return transits.filter((t) => t.planet === planet);
-  }, [transits]);
+  const getTransitsByPlanet = useCallback(
+    (planet: string): Transit[] => {
+      return transits.filter((t) => t.planet === planet);
+    },
+    [transits],
+  );
 
   // Get active transits for date
-  const getActiveTransitsForDate = useCallback((date: Date): Transit[] => {
-    return transits.filter((t) => {
-      const start = new Date(t.start_date);
-      const end = new Date(t.end_date);
-      return date >= start && date <= end;
-    });
-  }, [transits]);
+  const getActiveTransitsForDate = useCallback(
+    (date: Date): Transit[] => {
+      return transits.filter((t) => {
+        const start = new Date(t.start_date);
+        const end = new Date(t.end_date);
+        return date >= start && date <= end;
+      });
+    },
+    [transits],
+  );
 
   // Get energy level label
   const getEnergyLabel = useCallback((): string => {

@@ -21,7 +21,14 @@ vi.mock('../../components/SkeletonLoader', () => ({
 }));
 
 vi.mock('../../components/EmptyState', () => ({
-  EmptyState: ({ title, description, actionText, onAction, secondaryActionText, onSecondaryAction }: Record<string, unknown>) => (
+  EmptyState: ({
+    title,
+    description,
+    actionText,
+    onAction,
+    secondaryActionText,
+    onSecondaryAction,
+  }: Record<string, unknown>) => (
     <div data-testid="empty-state">
       <h3>{title}</h3>
       <p>{description}</p>
@@ -31,7 +38,10 @@ vi.mock('../../components/EmptyState', () => ({
         </button>
       )}
       {secondaryActionText && (
-        <button onClick={onSecondaryAction as () => void} data-testid="empty-state-secondary-action">
+        <button
+          onClick={onSecondaryAction as () => void}
+          data-testid="empty-state-secondary-action"
+        >
           {secondaryActionText}
         </button>
       )}
@@ -43,7 +53,9 @@ vi.mock('../../components/ChartWheel', () => ({
   ChartWheel: ({ data }: Record<string, unknown>) => (
     <div data-testid="chart-wheel">
       <span>Chart Wheel</span>
-      <span data-testid="planets-count">{(data as { planets: unknown[] })?.planets?.length || 0} planets</span>
+      <span data-testid="planets-count">
+        {(data as { planets: unknown[] })?.planets?.length || 0} planets
+      </span>
     </div>
   ),
 }));
@@ -64,7 +76,14 @@ vi.mock('../../components', () => ({
       Loading...
     </div>
   ),
-  EmptyState: ({ title, description, actionText, onAction, secondaryActionText, onSecondaryAction }: Record<string, unknown>) => (
+  EmptyState: ({
+    title,
+    description,
+    actionText,
+    onAction,
+    secondaryActionText,
+    onSecondaryAction,
+  }: Record<string, unknown>) => (
     <div data-testid="empty-state">
       <h3>{title}</h3>
       <p>{description}</p>
@@ -74,7 +93,10 @@ vi.mock('../../components', () => ({
         </button>
       )}
       {secondaryActionText && (
-        <button onClick={onSecondaryAction as () => void} data-testid="empty-state-secondary-action">
+        <button
+          onClick={onSecondaryAction as () => void}
+          data-testid="empty-state-secondary-action"
+        >
           {secondaryActionText}
         </button>
       )}
@@ -83,7 +105,9 @@ vi.mock('../../components', () => ({
   ChartWheel: ({ data }: Record<string, unknown>) => (
     <div data-testid="chart-wheel">
       <span>Chart Wheel</span>
-      <span data-testid="planets-count">{(data as { planets: unknown[] })?.planets?.length || 0} planets</span>
+      <span data-testid="planets-count">
+        {(data as { planets: unknown[] })?.planets?.length || 0} planets
+      </span>
     </div>
   ),
 }));
@@ -101,7 +125,7 @@ const createWrapper = (initialRoute = '/charts/chart-1') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -118,8 +142,8 @@ describe('ChartViewPage', () => {
   describe('Page Rendering', () => {
     it('should render without crashing', () => {
       renderWithProviders(createElement(ChartViewPage));
-      // Check for main container
-      expect(document.querySelector('.min-h-screen')).toBeInTheDocument();
+      // Page renders inside AppLayout (mocked as div) with loading skeleton
+      expect(screen.getByTestId('skeleton-loader')).toBeInTheDocument();
     });
 
     it('should render page header', () => {
@@ -127,11 +151,9 @@ describe('ChartViewPage', () => {
       expect(screen.getByText('Natal Chart')).toBeInTheDocument();
     });
 
-    it('should render back to dashboard link', () => {
+    it('should render loading skeleton while fetching chart data', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const backLink = screen.getByText(/Back to Dashboard/i);
-      expect(backLink).toBeInTheDocument();
-      expect(backLink).toHaveAttribute('href', '/dashboard');
+      expect(screen.getByTestId('skeleton-loader')).toBeInTheDocument();
     });
   });
 
@@ -150,58 +172,55 @@ describe('ChartViewPage', () => {
   });
 
   describe('Header Structure', () => {
-    it('should have header element', () => {
+    it('should display Natal Chart title as h2', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const header = document.querySelector('header');
-      expect(header).toBeInTheDocument();
+      const heading = screen.getByText('Natal Chart');
+      expect(heading).toBeInTheDocument();
+      expect(heading.tagName).toBe('H2');
     });
 
-    it('should have main content area', () => {
+    it('should have heading in mb-8 container', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const main = document.querySelector('main');
-      expect(main).toBeInTheDocument();
-    });
-
-    it('should display Natal Chart title', () => {
-      renderWithProviders(createElement(ChartViewPage));
-      expect(screen.getByText('Natal Chart')).toBeInTheDocument();
+      const heading = screen.getByText('Natal Chart');
+      const container = heading.closest('.mb-8');
+      expect(container).toBeInTheDocument();
     });
   });
 
   describe('Container Structure', () => {
-    it('should have dark mode classes', () => {
+    it('should have mb-8 spacing on header container', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const container = document.querySelector('.bg-gray-50');
-      expect(container).toBeInTheDocument();
+      const heading = screen.getByText('Natal Chart');
+      const container = heading.parentElement;
+      expect(container?.className).toContain('mb-8');
     });
 
-    it('should have responsive container', () => {
+    it('should wrap content in AppLayout', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const container = document.querySelector('.container');
-      expect(container).toBeInTheDocument();
+      // AppLayout is mocked as a div, content is rendered inside it
+      expect(screen.getByText('Natal Chart')).toBeInTheDocument();
     });
   });
 
   describe('Navigation Links', () => {
-    it('should have link to dashboard', () => {
+    it('should not have a back to dashboard link during loading', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const dashboardLink = screen.getByRole('link', { name: /back to dashboard/i });
-      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
+      // During loading state, there are no navigation links
+      expect(screen.queryByRole('link', { name: /back to dashboard/i })).not.toBeInTheDocument();
     });
   });
 
   describe('Accessibility', () => {
-    it('should have proper document structure with header and main', () => {
+    it('should have Natal Chart heading', () => {
       renderWithProviders(createElement(ChartViewPage));
-      expect(document.querySelector('header')).toBeInTheDocument();
-      expect(document.querySelector('main')).toBeInTheDocument();
+      expect(screen.getByText('Natal Chart')).toBeInTheDocument();
     });
 
-    it('should have h1 heading', () => {
+    it('should have heading visible during loading state', () => {
       renderWithProviders(createElement(ChartViewPage));
-      const h1 = document.querySelector('h1');
-      expect(h1).toBeInTheDocument();
-      expect(h1?.textContent).toBe('Natal Chart');
+      // The h2 "Natal Chart" is rendered even during loading
+      const heading = screen.getByText('Natal Chart');
+      expect(heading.tagName).toBe('H2');
     });
   });
 

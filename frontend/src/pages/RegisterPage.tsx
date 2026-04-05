@@ -42,12 +42,8 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full card">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-display font-bold text-primary-600">
-            Create Account
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Start your astrological journey
-          </p>
+          <h1 className="text-3xl font-display font-bold text-primary-600">Create Account</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Start your astrological journey</p>
         </div>
 
         {error && (
@@ -56,9 +52,17 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form className="space-y-6" onSubmit={(e) => { void handleSubmit(e); }}>
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+        >
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Full Name
             </label>
             <input
@@ -75,7 +79,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Email Address
             </label>
             <input
@@ -93,7 +100,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Password
             </label>
             <input
@@ -111,7 +121,10 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Confirm Password
             </label>
             <input
@@ -142,8 +155,8 @@ export default function RegisterPage() {
               I agree to the{' '}
               <Link to="/terms" className="text-primary-600 hover:text-primary-500">
                 Terms of Service
-              </Link>
-              {' '}and{' '}
+              </Link>{' '}
+              and{' '}
               <Link to="/privacy" className="text-primary-600 hover:text-primary-500">
                 Privacy Policy
               </Link>
@@ -163,7 +176,10 @@ export default function RegisterPage() {
             <span className="text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
             </span>
-            <Link to="/login" className="text-sm text-primary-600 hover:text-primary-500 font-medium">
+            <Link
+              to="/login"
+              className="text-sm text-primary-600 hover:text-primary-500 font-medium"
+            >
               Sign in
             </Link>
           </div>

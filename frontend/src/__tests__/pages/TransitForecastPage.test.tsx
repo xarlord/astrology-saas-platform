@@ -72,12 +72,7 @@ vi.mock('../../components/transit/TransitChart', () => ({
 vi.mock('../../components/astrology/EnergyMeter', () => ({
   __esModule: true,
   default: ({ value, size, label, ...props }: any) => (
-    <div
-      role="progressbar"
-      aria-valuenow={value}
-      data-testid={`energy-meter-${size}`}
-      {...props}
-    >
+    <div role="progressbar" aria-valuenow={value} data-testid={`energy-meter-${size}`} {...props}>
       {value}%
     </div>
   ),
@@ -121,7 +116,7 @@ const createWrapper = () => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: ['/transits'] }, children)
+      createElement(MemoryRouter, { initialEntries: ['/transits'] }, children),
     );
 };
 
@@ -349,7 +344,11 @@ describe('TransitForecastPage', () => {
       await user.selectOptions(chartSelector, 'chart-2');
 
       await waitFor(() => {
-        expect(mockCalculateTransits).toHaveBeenCalledWith('chart-2', expect.any(String), expect.any(String));
+        expect(mockCalculateTransits).toHaveBeenCalledWith(
+          'chart-2',
+          expect.any(String),
+          expect.any(String),
+        );
       });
     });
   });
@@ -652,8 +651,8 @@ describe('TransitForecastPage', () => {
 
   describe('Loading State', () => {
     it('should show loading indicator while loading transits', async () => {
-      mockCalculateTransits.mockImplementation(() =>
-        new Promise((resolve) => setTimeout(() => resolve(mockTransitData), 100))
+      mockCalculateTransits.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve(mockTransitData), 100)),
       );
 
       renderWithProviders(createElement(TransitForecastPage));
@@ -665,8 +664,8 @@ describe('TransitForecastPage', () => {
     });
 
     it('should show skeleton loader while loading charts', async () => {
-      mockGetCharts.mockImplementation(() =>
-        new Promise((resolve) => setTimeout(() => resolve({ charts: mockCharts }), 100))
+      mockGetCharts.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ charts: mockCharts }), 100)),
       );
 
       renderWithProviders(createElement(TransitForecastPage));

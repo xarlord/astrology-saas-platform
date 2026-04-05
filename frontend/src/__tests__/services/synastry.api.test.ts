@@ -15,11 +15,7 @@ import {
   createSynastryController,
   SynastryServiceError,
 } from '../../services/synastry.api';
-import {
-  mockSynastryChart,
-  createMockResponse,
-  createMockError,
-} from './utils';
+import { mockSynastryChart, createMockResponse, createMockError } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -58,7 +54,7 @@ describe('synastry.api', () => {
       expect(api.post).toHaveBeenCalledWith(
         '/synastry/compare',
         { chart1Id: 'chart-1', chart2Id: 'chart-2' },
-        { timeout: 60000 }
+        { timeout: 60000 },
       );
       expect(result.chart1Id).toBe('chart-1');
       expect(result.chart2Id).toBe('chart-2');
@@ -74,7 +70,7 @@ describe('synastry.api', () => {
       expect(api.post).toHaveBeenCalledWith(
         expect.any(String),
         expect.any(Object),
-        expect.objectContaining({ timeout: 60000 })
+        expect.objectContaining({ timeout: 60000 }),
       );
     });
 
@@ -107,9 +103,7 @@ describe('synastry.api', () => {
       const mockError = new Error('ECONNABORTED');
       const mockResponse = createMockResponse(mockSynastryChart);
 
-      (api.post as any)
-        .mockRejectedValueOnce(mockError)
-        .mockResolvedValueOnce(mockResponse);
+      (api.post as any).mockRejectedValueOnce(mockError).mockResolvedValueOnce(mockResponse);
 
       const result = await compareCharts('chart-1', 'chart-2', 2);
 
@@ -155,7 +149,7 @@ describe('synastry.api', () => {
       expect(api.post).toHaveBeenCalledWith(
         '/synastry/compatibility',
         { chart1Id: 'chart-1', chart2Id: 'chart-2', includeComposite: false },
-        expect.objectContaining({ timeout: 60000 })
+        expect.objectContaining({ timeout: 60000 }),
       );
       expect(result.scores.overall).toBe(85);
     });
@@ -164,7 +158,15 @@ describe('synastry.api', () => {
       const mockCompatibilityData = {
         chart1Id: 'chart-1',
         chart2Id: 'chart-2',
-        scores: { overall: 85, romantic: 90, communication: 80, emotional: 88, intellectual: 75, spiritual: 70, values: 82 },
+        scores: {
+          overall: 85,
+          romantic: 90,
+          communication: 80,
+          emotional: 88,
+          intellectual: 75,
+          spiritual: 70,
+          values: 82,
+        },
         elementalBalance: { fire: 25, earth: 25, air: 25, water: 25, balance: 'balanced' as const },
         compositeChart: {
           chart1Id: 'chart-1',
@@ -181,7 +183,7 @@ describe('synastry.api', () => {
       expect(api.post).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({ includeComposite: true }),
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(result.compositeChart).toBeDefined();
     });
@@ -190,7 +192,15 @@ describe('synastry.api', () => {
       const mockResponse = createMockResponse({
         chart1Id: 'chart-1',
         chart2Id: 'chart-2',
-        scores: { overall: 80, romantic: 80, communication: 80, emotional: 80, intellectual: 80, spiritual: 80, values: 80 },
+        scores: {
+          overall: 80,
+          romantic: 80,
+          communication: 80,
+          emotional: 80,
+          intellectual: 80,
+          spiritual: 80,
+          values: 80,
+        },
         elementalBalance: { fire: 25, earth: 25, air: 25, water: 25, balance: 'balanced' as const },
       });
       (api.post as any).mockResolvedValue(mockResponse);
@@ -201,7 +211,7 @@ describe('synastry.api', () => {
       expect(api.post).toHaveBeenCalledWith(
         expect.any(String),
         expect.any(Object),
-        expect.objectContaining({ signal: controller.signal })
+        expect.objectContaining({ signal: controller.signal }),
       );
     });
 
@@ -229,8 +239,22 @@ describe('synastry.api', () => {
       const compatibilityResponse = createMockResponse({
         chart1Id: 'chart-1',
         chart2Id: 'chart-2',
-        scores: { overall: 85, romantic: 90, communication: 80, emotional: 88, intellectual: 75, spiritual: 70, values: 82 },
-        elementalBalance: { fire: 25, earth: 25, air: 25, water: 25, balance: 'well-balanced' as const },
+        scores: {
+          overall: 85,
+          romantic: 90,
+          communication: 80,
+          emotional: 88,
+          intellectual: 75,
+          spiritual: 70,
+          values: 82,
+        },
+        elementalBalance: {
+          fire: 25,
+          earth: 25,
+          air: 25,
+          water: 25,
+          balance: 'well-balanced' as const,
+        },
       });
 
       (api.post as any)
@@ -251,11 +275,20 @@ describe('synastry.api', () => {
       const compatibilityResponse = createMockResponse({
         chart1Id: 'chart-1',
         chart2Id: 'chart-2',
-        scores: { overall: 85, romantic: 90, communication: 80, emotional: 88, intellectual: 75, spiritual: 70, values: 82 },
+        scores: {
+          overall: 85,
+          romantic: 90,
+          communication: 80,
+          emotional: 88,
+          intellectual: 75,
+          spiritual: 70,
+          values: 82,
+        },
         elementalBalance: { fire: 25, earth: 25, air: 25, water: 25, balance: 'balanced' as const },
       });
 
-      (api.post as any).mockResolvedValueOnce(synastryResponse)
+      (api.post as any)
+        .mockResolvedValueOnce(synastryResponse)
         .mockResolvedValueOnce(compatibilityResponse);
 
       await generateCompatibilityReport('chart-1', 'chart-2');
@@ -355,9 +388,7 @@ describe('synastry.api', () => {
       const mockError = createMockError('Update failed', 500);
       (api.patch as any).mockRejectedValue(mockError);
 
-      await expect(
-        updateSynastryReport('synastry-123', { notes: 'test' })
-      ).rejects.toThrow();
+      await expect(updateSynastryReport('synastry-123', { notes: 'test' })).rejects.toThrow();
     });
   });
 

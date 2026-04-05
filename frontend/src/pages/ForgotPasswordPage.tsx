@@ -34,7 +34,9 @@ export default function ForgotPasswordPage() {
           <div className="bg-surface-dark border border-white/10 rounded-2xl p-8">
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
-                <span className="material-symbols-outlined text-green-500 text-3xl">check_circle</span>
+                <span className="material-symbols-outlined text-green-500 text-3xl">
+                  check_circle
+                </span>
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">Check Your Email</h2>
               <p className="text-slate-400">
@@ -101,7 +103,13 @@ export default function ForgotPasswordPage() {
             </div>
           )}
 
-          <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(e); }} className="space-y-5">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleSubmit(e);
+            }}
+            className="space-y-5"
+          >
             {/* Email Input */}
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2" htmlFor="email">

@@ -274,21 +274,25 @@ export function transformUserSettings(apiSettings: APIUserSettings): UserSetting
     language: apiSettings.language,
     dateFormat: apiSettings.date_format,
     timeFormat: apiSettings.time_format,
-    notifications: apiSettings.notifications ? transformNotificationSettings(apiSettings.notifications) : {
-      email: false,
-      push: false,
-      dailyDigest: false,
-      transitAlerts: false,
-      lunarReturns: false,
-      solarReturns: false,
-    },
+    notifications: apiSettings.notifications
+      ? transformNotificationSettings(apiSettings.notifications)
+      : {
+          email: false,
+          push: false,
+          dailyDigest: false,
+          transitAlerts: false,
+          lunarReturns: false,
+          solarReturns: false,
+        },
   };
 }
 
 /**
  * Transform APINotificationSettings to frontend NotificationSettings
  */
-export function transformNotificationSettings(apiSettings: APINotificationSettings): NotificationSettings {
+export function transformNotificationSettings(
+  apiSettings: APINotificationSettings,
+): NotificationSettings {
   return {
     email: apiSettings.email_enabled,
     push: apiSettings.push_enabled,
@@ -334,7 +338,7 @@ type UserSettings = import('../types/api.types').UserSettings;
 export function safeTransform<T, R>(
   data: T | null | undefined,
   transformer: (data: T) => R,
-  defaultValue: R
+  defaultValue: R,
 ): R {
   if (data === null || data === undefined) {
     return defaultValue;

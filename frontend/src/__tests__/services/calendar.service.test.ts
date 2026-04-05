@@ -10,11 +10,7 @@ import calendarService, {
   exportCalendar,
   setReminder,
 } from '../../services/calendar.service';
-import {
-  mockCalendarEvent,
-  createMockResponse,
-  createMockError,
-} from './utils';
+import { mockCalendarEvent, createMockResponse, createMockError } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -60,7 +56,7 @@ describe('calendarService', () => {
         expect.objectContaining({
           params: { includeGlobal: 'true' },
           timeout: 30000,
-        })
+        }),
       );
       expect(result.data).toHaveLength(1);
       expect(result.meta.year).toBe(2024);
@@ -81,7 +77,7 @@ describe('calendarService', () => {
         '/calendar/month/2024/1',
         expect.objectContaining({
           params: { includeGlobal: 'false' },
-        })
+        }),
       );
     });
 
@@ -142,11 +138,7 @@ describe('calendarService', () => {
 
       const result = await calendarService.createCustomEvent(newEvent);
 
-      expect(api.post).toHaveBeenCalledWith(
-        '/calendar/events',
-        newEvent,
-        { timeout: 30000 }
-      );
+      expect(api.post).toHaveBeenCalledWith('/calendar/events', newEvent, { timeout: 30000 });
       expect(result.data).toEqual(mockCalendarEvent);
     });
 
@@ -154,10 +146,12 @@ describe('calendarService', () => {
       const mockError = createMockError('Validation failed', 400);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(calendarService.createCustomEvent({
-        event_type: 'custom',
-        event_date: new Date(),
-      })).rejects.toThrow(CalendarServiceError);
+      await expect(
+        calendarService.createCustomEvent({
+          event_type: 'custom',
+          event_date: new Date(),
+        }),
+      ).rejects.toThrow(CalendarServiceError);
     });
 
     it('should include end_date when provided', async () => {
@@ -175,7 +169,7 @@ describe('calendarService', () => {
         expect.objectContaining({
           end_date: expect.any(Date),
         }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -202,7 +196,9 @@ describe('calendarService', () => {
       const mockError = createMockError('Event not found', 404);
       (api.delete as any).mockRejectedValue(mockError);
 
-      await expect(calendarService.deleteEvent('nonexistent')).rejects.toThrow('Failed to delete event');
+      await expect(calendarService.deleteEvent('nonexistent')).rejects.toThrow(
+        'Failed to delete event',
+      );
     });
   });
 
@@ -228,7 +224,7 @@ describe('calendarService', () => {
 
       expect(api.get).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ timeout: 60000 })
+        expect.objectContaining({ timeout: 60000 }),
       );
     });
 
@@ -243,9 +239,7 @@ describe('calendarService', () => {
       const mockError = createMockError('Timeout', 500);
       const mockBlob = new Blob(['data']);
 
-      (api.get as any)
-        .mockRejectedValueOnce(mockError)
-        .mockResolvedValueOnce({ data: mockBlob });
+      (api.get as any).mockRejectedValueOnce(mockError).mockResolvedValueOnce({ data: mockBlob });
 
       const result = await calendarService.exportCalendar(2024, 2);
 
@@ -264,7 +258,7 @@ describe('calendarService', () => {
       expect(api.post).toHaveBeenCalledWith(
         '/calendar/events/event-123/reminder',
         { reminderDate },
-        { timeout: 30000 }
+        { timeout: 30000 },
       );
     });
 
@@ -272,9 +266,9 @@ describe('calendarService', () => {
       const mockError = createMockError('Reminder failed', 500);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(
-        calendarService.setReminder('event-123', new Date())
-      ).rejects.toThrow(CalendarServiceError);
+      await expect(calendarService.setReminder('event-123', new Date())).rejects.toThrow(
+        CalendarServiceError,
+      );
     });
   });
 
@@ -291,7 +285,7 @@ describe('calendarService', () => {
       expect(api.patch).toHaveBeenCalledWith(
         '/calendar/events/event-123',
         { title: 'Updated Title' },
-        { timeout: 30000 }
+        { timeout: 30000 },
       );
       expect(result.data.title).toBe('Updated Title');
     });
@@ -307,7 +301,7 @@ describe('calendarService', () => {
       expect(api.patch).toHaveBeenCalledWith(
         '/calendar/events/event-123',
         { priority: 'high' },
-        { timeout: 30000 }
+        { timeout: 30000 },
       );
     });
 
@@ -315,9 +309,9 @@ describe('calendarService', () => {
       const mockError = createMockError('Update failed', 500);
       (api.patch as any).mockRejectedValue(mockError);
 
-      await expect(
-        calendarService.updateEvent('event-123', {})
-      ).rejects.toThrow(CalendarServiceError);
+      await expect(calendarService.updateEvent('event-123', {})).rejects.toThrow(
+        CalendarServiceError,
+      );
     });
   });
 

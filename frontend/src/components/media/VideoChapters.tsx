@@ -45,7 +45,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
   // Find current chapter
   const currentChapter = useMemo(() => {
     return chapters.find(
-      (chapter) => currentTime >= chapter.startTime && currentTime < chapter.endTime
+      (chapter) => currentTime >= chapter.startTime && currentTime < chapter.endTime,
     );
   }, [chapters, currentTime]);
 
@@ -58,7 +58,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
       const elapsed = currentTime - chapter.startTime;
       return Math.round((elapsed / chapterDuration) * 100);
     },
-    [currentTime]
+    [currentTime],
   );
 
   // Check if chapter is completed
@@ -66,7 +66,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
     (chapter: VideoChapter): boolean => {
       return currentTime >= chapter.endTime;
     },
-    [currentTime]
+    [currentTime],
   );
 
   // Format time display
@@ -93,7 +93,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
       className={clsx(
         'video-chapters',
         layout === 'vertical' ? 'space-y-2' : 'flex space-x-2 overflow-x-auto',
-        className
+        className,
       )}
       role="navigation"
       aria-label="Video chapters"
@@ -115,9 +115,9 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
               'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900',
               layout === 'vertical' ? 'flex items-start space-x-3 p-2' : 'flex-shrink-0 w-40 p-2',
               isActive
-                ? activeChapterClassName ?? 'bg-purple-600/20 border border-purple-500/50'
-                : chapterClassName ?? 'bg-white/5 hover:bg-white/10 border border-transparent',
-              isActive && 'ring-1 ring-purple-500/50'
+                ? (activeChapterClassName ?? 'bg-purple-600/20 border border-purple-500/50')
+                : (chapterClassName ?? 'bg-white/5 hover:bg-white/10 border border-transparent'),
+              isActive && 'ring-1 ring-purple-500/50',
             )}
             aria-current={isActive ? 'true' : undefined}
             aria-label={`${chapter.title}, starts at ${formatTime(chapter.startTime)}`}
@@ -127,7 +127,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
               <div
                 className={clsx(
                   'relative flex-shrink-0 overflow-hidden rounded',
-                  layout === 'vertical' ? 'w-24 h-14' : 'w-full h-20'
+                  layout === 'vertical' ? 'w-24 h-14' : 'w-full h-20',
                 )}
               >
                 {chapter.thumbnail ? (
@@ -190,8 +190,8 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
                     isCompleted
                       ? 'bg-green-500 text-white'
                       : isActive
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-white/10 text-white/70'
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/10 text-white/70',
                   )}
                 >
                   {isCompleted ? (
@@ -209,7 +209,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
                 <span
                   className={clsx(
                     'text-sm font-medium truncate',
-                    isActive ? 'text-white' : 'text-white/80'
+                    isActive ? 'text-white' : 'text-white/80',
                   )}
                 >
                   {chapter.title}

@@ -50,10 +50,14 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 
 export function renderWithProviders(
   ui: ReactElement,
-  { queryClient, route, ...renderOptions }: CustomRenderOptions = {}
+  { queryClient, route, ...renderOptions }: CustomRenderOptions = {},
 ) {
   function Wrapper({ children }: { children: React.ReactNode }) {
-    return <AllTheProviders queryClient={queryClient} route={route}>{children}</AllTheProviders>;
+    return (
+      <AllTheProviders queryClient={queryClient} route={route}>
+        {children}
+      </AllTheProviders>
+    );
   }
 
   return {
@@ -83,7 +87,7 @@ export const mockChart = {
   birth_time: '14:30',
   birth_place: 'New York, NY',
   latitude: 40.7128,
-  longitude: -74.0060,
+  longitude: -74.006,
   timezone: 'America/New_York',
   house_system: 'placidus',
   zodiac_type: 'tropical',
@@ -115,8 +119,14 @@ export const mockHandlers = {
 
   // Charts
   getCharts: vi.fn(() => ({ charts: [mockChart] })),
-  getChart: vi.fn(() => ({ chart: mockChart, calculated: { planets: [], houses: [], aspects: [] } })),
-  createChart: vi.fn(() => ({ chart: mockChart, calculated: { planets: [], houses: [], aspects: [] } })),
+  getChart: vi.fn(() => ({
+    chart: mockChart,
+    calculated: { planets: [], houses: [], aspects: [] },
+  })),
+  createChart: vi.fn(() => ({
+    chart: mockChart,
+    calculated: { planets: [], houses: [], aspects: [] },
+  })),
   updateChart: vi.fn(() => ({ chart: mockChart })),
   deleteChart: vi.fn(() => ({ success: true })),
 
@@ -128,8 +138,7 @@ export const mockHandlers = {
 };
 
 // Helper to wait for async operations
-export const waitFor = (ms = 0) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+export const waitFor = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Helper to mock window.location
 export const mockLocation = (pathname: string) => {

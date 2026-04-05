@@ -69,7 +69,7 @@ const SIDEREAL_MODES = [
 export function BirthDataForm({
   onSuccess,
   initialData,
-  submitLabel = 'Generate Chart'
+  submitLabel = 'Generate Chart',
 }: BirthDataFormProps) {
   const [formData, setFormData] = useState<BirthData>({
     birthDate: initialData?.birthDate ?? '',
@@ -110,7 +110,7 @@ export function BirthDataForm({
     try {
       // Using OpenStreetMap Nominatim API (free, no key required)
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`,
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const data: { display_name: string }[] = await response.json();
@@ -127,7 +127,7 @@ export function BirthDataForm({
   const getPlaceCoordinates = useCallback(async (placeName: string) => {
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`,
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const data: { lat: string; lon: string }[] = await response.json();
@@ -186,46 +186,48 @@ export function BirthDataForm({
     return Object.keys(newErrors).length === 0;
   }, [formData]);
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
-
-    try {
-      // Create chart with birth data - match service format
-      const chartData = {
-        name: formData.chartName,
-        type: 'natal' as const,
-        birth_date: formData.birthDate,
-        birth_time: formData.timeUnknown ? '00:00' : formData.birthTime,
-        birth_time_unknown: formData.timeUnknown,
-        birth_place_name: formData.birthPlace,
-        birth_latitude: formData.latitude!,
-        birth_longitude: formData.longitude!,
-        birth_timezone: formData.timezone ?? 'UTC',
-        house_system: formData.houseSystem,
-        zodiac: formData.zodiac,
-        sidereal_mode: formData.zodiac === 'sidereal' ? formData.siderealMode : undefined,
-      };
-
-      await createChartMutation.mutateAsync(chartData);
-
-      // Calculate the chart using the currentChart from the store
-      if (currentChart?.id) {
-        await calculateChartMutation.mutateAsync(currentChart.id);
-        onSuccess?.(currentChart.id);
+      if (!validateForm()) {
+        return;
       }
-    } catch (error) {
-      const err = error as { message?: string };
-      console.error('Form submission error:', error);
-      const err = error as { message?: string };
-      setErrors({
-        birthDate: err.message || 'Failed to create chart. Please try again.',
-      });
-    }
-  }, [formData, validateForm, createChartMutation, calculateChartMutation, currentChart, onSuccess]);
+
+      try {
+        // Create chart with birth data - match service format
+        const chartData = {
+          name: formData.chartName,
+          type: 'natal' as const,
+          birth_date: formData.birthDate,
+          birth_time: formData.timeUnknown ? '00:00' : formData.birthTime,
+          birth_time_unknown: formData.timeUnknown,
+          birth_place_name: formData.birthPlace,
+          birth_latitude: formData.latitude!,
+          birth_longitude: formData.longitude!,
+          birth_timezone: formData.timezone ?? 'UTC',
+          house_system: formData.houseSystem,
+          zodiac: formData.zodiac,
+          sidereal_mode: formData.zodiac === 'sidereal' ? formData.siderealMode : undefined,
+        };
+
+        await createChartMutation.mutateAsync(chartData);
+
+        // Calculate the chart using the currentChart from the store
+        if (currentChart?.id) {
+          await calculateChartMutation.mutateAsync(currentChart.id);
+          onSuccess?.(currentChart.id);
+        }
+      } catch (error) {
+        const err = error as { message?: string };
+        console.error('Form submission error:', error);
+        setErrors({
+          birthDate: err.message || 'Failed to create chart. Please try again.',
+        });
+      }
+    },
+    [formData, validateForm, createChartMutation, calculateChartMutation, currentChart, onSuccess],
+  );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -242,22 +244,25 @@ export function BirthDataForm({
         setErrors((prev) => ({ ...prev, [name]: undefined }));
       }
     },
-    [errors]
+    [errors],
   );
 
   return (
     <form
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onSubmit={handleSubmit} className="space-y-8">
+      onSubmit={handleSubmit}
+      className="space-y-8"
+    >
       {/* Date & Time Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Date & Time
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Date & Time</h3>
         <div className="space-y-4">
           {/* Birth Date */}
           <div>
-            <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="birthDate"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Birth Date <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -289,7 +294,10 @@ export function BirthDataForm({
 
           {/* Birth Time */}
           <div>
-            <label htmlFor="birthTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="birthTime"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Birth Time <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -330,7 +338,10 @@ export function BirthDataForm({
                 onChange={handleChange}
                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
               />
-              <label htmlFor="timeUnknown" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="timeUnknown"
+                className="ml-2 text-sm text-gray-700 dark:text-gray-300"
+              >
                 I don't know my exact birth time
               </label>
             </div>
@@ -341,12 +352,13 @@ export function BirthDataForm({
 
       {/* Location Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Location
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Location</h3>
         <div className="space-y-4">
           <div className="relative">
-            <label htmlFor="birthPlace" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="birthPlace"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Birth Place <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -374,7 +386,9 @@ export function BirthDataForm({
                 </div>
               )}
             </div>
-            {errors.birthPlace && <ErrorMessage message={errors.birthPlace} id={birthPlaceErrorId} />}
+            {errors.birthPlace && (
+              <ErrorMessage message={errors.birthPlace} id={birthPlaceErrorId} />
+            )}
 
             {/* Place Suggestions Dropdown */}
             {showPlaceSearch && placeSuggestions.length > 0 && (
@@ -406,13 +420,14 @@ export function BirthDataForm({
 
       {/* Chart Details Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Chart Details
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Chart Details</h3>
         <div className="space-y-4">
           {/* Chart Name */}
           <div>
-            <label htmlFor="chartName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="chartName"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Chart Name <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -444,7 +459,10 @@ export function BirthDataForm({
 
           {/* House System Selector */}
           <div>
-            <label htmlFor="houseSystem" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="houseSystem"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               House System
             </label>
             <select
@@ -465,7 +483,10 @@ export function BirthDataForm({
 
           {/* Zodiac Type Selector */}
           <div>
-            <label htmlFor="zodiac" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="zodiac"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Zodiac Type
             </label>
             <select
@@ -486,7 +507,10 @@ export function BirthDataForm({
             {/* Sidereal Mode (shown only when Sidereal is selected) */}
             {formData.zodiac === 'sidereal' && (
               <div className="mt-3">
-                <label htmlFor="siderealMode" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="siderealMode"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Ayanamsha (Sidereal Calculation Method)
                 </label>
                 <select

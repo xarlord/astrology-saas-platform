@@ -65,7 +65,7 @@ describe('Button Component', () => {
     render(
       <Button leftIcon={leftIcon} rightIcon={rightIcon}>
         Icon Button
-      </Button>
+      </Button>,
     );
 
     expect(screen.getByTestId('left-icon')).toBeInTheDocument();
@@ -238,7 +238,9 @@ describe('Badge Components', () => {
 
     it('renders with different variants', () => {
       const { rerender } = render(<Badge variant="success">Success</Badge>);
-      expect(screen.getByText('Success').closest('span[role="status"]')).toHaveClass('bg-green-100');
+      expect(screen.getByText('Success').closest('span[role="status"]')).toHaveClass(
+        'bg-green-100',
+      );
 
       rerender(<Badge variant="danger">Danger</Badge>);
       expect(screen.getByText('Danger').closest('span[role="status"]')).toHaveClass('bg-red-100');
@@ -343,7 +345,11 @@ describe('Alert Component', () => {
 
   it('calls onClose when dismiss button clicked', async () => {
     const handleClose = vi.fn();
-    render(<Alert onClose={handleClose} dismissible>Dismissible</Alert>);
+    render(
+      <Alert onClose={handleClose} dismissible>
+        Dismissible
+      </Alert>,
+    );
 
     const closeButton = screen.getByLabelText('Dismiss alert');
     await userEvent.click(closeButton);
@@ -361,9 +367,7 @@ describe('Toast Component', () => {
   });
 
   it('renders with different variants', () => {
-    const { rerender } = render(
-      <Toast id="1" variant="success" message="Success message" />
-    );
+    const { rerender } = render(<Toast id="1" variant="success" message="Success message" />);
     expect(screen.getByRole('alert')).toHaveClass('border-l-4 border-green-500');
 
     rerender(<Toast id="1" variant="error" message="Error message" />);
@@ -372,13 +376,7 @@ describe('Toast Component', () => {
 
   it('renders with action button', async () => {
     const handleAction = vi.fn();
-    render(
-      <Toast
-        id="1"
-        message="Message"
-        action={{ label: 'Undo', onClick: handleAction }}
-      />
-    );
+    render(<Toast id="1" message="Message" action={{ label: 'Undo', onClick: handleAction }} />);
 
     const actionButton = screen.getByText('Undo');
     await userEvent.click(actionButton);
@@ -439,12 +437,7 @@ describe('Modal Component', () => {
   });
 
   it('renders with footer', () => {
-    render(
-      <Modal
-        {...defaultProps}
-        footer={<button>Footer Action</button>}
-      />
-    );
+    render(<Modal {...defaultProps} footer={<button>Footer Action</button>} />);
     expect(screen.getByText('Footer Action')).toBeInTheDocument();
   });
 
@@ -464,21 +457,14 @@ describe('Accessibility', () => {
     render(
       <Button isLoading aria-label="Loading data">
         Loading
-      </Button>
+      </Button>,
     );
     expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Loading data');
     expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true');
   });
 
   it('Input has proper ARIA attributes', () => {
-    render(
-      <Input
-        label="Email"
-        error="Invalid email"
-        id="email"
-        aria-describedby="email-help"
-      />
-    );
+    render(<Input label="Email" error="Invalid email" id="email" aria-describedby="email-help" />);
     expect(screen.getByLabelText('Email')).toHaveAttribute('aria-invalid', 'true');
   });
 

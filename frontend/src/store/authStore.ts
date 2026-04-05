@@ -35,7 +35,9 @@ function getErrorMessage(error: unknown, fallback: string): string {
     return error.message;
   }
   const axiosError = error as AxiosError<ApiErrorResponse>;
-  return axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback;
+  return (
+    axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback
+  );
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -145,8 +147,8 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Listen for token refresh events from API interceptor

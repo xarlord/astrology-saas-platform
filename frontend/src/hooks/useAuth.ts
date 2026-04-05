@@ -36,7 +36,7 @@ export const useAuth = () => {
         return false;
       }
     },
-    [login]
+    [login],
   );
 
   // Register wrapper with error handling
@@ -49,7 +49,7 @@ export const useAuth = () => {
         return false;
       }
     },
-    [register]
+    [register],
   );
 
   // Logout wrapper
@@ -67,7 +67,7 @@ export const useAuth = () => {
         return false;
       }
     },
-    [updateProfile]
+    [updateProfile],
   );
 
   // Update preferences wrapper
@@ -80,7 +80,7 @@ export const useAuth = () => {
         return false;
       }
     },
-    [updatePreferences]
+    [updatePreferences],
   );
 
   // Check if user has specific plan
@@ -88,7 +88,7 @@ export const useAuth = () => {
     (plan: 'free' | 'basic' | 'premium') => {
       return user?.plan === plan;
     },
-    [user]
+    [user],
   );
 
   // Check if user has at least specific plan
@@ -99,7 +99,7 @@ export const useAuth = () => {
       const requiredPlanLevel = planHierarchy[plan];
       return userPlanLevel >= requiredPlanLevel;
     },
-    [user]
+    [user],
   );
 
   return {

@@ -4,7 +4,11 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { act } from '@testing-library/react';
-import { useLocationStore, type GeocodeResult, type TimezoneInfo } from '../../stores/locationStore';
+import {
+  useLocationStore,
+  type GeocodeResult,
+  type TimezoneInfo,
+} from '../../stores/locationStore';
 
 // Mock fetch and localStorage
 const mockFetch = vi.fn();
@@ -166,7 +170,10 @@ describe('locationStore', () => {
 
     it('should set loading state during search', async () => {
       mockFetch.mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: async () => ({ data: [] }) }), 100))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: async () => ({ data: [] }) }), 100),
+          ),
       );
 
       const searchPromise = act(async () => {
@@ -261,7 +268,7 @@ describe('locationStore', () => {
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('date=2024-06-15'),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -314,7 +321,7 @@ describe('locationStore', () => {
       expect(result).toEqual(mockGeocodeResult);
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('latitude=40.7128'),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 

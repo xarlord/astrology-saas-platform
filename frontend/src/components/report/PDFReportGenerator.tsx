@@ -21,7 +21,11 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { usePDFGeneration, getReportTypeName, generateReportFilename } from '../../hooks/usePDFGeneration';
+import {
+  usePDFGeneration,
+  getReportTypeName,
+  generateReportFilename,
+} from '../../hooks/usePDFGeneration';
 import pdfService, {
   type ReportType,
   type ReportData,
@@ -156,15 +160,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Hook
-  const {
-    isGenerating,
-    progress,
-    error,
-    lastGeneratedBlob,
-    generateReport,
-    clearError,
-    reset,
-  } = usePDFGeneration();
+  const { isGenerating, progress, error, lastGeneratedBlob, generateReport, clearError, reset } =
+    usePDFGeneration();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -223,9 +220,11 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
         return {
           chart,
           personality: {
-            coreIdentity: 'Your core identity is shaped by the placement of your Sun sign and its aspects to other planets.',
-            emotionalNature: 'Your emotional nature is influenced by your Moon sign and its house placement.',
-            mentalStyle: 'Your mental style is reflected by Mercury\'s position in your chart.',
+            coreIdentity:
+              'Your core identity is shaped by the placement of your Sun sign and its aspects to other planets.',
+            emotionalNature:
+              'Your emotional nature is influenced by your Moon sign and its house placement.',
+            mentalStyle: "Your mental style is reflected by Mercury's position in your chart.",
           },
         } as NatalReportData;
 
@@ -265,7 +264,17 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
       default:
         return null;
     }
-  }, [selectedReportType, chart, transits, synastry, solarReturn, lunarReturn, chartName, person1Name, person2Name]);
+  }, [
+    selectedReportType,
+    chart,
+    transits,
+    synastry,
+    solarReturn,
+    lunarReturn,
+    chartName,
+    person1Name,
+    person2Name,
+  ]);
 
   // Handle generate report
   const handleGenerateReport = useCallback(async () => {
@@ -390,7 +399,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
   const selectedTypeInfo = REPORT_TYPE_OPTIONS.find((t) => t.value === selectedReportType);
 
   return (
-    <div className={`bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-primary/30 ${className}`}>
+    <div
+      className={`bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-primary/30 ${className}`}
+    >
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-primary/20 rounded-lg">
@@ -398,7 +409,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
         </div>
         <div>
           <h3 className="text-lg font-semibold text-white">Generate PDF Report</h3>
-          <p className="text-sm text-slate-400">Create a downloadable PDF of your astrological report</p>
+          <p className="text-sm text-slate-400">
+            Create a downloadable PDF of your astrological report
+          </p>
         </div>
       </div>
 
@@ -418,7 +431,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                 <p className="text-xs text-slate-400">{selectedTypeInfo?.pages}</p>
               </div>
             </div>
-            <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              className={`w-5 h-5 text-slate-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`}
+            />
           </button>
 
           <AnimatePresence>
@@ -510,7 +525,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
         <Button
           variant="primary"
           fullWidth
-          onClick={() => { void handleGenerateReport(); }}
+          onClick={() => {
+            void handleGenerateReport();
+          }}
           disabled={isGenerating}
           leftIcon={
             isGenerating ? (
@@ -598,10 +615,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                 />
               </div>
               <div className="flex justify-end gap-3 p-4 border-t border-white/10">
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowPreviewModal(false)}
-                >
+                <Button variant="secondary" onClick={() => setShowPreviewModal(false)}>
                   Close
                 </Button>
                 <Button

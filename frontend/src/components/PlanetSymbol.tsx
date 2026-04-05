@@ -9,7 +9,12 @@ interface PlanetSymbolProps {
   className?: string;
 }
 
-export function PlanetSymbol({ planet, size = 'md', showName = false, className = '' }: PlanetSymbolProps) {
+export function PlanetSymbol({
+  planet,
+  size = 'md',
+  showName = false,
+  className = '',
+}: PlanetSymbolProps) {
   const symbols: Record<string, string> = {
     sun: '☉',
     moon: '☽',
@@ -48,7 +53,9 @@ export function PlanetSymbol({ planet, size = 'md', showName = false, className 
 
   return (
     <span className={`inline-flex items-center gap-1 ${className}`}>
-      <span className={`${symbols[planet] ? '' : 'text-gray-400'} ${sizeClasses[size]} ${colors[planet] || ''}`}>
+      <span
+        className={`${symbols[planet] ? '' : 'text-gray-400'} ${sizeClasses[size]} ${colors[planet] || ''}`}
+      >
         {symbols[planet] || planet}
       </span>
       {showName && <span className="capitalize text-sm">{planet}</span>}

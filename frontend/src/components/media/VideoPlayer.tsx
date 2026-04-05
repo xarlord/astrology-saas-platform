@@ -77,13 +77,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Initialize video player hook
-  const {
-    videoRef,
-    containerRef,
-    state,
-    controls,
-    handlers,
-  } = useVideoPlayer({
+  const { videoRef, containerRef, state, controls, handlers } = useVideoPlayer({
     autoplay,
     startTime,
     onProgress,
@@ -159,16 +153,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [state.isPlaying, showControls]);
 
   // Handle seek with chapter info
-  const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(e.target.value);
-    controls.seek(time);
-    analytics.trackEvent(videoId, 'seek', { targetTime: time });
-  }, [controls, videoId, analytics]);
+  const handleSeek = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const time = parseFloat(e.target.value);
+      controls.seek(time);
+      analytics.trackEvent(videoId, 'seek', { targetTime: time });
+    },
+    [controls, videoId, analytics],
+  );
 
   // Handle chapter click
-  const _handleChapterClick = useCallback((startTime: number) => {
-    controls.seek(startTime);
-  }, [controls]);
+  const _handleChapterClick = useCallback(
+    (startTime: number) => {
+      controls.seek(startTime);
+    },
+    [controls],
+  );
 
   // Handle caption toggle
   const handleCaptionsToggle = useCallback(() => {
@@ -180,16 +180,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [videoId, analytics]);
 
   // Handle playback rate change
-  const handlePlaybackRateChange = useCallback((rate: number) => {
-    controls.setPlaybackRate(rate);
-    analytics.trackEvent(videoId, 'playback_rate_change', { rate });
-  }, [controls, videoId, analytics]);
+  const handlePlaybackRateChange = useCallback(
+    (rate: number) => {
+      controls.setPlaybackRate(rate);
+      analytics.trackEvent(videoId, 'playback_rate_change', { rate });
+    },
+    [controls, videoId, analytics],
+  );
 
   // Handle volume change
-  const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    controls.setVolume(newVolume);
-  }, [controls]);
+  const handleVolumeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newVolume = parseFloat(e.target.value);
+      controls.setVolume(newVolume);
+    },
+    [controls],
+  );
 
   // Handle fullscreen toggle
   const handleFullscreenToggle = useCallback(() => {
@@ -219,7 +225,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       className={clsx(
         'relative bg-black rounded-lg overflow-hidden group',
         'focus-within:ring-2 focus-within:ring-purple-500',
-        className
+        className,
       )}
       role="region"
       aria-label={title ?? 'Video player'}
@@ -333,7 +339,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             'absolute bottom-0 left-0 right-0',
             'bg-gradient-to-t from-black/90 via-black/60 to-transparent',
             'p-4 pt-12 transition-opacity duration-300',
-            controlsVisible || !state.isPlaying ? 'opacity-100' : 'opacity-0'
+            controlsVisible || !state.isPlaying ? 'opacity-100' : 'opacity-0',
           )}
           role="toolbar"
           aria-label="Video controls"
@@ -353,7 +359,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 '[&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full',
                 '[&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer',
                 '[&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform',
-                'focus:outline-none focus:ring-2 focus:ring-purple-500'
+                'focus:outline-none focus:ring-2 focus:ring-purple-500',
               )}
               aria-label="Video progress"
               aria-valuemin={0}
@@ -395,7 +401,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 aria-label={state.isPlaying ? 'Pause' : 'Play'}
               >
                 {state.isPlaying ? (
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
@@ -403,7 +414,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     />
                   </svg>
                 ) : (
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
@@ -454,7 +470,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   aria-label={state.isMuted ? 'Unmute' : 'Mute'}
                 >
                   {state.isMuted || state.volume === 0 ? (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
                       <path
                         fillRule="evenodd"
                         d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z"
@@ -462,7 +483,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                       />
                     </svg>
                   ) : state.volume < 0.5 ? (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
                       <path
                         fillRule="evenodd"
                         d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z"
@@ -470,7 +496,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                       />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
                       <path
                         fillRule="evenodd"
                         d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414z"
@@ -492,7 +523,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     '[&::-webkit-slider-thumb]:appearance-none',
                     '[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3',
                     '[&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full',
-                    'focus:outline-none focus:ring-2 focus:ring-white'
+                    'focus:outline-none focus:ring-2 focus:ring-white',
                   )}
                   aria-label="Volume"
                 />
@@ -526,12 +557,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   onClick={handleCaptionsToggle}
                   className={clsx(
                     'text-white hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-white rounded-lg p-1 transition-colors',
-                    captionsEnabled && 'bg-white/20'
+                    captionsEnabled && 'bg-white/20',
                   )}
                   aria-label={captionsEnabled ? 'Hide captions' : 'Show captions'}
                   aria-pressed={captionsEnabled}
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
                     <path
                       fillRule="evenodd"
@@ -550,7 +586,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   className="text-white hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-white rounded-lg p-1 transition-colors"
                   aria-label={state.isPiP ? 'Exit Picture-in-Picture' : 'Enter Picture-in-Picture'}
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     <path d="M5 4a2 2 0 00-2 2v6a2 2 0 002 2h4a2 2 0 002-2V6a2 2 0 00-2-2H5z" />
                     <path d="M13 9a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V9z" />
                   </svg>
@@ -565,7 +606,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 aria-label={state.isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
               >
                 {state.isFullscreen ? (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M5 4a1 1 0 00-1 1v3a1 1 0 01-2 0V5a3 3 0 013-3h3a1 1 0 010 2H5zm10 0a1 1 0 011 1v3a1 1 0 102 0V5a3 3 0 00-3-3h-3a1 1 0 000 2h3zm-9 10a1 1 0 011-1h3a1 1 0 110 2H6a1 1 0 01-1-1zm10 0a1 1 0 011 1v3a1 1 0 01-2 0v-3a1 1 0 011-1z"
@@ -573,7 +619,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
                     <path
                       fillRule="evenodd"
                       d="M3 4a1 1 0 011-1h3a1 1 0 010 2H5v2a1 1 0 01-2 0V4zm11-1a1 1 0 011 1v3a1 1 0 01-2 0V5h-2a1 1 0 010-2h3zM3 15a1 1 0 011-1h3a1 1 0 110 2H5v2a1 1 0 01-2 0v-3zm11 1a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-2 0v-2h-2a1 1 0 01-1-1z"
@@ -588,12 +639,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       )}
 
       {/* Keyboard shortcuts help */}
-      <div
-        id="video-shortcuts"
-        className="sr-only"
-        role="note"
-        aria-label="Keyboard shortcuts"
-      >
+      <div id="video-shortcuts" className="sr-only" role="note" aria-label="Keyboard shortcuts">
         Keyboard shortcuts: Space or K to play/pause, Arrow Left/Right to seek 5 seconds, Arrow
         Up/Down for volume, M to mute, F for fullscreen, Shift+P for Picture-in-Picture, C for
         captions, 0-9 to jump to percentage.

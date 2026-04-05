@@ -39,7 +39,7 @@ const createWrapper = (initialRoute = '/register') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -175,9 +175,9 @@ describe('RegisterPageNew', () => {
 
     it('should have password visibility toggle', () => {
       renderWithProviders(createElement(RegisterPageNew));
-      const toggleButtons = screen.getAllByRole('button').filter(btn =>
-        btn.getAttribute('aria-label')?.includes('Show password')
-      );
+      const toggleButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.getAttribute('aria-label')?.includes('Show password'));
       expect(toggleButtons.length).toBeGreaterThan(0);
     });
 
@@ -186,9 +186,9 @@ describe('RegisterPageNew', () => {
       renderWithProviders(createElement(RegisterPageNew));
 
       const passwordInput = screen.getByTestId('register-password-input');
-      const toggleButtons = screen.getAllByRole('button').filter(btn =>
-        btn.getAttribute('aria-label')?.includes('password')
-      );
+      const toggleButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.getAttribute('aria-label')?.includes('password'));
       const passwordToggle = toggleButtons[0];
 
       // Initially password should be hidden
@@ -376,17 +376,17 @@ describe('RegisterPageNew', () => {
   describe('Navigation Links', () => {
     it('should render sign in link', () => {
       renderWithProviders(createElement(RegisterPageNew));
-      const signInLinks = screen.getAllByRole('link').filter(link =>
-        /sign in/i.test(link.textContent || '')
-      );
+      const signInLinks = screen
+        .getAllByRole('link')
+        .filter((link) => /sign in/i.test(link.textContent || ''));
       expect(signInLinks.length).toBeGreaterThan(0);
     });
 
     it('should link sign in to login page', () => {
       renderWithProviders(createElement(RegisterPageNew));
-      const signInLinks = screen.getAllByRole('link').filter(link =>
-        link.getAttribute('href') === '/login'
-      );
+      const signInLinks = screen
+        .getAllByRole('link')
+        .filter((link) => link.getAttribute('href') === '/login');
       expect(signInLinks.length).toBeGreaterThan(0);
     });
   });

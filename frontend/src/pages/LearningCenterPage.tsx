@@ -72,11 +72,7 @@ const KNOWLEDGE_BASE: KnowledgeCategory[] = [
     icon: 'change_history',
     color: 'text-green-400 bg-green-400/10',
     topics: 15,
-    items: [
-      'Conjunctions: Fusion of Energy',
-      'Squares: Dynamic Tension',
-      'Trines: Natural Flow',
-    ],
+    items: ['Conjunctions: Fusion of Energy', 'Squares: Dynamic Tension', 'Trines: Natural Flow'],
   },
 ];
 
@@ -103,9 +99,9 @@ const LearningCenterPage: React.FC = () => {
   // Derive latest lessons from courses
   const latestLessons = useMemo(() => {
     const allLessons: (Lesson & { courseTitle?: string })[] = [];
-    courses.forEach(course => {
+    courses.forEach((course) => {
       if (course.lessons) {
-        course.lessons.forEach(lesson => {
+        course.lessons.forEach((lesson) => {
           allLessons.push({ ...lesson, courseTitle: course.title });
         });
       }
@@ -128,19 +124,23 @@ const LearningCenterPage: React.FC = () => {
   // Filter courses based on search query
   const filteredCourses = useMemo(() => {
     if (!searchQuery) return courses;
-    return courses.filter(course =>
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchQuery.toLowerCase())
+    return courses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.description.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [courses, searchQuery]);
 
   // Get course status based on progress
-  const getCourseStatus = useCallback((course: Course): 'in-progress' | 'locked' | 'not-started' => {
-    const progress = getCourseProgressPercentage(course.id);
-    if (progress > 0) return 'in-progress';
-    // For now, all courses are unlocked. In future, could check prerequisites
-    return 'not-started';
-  }, [getCourseProgressPercentage]);
+  const getCourseStatus = useCallback(
+    (course: Course): 'in-progress' | 'locked' | 'not-started' => {
+      const progress = getCourseProgressPercentage(course.id);
+      if (progress > 0) return 'in-progress';
+      // For now, all courses are unlocked. In future, could check prerequisites
+      return 'not-started';
+    },
+    [getCourseProgressPercentage],
+  );
 
   // Format duration
   const formatDuration = useCallback((minutes: number): string => {
@@ -238,7 +238,9 @@ const LearningCenterPage: React.FC = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-blue-500/20">
-                    <span className="material-symbols-outlined text-6xl text-primary/50">school</span>
+                    <span className="material-symbols-outlined text-6xl text-primary/50">
+                      school
+                    </span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D17]/80 to-transparent flex items-end p-6">
@@ -254,7 +256,9 @@ const LearningCenterPage: React.FC = () => {
                   <div className="space-y-3 mb-8">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-400 font-medium">Your Progress</span>
-                      <span className="text-primary font-bold">{getCourseProgressPercentage(currentCourse.id)}% Complete</span>
+                      <span className="text-primary font-bold">
+                        {getCourseProgressPercentage(currentCourse.id)}% Complete
+                      </span>
                     </div>
                     <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
                       <div
@@ -271,7 +275,9 @@ const LearningCenterPage: React.FC = () => {
                       e.stopPropagation();
                       handleCourseClick(currentCourse.id);
                     }}
-                    leftIcon={<span className="material-symbols-outlined text-[18px]">play_arrow</span>}
+                    leftIcon={
+                      <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                    }
                   >
                     Resume Learning
                   </Button>
@@ -328,7 +334,9 @@ const LearningCenterPage: React.FC = () => {
                     <div className="flex justify-between items-start mb-4">
                       <div
                         className={`p-2 rounded-lg ${
-                          status === 'in-progress' ? 'bg-primary/10 text-primary' : 'bg-white/5 text-slate-400'
+                          status === 'in-progress'
+                            ? 'bg-primary/10 text-primary'
+                            : 'bg-white/5 text-slate-400'
                         }`}
                       >
                         <span className="material-symbols-outlined">
@@ -342,7 +350,11 @@ const LearningCenterPage: React.FC = () => {
                             : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
                         }`}
                       >
-                        {status === 'in-progress' ? 'In Progress' : status === 'locked' ? 'Locked' : 'Not Started'}
+                        {status === 'in-progress'
+                          ? 'In Progress'
+                          : status === 'locked'
+                            ? 'Locked'
+                            : 'Not Started'}
                       </span>
                     </div>
                     <h4 className="text-white font-bold mb-2">{course.title}</h4>
@@ -352,9 +364,7 @@ const LearningCenterPage: React.FC = () => {
                         <span className="material-symbols-outlined text-sm">schedule</span>
                         {formatDuration(course.duration)}
                       </div>
-                      <span>
-                        {course.lessons?.length || 0} Lessons
-                      </span>
+                      <span>{course.lessons?.length || 0} Lessons</span>
                     </div>
                     {progress > 0 && (
                       <div className="mt-4">
@@ -364,7 +374,9 @@ const LearningCenterPage: React.FC = () => {
                             style={{ width: `${progress}%` }}
                           ></div>
                         </div>
-                        <span className="text-[10px] text-primary mt-1 inline-block">{progress}% complete</span>
+                        <span className="text-[10px] text-primary mt-1 inline-block">
+                          {progress}% complete
+                        </span>
                       </div>
                     )}
                   </div>
@@ -394,14 +406,19 @@ const LearningCenterPage: React.FC = () => {
                   onClick={() => handleCategoryClick(category.id)}
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${category.color}`}>
+                    <div
+                      className={`w-12 h-12 rounded-lg flex items-center justify-center ${category.color}`}
+                    >
                       <span className="material-symbols-outlined text-3xl">{category.icon}</span>
                     </div>
                     <h4 className="text-white font-bold text-lg">{category.title}</h4>
                   </div>
                   <ul className="space-y-3 text-sm text-slate-400">
                     {category.items.map((item, index) => (
-                      <li key={index} className="flex items-center gap-2 hover:text-white transition-colors">
+                      <li
+                        key={index}
+                        className="flex items-center gap-2 hover:text-white transition-colors"
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
                         {item}
                       </li>
@@ -431,7 +448,9 @@ const LearningCenterPage: React.FC = () => {
               </div>
               <div className="space-y-4">
                 {latestLessons.length === 0 ? (
-                  <p className="text-slate-500 text-sm text-center py-4">No lessons available yet.</p>
+                  <p className="text-slate-500 text-sm text-center py-4">
+                    No lessons available yet.
+                  </p>
                 ) : (
                   latestLessons.map((lesson) => (
                     <div
@@ -442,11 +461,15 @@ const LearningCenterPage: React.FC = () => {
                       <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
                         {lesson.videoUrl ? (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-blue-500/20 relative">
-                            <span className="material-symbols-outlined text-2xl text-white/80">play_circle</span>
+                            <span className="material-symbols-outlined text-2xl text-white/80">
+                              play_circle
+                            </span>
                           </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-orange-500/20">
-                            <span className="material-symbols-outlined text-2xl text-white/80">article</span>
+                            <span className="material-symbols-outlined text-2xl text-white/80">
+                              article
+                            </span>
                           </div>
                         )}
                       </div>
@@ -457,7 +480,8 @@ const LearningCenterPage: React.FC = () => {
                           </h5>
                           <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
                             <span>
-                              {lesson.videoUrl ? 'Video' : 'Article'} - {formatDuration(lesson.duration)}
+                              {lesson.videoUrl ? 'Video' : 'Article'} -{' '}
+                              {formatDuration(lesson.duration)}
                             </span>
                             <span className="text-slate-700">-</span>
                             <span>{lesson.category}</span>

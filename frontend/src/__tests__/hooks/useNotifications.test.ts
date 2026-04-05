@@ -155,7 +155,10 @@ describe('useNotifications', () => {
         result.current.success('Success message', 'Success Title');
       });
 
-      expect(mockNotificationStore.showSuccess).toHaveBeenCalledWith('Success message', 'Success Title');
+      expect(mockNotificationStore.showSuccess).toHaveBeenCalledWith(
+        'Success message',
+        'Success Title',
+      );
     });
   });
 
@@ -177,7 +180,10 @@ describe('useNotifications', () => {
         result.current.warning('Warning message', 'Warning Title');
       });
 
-      expect(mockNotificationStore.showWarning).toHaveBeenCalledWith('Warning message', 'Warning Title');
+      expect(mockNotificationStore.showWarning).toHaveBeenCalledWith(
+        'Warning message',
+        'Warning Title',
+      );
     });
   });
 
@@ -300,7 +306,7 @@ describe('useNotifications', () => {
       expect(mockNotificationStore.addNotification).toHaveBeenCalledWith(
         expect.objectContaining({
           variant: 'info',
-        })
+        }),
       );
     });
 
@@ -314,7 +320,7 @@ describe('useNotifications', () => {
       expect(mockNotificationStore.addNotification).toHaveBeenCalledWith(
         expect.objectContaining({
           duration: 0,
-        })
+        }),
       );
     });
   });

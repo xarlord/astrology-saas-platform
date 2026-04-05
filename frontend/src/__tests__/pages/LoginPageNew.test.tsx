@@ -11,6 +11,7 @@ import userEvent from '@testing-library/user-event';
 import { createElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import LoginPageNew from '../../pages/LoginPageNew';
 
 // Create mock functions for auth
@@ -39,7 +40,11 @@ const createWrapper = (initialRoute = '/login') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(
+        HelmetProvider,
+        null,
+        createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
+      ),
     );
 };
 

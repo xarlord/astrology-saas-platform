@@ -44,7 +44,9 @@ export const SavedChartsGalleryPage: React.FC = () => {
           case 'clients':
             return tags.includes('Client') || tags.includes('Clients');
           case 'relationships':
-            return tags.includes('Family') || tags.includes('Friends') || tags.includes('Relationship');
+            return (
+              tags.includes('Family') || tags.includes('Friends') || tags.includes('Relationship')
+            );
           case 'favorites':
             return tags.includes('Favorite') || tags.includes('Default');
           default:
@@ -60,7 +62,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
         (chart) =>
           chart.name.toLowerCase().includes(query) ||
           (chart.birthData?.birthPlace?.toLowerCase().includes(query) ??
-          chart.tags?.some((tag) => tag.toLowerCase().includes(query)))
+            chart.tags?.some((tag) => tag.toLowerCase().includes(query))),
       );
     }
 
@@ -71,7 +73,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
           return a.name.localeCompare(b.name);
         case 'sign': {
           const getSunSign = (chart: Chart) => {
-            const sun = chart.positions?.find(p => p.name.toLowerCase() === 'sun');
+            const sun = chart.positions?.find((p) => p.name.toLowerCase() === 'sun');
             return sun?.sign ?? '';
           };
           const aSign = getSunSign(a);
@@ -91,38 +93,41 @@ export const SavedChartsGalleryPage: React.FC = () => {
     async (id: string) => {
       await deleteChart(id);
     },
-    [deleteChart]
+    [deleteChart],
   );
 
-  const handleShare = useCallback(async (id: string) => {
-    const shareUrl = `${window.location.origin}/charts/${id}`;
-    const chart = charts.find(c => c.id === id);
-    const shareTitle = chart?.name ?? 'Birth Chart';
+  const handleShare = useCallback(
+    async (id: string) => {
+      const shareUrl = `${window.location.origin}/charts/${id}`;
+      const chart = charts.find((c) => c.id === id);
+      const shareTitle = chart?.name ?? 'Birth Chart';
 
-    // Try native Web Share API first (mobile)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${shareTitle} - AstroVerse`,
-          text: `Check out this birth chart for ${shareTitle}`,
-          url: shareUrl,
-        });
-        return;
-      } catch {
-        // User cancelled or error - fall through to clipboard
+      // Try native Web Share API first (mobile)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: `${shareTitle} - AstroVerse`,
+            text: `Check out this birth chart for ${shareTitle}`,
+            url: shareUrl,
+          });
+          return;
+        } catch {
+          // User cancelled or error - fall through to clipboard
+        }
       }
-    }
 
-    // Fallback: copy to clipboard
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      // Could add a toast notification here
-      alert('Link copied to clipboard!');
-    } catch {
-      // Final fallback: show the URL
-      prompt('Copy this link:', shareUrl);
-    }
-  }, [charts]);
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        // Could add a toast notification here
+        alert('Link copied to clipboard!');
+      } catch {
+        // Final fallback: show the URL
+        prompt('Copy this link:', shareUrl);
+      }
+    },
+    [charts],
+  );
 
   // Share Modal State
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -151,7 +156,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
 
   const handleNativeShare = useCallback(async () => {
     if (!shareChartId) return;
-    const chart = charts.find(c => c.id === shareChartId);
+    const chart = charts.find((c) => c.id === shareChartId);
     const shareTitle = chart?.name ?? 'Birth Chart';
     const shareUrl = `${window.location.origin}/charts/${shareChartId}`;
 
@@ -208,11 +213,13 @@ export const SavedChartsGalleryPage: React.FC = () => {
                     'flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left',
                     activeFolder === folder.id
                       ? 'bg-primary/10 text-primary border border-primary/20'
-                      : 'hover:bg-slate-800/50 text-slate-400 hover:text-slate-100'
+                      : 'hover:bg-slate-800/50 text-slate-400 hover:text-slate-100',
                   )}
                 >
                   <span className="material-symbols-outlined text-xl">{folder.icon}</span>
-                  <span className={clsx('font-medium', activeFolder === folder.id && 'font-semibold')}>
+                  <span
+                    className={clsx('font-medium', activeFolder === folder.id && 'font-semibold')}
+                  >
                     {folder.label}
                   </span>
                 </button>
@@ -248,7 +255,9 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   My Cosmic Library
                 </h2>
               </div>
-              <p className="text-slate-400 text-lg">Manage and explore your collection of birth charts</p>
+              <p className="text-slate-400 text-lg">
+                Manage and explore your collection of birth charts
+              </p>
             </div>
             <Button
               variant="primary"
@@ -278,7 +287,9 @@ export const SavedChartsGalleryPage: React.FC = () => {
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2.5">
-                <span className="text-sm text-slate-400 font-medium whitespace-nowrap">Sort by:</span>
+                <span className="text-sm text-slate-400 font-medium whitespace-nowrap">
+                  Sort by:
+                </span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortBy)}
@@ -297,7 +308,9 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   onClick={() => setViewMode('grid')}
                   className={clsx(
                     'p-2 rounded-lg transition-colors',
-                    viewMode === 'grid' ? 'bg-slate-800 text-primary' : 'text-slate-500 hover:text-slate-300'
+                    viewMode === 'grid'
+                      ? 'bg-slate-800 text-primary'
+                      : 'text-slate-500 hover:text-slate-300',
                   )}
                 >
                   <span className="material-symbols-outlined">grid_view</span>
@@ -306,7 +319,9 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   onClick={() => setViewMode('list')}
                   className={clsx(
                     'p-2 rounded-lg transition-colors',
-                    viewMode === 'list' ? 'bg-slate-800 text-primary' : 'text-slate-500 hover:text-slate-300'
+                    viewMode === 'list'
+                      ? 'bg-slate-800 text-primary'
+                      : 'text-slate-500 hover:text-slate-300',
                   )}
                 >
                   <span className="material-symbols-outlined">view_list</span>
@@ -327,15 +342,17 @@ export const SavedChartsGalleryPage: React.FC = () => {
             <div className="flex items-center justify-center py-20">
               <div className="text-center max-w-md">
                 <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-6">
-                  <span className="material-symbols-outlined text-4xl text-slate-600">folder_open</span>
+                  <span className="material-symbols-outlined text-4xl text-slate-600">
+                    folder_open
+                  </span>
                 </div>
                 <h3 className="text-xl font-bold text-slate-100 mb-2">No charts found</h3>
                 <p className="text-slate-400 mb-6">
                   {searchQuery
                     ? `No charts match "${searchQuery}"`
                     : activeFolder !== 'all'
-                    ? `No charts in ${folders.find((f) => f.id === activeFolder)?.label?.toLowerCase()}`
-                    : 'Get started by creating your first birth chart'}
+                      ? `No charts in ${folders.find((f) => f.id === activeFolder)?.label?.toLowerCase()}`
+                      : 'Get started by creating your first birth chart'}
                 </p>
                 <Button
                   variant="primary"
@@ -354,15 +371,19 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 'gap-6',
                 viewMode === 'grid'
                   ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
-                  : 'flex flex-col'
+                  : 'flex flex-col',
               )}
             >
               {filteredCharts.map((chart) => (
                 <ChartCard
                   key={chart.id}
                   chart={chart}
-                  onDelete={(id) => { void handleDelete(id); }}
-                  onShare={(id) => { void handleShare(id); }}
+                  onDelete={(id) => {
+                    void handleDelete(id);
+                  }}
+                  onShare={(id) => {
+                    void handleShare(id);
+                  }}
                   className={viewMode === 'list' ? 'w-full' : ''}
                 />
               ))}
@@ -375,7 +396,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   'flex flex-col items-center justify-center',
                   'hover:border-primary/50 hover:bg-primary/5 transition-all',
                   'cursor-pointer',
-                  viewMode === 'list' ? 'w-full min-h-[200px]' : 'min-h-[320px]'
+                  viewMode === 'list' ? 'w-full min-h-[200px]' : 'min-h-[320px]',
                 )}
               >
                 <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-all mb-4">

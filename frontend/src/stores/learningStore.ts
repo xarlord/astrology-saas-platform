@@ -26,7 +26,7 @@ interface LearningState {
   updateLessonProgress: (
     lessonId: string,
     completed: boolean,
-    lastPosition?: number
+    lastPosition?: number,
   ) => Promise<void>;
   completeLesson: (lessonId: string) => Promise<void>;
   setCurrentCourse: (course: Course | null) => void;
@@ -203,7 +203,7 @@ export const useLearningStore = create<LearningState>()(
 
     // Clear error
     clearError: () => set({ error: null }),
-  }))
+  })),
 );
 
 // Selector hooks for optimized re-renders

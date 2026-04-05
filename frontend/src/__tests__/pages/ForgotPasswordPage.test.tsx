@@ -35,7 +35,7 @@ const renderForgotPasswordPage = () => {
   return render(
     <BrowserRouter>
       <ForgotPasswordPage />
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 
@@ -240,7 +240,7 @@ describe('ForgotPasswordPage', () => {
       await waitFor(() => {
         expect(consoleLogMock).toHaveBeenCalledWith(
           'Password reset requested for:',
-          'test@example.com'
+          'test@example.com',
         );
       });
     });

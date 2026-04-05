@@ -240,7 +240,7 @@ export function ChartWheelAccessibilityDemo() {
             }}
             onAspectClick={(aspect) => {
               setSelectedAspect(
-                `Aspect: ${aspect.planet1} ${aspect.type} ${aspect.planet2} (${aspect.degree}°${aspect.minute}')`
+                `Aspect: ${aspect.planet1} ${aspect.type} ${aspect.planet2} (${aspect.degree}°${aspect.minute}')`,
               );
               setTimeout(() => setSelectedAspect(null), 3000);
             }}

@@ -34,14 +34,10 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
     currentMonth.getMonth() + 1,
-    0
+    0,
   ).getDate();
 
-  const firstDayOfMonth = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth(),
-    1
-  ).getDay();
+  const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -53,15 +49,11 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
       if (maxDate && date > maxDate) return true;
       return false;
     },
-    [disabled, minDate, maxDate]
+    [disabled, minDate, maxDate],
   );
 
   const handleDateClick = (day: number) => {
-    const newDate = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth(),
-      day
-    );
+    const newDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
 
     if (isDateDisabled(newDate)) return;
 
@@ -71,15 +63,11 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
   };
 
   const handlePrevMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
-    );
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-    );
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -131,15 +119,11 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
           'text-slate-100 placeholder-slate-500',
           'transition-all duration-200',
           'flex items-center justify-between',
-          disabled && 'opacity-50 cursor-not-allowed'
+          disabled && 'opacity-50 cursor-not-allowed',
         )}
       >
-        <span>
-          {selectedDate ? formatDate(selectedDate) : placeholder}
-        </span>
-        <span className="material-symbols-outlined text-slate-500">
-          calendar_month
-        </span>
+        <span>{selectedDate ? formatDate(selectedDate) : placeholder}</span>
+        <span className="material-symbols-outlined text-slate-500">calendar_month</span>
       </button>
 
       {/* Calendar Popup */}
@@ -149,7 +133,7 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
             'absolute z-50 mt-2 w-full',
             'bg-card-dark border border-white/10 rounded-xl',
             'shadow-xl shadow-black/50',
-            'p-4'
+            'p-4',
           )}
           onClick={(e) => e.stopPropagation()}
         >
@@ -201,11 +185,7 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
             {/* Days of month */}
             {Array.from({ length: daysInMonth }).map((_, index) => {
               const day = index + 1;
-              const date = new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth(),
-                day
-              );
+              const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
               const isSelected = selectedDate?.toDateString() === date.toDateString();
               const isToday = date.toDateString() === today.toDateString();
               const isDisabled = isDateDisabled(date);
@@ -225,9 +205,10 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
                     // Today state
                     !isSelected && isToday && 'border border-primary text-primary',
                     // Disabled state
-                    isDisabled && 'opacity-30 cursor-not-allowed hover:bg-transparent hover:scale-100',
+                    isDisabled &&
+                      'opacity-30 cursor-not-allowed hover:bg-transparent hover:scale-100',
                     // Default
-                    !isSelected && !isToday && !isDisabled && 'text-slate-300'
+                    !isSelected && !isToday && !isDisabled && 'text-slate-300',
                   )}
                 >
                   {day}

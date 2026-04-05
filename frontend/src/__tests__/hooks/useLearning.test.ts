@@ -283,7 +283,11 @@ describe('useLearning', () => {
         updateResult = await result.current.updateLessonProgress('lesson-1', true);
       });
 
-      expect(mockLearningStore.updateLessonProgress).toHaveBeenCalledWith('lesson-1', true, undefined);
+      expect(mockLearningStore.updateLessonProgress).toHaveBeenCalledWith(
+        'lesson-1',
+        true,
+        undefined,
+      );
       expect(updateResult).toBe(true);
     });
 
@@ -401,7 +405,9 @@ describe('useLearning', () => {
     });
 
     it('should return false for in-progress lesson', () => {
-      mockLearningStore.progress = { 'lesson-2': { ...mockProgress1, lessonId: 'lesson-2', status: 'in-progress' } };
+      mockLearningStore.progress = {
+        'lesson-2': { ...mockProgress1, lessonId: 'lesson-2', status: 'in-progress' },
+      };
 
       const { result } = renderHook(() => useLearning(false));
 

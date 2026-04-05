@@ -116,7 +116,7 @@ function createShortcutKey(key: string, modifiers: Modifiers): string {
  */
 export function useShortcut(
   shortcut: ShortcutDefinition | ShortcutDefinition[],
-  options: UseShortcutOptions = {}
+  options: UseShortcutOptions = {},
 ): { unregister: () => void; isRegistered: boolean } {
   const {
     enabled = true,
@@ -149,13 +149,17 @@ export function useShortcut(
         const existing = globalShortcutContext.shortcuts.get(key);
         console.warn(
           `Shortcut conflict: "${key}" is already registered (${existing?.description ?? 'no description'}). ` +
-          `Use scope to manage multiple shortcuts with the same key.`
+            `Use scope to manage multiple shortcuts with the same key.`,
         );
         return;
       }
 
       // Check scope
-      if (scope && globalShortcutContext.activeScope && globalShortcutContext.activeScope !== scope) {
+      if (
+        scope &&
+        globalShortcutContext.activeScope &&
+        globalShortcutContext.activeScope !== scope
+      ) {
         return;
       }
 
@@ -210,7 +214,11 @@ export function useShortcut(
 
       if (shortcut && shortcut.enabled !== false) {
         // Check scope
-        if (scope && globalShortcutContext.activeScope && globalShortcutContext.activeScope !== scope) {
+        if (
+          scope &&
+          globalShortcutContext.activeScope &&
+          globalShortcutContext.activeScope !== scope
+        ) {
           return;
         }
 
@@ -230,7 +238,7 @@ export function useShortcut(
         shortcut.handler(event);
       }
     },
-    [enabled, allowInInput, scope, preventDefault, stopPropagation]
+    [enabled, allowInInput, scope, preventDefault, stopPropagation],
   );
 
   // Register on mount, unregister on unmount
@@ -263,7 +271,7 @@ export function useShortcut(
 export function useScopedShortcuts(
   shortcuts: ShortcutDefinition[],
   scope: string,
-  options: Omit<UseShortcutOptions, 'scope'> = {}
+  options: Omit<UseShortcutOptions, 'scope'> = {},
 ): { activate: () => void; deactivate: () => void; isActive: boolean } {
   const [isActive, setIsActive] = useState(false);
 
@@ -296,9 +304,7 @@ export function useShortcutsList(group?: string): RegisteredShortcut[] {
   useEffect(() => {
     const allShortcuts = Array.from(globalShortcutContext.shortcuts.values());
 
-    const filtered = group
-      ? allShortcuts.filter((s) => s.group === group)
-      : allShortcuts;
+    const filtered = group ? allShortcuts.filter((s) => s.group === group) : allShortcuts;
 
     setShortcuts(filtered);
   }, [group]);
@@ -343,7 +349,7 @@ export const AppShortcuts = {
 export function createShortcut(
   key: string,
   handler: (event: KeyboardEvent) => void,
-  options: Partial<ShortcutDefinition> = {}
+  options: Partial<ShortcutDefinition> = {},
 ): ShortcutDefinition {
   return {
     key,

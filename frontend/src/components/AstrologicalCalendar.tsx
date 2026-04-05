@@ -22,10 +22,14 @@ const eventBadgeClasses: Record<string, string> = {
   mercury_retrograde: 'bg-red-100 text-red-600 font-semibold dark:bg-red-900/30 dark:text-red-400',
   venus_retrograde: 'bg-red-100 text-red-600 font-semibold dark:bg-red-900/30 dark:text-red-400',
   mars_retrograde: 'bg-red-100 text-red-600 font-semibold dark:bg-red-900/30 dark:text-red-400',
-  jupiter_retrograde: 'bg-amber-100 text-amber-600 font-semibold dark:bg-amber-900/30 dark:text-amber-400',
-  saturn_retrograde: 'bg-amber-100 text-amber-600 font-semibold dark:bg-amber-900/30 dark:text-amber-400',
-  solar_eclipse: 'bg-red-200 text-red-800 font-semibold border-2 border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-500',
-  lunar_eclipse: 'bg-red-200 text-red-800 font-semibold border-2 border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-500',
+  jupiter_retrograde:
+    'bg-amber-100 text-amber-600 font-semibold dark:bg-amber-900/30 dark:text-amber-400',
+  saturn_retrograde:
+    'bg-amber-100 text-amber-600 font-semibold dark:bg-amber-900/30 dark:text-amber-400',
+  solar_eclipse:
+    'bg-red-200 text-red-800 font-semibold border-2 border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-500',
+  lunar_eclipse:
+    'bg-red-200 text-red-800 font-semibold border-2 border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-500',
 };
 
 const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
@@ -34,10 +38,12 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month - 1, 1));
 
-  const { data: events, isLoading, error, refetch } = useCalendarEvents(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1
-  );
+  const {
+    data: events,
+    isLoading,
+    error,
+    refetch,
+  } = useCalendarEvents(currentDate.getFullYear(), currentDate.getMonth() + 1);
 
   const getEventForDate = (date: Date) => {
     if (!events) return [];
@@ -63,7 +69,12 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 
     // Empty cells for days before month starts
     for (let i = 0; i < startingDayOfWeek; i++) {
-      calendar.push(<div key={`empty-${i}`} className="bg-gray-50 dark:bg-gray-800/50 min-h-[100px] sm:min-h-[80px]" />);
+      calendar.push(
+        <div
+          key={`empty-${i}`}
+          className="bg-gray-50 dark:bg-gray-800/50 min-h-[100px] sm:min-h-[80px]"
+        />,
+      );
     }
 
     // Days of the month
@@ -72,8 +83,13 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
       const dayEvents = getEventForDate(date);
 
       calendar.push(
-        <div key={day} className="bg-white dark:bg-gray-800 min-h-[100px] sm:min-h-[80px] p-2 sm:p-1 relative transition-colors hover:bg-gray-50 dark:hover:bg-gray-750">
-          <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm sm:text-xs block mb-1">{day}</span>
+        <div
+          key={day}
+          className="bg-white dark:bg-gray-800 min-h-[100px] sm:min-h-[80px] p-2 sm:p-1 relative transition-colors hover:bg-gray-50 dark:hover:bg-gray-750"
+        >
+          <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm sm:text-xs block mb-1">
+            {day}
+          </span>
           {dayEvents.length > 0 && (
             <div className="flex flex-col gap-0.5">
               {dayEvents.map((event) => (
@@ -86,7 +102,8 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
                     {event.event_type === 'new_moon' && '\u{1F311}'}
                     {event.event_type === 'full_moon' && '\u{1F315}'}
                     {event.event_type.includes('retrograde') && '\u21C4'}
-                    {(event.event_type.includes('eclipse') && (event.event_type === 'solar_eclipse' ? '\u{1F311}' : '\u{1F315}'))}
+                    {event.event_type.includes('eclipse') &&
+                      (event.event_type === 'solar_eclipse' ? '\u{1F311}' : '\u{1F315}')}
                   </span>
                   {(event.event_data as { sign?: string } | null)?.sign && (
                     <span className="event-sign">
@@ -97,7 +114,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
               ))}
             </div>
           )}
-        </div>
+        </div>,
       );
     }
 
@@ -123,8 +140,18 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   };
 
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -166,25 +193,41 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   return (
     <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
       <div className="flex justify-between items-center mb-5 gap-4 sm:flex-col sm:gap-2.5">
-        <button onClick={goToPreviousMonth} className="py-2 px-4 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600 sm:w-full" aria-label="Previous month">
+        <button
+          onClick={goToPreviousMonth}
+          className="py-2 px-4 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600 sm:w-full"
+          aria-label="Previous month"
+        >
           \u2190 Previous
         </button>
 
         <div className="text-center flex-1 sm:flex-none">
-          <h2 className="m-0 text-gray-800 dark:text-gray-200">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
-          <button onClick={goToToday} className="ml-2.5 py-1.5 px-3 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600">
+          <h2 className="m-0 text-gray-800 dark:text-gray-200">
+            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+          </h2>
+          <button
+            onClick={goToToday}
+            className="ml-2.5 py-1.5 px-3 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600"
+          >
             Today
           </button>
         </div>
 
-        <button onClick={goToNextMonth} className="py-2 px-4 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600 sm:w-full" aria-label="Next month">
+        <button
+          onClick={goToNextMonth}
+          className="py-2 px-4 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600 sm:w-full"
+          aria-label="Next month"
+        >
           Next \u2192
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-px mb-2.5">
         {weekdays.map((day) => (
-          <div key={day} className="text-center font-semibold text-gray-500 dark:text-gray-400 py-2.5 text-sm sm:text-xs sm:py-2">
+          <div
+            key={day}
+            className="text-center font-semibold text-gray-500 dark:text-gray-400 py-2.5 text-sm sm:text-xs sm:py-2"
+          >
             {day}
           </div>
         ))}

@@ -4,14 +4,7 @@
  */
 
 export { default as ChartWheel } from './ChartWheel';
-export type {
-  Planet,
-  Aspect,
-  House,
-  ChartAngles,
-  ChartData,
-  ChartWheelProps,
-} from './ChartWheel';
+export type { Planet, Aspect, House, ChartAngles, ChartData, ChartWheelProps } from './ChartWheel';
 
 export { default as EnergyMeter } from './EnergyMeter';
 export type { EnergyMeterProps } from './EnergyMeter';

@@ -33,7 +33,8 @@ const positionStyles: Record<TooltipPosition, string> = {
 
 const themeStyles: Record<TooltipTheme, string> = {
   dark: 'bg-gray-900 dark:bg-gray-700 text-white',
-  light: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg border border-gray-200 dark:border-gray-700',
+  light:
+    'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg border border-gray-200 dark:border-gray-700',
 };
 
 const animationVariants = {
@@ -112,10 +113,22 @@ export const Tooltip: React.FC<TooltipProps> = ({
   // Get the arrow style based on position and theme
   const getArrowStyle = () => {
     const baseStyle = {
-      top: theme === 'dark' ? 'border-t-gray-900 dark:border-t-gray-700' : 'border-t-white dark:border-t-gray-800',
-      bottom: theme === 'dark' ? 'border-b-gray-900 dark:border-b-gray-700' : 'border-b-white dark:border-b-gray-800',
-      left: theme === 'dark' ? 'border-l-gray-900 dark:border-l-gray-700' : 'border-l-white dark:border-l-gray-800',
-      right: theme === 'dark' ? 'border-r-gray-900 dark:border-r-gray-700' : 'border-r-white dark:border-r-gray-800',
+      top:
+        theme === 'dark'
+          ? 'border-t-gray-900 dark:border-t-gray-700'
+          : 'border-t-white dark:border-t-gray-800',
+      bottom:
+        theme === 'dark'
+          ? 'border-b-gray-900 dark:border-b-gray-700'
+          : 'border-b-white dark:border-b-gray-800',
+      left:
+        theme === 'dark'
+          ? 'border-l-gray-900 dark:border-l-gray-700'
+          : 'border-l-white dark:border-l-gray-800',
+      right:
+        theme === 'dark'
+          ? 'border-r-gray-900 dark:border-r-gray-700'
+          : 'border-r-white dark:border-r-gray-800',
     };
 
     const transformStyle = {
@@ -153,7 +166,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
               'pointer-events-none',
               positionStyles[position],
               themeStyles[theme],
-              className
+              className,
             )}
             style={{ maxWidth }}
             initial={animationVariants[position].initial}
@@ -165,10 +178,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
             {content}
             {/* Arrow */}
             <span
-              className={clsx(
-                'absolute w-0 h-0 border-[6px]',
-                getArrowStyle()
-              )}
+              className={clsx('absolute w-0 h-0 border-[6px]', getArrowStyle())}
               aria-hidden="true"
             />
           </motion.div>

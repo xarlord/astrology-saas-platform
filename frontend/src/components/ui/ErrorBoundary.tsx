@@ -67,7 +67,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     if (hasError && (resetOnPropsChange ?? prevProps.resetKeys !== resetKeys)) {
       if (resetKeys && prevProps.resetKeys) {
-        const hasResetKeyChanged = resetKeys.some((key, index) => key !== prevProps.resetKeys![index]);
+        const hasResetKeyChanged = resetKeys.some(
+          (key, index) => key !== prevProps.resetKeys![index],
+        );
 
         if (hasResetKeyChanged) {
           this.resetErrorBoundary();
@@ -106,7 +108,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <Alert variant="error" title="Something went wrong">
               <div className="space-y-4">
                 <p className="text-sm">
-                  {error?.message ?? 'An unexpected error occurred. Please try refreshing the page.'}
+                  {error?.message ??
+                    'An unexpected error occurred. Please try refreshing the page.'}
                 </p>
 
                 {process.env.NODE_ENV === 'development' && error && (
@@ -130,7 +133,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                   </button>
                   <button
                     type="button"
-                    onClick={() => window.location.href = '/'}
+                    onClick={() => (window.location.href = '/')}
                     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     Go Home
@@ -150,7 +153,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 // Functional wrapper component with hooks
 export const withErrorBoundary = <P extends object>(
   Component: React.ComponentType<P>,
-  errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>
+  errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>,
 ): React.FC<P> => {
   const WrappedComponent: React.FC<P> = (props) => (
     <ErrorBoundary {...errorBoundaryProps}>

@@ -81,7 +81,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onAdditionalOptionChange?.(e.target.checked);
     },
-    [onAdditionalOptionChange]
+    [onAdditionalOptionChange],
   );
 
   // Focus input on open
@@ -188,7 +188,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               'shadow-2xl',
               variant === 'danger' && 'shadow-red-500/20',
               variant === 'warning' && 'shadow-yellow-500/20',
-              className
+              className,
             )}
             variants={modalVariants}
             transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -206,10 +206,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 >
                   <AlertTriangle className="w-5 h-5" />
                 </motion.div>
-                <h2
-                  id="confirm-modal-title"
-                  className="text-lg font-semibold text-white"
-                >
+                <h2 id="confirm-modal-title" className="text-lg font-semibold text-white">
                   {title}
                 </h2>
               </div>
@@ -231,18 +228,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   {itemName ? (
                     <>
                       Are you sure you want to delete{' '}
-                      <span className="font-medium text-white">
-                        &quot;{itemName}&quot;
-                      </span>
-                      ?
+                      <span className="font-medium text-white">&quot;{itemName}&quot;</span>?
                     </>
                   ) : (
                     message
                   )}
                 </p>
-                {itemName && (
-                  <p className="mt-2 text-sm text-gray-400">{message}</p>
-                )}
+                {itemName && <p className="mt-2 text-sm text-gray-400">{message}</p>}
               </div>
 
               {/* Additional warning */}
@@ -293,7 +285,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   htmlFor="confirm-input"
                   className="block text-sm font-medium text-gray-300 mb-2"
                 >
-                  Type <span className="font-mono font-bold text-red-400">{confirmationString}</span> to
+                  Type{' '}
+                  <span className="font-mono font-bold text-red-400">{confirmationString}</span> to
                   confirm:
                 </label>
                 <input
@@ -311,9 +304,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     'focus:outline-none focus:ring-2',
                     'disabled:opacity-50 disabled:cursor-not-allowed',
                     'transition-all duration-200',
-                    isConfirmed
-                      ? 'border-green-500/50 focus:ring-green-500'
-                      : styles.input
+                    isConfirmed ? 'border-green-500/50 focus:ring-green-500' : styles.input,
                   )}
                   autoComplete="off"
                   autoCorrect="off"
@@ -341,10 +332,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900',
                   'disabled:opacity-50 disabled:cursor-not-allowed',
                   'transition-all duration-200',
-                  styles.button
+                  styles.button,
                 )}
               >
-                {(isSubmitting || isLoading) ? (
+                {isSubmitting || isLoading ? (
                   <>
                     <svg
                       className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

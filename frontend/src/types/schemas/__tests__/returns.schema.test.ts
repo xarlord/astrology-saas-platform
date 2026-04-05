@@ -20,7 +20,7 @@ describe('Returns Schemas', () => {
   describe('returnLocationSchema', () => {
     const validLocation = {
       latitude: 40.7128,
-      longitude: -74.0060,
+      longitude: -74.006,
       placeName: 'New York, NY, USA',
     };
 
@@ -80,7 +80,7 @@ describe('Returns Schemas', () => {
         ...validRequest,
         location: {
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           placeName: 'New York, NY',
         },
       });
@@ -205,7 +205,7 @@ describe('Returns Schemas', () => {
           birthTime: '14:30',
           birthPlace: 'New York',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
         },
         createdAt: '2024-01-01T00:00:00Z',
@@ -250,7 +250,7 @@ describe('Returns Schemas', () => {
         ...validResponse,
         location: {
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           placeName: 'New York, NY',
         },
       });
@@ -289,7 +289,7 @@ describe('Returns Schemas', () => {
         ...validRequest,
         location: {
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           placeName: 'New York, NY',
         },
       });
@@ -344,7 +344,7 @@ describe('Returns Schemas', () => {
           birthTime: '14:30',
           birthPlace: 'New York',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
         },
         createdAt: '2024-01-01T00:00:00Z',

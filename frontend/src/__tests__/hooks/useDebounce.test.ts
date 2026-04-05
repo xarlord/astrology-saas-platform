@@ -23,10 +23,9 @@ describe('useDebounce', () => {
   });
 
   it('should debounce value changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 500 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 500 },
+    });
 
     expect(result.current).toBe('initial');
 
@@ -46,10 +45,9 @@ describe('useDebounce', () => {
   });
 
   it('should use default delay of 500ms', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value),
-      { initialProps: { value: 'initial' } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value), {
+      initialProps: { value: 'initial' },
+    });
 
     rerender({ value: 'changed' });
 
@@ -67,10 +65,9 @@ describe('useDebounce', () => {
   });
 
   it('should cancel pending debounce on value change', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 500 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 500 },
+    });
 
     // First change
     rerender({ value: 'first', delay: 500 });
@@ -94,10 +91,9 @@ describe('useDebounce', () => {
   });
 
   it('should handle delay changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 500 } }
-    );
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'initial', delay: 500 },
+    });
 
     rerender({ value: 'changed', delay: 200 });
 
@@ -109,10 +105,9 @@ describe('useDebounce', () => {
   });
 
   it('should work with numeric values', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value, 300),
-      { initialProps: { value: 0 } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
+      initialProps: { value: 0 },
+    });
 
     expect(result.current).toBe(0);
 
@@ -125,10 +120,9 @@ describe('useDebounce', () => {
   });
 
   it('should work with object values', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value, 300),
-      { initialProps: { value: { name: 'initial' } } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
+      initialProps: { value: { name: 'initial' } },
+    });
 
     expect(result.current).toEqual({ name: 'initial' });
 
@@ -142,10 +136,9 @@ describe('useDebounce', () => {
   });
 
   it('should work with array values', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value, 300),
-      { initialProps: { value: [1, 2, 3] } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
+      initialProps: { value: [1, 2, 3] },
+    });
 
     expect(result.current).toEqual([1, 2, 3]);
 
@@ -158,10 +151,9 @@ describe('useDebounce', () => {
   });
 
   it('should work with null and undefined values', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value, 300),
-      { initialProps: { value: null as string | null } }
-    );
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
+      initialProps: { value: null as string | null },
+    });
 
     expect(result.current).toBeNull();
 
@@ -284,10 +276,9 @@ describe('useDebouncedCallback', () => {
     const callback1 = vi.fn();
     const callback2 = vi.fn();
 
-    const { result, rerender } = renderHook(
-      ({ cb }) => useDebouncedCallback(cb, 300),
-      { initialProps: { cb: callback1 } }
-    );
+    const { result, rerender } = renderHook(({ cb }) => useDebouncedCallback(cb, 300), {
+      initialProps: { cb: callback1 },
+    });
 
     // Call with first callback and let it complete
     act(() => {
@@ -321,10 +312,9 @@ describe('useDebouncedCallback', () => {
   it('should update when delay changes', () => {
     const callback = vi.fn();
 
-    const { result, rerender } = renderHook(
-      ({ delay }) => useDebouncedCallback(callback, delay),
-      { initialProps: { delay: 500 } }
-    );
+    const { result, rerender } = renderHook(({ delay }) => useDebouncedCallback(callback, delay), {
+      initialProps: { delay: 500 },
+    });
 
     act(() => {
       result.current();

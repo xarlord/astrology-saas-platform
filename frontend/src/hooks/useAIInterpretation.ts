@@ -80,7 +80,8 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     generateNatal: natalMutation.mutateAsync,
     generateTransit: transitMutation.mutateAsync,
     generateCompatibility: compatibilityMutation.mutateAsync,
-    isGenerating: natalMutation.isPending || transitMutation.isPending || compatibilityMutation.isPending,
+    isGenerating:
+      natalMutation.isPending || transitMutation.isPending || compatibilityMutation.isPending,
     error,
     isAvailable: status?.available ?? false,
   };

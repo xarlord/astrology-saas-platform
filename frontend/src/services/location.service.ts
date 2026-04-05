@@ -27,14 +27,14 @@ class LocationService {
     try {
       // Use Open-Meteo Geocoding API
       const response = await fetch(
-        `${this.GEOCODING_API_URL}/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`
+        `${this.GEOCODING_API_URL}/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`,
       );
 
       if (!response.ok) {
         throw new Error('Failed to search location');
       }
 
-      const data = await response.json() as { results?: GeocodingAPIResult[] };
+      const data = (await response.json()) as { results?: GeocodingAPIResult[] };
 
       if (!data.results) {
         return { locations: [], query };
@@ -69,14 +69,14 @@ class LocationService {
   async getTimezone(latitude: number, longitude: number): Promise<string> {
     try {
       const response = await fetch(
-        `https://timezone-api.open-meteo.com/v1/timezone?latitude=${latitude}&longitude=${longitude}`
+        `https://timezone-api.open-meteo.com/v1/timezone?latitude=${latitude}&longitude=${longitude}`,
       );
 
       if (!response.ok) {
         throw new Error('Failed to get timezone');
       }
 
-      const data = await response.json() as { timezone?: string };
+      const data = (await response.json()) as { timezone?: string };
       return data.timezone ?? 'UTC';
     } catch (error: unknown) {
       console.error('Timezone lookup error:', error);
@@ -90,9 +90,7 @@ class LocationService {
   async reverseGeocode(latitude: number, longitude: number): Promise<Location | null> {
     try {
       // Use Open-Meteo's reverse geocoding if available, or fall back to a default
-      const response = await fetch(
-        `${this.GEOCODING_API_URL}/search?name=&count=1`
-      );
+      const response = await fetch(`${this.GEOCODING_API_URL}/search?name=&count=1`);
 
       if (!response.ok) {
         throw new Error('Failed to reverse geocode');
@@ -141,10 +139,9 @@ class LocationService {
    */
   async getSavedLocations(): Promise<Location[]> {
     try {
-      const response = await api.get<ApiResponse<{ locations: Location[] }>>(
-        '/locations',
-        { timeout: this.TIMEOUT }
-      );
+      const response = await api.get<ApiResponse<{ locations: Location[] }>>('/locations', {
+        timeout: this.TIMEOUT,
+      });
       return response.data.data.locations;
     } catch (error: unknown) {
       console.error('Failed to get saved locations:', error);
@@ -157,14 +154,14 @@ class LocationService {
    */
   async saveLocation(location: Location): Promise<Location> {
     try {
-      const response = await api.post<ApiResponse<{ location: Location }>>(
-        '/locations',
-        location,
-        { timeout: this.TIMEOUT }
-      );
+      const response = await api.post<ApiResponse<{ location: Location }>>('/locations', location, {
+        timeout: this.TIMEOUT,
+      });
       return response.data.data.location;
     } catch (error: unknown) {
-      throw new Error(`Failed to save location: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to save location: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -177,7 +174,9 @@ class LocationService {
         timeout: this.TIMEOUT,
       });
     } catch (error: unknown) {
-      throw new Error(`Failed to delete location: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete location: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -206,7 +205,7 @@ class LocationService {
 
       // Remove if already exists
       const filtered = searches.filter(
-        (s) => s.name !== location.name || s.country !== location.country
+        (s) => s.name !== location.name || s.country !== location.country,
       );
 
       // Add to beginning

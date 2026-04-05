@@ -31,7 +31,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       const skipLink = screen.getByText('Skip to main content');
@@ -45,7 +45,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       const mainContent = document.getElementById('main-content');
@@ -59,7 +59,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       const skipLink = screen.getByText('Skip to main content');
@@ -74,7 +74,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       // Check that CSS includes focus-visible styles
@@ -97,7 +97,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       // Menu button should have aria-label
@@ -115,7 +115,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       const sidebar = document.querySelector('[aria-label="Main navigation"]');
@@ -128,7 +128,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       const mobileNav = document.querySelector('[aria-label="Mobile navigation"]');
@@ -156,13 +156,7 @@ describe('Keyboard Navigation Accessibility', () => {
 
     it('should close modal on Escape key', () => {
       const mockOnClose = vi.fn();
-      render(
-        <DailyWeatherModal
-          date="2026-02-20"
-          weather={mockWeather}
-          onClose={mockOnClose}
-        />
-      );
+      render(<DailyWeatherModal date="2026-02-20" weather={mockWeather} onClose={mockOnClose} />);
 
       fireEvent.keyDown(document, { key: 'Escape' });
       expect(mockOnClose).toHaveBeenCalled();
@@ -173,8 +167,10 @@ describe('Keyboard Navigation Accessibility', () => {
         <DailyWeatherModal
           date="2026-02-20"
           weather={mockWeather}
-          onClose={() => { /* intentional empty */ }}
-        />
+          onClose={() => {
+            /* intentional empty */
+          }}
+        />,
       );
 
       const modal = document.querySelector('[role="dialog"]');
@@ -188,8 +184,10 @@ describe('Keyboard Navigation Accessibility', () => {
         <DailyWeatherModal
           date="2026-02-20"
           weather={mockWeather}
-          onClose={() => { /* intentional empty */ }}
-        />
+          onClose={() => {
+            /* intentional empty */
+          }}
+        />,
       );
 
       const closeButton = screen.getByLabelText('Close modal');
@@ -204,12 +202,12 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       // Get all focusable elements
       const focusableElements = document.querySelectorAll(
-        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled])'
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled])',
       );
 
       // Verify there are focusable elements
@@ -228,7 +226,7 @@ describe('Keyboard Navigation Accessibility', () => {
           <AppLayout>
             <div>Test Content</div>
           </AppLayout>
-        </RouterWrapper>
+        </RouterWrapper>,
       );
 
       // When sidebar is closed (default), focus should not be trapped

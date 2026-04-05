@@ -18,8 +18,16 @@ import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
 import { ChartWheel, AppLayout } from '../components';
-import type { PlanetPosition as APIPlanetPosition, CalculatedChartData } from '../services/api.types';
-import type { ChartData, PlanetPosition as WheelPlanetPosition, HouseCusp as WheelHouseCusp, Aspect as WheelAspect } from '../components/ChartWheel';
+import type {
+  PlanetPosition as APIPlanetPosition,
+  CalculatedChartData,
+} from '../services/api.types';
+import type {
+  ChartData,
+  PlanetPosition as WheelPlanetPosition,
+  HouseCusp as WheelHouseCusp,
+  Aspect as WheelAspect,
+} from '../components/ChartWheel';
 
 type DetailTab = 'personality' | 'houses' | 'aspects' | 'report';
 
@@ -76,35 +84,41 @@ const ZODIAC_SYMBOLS: Record<string, string> = {
 // Convert API data to ChartWheel format
 function toWheelData(data: CalculatedChartData): ChartData {
   return {
-    planets: data.planets.map((p): WheelPlanetPosition => ({
-      planet: p.planet,
-      sign: p.sign,
-      degree: p.degree,
-      minute: p.minute,
-      second: 0,
-      house: p.house,
-      retrograde: p.retrograde,
-      latitude: p.latitude,
-      longitude: p.longitude,
-      speed: p.speed,
-    })),
-    houses: data.houses.map((h): WheelHouseCusp => ({
-      house: h.house,
-      sign: h.sign,
-      degree: h.longitude % 30,
-      minute: 0,
-      second: 0,
-    })),
-    aspects: data.aspects.map((a): WheelAspect => ({
-      planet1: a.planet1,
-      planet2: a.planet2,
-      type: a.type as WheelAspect['type'],
-      degree: a.degree,
-      minute: 0,
-      orb: a.orb,
-      applying: a.applying,
-      separating: !a.applying,
-    })),
+    planets: data.planets.map(
+      (p): WheelPlanetPosition => ({
+        planet: p.planet,
+        sign: p.sign,
+        degree: p.degree,
+        minute: p.minute,
+        second: 0,
+        house: p.house,
+        retrograde: p.retrograde,
+        latitude: p.latitude,
+        longitude: p.longitude,
+        speed: p.speed,
+      }),
+    ),
+    houses: data.houses.map(
+      (h): WheelHouseCusp => ({
+        house: h.house,
+        sign: h.sign,
+        degree: h.longitude % 30,
+        minute: 0,
+        second: 0,
+      }),
+    ),
+    aspects: data.aspects.map(
+      (a): WheelAspect => ({
+        planet1: a.planet1,
+        planet2: a.planet2,
+        type: a.type as WheelAspect['type'],
+        degree: a.degree,
+        minute: 0,
+        orb: a.orb,
+        applying: a.applying,
+        separating: !a.applying,
+      }),
+    ),
   };
 }
 
@@ -133,7 +147,9 @@ function toDisplayAspects(data: CalculatedChartData): DisplayAspect[] {
 }
 
 // Calculate elemental balance from planets
-function calculateElementBalance(planets: APIPlanetPosition[]): Record<string, { percentage: number; signs: string[] }> {
+function calculateElementBalance(
+  planets: APIPlanetPosition[],
+): Record<string, { percentage: number; signs: string[] }> {
   const elementSigns: Record<string, string[]> = {
     fire: ['Aries', 'Leo', 'Sagittarius'],
     earth: ['Taurus', 'Virgo', 'Capricorn'],
@@ -366,13 +382,13 @@ export const NatalChartDetailPage: React.FC = () => {
                             planet.name === 'Saturn' && 'bg-yellow-600/10 text-yellow-600',
                             planet.name === 'Uranus' && 'bg-cyan-500/10 text-cyan-400',
                             planet.name === 'Neptune' && 'bg-indigo-500/10 text-indigo-400',
-                            planet.name === 'Pluto' && 'bg-rose-500/10 text-rose-400'
+                            planet.name === 'Pluto' && 'bg-rose-500/10 text-rose-400',
                           )}
                         >
                           <span
                             className={clsx(
                               'material-symbols-outlined',
-                              planet.isRetrograde && 'relative'
+                              planet.isRetrograde && 'relative',
                             )}
                           >
                             {planet.symbol}
@@ -406,7 +422,7 @@ export const NatalChartDetailPage: React.FC = () => {
                         {['4', '5', '6'].includes(planet.house.toString().slice(-1)) && 'th'}
                         {['7', '8', '9'].includes(planet.house.toString().slice(-1)) && 'th'}
                         {!['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(
-                          planet.house.toString().slice(-1)
+                          planet.house.toString().slice(-1),
                         ) && 'th'}
                       </td>
                     </tr>
@@ -422,17 +438,11 @@ export const NatalChartDetailPage: React.FC = () => {
             <div className="px-8 py-6 flex flex-wrap justify-between items-start gap-4 z-20">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <a
-                    href="/dashboard"
-                    className="hover:text-primary transition-colors"
-                  >
+                  <a href="/dashboard" className="hover:text-primary transition-colors">
                     Dashboard
                   </a>
                   <span className="material-symbols-outlined text-[12px]">chevron_right</span>
-                  <a
-                    href="/charts"
-                    className="hover:text-primary transition-colors"
-                  >
+                  <a href="/charts" className="hover:text-primary transition-colors">
                     Charts
                   </a>
                   <span className="material-symbols-outlined text-[12px]">chevron_right</span>
@@ -477,7 +487,9 @@ export const NatalChartDetailPage: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { void handleShare(); }}
+                  onClick={() => {
+                    void handleShare();
+                  }}
                   className="w-10 h-10 rounded-full"
                 >
                   <span className="material-symbols-outlined text-[20px]">share</span>
@@ -553,7 +565,11 @@ export const NatalChartDetailPage: React.FC = () => {
               <div className="flex items-end gap-8 overflow-x-auto">
                 {(
                   [
-                    { id: 'personality' as DetailTab, label: 'Personality Analysis', icon: 'psychology' },
+                    {
+                      id: 'personality' as DetailTab,
+                      label: 'Personality Analysis',
+                      icon: 'psychology',
+                    },
                     { id: 'houses' as DetailTab, label: 'House Interpretations', icon: 'home' },
                     { id: 'aspects' as DetailTab, label: 'Aspects Detail', icon: 'hub' },
                     { id: 'report' as DetailTab, label: 'Download Report', icon: 'description' },
@@ -566,7 +582,7 @@ export const NatalChartDetailPage: React.FC = () => {
                       'pb-4 pt-4 border-b-2 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors',
                       activeTab === tab.id
                         ? 'border-primary text-white'
-                        : 'border-transparent text-slate-400 hover:text-white'
+                        : 'border-transparent text-slate-400 hover:text-white',
                     )}
                   >
                     <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
@@ -605,11 +621,15 @@ export const NatalChartDetailPage: React.FC = () => {
                               'w-8 h-8 rounded-full flex items-center justify-center',
                               item.name === 'Sun' && 'bg-orange-500/10 text-orange-400',
                               item.name === 'Moon' && 'bg-blue-500/10 text-blue-400',
-                              item.name === 'Rising' && 'bg-yellow-500/10 text-yellow-400'
+                              item.name === 'Rising' && 'bg-yellow-500/10 text-yellow-400',
                             )}
                           >
                             <span className="material-symbols-outlined text-[18px]">
-                              {item.name === 'Sun' ? 'sunny' : item.name === 'Moon' ? 'dark_mode' : 'arrow_upward'}
+                              {item.name === 'Sun'
+                                ? 'sunny'
+                                : item.name === 'Moon'
+                                  ? 'dark_mode'
+                                  : 'arrow_upward'}
                             </span>
                           </div>
                           <div>
@@ -617,7 +637,11 @@ export const NatalChartDetailPage: React.FC = () => {
                               {item.name} in {item.sign}
                             </p>
                             <p className="text-[10px] text-slate-400 uppercase tracking-wide">
-                              {item.name === 'Sun' ? 'Identity' : item.name === 'Moon' ? 'Emotions' : 'Persona'}
+                              {item.name === 'Sun'
+                                ? 'Identity'
+                                : item.name === 'Moon'
+                                  ? 'Emotions'
+                                  : 'Persona'}
                             </p>
                           </div>
                         </div>
@@ -642,47 +666,63 @@ export const NatalChartDetailPage: React.FC = () => {
                   </button>
                 </div>
                 <div className="bg-card-dark rounded-xl border border-white/5 overflow-hidden">
-                  {aspects.length > 0 ? aspects.map((aspect, index) => (
-                    <div
-                      key={index}
-                      className="p-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors cursor-pointer flex items-center justify-between group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex -space-x-1">
-                          <div className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-400 border border-card-dark flex items-center justify-center z-10">
-                            <span className="material-symbols-outlined text-[12px]">
-                              {aspect.planet1 === 'Sun' ? 'sunny' : aspect.planet1 === 'Moon' ? 'dark_mode' : 'bolt'}
-                            </span>
-                          </div>
-                          <div className="w-6 h-6 rounded-full bg-red-500/20 text-red-500 border border-card-dark flex items-center justify-center">
-                            <span className="material-symbols-outlined text-[12px]">
-                              {aspect.planet2 === 'Mars' ? 'local_fire_department' : aspect.planet2 === 'Jupiter' ? 'bolt' : 'public'}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-white group-hover:text-primary">
-                            {aspect.planet1} {aspect.type.charAt(0).toUpperCase() + aspect.type.slice(1)} {aspect.planet2}
-                          </span>
-                          <span className="text-[10px] text-slate-500">
-                            Orb: {aspect.orb}°{aspect.orbMinutes}&apos;
-                          </span>
-                        </div>
-                      </div>
+                  {aspects.length > 0 ? (
+                    aspects.map((aspect, index) => (
                       <div
-                        className={clsx(
-                          'w-6 h-6 rounded-full flex items-center justify-center',
-                          ASPECT_CONFIG[aspect.type].bgColor,
-                          ASPECT_CONFIG[aspect.type].color
-                        )}
-                        title={aspect.type}
+                        key={index}
+                        className="p-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors cursor-pointer flex items-center justify-between group"
                       >
-                        <span className="material-symbols-outlined text-[14px]">
-                          {aspect.type === 'trine' ? 'check_circle' : aspect.type === 'square' ? 'error' : 'stars'}
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <div className="flex -space-x-1">
+                            <div className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-400 border border-card-dark flex items-center justify-center z-10">
+                              <span className="material-symbols-outlined text-[12px]">
+                                {aspect.planet1 === 'Sun'
+                                  ? 'sunny'
+                                  : aspect.planet1 === 'Moon'
+                                    ? 'dark_mode'
+                                    : 'bolt'}
+                              </span>
+                            </div>
+                            <div className="w-6 h-6 rounded-full bg-red-500/20 text-red-500 border border-card-dark flex items-center justify-center">
+                              <span className="material-symbols-outlined text-[12px]">
+                                {aspect.planet2 === 'Mars'
+                                  ? 'local_fire_department'
+                                  : aspect.planet2 === 'Jupiter'
+                                    ? 'bolt'
+                                    : 'public'}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-white group-hover:text-primary">
+                              {aspect.planet1}{' '}
+                              {aspect.type.charAt(0).toUpperCase() + aspect.type.slice(1)}{' '}
+                              {aspect.planet2}
+                            </span>
+                            <span className="text-[10px] text-slate-500">
+                              Orb: {aspect.orb}°{aspect.orbMinutes}&apos;
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          className={clsx(
+                            'w-6 h-6 rounded-full flex items-center justify-center',
+                            ASPECT_CONFIG[aspect.type].bgColor,
+                            ASPECT_CONFIG[aspect.type].color,
+                          )}
+                          title={aspect.type}
+                        >
+                          <span className="material-symbols-outlined text-[14px]">
+                            {aspect.type === 'trine'
+                              ? 'check_circle'
+                              : aspect.type === 'square'
+                                ? 'error'
+                                : 'stars'}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )) : (
+                    ))
+                  ) : (
                     <div className="p-4 text-center text-slate-500 text-sm">
                       No aspects calculated yet
                     </div>
@@ -709,7 +749,7 @@ export const NatalChartDetailPage: React.FC = () => {
                             element === 'fire' && 'bg-orange-500',
                             element === 'earth' && 'bg-green-500',
                             element === 'air' && 'bg-yellow-400',
-                            element === 'water' && 'bg-blue-500'
+                            element === 'water' && 'bg-blue-500',
                           )}
                           style={{ width: `${data.percentage}%` }}
                         />

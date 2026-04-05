@@ -151,7 +151,7 @@ class PDFService {
    */
   async generateReport(
     options: PDFGenerationOptions,
-    data: ReportData
+    data: ReportData,
   ): Promise<PDFGenerationResult> {
     try {
       this.doc = new jsPDF({
@@ -328,7 +328,10 @@ class PDFService {
   /**
    * Add body text
    */
-  private addText(text: string, options?: { indent?: number; color?: [number, number, number] }): void {
+  private addText(
+    text: string,
+    options?: { indent?: number; color?: [number, number, number] },
+  ): void {
     const doc = this.getDoc();
 
     const indent = options?.indent ?? 0;
@@ -477,7 +480,13 @@ class PDFService {
 
     // Header
     doc.setFillColor(...COLORS.cosmicBlue);
-    doc.rect(startX, this.currentY - 4, colWidths.reduce((a, b) => a + b, 0), rowHeight, 'F');
+    doc.rect(
+      startX,
+      this.currentY - 4,
+      colWidths.reduce((a, b) => a + b, 0),
+      rowHeight,
+      'F',
+    );
 
     doc.setFontSize(FONT_SIZES.small);
     doc.setFont('helvetica', 'bold');
@@ -503,7 +512,13 @@ class PDFService {
       // Alternate row background
       if (i % 2 === 0) {
         doc.setFillColor(240, 245, 255);
-        doc.rect(startX, this.currentY - 4, colWidths.reduce((a, b) => a + b, 0), rowHeight, 'F');
+        doc.rect(
+          startX,
+          this.currentY - 4,
+          colWidths.reduce((a, b) => a + b, 0),
+          rowHeight,
+          'F',
+        );
       }
 
       doc.setTextColor(...COLORS.textDark);
@@ -541,7 +556,7 @@ class PDFService {
     houses.forEach((house) => {
       this.addKeyValue(
         `House ${house.number}`,
-        `${house.sign} ${house.cuspDegree}\u00B0${house.cuspMinute}'`
+        `${house.sign} ${house.cuspDegree}\u00B0${house.cuspMinute}'`,
       );
     });
   }
@@ -586,20 +601,14 @@ class PDFService {
     doc.text(`Generated: ${generatedDate}`, MARGIN_LEFT, footerY);
 
     // Center: Copyright
-    doc.text(
-      '\u00A9 AstroVerse | www.astroverse.app',
-      PAGE_WIDTH / 2,
-      footerY,
-      { align: 'center' }
-    );
+    doc.text('\u00A9 AstroVerse | www.astroverse.app', PAGE_WIDTH / 2, footerY, {
+      align: 'center',
+    });
 
     // Right: Page number
-    doc.text(
-      `Page ${currentPage} of ${totalPages}`,
-      PAGE_WIDTH - MARGIN_RIGHT,
-      footerY,
-      { align: 'right' }
-    );
+    doc.text(`Page ${currentPage} of ${totalPages}`, PAGE_WIDTH - MARGIN_RIGHT, footerY, {
+      align: 'right',
+    });
   }
 
   // ============================================================================
@@ -618,14 +627,26 @@ class PDFService {
     this.addKeyValue('Date', chart.chart.birthData.birthDate);
     this.addKeyValue('Time', chart.chart.birthData.birthTime);
     this.addKeyValue('Location', chart.chart.birthData.birthPlace);
-    this.addKeyValue('Coordinates', `${chart.chart.birthData.latitude.toFixed(4)}\u00B0, ${chart.chart.birthData.longitude.toFixed(4)}\u00B0`);
+    this.addKeyValue(
+      'Coordinates',
+      `${chart.chart.birthData.latitude.toFixed(4)}\u00B0, ${chart.chart.birthData.longitude.toFixed(4)}\u00B0`,
+    );
 
     // Chart angles
     if (chart.angles) {
       this.addHeading('Chart Angles');
-      this.addKeyValue('Ascendant', `${chart.angles.ascendant.sign} ${chart.angles.ascendant.degree}\u00B0`);
-      this.addKeyValue('Midheaven', `${chart.angles.midheaven.sign} ${chart.angles.midheaven.degree}\u00B0`);
-      this.addKeyValue('Descendant', `${chart.angles.descendant.sign} ${chart.angles.descendant.degree}\u00B0`);
+      this.addKeyValue(
+        'Ascendant',
+        `${chart.angles.ascendant.sign} ${chart.angles.ascendant.degree}\u00B0`,
+      );
+      this.addKeyValue(
+        'Midheaven',
+        `${chart.angles.midheaven.sign} ${chart.angles.midheaven.degree}\u00B0`,
+      );
+      this.addKeyValue(
+        'Descendant',
+        `${chart.angles.descendant.sign} ${chart.angles.descendant.degree}\u00B0`,
+      );
       this.addKeyValue('IC', `${chart.angles.ic.sign} ${chart.angles.ic.degree}\u00B0`);
     }
 
@@ -670,7 +691,9 @@ class PDFService {
     if (chart.patterns && chart.patterns.length > 0) {
       this.addHeading('Aspect Patterns');
       chart.patterns.forEach((pattern) => {
-        this.addBullet(`${pattern.type.replace('-', ' ').toUpperCase()} - Strength: ${pattern.strength}%`);
+        this.addBullet(
+          `${pattern.type.replace('-', ' ').toUpperCase()} - Strength: ${pattern.strength}%`,
+        );
       });
     }
   }
@@ -690,7 +713,10 @@ class PDFService {
       this.addHeading('Major Transits');
       transits.majorTransits.forEach((transit) => {
         this.addBullet(`${transit.planet} ${transit.type} - ${transit.description}`);
-        this.addText(`Peak: ${transit.peakDate} | Significance: ${transit.significance}`, { indent: 10, color: COLORS.textLight });
+        this.addText(`Peak: ${transit.peakDate} | Significance: ${transit.significance}`, {
+          indent: 10,
+          color: COLORS.textLight,
+        });
       });
     }
 
@@ -753,9 +779,13 @@ class PDFService {
     // Key aspects
     if (synastry.synastryAspects && synastry.synastryAspects.length > 0) {
       this.addHeading('Key Synastry Aspects');
-      const majorAspects = synastry.synastryAspects.filter(a => a.significance === 'major').slice(0, 10);
+      const majorAspects = synastry.synastryAspects
+        .filter((a) => a.significance === 'major')
+        .slice(0, 10);
       majorAspects.forEach((aspect) => {
-        this.addBullet(`${aspect.planet1.planet} ${aspect.type} ${aspect.planet2.planet} - ${aspect.interpretation}`);
+        this.addBullet(
+          `${aspect.planet1.planet} ${aspect.type} ${aspect.planet2.planet} - ${aspect.interpretation}`,
+        );
       });
     }
 

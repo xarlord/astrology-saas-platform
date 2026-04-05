@@ -130,8 +130,8 @@ describe('authStore', () => {
         refreshToken: 'refresh-token-123',
       };
 
-      vi.mocked(authService.login).mockImplementationOnce(() =>
-        new Promise((resolve) => setTimeout(() => resolve(mockResponse), 100))
+      vi.mocked(authService.login).mockImplementationOnce(
+        () => new Promise((resolve) => setTimeout(() => resolve(mockResponse), 100)),
       );
 
       const loginPromise = act(async () => {
@@ -428,7 +428,9 @@ describe('authStore', () => {
     });
 
     it('should handle preferences update error', async () => {
-      vi.mocked(authService.updatePreferences).mockRejectedValueOnce(new Error('Preferences error'));
+      vi.mocked(authService.updatePreferences).mockRejectedValueOnce(
+        new Error('Preferences error'),
+      );
 
       await act(async () => {
         try {

@@ -143,7 +143,9 @@ export const useReportStore = create<ReportState>()(
             throw new Error(`Report generation failed: ${response.statusText}`);
           }
 
-          const data = await response.json() as { data: { downloadUrl?: string; expiresAt?: string } };
+          const data = (await response.json()) as {
+            data: { downloadUrl?: string; expiresAt?: string };
+          };
 
           // Update with completed report
           const completedReport: Report = {
@@ -194,16 +196,17 @@ export const useReportStore = create<ReportState>()(
     }),
     {
       name: 'ReportStore',
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks for optimized re-renders
 export const useReports = () => useReportStore((state) => Object.values(state.reports));
-export const useActiveReport = () => useReportStore((state) => {
-  if (!state.activeReportId) return null;
-  return state.reports[state.activeReportId] || null;
-});
+export const useActiveReport = () =>
+  useReportStore((state) => {
+    if (!state.activeReportId) return null;
+    return state.reports[state.activeReportId] || null;
+  });
 export const useIsGeneratingReport = () => useReportStore((state) => state.isGenerating);
 
 export default useReportStore;

@@ -10,7 +10,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, ArrowRight, Sparkles, Sun, Moon, Star, TrendingUp, Bell, Activity } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Sparkles,
+  Sun,
+  Moon,
+  Star,
+  TrendingUp,
+  Bell,
+  Activity,
+} from 'lucide-react';
 
 // Hooks
 import { useAuth } from '../hooks/useAuth';
@@ -47,7 +57,8 @@ interface DailyThemeData {
 const MOCK_DAILY_THEME: DailyThemeData = {
   title: 'Embrace Change',
   transit: 'Uranus trine Sun',
-  description: 'invites innovation and breakthroughs. A powerful day to lean into the unexpected and let curiosity lead.',
+  description:
+    'invites innovation and breakthroughs. A powerful day to lean into the unexpected and let curiosity lead.',
 };
 
 type TransitBadge = 'favorable' | 'challenging' | 'major';
@@ -64,7 +75,8 @@ const MOCK_TRANSITS: TransitCardData[] = [
   {
     planet: 'Venus',
     sign: 'Pisces',
-    description: 'Heightened romance and creativity. Sensitivity is amplified across relationships.',
+    description:
+      'Heightened romance and creativity. Sensitivity is amplified across relationships.',
     badge: 'favorable',
     emoji: 'star',
   },
@@ -209,15 +221,11 @@ const DailyBriefingPage: React.FC = () => {
           <div className="flex items-start gap-4">
             <Moon className="w-10 h-10 text-yellow-100" aria-hidden="true" />
             <div className="flex-1 min-w-0">
-              <h2 className="text-white font-bold text-lg leading-tight">
-                {moonPhase.phase}
-              </h2>
+              <h2 className="text-white font-bold text-lg leading-tight">{moonPhase.phase}</h2>
               <p className="text-slate-400 text-sm mt-0.5">
                 {moonPhase.illumination}% illumination
               </p>
-              <p className="text-slate-300 text-sm mt-0.5">
-                Moon in {moonPhase.sign}
-              </p>
+              <p className="text-slate-300 text-sm mt-0.5">Moon in {moonPhase.sign}</p>
               <div className="flex flex-wrap gap-2 mt-3">
                 {moonPhase.keywords.map((kw) => (
                   <span
@@ -253,12 +261,7 @@ const DailyBriefingPage: React.FC = () => {
         </motion.section>
 
         {/* ---- Top Transits Section ---- */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          custom={3}
-          variants={cardVariants}
-        >
+        <motion.div initial="hidden" animate="visible" custom={3} variants={cardVariants}>
           <h2 className="text-white font-bold text-base mb-3 flex items-center gap-2">
             <TrendingUp className="w-[18px] h-[18px] text-primary" />
             Top Transits Today
@@ -280,9 +283,7 @@ const DailyBriefingPage: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-slate-300" />
-                    <span className="text-white font-bold text-sm">
-                      {transit.planet}
-                    </span>
+                    <span className="text-white font-bold text-sm">{transit.planet}</span>
                     <ArrowRight className="w-5 h-5" />
                     <span className="text-white font-bold text-sm">{transit.sign}</span>
                   </div>
@@ -325,10 +326,7 @@ const DailyBriefingPage: React.FC = () => {
                   { key: 'fullMoon' as const, label: 'Full moon' },
                 ] as const
               ).map((item) => (
-                <div
-                  key={item.key}
-                  className="flex items-center justify-between gap-3"
-                >
+                <div key={item.key} className="flex items-center justify-between gap-3">
                   <span className="text-slate-300 text-sm">{item.label}</span>
                   <button
                     type="button"
@@ -404,4 +402,3 @@ const DailyBriefingPage: React.FC = () => {
 };
 
 export default DailyBriefingPage;
-

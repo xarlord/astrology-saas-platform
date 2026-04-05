@@ -27,11 +27,11 @@ export interface MoonPhaseCardProps {
 }
 
 const MOON_PHASE_CONFIG: Record<MoonPhaseType, { icon: string; label: string; color: string }> = {
-  'new': { icon: '🌑', label: 'New Moon', color: '#1e293b' },
+  new: { icon: '🌑', label: 'New Moon', color: '#1e293b' },
   'waxing-crescent': { icon: '🌒', label: 'Waxing Crescent', color: '#3b82f6' },
   'first-quarter': { icon: '🌓', label: 'First Quarter', color: '#60a5fa' },
   'waxing-gibbous': { icon: '🌔', label: 'Waxing Gibbous', color: '#93c5fd' },
-  'full': { icon: '🌕', label: 'Full Moon', color: '#fbbf24' },
+  full: { icon: '🌕', label: 'Full Moon', color: '#fbbf24' },
   'waning-gibbous': { icon: '🌖', label: 'Waning Gibbous', color: '#93c5fd' },
   'last-quarter': { icon: '🌗', label: 'Last Quarter', color: '#60a5fa' },
   'waning-crescent': { icon: '🌘', label: 'Waning Crescent', color: '#3b82f6' },
@@ -84,10 +84,7 @@ const MoonPhaseCard: React.FC<MoonPhaseCardProps> = ({
         animate={showAnimation ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div
-          className="text-6xl md:text-7xl filter drop-shadow-lg"
-          style={{ color: config.color }}
-        >
+        <div className="text-6xl md:text-7xl filter drop-shadow-lg" style={{ color: config.color }}>
           {config.icon}
         </div>
 
@@ -119,9 +116,7 @@ const MoonPhaseCard: React.FC<MoonPhaseCardProps> = ({
           <span className="text-sm font-medium" style={{ color: elementColor }}>
             {sign}
           </span>
-          {degree !== undefined && (
-            <span className="text-xs text-slate-400">{degree}°</span>
-          )}
+          {degree !== undefined && <span className="text-xs text-slate-400">{degree}°</span>}
         </div>
       </div>
     </motion.div>

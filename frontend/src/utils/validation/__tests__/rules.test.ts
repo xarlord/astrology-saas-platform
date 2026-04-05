@@ -99,7 +99,10 @@ describe('validation rules', () => {
     });
 
     it('should interpolate multiple parameters', () => {
-      const message = getValidationMessage(ValidationMessageKeys.DATE_RANGE, { min: '1/1/1900', max: 'today' });
+      const message = getValidationMessage(ValidationMessageKeys.DATE_RANGE, {
+        min: '1/1/1900',
+        max: 'today',
+      });
       expect(message).toContain('1/1/1900');
       expect(message).toContain('today');
     });
@@ -489,7 +492,7 @@ describe('validation rules', () => {
     });
 
     it('should pass for valid longitude', () => {
-      expect(validator(-74.0060)).toBeUndefined();
+      expect(validator(-74.006)).toBeUndefined();
       expect(validator(151.2093)).toBeUndefined();
       expect(validator(0)).toBeUndefined();
     });
@@ -627,25 +630,19 @@ describe('validation rules', () => {
 
   describe('custom', () => {
     it('should pass when validation function returns true', () => {
-      const validator = custom(
-        (value: number) => value > 0,
-        'Value must be positive'
-      );
+      const validator = custom((value: number) => value > 0, 'Value must be positive');
       expect(validator(5)).toBeUndefined();
     });
 
     it('should fail when validation function returns false', () => {
-      const validator = custom(
-        (value: number) => value > 0,
-        'Value must be positive'
-      );
+      const validator = custom((value: number) => value > 0, 'Value must be positive');
       expect(validator(-5)).toBe('Value must be positive');
     });
 
     it('should receive form data', () => {
       const validator = custom(
         (value: string, formData) => formData?.other === 'test',
-        'Other field must be test'
+        'Other field must be test',
       );
       expect(validator('value', { other: 'test' })).toBeUndefined();
       expect(validator('value', { other: 'other' })).toBe('Other field must be test');
@@ -654,24 +651,18 @@ describe('validation rules', () => {
 
   describe('customAsync', () => {
     it('should pass when async validation returns true', async () => {
-      const validator = customAsync(
-        async (value: string) => {
-          await new Promise(resolve => setTimeout(resolve, 10));
-          return value.length > 3;
-        },
-        'Value too short'
-      );
+      const validator = customAsync(async (value: string) => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        return value.length > 3;
+      }, 'Value too short');
       expect(await validator('test')).toBeUndefined();
     });
 
     it('should fail when async validation returns false', async () => {
-      const validator = customAsync(
-        async (value: string) => {
-          await new Promise(resolve => setTimeout(resolve, 10));
-          return value.length > 3;
-        },
-        'Value too short'
-      );
+      const validator = customAsync(async (value: string) => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        return value.length > 3;
+      }, 'Value too short');
       expect(await validator('ab')).toBe('Value too short');
     });
   });

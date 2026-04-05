@@ -5,11 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import userService from '../../services/user.service';
-import {
-  mockUser,
-  createMockResponse,
-  createMockError,
-} from './utils';
+import { mockUser, createMockResponse, createMockError } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -65,7 +61,7 @@ describe('userService', () => {
 
       expect(api.get).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ timeout: 15000 })
+        expect.objectContaining({ timeout: 15000 }),
       );
     });
 
@@ -127,7 +123,9 @@ describe('userService', () => {
       const mockError = createMockError('Update failed', 500);
       (api.put as any).mockRejectedValue(mockError);
 
-      await expect(userService.updateProfile({ name: 'New' })).rejects.toThrow('Failed to update profile');
+      await expect(userService.updateProfile({ name: 'New' })).rejects.toThrow(
+        'Failed to update profile',
+      );
     });
 
     it('should handle partial updates', async () => {
@@ -156,7 +154,7 @@ describe('userService', () => {
       expect(api.put).toHaveBeenCalledWith(
         '/auth/me/preferences',
         { preferences: { theme: 'light' } },
-        { timeout: 15000 }
+        { timeout: 15000 },
       );
       expect(result.preferences.theme).toBe('light');
     });
@@ -194,9 +192,9 @@ describe('userService', () => {
       const mockError = createMockError('Preferences update failed', 400);
       (api.put as any).mockRejectedValue(mockError);
 
-      await expect(
-        userService.updatePreferences({ theme: 'dark' })
-      ).rejects.toThrow('Failed to update preferences');
+      await expect(userService.updatePreferences({ theme: 'dark' })).rejects.toThrow(
+        'Failed to update preferences',
+      );
     });
   });
 
@@ -215,7 +213,7 @@ describe('userService', () => {
           currentPassword: 'OldPassword123!',
           newPassword: 'NewPassword456!',
         },
-        { timeout: 15000 }
+        { timeout: 15000 },
       );
     });
 
@@ -227,7 +225,7 @@ describe('userService', () => {
         userService.changePassword({
           currentPassword: 'wrong',
           newPassword: 'newpassword',
-        })
+        }),
       ).rejects.toThrow('Failed to change password');
     });
   });
@@ -267,7 +265,7 @@ describe('userService', () => {
         expect.objectContaining({
           timeout: 30000,
           headers: { 'Content-Type': 'multipart/form-data' },
-        })
+        }),
       );
       expect(result.avatar_url).toBe('https://example.com/avatars/avatar-123.jpg');
     });
@@ -282,7 +280,7 @@ describe('userService', () => {
       expect(api.post).toHaveBeenCalledWith(
         expect.any(String),
         expect.any(FormData),
-        expect.objectContaining({ timeout: 30000 })
+        expect.objectContaining({ timeout: 30000 }),
       );
     });
 
@@ -353,7 +351,9 @@ describe('userService', () => {
       const mockError = createMockError('Fetch failed', 500);
       (api.get as any).mockRejectedValue(mockError);
 
-      await expect(userService.getSubscriptionStatus()).rejects.toThrow('Failed to fetch subscription');
+      await expect(userService.getSubscriptionStatus()).rejects.toThrow(
+        'Failed to fetch subscription',
+      );
     });
   });
 
@@ -363,18 +363,16 @@ describe('userService', () => {
 
       await userService.cancelSubscription();
 
-      expect(api.post).toHaveBeenCalledWith(
-        '/auth/me/subscription/cancel',
-        {},
-        { timeout: 15000 }
-      );
+      expect(api.post).toHaveBeenCalledWith('/auth/me/subscription/cancel', {}, { timeout: 15000 });
     });
 
     it('should throw error on cancellation failure', async () => {
       const mockError = createMockError('Cancellation failed', 400);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(userService.cancelSubscription()).rejects.toThrow('Failed to cancel subscription');
+      await expect(userService.cancelSubscription()).rejects.toThrow(
+        'Failed to cancel subscription',
+      );
     });
   });
 
@@ -387,7 +385,7 @@ describe('userService', () => {
       expect(api.post).toHaveBeenCalledWith(
         '/auth/me/subscription/reactivate',
         {},
-        { timeout: 15000 }
+        { timeout: 15000 },
       );
     });
 
@@ -395,7 +393,9 @@ describe('userService', () => {
       const mockError = createMockError('Reactivation failed', 400);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(userService.reactivateSubscription()).rejects.toThrow('Failed to reactivate subscription');
+      await expect(userService.reactivateSubscription()).rejects.toThrow(
+        'Failed to reactivate subscription',
+      );
     });
   });
 });

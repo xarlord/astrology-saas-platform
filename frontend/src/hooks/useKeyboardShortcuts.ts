@@ -23,13 +23,9 @@ export function useKeyboardShortcuts(
     enabled?: boolean;
     preventDefault?: boolean;
     stopPropagation?: boolean;
-  } = {}
+  } = {},
 ) {
-  const {
-    enabled = true,
-    preventDefault = true,
-    stopPropagation = false,
-  } = options;
+  const { enabled = true, preventDefault = true, stopPropagation = false } = options;
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -37,8 +33,7 @@ export function useKeyboardShortcuts(
 
       for (const shortcut of shortcuts) {
         const keyMatch =
-          event.key.toLowerCase() === shortcut.key.toLowerCase() ||
-          event.code === shortcut.key;
+          event.key.toLowerCase() === shortcut.key.toLowerCase() || event.code === shortcut.key;
 
         const ctrlMatch = shortcut.ctrlKey === undefined || event.ctrlKey === shortcut.ctrlKey;
         const shiftMatch = shortcut.shiftKey === undefined || event.shiftKey === shortcut.shiftKey;
@@ -59,7 +54,7 @@ export function useKeyboardShortcuts(
         }
       }
     },
-    [shortcuts, enabled, preventDefault, stopPropagation]
+    [shortcuts, enabled, preventDefault, stopPropagation],
   );
 
   useEffect(() => {
@@ -89,16 +84,9 @@ export function useKeyboardShortcut(
     metaKey?: boolean;
     enabled?: boolean;
     preventDefault?: boolean;
-  } = {}
+  } = {},
 ) {
-  const {
-    ctrlKey,
-    shiftKey,
-    altKey,
-    metaKey,
-    enabled = true,
-    preventDefault = true,
-  } = options;
+  const { ctrlKey, shiftKey, altKey, metaKey, enabled = true, preventDefault = true } = options;
 
   useKeyboardShortcuts(
     [
@@ -111,7 +99,7 @@ export function useKeyboardShortcut(
         handler,
       },
     ],
-    { enabled, preventDefault }
+    { enabled, preventDefault },
   );
 }
 

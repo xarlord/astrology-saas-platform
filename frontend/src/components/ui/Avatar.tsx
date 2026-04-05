@@ -108,7 +108,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     sizeStyles[size],
     shape === 'circle' ? 'rounded-full' : 'rounded-lg',
     onClick && 'cursor-pointer',
-    className
+    className,
   );
 
   const avatarContent = (
@@ -118,7 +118,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           className={clsx(
             'w-full h-full flex items-center justify-center font-medium text-white',
             shape === 'circle' ? 'rounded-full' : 'rounded-lg',
-            name ? getColorFromString(name) : 'bg-gray-400'
+            name ? getColorFromString(name) : 'bg-gray-400',
           )}
           aria-hidden="true"
         >
@@ -131,7 +131,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           onError={handleImageError}
           className={clsx(
             'w-full h-full object-cover',
-            shape === 'circle' ? 'rounded-full' : 'rounded-lg'
+            shape === 'circle' ? 'rounded-full' : 'rounded-lg',
           )}
         />
       )}
@@ -142,7 +142,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           className={clsx(
             'absolute bottom-0 right-0 block rounded-full ring-white dark:ring-gray-900',
             statusStyles[status],
-            statusSizeStyles[size]
+            statusSizeStyles[size],
           )}
           aria-label={`Status: ${status}`}
         />
@@ -205,7 +205,10 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       {visibleChildren.map((child, index) => (
         <div
           key={index}
-          className={clsx(index > 0 && overlapStyles[size], 'ring-2 ring-white dark:ring-gray-900 rounded-full')}
+          className={clsx(
+            index > 0 && overlapStyles[size],
+            'ring-2 ring-white dark:ring-gray-900 rounded-full',
+          )}
         >
           {React.isValidElement(child)
             ? React.cloneElement(child as React.ReactElement<{ size?: AvatarSize }>, { size })
@@ -220,7 +223,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             'ring-2 ring-white dark:ring-gray-900 rounded-full',
             'flex items-center justify-center bg-gray-200 dark:bg-gray-700',
             sizeStyles[size],
-            'rounded-full text-gray-600 dark:text-gray-300 font-medium'
+            'rounded-full text-gray-600 dark:text-gray-300 font-medium',
           )}
         >
           +{remainingCount}

@@ -10,17 +10,22 @@ export default function HomePage() {
       {/* Hero Section */}
       <header className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-5xl font-display font-bold mb-6">
-            Discover Your Cosmic Blueprint
-          </h1>
+          <h1 className="text-5xl font-display font-bold mb-6">Discover Your Cosmic Blueprint</h1>
           <p className="text-xl mb-8 text-primary-100">
-            Generate accurate natal charts, explore personality insights, and receive personalized forecasts
+            Generate accurate natal charts, explore personality insights, and receive personalized
+            forecasts
           </p>
           <div className="flex gap-4 justify-center">
-            <Link to="/register" className="btn-primary bg-white text-primary-600 hover:bg-primary-50">
+            <Link
+              to="/register"
+              className="btn-primary bg-white text-primary-600 hover:bg-primary-50"
+            >
               Get Started Free
             </Link>
-            <Link to="/login" className="btn-primary bg-transparent border-2 border-white hover:bg-white/10">
+            <Link
+              to="/login"
+              className="btn-primary bg-transparent border-2 border-white hover:bg-white/10"
+            >
               Sign In
             </Link>
           </div>

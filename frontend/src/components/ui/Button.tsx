@@ -25,8 +25,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: 'bg-indigo-600 hover:bg-indigo-700 text-white border-transparent focus:ring-indigo-500',
-  secondary: 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-indigo-500',
-  ghost: 'bg-transparent text-gray-700 dark:text-gray-200 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-indigo-500',
+  secondary:
+    'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-indigo-500',
+  ghost:
+    'bg-transparent text-gray-700 dark:text-gray-200 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-indigo-500',
   danger: 'bg-red-600 hover:bg-red-700 text-white border-transparent focus:ring-red-500',
 };
 
@@ -67,7 +69,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       onClick,
       ...props
     },
-    ref
+    ref,
   ) => {
     const isDisabled = isLoading || disabled;
 
@@ -93,7 +95,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           variantStyles[variant],
           sizeStyles[size],
           fullWidth && 'w-full',
-          className
+          className,
         )}
         aria-disabled={isDisabled}
         aria-busy={isLoading}
@@ -104,7 +106,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             className={clsx(
               'animate-spin rounded-full border-t-transparent',
               loadingSpinnerSize[size],
-              'mr-2'
+              'mr-2',
             )}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -142,7 +144,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

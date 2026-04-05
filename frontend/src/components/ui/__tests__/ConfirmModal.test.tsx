@@ -242,7 +242,7 @@ describe('ConfirmModal', () => {
           {...mockProps}
           showAdditionalOption
           additionalOptionLabel="Also delete transit history"
-        />
+        />,
       );
       expect(screen.getByText('Also delete transit history')).toBeInTheDocument();
     });
@@ -255,7 +255,7 @@ describe('ConfirmModal', () => {
           {...mockProps}
           showAdditionalOption
           onAdditionalOptionChange={onAdditionalOptionChange}
-        />
+        />,
       );
 
       const checkbox = screen.getByRole('checkbox');
@@ -265,13 +265,7 @@ describe('ConfirmModal', () => {
     });
 
     it('should reflect additionalOptionChecked state', () => {
-      render(
-        <ConfirmModal
-          {...mockProps}
-          showAdditionalOption
-          additionalOptionChecked
-        />
-      );
+      render(<ConfirmModal {...mockProps} showAdditionalOption additionalOptionChecked />);
 
       const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
       expect(checkbox.checked).toBe(true);

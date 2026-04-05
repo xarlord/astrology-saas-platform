@@ -65,8 +65,8 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
                 Enable Notifications
               </h3>
               <p className="m-0 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Get notified about your astrological forecasts, lunar returns, and important
-                transit events.
+                Get notified about your astrological forecasts, lunar returns, and important transit
+                events.
               </p>
             </div>
 

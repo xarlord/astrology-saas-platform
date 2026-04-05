@@ -22,21 +22,21 @@ interface PersonalityAnalysisResponse {
     moonSign: PlanetInSignInterpretation | null;
     ascendantSign?: PlanetInSignInterpretation;
   };
-  planetsInSigns: Array<{
+  planetsInSigns: {
     planet: string;
     sign: string;
     house: number;
     interpretation: PlanetInSignInterpretation;
-  }>;
-  houses: Array<{
+  }[];
+  houses: {
     house: number;
     signOnCusp: string;
     planetsInHouse: string[];
     themes: string[];
     interpretation: string;
     advice: string[];
-  }>;
-  aspects: Array<{
+  }[];
+  aspects: {
     planet1: string;
     planet2: string;
     aspect: string;
@@ -46,13 +46,13 @@ interface PersonalityAnalysisResponse {
     interpretation: string;
     expression: string;
     advice: string[];
-  }>;
-  patterns: Array<{
+  }[];
+  patterns: {
     type: string;
     description: string;
     planets: string[];
     intensity: number;
-  }>;
+  }[];
 }
 
 interface AspectAnalysis {
@@ -65,7 +65,7 @@ interface AspectAnalysis {
 }
 
 interface HousesAnalysis {
-  houses: Array<{ cusp: number }>;
+  houses: { cusp: number }[];
   planetsInHouses: Record<string, number>;
   houseRulers: Record<string, unknown>;
   emptyHouses: number[];
@@ -84,8 +84,12 @@ export const analysisService = {
   /**
    * Get personality analysis
    */
-  async getPersonalityAnalysis(chartId: string): Promise<{ analysis: PersonalityAnalysisResponse }> {
-    const { data } = await api.get<{ data: { analysis: PersonalityAnalysisResponse } }>(`/analysis/${chartId}`);
+  async getPersonalityAnalysis(
+    chartId: string,
+  ): Promise<{ analysis: PersonalityAnalysisResponse }> {
+    const { data } = await api.get<{ data: { analysis: PersonalityAnalysisResponse } }>(
+      `/analysis/${chartId}`,
+    );
     return data.data;
   },
 
@@ -93,7 +97,9 @@ export const analysisService = {
    * Get aspect analysis
    */
   async getAspectAnalysis(chartId: string): Promise<{ aspectAnalysis: AspectAnalysis }> {
-    const { data } = await api.get<{ data: { aspectAnalysis: AspectAnalysis } }>(`/analysis/${chartId}/aspects`);
+    const { data } = await api.get<{ data: { aspectAnalysis: AspectAnalysis } }>(
+      `/analysis/${chartId}/aspects`,
+    );
     return data.data;
   },
 
@@ -101,7 +107,9 @@ export const analysisService = {
    * Get aspect patterns
    */
   async getAspectPatterns(chartId: string): Promise<{ patterns: ChartPattern[] }> {
-    const { data } = await api.get<{ data: { patterns: ChartPattern[] } }>(`/analysis/${chartId}/patterns`);
+    const { data } = await api.get<{ data: { patterns: ChartPattern[] } }>(
+      `/analysis/${chartId}/patterns`,
+    );
     return data.data;
   },
 
@@ -109,7 +117,9 @@ export const analysisService = {
    * Get planets in signs
    */
   async getPlanetsInSigns(chartId: string): Promise<{ planetsInSigns: unknown[] }> {
-    const { data } = await api.get<{ data: { planetsInSigns: unknown[] } }>(`/analysis/${chartId}/planets`);
+    const { data } = await api.get<{ data: { planetsInSigns: unknown[] } }>(
+      `/analysis/${chartId}/planets`,
+    );
     return data.data;
   },
 
@@ -117,7 +127,9 @@ export const analysisService = {
    * Get houses analysis
    */
   async getHousesAnalysis(chartId: string): Promise<{ housesAnalysis: HousesAnalysis }> {
-    const { data } = await api.get<{ data: { housesAnalysis: HousesAnalysis } }>(`/analysis/${chartId}/houses`);
+    const { data } = await api.get<{ data: { housesAnalysis: HousesAnalysis } }>(
+      `/analysis/${chartId}/houses`,
+    );
     return data.data;
   },
 };

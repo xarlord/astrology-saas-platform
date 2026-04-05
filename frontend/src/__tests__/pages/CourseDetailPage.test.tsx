@@ -25,11 +25,7 @@ vi.mock('framer-motion', () => ({
 vi.mock('../../components/media/VideoPlayer', () => ({
   __esModule: true,
   default: ({ src, title, onProgress, onComplete }: any) => (
-    <div
-      data-testid="video-player"
-      data-src={src}
-      data-title={title}
-    >
+    <div data-testid="video-player" data-src={src} data-title={title}>
       <button
         data-testid="video-complete-btn"
         onClick={() => {
@@ -47,7 +43,16 @@ vi.mock('../../components/media/VideoPlayer', () => ({
 // Mock Button component
 vi.mock('../../components/ui/Button', () => ({
   __esModule: true,
-  Button: ({ children, onClick, variant, disabled, leftIcon, rightIcon, fullWidth, ...props }: any) => (
+  Button: ({
+    children,
+    onClick,
+    variant,
+    disabled,
+    leftIcon,
+    rightIcon,
+    fullWidth,
+    ...props
+  }: any) => (
     <button
       onClick={onClick}
       disabled={disabled}
@@ -87,19 +92,22 @@ const createWrapper = (initialRoute = '/learning/courses/master-houses') => {
           null,
           createElement(Route, {
             path: '/learning/courses/:id',
-            element: children
+            element: children,
           }),
           createElement(Route, {
             path: '*',
-            element: children
-          })
-        )
-      )
+            element: children,
+          }),
+        ),
+      ),
     );
 };
 
 // Helper to render with providers and route params
-const renderWithProviders = (ui: React.ReactElement, initialRoute = '/learning/courses/master-houses') => {
+const renderWithProviders = (
+  ui: React.ReactElement,
+  initialRoute = '/learning/courses/master-houses',
+) => {
   return render(ui, { wrapper: createWrapper(initialRoute) });
 };
 
@@ -111,15 +119,16 @@ describe('CourseDetailPage', () => {
   describe('Page Rendering', () => {
     it('should render without crashing for valid course', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      expect(screen.getByRole('heading', { name: /master the houses/i })).toBeInTheDocument();
+      // The page renders the first lesson title as h2
+      expect(screen.getByRole('heading', { name: /what are the houses\?/i })).toBeInTheDocument();
     });
 
     it('should have correct document structure', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Header with back button
-      expect(screen.getByRole('banner')).toBeInTheDocument();
-      // Main content area - check for lesson description instead
-      expect(screen.getByText(/learn the fundamental concept of astrological houses/i)).toBeInTheDocument();
+      // Check for lesson description text
+      expect(
+        screen.getByText(/learn the fundamental concept of astrological houses/i),
+      ).toBeInTheDocument();
     });
   });
 
@@ -147,52 +156,51 @@ describe('CourseDetailPage', () => {
   });
 
   describe('Header Section', () => {
-    it('should render back navigation button', () => {
+    it('should render navigation buttons', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Back button with arrow icon - find by querying for buttons
       const buttons = screen.getAllByRole('button');
       expect(buttons.length).toBeGreaterThan(0);
     });
 
-    it('should display course title in header', () => {
+    it('should display current lesson title as heading', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      expect(screen.getByRole('heading', { name: /master the houses/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /what are the houses\?/i })).toBeInTheDocument();
     });
 
-    it('should display instructor name', () => {
+    it('should display current lesson description', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      expect(screen.getByText(/dr\. stella nova/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/learn the fundamental concept of astrological houses/i),
+      ).toBeInTheDocument();
     });
 
-    it('should display difficulty level', () => {
+    it('should display module titles in sidebar', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      expect(screen.getByText(/intermediate/i)).toBeInTheDocument();
+      expect(screen.getByText(/introduction to houses/i)).toBeInTheDocument();
     });
 
-    it('should display progress percentage', () => {
+    it('should display module completion counts', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Progress is calculated from completed lessons
-      expect(screen.getByText(/progress/i)).toBeInTheDocument();
+      // First module shows "2/3 completed"
+      const completedTexts = screen.getAllByText(/completed/i);
+      expect(completedTexts.length).toBeGreaterThan(0);
     });
 
-    it('should display progress bar', () => {
+    it('should display course resources section', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      const progressBar = document.querySelector('.bg-primary.h-full.rounded-full');
-      expect(progressBar).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /course resources/i })).toBeInTheDocument();
     });
 
-    it('should navigate back to learning center when back button clicked', async () => {
+    it('should have lesson navigation buttons', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CourseDetailPage));
 
-      // Find the back arrow button in the header
       const buttons = screen.getAllByRole('button');
-      const backButton = buttons.find(btn => btn.querySelector('.material-symbols-outlined'));
+      const backButton = buttons.find((btn) => btn.querySelector('.material-symbols-outlined'));
       if (backButton) {
         await user.click(backButton);
       }
 
-      // Navigation handled by useNavigate - verify button exists
       expect(buttons.length).toBeGreaterThan(0);
     });
   });
@@ -211,7 +219,9 @@ describe('CourseDetailPage', () => {
 
     it('should display current lesson description', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      expect(screen.getByText(/learn the fundamental concept of astrological houses/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/learn the fundamental concept of astrological houses/i),
+      ).toBeInTheDocument();
     });
 
     it('should show mark complete button', () => {
@@ -261,7 +271,9 @@ describe('CourseDetailPage', () => {
 
       // Should show second lesson title
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /the house system explained/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { name: /the house system explained/i }),
+        ).toBeInTheDocument();
       });
     });
 
@@ -320,11 +332,14 @@ describe('CourseDetailPage', () => {
 
     it('should have downloadable resource buttons', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      const resourceButtons = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.includes('Workbook') ||
-        btn.textContent?.includes('Chart') ||
-        btn.textContent?.includes('Sheet')
-      );
+      const resourceButtons = screen
+        .getAllByRole('button')
+        .filter(
+          (btn) =>
+            btn.textContent?.includes('Workbook') ||
+            btn.textContent?.includes('Chart') ||
+            btn.textContent?.includes('Sheet'),
+        );
       expect(resourceButtons.length).toBeGreaterThan(0);
     });
 
@@ -419,7 +434,9 @@ describe('CourseDetailPage', () => {
 
       // Should update video title
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /the house system explained/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { name: /the house system explained/i }),
+        ).toBeInTheDocument();
       });
     });
 
@@ -523,25 +540,25 @@ describe('CourseDetailPage', () => {
   });
 
   describe('Progress Tracking', () => {
-    it('should calculate and display overall progress', () => {
+    it('should show completed status for completed lessons', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Progress percentage shown in header
-      const progressText = screen.getAllByText(/\d+%/);
-      expect(progressText.length).toBeGreaterThan(0);
+      // Module shows completion count like "2/3 completed"
+      const completedTexts = screen.getAllByText(/completed/i);
+      expect(completedTexts.length).toBeGreaterThan(0);
     });
 
-    it('should update progress when lesson completed', async () => {
+    it('should update completion when lesson marked incomplete', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CourseDetailPage));
 
-      // Toggle completion of first lesson
+      // Toggle completion of first lesson (which is completed)
       const completeButtons = screen.getAllByRole('button', { name: /completed/i });
       await user.click(completeButtons[0]);
 
-      // Progress should update (may take time)
+      // Completion count should update
       await waitFor(() => {
-        const progressElements = screen.getAllByText(/\d+%/);
-        expect(progressElements.length).toBeGreaterThan(0);
+        const completedTexts = screen.getAllByText(/completed/i);
+        expect(completedTexts.length).toBeGreaterThan(0);
       });
     });
   });
@@ -557,13 +574,17 @@ describe('CourseDetailPage', () => {
       // Navigate to lesson 2
       await user.click(screen.getByRole('button', { name: /next lesson/i }));
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /the house system explained/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { name: /the house system explained/i }),
+        ).toBeInTheDocument();
       });
 
       // Navigate to lesson 3
       await user.click(screen.getByRole('button', { name: /next lesson/i }));
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /house cusps and rulers/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { name: /house cusps and rulers/i }),
+        ).toBeInTheDocument();
       });
     });
 
@@ -579,7 +600,9 @@ describe('CourseDetailPage', () => {
       await user.click(screen.getByRole('button', { name: /previous/i }));
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /the house system explained/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { name: /the house system explained/i }),
+        ).toBeInTheDocument();
       });
     });
   });
@@ -587,25 +610,27 @@ describe('CourseDetailPage', () => {
   describe('Different Course Loading', () => {
     it('should load astrology-101 course correctly', () => {
       renderWithProviders(createElement(CourseDetailPage), '/learning/courses/astrology-101');
-      expect(screen.getByRole('heading', { name: /astrology 101/i })).toBeInTheDocument();
+      // The first lesson title is rendered as the heading
+      expect(screen.getByRole('heading', { name: /welcome to astrology/i })).toBeInTheDocument();
     });
 
-    it('should display correct instructor for astrology-101', () => {
+    it('should display lesson description for astrology-101', () => {
       renderWithProviders(createElement(CourseDetailPage), '/learning/courses/astrology-101');
-      expect(screen.getByText(/prof\. luna star/i)).toBeInTheDocument();
+      expect(screen.getByText(/introduction to the course/i)).toBeInTheDocument();
     });
 
-    it('should display beginner difficulty for astrology-101', () => {
+    it('should display module info for astrology-101', () => {
       renderWithProviders(createElement(CourseDetailPage), '/learning/courses/astrology-101');
-      expect(screen.getByText(/beginner/i)).toBeInTheDocument();
+      expect(screen.getByText(/getting started/i)).toBeInTheDocument();
     });
   });
 
   describe('Accessibility', () => {
     it('should have proper heading hierarchy', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Main course title heading
-      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+      // Lesson title is h2, section headers are h3
+      const h2s = screen.getAllByRole('heading', { level: 2 });
+      expect(h2s.length).toBeGreaterThan(0);
     });
 
     it('should have accessible buttons', () => {

@@ -47,7 +47,7 @@ export const useLearning = (autoLoad = false) => {
         return false;
       }
     },
-    [loadCourse]
+    [loadCourse],
   );
 
   // Update progress wrapper
@@ -60,7 +60,7 @@ export const useLearning = (autoLoad = false) => {
         return false;
       }
     },
-    [updateLessonProgress]
+    [updateLessonProgress],
   );
 
   // Complete lesson wrapper
@@ -73,7 +73,7 @@ export const useLearning = (autoLoad = false) => {
         return false;
       }
     },
-    [completeLesson]
+    [completeLesson],
   );
 
   // Search courses wrapper
@@ -86,65 +86,86 @@ export const useLearning = (autoLoad = false) => {
         return false;
       }
     },
-    [searchCourses]
+    [searchCourses],
   );
 
   // Get progress for course
-  const getCourseProgress = useCallback((courseId: string): UserProgress | undefined => {
-    return progress[courseId];
-  }, [progress]);
+  const getCourseProgress = useCallback(
+    (courseId: string): UserProgress | undefined => {
+      return progress[courseId];
+    },
+    [progress],
+  );
 
   // Get progress percentage for course
-  const getCourseProgressPercentage = useCallback((courseId: string): number => {
-    const courseProgress = progress[courseId];
-    return courseProgress?.progressPercentage ?? 0;
-  }, [progress]);
+  const getCourseProgressPercentage = useCallback(
+    (courseId: string): number => {
+      const courseProgress = progress[courseId];
+      return courseProgress?.progressPercentage ?? 0;
+    },
+    [progress],
+  );
 
   // Check if lesson is completed
-  const isLessonCompleted = useCallback((lessonId: string): boolean => {
-    const lessonProgress = progress[lessonId];
-    return lessonProgress?.status === 'completed';
-  }, [progress]);
+  const isLessonCompleted = useCallback(
+    (lessonId: string): boolean => {
+      const lessonProgress = progress[lessonId];
+      return lessonProgress?.status === 'completed';
+    },
+    [progress],
+  );
 
   // Get next lesson in course
-  const getNextLesson = useCallback((courseId: string): string | null => {
-    const course = courses.find((c) => c.id === courseId);
-    if (!course?.lessons?.length) {
+  const getNextLesson = useCallback(
+    (courseId: string): string | null => {
+      const course = courses.find((c) => c.id === courseId);
+      if (!course?.lessons?.length) {
+        return null;
+      }
+
+      const currentIndex = course.lessons.findIndex((l) => l.id === currentLesson);
+      if (currentIndex >= 0 && currentIndex < course.lessons.length - 1) {
+        return course.lessons[currentIndex + 1].id;
+      }
+
       return null;
-    }
-
-    const currentIndex = course.lessons.findIndex((l) => l.id === currentLesson);
-    if (currentIndex >= 0 && currentIndex < course.lessons.length - 1) {
-      return course.lessons[currentIndex + 1].id;
-    }
-
-    return null;
-  }, [courses, currentLesson]);
+    },
+    [courses, currentLesson],
+  );
 
   // Get previous lesson in course
-  const getPreviousLesson = useCallback((courseId: string): string | null => {
-    const course = courses.find((c) => c.id === courseId);
-    if (!course?.lessons?.length) {
+  const getPreviousLesson = useCallback(
+    (courseId: string): string | null => {
+      const course = courses.find((c) => c.id === courseId);
+      if (!course?.lessons?.length) {
+        return null;
+      }
+
+      const currentIndex = course.lessons.findIndex((l) => l.id === currentLesson);
+      if (currentIndex > 0) {
+        return course.lessons[currentIndex - 1].id;
+      }
+
       return null;
-    }
-
-    const currentIndex = course.lessons.findIndex((l) => l.id === currentLesson);
-    if (currentIndex > 0) {
-      return course.lessons[currentIndex - 1].id;
-    }
-
-    return null;
-  }, [courses, currentLesson]);
+    },
+    [courses, currentLesson],
+  );
 
   // Filter courses by category
-  const getCoursesByCategory = useCallback((category: string): Course[] => {
-    return courses.filter((c) => c.category === category);
-  }, [courses]);
+  const getCoursesByCategory = useCallback(
+    (category: string): Course[] => {
+      return courses.filter((c) => c.category === category);
+    },
+    [courses],
+  );
 
   // Filter courses by level
-  const getCoursesByLevel = useCallback((level: 'beginner' | 'intermediate' | 'advanced'): Course[] => {
-    return courses.filter((c) => c.level === level);
-  }, [courses]);
+  const getCoursesByLevel = useCallback(
+    (level: 'beginner' | 'intermediate' | 'advanced'): Course[] => {
+      return courses.filter((c) => c.level === level);
+    },
+    [courses],
+  );
 
   // Get completed courses
   const getCompletedCourses = useCallback((): Course[] => {

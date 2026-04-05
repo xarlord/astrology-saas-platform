@@ -33,15 +33,25 @@ describe('LunarReturnDashboard', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetCurrentLunarReturn.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
-      mockGetNextLunarReturn.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
+      mockGetCurrentLunarReturn.mockImplementation(
+        () =>
+          new Promise(() => {
+            /* intentional empty - never resolves */
+          }),
+      );
+      mockGetNextLunarReturn.mockImplementation(
+        () =>
+          new Promise(() => {
+            /* intentional empty - never resolves */
+          }),
+      );
 
       render(
         <LunarReturnDashboard
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       expect(screen.getByText('Loading lunar return data...')).toBeInTheDocument();
@@ -52,10 +62,10 @@ describe('LunarReturnDashboard', () => {
     it('should display error message when API fails', async () => {
       const errorMessage = 'Failed to load lunar return data';
       mockGetCurrentLunarReturn.mockRejectedValue({
-        response: { data: { error: errorMessage } }
+        response: { data: { error: errorMessage } },
       });
       mockGetNextLunarReturn.mockRejectedValue({
-        response: { data: { error: errorMessage } }
+        response: { data: { error: errorMessage } },
       });
 
       render(
@@ -63,7 +73,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -80,7 +90,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -116,7 +126,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -131,7 +141,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -147,7 +157,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -163,7 +173,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -179,7 +189,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -197,7 +207,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -215,7 +225,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {
@@ -246,7 +256,7 @@ describe('LunarReturnDashboard', () => {
           onChartClick={mockOnChartClick}
           onForecastClick={mockOnForecastClick}
           onHistoryClick={mockOnHistoryClick}
-        />
+        />,
       );
 
       await waitFor(() => {

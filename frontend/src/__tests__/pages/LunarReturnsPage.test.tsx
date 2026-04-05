@@ -16,9 +16,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...props }: Record<string, unknown>) => createElement('div', props, children),
-    header: ({ children, ...props }: Record<string, unknown>) => createElement('header', props, children),
-    span: ({ children, ...props }: Record<string, unknown>) => createElement('span', props, children),
-    circle: ({ children, ...props }: Record<string, unknown>) => createElement('circle', props, children),
+    header: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('header', props, children),
+    span: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('span', props, children),
+    circle: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('circle', props, children),
   },
 }));
 
@@ -110,8 +113,18 @@ vi.mock('../../services/lunarReturn.api', () => ({
     actionAdvice: ['Focus on self-care', 'Practice meditation'],
     keyDates: [],
     predictions: [
-      { category: 'relationships', prediction: 'Good time for connections', likelihood: 80, advice: [] },
-      { category: 'career', prediction: 'Creative opportunities arise', likelihood: 60, advice: [] },
+      {
+        category: 'relationships',
+        prediction: 'Good time for connections',
+        likelihood: 80,
+        advice: [],
+      },
+      {
+        category: 'career',
+        prediction: 'Creative opportunities arise',
+        likelihood: 60,
+        advice: [],
+      },
     ],
     rituals: [],
     journalPrompts: [],
@@ -141,7 +154,9 @@ vi.mock('lucide-react', () => ({
 
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
-  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  AppLayout: ({ children, ...props }: { children: React.ReactNode } & Record<string, unknown>) => (
+    <div {...props}>{children}</div>
+  ),
 }));
 
 // Import after mocks
@@ -157,7 +172,7 @@ const createWrapper = (initialRoute = '/lunar-returns') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -165,9 +180,12 @@ const createWrapper = (initialRoute = '/lunar-returns') => {
 const renderWithProviders = async (ui: React.ReactElement, initialRoute = '/lunar-returns') => {
   const result = render(ui, { wrapper: createWrapper(initialRoute) });
   // Wait for loading to complete to avoid act warnings
-  await waitFor(() => {
-    expect(screen.queryByText('Loading lunar return data...')).not.toBeInTheDocument();
-  }, { timeout: 5000 });
+  await waitFor(
+    () => {
+      expect(screen.queryByText('Loading lunar return data...')).not.toBeInTheDocument();
+    },
+    { timeout: 5000 },
+  );
   return result;
 };
 
@@ -189,29 +207,34 @@ describe('LunarReturnsPage', () => {
       });
     });
 
-    it('should render navigation bar', async () => {
+    it('should render page content inside AppLayout', async () => {
       await renderWithProviders(createElement(LunarReturnsPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
+      // The page wraps content in AppLayout which is mocked as a simple div
+      expect(screen.getByTestId('lunar-returns-page')).toBeInTheDocument();
     });
 
-    it('should render nav links', async () => {
+    it('should render main content area', async () => {
       await renderWithProviders(createElement(LunarReturnsPage));
-      expect(screen.getByTestId('nav-dashboard')).toBeInTheDocument();
-      expect(screen.getByTestId('nav-lunar-returns')).toBeInTheDocument();
+      // The page renders a main element inside AppLayout
+      await waitFor(() => {
+        expect(screen.getByText('Lunar Return in Pisces')).toBeInTheDocument();
+      });
     });
   });
 
   describe('Navigation Section', () => {
-    it('should have dashboard link', async () => {
+    it('should render Past Cycles button', async () => {
       await renderWithProviders(createElement(LunarReturnsPage));
-      const dashboardLink = screen.getByTestId('nav-dashboard');
-      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
+      await waitFor(() => {
+        expect(screen.getByText('Past Cycles')).toBeInTheDocument();
+      });
     });
 
-    it('should highlight Lunar Returns nav item', async () => {
+    it('should render Share Chart button', async () => {
       await renderWithProviders(createElement(LunarReturnsPage));
-      const lunarReturnsLink = screen.getByTestId('nav-lunar-returns');
-      expect(lunarReturnsLink).toHaveClass('text-white');
+      await waitFor(() => {
+        expect(screen.getByText('Share Chart')).toBeInTheDocument();
+      });
     });
   });
 
@@ -500,9 +523,9 @@ describe('LunarReturnsPage', () => {
   describe('Accessibility', () => {
     it('should have proper document structure', async () => {
       await renderWithProviders(createElement(LunarReturnsPage));
-      // Check for semantic elements
-      expect(screen.getByRole('navigation')).toBeInTheDocument();
-      expect(screen.getByRole('main')).toBeInTheDocument();
+      // Check for semantic elements - the page has a main element
+      const mainElement = document.querySelector('main');
+      expect(mainElement).toBeInTheDocument();
     });
   });
 });

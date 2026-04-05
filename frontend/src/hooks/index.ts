@@ -120,7 +120,18 @@ export {
  * Use Auth Hook
  */
 export function useAuth() {
-  const { user, isAuthenticated, login, register, logout, updateProfile, updatePreferences, isLoading, error, clearError } = useAuthStore();
+  const {
+    user,
+    isAuthenticated,
+    login,
+    register,
+    logout,
+    updateProfile,
+    updatePreferences,
+    isLoading,
+    error,
+    clearError,
+  } = useAuthStore();
 
   return {
     user,
@@ -140,7 +151,20 @@ export function useAuth() {
  * Use Charts Hook
  */
 export function useCharts() {
-  const { charts, currentChart, pagination, loadCharts, loadChart, createChart, updateChart, deleteChart, calculateChart, isLoading, error, clearError } = useChartStore();
+  const {
+    charts,
+    currentChart,
+    pagination,
+    loadCharts,
+    loadChart,
+    createChart,
+    updateChart,
+    deleteChart,
+    calculateChart,
+    isLoading,
+    error,
+    clearError,
+  } = useChartStore();
 
   return {
     charts,
@@ -217,7 +241,10 @@ export function useTransitCalendar(month: number, year: number, enabled = true) 
 /**
  * Use Transit Forecast Hook
  */
-export function useTransitForecast(duration: 'week' | 'month' | 'quarter' | 'year' = 'month', enabled = true) {
+export function useTransitForecast(
+  duration: 'week' | 'month' | 'quarter' | 'year' = 'month',
+  enabled = true,
+) {
   return useQuery({
     queryKey: ['transits', 'forecast', duration],
     queryFn: () => transitService.getTransitForecast(duration),

@@ -5,10 +5,10 @@
  * Matches design from stitch-UI/desktop/02-login-page.html
  */
 
-import { useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks";
-import { Helmet } from "react-helmet-async";
+import { useState } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks';
+import { Helmet } from 'react-helmet-async';
 import {
   Sparkles,
   AlertCircle,
@@ -18,15 +18,15 @@ import {
   Lock,
   RefreshCw,
   ArrowRight,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isLoading, error, clearError } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -38,15 +38,14 @@ export default function LoginPageNew() {
       await login({ email, password });
       // Redirect to the page they were trying to access, or dashboard by default
       const from =
-        (location.state as { from?: { pathname?: string } })?.from?.pathname ??
-        "/dashboard";
+        (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
       navigate(from, { replace: true });
     } catch (err) {
       // Error is handled by the hook
     }
   };
 
-  const handleSocialLogin = (provider: "google" | "apple") => {
+  const handleSocialLogin = (provider: 'google' | 'apple') => {
     // Social login will be implemented later
     console.log(`Social login with ${provider}`);
   };
@@ -83,9 +82,7 @@ export default function LoginPageNew() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm border border-white/10">
                   <Sparkles className="w-6 h-6 text-accent-gold" />
                 </div>
-                <span className="text-2xl font-bold tracking-tight text-white">
-                  AstroVerse
-                </span>
+                <span className="text-2xl font-bold tracking-tight text-white">AstroVerse</span>
               </Link>
 
               {/* Central Visual Element (Abstract Zodiac Wheel) */}
@@ -110,11 +107,7 @@ export default function LoginPageNew() {
                       y2="400"
                     >
                       <stop stopColor="#A78BFA" stopOpacity="0.8"></stop>
-                      <stop
-                        offset="1"
-                        stopColor="#2563EB"
-                        stopOpacity="0.1"
-                      ></stop>
+                      <stop offset="1" stopColor="#2563EB" stopOpacity="0.1"></stop>
                     </linearGradient>
                   </defs>
                   <circle
@@ -154,9 +147,7 @@ export default function LoginPageNew() {
                 </blockquote>
                 <div className="mt-6 flex items-center gap-3">
                   <div className="h-px w-12 bg-gradient-to-r from-accent-gold to-transparent"></div>
-                  <p className="text-sm font-light text-slate-400">
-                    Premium Astrology SaaS
-                  </p>
+                  <p className="text-sm font-light text-slate-400">Premium Astrology SaaS</p>
                 </div>
               </div>
             </div>
@@ -170,19 +161,13 @@ export default function LoginPageNew() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
                   <Sparkles className="w-5 h-5" />
                 </div>
-                <span className="text-2xl font-bold text-white">
-                  AstroVerse
-                </span>
+                <span className="text-2xl font-bold text-white">AstroVerse</span>
               </Link>
 
               {/* Header */}
               <div className="mb-10 text-center lg:text-left">
-                <h1 className="mb-2 text-4xl font-bold tracking-tight text-white">
-                  Welcome Back
-                </h1>
-                <p className="text-primary-200/80">
-                  Sign in to access your cosmic insights
-                </p>
+                <h1 className="mb-2 text-4xl font-bold tracking-tight text-white">Welcome Back</h1>
+                <p className="text-primary-200/80">Sign in to access your cosmic insights</p>
               </div>
 
               {/* Error Display */}
@@ -202,10 +187,10 @@ export default function LoginPageNew() {
               <div
                 className="rounded-2xl p-8 shadow-2xl shadow-primary/5"
                 style={{
-                  background: "rgba(22, 18, 33, 0.4)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  background: 'rgba(22, 18, 33, 0.4)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
                 }}
               >
                 <form
@@ -241,10 +226,7 @@ export default function LoginPageNew() {
                         data-testid="email-input"
                       />
                     </div>
-                    <p
-                      id="email-description"
-                      className="mt-1 text-xs text-slate-500"
-                    >
+                    <p id="email-description" className="mt-1 text-xs text-slate-500">
                       We'll never share your email with anyone else.
                     </p>
                   </div>
@@ -265,7 +247,7 @@ export default function LoginPageNew() {
                         className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-12 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
                         id="password"
                         name="password"
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         autoComplete="current-password"
                         required
                         placeholder="••••••••"
@@ -278,9 +260,7 @@ export default function LoginPageNew() {
                         type="button"
                         className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-300 transition-colors"
                         onClick={() => setShowPassword(!showPassword)}
-                        aria-label={
-                          showPassword ? "Hide password" : "Show password"
-                        }
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                         data-testid="password-visibility-toggle"
                       >
                         {showPassword ? (
@@ -303,10 +283,7 @@ export default function LoginPageNew() {
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
                       />
-                      <label
-                        className="ml-2 block text-sm text-slate-300"
-                        htmlFor="remember-me"
-                      >
+                      <label className="ml-2 block text-sm text-slate-300" htmlFor="remember-me">
                         Remember me
                       </label>
                     </div>
@@ -325,8 +302,7 @@ export default function LoginPageNew() {
                     <button
                       className="group relative flex w-full justify-center rounded-xl py-3.5 px-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-primary/40 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                       style={{
-                        background:
-                          "linear-gradient(135deg, #6b3de1 0%, #2563EB 100%)",
+                        background: 'linear-gradient(135deg, #6b3de1 0%, #2563EB 100%)',
                       }}
                       type="submit"
                       data-testid="submit-button"
@@ -335,7 +311,7 @@ export default function LoginPageNew() {
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                         {isLoading && <RefreshCw className="w-6 h-6" />}
                       </span>
-                      {isLoading ? "Signing in..." : "Sign In"}
+                      {isLoading ? 'Signing in...' : 'Sign In'}
                       <ArrowRight className="w-6 h-6" />
                     </button>
                   </div>
@@ -343,10 +319,7 @@ export default function LoginPageNew() {
 
                 {/* Divider */}
                 <div className="relative mt-8">
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 flex items-center"
-                  >
+                  <div aria-hidden="true" className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/10"></div>
                   </div>
                   <div className="relative flex justify-center">
@@ -361,27 +334,21 @@ export default function LoginPageNew() {
                   <button
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors"
                     type="button"
-                    onClick={() => handleSocialLogin("google")}
+                    onClick={() => handleSocialLogin('google')}
                     aria-label="Continue with Google"
                   >
-                    <svg
-                      aria-hidden="true"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 24 24">
                       <path
                         d="M12.0003 20.45c4.6593 0 8.3604-3.8532 8.1897-8.5082h-8.1897v-3.3444h11.9793c.1251.681.1897 1.3857.1897 2.1154 0 6.627-5.373 12-12 12-6.627 0-12-5.373-12-12s5.373-12 12-12c3.056 0 5.845 1.137 7.973 3.013l-2.585 2.528c-1.397-1.127-3.172-1.805-5.388-1.805-4.615 0-8.356 3.741-8.356 8.356s3.741 8.356 8.356 8.356z"
                         fill="currentColor"
                       ></path>
                     </svg>
-                    <span className="text-sm font-semibold leading-6">
-                      Google
-                    </span>
+                    <span className="text-sm font-semibold leading-6">Google</span>
                   </button>
                   <button
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors"
                     type="button"
-                    onClick={() => handleSocialLogin("apple")}
+                    onClick={() => handleSocialLogin('apple')}
                     aria-label="Continue with Apple"
                   >
                     <svg
@@ -392,9 +359,7 @@ export default function LoginPageNew() {
                     >
                       <path d="M13.135 6.05675C13.6215 5.5675 13.922 4.96675 13.922 4.416C13.922 4.281 13.9102 4.1445 13.8765 4.0095C13.2592 4.03275 12.5167 4.39425 12.0622 4.88775C11.649 5.334 11.2935 5.96925 11.2935 6.5415C11.2935 6.69 11.3115 6.8265 11.3325 6.94275C11.9962 6.98925 12.6735 6.61125 13.135 6.05675ZM15.9382 13.881C15.918 15.3562 17.2065 16.1482 17.2725 16.1857C17.229 16.3267 17.025 17.0197 16.533 17.7052C16.11 18.2932 15.666 18.8752 14.976 18.8932C14.286 18.9112 14.07 18.4972 13.248 18.4972C12.426 18.4972 12.18 18.8932 11.532 18.9112C10.878 18.9292 10.374 18.2752 9.9405 17.6872C9.0525 16.4812 8.3745 14.2822 8.3745 12.5122C8.3745 10.9762 9.2025 10.0342 10.74 10.0162C11.406 10.0072 12.042 10.4392 12.45 10.4392C12.852 10.4392 13.632 9.92925 14.814 9.91125C15.312 9.92925 16.596 10.0912 17.316 11.0812C17.256 11.1172 15.9562 11.8372 15.9382 13.881Z"></path>
                     </svg>
-                    <span className="text-sm font-semibold leading-6">
-                      Apple
-                    </span>
+                    <span className="text-sm font-semibold leading-6">Apple</span>
                   </button>
                 </div>
               </div>

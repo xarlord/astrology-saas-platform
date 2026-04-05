@@ -16,8 +16,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...props }: Record<string, unknown>) => createElement('div', props, children),
-    section: ({ children, ...props }: Record<string, unknown>) => createElement('section', props, children),
-    header: ({ children, ...props }: Record<string, unknown>) => createElement('header', props, children),
+    section: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('section', props, children),
+    header: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('header', props, children),
   },
 }));
 
@@ -70,12 +72,24 @@ const createWrapper = (initialRoute = '/solar-returns/2024') => {
           Routes,
           null,
           createElement(Route, { path: '/solar-returns/:id', element: children }),
-          createElement(Route, { path: '/solar-returns', element: <div data-testid="solar-returns-page">Solar Returns</div> }),
-          createElement(Route, { path: '/dashboard', element: <div data-testid="dashboard-page">Dashboard</div> }),
-          createElement(Route, { path: '/synastry', element: <div data-testid="synastry-page">Synastry</div> }),
-          createElement(Route, { path: '/learning', element: <div data-testid="learning-page">Learning</div> })
-        )
-      )
+          createElement(Route, {
+            path: '/solar-returns',
+            element: <div data-testid="solar-returns-page">Solar Returns</div>,
+          }),
+          createElement(Route, {
+            path: '/dashboard',
+            element: <div data-testid="dashboard-page">Dashboard</div>,
+          }),
+          createElement(Route, {
+            path: '/synastry',
+            element: <div data-testid="synastry-page">Synastry</div>,
+          }),
+          createElement(Route, {
+            path: '/learning',
+            element: <div data-testid="learning-page">Learning</div>,
+          }),
+        ),
+      ),
     );
 };
 
@@ -103,13 +117,10 @@ describe('SolarReturnAnnualReportPage', () => {
       expect(screen.getByText('Annual Forecast')).toBeInTheDocument();
     });
 
-    it('should render navigation header', () => {
+    it('should render navigation header content', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
-      expect(screen.getByText('Reports')).toBeInTheDocument();
-      expect(screen.getByText('Compatibility')).toBeInTheDocument();
-      expect(screen.getByText('Academy')).toBeInTheDocument();
+      expect(screen.getByText('Annual Forecast')).toBeInTheDocument();
+      expect(screen.getByText(/Solar Return Report 2024/)).toBeInTheDocument();
     });
 
     it('should render year in header', () => {
@@ -119,7 +130,9 @@ describe('SolarReturnAnnualReportPage', () => {
 
     it('should render page description', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText('Your birthday chart and annual forecast for the year ahead.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Your birthday chart and annual forecast for the year ahead.'),
+      ).toBeInTheDocument();
     });
 
     it('should render View Archive button', () => {
@@ -222,7 +235,9 @@ describe('SolarReturnAnnualReportPage', () => {
 
     it('should render descriptions for each placement', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText(/travel, higher learning, and spiritual philosophy/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/travel, higher learning, and spiritual philosophy/),
+      ).toBeInTheDocument();
       expect(screen.getByText(/magnifying abundance/)).toBeInTheDocument();
       expect(screen.getByText(/professional peak/)).toBeInTheDocument();
     });
@@ -235,10 +250,23 @@ describe('SolarReturnAnnualReportPage', () => {
     });
 
     it('should render all months', () => {
-      const months = ['MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB', 'MAR', 'APR'];
+      const months = [
+        'MAY',
+        'JUN',
+        'JUL',
+        'AUG',
+        'SEP',
+        'OCT',
+        'NOV',
+        'DEC',
+        'JAN',
+        'FEB',
+        'MAR',
+        'APR',
+      ];
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
 
-      months.forEach(month => {
+      months.forEach((month) => {
         // Use getAllByText since some months might appear multiple times
         expect(screen.getAllByText(month).length).toBeGreaterThan(0);
       });
@@ -292,13 +320,16 @@ describe('SolarReturnAnnualReportPage', () => {
 
       // Click Career accordion - find by text content
       const allButtons = screen.getAllByRole('button');
-      const careerButton = allButtons.find(btn => btn.textContent?.includes('Career & Purpose'));
+      const careerButton = allButtons.find((btn) => btn.textContent?.includes('Career & Purpose'));
       await user.click(careerButton!);
 
       // Content should now be visible
-      await waitFor(() => {
-        expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should collapse accordion when clicked again', async () => {
@@ -307,18 +338,26 @@ describe('SolarReturnAnnualReportPage', () => {
 
       // Open accordion
       const allButtons = screen.getAllByRole('button');
-      const careerButton = allButtons.find(btn => btn.textContent?.includes('Career & Purpose'));
+      const careerButton = allButtons.find((btn) => btn.textContent?.includes('Career & Purpose'));
       await user.click(careerButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
 
       // Close accordion
       await user.click(careerButton!);
-      await waitFor(() => {
-        expect(screen.queryByText(/professional landscape is undergoing/)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(
+            screen.queryByText(/professional landscape is undergoing/),
+          ).not.toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should show Love content when expanded', async () => {
@@ -326,12 +365,15 @@ describe('SolarReturnAnnualReportPage', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
 
       const allButtons = screen.getAllByRole('button');
-      const loveButton = allButtons.find(btn => btn.textContent?.includes('Love & Social Life'));
+      const loveButton = allButtons.find((btn) => btn.textContent?.includes('Love & Social Life'));
       await user.click(loveButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Social dynamics will shift/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Social dynamics will shift/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should show Health content when expanded', async () => {
@@ -339,12 +381,15 @@ describe('SolarReturnAnnualReportPage', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
 
       const allButtons = screen.getAllByRole('button');
-      const healthButton = allButtons.find(btn => btn.textContent?.includes('Health & Vitality'));
+      const healthButton = allButtons.find((btn) => btn.textContent?.includes('Health & Vitality'));
       await user.click(healthButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Focus on routine and mental health/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Focus on routine and mental health/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should only have one accordion open at a time', async () => {
@@ -353,20 +398,26 @@ describe('SolarReturnAnnualReportPage', () => {
 
       // Open Career
       const allButtons = screen.getAllByRole('button');
-      const careerButton = allButtons.find(btn => btn.textContent?.includes('Career & Purpose'));
+      const careerButton = allButtons.find((btn) => btn.textContent?.includes('Career & Purpose'));
       await user.click(careerButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
 
       // Open Love - Career should close
-      const loveButton = allButtons.find(btn => btn.textContent?.includes('Love & Social Life'));
+      const loveButton = allButtons.find((btn) => btn.textContent?.includes('Love & Social Life'));
       await user.click(loveButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Social dynamics will shift/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Social dynamics will shift/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
 
       expect(screen.queryByText(/professional landscape is undergoing/)).not.toBeInTheDocument();
     });
@@ -413,19 +464,19 @@ describe('SolarReturnAnnualReportPage', () => {
       expect(screen.getByText('View Archive')).toBeInTheDocument();
     });
 
-    it('should have Dashboard navigation link', () => {
+    it('should have Download PDF button', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Download PDF')).toBeInTheDocument();
     });
 
-    it('should have Compatibility navigation link', () => {
+    it('should have Annual Forecast label', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText('Compatibility')).toBeInTheDocument();
+      expect(screen.getByText('Annual Forecast')).toBeInTheDocument();
     });
 
-    it('should have Academy navigation link', () => {
+    it('should have Compare with Previous Year button', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText('Academy')).toBeInTheDocument();
+      expect(screen.getByText('Compare with Previous Year')).toBeInTheDocument();
     });
   });
 
@@ -482,12 +533,6 @@ describe('SolarReturnAnnualReportPage', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
       const grid = document.querySelector('.grid-cols-1.md\\:grid-cols-3');
       expect(grid).toBeInTheDocument();
-    });
-
-    it('should have fixed navigation', () => {
-      renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      const nav = document.querySelector('nav.fixed');
-      expect(nav).toBeInTheDocument();
     });
   });
 
@@ -551,13 +596,16 @@ describe('SolarReturnAnnualReportPage', () => {
 
       // Find and click career accordion
       const allButtons = screen.getAllByRole('button');
-      const careerButton = allButtons.find(btn => btn.textContent?.includes('Career & Purpose'));
+      const careerButton = allButtons.find((btn) => btn.textContent?.includes('Career & Purpose'));
       await user.click(careerButton!);
 
       // Content should now be visible
-      await waitFor(() => {
-        expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/professional landscape is undergoing/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should display complete love interpretation when accordion expanded', async () => {
@@ -565,12 +613,15 @@ describe('SolarReturnAnnualReportPage', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
 
       const allButtons = screen.getAllByRole('button');
-      const loveButton = allButtons.find(btn => btn.textContent?.includes('Love & Social Life'));
+      const loveButton = allButtons.find((btn) => btn.textContent?.includes('Love & Social Life'));
       await user.click(loveButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Social dynamics will shift/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Social dynamics will shift/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should display complete health interpretation when accordion expanded', async () => {
@@ -578,12 +629,15 @@ describe('SolarReturnAnnualReportPage', () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
 
       const allButtons = screen.getAllByRole('button');
-      const healthButton = allButtons.find(btn => btn.textContent?.includes('Health & Vitality'));
+      const healthButton = allButtons.find((btn) => btn.textContent?.includes('Health & Vitality'));
       await user.click(healthButton!);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Focus on routine and mental health/)).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Focus on routine and mental health/)).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
   });
 });

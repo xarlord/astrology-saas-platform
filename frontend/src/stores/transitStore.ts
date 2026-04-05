@@ -83,7 +83,8 @@ export const useTransitStore = create<TransitState>()(
               isLoading: false,
             });
           } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Failed to load today\'s transits';
+            const message =
+              error instanceof Error ? error.message : "Failed to load today's transits";
             set({
               error: message,
               isLoading: false,
@@ -103,7 +104,8 @@ export const useTransitStore = create<TransitState>()(
               isLoading: false,
             });
           } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Failed to load transit calendar';
+            const message =
+              error instanceof Error ? error.message : 'Failed to load transit calendar';
             set({
               error: message,
               isLoading: false,
@@ -124,7 +126,8 @@ export const useTransitStore = create<TransitState>()(
               isLoading: false,
             });
           } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Failed to load transit forecast';
+            const message =
+              error instanceof Error ? error.message : 'Failed to load transit forecast';
             set({
               error: message,
               isLoading: false,
@@ -151,10 +154,10 @@ export const useTransitStore = create<TransitState>()(
         partialize: (state) => ({
           dateRange: state.dateRange,
         }),
-      }
+      },
     ),
-    { name: 'TransitStore' }
-  )
+    { name: 'TransitStore' },
+  ),
 );
 
 // Selector hooks for optimized re-renders

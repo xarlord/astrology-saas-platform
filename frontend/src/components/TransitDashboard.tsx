@@ -71,15 +71,21 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick }: Transit
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   // Memoized handlers
-  const handleDateSelect = useCallback((date: string) => {
-    setSelectedDate(date);
-    onDateSelect?.(date);
-  }, [onDateSelect]);
+  const handleDateSelect = useCallback(
+    (date: string) => {
+      setSelectedDate(date);
+      onDateSelect?.(date);
+    },
+    [onDateSelect],
+  );
 
   // Reserved for future use when TransitDashboard needs to handle transit clicks internally
-  const _handleTransitClick = useCallback((transit: Transit) => {
-    onTransitClick?.(transit);
-  }, [onTransitClick]);
+  const _handleTransitClick = useCallback(
+    (transit: Transit) => {
+      onTransitClick?.(transit);
+    },
+    [onTransitClick],
+  );
   void _handleTransitClick; // Suppress unused warning
 
   return (
@@ -144,8 +150,10 @@ function DateSelector({
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
       {/* View Mode Buttons */}
- ??      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
- ??        {viewModes.map((mode) => {
+      ??{' '}
+      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+        ??{' '}
+        {viewModes.map((mode) => {
           const Icon = mode.icon;
           return (
             <button
@@ -166,7 +174,6 @@ function DateSelector({
           );
         })}
       </div>
-
       {/* Date Navigator */}
       <div className="flex items-center gap-2">
         <button
@@ -204,22 +211,29 @@ function DateSelector({
 }
 
 // Today's Transits Component
-function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onTransitClick?: (transit: Transit) => void }) {
+function TodaysTransits({
+  transits,
+  onTransitClick,
+}: {
+  transits: Transit[];
+  onTransitClick?: (transit: Transit) => void;
+}) {
   // Memoized sort by intensity
   const sortedTransits = useMemo(() => {
     return [...transits].sort((a, b) => b.intensity - a.intensity);
   }, [transits]);
 
   // Memoized click handler wrapper
-  const handleTransitClick = useCallback((transit: Transit) => {
-    onTransitClick?.(transit);
-  }, [onTransitClick]);
+  const handleTransitClick = useCallback(
+    (transit: Transit) => {
+      onTransitClick?.(transit);
+    },
+    [onTransitClick],
+  );
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-        Today&apos;s Transits
-      </h3>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Today&apos;s Transits</h3>
 
       {sortedTransits.length === 0 ? (
         <EmptyState
@@ -231,7 +245,11 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
       ) : (
         <div className="space-y-4">
           {sortedTransits.map((transit, index) => (
-            <TransitCard key={index} transit={transit} onClick={() => handleTransitClick(transit)} />
+            <TransitCard
+              key={index}
+              transit={transit}
+              onClick={() => handleTransitClick(transit)}
+            />
           ))}
         </div>
       )}
@@ -240,26 +258,38 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
 }
 
 // Weekly Transits Component
-function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onTransitClick?: (transit: Transit) => void }) {
+function WeeklyTransits({
+  transits,
+  onTransitClick,
+}: {
+  transits: Transit[];
+  onTransitClick?: (transit: Transit) => void;
+}) {
   // Memoized group by date
   const { transitsByDate, sortedDates } = useMemo(() => {
-    const grouped = transits.reduce((acc, transit) => {
-      const date = transit.peakDate.split('T')[0];
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(transit);
-      return acc;
-    }, {} as Record<string, Transit[]>);
+    const grouped = transits.reduce(
+      (acc, transit) => {
+        const date = transit.peakDate.split('T')[0];
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(transit);
+        return acc;
+      },
+      {} as Record<string, Transit[]>,
+    );
 
     const sorted = Object.keys(grouped).sort();
     return { transitsByDate: grouped, sortedDates: sorted };
   }, [transits]);
 
   // Memoized click handler wrapper
-  const handleTransitClick = useCallback((transit: Transit) => {
-    onTransitClick?.(transit);
-  }, [onTransitClick]);
+  const handleTransitClick = useCallback(
+    (transit: Transit) => {
+      onTransitClick?.(transit);
+    },
+    [onTransitClick],
+  );
 
   return (
     <div className="space-y-6">
@@ -312,7 +342,9 @@ function TransitCalendar({
 
   // Empty cells for days before month starts
   for (let i = 0; i < firstDayOfMonth; i++) {
-    week.push(<div key={`empty-${i}`} className="h-24 bg-gray-50 dark:bg-gray-800/50 rounded-lg" />);
+    week.push(
+      <div key={`empty-${i}`} className="h-24 bg-gray-50 dark:bg-gray-800/50 rounded-lg" />,
+    );
   }
 
   // Days of the month
@@ -329,11 +361,15 @@ function TransitCalendar({
         data={dayData}
         isSelected={isSelected}
         onClick={() => onDateSelect(dateStr)}
-      />
+      />,
     );
 
     if (week.length === 7) {
-      weeks.push(<div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">{week}</div>);
+      weeks.push(
+        <div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">
+          {week}
+        </div>,
+      );
       week = [];
     }
   }
@@ -341,9 +377,18 @@ function TransitCalendar({
   // Remaining days in last week
   if (week.length > 0) {
     while (week.length < 7) {
-      week.push(<div key={`empty-end-${week.length}`} className="h-24 bg-gray-50 dark:bg-gray-800/50 rounded-lg" />);
+      week.push(
+        <div
+          key={`empty-end-${week.length}`}
+          className="h-24 bg-gray-50 dark:bg-gray-800/50 rounded-lg"
+        />,
+      );
     }
-    weeks.push(<div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">{week}</div>);
+    weeks.push(
+      <div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">
+        {week}
+      </div>,
+    );
   }
 
   return (
@@ -355,7 +400,10 @@ function TransitCalendar({
       {/* Day headers */}
       <div className="grid grid-cols-7 gap-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="text-center text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div
+            key={day}
+            className="text-center text-sm font-medium text-gray-600 dark:text-gray-400"
+          >
             {day}
           </div>
         ))}
@@ -417,9 +465,7 @@ function CalendarDay({
             {data.moonPhase?.icon}
           </div>
         )}
-        {data?.hasEclipse && (
-          <div className="w-2 h-2 rounded-full bg-red-500" title="Eclipse" />
-        )}
+        {data?.hasEclipse && <div className="w-2 h-2 rounded-full bg-red-500" title="Eclipse" />}
       </div>
     </button>
   );
@@ -435,9 +481,7 @@ function UpcomingHighlights({
 }) {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-        Upcoming Highlights
-      </h3>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Highlights</h3>
 
       {highlights.length === 0 ? (
         <EmptyState
@@ -511,14 +555,16 @@ function TransitCard({
           {/* Themes */}
           {transit.interpretation.themes && transit.interpretation.themes.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
-              {transit.interpretation.themes.slice(0, UI.THEMES_DISPLAY_LIMIT).map((theme, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-700 dark:text-gray-300"
-                >
-                  {theme}
-                </span>
-              ))}
+              {transit.interpretation.themes
+                .slice(0, UI.THEMES_DISPLAY_LIMIT)
+                .map((theme, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-700 dark:text-gray-300"
+                  >
+                    {theme}
+                  </span>
+                ))}
             </div>
           )}
 
@@ -556,9 +602,7 @@ function HighlightCard({
       <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{highlight.title}</h4>
 
       {/* Date */}
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-        {formatDate(highlight.date)}
-      </p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{formatDate(highlight.date)}</p>
 
       {/* Description */}
       <p className="text-sm text-gray-500 dark:text-gray-500 line-clamp-3">
@@ -570,7 +614,9 @@ function HighlightCard({
         <div className="mt-3">
           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
             <span>Intensity</span>
-            <span>{highlight.intensity}/{UI.INTENSITY_MAX}</span>
+            <span>
+              {highlight.intensity}/{UI.INTENSITY_MAX}
+            </span>
           </div>
           <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div
@@ -604,7 +650,13 @@ function formatDate(dateStr: string): string {
 }
 
 // Transit Detail Modal Component (for full transit view)
-export function TransitDetailModal({ transit, onClose }: { transit: Transit; onClose: () => void }) {
+export function TransitDetailModal({
+  transit,
+  onClose,
+}: {
+  transit: Transit;
+  onClose: () => void;
+}) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -626,9 +678,7 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
 
           {/* Date Range */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Duration
-            </h4>
+            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Duration</h4>
             <p className="text-gray-600 dark:text-gray-400">
               {formatDate(transit.startDate)} - {formatDate(transit.endDate)}
             </p>
@@ -672,7 +722,10 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               </h4>
               <ul className="space-y-1">
                 {transit.interpretation.advice.positive.map((item, index) => (
-                  <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                  <li
+                    key={index}
+                    className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2"
+                  >
                     <span className="text-green-500 mt-0.5">✓</span>
                     {item}
                   </li>
@@ -685,7 +738,10 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               </h4>
               <ul className="space-y-1">
                 {transit.interpretation.advice.challenges.map((item, index) => (
-                  <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                  <li
+                    key={index}
+                    className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2"
+                  >
                     <span className="text-orange-500 mt-0.5">!</span>
                     {item}
                   </li>

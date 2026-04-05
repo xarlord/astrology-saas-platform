@@ -16,13 +16,11 @@ describe('usePolling', () => {
     vi.useRealTimers();
   });
 
-  const createPollFn = <T,>(data: T) => vi.fn().mockResolvedValue(data);
+  const createPollFn = <T>(data: T) => vi.fn().mockResolvedValue(data);
 
   it('should initialize with null data', () => {
     const pollFn = createPollFn({ value: 'test' });
-    const { result } = renderHook(() =>
-      usePolling(pollFn, { enabled: false })
-    );
+    const { result } = renderHook(() => usePolling(pollFn, { enabled: false }));
 
     const [state] = result.current;
 
@@ -38,7 +36,7 @@ describe('usePolling', () => {
     const interval = 100;
 
     const { result } = renderHook(() =>
-      usePolling(pollFn, { interval, enabled: true, immediate: true })
+      usePolling(pollFn, { interval, enabled: true, immediate: true }),
     );
 
     // First poll (immediate)
@@ -56,7 +54,7 @@ describe('usePolling', () => {
     const pollFn = createPollFn(testData);
 
     const { result } = renderHook(() =>
-      usePolling(pollFn, { interval: 100, enabled: true, immediate: true })
+      usePolling(pollFn, { interval: 100, enabled: true, immediate: true }),
     );
 
     await act(async () => {
@@ -79,7 +77,7 @@ describe('usePolling', () => {
         immediate: true,
         onError,
         maxErrors: 5,
-      })
+      }),
     );
 
     await act(async () => {
@@ -94,9 +92,7 @@ describe('usePolling', () => {
   it('should provide manual start/stop', async () => {
     const pollFn = createPollFn({ value: 'test' });
 
-    const { result } = renderHook(() =>
-      usePolling(pollFn, { interval: 100, enabled: false })
-    );
+    const { result } = renderHook(() => usePolling(pollFn, { interval: 100, enabled: false }));
 
     // Should not poll when disabled
     await act(async () => {
@@ -137,7 +133,7 @@ describe('usePolling', () => {
     const pollFn = createPollFn({ value: 'test' });
 
     const { result } = renderHook(() =>
-      usePolling(pollFn, { interval: 100, enabled: true, immediate: true })
+      usePolling(pollFn, { interval: 100, enabled: true, immediate: true }),
     );
 
     await act(async () => {
@@ -164,9 +160,7 @@ describe('usePolling', () => {
   it('should provide manual poll method', async () => {
     const pollFn = createPollFn({ value: 'test' });
 
-    const { result } = renderHook(() =>
-      usePolling(pollFn, { interval: 10000, enabled: false })
-    );
+    const { result } = renderHook(() => usePolling(pollFn, { interval: 10000, enabled: false }));
 
     // Manual poll
     await act(async () => {
@@ -187,7 +181,7 @@ describe('usePolling', () => {
         immediate: true,
         maxErrors: 5,
         errorRetryDelay: 5000, // Long delay to prevent retries
-      })
+      }),
     );
 
     // Trigger error
@@ -217,7 +211,7 @@ describe('usePolling', () => {
         enabled: true,
         immediate: true,
         onSuccess,
-      })
+      }),
     );
 
     await act(async () => {
@@ -235,7 +229,7 @@ describe('usePolling', () => {
         interval: 1000,
         enabled: true,
         immediate: true,
-      })
+      }),
     );
 
     // Should poll immediately without waiting for interval
@@ -251,7 +245,7 @@ describe('usePolling', () => {
     const interval = 1000;
 
     const { result } = renderHook(() =>
-      usePolling(pollFn, { interval, enabled: true, immediate: true })
+      usePolling(pollFn, { interval, enabled: true, immediate: true }),
     );
 
     await act(async () => {
@@ -265,13 +259,14 @@ describe('usePolling', () => {
   it('should prevent concurrent polls', async () => {
     let resolvePoll: () => void;
     const pollFn = vi.fn().mockImplementation(
-      () => new Promise<void>((resolve) => {
-        resolvePoll = resolve;
-      })
+      () =>
+        new Promise<void>((resolve) => {
+          resolvePoll = resolve;
+        }),
     );
 
     const { result } = renderHook(() =>
-      usePolling(pollFn, { interval: 10, enabled: true, immediate: true })
+      usePolling(pollFn, { interval: 10, enabled: true, immediate: true }),
     );
 
     // Start first poll

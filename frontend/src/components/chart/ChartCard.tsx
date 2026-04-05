@@ -47,12 +47,7 @@ const TAG_COLORS: Record<string, string> = {
   Default: 'bg-slate-800 text-slate-400',
 };
 
-export const ChartCard: React.FC<ChartCardProps> = ({
-  chart,
-  onDelete,
-  onShare,
-  className,
-}) => {
+export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, className }) => {
   const navigate = useNavigate();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -86,7 +81,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
   // positions is an array, so we need to find the planets
   const getPlanetSign = (planetName: string): string => {
     if (!chart.positions) return 'Unknown';
-    const planet = chart.positions.find(p => p.name.toLowerCase() === planetName.toLowerCase());
+    const planet = chart.positions.find((p) => p.name.toLowerCase() === planetName.toLowerCase());
     return planet?.sign ?? 'Unknown';
   };
 
@@ -128,7 +123,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
         'group relative bg-card-dark rounded-2xl border border-slate-800 p-6',
         'hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20',
         'transition-all duration-300 cursor-pointer',
-        className
+        className,
       )}
       onClick={handleClick}
       role="button"
@@ -146,19 +141,14 @@ export const ChartCard: React.FC<ChartCardProps> = ({
         <div
           className={clsx(
             'w-14 h-14 rounded-2xl flex items-center justify-center border transition-all',
-            ELEMENT_COLORS[chart.element?.toLowerCase() ?? 'fire']
+            ELEMENT_COLORS[chart.element?.toLowerCase() ?? 'fire'],
           )}
         >
           <span className="material-symbols-outlined text-3xl">{chartIcon}</span>
         </div>
 
         {/* Hover Actions */}
-        <div
-          className={clsx(
-            'flex gap-1 transition-opacity',
-            'opacity-0 group-hover:opacity-100'
-          )}
-        >
+        <div className={clsx('flex gap-1 transition-opacity', 'opacity-0 group-hover:opacity-100')}>
           <button
             onClick={handleEdit}
             className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-slate-100 transition-colors"
@@ -167,19 +157,23 @@ export const ChartCard: React.FC<ChartCardProps> = ({
             <span className="material-symbols-outlined text-lg">edit</span>
           </button>
           <button
-            onClick={(e) => { void handleShare(e); }}
+            onClick={(e) => {
+              void handleShare(e);
+            }}
             className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-slate-100 transition-colors"
             aria-label="Share chart"
           >
             <span className="material-symbols-outlined text-lg">share</span>
           </button>
           <button
-            onClick={(e) => { void handleDelete(e); }}
+            onClick={(e) => {
+              void handleDelete(e);
+            }}
             className={clsx(
               'p-2 rounded-lg transition-colors',
               showDeleteConfirm
                 ? 'bg-red-500 text-white'
-                : 'hover:bg-red-500/20 text-slate-400 hover:text-red-400'
+                : 'hover:bg-red-500/20 text-slate-400 hover:text-red-400',
             )}
             aria-label={showDeleteConfirm ? 'Confirm delete' : 'Delete chart'}
           >
@@ -204,25 +198,19 @@ export const ChartCard: React.FC<ChartCardProps> = ({
       {/* Big Three */}
       <div className="grid grid-cols-3 gap-2 mb-6">
         <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">
-            Sun
-          </span>
+          <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">Sun</span>
           <span className="text-xs font-bold text-cosmic-gold">
             {sunSymbol} {sunSign.slice(0, 3)}
           </span>
         </div>
         <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">
-            Moon
-          </span>
+          <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">Moon</span>
           <span className="text-xs font-bold text-slate-300">
             {moonSymbol} {moonSign.slice(0, 3)}
           </span>
         </div>
         <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/50">
-          <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">
-            Rising
-          </span>
+          <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">Rising</span>
           <span className="text-xs font-bold text-slate-300">
             {risingSymbol} {risingSign.slice(0, 3)}
           </span>
@@ -237,7 +225,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
               key={tag}
               className={clsx(
                 'px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider',
-                TAG_COLORS[tag] ?? TAG_COLORS.Default
+                TAG_COLORS[tag] ?? TAG_COLORS.Default,
               )}
             >
               {tag}
@@ -263,7 +251,9 @@ export const ChartCard: React.FC<ChartCardProps> = ({
                 Cancel
               </button>
               <button
-                onClick={(e) => { void handleDelete(e); }}
+                onClick={(e) => {
+                  void handleDelete(e);
+                }}
                 className="px-4 py-2 bg-white hover:bg-white/90 rounded-lg text-red-600 text-sm font-bold transition-colors"
               >
                 Delete

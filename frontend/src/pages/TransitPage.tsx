@@ -8,23 +8,14 @@
 
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  EmptyState,
-  AppLayout,
-  TransitDashboard,
-  TransitDetailModal,
-} from '../components';
+import { EmptyState, AppLayout, TransitDashboard, TransitDetailModal } from '../components';
 import type {
   Transit as TransitType,
   TransitHighlight,
   TransitCalendarDay,
   TransitDashboardData,
 } from '../components/TransitDashboard';
-import {
-  useTodayTransits,
-  useTransitForecast,
-  useTransitCalendar,
-} from '../hooks';
+import { useTodayTransits, useTransitForecast, useTransitCalendar } from '../hooks';
 import type { TransitReading } from '../services/transit.service';
 import { getErrorMessage } from '../utils/errorHandling';
 
@@ -112,25 +103,21 @@ export default function TransitPage() {
   const currentYear = now.getFullYear();
 
   // React Query hooks
-  const {
-    data: todayReading,
-    error: todayError,
-  } = useTodayTransits(true);
+  const { data: todayReading, error: todayError } = useTodayTransits(true);
 
-  const {
-    data: weekReadings,
-    error: weekError,
-  } = useTransitForecast('week', true);
+  const { data: weekReadings, error: weekError } = useTransitForecast('week', true);
 
-  const {
-    data: calendarReadings,
-    error: calendarError,
-  } = useTransitCalendar(currentMonth, currentYear, true);
+  const { data: calendarReadings, error: calendarError } = useTransitCalendar(
+    currentMonth,
+    currentYear,
+    true,
+  );
 
   // Aggregate error from any query
-  const queryError =
-    todayError ?? weekError ?? calendarError;
-  const errorMessage = queryError ? getErrorMessage(queryError, 'Failed to load transit data') : null;
+  const queryError = todayError ?? weekError ?? calendarError;
+  const errorMessage = queryError
+    ? getErrorMessage(queryError, 'Failed to load transit data')
+    : null;
 
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
@@ -140,7 +127,9 @@ export default function TransitPage() {
 
     /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
     const weekTransits: TransitType[] = weekReadings
-      ? weekReadings.flatMap((r: TransitReading) => r.transits.map((t) => mapReadingToTransit(t, r)))
+      ? weekReadings.flatMap((r: TransitReading) =>
+          r.transits.map((t) => mapReadingToTransit(t, r)),
+        )
       : [];
     /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 

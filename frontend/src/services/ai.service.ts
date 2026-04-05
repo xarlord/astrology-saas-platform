@@ -57,7 +57,10 @@ class AIService {
    * Generate AI compatibility analysis
    */
   async generateCompatibility(synastryData: SynastryChartData): Promise<AIInterpretationResponse> {
-    const response = await api.post<{ data: AIInterpretationResponse }>('/ai/compatibility', synastryData);
+    const response = await api.post<{ data: AIInterpretationResponse }>(
+      '/ai/compatibility',
+      synastryData,
+    );
     return response.data.data;
   }
 
@@ -65,7 +68,9 @@ class AIService {
    * Check AI service status
    */
   async checkStatus(): Promise<{ available: boolean; service: string | null }> {
-    const response = await api.get<{ data: { available: boolean; service: string | null } }>('/ai/status');
+    const response = await api.get<{ data: { available: boolean; service: string | null } }>(
+      '/ai/status',
+    );
     return response.data.data;
   }
 

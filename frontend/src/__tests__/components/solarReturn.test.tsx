@@ -82,7 +82,7 @@ const mockSolarReturns = [
     returnLocation: {
       name: 'New York, USA',
       latitude: 40.7128,
-      longitude: -74.0060,
+      longitude: -74.006,
       timezone: 'America/New_York',
     },
     interpretation: {
@@ -187,11 +187,7 @@ const mockInterpretation = {
       timing: 'Best during latter half',
     },
   ],
-  advice: [
-    'Focus on self-development',
-    'Start new projects',
-    'Build confidence',
-  ],
+  advice: ['Focus on self-development', 'Start new projects', 'Build confidence'],
   keywords: ['new', 'growth', 'transformation', 'empowerment'],
 };
 
@@ -201,7 +197,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('renders loading state initially', () => {
-    (mockedApi.get).mockResolvedValue({
+    mockedApi.get.mockResolvedValue({
       data: { data: [] },
     });
 
@@ -211,7 +207,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('renders solar returns after loading', async () => {
-    (mockedApi.get).mockResolvedValue({
+    mockedApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -224,7 +220,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('displays empty state when no returns', async () => {
-    (mockedApi.get).mockResolvedValue({
+    mockedApi.get.mockResolvedValue({
       data: { data: [] },
     });
 
@@ -237,7 +233,7 @@ describe('SolarReturnDashboard', () => {
   });
 
   it('filters relocated returns', async () => {
-    (mockedApi.get).mockResolvedValue({
+    mockedApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -256,17 +252,17 @@ describe('SolarReturnDashboard', () => {
 
   it('calculates new solar return', async () => {
     // Mock api.get for fetching solar returns history
-    (mockedApi.get).mockResolvedValue({
+    mockedApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
     // Mock axios.get for fetching charts (used in handleCalculateNew)
-    (mockedAxios.get).mockResolvedValue({
+    mockedAxios.get.mockResolvedValue({
       data: { data: [{ id: 'chart-1', name: 'Natal Chart' }] },
     });
 
     // Mock axios.post for calculating solar return
-    (mockedAxios.post).mockResolvedValue({
+    mockedAxios.post.mockResolvedValue({
       data: { data: mockSolarReturns[0] },
     });
 
@@ -281,12 +277,12 @@ describe('SolarReturnDashboard', () => {
     fireEvent.click(calculateButton);
 
     await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalled();
+      expect(mockedApi.post).toHaveBeenCalled();
     });
   });
 
   it('sorts returns by year and date', async () => {
-    (mockedApi.get).mockResolvedValue({
+    mockedApi.get.mockResolvedValue({
       data: { data: mockSolarReturns },
     });
 
@@ -301,40 +297,24 @@ describe('SolarReturnDashboard', () => {
 
 describe('SolarReturnChart', () => {
   it('renders chart canvas', () => {
-    render(
-      <SolarReturnChart
-        chartData={mockChartData}
-        year={2026}
-        location="New York"
-      />
-    );
+    render(<SolarReturnChart chartData={mockChartData} year={2026} location="New York" />);
 
     expect(screen.getByText(/solar return chart for 2026/i)).toBeInTheDocument();
     expect(screen.getByText(/new york/i)).toBeInTheDocument();
   });
 
   it('displays zoom controls', () => {
-    render(
-      <SolarReturnChart
-        chartData={mockChartData}
-        year={2026}
-      />
-    );
+    render(<SolarReturnChart chartData={mockChartData} year={2026} />);
 
     const buttons = screen.getAllByRole('button');
     expect(buttons.length).toBeGreaterThan(0);
   });
 
   it('handles zoom in/out', () => {
-    render(
-      <SolarReturnChart
-        chartData={mockChartData}
-        year={2026}
-      />
-    );
+    render(<SolarReturnChart chartData={mockChartData} year={2026} />);
 
     const buttons = screen.getAllByRole('button');
-    const zoomButtons = buttons.filter(btn => btn.querySelector('svg'));
+    const zoomButtons = buttons.filter((btn) => btn.querySelector('svg'));
 
     expect(zoomButtons.length).toBeGreaterThan(0);
 
@@ -345,13 +325,7 @@ describe('SolarReturnChart', () => {
   });
 
   it('displays planet legend', () => {
-    render(
-      <SolarReturnChart
-        chartData={mockChartData}
-        year={2026}
-        showAspects={true}
-      />
-    );
+    render(<SolarReturnChart chartData={mockChartData} year={2026} showAspects={true} />);
 
     expect(screen.getByText(/sun/i)).toBeInTheDocument();
     expect(screen.getByText(/moon/i)).toBeInTheDocument();
@@ -366,7 +340,7 @@ describe('SolarReturnInterpretation', () => {
         interpretation={mockInterpretation}
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
-      />
+      />,
     );
 
     expect(screen.getByText(/sun in first house/i)).toBeInTheDocument();
@@ -379,7 +353,7 @@ describe('SolarReturnInterpretation', () => {
         interpretation={mockInterpretation}
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
-      />
+      />,
     );
 
     expect(screen.getByText(/moon phase: full/i)).toBeInTheDocument();
@@ -392,7 +366,7 @@ describe('SolarReturnInterpretation', () => {
         interpretation={mockInterpretation}
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
-      />
+      />,
     );
 
     expect(screen.getByText(/lucky days/i)).toBeInTheDocument();
@@ -406,7 +380,7 @@ describe('SolarReturnInterpretation', () => {
         interpretation={mockInterpretation}
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
-      />
+      />,
     );
 
     // Check that component renders - just verify it doesn't crash
@@ -420,7 +394,7 @@ describe('SolarReturnInterpretation', () => {
         interpretation={mockInterpretation}
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
-      />
+      />,
     );
 
     expect(screen.getByText(/your advice for 2026/i)).toBeInTheDocument();
@@ -433,11 +407,11 @@ describe('SolarReturnInterpretation', () => {
         interpretation={mockInterpretation}
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
-      />
+      />,
     );
 
     expect(screen.getByText(/keywords for 2026/i)).toBeInTheDocument();
-    mockInterpretation.keywords.forEach(keyword => {
+    mockInterpretation.keywords.forEach((keyword) => {
       expect(screen.getByText(keyword)).toBeInTheDocument();
     });
   });
@@ -451,7 +425,7 @@ describe('SolarReturnInterpretation', () => {
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
         onDownload={onDownload}
-      />
+      />,
     );
 
     const downloadButton = screen.getByRole('button', { name: /save/i });
@@ -469,7 +443,7 @@ describe('SolarReturnInterpretation', () => {
         year={2026}
         returnDate="2026-01-15T10:30:00Z"
         onShare={onShare}
-      />
+      />,
     );
 
     const shareButton = screen.getByRole('button', { name: /share/i });
@@ -481,13 +455,7 @@ describe('SolarReturnInterpretation', () => {
 
 describe('RelocationCalculator', () => {
   it('renders popular locations', () => {
-    render(
-      <RelocationCalculator
-        natalChartId="chart-1"
-        year={2026}
-        onRecalculate={vi.fn()}
-      />
-    );
+    render(<RelocationCalculator natalChartId="chart-1" year={2026} onRecalculate={vi.fn()} />);
 
     // Component should render
     expect(screen.getByText(/relocation/i)).toBeInTheDocument();
@@ -503,11 +471,7 @@ describe('RelocationCalculator', () => {
     });
 
     render(
-      <RelocationCalculator
-        natalChartId="chart-1"
-        year={2026}
-        onRecalculate={onRecalculate}
-      />
+      <RelocationCalculator natalChartId="chart-1" year={2026} onRecalculate={onRecalculate} />,
     );
 
     const locationButton = screen.getByText(/new york, usa/i);
@@ -518,8 +482,8 @@ describe('RelocationCalculator', () => {
         expect.objectContaining({
           name: 'New York, USA',
           latitude: 40.7128,
-          longitude: -74.0060,
-        })
+          longitude: -74.006,
+        }),
       );
     });
   });
@@ -534,11 +498,7 @@ describe('RelocationCalculator', () => {
     });
 
     render(
-      <RelocationCalculator
-        natalChartId="chart-1"
-        year={2026}
-        onRecalculate={onRecalculate}
-      />
+      <RelocationCalculator natalChartId="chart-1" year={2026} onRecalculate={onRecalculate} />,
     );
 
     const locationButton = screen.getByText(/new york, usa/i);
@@ -550,13 +510,7 @@ describe('RelocationCalculator', () => {
   });
 
   it('handles manual coordinate entry', () => {
-    render(
-      <RelocationCalculator
-        natalChartId="chart-1"
-        year={2026}
-        onRecalculate={vi.fn()}
-      />
-    );
+    render(<RelocationCalculator natalChartId="chart-1" year={2026} onRecalculate={vi.fn()} />);
 
     // Component should render
     expect(screen.getByText(/relocation/i)).toBeInTheDocument();
@@ -572,22 +526,14 @@ describe('BirthdaySharing', () => {
   };
 
   it('renders sharing preview', () => {
-    render(
-      <BirthdaySharing
-        solarReturn={mockSolarReturn}
-      />
-    );
+    render(<BirthdaySharing solarReturn={mockSolarReturn} />);
 
     expect(screen.getByText(/share as gift/i)).toBeInTheDocument();
     expect(screen.getByText(/solar return reading for 2026/i)).toBeInTheDocument();
   });
 
   it('switches between link and email sharing', () => {
-    render(
-      <BirthdaySharing
-        solarReturn={mockSolarReturn}
-      />
-    );
+    render(<BirthdaySharing solarReturn={mockSolarReturn} />);
 
     const linkTab = screen.getByRole('button', { name: /share link/i });
     const emailTab = screen.getByRole('button', { name: /send email/i });
@@ -603,22 +549,18 @@ describe('BirthdaySharing', () => {
   });
 
   it('generates share link', async () => {
-    (mockedApi.post).mockResolvedValue({
+    mockedApi.post.mockResolvedValue({
       data: { data: { url: 'https://example.com/share/abc123' } },
     });
 
-    render(
-      <BirthdaySharing
-        solarReturn={mockSolarReturn}
-      />
-    );
+    render(<BirthdaySharing solarReturn={mockSolarReturn} />);
 
     // Component should render with sharing options
     expect(screen.getByText(/share as gift/i)).toBeInTheDocument();
   });
 
   it('copies link to clipboard', async () => {
-    (mockedApi.post).mockResolvedValue({
+    mockedApi.post.mockResolvedValue({
       data: { data: { url: 'https://example.com/share/abc123' } },
     });
 
@@ -630,31 +572,22 @@ describe('BirthdaySharing', () => {
       },
     });
 
-    render(
-      <BirthdaySharing
-        solarReturn={mockSolarReturn}
-      />
-    );
+    render(<BirthdaySharing solarReturn={mockSolarReturn} />);
 
     // Component should render with sharing options
     expect(screen.getByText(/share as gift/i)).toBeInTheDocument();
   });
 
   it('sends email sharing', async () => {
-    (mockedApi.post).mockResolvedValue({
+    mockedApi.post.mockResolvedValue({
       data: { success: true },
     });
 
-    render(
-      <BirthdaySharing
-        solarReturn={mockSolarReturn}
-        recipientEmail="friend@example.com"
-      />
-    );
+    render(<BirthdaySharing solarReturn={mockSolarReturn} recipientEmail="friend@example.com" />);
 
     // Switch to email tab
     const emailTabs = screen.getAllByRole('button');
-    const emailTab = emailTabs.find(btn => btn.textContent?.includes('Send Email'));
+    const emailTab = emailTabs.find((btn) => btn.textContent?.includes('Send Email'));
     expect(emailTab).toBeInTheDocument();
 
     if (emailTab) {

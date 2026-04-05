@@ -104,12 +104,12 @@ export const VideoModal: React.FC<VideoModalProps> = ({
 
   // Get current chapter
   const currentChapter = chapters.find(
-    (chapter) => currentTime >= chapter.startTime && currentTime < chapter.endTime
+    (chapter) => currentTime >= chapter.startTime && currentTime < chapter.endTime,
   );
 
   // Get current transcript entry
   const currentTranscriptEntry = transcript.find(
-    (entry) => currentTime >= entry.startTime && currentTime < entry.endTime
+    (entry) => currentTime >= entry.startTime && currentTime < entry.endTime,
   );
 
   // Handle play/pause
@@ -138,14 +138,17 @@ export const VideoModal: React.FC<VideoModalProps> = ({
   }, []);
 
   // Handle seek
-  const handleSeek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (progressRef.current && videoRef.current) {
-      const rect = progressRef.current.getBoundingClientRect();
-      const percent = (e.clientX - rect.left) / rect.width;
-      const newTime = percent * videoDuration;
-      videoRef.current.currentTime = Math.max(0, Math.min(newTime, videoDuration));
-    }
-  }, [videoDuration]);
+  const handleSeek = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (progressRef.current && videoRef.current) {
+        const rect = progressRef.current.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        const newTime = percent * videoDuration;
+        videoRef.current.currentTime = Math.max(0, Math.min(newTime, videoDuration));
+      }
+    },
+    [videoDuration],
+  );
 
   // Handle volume change
   const handleVolumeChange = useCallback((newVolume: number) => {
@@ -174,14 +177,17 @@ export const VideoModal: React.FC<VideoModalProps> = ({
   }, []);
 
   // Seek to chapter
-  const seekToChapter = useCallback((startTime: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = startTime;
-      if (!isPlaying) {
-        void videoRef.current.play();
+  const seekToChapter = useCallback(
+    (startTime: number) => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = startTime;
+        if (!isPlaying) {
+          void videoRef.current.play();
+        }
       }
-    }
-  }, [isPlaying]);
+    },
+    [isPlaying],
+  );
 
   // Toggle fullscreen
   const toggleFullscreen = useCallback(() => {
@@ -216,7 +222,10 @@ export const VideoModal: React.FC<VideoModalProps> = ({
         case 'ArrowRight':
           e.preventDefault();
           if (videoRef.current) {
-            videoRef.current.currentTime = Math.min(videoDuration, videoRef.current.currentTime + 10);
+            videoRef.current.currentTime = Math.min(
+              videoDuration,
+              videoRef.current.currentTime + 10,
+            );
           }
           break;
         case 'm':
@@ -237,7 +246,16 @@ export const VideoModal: React.FC<VideoModalProps> = ({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, showSettings, showTranscript, togglePlay, toggleMute, toggleFullscreen, videoDuration, onClose]);
+  }, [
+    isOpen,
+    showSettings,
+    showTranscript,
+    togglePlay,
+    toggleMute,
+    toggleFullscreen,
+    videoDuration,
+    onClose,
+  ]);
 
   // Reset state when modal closes
   useEffect(() => {
@@ -284,7 +302,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
               'relative w-full max-w-4xl rounded-2xl overflow-hidden',
               'bg-gray-900/95 backdrop-blur-xl border border-white/10',
               'shadow-2xl shadow-purple-500/20',
-              className
+              className,
             )}
             variants={modalVariants}
             transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -294,10 +312,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-              <h2
-                id="video-modal-title"
-                className="text-lg font-semibold text-white truncate"
-              >
+              <h2 id="video-modal-title" className="text-lg font-semibold text-white truncate">
                 {title}
               </h2>
               <button
@@ -386,11 +401,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                     className="p-2 text-white hover:text-purple-400 transition-colors"
                     aria-label={isPlaying ? 'Pause' : 'Play'}
                   >
-                    {isPlaying ? (
-                      <Pause className="w-6 h-6" />
-                    ) : (
-                      <Play className="w-6 h-6" />
-                    )}
+                    {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
                   </button>
 
                   {/* Volume */}
@@ -400,11 +411,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                       className="p-2 text-white hover:text-purple-400 transition-colors"
                       aria-label={isMuted ? 'Unmute' : 'Mute'}
                     >
-                      {isMuted ? (
-                        <VolumeX className="w-5 h-5" />
-                      ) : (
-                        <Volume2 className="w-5 h-5" />
-                      )}
+                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                     </button>
                     <input
                       type="range"
@@ -431,7 +438,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                       onClick={() => setShowSettings(!showSettings)}
                       className={clsx(
                         'p-2 transition-colors',
-                        showSettings ? 'text-purple-400' : 'text-white hover:text-purple-400'
+                        showSettings ? 'text-purple-400' : 'text-white hover:text-purple-400',
                       )}
                       aria-label="Settings"
                       aria-expanded={showSettings}
@@ -452,7 +459,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                                   'px-2 py-1 text-xs rounded',
                                   playbackSpeed === speed
                                     ? 'bg-purple-500 text-white'
-                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600',
                                 )}
                               >
                                 {speed}x
@@ -531,7 +538,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                               'block w-full text-left py-2 px-3 rounded-lg text-sm transition-colors',
                               currentTranscriptEntry?.id === entry.id
                                 ? 'bg-purple-500/20 text-purple-300'
-                                : 'text-gray-400 hover:bg-white/5 hover:text-gray-300'
+                                : 'text-gray-400 hover:bg-white/5 hover:text-gray-300',
                             )}
                           >
                             <span className="text-xs text-gray-500 mr-2">
@@ -560,7 +567,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                         'px-3 py-1.5 rounded-full text-sm transition-all',
                         currentChapter?.id === chapter.id
                           ? 'bg-purple-500 text-white'
-                          : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50'
+                          : 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/50',
                       )}
                     >
                       <span className="text-xs text-gray-400 mr-1">

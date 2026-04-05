@@ -27,9 +27,21 @@ import {
 describe('Chart Schemas', () => {
   describe('zodiacSignSchema', () => {
     it('should validate all zodiac signs', () => {
-      const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-        'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
-      signs.forEach(sign => {
+      const signs = [
+        'aries',
+        'taurus',
+        'gemini',
+        'cancer',
+        'leo',
+        'virgo',
+        'libra',
+        'scorpio',
+        'sagittarius',
+        'capricorn',
+        'aquarius',
+        'pisces',
+      ];
+      signs.forEach((sign) => {
         expect(zodiacSignSchema.safeParse(sign).success).toBe(true);
       });
     });
@@ -43,7 +55,7 @@ describe('Chart Schemas', () => {
   describe('elementSchema', () => {
     it('should validate all elements', () => {
       const elements = ['fire', 'earth', 'air', 'water'];
-      elements.forEach(element => {
+      elements.forEach((element) => {
         expect(elementSchema.safeParse(element).success).toBe(true);
       });
     });
@@ -56,7 +68,7 @@ describe('Chart Schemas', () => {
   describe('qualitySchema', () => {
     it('should validate all qualities', () => {
       const qualities = ['cardinal', 'fixed', 'mutable'];
-      qualities.forEach(quality => {
+      qualities.forEach((quality) => {
         expect(qualitySchema.safeParse(quality).success).toBe(true);
       });
     });
@@ -69,7 +81,7 @@ describe('Chart Schemas', () => {
   describe('chartTypeSchema', () => {
     it('should validate all chart types', () => {
       const types = ['natal', 'draconic', 'harmonic', 'composite', 'synastry'];
-      types.forEach(type => {
+      types.forEach((type) => {
         expect(chartTypeSchema.safeParse(type).success).toBe(true);
       });
     });
@@ -82,7 +94,7 @@ describe('Chart Schemas', () => {
   describe('houseSystemSchema', () => {
     it('should validate all house systems', () => {
       const systems = ['placidus', 'koch', 'porphyry', 'equal', 'whole-sign', 'topocentric'];
-      systems.forEach(system => {
+      systems.forEach((system) => {
         expect(houseSystemSchema.safeParse(system).success).toBe(true);
       });
     });
@@ -95,14 +107,21 @@ describe('Chart Schemas', () => {
   describe('aspectTypeSchema', () => {
     it('should validate major aspects', () => {
       const aspects = ['conjunction', 'opposition', 'trine', 'square', 'sextile'];
-      aspects.forEach(aspect => {
+      aspects.forEach((aspect) => {
         expect(aspectTypeSchema.safeParse(aspect).success).toBe(true);
       });
     });
 
     it('should validate minor aspects', () => {
-      const aspects = ['quincunx', 'semisextile', 'sesquisquare', 'semisquare', 'quintile', 'biquintile'];
-      aspects.forEach(aspect => {
+      const aspects = [
+        'quincunx',
+        'semisextile',
+        'sesquisquare',
+        'semisquare',
+        'quintile',
+        'biquintile',
+      ];
+      aspects.forEach((aspect) => {
         expect(aspectTypeSchema.safeParse(aspect).success).toBe(true);
       });
     });
@@ -114,17 +133,35 @@ describe('Chart Schemas', () => {
 
   describe('planetNameSchema', () => {
     it('should validate all planets', () => {
-      const planets = ['sun', 'moon', 'mercury', 'venus', 'mars',
-        'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
-      planets.forEach(planet => {
+      const planets = [
+        'sun',
+        'moon',
+        'mercury',
+        'venus',
+        'mars',
+        'jupiter',
+        'saturn',
+        'uranus',
+        'neptune',
+        'pluto',
+      ];
+      planets.forEach((planet) => {
         expect(planetNameSchema.safeParse(planet).success).toBe(true);
       });
     });
 
     it('should validate points and nodes', () => {
-      const points = ['north-node', 'south-node', 'chiron', 'lilith',
-        'ascendant', 'mc', 'descendant', 'ic'];
-      points.forEach(point => {
+      const points = [
+        'north-node',
+        'south-node',
+        'chiron',
+        'lilith',
+        'ascendant',
+        'mc',
+        'descendant',
+        'ic',
+      ];
+      points.forEach((point) => {
         expect(planetNameSchema.safeParse(point).success).toBe(true);
       });
     });
@@ -142,7 +179,7 @@ describe('Chart Schemas', () => {
       birthTime: '14:30',
       birthPlace: 'New York, NY, USA',
       latitude: 40.7128,
-      longitude: -74.0060,
+      longitude: -74.006,
       timezone: 'America/New_York',
     };
 
@@ -381,7 +418,7 @@ describe('Chart Schemas', () => {
         birthTime: '14:30',
         birthPlace: 'New York, NY, USA',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       },
     };
@@ -438,7 +475,7 @@ describe('Chart Schemas', () => {
           birthTime: '14:30',
           birthPlace: 'New York',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
         },
         createdAt: '2024-01-01T00:00:00Z',

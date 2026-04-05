@@ -79,7 +79,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
             status === 'in-progress' ? 'bg-primary/10 text-primary' : 'bg-white/5 text-slate-400'
           }`}
         >
-          <span className="material-symbols-outlined">{status === 'locked' ? 'lock' : 'school'}</span>
+          <span className="material-symbols-outlined">
+            {status === 'locked' ? 'lock' : 'school'}
+          </span>
         </div>
         {getStatusBadge()}
       </div>

@@ -5,9 +5,9 @@
  * Matches design from stitch-UI/desktop/01-landing-page.html
  */
 
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   CheckCircle,
   Sparkles,
@@ -24,7 +24,7 @@ import {
   PlayCircle,
   Quote,
   Sun,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,9 +47,7 @@ export default function LandingPage() {
               <div className="size-8 text-primary animate-pulse">
                 <Pentagon className="w-10 h-10" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">
-                AstroVerse
-              </span>
+              <span className="text-xl font-bold tracking-tight text-white">AstroVerse</span>
             </Link>
 
             {/* Desktop Menu */}
@@ -97,11 +95,7 @@ export default function LandingPage() {
                 className="text-slate-300 hover:text-white p-2"
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
@@ -166,8 +160,8 @@ export default function LandingPage() {
                 radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
                 radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px)
               `,
-                backgroundSize: "550px 550px, 350px 350px, 250px 250px",
-                backgroundPosition: "0 0, 40px 60px, 130px 270px",
+                backgroundSize: '550px 550px, 350px 350px, 250px 250px',
+                backgroundPosition: '0 0, 40px 60px, 130px 270px',
               }}
             />
           </div>
@@ -178,7 +172,7 @@ export default function LandingPage() {
               className="w-full h-full"
               style={{
                 background:
-                  "radial-gradient(circle at 50% 50%, rgba(123, 59, 227, 0.15) 0%, rgba(11, 13, 23, 0) 50%)",
+                  'radial-gradient(circle at 50% 50%, rgba(123, 59, 227, 0.15) 0%, rgba(11, 13, 23, 0) 50%)',
               }}
             />
           </div>
@@ -204,16 +198,15 @@ export default function LandingPage() {
                   <br />
                   <span
                     className="text-primary"
-                    style={{ textShadow: "0 0 20px rgba(123, 59, 227, 0.5)" }}
+                    style={{ textShadow: '0 0 20px rgba(123, 59, 227, 0.5)' }}
                   >
                     Cosmic Blueprint
                   </span>
                 </h1>
 
                 <p className="text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
-                  Unlock the secrets of your natal chart with AI-powered
-                  insights and hyper-personalized transit forecasts. Align your
-                  life with the stars.
+                  Unlock the secrets of your natal chart with AI-powered insights and
+                  hyper-personalized transit forecasts. Align your life with the stars.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
@@ -221,17 +214,15 @@ export default function LandingPage() {
                     to="/register"
                     className="flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-xl text-base font-bold tracking-wide transition-all hover:scale-105"
                     style={{
-                      boxShadow: "0 0 20px rgba(123, 59, 227, 0.4)",
+                      boxShadow: '0 0 20px rgba(123, 59, 227, 0.4)',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow =
-                        "0 0 30px rgba(123, 59, 227, 0.6)";
-                      e.currentTarget.style.transform = "translateY(-1px)";
+                      e.currentTarget.style.boxShadow = '0 0 30px rgba(123, 59, 227, 0.6)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow =
-                        "0 0 20px rgba(123, 59, 227, 0.4)";
-                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = '0 0 20px rgba(123, 59, 227, 0.4)';
+                      e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
                     Get Started Free
@@ -242,7 +233,7 @@ export default function LandingPage() {
                     className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white border border-slate-700 hover:border-primary/50 hover:bg-white/5 backdrop-blur-sm transition-all group"
                     onClick={() => {
                       // Video modal would go here
-                      console.log("Open video modal");
+                      console.log('Open video modal');
                     }}
                   >
                     <PlayCircle className="w-5 h-5" />
@@ -269,9 +260,7 @@ export default function LandingPage() {
                     />
                   </div>
                   <p>
-                    Trusted by{" "}
-                    <span className="text-white font-semibold">50,000+</span>{" "}
-                    enthusiasts
+                    Trusted by <span className="text-white font-semibold">50,000+</span> enthusiasts
                   </p>
                 </div>
               </div>
@@ -284,20 +273,18 @@ export default function LandingPage() {
                 {/* 3D Wheel Representation */}
                 <div
                   className="relative w-full aspect-square max-w-[600px]"
-                  style={{ animation: "spin 60s linear infinite" }}
+                  style={{ animation: 'spin 60s linear infinite' }}
                 >
                   <div
                     className="absolute inset-0 opacity-90 drop-shadow-[0_0_30px_rgba(123,59,227,0.4)]"
                     style={{
                       backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuBCTsCxWCP1swyyZf1EW6u7OsmMeqKYbb4othgBcP_TtMrDmCE7NKYOgHlWMZnDHKvw8lWAM1StrywzIuT_KRsNEedt_TDzofWGUGCOW-pR7_QUae9UV7mQTRnEosC3woL7co6fiHer9JUm8dBJ4XNE0Fv0NGaAZw2yIhxt9v5pbQRUjSlxP6qtsFuJUUcTXbwSuliR31-mr3thFvd2Tikk4uam8MzgJ00-Exc1aPvwnFZefFTcVsErD9_bWl8udMRAL_FUuCC7AYtA')`,
-                      backgroundSize: "contain",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                      maskImage:
-                        "radial-gradient(circle, black 60%, transparent 100%)",
-                      WebkitMaskImage:
-                        "radial-gradient(circle, black 60%, transparent 100%)",
-                      mixBlendMode: "screen",
+                      backgroundSize: 'contain',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                      maskImage: 'radial-gradient(circle, black 60%, transparent 100%)',
+                      WebkitMaskImage: 'radial-gradient(circle, black 60%, transparent 100%)',
+                      mixBlendMode: 'screen',
                     }}
                   />
                 </div>
@@ -306,10 +293,10 @@ export default function LandingPage() {
                 <div
                   className="absolute top-1/4 right-0 p-4 rounded-xl border-l-4 border-l-primary backdrop-blur-md"
                   style={{
-                    background: "rgba(19, 22, 37, 0.6)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-                    animation: "bounce 4s infinite",
+                    background: 'rgba(19, 22, 37, 0.6)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    animation: 'bounce 4s infinite',
                   }}
                 >
                   <div className="flex items-center gap-3">
@@ -329,10 +316,10 @@ export default function LandingPage() {
                 <div
                   className="absolute bottom-1/4 left-0 p-4 rounded-xl border-l-4 border-l-accent-gold backdrop-blur-md"
                   style={{
-                    background: "rgba(19, 22, 37, 0.6)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-                    animation: "bounce 5s infinite",
+                    background: 'rgba(19, 22, 37, 0.6)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    animation: 'bounce 5s infinite',
                   }}
                 >
                   <div className="flex items-center gap-3">
@@ -340,9 +327,7 @@ export default function LandingPage() {
                       <Sun className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider">
-                        Sun Sign
-                      </p>
+                      <p className="text-xs text-slate-400 uppercase tracking-wider">Sun Sign</p>
                       <p className="font-bold text-white">Leo (Fire)</p>
                     </div>
                   </div>
@@ -367,8 +352,8 @@ export default function LandingPage() {
                 Align with the Stars
               </h3>
               <p className="text-slate-400 text-lg">
-                Our comprehensive suite of astrological tools helps you navigate
-                life's cosmic currents with precision.
+                Our comprehensive suite of astrological tools helps you navigate life's cosmic
+                currents with precision.
               </p>
             </div>
 
@@ -377,29 +362,27 @@ export default function LandingPage() {
               <div
                 className="group p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div
                   className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ transitionDuration: "300ms" }}
+                  style={{ transitionDuration: '300ms' }}
                 ></div>
                 <div className="relative z-10">
                   <div
                     className="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300"
-                    style={{ boxShadow: "0 0 15px rgba(123, 59, 227, 0.1)" }}
+                    style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.1)' }}
                   >
                     <Clock className="w-8 h-8" />
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-3">
-                    Natal Charts
-                  </h4>
+                  <h4 className="text-xl font-bold text-white mb-3">Natal Charts</h4>
                   <p className="text-slate-400 leading-relaxed">
-                    Deep dive analysis of your birth chart with precise
-                    planetary positions calculated to the second.
+                    Deep dive analysis of your birth chart with precise planetary positions
+                    calculated to the second.
                   </p>
                 </div>
               </div>
@@ -408,29 +391,27 @@ export default function LandingPage() {
               <div
                 className="group p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div
                   className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ transitionDuration: "300ms" }}
+                  style={{ transitionDuration: '300ms' }}
                 ></div>
                 <div className="relative z-10">
                   <div
                     className="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300"
-                    style={{ boxShadow: "0 0 15px rgba(123, 59, 227, 0.1)" }}
+                    style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.1)' }}
                   >
                     <Brain className="w-8 h-8" />
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-3">
-                    Personality Insights
-                  </h4>
+                  <h4 className="text-xl font-bold text-white mb-3">Personality Insights</h4>
                   <p className="text-slate-400 leading-relaxed">
-                    Psychological profiling based on elemental balances and
-                    modalities. Understand your true self.
+                    Psychological profiling based on elemental balances and modalities. Understand
+                    your true self.
                   </p>
                 </div>
               </div>
@@ -439,29 +420,27 @@ export default function LandingPage() {
               <div
                 className="group p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div
                   className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ transitionDuration: "300ms" }}
+                  style={{ transitionDuration: '300ms' }}
                 ></div>
                 <div className="relative z-10">
                   <div
                     className="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300"
-                    style={{ boxShadow: "0 0 15px rgba(123, 59, 227, 0.1)" }}
+                    style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.1)' }}
                   >
                     <Calendar className="w-8 h-8" />
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-3">
-                    Transit Forecasts
-                  </h4>
+                  <h4 className="text-xl font-bold text-white mb-3">Transit Forecasts</h4>
                   <p className="text-slate-400 leading-relaxed">
-                    Predictive planning tools to navigate retrogrades and
-                    transits. Know when to act and when to pause.
+                    Predictive planning tools to navigate retrogrades and transits. Know when to act
+                    and when to pause.
                   </p>
                 </div>
               </div>
@@ -489,9 +468,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <span className="text-white font-bold text-lg">4.9/5</span>
-                  <span className="text-slate-500 text-sm ml-2">
-                    Average Rating
-                  </span>
+                  <span className="text-slate-500 text-sm ml-2">Average Rating</span>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -503,7 +480,7 @@ export default function LandingPage() {
                 </button>
                 <button
                   className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors"
-                  style={{ boxShadow: "0 0 15px rgba(123, 59, 227, 0.2)" }}
+                  style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.2)' }}
                   aria-label="Next testimonial"
                 >
                   <ArrowRight className="w-5 h-5" />
@@ -516,10 +493,10 @@ export default function LandingPage() {
               <div
                 className="p-6 rounded-xl flex flex-col justify-between h-full"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div>
@@ -527,9 +504,8 @@ export default function LandingPage() {
                     <Quote className="w-10 h-10" />
                   </div>
                   <p className="text-slate-300 text-lg leading-relaxed mb-6">
-                    "AstroVerse completely changed how I plan my month. The
-                    transit accuracy is scary good! I feel so much more
-                    aligned."
+                    "AstroVerse completely changed how I plan my month. The transit accuracy is
+                    scary good! I feel so much more aligned."
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
@@ -540,9 +516,7 @@ export default function LandingPage() {
                   />
                   <div>
                     <p className="text-white font-semibold text-sm">Elena R.</p>
-                    <p className="text-slate-500 text-xs">
-                      Professional Astrologer
-                    </p>
+                    <p className="text-slate-500 text-xs">Professional Astrologer</p>
                   </div>
                 </div>
               </div>
@@ -551,10 +525,10 @@ export default function LandingPage() {
               <div
                 className="p-6 rounded-xl flex flex-col justify-between h-full"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div>
@@ -562,9 +536,8 @@ export default function LandingPage() {
                     <Quote className="w-10 h-10" />
                   </div>
                   <p className="text-slate-300 text-lg leading-relaxed mb-6">
-                    "Finally, an astrology app that combines beautiful design
-                    with deep data. Highly recommend the Pro plan for detailed
-                    reports."
+                    "Finally, an astrology app that combines beautiful design with deep data. Highly
+                    recommend the Pro plan for detailed reports."
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
@@ -574,12 +547,8 @@ export default function LandingPage() {
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzgXONST5iDpipGxC8sINf6t5KxJVEqciK1adWFABCS6SBSBiyTfqzHvZzXiugyUYBHMGzba9QfgFXyga6k2F7d7Lz0gHzlWYpNXDjYssPva7r5qxeTibbHZJpYvB9SyhxiDa14vS97PsOQolQFB9XxqkaGEu9LB8SUnF5Pyi-tVbJctDcrVOZp5BxdHq0KGxZuShtdPs99pPYhBp3GMmjVC54wZm_MaxuKn5HK7K-vYRqyLH2SGGr5YsEUFv0JBW-FsGjeMVq6oQF"
                   />
                   <div>
-                    <p className="text-white font-semibold text-sm">
-                      Marcus T.
-                    </p>
-                    <p className="text-slate-500 text-xs">
-                      AstroVerse Pro User
-                    </p>
+                    <p className="text-white font-semibold text-sm">Marcus T.</p>
+                    <p className="text-slate-500 text-xs">AstroVerse Pro User</p>
                   </div>
                 </div>
               </div>
@@ -588,10 +557,10 @@ export default function LandingPage() {
               <div
                 className="p-6 rounded-xl flex flex-col justify-between h-full"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div>
@@ -599,8 +568,8 @@ export default function LandingPage() {
                     <Quote className="w-10 h-10" />
                   </div>
                   <p className="text-slate-300 text-lg leading-relaxed mb-6">
-                    "The natal chart breakdown is so detailed, it felt like a
-                    professional reading. The UI is absolutely stunning."
+                    "The natal chart breakdown is so detailed, it felt like a professional reading.
+                    The UI is absolutely stunning."
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
@@ -636,13 +605,11 @@ export default function LandingPage() {
               <div
                 className="rounded-2xl p-8 border border-white/5 hover:border-white/10 transition-colors"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
                 }}
               >
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  Seeker
-                </h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Seeker</h3>
                 <div className="flex items-baseline mb-6">
                   <span className="text-4xl font-bold text-white">Free</span>
                   <span className="text-slate-500 ml-2">/forever</span>
@@ -676,9 +643,9 @@ export default function LandingPage() {
               <div
                 className="relative rounded-2xl p-8 border border-primary z-10 scale-105"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
-                  boxShadow: "0 0 40px rgba(123, 59, 227, 0.2)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
+                  boxShadow: '0 0 40px rgba(123, 59, 227, 0.2)',
                 }}
               >
                 <div className="absolute top-0 right-0 left-0 -mt-4 flex justify-center">
@@ -686,9 +653,7 @@ export default function LandingPage() {
                     Most Popular
                   </span>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  Mystic
-                </h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Mystic</h3>
                 <div className="flex items-baseline mb-6">
                   <span className="text-4xl font-bold text-white">$9.99</span>
                   <span className="text-slate-500 ml-2">/mo</span>
@@ -700,15 +665,13 @@ export default function LandingPage() {
                   to="/register"
                   className="w-full block text-center py-3 px-4 rounded-lg bg-primary text-white hover:bg-primary-dark font-semibold mb-8 transition-all"
                   style={{
-                    boxShadow: "0 0 20px rgba(123, 59, 227, 0.4)",
+                    boxShadow: '0 0 20px rgba(123, 59, 227, 0.4)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow =
-                      "0 0 30px rgba(123, 59, 227, 0.6)";
+                    e.currentTarget.style.boxShadow = '0 0 30px rgba(123, 59, 227, 0.6)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow =
-                      "0 0 20px rgba(123, 59, 227, 0.4)";
+                    e.currentTarget.style.boxShadow = '0 0 20px rgba(123, 59, 227, 0.4)';
                   }}
                 >
                   Get Pro Access
@@ -737,13 +700,11 @@ export default function LandingPage() {
               <div
                 className="rounded-2xl p-8 border border-white/5 hover:border-white/10 transition-colors"
                 style={{
-                  background: "rgba(19, 22, 37, 0.6)",
-                  backdropFilter: "blur(12px)",
+                  background: 'rgba(19, 22, 37, 0.6)',
+                  backdropFilter: 'blur(12px)',
                 }}
               >
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  Oracle
-                </h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Oracle</h3>
                 <div className="flex items-baseline mb-6">
                   <span className="text-4xl font-bold text-white">$29.99</span>
                   <span className="text-slate-500 ml-2">/mo</span>
@@ -788,13 +749,11 @@ export default function LandingPage() {
             <div className="col-span-2 lg:col-span-2">
               <div className="flex items-center gap-2 mb-6">
                 <Pentagon className="w-8 h-8" />
-                <span className="text-2xl font-bold text-white">
-                  AstroVerse
-                </span>
+                <span className="text-2xl font-bold text-white">AstroVerse</span>
               </div>
               <p className="text-slate-400 text-sm mb-6 max-w-xs">
-                Connecting you to the cosmos through data-driven astrology.
-                Discover your purpose today.
+                Connecting you to the cosmos through data-driven astrology. Discover your purpose
+                today.
               </p>
               <div className="flex gap-4">
                 <a
@@ -825,18 +784,12 @@ export default function LandingPage() {
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-slate-400">
                 <li>
-                  <a
-                    className="hover:text-primary transition-colors"
-                    href="#features"
-                  >
+                  <a className="hover:text-primary transition-colors" href="#features">
                     Features
                   </a>
                 </li>
                 <li>
-                  <a
-                    className="hover:text-primary transition-colors"
-                    href="#pricing"
-                  >
+                  <a className="hover:text-primary transition-colors" href="#pricing">
                     Pricing
                   </a>
                 </li>
@@ -884,10 +837,7 @@ export default function LandingPage() {
               <p className="text-xs text-slate-500 mb-4">
                 Subscribe to our newsletter for weekly transit updates.
               </p>
-              <form
-                className="flex flex-col gap-2"
-                onSubmit={(e) => e.preventDefault()}
-              >
+              <form className="flex flex-col gap-2" onSubmit={(e) => e.preventDefault()}>
                 <input
                   className="bg-surface-dark border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   placeholder="Enter your email"
@@ -904,9 +854,7 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">
-              © 2026 AstroVerse Inc. All rights reserved.
-            </p>
+            <p className="text-slate-500 text-sm">© 2026 AstroVerse Inc. All rights reserved.</p>
             <div className="flex gap-6 text-sm text-slate-500">
               <a className="hover:text-white transition-colors" href="#">
                 Privacy Policy

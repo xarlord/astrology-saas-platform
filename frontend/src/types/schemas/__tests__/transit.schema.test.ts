@@ -25,7 +25,7 @@ describe('Transit Schemas', () => {
   describe('transitSignificanceSchema', () => {
     it('should validate all significance levels', () => {
       const levels = ['minor', 'moderate', 'major'];
-      levels.forEach(level => {
+      levels.forEach((level) => {
         expect(transitSignificanceSchema.safeParse(level).success).toBe(true);
       });
     });
@@ -38,7 +38,7 @@ describe('Transit Schemas', () => {
   describe('transitInfluenceSchema', () => {
     it('should validate all influence types', () => {
       const types = ['positive', 'neutral', 'challenging'];
-      types.forEach(type => {
+      types.forEach((type) => {
         expect(transitInfluenceSchema.safeParse(type).success).toBe(true);
       });
     });
@@ -51,7 +51,7 @@ describe('Transit Schemas', () => {
   describe('energyLevelSchema', () => {
     it('should validate all energy levels', () => {
       const levels = ['low', 'moderate', 'high'];
-      levels.forEach(level => {
+      levels.forEach((level) => {
         expect(energyLevelSchema.safeParse(level).success).toBe(true);
       });
     });
@@ -64,10 +64,16 @@ describe('Transit Schemas', () => {
   describe('lunarPhaseTypeSchema', () => {
     it('should validate all lunar phases', () => {
       const phases = [
-        'new-moon', 'waxing-crescent', 'first-quarter', 'waxing-gibbous',
-        'full-moon', 'waning-gibbous', 'last-quarter', 'waning-crescent'
+        'new-moon',
+        'waxing-crescent',
+        'first-quarter',
+        'waxing-gibbous',
+        'full-moon',
+        'waning-gibbous',
+        'last-quarter',
+        'waning-crescent',
       ];
-      phases.forEach(phase => {
+      phases.forEach((phase) => {
         expect(lunarPhaseTypeSchema.safeParse(phase).success).toBe(true);
       });
     });

@@ -97,14 +97,14 @@ export const useLocationStore = create<LocationState>()(
               headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
               },
-            }
+            },
           );
 
           if (!response.ok) {
             throw new Error('Failed to search locations');
           }
 
-          const data = await response.json() as { data: GeocodeResult[] };
+          const data = (await response.json()) as { data: GeocodeResult[] };
           const results: GeocodeResult[] = data.data;
 
           // Update state and cache
@@ -119,7 +119,8 @@ export const useLocationStore = create<LocationState>()(
 
           return results;
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to search locations';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to search locations';
           set({
             searchResults: [],
             isSearching: false,
@@ -171,7 +172,7 @@ export const useLocationStore = create<LocationState>()(
             throw new Error('Failed to get timezone information');
           }
 
-          const data = await response.json() as { data: TimezoneInfo };
+          const data = (await response.json()) as { data: TimezoneInfo };
           const timezoneInfo: TimezoneInfo = data.data;
 
           set((state) => ({
@@ -200,14 +201,14 @@ export const useLocationStore = create<LocationState>()(
             headers: {
               Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },
-          }
+          },
         );
 
         if (!response.ok) {
           throw new Error('Failed to reverse geocode');
         }
 
-        const data = await response.json() as { data: GeocodeResult };
+        const data = (await response.json()) as { data: GeocodeResult };
         return data.data;
       },
 
@@ -220,8 +221,8 @@ export const useLocationStore = create<LocationState>()(
     }),
     {
       name: 'LocationStore',
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks for optimized re-renders

@@ -96,7 +96,10 @@ describe('reportService', () => {
         type: 'synastry',
         chart2Id: 'chart-2',
       };
-      const response: ApiResponse<ReportResponse> = { success: true, data: { ...mockResponse, type: 'synastry' as const } };
+      const response: ApiResponse<ReportResponse> = {
+        success: true,
+        data: { ...mockResponse, type: 'synastry' as const },
+      };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
       const result = await reportService.generateReport(synastryRequest);
@@ -111,7 +114,10 @@ describe('reportService', () => {
         type: 'solar-return',
         year: 2024,
       };
-      const response: ApiResponse<ReportResponse> = { success: true, data: { ...mockResponse, type: 'solar-return' as const } };
+      const response: ApiResponse<ReportResponse> = {
+        success: true,
+        data: { ...mockResponse, type: 'solar-return' as const },
+      };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
       const result = await reportService.generateReport(solarRequest);
@@ -120,23 +126,33 @@ describe('reportService', () => {
     });
 
     it('should handle error with error field', async () => {
-      const response: ApiResponse<ReportResponse> = { success: false, data: mockResponse, error: 'Report generation failed' };
+      const response: ApiResponse<ReportResponse> = {
+        success: false,
+        data: mockResponse,
+        error: 'Report generation failed',
+      };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
-      await expect(reportService.generateReport(mockRequest)).rejects.toThrow('Report generation failed');
+      await expect(reportService.generateReport(mockRequest)).rejects.toThrow(
+        'Report generation failed',
+      );
     });
 
     it('should handle error without error field', async () => {
       const response: ApiResponse<ReportResponse> = { success: false, data: mockResponse };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
-      await expect(reportService.generateReport(mockRequest)).rejects.toThrow('Failed to generate report');
+      await expect(reportService.generateReport(mockRequest)).rejects.toThrow(
+        'Failed to generate report',
+      );
     });
 
     it('should handle non-Error thrown', async () => {
       mockApi.post.mockRejectedValueOnce('Network error');
 
-      await expect(reportService.generateReport(mockRequest)).rejects.toThrow('Failed to generate report');
+      await expect(reportService.generateReport(mockRequest)).rejects.toThrow(
+        'Failed to generate report',
+      );
     });
   });
 
@@ -163,7 +179,11 @@ describe('reportService', () => {
     });
 
     it('should return pending status for processing report', async () => {
-      const pendingResponse = { ...mockResponse, status: 'pending' as const, downloadUrl: undefined };
+      const pendingResponse = {
+        ...mockResponse,
+        status: 'pending' as const,
+        downloadUrl: undefined,
+      };
       const response: ApiResponse<ReportResponse> = { success: true, data: pendingResponse };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
@@ -173,7 +193,11 @@ describe('reportService', () => {
     });
 
     it('should return failed status for failed report', async () => {
-      const failedResponse = { ...mockResponse, status: 'failed' as const, error: 'Generation failed' };
+      const failedResponse = {
+        ...mockResponse,
+        status: 'failed' as const,
+        error: 'Generation failed',
+      };
       const response: ApiResponse<ReportResponse> = { success: true, data: failedResponse };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
@@ -183,7 +207,11 @@ describe('reportService', () => {
     });
 
     it('should handle error when getting status', async () => {
-      const response: ApiResponse<ReportResponse> = { success: false, data: mockResponse, error: 'Report not found' };
+      const response: ApiResponse<ReportResponse> = {
+        success: false,
+        data: mockResponse,
+        error: 'Report not found',
+      };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(reportService.getReportStatus('invalid-id')).rejects.toThrow('Report not found');
@@ -213,7 +241,9 @@ describe('reportService', () => {
     it('should handle non-Error thrown during download', async () => {
       mockApi.get.mockRejectedValueOnce('Network error');
 
-      await expect(reportService.downloadReport('report-1')).rejects.toThrow('Failed to download report');
+      await expect(reportService.downloadReport('report-1')).rejects.toThrow(
+        'Failed to download report',
+      );
     });
   });
 
@@ -228,7 +258,11 @@ describe('reportService', () => {
     });
 
     it('should handle delete error with error field', async () => {
-      const response: ApiResponse<void> = { success: false, data: undefined as unknown as void, error: 'Cannot delete report' };
+      const response: ApiResponse<void> = {
+        success: false,
+        data: undefined as unknown as void,
+        error: 'Cannot delete report',
+      };
       mockApi.delete.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(reportService.deleteReport('report-1')).rejects.toThrow('Cannot delete report');
@@ -238,13 +272,17 @@ describe('reportService', () => {
       const response: ApiResponse<void> = { success: false, data: undefined as unknown as void };
       mockApi.delete.mockResolvedValueOnce(createMockResponse(response));
 
-      await expect(reportService.deleteReport('report-1')).rejects.toThrow('Failed to delete report');
+      await expect(reportService.deleteReport('report-1')).rejects.toThrow(
+        'Failed to delete report',
+      );
     });
 
     it('should handle non-Error thrown during delete', async () => {
       mockApi.delete.mockRejectedValueOnce('Network error');
 
-      await expect(reportService.deleteReport('report-1')).rejects.toThrow('Failed to delete report');
+      await expect(reportService.deleteReport('report-1')).rejects.toThrow(
+        'Failed to delete report',
+      );
     });
   });
 
@@ -289,7 +327,11 @@ describe('reportService', () => {
     });
 
     it('should handle error when listing reports', async () => {
-      const response: ApiResponse<ReportResponse[]> = { success: false, data: [], error: 'Unauthorized' };
+      const response: ApiResponse<ReportResponse[]> = {
+        success: false,
+        data: [],
+        error: 'Unauthorized',
+      };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(reportService.listReports()).rejects.toThrow('Unauthorized');
@@ -322,7 +364,11 @@ describe('reportService', () => {
     });
 
     it('should handle retry error with error field', async () => {
-      const response: ApiResponse<ReportResponse> = { success: false, data: mockResponse, error: 'Cannot retry report' };
+      const response: ApiResponse<ReportResponse> = {
+        success: false,
+        data: mockResponse,
+        error: 'Cannot retry report',
+      };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(reportService.retryReport('report-1')).rejects.toThrow('Cannot retry report');

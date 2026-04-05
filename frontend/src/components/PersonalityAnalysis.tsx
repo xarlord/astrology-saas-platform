@@ -54,7 +54,9 @@ interface PersonalityAnalysisProps {
 }
 
 export function PersonalityAnalysis({ data }: PersonalityAnalysisProps) {
-  const [activeTab, setActiveTab] = React.useState<'overview' | 'planets' | 'houses' | 'aspects'>('overview');
+  const [activeTab, setActiveTab] = React.useState<'overview' | 'planets' | 'houses' | 'aspects'>(
+    'overview',
+  );
 
   const tabs = [
     { id: 'overview' as const, label: 'Overview', icon: '📊' },
@@ -146,9 +148,7 @@ function PlanetsTab({ data }: { data: PersonalityAnalysisData }) {
           key={`${item.planet}-${item.sign}`}
           interpretation={item}
           isExpanded={expandedPlanet === item.planet}
-          onToggle={() =>
-            setExpandedPlanet(expandedPlanet === item.planet ? null : item.planet)
-          }
+          onToggle={() => setExpandedPlanet(expandedPlanet === item.planet ? null : item.planet)}
         />
       ))}
     </div>
@@ -168,13 +168,16 @@ function HousesTab({ data }: { data: PersonalityAnalysisData }) {
 
 // Aspects Tab Component
 function AspectsTab({ data }: { data: PersonalityAnalysisData }) {
-  const aspectsByType = data.aspects.reduce((acc, aspect) => {
-    if (!acc[aspect.aspect]) {
-      acc[aspect.aspect] = [];
-    }
-    acc[aspect.aspect].push(aspect);
-    return acc;
-  }, {} as Record<string, AspectInterpretation[]>);
+  const aspectsByType = data.aspects.reduce(
+    (acc, aspect) => {
+      if (!acc[aspect.aspect]) {
+        acc[aspect.aspect] = [];
+      }
+      acc[aspect.aspect].push(aspect);
+      return acc;
+    },
+    {} as Record<string, AspectInterpretation[]>,
+  );
 
   return (
     <div className="space-y-6">
@@ -239,9 +242,12 @@ function SummaryCard({
   children: React.ReactNode;
 }) {
   const colorClasses = {
-    amber: 'from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800',
-    slate: 'from-slate-50 to-gray-50 dark:from-slate-900/20 dark:to-gray-900/20 border-slate-200 dark:border-slate-800',
-    indigo: 'from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-indigo-200 dark:border-indigo-800',
+    amber:
+      'from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800',
+    slate:
+      'from-slate-50 to-gray-50 dark:from-slate-900/20 dark:to-gray-900/20 border-slate-200 dark:border-slate-800',
+    indigo:
+      'from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-indigo-200 dark:border-indigo-800',
   };
 
   return (
@@ -299,12 +305,13 @@ function PlanetInterpretationContent({
       {/* Strengths and Challenges */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">
-            Strengths
-          </h4>
+          <h4 className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">Strengths</h4>
           <ul className="space-y-1">
             {interpretation.strengths.map((strength, index) => (
-              <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+              <li
+                key={index}
+                className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2"
+              >
                 <span className="text-green-500 mt-0.5">✓</span>
                 {strength}
               </li>
@@ -317,7 +324,10 @@ function PlanetInterpretationContent({
           </h4>
           <ul className="space-y-1">
             {interpretation.challenges.map((challenge, index) => (
-              <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+              <li
+                key={index}
+                className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2"
+              >
                 <span className="text-orange-500 mt-0.5">!</span>
                 {challenge}
               </li>
@@ -334,7 +344,10 @@ function PlanetInterpretationContent({
           </h4>
           <ul className="space-y-1">
             {interpretation.advice.map((item, index) => (
-              <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+              <li
+                key={index}
+                className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2"
+              >
                 <span className="text-indigo-500">💡</span>
                 {item}
               </li>
@@ -457,9 +470,7 @@ function AspectCard({ aspect }: { aspect: AspectInterpretation }) {
           </span>
           <PlanetSymbol planet={aspect.planet2} size="sm" />
         </div>
-        <span className="text-xs text-gray-500 dark:text-gray-400">
-          Orb: {aspect.orb}°
-        </span>
+        <span className="text-xs text-gray-500 dark:text-gray-400">Orb: {aspect.orb}°</span>
       </div>
 
       {/* Keywords */}

@@ -38,7 +38,10 @@ class PushNotificationService {
    * Subscribe to push notifications
    */
   async subscribe(subscription: SubscribePayload): Promise<PushSubscription> {
-    const response = await api.post<{ data: PushSubscription }>('/notifications/subscribe', subscription);
+    const response = await api.post<{ data: PushSubscription }>(
+      '/notifications/subscribe',
+      subscription,
+    );
     return response.data.data;
   }
 

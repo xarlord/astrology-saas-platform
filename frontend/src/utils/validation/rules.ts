@@ -12,8 +12,14 @@
 // ============================================================================
 
 export type ValidationResult = string | undefined;
-export type Validator<T = unknown> = (value: T, formData?: Record<string, unknown>) => ValidationResult;
-export type AsyncValidator<T = unknown> = (value: T, formData?: Record<string, unknown>) => Promise<ValidationResult>;
+export type Validator<T = unknown> = (
+  value: T,
+  formData?: Record<string, unknown>,
+) => ValidationResult;
+export type AsyncValidator<T = unknown> = (
+  value: T,
+  formData?: Record<string, unknown>,
+) => Promise<ValidationResult>;
 
 export interface ValidationRuleOptions {
   /** Custom error message (overrides default i18n key) */
@@ -136,7 +142,10 @@ const defaultMessages: Record<string, string> = {
 /**
  * Get error message by key with interpolation support
  */
-export function getValidationMessage(key: string, params?: Record<string, string | number>): string {
+export function getValidationMessage(
+  key: string,
+  params?: Record<string, string | number>,
+): string {
   let message = defaultMessages[key] || key;
 
   if (params) {
@@ -171,7 +180,7 @@ function createResult(
   isValid: boolean,
   options: ValidationRuleOptions = {},
   messageKey: string = ValidationMessageKeys.INVALID_FORMAT,
-  params?: Record<string, string | number>
+  params?: Record<string, string | number>,
 ): ValidationResult {
   if (isValid) return undefined;
 
@@ -198,7 +207,8 @@ export function required<T = unknown>(options: ValidationRuleOptions = {}): Vali
 // ============================================================================
 
 // RFC 5322 compliant email regex (simplified but covers most cases)
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 /**
  * Validate email format
@@ -261,7 +271,9 @@ export function password(options: PasswordStrengthOptions = {}): Validator<strin
 
     // Check minimum length
     if (opts.minLength && value.length < opts.minLength) {
-      return createResult(false, opts, ValidationMessageKeys.PASSWORD_MIN_LENGTH, { min: opts.minLength });
+      return createResult(false, opts, ValidationMessageKeys.PASSWORD_MIN_LENGTH, {
+        min: opts.minLength,
+      });
     }
 
     // Check uppercase
@@ -337,7 +349,9 @@ export function getPasswordStrengthLevel(value: string): 'weak' | 'fair' | 'good
 /**
  * Validate name (person's name)
  */
-export function name(options: ValidationRuleOptions & { minLength?: number; maxLength?: number } = {}): Validator<string> {
+export function name(
+  options: ValidationRuleOptions & { minLength?: number; maxLength?: number } = {},
+): Validator<string> {
   const { minLength = 2, maxLength = 100 } = options;
 
   return (value: string): ValidationResult => {
@@ -349,12 +363,16 @@ export function name(options: ValidationRuleOptions & { minLength?: number; maxL
 
     // Check minimum length
     if (trimmed.length < minLength) {
-      return createResult(false, options, ValidationMessageKeys.NAME_MIN_LENGTH, { min: minLength });
+      return createResult(false, options, ValidationMessageKeys.NAME_MIN_LENGTH, {
+        min: minLength,
+      });
     }
 
     // Check maximum length
     if (trimmed.length > maxLength) {
-      return createResult(false, options, ValidationMessageKeys.NAME_MAX_LENGTH, { max: maxLength });
+      return createResult(false, options, ValidationMessageKeys.NAME_MAX_LENGTH, {
+        max: maxLength,
+      });
     }
 
     // Check for valid characters (letters, spaces, hyphens, apostrophes)
@@ -483,7 +501,9 @@ const TIME_24_REGEX = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
 /**
  * Validate time format (HH:MM)
  */
-export function time(options: ValidationRuleOptions & { format24?: boolean } = {}): Validator<string> {
+export function time(
+  options: ValidationRuleOptions & { format24?: boolean } = {},
+): Validator<string> {
   const { format24 = false } = options;
   const regex = format24 ? TIME_24_REGEX : TIME_REGEX;
 
@@ -574,7 +594,9 @@ export function longitude(options: CoordinateOptions = {}): Validator<number | s
 /**
  * Validate coordinates object
  */
-export function coordinates(options: ValidationRuleOptions = {}): Validator<{ latitude: number; longitude: number }> {
+export function coordinates(
+  options: ValidationRuleOptions = {},
+): Validator<{ latitude: number; longitude: number }> {
   return (value: { latitude: number; longitude: number }): ValidationResult => {
     if (!value || typeof value !== 'object') {
       return createResult(false, options, ValidationMessageKeys.LOCATION_INVALID);
@@ -599,14 +621,35 @@ export function coordinates(options: ValidationRuleOptions = {}): Validator<{ la
  */
 const COMMON_TIMEZONES = new Set([
   'UTC',
-  'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles',
-  'America/Toronto', 'America/Vancouver', 'America/Mexico_City',
-  'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Rome', 'Europe/Madrid',
-  'Europe/Amsterdam', 'Europe/Brussels', 'Europe/Vienna', 'Europe/Moscow',
-  'Asia/Tokyo', 'Asia/Shanghai', 'Asia/Hong_Kong', 'Asia/Singapore',
-  'Asia/Seoul', 'Asia/Mumbai', 'Asia/Dubai', 'Asia/Bangkok',
-  'Australia/Sydney', 'Australia/Melbourne', 'Australia/Perth',
-  'Pacific/Auckland', 'Pacific/Honolulu',
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Toronto',
+  'America/Vancouver',
+  'America/Mexico_City',
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Europe/Rome',
+  'Europe/Madrid',
+  'Europe/Amsterdam',
+  'Europe/Brussels',
+  'Europe/Vienna',
+  'Europe/Moscow',
+  'Asia/Tokyo',
+  'Asia/Shanghai',
+  'Asia/Hong_Kong',
+  'Asia/Singapore',
+  'Asia/Seoul',
+  'Asia/Mumbai',
+  'Asia/Dubai',
+  'Asia/Bangkok',
+  'Australia/Sydney',
+  'Australia/Melbourne',
+  'Australia/Perth',
+  'Pacific/Auckland',
+  'Pacific/Honolulu',
   // Add more as needed
 ]);
 
@@ -640,7 +683,7 @@ export function timezone(options: ValidationRuleOptions = {}): Validator<string>
  */
 export function matchField(
   fieldName: string,
-  options: ValidationRuleOptions = {}
+  options: ValidationRuleOptions = {},
 ): Validator<string> {
   return (value: string, formData?: Record<string, unknown>): ValidationResult => {
     if (!formData || !(fieldName in formData)) {
@@ -702,10 +745,7 @@ export function maxLength(max: number, options: ValidationRuleOptions = {}): Val
 /**
  * Validate against a custom regex pattern
  */
-export function pattern(
-  regex: RegExp,
-  options: ValidationRuleOptions = {}
-): Validator<string> {
+export function pattern(regex: RegExp, options: ValidationRuleOptions = {}): Validator<string> {
   return (value: string): ValidationResult => {
     if (isEmpty(value)) {
       return undefined;
@@ -725,7 +765,7 @@ export function pattern(
  */
 export function custom<T = unknown>(
   validateFn: (value: T, formData?: Record<string, unknown>) => boolean,
-  message: string
+  message: string,
 ): Validator<T> {
   return (value: T, formData?: Record<string, unknown>): ValidationResult => {
     const isValid = validateFn(value, formData);
@@ -738,7 +778,7 @@ export function custom<T = unknown>(
  */
 export function customAsync<T = unknown>(
   validateFn: (value: T, formData?: Record<string, unknown>) => Promise<boolean>,
-  message: string
+  message: string,
 ): AsyncValidator<T> {
   return async (value: T, formData?: Record<string, unknown>): Promise<ValidationResult> => {
     const isValid = await validateFn(value, formData);

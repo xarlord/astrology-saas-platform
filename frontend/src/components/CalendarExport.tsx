@@ -119,7 +119,9 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Export Calendar</h2>
-          <p className="m-0 text-sm text-gray-500">Download your astrological calendar as an iCal file</p>
+          <p className="m-0 text-sm text-gray-500">
+            Download your astrological calendar as an iCal file
+          </p>
         </div>
       </div>
 
@@ -157,7 +159,9 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
           <label className="text-sm font-semibold text-gray-700">Custom Date Range</label>
           <div className="flex gap-4 sm:flex-col sm:gap-3">
             <div className="flex-1 flex flex-col gap-1">
-              <label htmlFor="startDate" className="text-xs font-medium text-gray-500">From</label>
+              <label htmlFor="startDate" className="text-xs font-medium text-gray-500">
+                From
+              </label>
               <input
                 id="startDate"
                 type="date"
@@ -168,7 +172,9 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
             </div>
 
             <div className="flex-1 flex flex-col gap-1">
-              <label htmlFor="endDate" className="text-xs font-medium text-gray-500">To</label>
+              <label htmlFor="endDate" className="text-xs font-medium text-gray-500">
+                To
+              </label>
               <input
                 id="endDate"
                 type="date"
@@ -195,7 +201,9 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
           </label>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-green-50 border-l-[3px] border-emerald-500 rounded bg-[#f0fdf4] text-[13px] text-green-800 leading-snug">
             <AlertCircle size={14} className="shrink-0 mt-0.5" />
-            <span>Uncheck to export only global astrological events (retrogrades, eclipses, moon phases)</span>
+            <span>
+              Uncheck to export only global astrological events (retrogrades, eclipses, moon phases)
+            </span>
           </div>
         </div>
 

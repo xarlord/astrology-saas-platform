@@ -54,7 +54,7 @@ export const chartService = {
   async getCharts(page = 1, limit = 20): Promise<ChartListResponse> {
     const response = await api.get<ApiResponse<{ charts: APIChart[]; pagination: PaginationInfo }>>(
       '/charts',
-      { params: { page, limit } }
+      { params: { page, limit } },
     );
 
     // Transform API charts to frontend format

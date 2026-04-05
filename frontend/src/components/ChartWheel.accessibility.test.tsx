@@ -126,11 +126,15 @@ describe('ChartWheel Accessibility', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
       // Find the sr-only region
-      const textRegion = container.querySelector('[role="region"][aria-label="Chart data in text format"]');
+      const textRegion = container.querySelector(
+        '[role="region"][aria-label="Chart data in text format"]',
+      );
       expect(textRegion).toBeInTheDocument();
 
       // Should have heading
-      expect(within(textRegion!).getByText('Astrological Chart - Text Description')).toBeInTheDocument();
+      expect(
+        within(textRegion!).getByText('Astrological Chart - Text Description'),
+      ).toBeInTheDocument();
 
       // Should have planetary positions
       expect(within(textRegion!).getByText(/Planetary Positions/i)).toBeInTheDocument();
@@ -145,7 +149,9 @@ describe('ChartWheel Accessibility', () => {
     it('should list all aspects in text format', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
-      const textRegion = container.querySelector('[role="region"][aria-label="Chart data in text format"]');
+      const textRegion = container.querySelector(
+        '[role="region"][aria-label="Chart data in text format"]',
+      );
       expect(within(textRegion!).getByText(/Aspects/i)).toBeInTheDocument();
       expect(within(textRegion!).getByText(/Sun.*trine.*Moon/i)).toBeInTheDocument();
     });
@@ -153,7 +159,9 @@ describe('ChartWheel Accessibility', () => {
     it('should list all house cusps in text format', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
-      const textRegion = container.querySelector('[role="region"][aria-label="Chart data in text format"]');
+      const textRegion = container.querySelector(
+        '[role="region"][aria-label="Chart data in text format"]',
+      );
       expect(within(textRegion!).getByText(/House Cusps/i)).toBeInTheDocument();
       expect(within(textRegion!).getByText(/House 1.*aries/i)).toBeInTheDocument();
       expect(within(textRegion!).getByText(/House 2.*taurus/i)).toBeInTheDocument();
@@ -165,7 +173,9 @@ describe('ChartWheel Accessibility', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
       // Filter for planet elements (have House info) not aspects
       const allSunLabeled = container.querySelectorAll('g[aria-label*="Sun"]');
-      const planets = Array.from(allSunLabeled).filter(el => el.getAttribute('aria-label')?.includes('House'));
+      const planets = Array.from(allSunLabeled).filter((el) =>
+        el.getAttribute('aria-label')?.includes('House'),
+      );
 
       expect(planets.length).toBeGreaterThanOrEqual(1); // At least Sun planet
     });
@@ -173,8 +183,9 @@ describe('ChartWheel Accessibility', () => {
     it('should include planet name, sign, degree, and house in aria-label', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
       // Find the planet element (not aspect) by looking for one with degree info
-      const sun = Array.from(container.querySelectorAll('g[aria-label*="Sun"]'))
-        .find(el => el.getAttribute('aria-label')?.includes('House'));
+      const sun = Array.from(container.querySelectorAll('g[aria-label*="Sun"]')).find((el) =>
+        el.getAttribute('aria-label')?.includes('House'),
+      );
 
       expect(sun).toBeDefined();
       const label = sun?.getAttribute('aria-label') || '';
@@ -187,8 +198,9 @@ describe('ChartWheel Accessibility', () => {
     it('should indicate retrograde status in aria-label', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
       // Find the planet element (not aspect) by looking for House info
-      const mercury = Array.from(container.querySelectorAll('g[aria-label*="Mercury"]'))
-        .find(el => el.getAttribute('aria-label')?.includes('House'));
+      const mercury = Array.from(container.querySelectorAll('g[aria-label*="Mercury"]')).find(
+        (el) => el.getAttribute('aria-label')?.includes('House'),
+      );
 
       expect(mercury?.getAttribute('aria-label')).toMatch(/retrograde/i);
     });
@@ -358,19 +370,27 @@ describe('Screen Reader Testing', () => {
     const { container } = render(<ChartWheel data={mockChartData} />);
 
     // Find the sr-only region for text-based alternative
-    const textRegion = container.querySelector('[role="region"][aria-label="Chart data in text format"]');
+    const textRegion = container.querySelector(
+      '[role="region"][aria-label="Chart data in text format"]',
+    );
     expect(textRegion).toBeInTheDocument();
 
     // Text-based alternative should be available
     expect(within(textRegion!).getByText(/Sun in aries at 15°30' in House 1/i)).toBeInTheDocument();
-    expect(within(textRegion!).getByText(/Moon in taurus at 20°45' in House 2/i)).toBeInTheDocument();
-    expect(within(textRegion!).getByText(/Mercury in aries at 5°15' in House 1 \(retrograde\)/i)).toBeInTheDocument();
+    expect(
+      within(textRegion!).getByText(/Moon in taurus at 20°45' in House 2/i),
+    ).toBeInTheDocument();
+    expect(
+      within(textRegion!).getByText(/Mercury in aries at 5°15' in House 1 \(retrograde\)/i),
+    ).toBeInTheDocument();
   });
 
   it('should announce aspects clearly', () => {
     const { container } = render(<ChartWheel data={mockChartData} />);
 
-    const textRegion = container.querySelector('[role="region"][aria-label="Chart data in text format"]');
+    const textRegion = container.querySelector(
+      '[role="region"][aria-label="Chart data in text format"]',
+    );
     expect(within(textRegion!).getByText(/Sun trine Moon \(120°0'\)/i)).toBeInTheDocument();
   });
 });

@@ -52,11 +52,32 @@ const MOCK_NATAL_CHARTS: Record<string, NatalChart> = {
       location: 'New York, USA',
     },
     planets: [
-      { name: 'Sun', sign: 'Capricorn', degree: 24, house: 10, element: 'Earth', modality: 'Cardinal' },
+      {
+        name: 'Sun',
+        sign: 'Capricorn',
+        degree: 24,
+        house: 10,
+        element: 'Earth',
+        modality: 'Cardinal',
+      },
       { name: 'Moon', sign: 'Pisces', degree: 15, house: 4, element: 'Water', modality: 'Mutable' },
       { name: 'Rising', sign: 'Leo', degree: 8, house: 1, element: 'Fire', modality: 'Fixed' },
-      { name: 'Mercury', sign: 'Capricorn', degree: 18, house: 10, element: 'Earth', modality: 'Cardinal' },
-      { name: 'Venus', sign: 'Sagittarius', degree: 22, house: 5, element: 'Fire', modality: 'Mutable' },
+      {
+        name: 'Mercury',
+        sign: 'Capricorn',
+        degree: 18,
+        house: 10,
+        element: 'Earth',
+        modality: 'Cardinal',
+      },
+      {
+        name: 'Venus',
+        sign: 'Sagittarius',
+        degree: 22,
+        house: 5,
+        element: 'Fire',
+        modality: 'Mutable',
+      },
       { name: 'Mars', sign: 'Scorpio', degree: 12, house: 4, element: 'Water', modality: 'Fixed' },
       { name: 'Jupiter', sign: 'Libra', degree: 5, house: 3, element: 'Air', modality: 'Cardinal' },
     ],
@@ -74,7 +95,9 @@ const DetailedNatalReportPage: React.FC = () => {
   const { chartId } = useParams<{ chartId: string }>();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState<'summary' | 'planets' | 'houses' | 'aspects'>('summary');
+  const [activeTab, setActiveTab] = useState<'summary' | 'planets' | 'houses' | 'aspects'>(
+    'summary',
+  );
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const chart = useMemo(() => {
@@ -218,8 +241,8 @@ const DetailedNatalReportPage: React.FC = () => {
                   {/* Sun Card */}
                   <PlanetaryPositionCard
                     planet={{
-                      name: "Sun",
-                      symbol: "☉",
+                      name: 'Sun',
+                      symbol: '☉',
                       sign: bigThree.sun.sign,
                       degree: 0,
                       minute: 0,
@@ -230,8 +253,8 @@ const DetailedNatalReportPage: React.FC = () => {
                   {/* Moon Card */}
                   <PlanetaryPositionCard
                     planet={{
-                      name: "Moon",
-                      symbol: "☽",
+                      name: 'Moon',
+                      symbol: '☽',
                       sign: bigThree.moon.sign,
                       degree: 0,
                       minute: 0,
@@ -242,8 +265,8 @@ const DetailedNatalReportPage: React.FC = () => {
                   {/* Rising Card */}
                   <PlanetaryPositionCard
                     planet={{
-                      name: "Rising",
-                      symbol: "↑",
+                      name: 'Rising',
+                      symbol: '↑',
                       sign: bigThree.rising.sign,
                       degree: 0,
                       minute: 0,
@@ -263,12 +286,7 @@ const DetailedNatalReportPage: React.FC = () => {
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
                   <h3 className="text-lg font-bold text-white mb-6">Elemental Balance</h3>
-                  <ElementalBalance
-                    fire={35}
-                    earth={45}
-                    air={10}
-                    water={10}
-                  />
+                  <ElementalBalance fire={35} earth={45} air={10} water={10} />
                 </motion.div>
                 <motion.div
                   className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 flex flex-col items-center justify-center"
@@ -276,10 +294,13 @@ const DetailedNatalReportPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.25 }}
                 >
-                  <span className="material-symbols-outlined text-primary text-5xl mb-4">auto_graph</span>
+                  <span className="material-symbols-outlined text-primary text-5xl mb-4">
+                    auto_graph
+                  </span>
                   <p className="text-white font-medium text-center">Chart Strength Overview</p>
                   <p className="text-slate-400 text-sm text-center mt-2 px-8">
-                    Your chart shows a high concentration of Cardinal energy, indicating a natural drive to start new projects and lead.
+                    Your chart shows a high concentration of Cardinal energy, indicating a natural
+                    drive to start new projects and lead.
                   </p>
                 </motion.div>
               </div>
@@ -347,7 +368,10 @@ const DetailedNatalReportPage: React.FC = () => {
               transition={{ duration: 0.5 }}
             >
               <h3 className="text-xl font-bold text-white mb-6">Aspect Grid Matrix</h3>
-              <AspectGrid planets={chart.planets.map(p => p.name)} aspects={chart.aspects as unknown as AspectGridData[]} />
+              <AspectGrid
+                planets={chart.planets.map((p) => p.name)}
+                aspects={chart.aspects as unknown as AspectGridData[]}
+              />
             </motion.section>
           )}
 
@@ -368,7 +392,9 @@ const DetailedNatalReportPage: React.FC = () => {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-white font-bold">House {houseNum}</h4>
-                      <span className="text-xs text-slate-500">{planetsInHouse.length} planets</span>
+                      <span className="text-xs text-slate-500">
+                        {planetsInHouse.length} planets
+                      </span>
                     </div>
                     {planetsInHouse.length > 0 ? (
                       <div className="space-y-2">
@@ -410,7 +436,9 @@ const DetailedNatalReportPage: React.FC = () => {
               <Button
                 variant="primary"
                 fullWidth
-                onClick={() => { void handleGeneratePDF(); }}
+                onClick={() => {
+                  void handleGeneratePDF();
+                }}
                 disabled={isGeneratingPDF}
                 leftIcon={
                   <span className="material-symbols-outlined text-[18px]">
@@ -430,7 +458,9 @@ const DetailedNatalReportPage: React.FC = () => {
               <Button
                 variant="secondary"
                 fullWidth
-                onClick={() => { void handleShare(); }}
+                onClick={() => {
+                  void handleShare();
+                }}
                 leftIcon={<span className="material-symbols-outlined text-[18px]">share</span>}
               >
                 Share Report

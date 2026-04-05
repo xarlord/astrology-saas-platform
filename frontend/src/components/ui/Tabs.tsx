@@ -74,10 +74,7 @@ export const Tabs: React.FC<TabsProps> = ({
       value={{ activeTab, setActiveTab, orientation, registerTab, unregisterTab }}
     >
       <div
-        className={clsx(
-          orientation === 'vertical' && 'flex gap-4',
-          className
-        )}
+        className={clsx(orientation === 'vertical' && 'flex gap-4', className)}
         aria-orientation={orientation}
       >
         {children}
@@ -102,7 +99,7 @@ export const TabList: React.FC<TabListProps> = ({ children, className }) => {
         orientation === 'horizontal'
           ? 'flex border-b border-gray-200 dark:border-gray-700'
           : 'flex flex-col border-l border-gray-200 dark:border-gray-700',
-        className
+        className,
       )}
       role="tablist"
     >
@@ -129,9 +126,7 @@ const TabIndicator: React.FC = () => {
       ref={indicatorRef}
       className={clsx(
         'absolute bg-primary-500',
-        orientation === 'horizontal'
-          ? 'bottom-0 h-0.5 w-full'
-          : 'left-0 w-0.5 h-8'
+        orientation === 'horizontal' ? 'bottom-0 h-0.5 w-full' : 'left-0 w-0.5 h-8',
       )}
       layoutId="tab-indicator"
       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
@@ -148,13 +143,7 @@ export interface TabProps {
   icon?: React.ReactNode;
 }
 
-export const Tab: React.FC<TabProps> = ({
-  value,
-  children,
-  disabled = false,
-  className,
-  icon,
-}) => {
+export const Tab: React.FC<TabProps> = ({ value, children, disabled = false, className, icon }) => {
   const { activeTab, setActiveTab, orientation, registerTab, unregisterTab } = useTabsContext();
   const tabRef = useRef<HTMLButtonElement>(null);
   const isSelected = activeTab === value;
@@ -197,7 +186,7 @@ export const Tab: React.FC<TabProps> = ({
           ? 'text-primary-600 dark:text-primary-400'
           : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200',
         disabled && 'opacity-50 cursor-not-allowed',
-        className
+        className,
       )}
     >
       <span className="relative z-10 flex items-center gap-2">
@@ -210,7 +199,7 @@ export const Tab: React.FC<TabProps> = ({
             'absolute bg-primary-500',
             orientation === 'horizontal'
               ? 'bottom-0 left-0 right-0 h-0.5'
-              : 'left-0 top-0 bottom-0 w-0.5'
+              : 'left-0 top-0 bottom-0 w-0.5',
           )}
           layoutId="active-tab-indicator"
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
@@ -246,11 +235,7 @@ export const TabPanel: React.FC<TabPanelProps> = ({
       role="tabpanel"
       aria-hidden={!isSelected}
       hidden={!isSelected}
-      className={clsx(
-        'py-4',
-        isSelected ? 'block' : 'hidden',
-        className
-      )}
+      className={clsx('py-4', isSelected ? 'block' : 'hidden', className)}
       tabIndex={0}
     >
       <AnimatePresence mode="wait">
@@ -279,13 +264,7 @@ export const TabPanels: React.FC<TabPanelsProps> = ({ children, className }) => 
   const { orientation } = useTabsContext();
 
   return (
-    <div
-      className={clsx(
-        'flex-1',
-        orientation === 'vertical' && 'min-w-0',
-        className
-      )}
-    >
+    <div className={clsx('flex-1', orientation === 'vertical' && 'min-w-0', className)}>
       {children}
     </div>
   );

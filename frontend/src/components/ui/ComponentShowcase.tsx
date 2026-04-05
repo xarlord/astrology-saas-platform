@@ -50,9 +50,7 @@ const ComponentShowcase: React.FC = () => {
 
         {/* Buttons Section */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Buttons
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Buttons</h2>
           <div className="space-y-4">
             <div className="flex flex-wrap gap-3">
               <Button variant="primary">Primary</Button>
@@ -76,9 +74,7 @@ const ComponentShowcase: React.FC = () => {
 
         {/* Inputs Section */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Inputs
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Inputs</h2>
           <div className="space-y-4 max-w-md">
             <Input
               label="Standard Input"
@@ -92,7 +88,12 @@ const ComponentShowcase: React.FC = () => {
               placeholder="you@example.com"
               leftIcon={
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               }
             />
@@ -113,9 +114,7 @@ const ComponentShowcase: React.FC = () => {
 
         {/* Select Section */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Select
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Select</h2>
           <div className="space-y-4 max-w-md">
             <Select
               label="Choose an option"
@@ -145,18 +144,9 @@ const ComponentShowcase: React.FC = () => {
                 checked={checkboxChecked}
                 onChange={(e) => setCheckboxChecked(e.target.checked)}
               />
-              <Checkbox
-                label="Subscribe to newsletter"
-                helperText="Get weekly updates"
-              />
-              <Checkbox
-                label="Disabled checkbox"
-                disabled
-              />
-              <Checkbox
-                label="Indeterminate state"
-                indeterminate
-              />
+              <Checkbox label="Subscribe to newsletter" helperText="Get weekly updates" />
+              <Checkbox label="Disabled checkbox" disabled />
+              <Checkbox label="Indeterminate state" indeterminate />
             </div>
             <div className="space-y-3">
               <Toggle
@@ -164,10 +154,7 @@ const ComponentShowcase: React.FC = () => {
                 checked={toggleChecked}
                 onChange={setToggleChecked}
               />
-              <Toggle
-                label="Dark mode"
-                labelPosition="start"
-              />
+              <Toggle label="Dark mode" labelPosition="start" />
               <Toggle
                 label="Auto-save"
                 helperText="Automatically save your work"
@@ -179,9 +166,7 @@ const ComponentShowcase: React.FC = () => {
 
         {/* Badges Section */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Badges
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Badges</h2>
           <div className="space-y-4">
             <div className="flex flex-wrap gap-3">
               <Badge variant="default">Default</Badge>
@@ -192,8 +177,12 @@ const ComponentShowcase: React.FC = () => {
             </div>
             <div className="flex flex-wrap gap-3 items-center">
               <Badge dot>New</Badge>
-              <Badge variant="success" dot>Updated</Badge>
-              <Badge variant="danger" dot>Critical</Badge>
+              <Badge variant="success" dot>
+                Updated
+              </Badge>
+              <Badge variant="danger" dot>
+                Critical
+              </Badge>
             </div>
             <div className="flex flex-wrap gap-3">
               <CountBadge count={5} />
@@ -242,9 +231,7 @@ const ComponentShowcase: React.FC = () => {
 
         {/* Alerts */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Alerts
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Alerts</h2>
           <div className="space-y-4">
             <Alert variant="info" title="Information">
               This is an informational message for the user.
@@ -263,9 +250,7 @@ const ComponentShowcase: React.FC = () => {
 
         {/* Modal Trigger */}
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Modal
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Modal</h2>
           <Button onClick={() => setModalOpen(true)}>Open Modal</Button>
         </section>
 
@@ -313,8 +298,8 @@ const ComponentShowcase: React.FC = () => {
       >
         <div className="space-y-4">
           <p className="text-gray-700 dark:text-gray-300">
-            This is an example modal dialog with focus trap, keyboard navigation,
-            and accessibility features.
+            This is an example modal dialog with focus trap, keyboard navigation, and accessibility
+            features.
           </p>
           <Input label="Enter details" placeholder="Type something..." />
           <Checkbox label="Remember this choice" />

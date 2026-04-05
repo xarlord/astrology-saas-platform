@@ -18,7 +18,11 @@ export const authService = {
   /**
    * Register new user
    */
-  async register(data: { name: string; email: string; password: string }): Promise<AuthServiceResponse> {
+  async register(data: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<AuthServiceResponse> {
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/register', data);
     return response.data.data;
   },
@@ -62,7 +66,9 @@ export const authService = {
    * Update preferences
    */
   async updatePreferences(preferences: Partial<UserPreferences>): Promise<{ user: User }> {
-    const response = await api.put<{ data: { user: User } }>('/auth/me/preferences', { preferences });
+    const response = await api.put<{ data: { user: User } }>('/auth/me/preferences', {
+      preferences,
+    });
     return response.data.data;
   },
 
@@ -70,9 +76,13 @@ export const authService = {
    * Refresh token
    */
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-    const response = await api.post<{ data: { accessToken: string } }>('/auth/refresh', {}, {
-      headers: { Authorization: `Bearer ${refreshToken}` },
-    });
+    const response = await api.post<{ data: { accessToken: string } }>(
+      '/auth/refresh',
+      {},
+      {
+        headers: { Authorization: `Bearer ${refreshToken}` },
+      },
+    );
     return response.data.data;
   },
 };

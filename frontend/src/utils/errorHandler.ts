@@ -80,7 +80,8 @@ export function parseAPIError(error: unknown): AppError {
   }
 
   if (error && typeof error === 'object' && 'response' in error) {
-    const response = (error as { response?: { data?: { error?: string; message?: string } } }).response;
+    const response = (error as { response?: { data?: { error?: string; message?: string } } })
+      .response;
     if (response?.data?.error) {
       return {
         message: response.data.error,
@@ -111,7 +112,7 @@ export function getUserFriendlyError(error: AppError): string {
       return 'Please log in to continue';
     }
     if (error.statusCode === 403) {
-      return 'You don\'t have permission to access this resource';
+      return "You don't have permission to access this resource";
     }
     if (error.statusCode === 404) {
       return 'The requested resource was not found';
@@ -166,7 +167,7 @@ export function logError(error: AppError, context?: string): void {
  */
 export async function withErrorHandling<T>(
   fn: () => Promise<T>,
-  onError?: (error: AppError) => void
+  onError?: (error: AppError) => void,
 ): Promise<T | null> {
   try {
     return await fn();

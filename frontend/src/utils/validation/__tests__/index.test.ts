@@ -37,28 +37,21 @@ describe('validation utilities', () => {
 
   describe('composeValidators', () => {
     it('should return undefined when all validators pass', () => {
-      const validator = composeValidators(
-        required(),
-        minLength(3)
-      );
+      const validator = composeValidators(required(), minLength(3));
 
       expect(validator('test')).toBeUndefined();
     });
 
     it('should return first error encountered', () => {
-      const validator = composeValidators(
-        required(),
-        minLength(5)
-      );
+      const validator = composeValidators(required(), minLength(5));
 
       const result = validator('abc');
       expect(result).toBeDefined();
     });
 
     it('should pass form data to validators', () => {
-      const validator = composeValidators(
-        (value: string, formData) =>
-          formData?.other === 'test' ? undefined : 'Other must be test'
+      const validator = composeValidators((value: string, formData) =>
+        formData?.other === 'test' ? undefined : 'Other must be test',
       );
 
       expect(validator('value', { other: 'test' })).toBeUndefined();
@@ -70,7 +63,7 @@ describe('validation utilities', () => {
     it('should compose async validators', async () => {
       const validator = composeAsyncValidators(
         async () => undefined,
-        async () => 'error'
+        async () => 'error',
       );
 
       const result = await validator('test');
@@ -80,7 +73,7 @@ describe('validation utilities', () => {
     it('should return undefined when all pass', async () => {
       const validator = composeAsyncValidators(
         async () => undefined,
-        async () => undefined
+        async () => undefined,
       );
 
       const result = await validator('test');
@@ -90,9 +83,8 @@ describe('validation utilities', () => {
 
   describe('allErrors', () => {
     it('should return all errors', () => {
-      const getErrors = allErrors(
-        minLength(5),
-        (value: string) => value.includes('test') ? undefined : 'Must contain test'
+      const getErrors = allErrors(minLength(5), (value: string) =>
+        value.includes('test') ? undefined : 'Must contain test',
       );
 
       const result = getErrors('ab');
@@ -100,10 +92,7 @@ describe('validation utilities', () => {
     });
 
     it('should return empty array when all pass', () => {
-      const getErrors = allErrors(
-        required(),
-        minLength(3)
-      );
+      const getErrors = allErrors(required(), minLength(3));
 
       const result = getErrors('test');
       expect(result).toHaveLength(0);
@@ -136,17 +125,27 @@ describe('validation utilities', () => {
 
     it('should return all errors when stopOnFirstError is false', () => {
       // Note: required() returns first, so minLength won't run on empty string
-      const errors = validateField('ab', [minLength(3), minLength(5)], {}, {
-        stopOnFirstError: false,
-      });
+      const errors = validateField(
+        'ab',
+        [minLength(3), minLength(5)],
+        {},
+        {
+          stopOnFirstError: false,
+        },
+      );
 
       expect(errors.length).toBeGreaterThan(1);
     });
 
     it('should transform errors with custom function', () => {
-      const errors = validateField('', [required()], {}, {
-        transformError: (err) => `Custom: ${err}`,
-      });
+      const errors = validateField(
+        '',
+        [required()],
+        {},
+        {
+          transformError: (err) => `Custom: ${err}`,
+        },
+      );
 
       expect(errors[0]).toContain('Custom:');
     });
@@ -165,11 +164,7 @@ describe('validation utilities', () => {
     it('should run both sync and async validators', async () => {
       const asyncValidator = vi.fn().mockResolvedValue('async error');
 
-      const errorsPromise = validateFieldAsync(
-        'value',
-        [required()],
-        [asyncValidator]
-      );
+      const errorsPromise = validateFieldAsync('value', [required()], [asyncValidator]);
 
       await vi.runAllTimersAsync();
       const errors = await errorsPromise;
@@ -186,7 +181,7 @@ describe('validation utilities', () => {
         [required()],
         [asyncValidator],
         {},
-        { stopOnFirstError: true }
+        { stopOnFirstError: true },
       );
 
       expect(errors.length).toBeGreaterThan(0);
@@ -194,17 +189,13 @@ describe('validation utilities', () => {
     });
 
     it('should handle timeout', async () => {
-      const slowValidator = vi.fn().mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve(undefined), 10000))
-      );
+      const slowValidator = vi
+        .fn()
+        .mockImplementation(
+          () => new Promise((resolve) => setTimeout(() => resolve(undefined), 10000)),
+        );
 
-      const errorsPromise = validateFieldAsync(
-        'value',
-        [],
-        [slowValidator],
-        {},
-        { timeout: 100 }
-      );
+      const errorsPromise = validateFieldAsync('value', [], [slowValidator], {}, { timeout: 100 });
 
       await vi.advanceTimersByTimeAsync(200);
       const errors = await errorsPromise;
@@ -240,10 +231,7 @@ describe('validation utilities', () => {
         },
       };
 
-      const errors = validateForm(
-        { email: 'test@example.com', password: 'password123' },
-        config
-      );
+      const errors = validateForm({ email: 'test@example.com', password: 'password123' }, config);
 
       expect(Object.keys(errors)).toHaveLength(0);
     });
@@ -258,17 +246,12 @@ describe('validation utilities', () => {
           {
             fields: ['password', 'confirmPassword'],
             validate: (formData) =>
-              formData.password !== formData.confirmPassword
-                ? 'Passwords must match'
-                : undefined,
+              formData.password !== formData.confirmPassword ? 'Passwords must match' : undefined,
           },
         ],
       };
 
-      const errors = validateForm(
-        { password: 'pass1', confirmPassword: 'pass2' },
-        config
-      );
+      const errors = validateForm({ password: 'pass1', confirmPassword: 'pass2' }, config);
 
       expect(errors.password).toContain('Passwords must match');
     });
@@ -292,10 +275,7 @@ describe('validation utilities', () => {
         },
       };
 
-      const errorsPromise = validateFormAsync(
-        { email: '', password: '' },
-        config
-      );
+      const errorsPromise = validateFormAsync({ email: '', password: '' }, config);
 
       await vi.runAllTimersAsync();
       const errors = await errorsPromise;

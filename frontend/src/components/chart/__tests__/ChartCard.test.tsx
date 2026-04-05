@@ -22,9 +22,45 @@ vi.mock('react-router-dom', async () => {
 // Helper to create mock chart
 const createMockChart = (overrides: Partial<Chart> = {}): Chart => {
   const positions: PlanetPosition[] = [
-    { planet: 'Sun', name: 'Sun', longitude: 285, latitude: 0, speed: 1, house: 1, sign: 'Capricorn', degree: 15, minute: 30, position: "15\u00b030' Capricorn", retrograde: false },
-    { planet: 'Moon', name: 'Moon', longitude: 45, latitude: 0, speed: 13, house: 5, sign: 'Taurus', degree: 15, minute: 0, position: "15\u00b000' Taurus", retrograde: false },
-    { planet: 'Ascendant', name: 'Ascendant', longitude: 180, latitude: 0, speed: 0, house: 1, sign: 'Libra', degree: 0, minute: 0, position: "0\u00b000' Libra", retrograde: false },
+    {
+      planet: 'Sun',
+      name: 'Sun',
+      longitude: 285,
+      latitude: 0,
+      speed: 1,
+      house: 1,
+      sign: 'Capricorn',
+      degree: 15,
+      minute: 30,
+      position: "15\u00b030' Capricorn",
+      retrograde: false,
+    },
+    {
+      planet: 'Moon',
+      name: 'Moon',
+      longitude: 45,
+      latitude: 0,
+      speed: 13,
+      house: 5,
+      sign: 'Taurus',
+      degree: 15,
+      minute: 0,
+      position: "15\u00b000' Taurus",
+      retrograde: false,
+    },
+    {
+      planet: 'Ascendant',
+      name: 'Ascendant',
+      longitude: 180,
+      latitude: 0,
+      speed: 0,
+      house: 1,
+      sign: 'Libra',
+      degree: 0,
+      minute: 0,
+      position: "0\u00b000' Libra",
+      retrograde: false,
+    },
   ];
 
   return {
@@ -148,7 +184,19 @@ describe('ChartCard', () => {
     it('should handle partial positions', () => {
       const chart = createMockChart({
         positions: [
-          { planet: 'Sun', name: 'Sun', longitude: 285, latitude: 0, speed: 1, house: 1, sign: 'Aries', degree: 15, minute: 30, position: "15\u00b030' Aries", retrograde: false },
+          {
+            planet: 'Sun',
+            name: 'Sun',
+            longitude: 285,
+            latitude: 0,
+            speed: 1,
+            house: 1,
+            sign: 'Aries',
+            degree: 15,
+            minute: 30,
+            position: "15\u00b030' Aries",
+            retrograde: false,
+          },
         ],
       });
       renderWithProviders(<ChartCard chart={chart} />);

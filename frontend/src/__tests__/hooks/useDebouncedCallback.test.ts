@@ -18,9 +18,7 @@ describe('useDebouncedCallback', () => {
 
   it('should debounce callback execution', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300 })
-    );
+    const { result } = renderHook(() => useDebouncedCallback(callback, { delay: 300 }));
 
     act(() => {
       result.current('arg1');
@@ -60,7 +58,7 @@ describe('useDebouncedCallback', () => {
   it('should support leading edge execution', () => {
     const callback = vi.fn();
     const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300, leading: true })
+      useDebouncedCallback(callback, { delay: 300, leading: true }),
     );
 
     act(() => {
@@ -89,7 +87,7 @@ describe('useDebouncedCallback', () => {
   it('should support disabling trailing edge', () => {
     const callback = vi.fn();
     const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300, leading: true, trailing: false })
+      useDebouncedCallback(callback, { delay: 300, leading: true, trailing: false }),
     );
 
     act(() => {
@@ -109,7 +107,7 @@ describe('useDebouncedCallback', () => {
   it('should support maxWait option', () => {
     const callback = vi.fn();
     const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 100, maxWait: 250 })
+      useDebouncedCallback(callback, { delay: 100, maxWait: 250 }),
     );
 
     // Call multiple times, each within the delay
@@ -146,9 +144,7 @@ describe('useDebouncedCallback', () => {
 
   it('should provide cancel method', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300 })
-    );
+    const { result } = renderHook(() => useDebouncedCallback(callback, { delay: 300 }));
 
     act(() => {
       result.current('arg');
@@ -168,9 +164,7 @@ describe('useDebouncedCallback', () => {
 
   it('should provide flush method', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300 })
-    );
+    const { result } = renderHook(() => useDebouncedCallback(callback, { delay: 300 }));
 
     act(() => {
       result.current('arg');
@@ -194,9 +188,7 @@ describe('useDebouncedCallback', () => {
 
   it('should provide pending method', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300 })
-    );
+    const { result } = renderHook(() => useDebouncedCallback(callback, { delay: 300 }));
 
     expect(result.current.pending()).toBe(false);
 
@@ -215,9 +207,7 @@ describe('useDebouncedCallback', () => {
 
   it('should handle multiple arguments', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300 })
-    );
+    const { result } = renderHook(() => useDebouncedCallback(callback, { delay: 300 }));
 
     act(() => {
       result.current('arg1', 'arg2', 'arg3');
@@ -232,9 +222,7 @@ describe('useDebouncedCallback', () => {
 
   it('should reset timer on each call', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300 })
-    );
+    const { result } = renderHook(() => useDebouncedCallback(callback, { delay: 300 }));
 
     act(() => {
       result.current('first');
@@ -268,10 +256,9 @@ describe('useDebouncedCallback', () => {
     const callback1 = vi.fn();
     const callback2 = vi.fn();
 
-    const { result, rerender } = renderHook(
-      ({ cb }) => useDebouncedCallback(cb, { delay: 300 }),
-      { initialProps: { cb: callback1 } }
-    );
+    const { result, rerender } = renderHook(({ cb }) => useDebouncedCallback(cb, { delay: 300 }), {
+      initialProps: { cb: callback1 },
+    });
 
     act(() => {
       result.current();
@@ -301,7 +288,7 @@ describe('useDebouncedCallback', () => {
 
     const { result, rerender } = renderHook(
       ({ delay }) => useDebouncedCallback(callback, { delay }),
-      { initialProps: { delay: 500 } }
+      { initialProps: { delay: 500 } },
     );
 
     act(() => {
@@ -324,7 +311,7 @@ describe('useDebouncedCallback', () => {
   it('should handle both leading and trailing disabled', () => {
     const callback = vi.fn();
     const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300, leading: false, trailing: false })
+      useDebouncedCallback(callback, { delay: 300, leading: false, trailing: false }),
     );
 
     act(() => {
@@ -342,7 +329,7 @@ describe('useDebouncedCallback', () => {
   it('should only call leading once per debounce cycle', () => {
     const callback = vi.fn();
     const { result } = renderHook(() =>
-      useDebouncedCallback(callback, { delay: 300, leading: true, trailing: false })
+      useDebouncedCallback(callback, { delay: 300, leading: true, trailing: false }),
     );
 
     act(() => {

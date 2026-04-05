@@ -27,9 +27,11 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
 
   // Get first chart for preview
   const primaryChart = charts[0];
-  const sunSign = primaryChart?.calculated_data?.planets?.find(p => p.name === 'Sun')?.sign;
-  const moonSign = primaryChart?.calculated_data?.planets?.find(p => p.name === 'Moon')?.sign;
-  const risingSign = primaryChart?.calculated_data?.planets?.find(p => p.name === 'Ascendant' || p.name === 'ASC')?.sign;
+  const sunSign = primaryChart?.calculated_data?.planets?.find((p) => p.name === 'Sun')?.sign;
+  const moonSign = primaryChart?.calculated_data?.planets?.find((p) => p.name === 'Moon')?.sign;
+  const risingSign = primaryChart?.calculated_data?.planets?.find(
+    (p) => p.name === 'Ascendant' || p.name === 'ASC',
+  )?.sign;
   const hasChart = !!primaryChart;
 
   // Focus trap
@@ -41,7 +43,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
     if (e.key !== 'Tab' || !modalRef.current) return;
 
     const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     if (focusable.length === 0) return;
 
@@ -100,7 +102,11 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
 
   const features = [
     { icon: 'bolt', label: 'Daily energy readings', color: 'text-yellow-400 bg-yellow-500/20' },
-    { icon: 'planet', label: 'Planetary transit alerts', color: 'text-purple-400 bg-purple-500/20' },
+    {
+      icon: 'planet',
+      label: 'Planetary transit alerts',
+      color: 'text-purple-400 bg-purple-500/20',
+    },
     { icon: 'group', label: 'Compatibility insights', color: 'text-pink-400 bg-pink-500/20' },
     { icon: 'calendar_month', label: 'Monthly forecasts', color: 'text-blue-400 bg-blue-500/20' },
   ];
@@ -108,7 +114,9 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-      onClick={(e) => { if (e.target === e.currentTarget) void handleDismiss(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) void handleDismiss();
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="welcome-title"
@@ -132,15 +140,17 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="material-symbols-outlined text-accent-gold text-2xl">auto_awesome</span>
+            <span className="material-symbols-outlined text-accent-gold text-2xl">
+              auto_awesome
+            </span>
             <h2 id="welcome-title" className="text-2xl font-bold text-white">
               Welcome to AstroVerse!
             </h2>
           </div>
           <p className="text-slate-400">
             {hasChart
-              ? "Here is a preview of your cosmic blueprint:"
-              : "Your personalized cosmic dashboard awaits."}
+              ? 'Here is a preview of your cosmic blueprint:'
+              : 'Your personalized cosmic dashboard awaits.'}
           </p>
         </div>
 
@@ -179,10 +189,15 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             >
               <span className="material-symbols-outlined text-4xl text-slate-400">nightlight</span>
             </div>
-            <p className="text-slate-300 text-sm mb-3">Complete your birth data to unlock your chart</p>
+            <p className="text-slate-300 text-sm mb-3">
+              Complete your birth data to unlock your chart
+            </p>
             <button
               className="text-primary text-sm font-medium hover:text-white transition-colors flex items-center gap-1 mx-auto"
-              onClick={() => { void handleDismiss(); navigate('/charts/create'); }}
+              onClick={() => {
+                void handleDismiss();
+                navigate('/charts/create');
+              }}
             >
               Add Birth Data
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -195,11 +210,10 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
           <p className="text-sm text-slate-300 mb-3">Your personalized dashboard includes:</p>
           <div className="grid grid-cols-2 gap-3">
             {features.map((feature) => (
-              <div
-                key={feature.icon}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/5"
-              >
-                <div className={`size-8 rounded-lg flex items-center justify-center ${feature.color}`}>
+              <div key={feature.icon} className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                <div
+                  className={`size-8 rounded-lg flex items-center justify-center ${feature.color}`}
+                >
                   <span className="material-symbols-outlined text-[18px]">{feature.icon}</span>
                 </div>
                 <span className="text-sm text-slate-300">{feature.label}</span>

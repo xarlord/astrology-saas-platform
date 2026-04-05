@@ -10,7 +10,13 @@ interface ZodiacBadgeProps {
   className?: string;
 }
 
-export function ZodiacBadge({ sign, size = 'md', showDegree = false, degree, className = '' }: ZodiacBadgeProps) {
+export function ZodiacBadge({
+  sign,
+  size = 'md',
+  showDegree = false,
+  degree,
+  className = '',
+}: ZodiacBadgeProps) {
   const colors: Record<string, string> = {
     aries: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
     taurus: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
@@ -50,7 +56,9 @@ export function ZodiacBadge({ sign, size = 'md', showDegree = false, degree, cla
   const signName = sign.charAt(0).toUpperCase() + sign.slice(1);
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full ${colors[sign] || 'bg-gray-100'} ${sizeClasses[size]} ${className}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full ${colors[sign] || 'bg-gray-100'} ${sizeClasses[size]} ${className}`}
+    >
       <span>{symbols[sign]}</span>
       <span className="capitalize font-medium">{signName}</span>
       {showDegree && degree !== undefined && (

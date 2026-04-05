@@ -126,7 +126,7 @@ let trapIdCounter = 0;
  * Custom hook for trapping focus within a container
  */
 export function useFocusTrap<T extends HTMLElement>(
-  options: UseFocusTrapOptions = { active: true }
+  options: UseFocusTrapOptions = { active: true },
 ): React.RefObject<T> {
   const {
     active,
@@ -152,7 +152,7 @@ export function useFocusTrap<T extends HTMLElement>(
     if (!containerRef.current) return [];
 
     const elements = Array.from(
-      containerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)
+      containerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS),
     );
 
     // Filter out elements that are not visible
@@ -234,7 +234,7 @@ export function useFocusTrap<T extends HTMLElement>(
         firstElement.focus({ preventScroll });
       }
     },
-    [escapeDeactivates, onEscape, getFocusableElements, preventScroll, pauseOtherTraps]
+    [escapeDeactivates, onEscape, getFocusableElements, preventScroll, pauseOtherTraps],
   );
 
   // Activate/deactivate focus trap
@@ -249,7 +249,7 @@ export function useFocusTrap<T extends HTMLElement>(
       managerRef.current.push(
         trapIdRef.current,
         containerRef.current,
-        previousActiveElementRef.current
+        previousActiveElementRef.current,
       );
     }
 
@@ -257,10 +257,10 @@ export function useFocusTrap<T extends HTMLElement>(
     onActivate?.();
 
     // Auto-focus with optional delay
+    let focusTimeoutId: ReturnType<typeof setTimeout> | undefined;
     if (autoFocus) {
       if (autoFocusDelay > 0) {
-        const timeoutId = setTimeout(focusInitialElement, autoFocusDelay);
-        return () => clearTimeout(timeoutId);
+        focusTimeoutId = setTimeout(focusInitialElement, autoFocusDelay);
       } else {
         // Use requestAnimationFrame for immediate focus
         requestAnimationFrame(focusInitialElement);
@@ -278,6 +278,7 @@ export function useFocusTrap<T extends HTMLElement>(
 
     // Cleanup
     return () => {
+      if (focusTimeoutId !== undefined) clearTimeout(focusTimeoutId);
       container.removeEventListener('keydown', handleKeyDown);
 
       // Unregister from manager
@@ -288,7 +289,8 @@ export function useFocusTrap<T extends HTMLElement>(
         onDeactivate?.();
 
         // Restore focus to the previous element or specified return element
-        const returnElement = returnFocusElement ?? previousFocus ?? previousActiveElementRef.current;
+        const returnElement =
+          returnFocusElement ?? previousFocus ?? previousActiveElementRef.current;
         if (returnElement && document.contains(returnElement)) {
           returnElement.focus({ preventScroll });
         }
@@ -320,9 +322,7 @@ export function useFocusTrap<T extends HTMLElement>(
 /**
  * Hook to manage focus restoration when a component unmounts
  */
-export function useFocusRestoration(
-  shouldRestore = true
-): React.RefObject<HTMLElement | null> {
+export function useFocusRestoration(shouldRestore = true): React.RefObject<HTMLElement | null> {
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
@@ -429,12 +429,15 @@ export function useAnnouncer(): {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assertiveMessages.join(',')]);
 
-  return { announce, AnnouncerRegion: () => (
-    <>
-      <AnnouncerRegion />
-      <AssertiveRegion />
-    </>
-  )};
+  return {
+    announce,
+    AnnouncerRegion: () => (
+      <>
+        <AnnouncerRegion />
+        <AssertiveRegion />
+      </>
+    ),
+  };
 }
 
 /**
@@ -446,7 +449,7 @@ export function useRovingTabIndex(
     orientation?: 'horizontal' | 'vertical';
     loop?: boolean;
     onSelectionChange?: (index: number) => void;
-  } = {}
+  } = {},
 ): {
   currentIndex: number;
   setCurrentIndex: (index: number) => void;
@@ -458,7 +461,7 @@ export function useRovingTabIndex(
 
   const getTabIndex = useCallback(
     (index: number) => (index === currentIndex ? 0 : -1),
-    [currentIndex]
+    [currentIndex],
   );
 
   const handleKeyDown = useCallback(
@@ -503,7 +506,7 @@ export function useRovingTabIndex(
         onSelectionChange?.(newIndex);
       }
     },
-    [currentIndex, items, loop, orientation, onSelectionChange]
+    [currentIndex, items, loop, orientation, onSelectionChange],
   );
 
   return { currentIndex, setCurrentIndex, getTabIndex, handleKeyDown };

@@ -316,8 +316,12 @@ describe('Auth Schemas', () => {
     });
 
     it('should require both passwords', () => {
-      expect(changePasswordRequestSchema.safeParse({ currentPassword: 'current' }).success).toBe(false);
-      expect(changePasswordRequestSchema.safeParse({ newPassword: 'StrongPass123' }).success).toBe(false);
+      expect(changePasswordRequestSchema.safeParse({ currentPassword: 'current' }).success).toBe(
+        false,
+      );
+      expect(changePasswordRequestSchema.safeParse({ newPassword: 'StrongPass123' }).success).toBe(
+        false,
+      );
     });
   });
 

@@ -6,11 +6,7 @@
  */
 
 import api from './api';
-import type {
-  ReportRequest,
-  ReportResponse,
-  ApiResponse,
-} from '../types/api.types';
+import type { ReportRequest, ReportResponse, ApiResponse } from '../types/api.types';
 
 export class ReportService {
   private readonly baseUrl = '/reports';
@@ -20,10 +16,7 @@ export class ReportService {
    */
   async generateReport(request: ReportRequest): Promise<ReportResponse> {
     try {
-      const response = await api.post<ApiResponse<ReportResponse>>(
-        this.baseUrl,
-        request
-      );
+      const response = await api.post<ApiResponse<ReportResponse>>(this.baseUrl, request);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to generate report');
@@ -43,9 +36,7 @@ export class ReportService {
    */
   async getReportStatus(reportId: string): Promise<ReportResponse> {
     try {
-      const response = await api.get<ApiResponse<ReportResponse>>(
-        `${this.baseUrl}/${reportId}`
-      );
+      const response = await api.get<ApiResponse<ReportResponse>>(`${this.baseUrl}/${reportId}`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get report status');
@@ -66,12 +57,9 @@ export class ReportService {
    */
   async downloadReport(reportId: string): Promise<Blob> {
     try {
-      const response = await api.get<Blob>(
-        `${this.baseUrl}/${reportId}/download`,
-        {
-          responseType: 'blob',
-        }
-      );
+      const response = await api.get<Blob>(`${this.baseUrl}/${reportId}/download`, {
+        responseType: 'blob',
+      });
 
       return response.data;
     } catch (error) {
@@ -87,9 +75,7 @@ export class ReportService {
    */
   async deleteReport(reportId: string): Promise<void> {
     try {
-      const response = await api.delete<ApiResponse<void>>(
-        `${this.baseUrl}/${reportId}`
-      );
+      const response = await api.delete<ApiResponse<void>>(`${this.baseUrl}/${reportId}`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to delete report');
@@ -107,9 +93,7 @@ export class ReportService {
    */
   async listReports(): Promise<ReportResponse[]> {
     try {
-      const response = await api.get<ApiResponse<ReportResponse[]>>(
-        this.baseUrl
-      );
+      const response = await api.get<ApiResponse<ReportResponse[]>>(this.baseUrl);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to list reports');
@@ -130,7 +114,7 @@ export class ReportService {
   async retryReport(reportId: string): Promise<ReportResponse> {
     try {
       const response = await api.post<ApiResponse<ReportResponse>>(
-        `${this.baseUrl}/${reportId}/retry`
+        `${this.baseUrl}/${reportId}/retry`,
       );
 
       if (!response.data.success) {

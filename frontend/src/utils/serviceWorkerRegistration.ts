@@ -19,14 +19,9 @@ export interface ServiceWorkerControls {
  * Register service worker with update detection
  */
 export async function registerSW(
-  options: ServiceWorkerRegistrationOptions = {}
+  options: ServiceWorkerRegistrationOptions = {},
 ): Promise<ServiceWorkerControls | null> {
-  const {
-    onNeedRefresh,
-    onOfflineReady,
-    onRegistered,
-    onRegistrationError,
-  } = options;
+  const { onNeedRefresh, onOfflineReady, onRegistered, onRegistrationError } = options;
 
   // Check if service workers are supported
   if (!('serviceWorker' in navigator)) {

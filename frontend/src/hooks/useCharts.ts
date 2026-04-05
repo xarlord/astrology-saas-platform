@@ -44,7 +44,7 @@ export const useCharts = (autoLoad = true) => {
         return null;
       }
     },
-    [createChart]
+    [createChart],
   );
 
   // Update chart wrapper
@@ -57,7 +57,7 @@ export const useCharts = (autoLoad = true) => {
         return false;
       }
     },
-    [updateChart]
+    [updateChart],
   );
 
   // Delete chart wrapper
@@ -70,7 +70,7 @@ export const useCharts = (autoLoad = true) => {
         return false;
       }
     },
-    [deleteChart]
+    [deleteChart],
   );
 
   // Calculate chart wrapper
@@ -83,7 +83,7 @@ export const useCharts = (autoLoad = true) => {
         return false;
       }
     },
-    [calculateChart]
+    [calculateChart],
   );
 
   // Get chart by ID
@@ -91,7 +91,7 @@ export const useCharts = (autoLoad = true) => {
     (id: string): Chart | undefined => {
       return charts.find((c) => c.id === id);
     },
-    [charts]
+    [charts],
   );
 
   // Get charts by type
@@ -99,7 +99,7 @@ export const useCharts = (autoLoad = true) => {
     (type: string): Chart[] => {
       return charts.filter((c) => c.type === type);
     },
-    [charts]
+    [charts],
   );
 
   // Load more charts (pagination)

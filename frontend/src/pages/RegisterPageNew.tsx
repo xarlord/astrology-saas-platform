@@ -10,7 +10,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 
 // Password strength calculator
-const calculatePasswordStrength = (password: string): { strength: number; label: string; color: string } => {
+const calculatePasswordStrength = (
+  password: string,
+): { strength: number; label: string; color: string } => {
   if (!password) {
     return { strength: 0, label: '', color: 'bg-slate-700' };
   }
@@ -140,7 +142,9 @@ export default function RegisterPageNew() {
                   <span className="material-symbols-outlined">auto_awesome</span>
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-lg">Accurate natal chart calculations</h3>
+                  <h3 className="text-white font-bold text-lg">
+                    Accurate natal chart calculations
+                  </h3>
                   <p className="text-slate-400 text-sm mt-1">
                     Precise astronomical data for your unique birth chart.
                   </p>
@@ -174,8 +178,8 @@ export default function RegisterPageNew() {
           {/* Quote Footer */}
           <div className="relative z-10 mt-auto pt-8 border-t border-white/10">
             <blockquote className="text-slate-400 italic text-sm">
-              "The universe is not outside of you. Look inside yourself; everything that you want, you
-              already are."
+              "The universe is not outside of you. Look inside yourself; everything that you want,
+              you already are."
               <span className="block text-primary not-italic font-bold mt-2">– Rumi</span>
             </blockquote>
           </div>
@@ -238,7 +242,10 @@ export default function RegisterPageNew() {
                 border: '1px solid rgba(255, 255, 255, 0.08)',
                 boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
               }}
-              onSubmit={(e) => { e.preventDefault(); void handleSubmit(e); }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void handleSubmit(e);
+              }}
             >
               {/* Full Name */}
               <div className="space-y-2">
@@ -247,7 +254,9 @@ export default function RegisterPageNew() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="material-symbols-outlined text-slate-500 text-[20px]">person</span>
+                    <span className="material-symbols-outlined text-slate-500 text-[20px]">
+                      person
+                    </span>
                   </div>
                   <input
                     className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -269,7 +278,9 @@ export default function RegisterPageNew() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="material-symbols-outlined text-slate-500 text-[20px]">mail</span>
+                    <span className="material-symbols-outlined text-slate-500 text-[20px]">
+                      mail
+                    </span>
                   </div>
                   <input
                     className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -292,7 +303,9 @@ export default function RegisterPageNew() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="material-symbols-outlined text-slate-500 text-[20px]">lock</span>
+                    <span className="material-symbols-outlined text-slate-500 text-[20px]">
+                      lock
+                    </span>
                   </div>
                   <input
                     className="block w-full pl-11 pr-12 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -439,9 +452,7 @@ export default function RegisterPageNew() {
               >
                 {isLoading ? (
                   <>
-                    <span className="material-symbols-outlined animate-spin text-sm">
-                      refresh
-                    </span>
+                    <span className="material-symbols-outlined animate-spin text-sm">refresh</span>
                     Creating Account...
                   </>
                 ) : (
@@ -507,7 +518,10 @@ export default function RegisterPageNew() {
               <div className="text-center mt-6">
                 <p className="text-slate-400 text-sm">
                   Already have an account?{' '}
-                  <Link className="text-primary font-semibold hover:text-white transition-colors" to="/login">
+                  <Link
+                    className="text-primary font-semibold hover:text-white transition-colors"
+                    to="/login"
+                  >
                     Sign in
                   </Link>
                 </p>

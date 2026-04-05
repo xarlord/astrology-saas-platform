@@ -181,8 +181,8 @@ export const useChartStore = create<ChartState>()(
       // Clear error
       clearError: () => set({ error: null }),
     }),
-    { name: 'ChartStore' }
-  )
+    { name: 'ChartStore' },
+  ),
 );
 
 // Selector hooks for optimized re-renders

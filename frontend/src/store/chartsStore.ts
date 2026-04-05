@@ -38,7 +38,9 @@ function getErrorMessage(error: unknown, fallback: string): string {
     return error.message;
   }
   const axiosError = error as AxiosError<ApiErrorResponse>;
-  return axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback;
+  return (
+    axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback
+  );
 }
 
 export const useChartsStore = create<ChartsState>((set) => ({

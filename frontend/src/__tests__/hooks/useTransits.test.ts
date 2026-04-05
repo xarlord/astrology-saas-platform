@@ -113,22 +113,15 @@ describe('useTransits', () => {
 
       let loadResult: boolean | undefined;
       await act(async () => {
-        loadResult = await result.current.loadTransits(
-          'chart-1',
-          '2024-01-01',
-          '2024-01-31'
-        );
+        loadResult = await result.current.loadTransits('chart-1', '2024-01-01', '2024-01-31');
       });
 
       expect(mockTransitStore.loadTransits).toHaveBeenCalledWith(
         'chart-1',
         '2024-01-01',
-        '2024-01-31'
+        '2024-01-31',
       );
-      expect(mockTransitStore.setDateRange).toHaveBeenCalledWith(
-        '2024-01-01',
-        '2024-01-31'
-      );
+      expect(mockTransitStore.setDateRange).toHaveBeenCalledWith('2024-01-01', '2024-01-31');
       expect(loadResult).toBe(true);
     });
 
@@ -139,11 +132,7 @@ describe('useTransits', () => {
 
       let loadResult: boolean | undefined;
       await act(async () => {
-        loadResult = await result.current.loadTransits(
-          'chart-1',
-          '2024-01-01',
-          '2024-01-31'
-        );
+        loadResult = await result.current.loadTransits('chart-1', '2024-01-01', '2024-01-31');
       });
 
       expect(loadResult).toBe(false);

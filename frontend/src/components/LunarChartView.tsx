@@ -45,11 +45,11 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
 
   const getMoonPhaseIcon = (phase: string): string => {
     const icons: Record<string, string> = {
-      'new': '🌑',
+      new: '🌑',
       'waxing-crescent': '🌒',
       'first-quarter': '🌓',
       'waxing-gibbous': '🌔',
-      'full': '🌕',
+      full: '🌕',
       'waning-gibbous': '🌖',
       'last-quarter': '🌗',
       'waning-crescent': '🌘',
@@ -77,7 +77,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
             const startY = 100 + 85 * Math.sin((startAngle * Math.PI) / 180);
             const endX = 100 + 85 * Math.cos((endAngle * Math.PI) / 180);
             const endY = 100 + 85 * Math.sin((endAngle * Math.PI) / 180);
-            void endX, endY; // Mark as used
+            (void endX, endY); // Mark as used
 
             const isCurrentHouse = house === currentHouse;
 
@@ -119,10 +119,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
   const renderAspect = (aspect: LunarAspect, index: number) => (
     <div key={index} className="aspect-item">
       <div className="aspect-header">
-        <span
-          className="aspect-symbol"
-          style={{ color: getAspectColor(aspect.type) }}
-        >
+        <span className="aspect-symbol" style={{ color: getAspectColor(aspect.type) }}>
           {getAspectIcon(aspect.type)}
         </span>
         <span className="aspect-type">{aspect.type}</span>
@@ -142,7 +139,11 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
     <div className="lunar-chart-view">
       {/* Header */}
       <div className="chart-header">
-        {onBack && <button onClick={onBack} className="back-button">← Back</button>}
+        {onBack && (
+          <button onClick={onBack} className="back-button">
+            ← Back
+          </button>
+        )}
         <h2>Lunar Return Chart</h2>
         <p className="return-date">
           {new Date(chart.returnDate).toLocaleDateString('en-US', {
@@ -160,10 +161,10 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
           <h3>Chart Wheel</h3>
           {renderHouseWheel()}
           <div className="wheel-info">
-            <p><strong>Moon in House {chart.housePlacement}</strong></p>
-            <p className="house-meaning">
-              {getHouseMeaning(chart.housePlacement)}
+            <p>
+              <strong>Moon in House {chart.housePlacement}</strong>
             </p>
+            <p className="house-meaning">{getHouseMeaning(chart.housePlacement)}</p>
           </div>
         </div>
 
@@ -180,7 +181,8 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
               <div className="position-row">
                 <span className="label">Position:</span>
                 <span className="value">
-                  {chart.moonPosition.degree}° {chart.moonPosition.minute}' {chart.moonPosition.second}"
+                  {chart.moonPosition.degree}° {chart.moonPosition.minute}'{' '}
+                  {chart.moonPosition.second}"
                 </span>
               </div>
               <div className="position-row">

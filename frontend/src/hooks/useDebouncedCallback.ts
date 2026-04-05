@@ -51,14 +51,9 @@ type AnyFunction = (...args: unknown[]) => unknown;
  */
 export function useDebouncedCallback<T extends AnyFunction>(
   callback: T,
-  options: DebouncedCallbackOptions = {}
+  options: DebouncedCallbackOptions = {},
 ): T & DebouncedCallbackControl {
-  const {
-    delay = 300,
-    leading = false,
-    trailing = true,
-    maxWait,
-  } = options;
+  const { delay = 300, leading = false, trailing = true, maxWait } = options;
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maxTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -141,7 +136,7 @@ export function useDebouncedCallback<T extends AnyFunction>(
         leadingCalledRef.current = false;
       }, delay);
     },
-    [delay, leading, trailing, maxWait, clearAllTimeouts]
+    [delay, leading, trailing, maxWait, clearAllTimeouts],
   );
 
   // Cleanup on unmount
@@ -156,7 +151,7 @@ export function useDebouncedCallback<T extends AnyFunction>(
     (...args: Parameters<T>) => {
       return debouncedFn(...args);
     },
-    [debouncedFn]
+    [debouncedFn],
   ) as T & DebouncedCallbackControl;
 
   result.cancel = cancel;

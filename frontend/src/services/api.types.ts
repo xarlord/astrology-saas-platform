@@ -102,7 +102,13 @@ export interface BirthData {
   timezone?: string;
 }
 
-export type ChartType = 'natal' | 'synastry' | 'composite' | 'transit' | 'progressed' | 'solar-return';
+export type ChartType =
+  | 'natal'
+  | 'synastry'
+  | 'composite'
+  | 'transit'
+  | 'progressed'
+  | 'solar-return';
 export type HouseSystem = 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
 export type ZodiacSystem = 'tropical' | 'sidereal';
 

@@ -44,12 +44,7 @@ const iconSizeClasses = {
 };
 
 const WarningIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="currentColor"
-    viewBox="0 0 20 20"
-    aria-hidden="true"
-  >
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
     <path
       fillRule="evenodd"
       d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -78,7 +73,7 @@ export const InlineError: React.FC<InlineErrorProps> = ({
       className={clsx(
         'flex items-start gap-1.5 text-error dark:text-error-light',
         sizeClasses[size],
-        className
+        className,
       )}
       role="alert"
       aria-live="polite"
@@ -142,20 +137,26 @@ export const FormErrorSummary: React.FC<FormErrorSummaryProps> = ({
     lg: 'w-2 h-2',
   };
 
-  const defaultTitle = title ?? `Please fix ${errors.length} ${errors.length === 1 ? 'error' : 'errors'}:`;
+  const defaultTitle =
+    title ?? `Please fix ${errors.length} ${errors.length === 1 ? 'error' : 'errors'}:`;
 
   return (
     <div
       className={clsx(
         'rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4',
-        className
+        className,
       )}
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
     >
       <div className="flex items-start gap-2">
-        <WarningIcon className={clsx('flex-shrink-0 text-error mt-0.5', size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-6 h-6' : 'w-5 h-5')} />
+        <WarningIcon
+          className={clsx(
+            'flex-shrink-0 text-error mt-0.5',
+            size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-6 h-6' : 'w-5 h-5',
+          )}
+        />
         <div className="flex-1">
           <h4 className={clsx('text-error dark:text-error-light mb-2', titleClasses[size])}>
             {defaultTitle}
@@ -164,16 +165,13 @@ export const FormErrorSummary: React.FC<FormErrorSummaryProps> = ({
             {errors.map((error, index) => (
               <li key={index} className="flex items-start gap-2">
                 <span
-                  className={clsx(
-                    'flex-shrink-0 rounded-full bg-error mt-1.5',
-                    bulletSize[size]
-                  )}
+                  className={clsx('flex-shrink-0 rounded-full bg-error mt-1.5', bulletSize[size])}
                   aria-hidden="true"
                 />
                 <span
                   className={clsx(
                     'text-error dark:text-error-light',
-                    onErrorClick && 'cursor-pointer hover:underline'
+                    onErrorClick && 'cursor-pointer hover:underline',
                   )}
                   onClick={() => onErrorClick?.(index, error)}
                   onKeyDown={(e) => {
@@ -184,7 +182,11 @@ export const FormErrorSummary: React.FC<FormErrorSummaryProps> = ({
                   }}
                   tabIndex={onErrorClick ? 0 : undefined}
                   role={onErrorClick ? 'button' : undefined}
-                  aria-label={onErrorClick ? `Focus ${fieldIds[index] ?? 'field'} with error: ${error}` : undefined}
+                  aria-label={
+                    onErrorClick
+                      ? `Focus ${fieldIds[index] ?? 'field'} with error: ${error}`
+                      : undefined
+                  }
                 >
                   {error}
                 </span>
@@ -228,14 +230,7 @@ export const FieldError: React.FC<FieldErrorProps> = ({
     return null;
   }
 
-  return (
-    <InlineError
-      message={error}
-      fieldId={fieldId}
-      size={size}
-      className={className}
-    />
-  );
+  return <InlineError message={error} fieldId={fieldId} size={size} className={className} />;
 };
 
 export default InlineError;

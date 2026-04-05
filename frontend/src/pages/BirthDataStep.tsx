@@ -62,9 +62,9 @@ export default function BirthDataStep() {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`,
-        { headers: { 'Accept-Language': 'en' } }
+        { headers: { 'Accept-Language': 'en' } },
       );
-      const data = await response.json() as GeoResult[];
+      const data = (await response.json()) as GeoResult[];
       setSearchResults(data);
       setShowDropdown(data.length > 0);
     } catch {
@@ -112,8 +112,8 @@ export default function BirthDataStep() {
         birth_time: timeUnknown ? '12:00' : birthTime,
         birth_time_unknown: timeUnknown,
         birth_place_name: birthPlace,
-        birth_latitude: latitude!,
-        birth_longitude: longitude!,
+        birth_latitude: latitude,
+        birth_longitude: longitude,
         birth_timezone: timezone,
         house_system: 'placidus',
         zodiac: 'tropical',
@@ -184,7 +184,8 @@ export default function BirthDataStep() {
               </span>
             </h1>
             <p className="text-slate-300 text-lg mb-10 leading-relaxed">
-              Your birth details allow us to create your unique natal chart — the foundation for all your cosmic insights.
+              Your birth details allow us to create your unique natal chart — the foundation for all
+              your cosmic insights.
             </p>
 
             {/* Feature List */}
@@ -237,12 +238,22 @@ export default function BirthDataStep() {
         {/* Right Panel: Birth Data Form */}
         <div className="w-full lg:w-7/12 xl:w-1/2 bg-gradient-to-br from-[#0B0D17] to-[#141627] flex items-center justify-center p-6 lg:p-12 relative">
           {/* Background glows */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cosmic-blue/10 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
+          <div
+            className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cosmic-blue/10 rounded-full blur-[80px] pointer-events-none"
+            aria-hidden="true"
+          />
 
           <div className="w-full max-w-md z-10">
             {/* Step Indicator */}
-            <div className="flex justify-between items-center mb-8" role="group" aria-label="Registration progress">
+            <div
+              className="flex justify-between items-center mb-8"
+              role="group"
+              aria-label="Registration progress"
+            >
               <div className="flex items-center gap-2">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary text-sm font-bold border border-primary/30">
                   <span className="material-symbols-outlined text-base">check</span>
@@ -268,7 +279,10 @@ export default function BirthDataStep() {
 
             {/* Error Display */}
             {error && (
-              <div className="mb-6 p-4 rounded-lg text-sm bg-red-500/10 border border-red-500/20 text-red-200" role="alert">
+              <div
+                className="mb-6 p-4 rounded-lg text-sm bg-red-500/10 border border-red-500/20 text-red-200"
+                role="alert"
+              >
                 <div className="flex items-start gap-2">
                   <span className="material-symbols-outlined text-base mt-0.5">error</span>
                   <p>{error}</p>
@@ -286,7 +300,10 @@ export default function BirthDataStep() {
                 border: '1px solid rgba(255, 255, 255, 0.08)',
                 boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
               }}
-              onSubmit={(e) => { e.preventDefault(); void handleSubmit(e); }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void handleSubmit(e);
+              }}
             >
               {/* Date of Birth */}
               <div className="space-y-2">
@@ -295,7 +312,9 @@ export default function BirthDataStep() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="material-symbols-outlined text-slate-500 text-[20px]">calendar_today</span>
+                    <span className="material-symbols-outlined text-slate-500 text-[20px]">
+                      calendar_today
+                    </span>
                   </div>
                   <input
                     className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -318,7 +337,9 @@ export default function BirthDataStep() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="material-symbols-outlined text-slate-500 text-[20px]">schedule</span>
+                    <span className="material-symbols-outlined text-slate-500 text-[20px]">
+                      schedule
+                    </span>
                   </div>
                   <input
                     className={`block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
@@ -365,7 +386,11 @@ export default function BirthDataStep() {
                 <div className="relative" ref={dropdownRef}>
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <span className="material-symbols-outlined text-slate-500 text-[20px]">
-                      {isSearching ? 'hourglass_top' : placeSelected ? 'check_circle' : 'location_on'}
+                      {isSearching
+                        ? 'hourglass_top'
+                        : placeSelected
+                          ? 'check_circle'
+                          : 'location_on'}
                     </span>
                   </div>
                   <input
@@ -400,8 +425,12 @@ export default function BirthDataStep() {
                           className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
                           onClick={() => selectPlace(result)}
                         >
-                          <span className="material-symbols-outlined text-slate-500 text-base">location_on</span>
-                          <span className="truncate">{result.display_name.split(',').slice(0, 3).join(',')}</span>
+                          <span className="material-symbols-outlined text-slate-500 text-base">
+                            location_on
+                          </span>
+                          <span className="truncate">
+                            {result.display_name.split(',').slice(0, 3).join(',')}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -431,7 +460,9 @@ export default function BirthDataStep() {
                 >
                   {isSubmitting ? (
                     <>
-                      <span className="material-symbols-outlined animate-spin text-sm">refresh</span>
+                      <span className="material-symbols-outlined animate-spin text-sm">
+                        refresh
+                      </span>
                       Generating Chart...
                     </>
                   ) : (
@@ -446,7 +477,9 @@ export default function BirthDataStep() {
               {/* Privacy Assurance */}
               <div className="flex items-center gap-2 justify-center pt-2">
                 <span className="material-symbols-outlined text-xs text-slate-500">lock</span>
-                <span className="text-xs text-slate-500">Your data is encrypted and never shared.</span>
+                <span className="text-xs text-slate-500">
+                  Your data is encrypted and never shared.
+                </span>
               </div>
             </form>
           </div>

@@ -5,9 +5,9 @@
  * Uses cosmic dark theme consistent with the rest of the app.
  */
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../hooks";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../hooks';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Sparkles,
   Plus,
@@ -27,7 +27,7 @@ import {
   Star,
   Home,
   Menu,
-} from "lucide-react";
+} from 'lucide-react';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -64,11 +64,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <TopNav onMenuClick={handleOpenSidebar} />
 
         {/* Page Content */}
-        <main
-          id="main-content"
-          className="p-4 lg:p-8 pb-24 lg:pb-8"
-          tabIndex={-1}
-        >
+        <main id="main-content" className="p-4 lg:p-8 pb-24 lg:pb-8" tabIndex={-1}>
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
@@ -89,22 +85,19 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
   const handleLogout = useCallback(() => {
     setDropdownOpen(false);
     void logout();
-    navigate("/login");
+    navigate('/login');
   }, [logout, navigate]);
 
   // Close dropdown on outside click
   useEffect(() => {
     if (!dropdownOpen) return;
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dropdownOpen]);
 
   return (
@@ -124,17 +117,12 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             <div className="size-8 bg-gradient-to-br from-primary to-[#8b5cf6] rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-white hidden sm:block">
-              AstroVerse
-            </span>
+            <span className="text-xl font-bold text-white hidden sm:block">AstroVerse</span>
           </Link>
         </div>
 
         {/* Center: Desktop Navigation */}
-        <nav
-          className="hidden lg:flex items-center gap-1"
-          aria-label="Main navigation"
-        >
+        <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
           {navItems.map((item) => (
             <NavLink
               key={item.name}
@@ -142,16 +130,14 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
               className={({ isActive }) =>
                 `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? "text-white bg-white/10"
-                    : "text-slate-300 hover:text-white hover:bg-white/5"
+                    ? 'text-white bg-white/10'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`
               }
               end
             >
               {({ isActive }) => (
-                <span aria-current={isActive ? "page" : undefined}>
-                  {item.label}
-                </span>
+                <span aria-current={isActive ? 'page' : undefined}>{item.label}</span>
               )}
             </NavLink>
           ))}
@@ -160,7 +146,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
         {/* Right: New Chart + User Menu */}
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/charts/create")}
+            onClick={() => navigate('/charts/create')}
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
             aria-label="Create new chart"
           >
@@ -179,20 +165,20 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
               className="flex items-center gap-2 p-1 rounded-lg hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors"
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onKeyDown={(e) => {
-                if (e.key === "Escape") setDropdownOpen(false);
+                if (e.key === 'Escape') setDropdownOpen(false);
               }}
               aria-expanded={dropdownOpen}
               aria-haspopup="true"
               aria-label="User menu"
             >
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                {user?.name?.charAt(0).toUpperCase() ?? 'U'}
               </div>
               <span className="hidden md:block text-sm font-medium text-slate-300">
-                {user?.name ?? "User"}
+                {user?.name ?? 'User'}
               </span>
               <ChevronDown
-                className={`w-4 h-4 text-slate-500 hidden md:block transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                className={`w-4 h-4 text-slate-500 hidden md:block transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
               />
             </button>
 
@@ -241,34 +227,24 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 }
 
 // Sidebar Component
-function Sidebar({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { user } = useAuth();
-  const tier = user?.plan ?? "free";
-  const isPaid = tier !== "free";
+  const tier = user?.plan ?? 'free';
+  const isPaid = tier !== 'free';
 
   return (
     <aside
       className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-[#0B0D17] border-r border-[#2f2645]
         transform transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}
       aria-label="Main navigation"
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
         <div className="flex items-center justify-between h-16 px-6 border-b border-[#2f2645]">
-          <Link
-            to="/dashboard"
-            className="flex items-center gap-2"
-            onClick={onClose}
-          >
+          <Link to="/dashboard" className="flex items-center gap-2" onClick={onClose}>
             <div className="size-8 bg-gradient-to-br from-primary to-[#8b5cf6] rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
@@ -384,12 +360,10 @@ function Sidebar({
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 <p className="text-sm font-medium text-emerald-300">
-                  {tier === "basic" ? "Pro Plan" : "Premium Plan"}
+                  {tier === 'basic' ? 'Pro Plan' : 'Premium Plan'}
                 </p>
               </div>
-              <p className="text-xs text-slate-400 mb-3">
-                You have access to premium features
-              </p>
+              <p className="text-xs text-slate-400 mb-3">You have access to premium features</p>
               <Link
                 to="/subscription"
                 onClick={onClose}
@@ -400,9 +374,7 @@ function Sidebar({
             </div>
           ) : (
             <div className="bg-gradient-to-br from-primary/10 to-purple-900/20 rounded-lg p-4 border border-primary/20">
-              <p className="text-sm font-medium text-white mb-1">
-                Upgrade to Premium
-              </p>
+              <p className="text-sm font-medium text-white mb-1">Upgrade to Premium</p>
               <p className="text-xs text-slate-400 mb-3">
                 Get unlimited charts and detailed analysis
               </p>
@@ -425,7 +397,7 @@ function Sidebar({
 const MobileBottomNav = React.memo(function MobileBottomNav() {
   const { user } = useAuth();
   const location = useLocation();
-  const [activePath, setActivePath] = useState("/");
+  const [activePath, setActivePath] = useState('/');
 
   useEffect(() => {
     setActivePath(location.pathname);
@@ -433,8 +405,8 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
 
   const isActive = useCallback(
     (href: string) => {
-      if (href === "/dashboard") {
-        return activePath === "/dashboard" || activePath === "/";
+      if (href === '/dashboard') {
+        return activePath === '/dashboard' || activePath === '/';
       }
       return activePath.startsWith(href);
     },
@@ -445,7 +417,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#141627] border-t border-[#2f2645]"
       style={{
-        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingBottom: 'env(safe-area-inset-bottom)',
       }}
       aria-label="Mobile navigation"
     >
@@ -459,7 +431,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
               to={item.href}
               className="flex flex-col items-center justify-center flex-1 min-h-[56px] relative transition-all duration-200 group"
               aria-label={item.label}
-              aria-current={active ? "page" : undefined}
+              aria-current={active ? 'page' : undefined}
             >
               {/* Active indicator bar */}
               {active && (
@@ -470,24 +442,20 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
               <span
                 className={`
                   relative p-2 rounded-xl transition-all duration-200
-                  ${
-                    active
-                      ? "bg-primary/20 text-primary"
-                      : "text-slate-400 group-hover:bg-white/5"
-                  }
+                  ${active ? 'bg-primary/20 text-primary' : 'text-slate-400 group-hover:bg-white/5'}
                   active:scale-95 active:bg-white/10
                 `}
                 style={{
-                  minWidth: "44px",
-                  minHeight: "44px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  minWidth: '44px',
+                  minHeight: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <Icon
                   className={`w-[22px] h-[22px] transition-all duration-200 ${
-                    active ? "scale-110" : "group-hover:scale-105"
+                    active ? 'scale-110' : 'group-hover:scale-105'
                   }`}
                 />
               </span>
@@ -496,7 +464,7 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
               <span
                 className={`
                   text-xs mt-0.5 font-medium transition-colors duration-200
-                  ${active ? "text-primary" : "text-slate-400"}
+                  ${active ? 'text-primary' : 'text-slate-400'}
                 `}
               >
                 {item.label}
@@ -510,9 +478,9 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
           to="/profile"
           className="flex flex-col items-center justify-center flex-1 min-h-[56px] relative transition-all duration-200 group"
           aria-label="Profile"
-          aria-current={activePath === "/profile" ? "page" : undefined}
+          aria-current={activePath === '/profile' ? 'page' : undefined}
         >
-          {activePath === "/profile" && (
+          {activePath === '/profile' && (
             <span className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-primary rounded-full" />
           )}
 
@@ -520,33 +488,33 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
             className={`
               relative p-2 rounded-xl transition-all duration-200
               ${
-                activePath === "/profile"
-                  ? "bg-primary/20 ring-2 ring-primary ring-offset-2 ring-offset-[#141627]"
-                  : "group-hover:bg-white/5"
+                activePath === '/profile'
+                  ? 'bg-primary/20 ring-2 ring-primary ring-offset-2 ring-offset-[#141627]'
+                  : 'group-hover:bg-white/5'
               }
               active:scale-95 active:bg-white/10
             `}
             style={{
-              minWidth: "44px",
-              minHeight: "44px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              minWidth: '44px',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <div
               className={`
                 w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-medium transition-all duration-200
-                ${activePath === "/profile" ? "scale-110 ring-2 ring-[#141627]" : "group-hover:scale-105"}
+                ${activePath === '/profile' ? 'scale-110 ring-2 ring-[#141627]' : 'group-hover:scale-105'}
               `}
             >
-              {user?.name?.charAt(0).toUpperCase() ?? "U"}
+              {user?.name?.charAt(0).toUpperCase() ?? 'U'}
             </div>
           </span>
 
           <span
             className={`text-xs mt-0.5 font-medium transition-colors duration-200 ${
-              activePath === "/profile" ? "text-primary" : "text-slate-400"
+              activePath === '/profile' ? 'text-primary' : 'text-slate-400'
             }`}
           >
             Profile
@@ -559,14 +527,14 @@ const MobileBottomNav = React.memo(function MobileBottomNav() {
 
 // Navigation data
 const navItems = [
-  { name: "charts", label: "Charts", href: "/charts" },
-  { name: "transits", label: "Transits", href: "/transits" },
-  { name: "learn", label: "Learn", href: "/learning" },
+  { name: 'charts', label: 'Charts', href: '/charts' },
+  { name: 'transits', label: 'Transits', href: '/transits' },
+  { name: 'learn', label: 'Learn', href: '/learning' },
 ];
 
 const mobileNavItems = [
-  { name: "home", label: "Home", href: "/dashboard", icon: Home },
-  { name: "charts", label: "Charts", href: "/charts", icon: Star },
-  { name: "transits", label: "Transits", href: "/transits", icon: RefreshCw },
-  { name: "learn", label: "Learn", href: "/learning", icon: GraduationCap },
+  { name: 'home', label: 'Home', href: '/dashboard', icon: Home },
+  { name: 'charts', label: 'Charts', href: '/charts', icon: Star },
+  { name: 'transits', label: 'Transits', href: '/transits', icon: RefreshCw },
+  { name: 'learn', label: 'Learn', href: '/learning', icon: GraduationCap },
 ];

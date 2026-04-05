@@ -412,10 +412,18 @@ describe('useReports', () => {
         _href: '',
         _download: '',
         click: mockClick,
-        get href() { return this._href; },
-        set href(v) { this._href = v; },
-        get download() { return this._download; },
-        set download(v) { this._download = v; },
+        get href() {
+          return this._href;
+        },
+        set href(v) {
+          this._href = v;
+        },
+        get download() {
+          return this._download;
+        },
+        set download(v) {
+          this._download = v;
+        },
       };
 
       // Store original createElement
@@ -423,16 +431,22 @@ describe('useReports', () => {
 
       // Track calls
       let createdElement: string | null = null;
-      const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-        createdElement = tagName;
-        if (tagName === 'a') {
-          return mockLink as unknown as HTMLAnchorElement;
-        }
-        return originalCreateElement(tagName);
-      });
+      const createElementSpy = vi
+        .spyOn(document, 'createElement')
+        .mockImplementation((tagName: string) => {
+          createdElement = tagName;
+          if (tagName === 'a') {
+            return mockLink as unknown as HTMLAnchorElement;
+          }
+          return originalCreateElement(tagName);
+        });
 
-      const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockReturnValue(null as unknown as Node);
-      const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockReturnValue(null as unknown as Node);
+      const appendChildSpy = vi
+        .spyOn(document.body, 'appendChild')
+        .mockReturnValue(null as unknown as Node);
+      const removeChildSpy = vi
+        .spyOn(document.body, 'removeChild')
+        .mockReturnValue(null as unknown as Node);
 
       act(() => {
         result.current.downloadReport(mockCompletedReport);
@@ -459,19 +473,29 @@ describe('useReports', () => {
         _href: '',
         _download: '',
         click: mockClick,
-        get href() { return this._href; },
-        set href(v) { this._href = v; },
-        get download() { return this._download; },
-        set download(v) { this._download = v; },
+        get href() {
+          return this._href;
+        },
+        set href(v) {
+          this._href = v;
+        },
+        get download() {
+          return this._download;
+        },
+        set download(v) {
+          this._download = v;
+        },
       };
 
       const originalCreateElement = document.createElement.bind(document);
-      const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-        if (tagName === 'a') {
-          return mockLink as unknown as HTMLAnchorElement;
-        }
-        return originalCreateElement(tagName);
-      });
+      const createElementSpy = vi
+        .spyOn(document, 'createElement')
+        .mockImplementation((tagName: string) => {
+          if (tagName === 'a') {
+            return mockLink as unknown as HTMLAnchorElement;
+          }
+          return originalCreateElement(tagName);
+        });
 
       const reportWithoutUrl: Report = {
         ...mockPendingReport,
@@ -496,22 +520,36 @@ describe('useReports', () => {
         _href: '',
         _download: '',
         click: mockClick,
-        get href() { return this._href; },
-        set href(v) { this._href = v; },
-        get download() { return this._download; },
-        set download(v) { this._download = v; },
+        get href() {
+          return this._href;
+        },
+        set href(v) {
+          this._href = v;
+        },
+        get download() {
+          return this._download;
+        },
+        set download(v) {
+          this._download = v;
+        },
       };
 
       const originalCreateElement = document.createElement.bind(document);
-      const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-        if (tagName === 'a') {
-          return mockLink as unknown as HTMLAnchorElement;
-        }
-        return originalCreateElement(tagName);
-      });
+      const createElementSpy = vi
+        .spyOn(document, 'createElement')
+        .mockImplementation((tagName: string) => {
+          if (tagName === 'a') {
+            return mockLink as unknown as HTMLAnchorElement;
+          }
+          return originalCreateElement(tagName);
+        });
 
-      const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockReturnValue(null as unknown as Node);
-      const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockReturnValue(null as unknown as Node);
+      const appendChildSpy = vi
+        .spyOn(document.body, 'appendChild')
+        .mockReturnValue(null as unknown as Node);
+      const removeChildSpy = vi
+        .spyOn(document.body, 'removeChild')
+        .mockReturnValue(null as unknown as Node);
 
       const jsonReport: Report = {
         ...mockCompletedReport,

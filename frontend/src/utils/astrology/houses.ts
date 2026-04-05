@@ -3,11 +3,7 @@
  * Calculate house cusps using various house systems
  */
 
-import {
-  HouseSystem,
-  HouseData,
-  ZODIAC_SIGNS,
-} from './types';
+import { HouseSystem, HouseData, ZODIAC_SIGNS } from './types';
 import {
   normalizeAngle,
   getZodiacSign,
@@ -23,10 +19,11 @@ export function calculateLST(jd: number, longitude: number): number {
   const T = julianCenturies(jd);
 
   // Greenwich Mean Sidereal Time at 0h UT
-  let GMST = 280.46061837 +
+  let GMST =
+    280.46061837 +
     360.98564736629 * (jd - 2451545.0) +
     0.000387933 * T * T -
-    T * T * T / 38710000.0;
+    (T * T * T) / 38710000.0;
 
   GMST = normalizeAngle(GMST);
 
@@ -49,7 +46,7 @@ export function calculateRAMC(lst: number): number {
 export function calculateHouses(
   lst: number,
   latitude: number,
-  system: HouseSystem = 'placidus'
+  system: HouseSystem = 'placidus',
 ): HouseData[] {
   switch (system) {
     case 'placidus':
@@ -260,19 +257,19 @@ export function calculatePorphyryHouses(lst: number, latitude: number): HouseDat
   const cusps: number[] = Array.from({ length: 12 }, () => 0);
 
   cusps[0] = asc; // 1st house
-  cusps[3] = ic;  // 4th house
+  cusps[3] = ic; // 4th house
   cusps[6] = desc; // 7th house
-  cusps[9] = mc;   // 10th house
+  cusps[9] = mc; // 10th house
 
   // Fill in intermediate houses
   cusps[1] = normalizeAngle(asc - q1 / 3);
-  cusps[2] = normalizeAngle(asc - 2 * q1 / 3);
+  cusps[2] = normalizeAngle(asc - (2 * q1) / 3);
   cusps[4] = normalizeAngle(ic - q2 / 3);
-  cusps[5] = normalizeAngle(ic - 2 * q2 / 3);
+  cusps[5] = normalizeAngle(ic - (2 * q2) / 3);
   cusps[7] = normalizeAngle(desc - q3 / 3);
-  cusps[8] = normalizeAngle(desc - 2 * q3 / 3);
+  cusps[8] = normalizeAngle(desc - (2 * q3) / 3);
   cusps[10] = normalizeAngle(mc - q4 / 3);
-  cusps[11] = normalizeAngle(mc - 2 * q4 / 3);
+  cusps[11] = normalizeAngle(mc - (2 * q4) / 3);
 
   for (let i = 0; i < 12; i++) {
     houses.push({
@@ -291,15 +288,15 @@ export function calculatePorphyryHouses(lst: number, latitude: number): HouseDat
  */
 export function calculateAscendant(ramc: number, latitude: number): number {
   const e = 23.44; // Obliquity of ecliptic (approximate)
-  const latRad = latitude * Math.PI / 180;
-  const eRad = e * Math.PI / 180;
-  const ramcRad = ramc * Math.PI / 180;
+  const latRad = (latitude * Math.PI) / 180;
+  const eRad = (e * Math.PI) / 180;
+  const ramcRad = (ramc * Math.PI) / 180;
 
   // Ascendant formula
   const y = -Math.cos(ramcRad);
   const x = Math.sin(ramcRad) * Math.cos(eRad) + Math.tan(latRad) * Math.sin(eRad);
 
-  let asc = Math.atan2(y, x) * 180 / Math.PI;
+  let asc = (Math.atan2(y, x) * 180) / Math.PI;
   asc = normalizeAngle(asc);
 
   return asc;
@@ -310,11 +307,11 @@ export function calculateAscendant(ramc: number, latitude: number): number {
  */
 export function calculateMC(ramc: number): number {
   const e = 23.44; // Obliquity of ecliptic
-  const eRad = e * Math.PI / 180;
-  const ramcRad = ramc * Math.PI / 180;
+  const eRad = (e * Math.PI) / 180;
+  const ramcRad = (ramc * Math.PI) / 180;
 
   // MC formula
-  const mc = Math.atan2(Math.sin(ramcRad), Math.cos(ramcRad) * Math.cos(eRad)) * 180 / Math.PI;
+  const mc = (Math.atan2(Math.sin(ramcRad), Math.cos(ramcRad) * Math.cos(eRad)) * 180) / Math.PI;
 
   return normalizeAngle(mc);
 }
@@ -338,15 +335,15 @@ export function calculateIC(midheaven: number): number {
  */
 export function calculateVertex(ramc: number, latitude: number): number {
   const e = 23.44; // Obliquity of ecliptic
-  const latRad = latitude * Math.PI / 180;
-  const eRad = e * Math.PI / 180;
-  const ramcRad = (ramc + 180) * Math.PI / 180; // Add 180 for Vertex
+  const latRad = (latitude * Math.PI) / 180;
+  const eRad = (e * Math.PI) / 180;
+  const ramcRad = ((ramc + 180) * Math.PI) / 180; // Add 180 for Vertex
 
   // Vertex formula
   const y = -Math.cos(ramcRad);
   const x = Math.sin(ramcRad) * Math.cos(eRad) - Math.tan(latRad) * Math.sin(eRad);
 
-  let vertex = Math.atan2(y, x) * 180 / Math.PI;
+  let vertex = (Math.atan2(y, x) * 180) / Math.PI;
   vertex = normalizeAngle(vertex);
 
   return vertex;
@@ -378,7 +375,7 @@ export function calculateHousesFromData(
   time: string,
   latitude: number,
   longitude: number,
-  system: HouseSystem = 'placidus'
+  system: HouseSystem = 'placidus',
 ): HouseData[] {
   // Parse time
   const [hours, minutes] = time.split(':').map(Number);

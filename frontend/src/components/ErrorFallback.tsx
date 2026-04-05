@@ -47,9 +47,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, retry }) => {
               Technical Details
             </summary>
             <div className="mt-2 p-3 bg-black/30 rounded-lg">
-              <p className="text-xs text-red-300 font-mono break-words">
-                {error.message}
-              </p>
+              <p className="text-xs text-red-300 font-mono break-words">{error.message}</p>
               {error.stack && (
                 <pre className="text-xs text-red-400/70 font-mono mt-2 overflow-x-auto whitespace-pre-wrap">
                   {error.stack}

@@ -15,7 +15,12 @@
 
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useFocusTrap, useFocusRestoration, useAnnouncer, useRovingTabIndex } from '../useFocusTrap';
+import {
+  useFocusTrap,
+  useFocusRestoration,
+  useAnnouncer,
+  useRovingTabIndex,
+} from '../useFocusTrap';
 
 // Mock DOM elements
 const createMockElement = (tagName: string = 'div'): HTMLElement => {
@@ -39,9 +44,7 @@ describe('useFocusTrap', () => {
 
   describe('Basic Focus Trap', () => {
     it('should return a ref object', () => {
-      const { result } = renderHook(() =>
-        useFocusTrap({ active: false })
-      );
+      const { result } = renderHook(() => useFocusTrap({ active: false }));
 
       expect(result.current).toHaveProperty('current');
     });
@@ -49,7 +52,7 @@ describe('useFocusTrap', () => {
     it('should accept active option', () => {
       const { result, rerender } = renderHook(
         ({ active }) => useFocusTrap<HTMLDivElement>({ active }),
-        { initialProps: { active: false } }
+        { initialProps: { active: false } },
       );
 
       expect(result.current).toHaveProperty('current');
@@ -68,7 +71,7 @@ describe('useFocusTrap', () => {
         useFocusTrap({
           active: false,
           returnFocusRef: returnRef as React.RefObject<HTMLElement>,
-        })
+        }),
       );
 
       expect(result.current).toHaveProperty('current');
@@ -79,7 +82,7 @@ describe('useFocusTrap', () => {
         useFocusTrap({
           active: false,
           autoFocus: true,
-        })
+        }),
       );
 
       expect(result.current).toHaveProperty('current');
@@ -93,7 +96,7 @@ describe('useFocusTrap', () => {
           active: false,
           escapeDeactivates: true,
           onEscape,
-        })
+        }),
       );
 
       expect(result.current).toHaveProperty('current');
@@ -109,7 +112,7 @@ describe('useFocusTrap', () => {
         useFocusTrap<HTMLDivElement>({
           active: false,
           returnFocusRef: returnRef as React.RefObject<HTMLElement>,
-        })
+        }),
       );
 
       // Focus restoration happens when the trap is deactivated
@@ -184,11 +187,7 @@ describe('useAnnouncer', () => {
 
 describe('useRovingTabIndex', () => {
   const createMockItems = (): HTMLElement[] => {
-    return [
-      createMockElement('button'),
-      createMockElement('button'),
-      createMockElement('button'),
-    ];
+    return [createMockElement('button'), createMockElement('button'), createMockElement('button')];
   };
 
   it('should initialize with currentIndex 0', () => {
@@ -230,9 +229,7 @@ describe('useRovingTabIndex', () => {
   it('should handle ArrowUp navigation', () => {
     const items = createMockItems();
 
-    const { result } = renderHook(() =>
-      useRovingTabIndex(items, { orientation: 'vertical' })
-    );
+    const { result } = renderHook(() => useRovingTabIndex(items, { orientation: 'vertical' }));
 
     // Move to index 1 first
     const downEvent = {
@@ -300,9 +297,7 @@ describe('useRovingTabIndex', () => {
   it('should loop by default', () => {
     const items = createMockItems();
 
-    const { result } = renderHook(() =>
-      useRovingTabIndex(items, { loop: true })
-    );
+    const { result } = renderHook(() => useRovingTabIndex(items, { loop: true }));
 
     // At last item, arrow down should loop to first
     act(() => {
@@ -324,9 +319,7 @@ describe('useRovingTabIndex', () => {
   it('should not loop when loop is false', () => {
     const items = createMockItems();
 
-    const { result } = renderHook(() =>
-      useRovingTabIndex(items, { loop: false })
-    );
+    const { result } = renderHook(() => useRovingTabIndex(items, { loop: false }));
 
     // At last item, arrow down should stay
     act(() => {
@@ -348,9 +341,7 @@ describe('useRovingTabIndex', () => {
   it('should support horizontal orientation', () => {
     const items = createMockItems();
 
-    const { result } = renderHook(() =>
-      useRovingTabIndex(items, { orientation: 'horizontal' })
-    );
+    const { result } = renderHook(() => useRovingTabIndex(items, { orientation: 'horizontal' }));
 
     const rightEvent = {
       key: 'ArrowRight',
@@ -379,9 +370,7 @@ describe('useRovingTabIndex', () => {
     const items = createMockItems();
     const onSelectionChange = vi.fn();
 
-    const { result } = renderHook(() =>
-      useRovingTabIndex(items, { onSelectionChange })
-    );
+    const { result } = renderHook(() => useRovingTabIndex(items, { onSelectionChange }));
 
     const event = {
       key: 'ArrowDown',
@@ -399,9 +388,7 @@ describe('useRovingTabIndex', () => {
 describe('WCAG 2.1 AA Compliance', () => {
   describe('Focus Trap (WCAG 2.1.2)', () => {
     it('should provide focus trap ref', () => {
-      const { result } = renderHook(() =>
-        useFocusTrap<HTMLDivElement>({ active: true })
-      );
+      const { result } = renderHook(() => useFocusTrap<HTMLDivElement>({ active: true }));
 
       // Focus trap ref should be provided
       expect(result.current).toBeDefined();
@@ -416,7 +403,7 @@ describe('WCAG 2.1 AA Compliance', () => {
           active: true,
           escapeDeactivates: true,
           onEscape,
-        })
+        }),
       );
 
       // Escape handling is tested through integration tests

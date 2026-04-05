@@ -21,25 +21,31 @@ interface UseErrorHandlerResult {
 export function useErrorHandler(context?: string): UseErrorHandlerResult {
   const [error, setErrorState] = useState<AppError | null>(null);
 
-  const setError = useCallback((err: unknown) => {
-    const appError = parseAPIError(err);
-    logError(appError, context);
-    setErrorState(appError);
-  }, [context]);
+  const setError = useCallback(
+    (err: unknown) => {
+      const appError = parseAPIError(err);
+      logError(appError, context);
+      setErrorState(appError);
+    },
+    [context],
+  );
 
   const clearError = useCallback(() => {
     setErrorState(null);
   }, []);
 
-  const handleAsync = useCallback(async <T>(fn: () => Promise<T>): Promise<T | null> => {
-    try {
-      clearError();
-      return await fn();
-    } catch (err) {
-      setError(err);
-      return null;
-    }
-  }, [clearError, setError]);
+  const handleAsync = useCallback(
+    async <T>(fn: () => Promise<T>): Promise<T | null> => {
+      try {
+        clearError();
+        return await fn();
+      } catch (err) {
+        setError(err);
+        return null;
+      }
+    },
+    [clearError, setError],
+  );
 
   const errorMessage = error ? getUserFriendlyError(error) : '';
 
@@ -67,19 +73,22 @@ export function useLoadingAndError<T>(context?: string): UseLoadingAndErrorResul
   const [loading, setLoading] = useState(false);
   const errorHandler = useErrorHandler(context);
 
-  const execute = useCallback(async (fn: () => Promise<T>) => {
-    setLoading(true);
-    try {
-      const result = await fn();
-      setData(result);
-      errorHandler.clearError();
-    } catch (err) {
-      errorHandler.setError(err);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [errorHandler]);
+  const execute = useCallback(
+    async (fn: () => Promise<T>) => {
+      setLoading(true);
+      try {
+        const result = await fn();
+        setData(result);
+        errorHandler.clearError();
+      } catch (err) {
+        errorHandler.setError(err);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [errorHandler],
+  );
 
   const reset = useCallback(() => {
     setData(null);

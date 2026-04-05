@@ -26,7 +26,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={false} onClose={mockOnClose}>
           Modal content
-        </Modal>
+        </Modal>,
       );
       expect(screen.queryByText('Modal content')).not.toBeInTheDocument();
     });
@@ -35,7 +35,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Modal content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByText('Modal content')).toBeInTheDocument();
     });
@@ -44,7 +44,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} title="Modal Title">
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByText('Modal Title')).toBeInTheDocument();
     });
@@ -53,7 +53,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} footer={<button>Footer Button</button>}>
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByText('Footer Button')).toBeInTheDocument();
     });
@@ -64,7 +64,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.max-w-lg')).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} size="sm">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.max-w-md')).toBeInTheDocument();
@@ -84,7 +84,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} size="lg">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.max-w-2xl')).toBeInTheDocument();
@@ -94,7 +94,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} size="xl">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.max-w-4xl')).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} size="full">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.max-w-full')).toBeInTheDocument();
@@ -116,7 +116,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.bg-white')).toBeInTheDocument();
@@ -126,7 +126,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} variant="danger">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.border-red-500')).toBeInTheDocument();
@@ -136,7 +136,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} variant="success">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.border-green-500')).toBeInTheDocument();
@@ -148,7 +148,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} title="Title">
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByLabelText('Close modal')).toBeInTheDocument();
     });
@@ -157,7 +157,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} showCloseButton={false}>
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.queryByLabelText('Close modal')).not.toBeInTheDocument();
     });
@@ -168,7 +168,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} title="Title">
           Content
-        </Modal>
+        </Modal>,
       );
 
       await user.click(screen.getByLabelText('Close modal'));
@@ -183,7 +183,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       // Click on the overlay (backdrop)
@@ -201,7 +201,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} closeOnOverlayClick={false}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       const overlay = screen.getByRole('dialog').querySelector('.absolute.inset-0');
@@ -218,7 +218,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           <button>Content Button</button>
-        </Modal>
+        </Modal>,
       );
 
       await user.click(screen.getByText('Content Button'));
@@ -231,7 +231,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
@@ -243,7 +243,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} closeOnEscape={false}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
@@ -257,7 +257,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} title="Title">
           Content
-        </Modal>
+        </Modal>,
       );
 
       await waitFor(() => {
@@ -274,13 +274,13 @@ describe('Modal', () => {
       const { rerender } = render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       rerender(
         <Modal isOpen={false} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       await waitFor(() => {
@@ -296,7 +296,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       expect(document.body.style.overflow).toBe('hidden');
@@ -306,13 +306,13 @@ describe('Modal', () => {
       const { rerender } = render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       rerender(
         <Modal isOpen={false} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
 
       expect(document.body.style.overflow).toBe('');
@@ -324,7 +324,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
@@ -333,7 +333,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true');
     });
@@ -342,7 +342,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} title="Modal Title">
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByRole('dialog')).toHaveAttribute('aria-labelledby', 'modal-title');
     });
@@ -351,7 +351,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByRole('dialog')).toHaveAttribute('aria-describedby', 'modal-description');
     });
@@ -360,7 +360,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose}>
           Content
-        </Modal>
+        </Modal>,
       );
       const backdrop = screen.getByRole('dialog').querySelector('[aria-hidden="true"]');
       expect(backdrop).toBeInTheDocument();
@@ -372,7 +372,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} className="custom-modal">
           Content
-        </Modal>
+        </Modal>,
       );
       const dialog = screen.getByRole('dialog');
       expect(dialog.querySelector('.custom-modal')).toBeInTheDocument();
@@ -382,7 +382,7 @@ describe('Modal', () => {
       render(
         <Modal isOpen={true} onClose={mockOnClose} contentClassName="custom-content">
           Content
-        </Modal>
+        </Modal>,
       );
       expect(screen.getByText('Content')).toHaveClass('custom-content');
     });

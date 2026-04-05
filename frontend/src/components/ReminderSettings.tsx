@@ -105,11 +105,18 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Event Reminders</h2>
-          <p className="m-0 text-sm text-gray-500">Get notified about important astrological events</p>
+          <p className="m-0 text-sm text-gray-500">
+            Get notified about important astrological events
+          </p>
         </div>
       </div>
 
-      <form onSubmit={(e) => { void handleSubmit(e); }} className="reminder-form">
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(e);
+        }}
+        className="reminder-form"
+      >
         {/* Event Type Selection */}
         <div className="flex flex-col gap-3">
           <label className="text-sm font-semibold text-gray-700">Which events?</label>
@@ -138,7 +145,9 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
 
         {/* Reminder Type */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-gray-700">How would you like to be notified?</label>
+          <label className="text-sm font-semibold text-gray-700">
+            How would you like to be notified?
+          </label>
           <div className="flex gap-3 sm:flex-col">
             <label
               className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 ${formData.reminderType === 'email' ? '!border-indigo-500 !bg-blue-50 !text-blue-500' : ''}`}
@@ -209,8 +218,12 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
               onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
               className="hidden"
             />
-            <span className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${formData.isActive ? 'bg-indigo-500' : 'bg-gray-200'}`}>
-              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-sm ${formData.isActive ? 'translate-x-6' : ''}`}></span>
+            <span
+              className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${formData.isActive ? 'bg-indigo-500' : 'bg-gray-200'}`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-sm ${formData.isActive ? 'translate-x-6' : ''}`}
+              ></span>
             </span>
             <span className="text-sm font-medium text-gray-700">
               Enable reminders {formData.isActive ? 'ON' : 'OFF'}
@@ -227,11 +240,19 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
         )}
 
         {/* Error Message */}
-        {error && <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">{error}</div>}
+        {error && (
+          <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">
+            {error}
+          </div>
+        )}
 
         {/* Submit Button */}
         <div className="flex justify-end pt-2 border-t border-gray-200 mt-2 sm:justify-stretch">
-          <button type="submit" className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed sm:w-full" disabled={loading}>
+          <button
+            type="submit"
+            className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed sm:w-full"
+            disabled={loading}
+          >
             {loading ? 'Saving...' : 'Save Settings'}
           </button>
         </div>

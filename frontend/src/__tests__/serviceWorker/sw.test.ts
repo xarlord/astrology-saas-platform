@@ -269,7 +269,8 @@ describe('Service Worker Event Handlers', () => {
 
   describe('Offline Fallback Handler', () => {
     it('should return offline HTML for document requests', () => {
-      const offlineHTML = '<!DOCTYPE html><html><head><title>Offline</title></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>';
+      const offlineHTML =
+        '<!DOCTYPE html><html><head><title>Offline</title></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>';
 
       expect(offlineHTML).toContain('You are offline');
       expect(offlineHTML).toContain('internet connection');
@@ -287,9 +288,7 @@ describe('Service Worker Event Handlers', () => {
       const currentCaches = ['api-cache-v1', 'images-cache-v1', 'static-cache-v1'];
       const allCacheKeys = ['api-cache-v1', 'images-cache-v1', 'static-cache-v1', 'old-cache-v1'];
 
-      const cachesToDelete = allCacheKeys.filter(
-        (cache) => !currentCaches.includes(cache)
-      );
+      const cachesToDelete = allCacheKeys.filter((cache) => !currentCaches.includes(cache));
 
       expect(cachesToDelete).toContain('old-cache-v1');
       expect(cachesToDelete).not.toContain('api-cache-v1');

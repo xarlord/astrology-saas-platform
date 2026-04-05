@@ -202,10 +202,10 @@ export const useAuthStore = create<AuthState>()(
           refreshToken: state.refreshToken,
           isAuthenticated: state.isAuthenticated,
         }),
-      }
+      },
     ),
-    { name: 'AuthStore' }
-  )
+    { name: 'AuthStore' },
+  ),
 );
 
 // Selector hooks for optimized re-renders

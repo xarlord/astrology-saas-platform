@@ -63,9 +63,7 @@ vi.mock('../../components/ui/Button', () => ({
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ChartWheel: ({ data }: any) => (
-    <div data-testid="chart-wheel">
-      ChartWheel - {data?.planets?.length || 0} planets
-    </div>
+    <div data-testid="chart-wheel">ChartWheel - {data?.planets?.length || 0} planets</div>
   ),
 }));
 
@@ -82,7 +80,7 @@ const createWrapper = (initialRoute = '/charts/chart-123') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -102,16 +100,116 @@ const mockChartData = {
   },
   calculated_data: {
     planets: [
-      { planet: 'Sun', sign: 'Capricorn', degree: 25, minute: 30, house: 1, retrograde: false, latitude: 0, longitude: 295.5, speed: 1.0 },
-      { planet: 'Moon', sign: 'Pisces', degree: 12, minute: 45, house: 3, retrograde: false, latitude: 0, longitude: 342.75, speed: 13.2 },
-      { planet: 'Mercury', sign: 'Capricorn', degree: 5, minute: 15, house: 1, retrograde: true, latitude: 0, longitude: 285.25, speed: -0.5 },
-      { planet: 'Venus', sign: 'Sagittarius', degree: 20, minute: 0, house: 12, retrograde: false, latitude: 0, longitude: 260.0, speed: 1.2 },
-      { planet: 'Mars', sign: 'Scorpio', degree: 8, minute: 30, house: 11, retrograde: false, latitude: 0, longitude: 218.5, speed: 0.8 },
-      { planet: 'Jupiter', sign: 'Cancer', degree: 15, minute: 0, house: 7, retrograde: false, latitude: 0, longitude: 105.0, speed: 0.1 },
-      { planet: 'Saturn', sign: 'Capricorn', degree: 20, minute: 45, house: 1, retrograde: false, latitude: 0, longitude: 290.75, speed: 0.05 },
-      { planet: 'Uranus', sign: 'Capricorn', degree: 8, minute: 15, house: 1, retrograde: false, latitude: 0, longitude: 278.25, speed: 0.02 },
-      { planet: 'Neptune', sign: 'Capricorn', degree: 14, minute: 30, house: 1, retrograde: false, latitude: 0, longitude: 284.5, speed: 0.01 },
-      { planet: 'Pluto', sign: 'Scorpio', degree: 22, minute: 0, house: 11, retrograde: false, latitude: 0, longitude: 232.0, speed: 0.001 },
+      {
+        planet: 'Sun',
+        sign: 'Capricorn',
+        degree: 25,
+        minute: 30,
+        house: 1,
+        retrograde: false,
+        latitude: 0,
+        longitude: 295.5,
+        speed: 1.0,
+      },
+      {
+        planet: 'Moon',
+        sign: 'Pisces',
+        degree: 12,
+        minute: 45,
+        house: 3,
+        retrograde: false,
+        latitude: 0,
+        longitude: 342.75,
+        speed: 13.2,
+      },
+      {
+        planet: 'Mercury',
+        sign: 'Capricorn',
+        degree: 5,
+        minute: 15,
+        house: 1,
+        retrograde: true,
+        latitude: 0,
+        longitude: 285.25,
+        speed: -0.5,
+      },
+      {
+        planet: 'Venus',
+        sign: 'Sagittarius',
+        degree: 20,
+        minute: 0,
+        house: 12,
+        retrograde: false,
+        latitude: 0,
+        longitude: 260.0,
+        speed: 1.2,
+      },
+      {
+        planet: 'Mars',
+        sign: 'Scorpio',
+        degree: 8,
+        minute: 30,
+        house: 11,
+        retrograde: false,
+        latitude: 0,
+        longitude: 218.5,
+        speed: 0.8,
+      },
+      {
+        planet: 'Jupiter',
+        sign: 'Cancer',
+        degree: 15,
+        minute: 0,
+        house: 7,
+        retrograde: false,
+        latitude: 0,
+        longitude: 105.0,
+        speed: 0.1,
+      },
+      {
+        planet: 'Saturn',
+        sign: 'Capricorn',
+        degree: 20,
+        minute: 45,
+        house: 1,
+        retrograde: false,
+        latitude: 0,
+        longitude: 290.75,
+        speed: 0.05,
+      },
+      {
+        planet: 'Uranus',
+        sign: 'Capricorn',
+        degree: 8,
+        minute: 15,
+        house: 1,
+        retrograde: false,
+        latitude: 0,
+        longitude: 278.25,
+        speed: 0.02,
+      },
+      {
+        planet: 'Neptune',
+        sign: 'Capricorn',
+        degree: 14,
+        minute: 30,
+        house: 1,
+        retrograde: false,
+        latitude: 0,
+        longitude: 284.5,
+        speed: 0.01,
+      },
+      {
+        planet: 'Pluto',
+        sign: 'Scorpio',
+        degree: 22,
+        minute: 0,
+        house: 11,
+        retrograde: false,
+        latitude: 0,
+        longitude: 232.0,
+        speed: 0.001,
+      },
     ],
     houses: [
       { house: 1, sign: 'Capricorn', longitude: 280, degree: 10, minute: 0 },
@@ -130,9 +228,30 @@ const mockChartData = {
     aspects: [
       { planet1: 'Sun', planet2: 'Mars', type: 'trine', degree: 120, orb: 2.5, applying: true },
       { planet1: 'Moon', planet2: 'Venus', type: 'sextile', degree: 60, orb: 1.2, applying: false },
-      { planet1: 'Mercury', planet2: 'Saturn', type: 'conjunction', degree: 0, orb: 3.0, applying: true },
-      { planet1: 'Venus', planet2: 'Jupiter', type: 'square', degree: 90, orb: 0.8, applying: false },
-      { planet1: 'Mars', planet2: 'Pluto', type: 'opposition', degree: 180, orb: 1.5, applying: true },
+      {
+        planet1: 'Mercury',
+        planet2: 'Saturn',
+        type: 'conjunction',
+        degree: 0,
+        orb: 3.0,
+        applying: true,
+      },
+      {
+        planet1: 'Venus',
+        planet2: 'Jupiter',
+        type: 'square',
+        degree: 90,
+        orb: 0.8,
+        applying: false,
+      },
+      {
+        planet1: 'Mars',
+        planet2: 'Pluto',
+        type: 'opposition',
+        degree: 180,
+        orb: 1.5,
+        applying: true,
+      },
     ],
   },
 };
@@ -192,7 +311,8 @@ describe('NatalChartDetailPage', () => {
 
       renderWithProviders(createElement(NatalChartDetailPage));
 
-      const loadingContainer = document.querySelector('.min-h-screen.bg-deep-navy');
+      // The loading state uses min-h-[60vh] for the centering container
+      const loadingContainer = document.querySelector('.min-h-\\[60vh\\]');
       expect(loadingContainer).toBeInTheDocument();
     });
   });
@@ -219,8 +339,8 @@ describe('NatalChartDetailPage', () => {
     it('should render page structure when chart is loaded', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
-      // Check for main structure
-      expect(document.querySelector('.min-h-screen')).toBeInTheDocument();
+      // Check for main element - the component renders a <main> with flex layout
+      expect(document.querySelector('main')).toBeInTheDocument();
     });
 
     it('should render chart name in the header', () => {
@@ -257,53 +377,20 @@ describe('NatalChartDetailPage', () => {
       mockIsLoading = false;
     });
 
-    it('should render header with brand name', () => {
-      renderWithProviders(createElement(NatalChartDetailPage));
-
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
-    });
-
     it('should render Dashboard navigation links', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
-      // Multiple Dashboard links exist (header nav and breadcrumbs)
+      // Breadcrumbs contain a Dashboard link
       const dashboardLinks = screen.getAllByRole('link', { name: /dashboard/i });
       expect(dashboardLinks.length).toBeGreaterThan(0);
       expect(dashboardLinks[0]).toHaveAttribute('href', '/dashboard');
     });
 
-    it('should render Transits navigation link', () => {
+    it('should render View Transits button', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
-      const transitsLink = screen.getByRole('link', { name: /transits/i });
-      expect(transitsLink).toHaveAttribute('href', '/transits');
-    });
-
-    it('should render profile button in header', () => {
-      renderWithProviders(createElement(NatalChartDetailPage));
-
-      // Use more specific selector - the profile button has bg-primary/20 class
-      const profileButton = document.querySelector('button.bg-primary\\/20');
-      expect(profileButton).not.toBeNull();
-    });
-
-    it('should navigate to profile when profile button is clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(createElement(NatalChartDetailPage));
-
-      // Click the header profile button (the one with the circular styling)
-      const profileButton = document.querySelector('button.bg-primary\\/20') as HTMLElement;
-      if (profileButton) {
-        await user.click(profileButton);
-        expect(mockNavigate).toHaveBeenCalledWith('/profile');
-      }
-    });
-
-    it('should render search input', () => {
-      renderWithProviders(createElement(NatalChartDetailPage));
-
-      const searchInput = screen.getByPlaceholderText('Search charts...');
-      expect(searchInput).toBeInTheDocument();
+      // The "View Transits" action is a Button, not a link
+      expect(screen.getByText('View Transits')).toBeInTheDocument();
     });
   });
 
@@ -651,7 +738,8 @@ describe('NatalChartDetailPage', () => {
       await user.click(shareButton);
 
       // Either share or clipboard.writeText should be called
-      const shareOrClipboardCalled = mockShare.mock.calls.length > 0 || mockClipboardWrite.mock.calls.length > 0;
+      const shareOrClipboardCalled =
+        mockShare.mock.calls.length > 0 || mockClipboardWrite.mock.calls.length > 0;
       expect(shareOrClipboardCalled).toBe(true);
 
       // Restore original values
@@ -868,10 +956,10 @@ describe('NatalChartDetailPage', () => {
       mockIsLoading = false;
     });
 
-    it('should have proper document structure with header and main', () => {
+    it('should have proper document structure with main', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
-      expect(document.querySelector('header')).toBeInTheDocument();
+      // The component renders a <main> element; <header> comes from AppLayout (mocked)
       expect(document.querySelector('main')).toBeInTheDocument();
     });
 
@@ -880,14 +968,6 @@ describe('NatalChartDetailPage', () => {
 
       const h1 = document.querySelector('h1');
       expect(h1).toBeInTheDocument();
-    });
-
-    it('should have h2 for brand name', () => {
-      renderWithProviders(createElement(NatalChartDetailPage));
-
-      const h2 = document.querySelector('h2');
-      expect(h2).toBeInTheDocument();
-      expect(h2?.textContent).toBe('AstroVerse');
     });
 
     it('should have h3 for section headers', () => {
@@ -960,8 +1040,10 @@ describe('NatalChartDetailPage', () => {
 
       renderWithProviders(createElement(NatalChartDetailPage));
 
-      // Should still render the page
-      expect(document.querySelector('.min-h-screen')).toBeInTheDocument();
+      // Should still render the page - check for chart name in h1
+      const h1 = document.querySelector('h1');
+      expect(h1).toBeInTheDocument();
+      expect(h1?.textContent).toBe('Test Chart');
     });
 
     it('should handle missing birth time gracefully', () => {
@@ -979,7 +1061,9 @@ describe('NatalChartDetailPage', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
       // Should still render the page without birth time display
-      expect(document.querySelector('.min-h-screen')).toBeInTheDocument();
+      const h1 = document.querySelector('h1');
+      expect(h1).toBeInTheDocument();
+      expect(h1?.textContent).toBe('Test Chart');
     });
 
     it('should handle missing birth place gracefully', () => {
@@ -997,7 +1081,9 @@ describe('NatalChartDetailPage', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
       // Should still render the page
-      expect(document.querySelector('.min-h-screen')).toBeInTheDocument();
+      const h1 = document.querySelector('h1');
+      expect(h1).toBeInTheDocument();
+      expect(h1?.textContent).toBe('Test Chart');
     });
 
     it('should use default name when chart has no name', () => {
@@ -1073,7 +1159,9 @@ describe('NatalChartDetailPage', () => {
       renderWithProviders(createElement(NatalChartDetailPage));
 
       // Check for aspect color classes
-      const aspectColors = document.querySelectorAll('.text-blue-400, .text-red-400, .text-green-400, .text-slate-400');
+      const aspectColors = document.querySelectorAll(
+        '.text-blue-400, .text-red-400, .text-green-400, .text-slate-400',
+      );
       expect(aspectColors.length).toBeGreaterThan(0);
     });
   });

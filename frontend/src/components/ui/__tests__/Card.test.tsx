@@ -13,7 +13,7 @@ describe('Card Component', () => {
       render(
         <Card>
           <p>Card content</p>
-        </Card>
+        </Card>,
       );
       expect(screen.getByText('Card content')).toBeInTheDocument();
     });
@@ -28,7 +28,7 @@ describe('Card Component', () => {
       render(
         <Card variant="glass" data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('backdrop-blur-lg');
@@ -38,7 +38,7 @@ describe('Card Component', () => {
       render(
         <Card variant="elevated" data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('shadow-lg');
@@ -50,7 +50,7 @@ describe('Card Component', () => {
       render(
         <Card padding="none" data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).not.toHaveClass('p-3');
@@ -61,7 +61,7 @@ describe('Card Component', () => {
       render(
         <Card padding="sm" data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('p-3');
@@ -77,7 +77,7 @@ describe('Card Component', () => {
       render(
         <Card padding="lg" data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('p-6');
@@ -89,7 +89,7 @@ describe('Card Component', () => {
       render(
         <Card>
           <Card.Header>Header content</Card.Header>
-        </Card>
+        </Card>,
       );
       expect(screen.getByText('Header content')).toBeInTheDocument();
     });
@@ -98,7 +98,7 @@ describe('Card Component', () => {
       render(
         <Card>
           <Card.Body>Body content</Card.Body>
-        </Card>
+        </Card>,
       );
       expect(screen.getByText('Body content')).toBeInTheDocument();
     });
@@ -107,7 +107,7 @@ describe('Card Component', () => {
       render(
         <Card>
           <Card.Footer>Footer content</Card.Footer>
-        </Card>
+        </Card>,
       );
       expect(screen.getByText('Footer content')).toBeInTheDocument();
     });
@@ -115,8 +115,10 @@ describe('Card Component', () => {
     it('renders Card.Header with border', () => {
       render(
         <Card>
-          <Card.Header bordered data-testid="header">Header content</Card.Header>
-        </Card>
+          <Card.Header bordered data-testid="header">
+            Header content
+          </Card.Header>
+        </Card>,
       );
       const header = screen.getByTestId('header');
       expect(header).toHaveClass('border-b');
@@ -125,8 +127,10 @@ describe('Card Component', () => {
     it('renders Card.Footer with left alignment', () => {
       render(
         <Card>
-          <Card.Footer align="left" data-testid="footer">Footer</Card.Footer>
-        </Card>
+          <Card.Footer align="left" data-testid="footer">
+            Footer
+          </Card.Footer>
+        </Card>,
       );
       const footer = screen.getByTestId('footer');
       expect(footer).toHaveClass('justify-start');
@@ -135,8 +139,10 @@ describe('Card Component', () => {
     it('renders Card.Footer with center alignment', () => {
       render(
         <Card>
-          <Card.Footer align="center" data-testid="footer">Footer</Card.Footer>
-        </Card>
+          <Card.Footer align="center" data-testid="footer">
+            Footer
+          </Card.Footer>
+        </Card>,
       );
       const footer = screen.getByTestId('footer');
       expect(footer).toHaveClass('justify-center');
@@ -145,8 +151,10 @@ describe('Card Component', () => {
     it('renders Card.Footer with right alignment', () => {
       render(
         <Card>
-          <Card.Footer align="right" data-testid="footer">Footer</Card.Footer>
-        </Card>
+          <Card.Footer align="right" data-testid="footer">
+            Footer
+          </Card.Footer>
+        </Card>,
       );
       const footer = screen.getByTestId('footer');
       expect(footer).toHaveClass('justify-end');
@@ -155,8 +163,10 @@ describe('Card Component', () => {
     it('renders Card.Footer with between alignment', () => {
       render(
         <Card>
-          <Card.Footer align="between" data-testid="footer">Footer</Card.Footer>
-        </Card>
+          <Card.Footer align="between" data-testid="footer">
+            Footer
+          </Card.Footer>
+        </Card>,
       );
       const footer = screen.getByTestId('footer');
       expect(footer).toHaveClass('justify-between');
@@ -168,7 +178,7 @@ describe('Card Component', () => {
       render(
         <Card hoverable data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('cursor-pointer');
@@ -179,7 +189,7 @@ describe('Card Component', () => {
       render(
         <Card clickable onClick={handleClick} data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
 
       await userEvent.click(screen.getByTestId('card'));
@@ -192,7 +202,7 @@ describe('Card Component', () => {
       render(
         <Card className="custom-class" data-testid="card">
           Content
-        </Card>
+        </Card>,
       );
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('custom-class');

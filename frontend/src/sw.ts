@@ -108,7 +108,7 @@ const navigationRoute = new NavigationRoute(
   }),
   {
     allowlist: [/^\/(?!api).*/],
-  }
+  },
 );
 
 registerRoute(navigationRoute);
@@ -147,7 +147,7 @@ registerRoute(navigationRoute);
   };
 
   event.waitUntil(
-    (self as any).registration.showNotification(data.title || 'Notification', options)
+    (self as any).registration.showNotification(data.title || 'Notification', options),
   );
 });
 
@@ -156,9 +156,7 @@ registerRoute(navigationRoute);
   event.notification.close();
 
   if (event.action === 'view') {
-    event.waitUntil(
-      (self as any).clients.openWindow(event.notification.data?.url || '/')
-    );
+    event.waitUntil((self as any).clients.openWindow(event.notification.data?.url || '/'));
   }
 });
 
@@ -177,28 +175,32 @@ registerRoute(navigationRoute);
           console.error('Sync failed:', error);
           return Promise.reject(error);
         }
-      })()
+      })(),
     );
   }
 });
 
 // Catch handler for offline fallback
-setCatchHandler(({ event }) => Promise.resolve().then(() => {
-  // For document requests (navigation), return offline HTML page
-  if (event.request.destination === 'document') {
-    return new Promise<Response>((resolve) => {
-      resolve(new Response(
-        '<!DOCTYPE html><html><head><title>Offline</title><style>body{font-family:system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;color:#333;background:#f5f5f5}h1{margin-bottom:16px}</style></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>',
-        {
-          headers: { 'Content-Type': 'text/html' },
-        }
-      ));
-    });
-  }
+setCatchHandler(({ event }) =>
+  Promise.resolve().then(() => {
+    // For document requests (navigation), return offline HTML page
+    if (event.request.destination === 'document') {
+      return new Promise<Response>((resolve) => {
+        resolve(
+          new Response(
+            '<!DOCTYPE html><html><head><title>Offline</title><style>body{font-family:system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;color:#333;background:#f5f5f5}h1{margin-bottom:16px}</style></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>',
+            {
+              headers: { 'Content-Type': 'text/html' },
+            },
+          ),
+        );
+      });
+    }
 
-  // For other requests, return error
-  return Response.error();
-}));
+    // For other requests, return error
+    return Response.error();
+  }),
+);
 
 // Activate event - clean up old caches
 (self as any).addEventListener('activate', (event: any) => {
@@ -213,7 +215,7 @@ setCatchHandler(({ event }) => Promise.resolve().then(() => {
           await caches.delete(cacheName);
         }
       }
-    })()
+    })(),
   );
 });
 

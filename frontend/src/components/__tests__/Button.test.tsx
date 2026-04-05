@@ -20,7 +20,7 @@ describe('Button', () => {
         <Button>
           <span>Icon</span>
           <span>Text</span>
-        </Button>
+        </Button>,
       );
       expect(screen.getByRole('button')).toHaveTextContent('IconText');
     });
@@ -143,7 +143,7 @@ describe('Button', () => {
           rightIcon={<span data-testid="right-icon">R</span>}
         >
           Both Icons
-        </Button>
+        </Button>,
       );
       expect(screen.getByTestId('left-icon')).toBeInTheDocument();
       expect(screen.getByTestId('right-icon')).toBeInTheDocument();
@@ -157,7 +157,7 @@ describe('Button', () => {
           rightIcon={<span data-testid="right-icon">R</span>}
         >
           Loading
-        </Button>
+        </Button>,
       );
       expect(screen.queryByTestId('left-icon')).not.toBeInTheDocument();
       expect(screen.queryByTestId('right-icon')).not.toBeInTheDocument();
@@ -179,7 +179,11 @@ describe('Button', () => {
       const handleClick = vi.fn();
       const user = userEvent.setup();
 
-      render(<Button disabled onClick={handleClick}>Disabled</Button>);
+      render(
+        <Button disabled onClick={handleClick}>
+          Disabled
+        </Button>,
+      );
       await user.click(screen.getByRole('button'));
 
       expect(handleClick).not.toHaveBeenCalled();
@@ -189,7 +193,11 @@ describe('Button', () => {
       const handleClick = vi.fn();
       const user = userEvent.setup();
 
-      render(<Button isLoading onClick={handleClick}>Loading</Button>);
+      render(
+        <Button isLoading onClick={handleClick}>
+          Loading
+        </Button>,
+      );
       await user.click(screen.getByRole('button'));
 
       expect(handleClick).not.toHaveBeenCalled();

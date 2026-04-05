@@ -125,7 +125,8 @@ export function ChartWheel({
             if (!info) return null;
             return (
               <li key={planet.planet}>
-                {info.name} in {planet.sign} at {planet.degree}°{planet.minute}' in House {planet.house}
+                {info.name} in {planet.sign} at {planet.degree}°{planet.minute}' in House{' '}
+                {planet.house}
                 {planet.retrograde && ' (retrograde)'}
               </li>
             );
@@ -164,11 +165,7 @@ export function ChartWheel({
         className="max-w-full h-auto"
       >
         {/* Hidden description element referenced by aria-describedby */}
-        {interactive && (
-          <desc id="chart-description">
-            {generateChartDescription()}
-          </desc>
-        )}
+        {interactive && <desc id="chart-description">{generateChartDescription()}</desc>}
         {/* Background circle */}
         <circle
           cx={cx}
@@ -319,8 +316,12 @@ export function ChartWheel({
                 x2={end.x}
                 y2={end.y}
                 stroke={ASPECT_COLORS[aspect.type] || '#888'}
-                strokeWidth={aspect.type === 'conjunction' || aspect.type === 'opposition' ? 2 : 1.5}
-                strokeDasharray={aspect.type === 'quincunx' || aspect.type === 'semi-sextile' ? '4,2' : 'none'}
+                strokeWidth={
+                  aspect.type === 'conjunction' || aspect.type === 'opposition' ? 2 : 1.5
+                }
+                strokeDasharray={
+                  aspect.type === 'quincunx' || aspect.type === 'semi-sextile' ? '4,2' : 'none'
+                }
                 aria-label={aspectLabel}
               />
             </g>
@@ -402,13 +403,7 @@ export function ChartWheel({
         })}
 
         {/* Center point */}
-        <circle
-          cx={cx}
-          cy={cy}
-          r={size * 0.02}
-          fill="#6366F1"
-          className="dark:fill-indigo-400"
-        />
+        <circle cx={cx} cy={cy} r={size * 0.02} fill="#6366F1" className="dark:fill-indigo-400" />
       </svg>
     </div>
   );
@@ -417,40 +412,62 @@ export function ChartWheel({
 // Legend component
 export function ChartWheelLegend() {
   return (
-    <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm" role="region" aria-label="Chart legend">
+    <div
+      className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm"
+      role="region"
+      aria-label="Chart legend"
+    >
       <div>
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Aspects</h4>
         <ul className="space-y-1" role="list">
           <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.conjunction }} aria-hidden="true">☌</span>
+            <span
+              className="text-lg"
+              style={{ color: ASPECT_COLORS.conjunction }}
+              aria-hidden="true"
+            >
+              ☌
+            </span>
             <span className="text-gray-600 dark:text-gray-400">
               <span className="sr-only">Conjunction symbol</span>
               Conjunction (10°)
             </span>
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.opposition }} aria-hidden="true">☍</span>
+            <span
+              className="text-lg"
+              style={{ color: ASPECT_COLORS.opposition }}
+              aria-hidden="true"
+            >
+              ☍
+            </span>
             <span className="text-gray-600 dark:text-gray-400">
               <span className="sr-only">Opposition symbol</span>
               Opposition (8°)
             </span>
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.trine }} aria-hidden="true">△</span>
+            <span className="text-lg" style={{ color: ASPECT_COLORS.trine }} aria-hidden="true">
+              △
+            </span>
             <span className="text-gray-600 dark:text-gray-400">
               <span className="sr-only">Trine symbol</span>
               Trine (8°)
             </span>
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.square }} aria-hidden="true">□</span>
+            <span className="text-lg" style={{ color: ASPECT_COLORS.square }} aria-hidden="true">
+              □
+            </span>
             <span className="text-gray-600 dark:text-gray-400">
               <span className="sr-only">Square symbol</span>
               Square (8°)
             </span>
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.sextile }} aria-hidden="true">⚹</span>
+            <span className="text-lg" style={{ color: ASPECT_COLORS.sextile }} aria-hidden="true">
+              ⚹
+            </span>
             <span className="text-gray-600 dark:text-gray-400">
               <span className="sr-only">Sextile symbol</span>
               Sextile (6°)
@@ -461,36 +478,50 @@ export function ChartWheelLegend() {
       <div>
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Planets</h4>
         <ul className="space-y-1">
-          {Object.entries(PLANET_INFO).slice(0, 5).map(([key, info]) => (
-            <li key={key} className="flex items-center gap-2">
-              <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
-              <span className="text-gray-600 dark:text-gray-400">
-                <span className="sr-only">{info.name} symbol</span>
-                {info.name}
-              </span>
-            </li>
-          ))}
+          {Object.entries(PLANET_INFO)
+            .slice(0, 5)
+            .map(([key, info]) => (
+              <li key={key} className="flex items-center gap-2">
+                <span style={{ color: info.color }} aria-hidden="true">
+                  {info.symbol}
+                </span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  <span className="sr-only">{info.name} symbol</span>
+                  {info.name}
+                </span>
+              </li>
+            ))}
         </ul>
       </div>
       <div>
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">&nbsp;</h4>
         <ul className="space-y-1" role="list">
-          {Object.entries(PLANET_INFO).slice(5).map(([key, info]) => (
-            <li key={key} className="flex items-center gap-2">
-              <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
-              <span className="text-gray-600 dark:text-gray-400">
-                <span className="sr-only">{info.name} symbol</span>
-                {info.name}
-              </span>
-            </li>
-          ))}
+          {Object.entries(PLANET_INFO)
+            .slice(5)
+            .map(([key, info]) => (
+              <li key={key} className="flex items-center gap-2">
+                <span style={{ color: info.color }} aria-hidden="true">
+                  {info.symbol}
+                </span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  <span className="sr-only">{info.name} symbol</span>
+                  {info.name}
+                </span>
+              </li>
+            ))}
         </ul>
       </div>
       <div>
         <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Zodiac Signs</h4>
         <div className="grid grid-cols-4 gap-1" role="list" aria-label="Zodiac signs">
           {ZODIAC_SIGNS.map((sign) => (
-            <div key={sign.name} role="listitem" style={{ color: sign.color }} className="text-lg text-center" aria-label={`${sign.name} ${sign.symbol}`}>
+            <div
+              key={sign.name}
+              role="listitem"
+              style={{ color: sign.color }}
+              className="text-lg text-center"
+              aria-label={`${sign.name} ${sign.symbol}`}
+            >
               {sign.symbol}
             </div>
           ))}

@@ -3,13 +3,7 @@
  * Calculates planet positions from date/time/location
  */
 
-import {
-  ZodiacSign,
-  ZODIAC_SIGNS,
-  PlanetData,
-  CelestialBody,
-  HouseData,
-} from './types';
+import { ZodiacSign, ZODIAC_SIGNS, PlanetData, CelestialBody, HouseData } from './types';
 
 // Planet orbital periods in days (approximate)
 const PLANET_PERIODS: Record<string, number> = {
@@ -93,9 +87,12 @@ export function dateToJulianDay(date: Date): number {
   const a = Math.floor(y / 100);
   const b = 2 - a + Math.floor(a / 4);
 
-  const jd = Math.floor(365.25 * (y + 4716)) +
+  const jd =
+    Math.floor(365.25 * (y + 4716)) +
     Math.floor(30.6001 * (m + 1)) +
-    day + b - 1524.5 +
+    day +
+    b -
+    1524.5 +
     decimalHour / 24;
 
   return jd;
@@ -166,7 +163,7 @@ export function calculatePlanetLongitude(
   planet: string,
   jd: number,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): number {
   const _t = julianCenturies(jd);
 
@@ -220,7 +217,7 @@ export function isRetrograde(planet: string, date: Date): boolean {
     // Simplified retrograde detection
     const phase = (dayOfYear % periodDays) / periodDays;
     const retrogradeStart = 0.3;
-    const retrogradeEnd = 0.3 + (retrogradeDays / periodDays);
+    const retrogradeEnd = 0.3 + retrogradeDays / periodDays;
 
     return phase >= retrogradeStart && phase <= retrogradeEnd;
   }
@@ -247,7 +244,7 @@ export function calculatePlanetPosition(
   date: Date,
   time: string,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): PlanetData {
   // Parse time string (HH:MM format)
   const [hours, minutes] = time.split(':').map(Number);
@@ -312,26 +309,29 @@ export function calculateAllPlanetPositions(
   date: Date,
   time: string,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): PlanetData[] {
   const planets: CelestialBody[] = [
-    'Sun', 'Moon', 'Mercury', 'Venus', 'Mars',
-    'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'
+    'Sun',
+    'Moon',
+    'Mercury',
+    'Venus',
+    'Mars',
+    'Jupiter',
+    'Saturn',
+    'Uranus',
+    'Neptune',
+    'Pluto',
   ];
 
-  return planets.map(planet =>
-    calculatePlanetPosition(planet, date, time, latitude, longitude)
-  );
+  return planets.map((planet) => calculatePlanetPosition(planet, date, time, latitude, longitude));
 }
 
 /**
  * Assign planets to houses
  */
-export function assignPlanetsToHouses(
-  planets: PlanetData[],
-  houses: HouseData[]
-): PlanetData[] {
-  return planets.map(planet => {
+export function assignPlanetsToHouses(planets: PlanetData[], houses: HouseData[]): PlanetData[] {
+  return planets.map((planet) => {
     const house = findHouseForLongitude(planet.longitude, houses);
     return { ...planet, house };
   });
@@ -340,10 +340,7 @@ export function assignPlanetsToHouses(
 /**
  * Find which house a longitude falls in
  */
-export function findHouseForLongitude(
-  longitude: number,
-  houses: HouseData[]
-): number {
+export function findHouseForLongitude(longitude: number, houses: HouseData[]): number {
   const normalized = normalizeAngle(longitude);
 
   for (let i = 0; i < houses.length; i++) {

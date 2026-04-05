@@ -133,7 +133,7 @@ describe('chartStore', () => {
       };
 
       vi.mocked(chartService.getCharts).mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve(mockResponse), 100))
+        () => new Promise((resolve) => setTimeout(() => resolve(mockResponse), 100)),
       );
 
       const loadPromise = act(async () => {

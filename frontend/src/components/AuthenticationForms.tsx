@@ -19,7 +19,13 @@ interface ErrorMessageProps {
 
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
-    <p id={id} data-testid="error-message" className="error-message" role="alert" aria-live="assertive">
+    <p
+      id={id}
+      data-testid="error-message"
+      className="error-message"
+      role="alert"
+      aria-live="assertive"
+    >
       <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
       <span className="error-text">{message}</span>
     </p>
@@ -116,10 +122,19 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-6" data-testid="login-form">
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+          className="space-y-6"
+          data-testid="login-form"
+        >
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -165,7 +180,10 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -363,7 +381,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(formData.password)) {
+    } else if (
+      !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(
+        formData.password,
+      )
+    ) {
       newErrors.password =
         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
     }
@@ -419,7 +441,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     } else if (name === 'password' && value) {
       if (value.length < 8) {
         newErrors.password = 'Password must be at least 8 characters';
-      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(value)) {
+      } else if (
+        !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(value)
+      ) {
         newErrors.password =
           'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
       }
@@ -446,10 +470,19 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-5" data-testid="register-form">
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+          className="space-y-5"
+          data-testid="register-form"
+        >
           {/* Name Field */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Full Name
             </label>
             <div className="relative">
@@ -487,7 +520,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -525,7 +561,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -574,14 +613,18 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             {errors.password && <ErrorMessage message={errors.password} id={passwordErrorId} />}
             {!errors.password && (
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                Must be at least 8 characters with uppercase, lowercase, number, and special character
+                Must be at least 8 characters with uppercase, lowercase, number, and special
+                character
               </p>
             )}
           </div>
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Confirm Password
             </label>
             <div className="relative">
@@ -626,7 +669,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 )}
               </button>
             </div>
-            {errors.confirmPassword && <ErrorMessage message={errors.confirmPassword} id={confirmPasswordErrorId} />}
+            {errors.confirmPassword && (
+              <ErrorMessage message={errors.confirmPassword} id={confirmPasswordErrorId} />
+            )}
           </div>
 
           {/* Terms and Conditions */}
@@ -640,11 +685,17 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             />
             <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
               I agree to the{' '}
-              <Link to="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <Link
+                to="/terms"
+                className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+              >
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link to="/privacy" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <Link
+                to="/privacy"
+                className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+              >
                 Privacy Policy
               </Link>
             </label>

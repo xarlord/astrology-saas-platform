@@ -8,7 +8,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import PersonSelector, { Chart } from '../components/synastry/PersonSelector';
 import CompatibilityGauge from '../components/astrology/CompatibilityGauge';
-import { compareCharts, getCompatibility, SynastryAspect, CompatibilityScores } from '../services/synastry.api';
+import {
+  compareCharts,
+  getCompatibility,
+  SynastryAspect,
+  CompatibilityScores,
+} from '../services/synastry.api';
 import { chartService } from '../services/chart.service';
 import { AppLayout } from '../components/AppLayout';
 import { SkeletonLoader, EmptyState } from '../components';
@@ -96,7 +101,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
       });
     } catch (err) {
       console.error('Error calculating synastry:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to calculate compatibility. Please try again.';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to calculate compatibility. Please try again.';
       setError(errorMessage);
     } finally {
       setCalculating(false);
@@ -206,7 +212,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
             Synastry & Compatibility
           </h1>
           <p className="text-slate-400 max-w-lg text-lg">
-            Decode the cosmic blueprint of your relationship. Compare birth charts to uncover strengths, challenges, and karmic bonds.
+            Decode the cosmic blueprint of your relationship. Compare birth charts to uncover
+            strengths, challenges, and karmic bonds.
           </p>
         </motion.div>
 
@@ -265,10 +272,15 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
               <div className="relative w-24 h-24 mb-6">
                 <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
                 <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary animate-spin"></div>
-                <div className="absolute inset-4 rounded-full border-4 border-transparent border-t-secondary animate-spin" style={{ animationDuration: '1.5s' }}></div>
+                <div
+                  className="absolute inset-4 rounded-full border-4 border-transparent border-t-secondary animate-spin"
+                  style={{ animationDuration: '1.5s' }}
+                ></div>
               </div>
               <p className="text-white text-lg font-medium mb-2">Calculating compatibility...</p>
-              <p className="text-slate-400 text-sm">This may take up to 60 seconds for complex calculations</p>
+              <p className="text-slate-400 text-sm">
+                This may take up to 60 seconds for complex calculations
+              </p>
               {timeoutWarning && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -305,7 +317,9 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                 <div className="flex flex-col text-center sm:text-left z-10">
                   <h2 className="text-2xl font-bold text-white mb-2 flex items-center justify-center sm:justify-start gap-2">
                     {getScoreLabel(results.scores.overall)}
-                    <span className="material-symbols-outlined text-accent-gold text-xl animate-pulse">auto_awesome</span>
+                    <span className="material-symbols-outlined text-accent-gold text-xl animate-pulse">
+                      auto_awesome
+                    </span>
                   </h2>
                   <p className="text-slate-300 leading-relaxed">{results.theme}</p>
                 </div>
@@ -323,18 +337,30 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                         className="bg-card-glass border border-glass-border rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition-colors group"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: Number(Object.keys(results.scores).indexOf(category)) * 0.1 }}
+                        transition={{
+                          delay: Number(Object.keys(results.scores).indexOf(category)) * 0.1,
+                        }}
                       >
                         <div
                           className="w-10 h-10 rounded-lg flex items-center justify-center"
-                          style={{ backgroundColor: `${getCategoryColor(category)}20`, color: getCategoryColor(category) }}
+                          style={{
+                            backgroundColor: `${getCategoryColor(category)}20`,
+                            color: getCategoryColor(category),
+                          }}
                         >
-                          <span className="material-symbols-outlined">{getCategoryIcon(category)}</span>
+                          <span className="material-symbols-outlined">
+                            {getCategoryIcon(category)}
+                          </span>
                         </div>
                         <div className="flex-grow">
                           <div className="flex justify-between mb-2">
-                            <span className="text-sm font-medium text-white capitalize">{category}</span>
-                            <span className="text-sm font-bold" style={{ color: getCategoryColor(category) }}>
+                            <span className="text-sm font-medium text-white capitalize">
+                              {category}
+                            </span>
+                            <span
+                              className="text-sm font-bold"
+                              style={{ color: getCategoryColor(category) }}
+                            >
                               {score}%
                             </span>
                           </div>
@@ -359,13 +385,29 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                   <h3 className="text-lg font-bold text-white mb-4">Key Aspects</h3>
                   <div className="space-y-4">
                     {results.aspects.slice(0, 10).map((aspect, index) => {
-                      const isHarmonious = ['trine', 'sextile', 'conjunction'].includes(aspect.aspect);
-                      const color = isHarmonious ? '#22c55e' : aspect.aspect === 'square' || aspect.aspect === 'opposition' ? '#ef4444' : '#3b82f6';
-                      const label = isHarmonious ? 'Harmony' : aspect.aspect === 'square' || aspect.aspect === 'opposition' ? 'Tension' : 'Flow';
+                      const isHarmonious = ['trine', 'sextile', 'conjunction'].includes(
+                        aspect.aspect,
+                      );
+                      const color = isHarmonious
+                        ? '#22c55e'
+                        : aspect.aspect === 'square' || aspect.aspect === 'opposition'
+                          ? '#ef4444'
+                          : '#3b82f6';
+                      const label = isHarmonious
+                        ? 'Harmony'
+                        : aspect.aspect === 'square' || aspect.aspect === 'opposition'
+                          ? 'Tension'
+                          : 'Flow';
 
                       return (
-                        <div key={index} className="flex gap-3 items-start pb-4 border-b border-white/5 last:border-0 last:pb-0">
-                          <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: color }}></div>
+                        <div
+                          key={index}
+                          className="flex gap-3 items-start pb-4 border-b border-white/5 last:border-0 last:pb-0"
+                        >
+                          <div
+                            className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
+                            style={{ backgroundColor: color }}
+                          ></div>
                           <div className="flex-grow">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-sm font-bold text-white">
@@ -383,7 +425,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                               </span>
                             </div>
                             <p className="text-xs text-slate-400 mb-1">
-                              Orb: {aspect.orb.toFixed(1)}° • {aspect.applying ? 'Applying' : 'Separating'}
+                              Orb: {aspect.orb.toFixed(1)}° •{' '}
+                              {aspect.applying ? 'Applying' : 'Separating'}
                             </p>
                             <p className="text-sm text-slate-300">{aspect.interpretation}</p>
                           </div>

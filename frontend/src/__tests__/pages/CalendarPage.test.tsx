@@ -135,7 +135,7 @@ const createWrapper = () => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: ['/calendar'] }, children)
+      createElement(MemoryRouter, { initialEntries: ['/calendar'] }, children),
     );
 };
 

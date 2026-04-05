@@ -55,13 +55,16 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await api.post<{ data: { url: string } }>(`/solar-returns/${solarReturn.id}/share`, {
-        type: 'link',
-        expiresInDays: parseInt(linkSettings.expiresIn),
-        maxAccesses: linkSettings.maxAccesses,
-        requirePassword: linkSettings.requirePassword,
-        password: linkSettings.password,
-      });
+      const response = await api.post<{ data: { url: string } }>(
+        `/solar-returns/${solarReturn.id}/share`,
+        {
+          type: 'link',
+          expiresInDays: parseInt(linkSettings.expiresIn),
+          maxAccesses: linkSettings.maxAccesses,
+          requirePassword: linkSettings.requirePassword,
+          password: linkSettings.password,
+        },
+      );
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       setGeneratedLink(response.data.data.url);
@@ -133,18 +136,24 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <h4 className="font-medium text-gray-700 mb-1">Themes for {year}:</h4>
               <div className="flex flex-wrap gap-2">
                 {interpretation.themes?.slice(0, 4).map((theme: string, i: number) => (
-                  <span key={i} className="preview-theme-tag">{theme}</span>
+                  <span key={i} className="preview-theme-tag">
+                    {theme}
+                  </span>
                 ))}
-              {(interpretation.themes?.length ?? 0) > 4 && (
-                <span className="preview-more">+{(interpretation.themes?.length ?? 0) - 4} more</span>
-              )}
+                {(interpretation.themes?.length ?? 0) > 4 && (
+                  <span className="preview-more">
+                    +{(interpretation.themes?.length ?? 0) - 4} more
+                  </span>
+                )}
               </div>
             </div>
 
             {interpretation.sunHouse && (
               <div>
                 <h4 className="font-medium text-gray-700 mb-1">Your Focus:</h4>
-                <p className="text-sm text-gray-600">{interpretation.sunHouse.interpretation.slice(0, 150)}...</p>
+                <p className="text-sm text-gray-600">
+                  {interpretation.sunHouse.interpretation.slice(0, 150)}...
+                </p>
               </div>
             )}
           </div>
@@ -178,11 +187,16 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Success Message */}
       {success && !generatedLink && (
-        <div aria-live="polite" className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4">
+        <div
+          aria-live="polite"
+          className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4"
+        >
           <Check size={20} className="text-green-600 flex-shrink-0" />
           <div>
             <strong className="text-green-800">Success!</strong>
-            <p className="text-sm text-green-700">{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
+            <p className="text-sm text-green-700">
+              {shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}
+            </p>
           </div>
           <button
             onClick={() => {
@@ -198,9 +212,17 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700">
+        <div
+          role="alert"
+          className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700"
+        >
           <span>{error}</span>
-          <button onClick={() => setError(null)} className="ml-auto text-red-500 hover:text-red-700 font-bold">✕</button>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-500 hover:text-red-700 font-bold"
+          >
+            ✕
+          </button>
         </div>
       )}
 
@@ -257,7 +279,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 <label className="block text-sm font-medium text-gray-700">Maximum Accesses</label>
                 <select
                   value={linkSettings.maxAccesses}
-                  onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })
+                  }
                   aria-label="Maximum number of accesses"
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 >
@@ -274,10 +298,14 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   type="checkbox"
                   id="requirePassword"
                   checked={linkSettings.requirePassword}
-                  onChange={(e) => setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })}
+                  onChange={(e) =>
+                    setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="requirePassword" className="text-sm text-gray-700">Require password</label>
+                <label htmlFor="requirePassword" className="text-sm text-gray-700">
+                  Require password
+                </label>
               </div>
 
               {linkSettings.requirePassword && (
@@ -306,7 +334,12 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
               {generatedLink && (
                 <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <label htmlFor="share-link-input" className="block text-sm font-medium text-gray-700">Your Share Link:</label>
+                  <label
+                    htmlFor="share-link-input"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Your Share Link:
+                  </label>
                   <div className="flex gap-2">
                     <input
                       id="share-link-input"
@@ -324,8 +357,13 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   </div>
 
                   <div className="space-y-1 text-xs text-gray-500">
-                    <p className="flex items-center gap-1"><Calendar size={14} /> Expires: {linkSettings.expiresIn} days</p>
-                    <p className="flex items-center gap-1"><Lock size={14} /> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
+                    <p className="flex items-center gap-1">
+                      <Calendar size={14} /> Expires: {linkSettings.expiresIn} days
+                    </p>
+                    <p className="flex items-center gap-1">
+                      <Lock size={14} /> Max accesses:{' '}
+                      {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}
+                    </p>
                   </div>
                 </div>
               )}
@@ -378,10 +416,14 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   type="checkbox"
                   id="includeChart"
                   checked={emailSettings.includeChart}
-                  onChange={(e) => setEmailSettings({ ...emailSettings, includeChart: e.target.checked })}
+                  onChange={(e) =>
+                    setEmailSettings({ ...emailSettings, includeChart: e.target.checked })
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="includeChart" className="text-sm text-gray-700">Include chart visualization</label>
+                <label htmlFor="includeChart" className="text-sm text-gray-700">
+                  Include chart visualization
+                </label>
               </div>
 
               <button

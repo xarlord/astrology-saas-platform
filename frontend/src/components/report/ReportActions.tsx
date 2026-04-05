@@ -96,7 +96,9 @@ const ReportActions: React.FC<ReportActionsProps> = ({
         <Button
           variant="secondary"
           fullWidth
-          onClick={() => { void handleShare(); }}
+          onClick={() => {
+            void handleShare();
+          }}
           leftIcon={<span className="material-symbols-outlined text-[18px]">share</span>}
         >
           Share Report

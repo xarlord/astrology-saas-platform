@@ -8,40 +8,51 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { chartService } from '../services';
 import type { PlanetPosition, CalculatedChartData } from '../services/api.types';
-import type { ChartData, PlanetPosition as WheelPlanetPosition, HouseCusp as WheelHouseCusp, Aspect as WheelAspect } from '../components/ChartWheel';
+import type {
+  ChartData,
+  PlanetPosition as WheelPlanetPosition,
+  HouseCusp as WheelHouseCusp,
+  Aspect as WheelAspect,
+} from '../components/ChartWheel';
 
 // Convert API's CalculatedChartData to ChartWheel's ChartData format
 function toWheelData(data: CalculatedChartData): ChartData {
   return {
-    planets: data.planets.map((p): WheelPlanetPosition => ({
-      planet: p.planet,
-      sign: p.sign,
-      degree: p.degree,
-      minute: p.minute,
-      second: 0, // API doesn't provide seconds
-      house: p.house,
-      retrograde: p.retrograde,
-      latitude: p.latitude,
-      longitude: p.longitude,
-      speed: p.speed,
-    })),
-    houses: data.houses.map((h): WheelHouseCusp => ({
-      house: h.house,
-      sign: h.sign,
-      degree: h.longitude % 30,
-      minute: 0,
-      second: 0,
-    })),
-    aspects: data.aspects.map((a): WheelAspect => ({
-      planet1: a.planet1,
-      planet2: a.planet2,
-      type: a.type as WheelAspect['type'],
-      degree: a.degree,
-      minute: 0,
-      orb: a.orb,
-      applying: a.applying,
-      separating: !a.applying,
-    })),
+    planets: data.planets.map(
+      (p): WheelPlanetPosition => ({
+        planet: p.planet,
+        sign: p.sign,
+        degree: p.degree,
+        minute: p.minute,
+        second: 0, // API doesn't provide seconds
+        house: p.house,
+        retrograde: p.retrograde,
+        latitude: p.latitude,
+        longitude: p.longitude,
+        speed: p.speed,
+      }),
+    ),
+    houses: data.houses.map(
+      (h): WheelHouseCusp => ({
+        house: h.house,
+        sign: h.sign,
+        degree: h.longitude % 30,
+        minute: 0,
+        second: 0,
+      }),
+    ),
+    aspects: data.aspects.map(
+      (a): WheelAspect => ({
+        planet1: a.planet1,
+        planet2: a.planet2,
+        type: a.type as WheelAspect['type'],
+        degree: a.degree,
+        minute: 0,
+        orb: a.orb,
+        applying: a.applying,
+        separating: !a.applying,
+      }),
+    ),
   };
 }
 
@@ -87,7 +98,9 @@ export default function ChartViewPage() {
           actionText="Retry"
           onAction={() => window.location.reload()}
           secondaryActionText="Back to Dashboard"
-          onSecondaryAction={() => { window.location.href = '/dashboard'; }}
+          onSecondaryAction={() => {
+            window.location.href = '/dashboard';
+          }}
         />
       ) : !chartData ? (
         <EmptyState
@@ -95,7 +108,9 @@ export default function ChartViewPage() {
           title="Chart not found"
           description="The requested chart could not be found. It may have been deleted or you may not have access to it."
           actionText="Back to Dashboard"
-          onAction={() => { window.location.href = '/dashboard'; }}
+          onAction={() => {
+            window.location.href = '/dashboard';
+          }}
         />
       ) : (
         <>
@@ -107,7 +122,12 @@ export default function ChartViewPage() {
                 {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
                 {typeof (chartData as Record<string, unknown>).calculated_data !== 'undefined' ? (
                   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                  <ChartWheel data={toWheelData((chartData as Record<string, unknown>).calculated_data as unknown as CalculatedChartData)} />
+                  <ChartWheel
+                    data={toWheelData(
+                      (chartData as Record<string, unknown>)
+                        .calculated_data as unknown as CalculatedChartData,
+                    )}
+                  />
                 ) : (
                   <p className="text-gray-500">Chart wheel visualization</p>
                 )}
@@ -119,16 +139,21 @@ export default function ChartViewPage() {
               <h3 className="text-xl font-bold mb-4">Planetary Positions</h3>
               <div className="space-y-2" data-testid="planetary-positions">
                 {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
-                {((chartData as Record<string, unknown>).calculated_data as unknown as { planets: PlanetPosition[] } | undefined)?.planets?.map((planet: PlanetPosition) => (
-                  <div key={planet.planet} className="flex justify-between py-2 border-b dark:border-gray-700">
+                {(
+                  (chartData as Record<string, unknown>).calculated_data as unknown as
+                    | { planets: PlanetPosition[] }
+                    | undefined
+                )?.planets?.map((planet: PlanetPosition) => (
+                  <div
+                    key={planet.planet}
+                    className="flex justify-between py-2 border-b dark:border-gray-700"
+                  >
                     <span className="font-medium">{planet.planet}</span>
                     <span className="text-gray-600 dark:text-gray-400">
                       {planet.sign} {planet.degree}°{planet.minute}'
                     </span>
                   </div>
-                )) ?? (
-                  <p className="text-gray-500">No planetary data available</p>
-                )}
+                )) ?? <p className="text-gray-500">No planetary data available</p>}
               </div>
             </div>
           </div>

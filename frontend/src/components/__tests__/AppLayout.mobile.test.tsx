@@ -25,7 +25,7 @@ describe('Mobile Bottom Navigation Active States', () => {
       ],
       {
         initialEntries,
-      }
+      },
     );
     return render(<RouterProvider router={router} />);
   };

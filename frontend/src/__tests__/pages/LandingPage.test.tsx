@@ -11,7 +11,50 @@ import userEvent from '@testing-library/user-event';
 import { createElement } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import LandingPage from '../../pages/LandingPage';
+
+// Helper to create a mock icon component
+const createMockIcon = (name: string) => {
+  const Icon = (props: any) =>
+    createElement('svg', { ...props, 'data-testid': `icon-${name}` }, props.children);
+  Icon.displayName = name;
+  return Icon;
+};
+
+// The LandingPage source uses several icons (Pentagon, ArrowRight, PlayCircle,
+// Sun, ArrowLeft, Quote, Clock, Brain, Calendar, Check) that are NOT imported
+// from lucide-react in the source file -- they are bare global references.
+// We must inject them as globals so the source module can find them at runtime.
+vi.stubGlobal('Pentagon', createMockIcon('Pentagon'));
+vi.stubGlobal('ArrowRight', createMockIcon('ArrowRight'));
+vi.stubGlobal('PlayCircle', createMockIcon('PlayCircle'));
+vi.stubGlobal('Sun', createMockIcon('Sun'));
+vi.stubGlobal('ArrowLeft', createMockIcon('ArrowLeft'));
+vi.stubGlobal('Quote', createMockIcon('Quote'));
+vi.stubGlobal('Clock', createMockIcon('Clock'));
+vi.stubGlobal('Brain', createMockIcon('Brain'));
+vi.stubGlobal('Calendar', createMockIcon('Calendar'));
+vi.stubGlobal('Check', createMockIcon('Check'));
+
+// Mock lucide-react icons that ARE imported in the source file
+vi.mock('lucide-react', () => {
+  const createIcon = (name: string) => {
+    const Icon = (props: any) =>
+      createElement('svg', { ...props, 'data-testid': `icon-${name}` }, props.children);
+    Icon.displayName = name;
+    return Icon;
+  };
+  return {
+    CheckCircle: createIcon('CheckCircle'),
+    Sparkles: createIcon('Sparkles'),
+    AlertCircle: createIcon('AlertCircle'),
+    Mail: createIcon('Mail'),
+    Menu: createIcon('Menu'),
+    X: createIcon('X'),
+    Star: createIcon('Star'),
+  };
+});
 
 // Mock useAuth hook
 vi.mock('../../hooks', () => ({
@@ -39,7 +82,7 @@ const createWrapper = (route = '/') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(BrowserRouter, null, children)
+      createElement(HelmetProvider, null, createElement(BrowserRouter, null, children)),
     );
 };
 
@@ -86,9 +129,9 @@ describe('LandingPage', () => {
 
     it('should render Sign In link', () => {
       renderWithProviders(createElement(LandingPage));
-      const signInLinks = screen.getAllByRole('link').filter(link =>
-        /^sign in$/i.test(link.textContent || '')
-      );
+      const signInLinks = screen
+        .getAllByRole('link')
+        .filter((link) => /^sign in$/i.test(link.textContent || ''));
       expect(signInLinks.length).toBeGreaterThan(0);
     });
 
@@ -205,7 +248,9 @@ describe('LandingPage', () => {
     it('should render Personality Insights feature card', () => {
       renderWithProviders(createElement(LandingPage));
       expect(screen.getByText(/personality insights/i)).toBeInTheDocument();
-      expect(screen.getByText(/psychological profiling based on elemental balances/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/psychological profiling based on elemental balances/i),
+      ).toBeInTheDocument();
     });
 
     it('should render Transit Forecasts feature card', () => {
@@ -236,8 +281,12 @@ describe('LandingPage', () => {
 
     it('should render testimonial cards with quotes', () => {
       renderWithProviders(createElement(LandingPage));
-      expect(screen.getByText(/astroverse completely changed how i plan my month/i)).toBeInTheDocument();
-      expect(screen.getByText(/finally, an astrology app that combines beautiful design/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/astroverse completely changed how i plan my month/i),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/finally, an astrology app that combines beautiful design/i),
+      ).toBeInTheDocument();
       expect(screen.getByText(/the natal chart breakdown is so detailed/i)).toBeInTheDocument();
     });
 
@@ -325,7 +374,9 @@ describe('LandingPage', () => {
   describe('Footer Section', () => {
     it('should render footer description', () => {
       renderWithProviders(createElement(LandingPage));
-      expect(screen.getByText(/connecting you to the cosmos through data-driven astrology/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/connecting you to the cosmos through data-driven astrology/i),
+      ).toBeInTheDocument();
     });
 
     it('should render social media links', () => {
@@ -391,7 +442,7 @@ describe('LandingPage', () => {
 
       // Main container should have dark background
       const mainContainer = document.querySelector('.min-h-screen');
-      expect(mainContainer).toHaveClass('bg-background-dark');
+      expect(mainContainer).toHaveClass('bg-gradient-to-br');
     });
 
     it('should have CSS keyframe animations defined', () => {
