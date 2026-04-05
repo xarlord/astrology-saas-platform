@@ -538,7 +538,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                 Chart Preview
               </h3>
               {birthData.date && (
-                <div className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <div className="bg-accent-gold/10 text-accent-gold border border-accent-gold/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">sunny</span>
                   Calculating...
                 </div>

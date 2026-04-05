@@ -248,7 +248,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-gold text-3xl">
+                <span className="material-symbols-outlined text-accent-gold text-3xl">
                   collections_bookmark
                 </span>
                 <h2 className="text-4xl font-bold tracking-tight text-slate-100">
