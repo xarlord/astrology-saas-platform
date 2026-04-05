@@ -40,6 +40,7 @@ router.get('/', (_req, res) => {
       'lunar-return': '/api/v1/lunar-return',
       synastry: '/api/v1/synastry',
       'solar-returns': '/api/v1/solar-returns',
+      briefing: '/api/v1/briefing',
       health: '/health'
     }
   });
