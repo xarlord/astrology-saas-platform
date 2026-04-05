@@ -550,11 +550,19 @@ const DashboardPage: React.FC = () => {
                 ) : (
                   <>
                     {recentCharts.map((chart, index) => (
-                      <div
+                      <button
                         key={chart.id}
+                        type="button"
                         onClick={() => handleChartClick(chart.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleChartClick(chart.id);
+                          }
+                        }}
+                        aria-label={`View ${chart.name} chart`}
                         data-testid={`chart-card-${chart.id}`}
-                        className="bg-[#0B0D17] p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-all cursor-pointer group relative overflow-hidden"
+                        className="bg-[#0B0D17] p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-all cursor-pointer group relative overflow-hidden text-left w-full"
                       >
                         <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-3xl"></div>
 
@@ -566,12 +574,12 @@ const DashboardPage: React.FC = () => {
                               {getInitials(chart.name)}
                             </div>
                             <div>
-                              <h4
-                                className="text-white font-bold text-sm"
+                              <span
+                                className="text-white font-bold text-sm block"
                                 data-testid={`chart-name-${chart.id}`}
                               >
                                 {chart.name}
-                              </h4>
+                              </span>
                               <span
                                 className="text-[10px] uppercase text-primary font-bold tracking-wide"
                                 data-testid={`chart-type-${chart.id}`}
@@ -580,12 +588,13 @@ const DashboardPage: React.FC = () => {
                               </span>
                             </div>
                           </div>
-                          <button
+                          <span
                             className="text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
                             data-testid={`edit-chart-${chart.id}`}
+                            aria-hidden="true"
                           >
                             <span className="material-symbols-outlined text-[18px]">edit</span>
-                          </button>
+                          </span>
                         </div>
 
                         <div className="flex gap-2 flex-wrap">
@@ -603,7 +612,7 @@ const DashboardPage: React.FC = () => {
                               </span>
                             ))}
                         </div>
-                      </div>
+                      </button>
                     ))}
 
                     {/* Create New Card */}

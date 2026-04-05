@@ -13,6 +13,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 import { AlertTriangle, X, Trash2 } from 'lucide-react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -53,6 +54,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Focus trap for WCAG 2.1 AA compliance
+  const trapRef = useFocusTrap<HTMLDivElement>({
+    active: isOpen,
+    onEscape: onClose,
+    autoFocusDelay: 150,
+  });
 
   const isConfirmed = inputValue === confirmationString;
 
@@ -96,21 +104,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     }
   }, [isOpen]);
 
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-
-      if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === 'Enter' && isConfirmed && !isSubmitting && !isLoading) {
-        void handleConfirm();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isConfirmed, isSubmitting, isLoading, handleConfirm, onClose]);
+  // Handle Enter key (Escape handled by useFocusTrap)
+  // Note: useFocusTrap already handles Escape via onEscape callback and
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -181,6 +176,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
           {/* Modal */}
           <motion.div
+            ref={trapRef}
             className={clsx(
               'relative w-full max-w-md rounded-2xl overflow-hidden',
               'bg-gradient-to-br from-gray-900/95 to-gray-800/95',

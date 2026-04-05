@@ -206,28 +206,59 @@ export const ProfileSettingsPage: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="border-b border-white/10 overflow-x-auto">
-          <nav className="flex space-x-8 min-w-max" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={clsx(
-                  'border-b-2 py-4 px-1 text-sm font-medium flex items-center gap-2 transition-colors',
-                  activeTab === tab.id
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-slate-400 hover:border-slate-300 hover:text-slate-200',
-                )}
-              >
-                <span className="material-symbols-outlined text-[20px]">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+        <div className="border-b border-white/10 overflow-x-auto" role="tablist" aria-label="Settings sections">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              role="tab"
+              id={`tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls={`panel-${tab.id}`}
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => setActiveTab(tab.id)}
+              onKeyDown={(e) => {
+                const idx = tabs.findIndex((t) => t.id === tab.id);
+                if (e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  const next = tabs[(idx + 1) % tabs.length];
+                  setActiveTab(next.id);
+                  document.getElementById(`tab-${next.id}`)?.focus();
+                } else if (e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
+                  setActiveTab(prev.id);
+                  document.getElementById(`tab-${prev.id}`)?.focus();
+                } else if (e.key === 'Home') {
+                  e.preventDefault();
+                  setActiveTab(tabs[0].id);
+                  document.getElementById(`tab-${tabs[0].id}`)?.focus();
+                } else if (e.key === 'End') {
+                  e.preventDefault();
+                  setActiveTab(tabs[tabs.length - 1].id);
+                  document.getElementById(`tab-${tabs[tabs.length - 1].id}`)?.focus();
+                }
+              }}
+              className={clsx(
+                'border-b-2 py-4 px-1 text-sm font-medium flex items-center gap-2 transition-colors',
+                activeTab === tab.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-slate-400 hover:border-slate-300 hover:text-slate-200',
+              )}
+            >
+              <span className="material-symbols-outlined text-[20px]">{tab.icon}</span>
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Tab Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
+          tabIndex={0}
+        >
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {activeTab === 'profile' && (
@@ -337,21 +368,39 @@ export const ProfileSettingsPage: React.FC = () => {
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Change Password</h3>
                       <div className="space-y-3">
-                        <input
-                          type="password"
-                          placeholder="Current password"
-                          className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                        />
-                        <input
-                          type="password"
-                          placeholder="New password"
-                          className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                        />
-                        <input
-                          type="password"
-                          placeholder="Confirm new password"
-                          className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                        />
+                        <div className="space-y-2">
+                          <label htmlFor="current-password" className="text-sm font-medium text-slate-300">
+                            Current password
+                          </label>
+                          <input
+                            id="current-password"
+                            type="password"
+                            autoComplete="current-password"
+                            className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="new-password" className="text-sm font-medium text-slate-300">
+                            New password
+                          </label>
+                          <input
+                            id="new-password"
+                            type="password"
+                            autoComplete="new-password"
+                            className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="confirm-password" className="text-sm font-medium text-slate-300">
+                            Confirm new password
+                          </label>
+                          <input
+                            id="confirm-password"
+                            type="password"
+                            autoComplete="new-password"
+                            className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                          />
+                        </div>
                       </div>
                       <Button variant="primary" size="md">
                         Update Password
