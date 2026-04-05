@@ -27,7 +27,6 @@ import {
   Star,
   Home,
   Menu,
-  Crown,
 } from "lucide-react";
 
 interface AppLayoutProps {

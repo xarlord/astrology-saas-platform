@@ -238,7 +238,7 @@ const CourseDetailPage: React.FC = () => {
     (sum, m) => sum + m.lessons.filter((l) => l.completed).length,
     0
   );
-  const progress = Math.round((completedLessons / totalLessons) * 100);
+  const _progress = Math.round((completedLessons / totalLessons) * 100);
 
   return (
     <AppLayout>

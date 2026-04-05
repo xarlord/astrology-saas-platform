@@ -5,9 +5,9 @@
 
 import api from './api';
 
-import type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn } from '../types/lunar-return.types';
+import type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast } from '../types/lunar-return.types';
 
-export type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn };
+export type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast };
 
 interface LunarReturnHistoryResponse {
   returns: SavedLunarReturn[];

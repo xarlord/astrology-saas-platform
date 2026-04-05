@@ -2,6 +2,8 @@
  * Home Page Component
  */
 
+import { Link } from 'react-router-dom';
+
 export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -15,12 +17,12 @@ export default function HomePage() {
             Generate accurate natal charts, explore personality insights, and receive personalized forecasts
           </p>
           <div className="flex gap-4 justify-center">
-            <a href="/register" className="btn-primary bg-white text-primary-600 hover:bg-primary-50">
+            <Link to="/register" className="btn-primary bg-white text-primary-600 hover:bg-primary-50">
               Get Started Free
-            </a>
-            <a href="/login" className="btn-primary bg-transparent border-2 border-white hover:bg-white/10">
+            </Link>
+            <Link to="/login" className="btn-primary bg-transparent border-2 border-white hover:bg-white/10">
               Sign In
-            </a>
+            </Link>
           </div>
         </div>
       </header>

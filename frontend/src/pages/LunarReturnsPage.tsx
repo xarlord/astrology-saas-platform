@@ -55,7 +55,7 @@ const ZODIAC_SYMBOLS: Record<string, string> = {
 };
 
 export const LunarReturnsPage: React.FC = () => {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { charts } = useCharts();
 
   const [selectedChartId, setSelectedChartId] = useState<string>('');

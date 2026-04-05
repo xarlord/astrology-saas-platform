@@ -6,7 +6,6 @@
 
 // Core API
 export { default as api } from './api';
-export { apiRequest, handleApiError, isNetworkError, isAuthError } from './api';
 
 // Services
 export { authService } from './auth.service';

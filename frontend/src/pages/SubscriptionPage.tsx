@@ -198,7 +198,7 @@ export default function SubscriptionPage() {
               Current plan: {plans.find(p => p.id === currentTier)?.name ?? currentTier}
             </span>
             <button
-              onClick={handleManage}
+              onClick={() => { void handleManage(); }}
               disabled={loadingPlan === 'portal'}
               className="ml-3 text-sm text-indigo-600 dark:text-indigo-400 hover:underline disabled:opacity-50"
             >

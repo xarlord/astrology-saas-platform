@@ -95,7 +95,7 @@ export const useChartsStore = create<ChartsState>((set) => ({
         error: getErrorMessage(error, 'Failed to create chart'),
         isLoading: false,
       });
-      throw err;
+      throw error;
     }
   },
 

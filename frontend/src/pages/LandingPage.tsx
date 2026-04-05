@@ -11,8 +11,6 @@ import { Helmet } from "react-helmet-async";
 import {
   CheckCircle,
   Sparkles,
-  AlertCircle,
-  Mail,
   Menu,
   X,
   Star,

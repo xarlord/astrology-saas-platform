@@ -194,7 +194,7 @@ const DashboardPage: React.FC = () => {
   const handleSynastry = () => navigate('/synastry');
   const handleChartClick = (chartId: string) => navigate(`/charts/${chartId}`);
 
-  const handleLogout = async () => {
+  const _handleLogout = async () => {
     try {
       await logout();
       navigate('/login');

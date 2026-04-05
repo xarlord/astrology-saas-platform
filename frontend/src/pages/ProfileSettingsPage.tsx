@@ -43,7 +43,7 @@ interface AppearanceSettings {
 }
 
 export const ProfileSettingsPage: React.FC = () => {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { user, updateProfile, isLoading: _isLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<TabType>('profile');

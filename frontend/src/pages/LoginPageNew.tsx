@@ -10,7 +10,6 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks";
 import { Helmet } from "react-helmet-async";
 import {
-  CheckCircle,
   Sparkles,
   AlertCircle,
   Mail,
