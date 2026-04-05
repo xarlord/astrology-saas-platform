@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { MapPin, Globe, Search, ArrowRight, Info } from 'lucide-react';
 import axios from 'axios';
 
 interface Location {
@@ -161,7 +160,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
     <div className="p-8 max-w-[1000px] mx-auto md:p-4" role="region" aria-label="Relocation Calculator">
       <div className="flex items-center gap-6 mb-8 md:flex-col md:text-center">
         <div className="w-16 h-16 bg-gradient-to-br from-[#667eea] to-[#764ba2] rounded-2xl flex items-center justify-center text-white">
-          <Globe size={32} />
+          <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>public</span>
         </div>
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-1">Solar Return Relocation</h2>
@@ -171,7 +170,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       {/* Info Banner */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-lg py-4 px-5 flex gap-3 items-start mb-8">
-        <Info size={20} className="text-emerald-700 shrink-0 mt-0.5" />
+        <span className="material-symbols-outlined text-emerald-700 shrink-0 mt-0.5" style={{ fontSize: '20px' }}>info</span>
         <p className="text-emerald-700 text-[0.925rem] leading-relaxed m-0">
           Relocating for your solar return can shift the house placements and themes for your birthday year.
           Choose a location to see how your solar return changes.
@@ -183,7 +182,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Choose a Location</h3>
 
         <div className="flex gap-3 items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm">
-          <Search size={20} className="text-gray-400 shrink-0" />
+          <span className="material-symbols-outlined text-gray-400 shrink-0" style={{ fontSize: '20px' }}>search</span>
           <input
             type="text"
             placeholder="Search for a city..."
@@ -222,7 +221,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               onClick={() => void handleLocationSelect(location)}
               disabled={loading}
             >
-              <MapPin size={20} className="text-indigo-500 shrink-0" />
+              <span className="material-symbols-outlined text-indigo-500 shrink-0" style={{ fontSize: '20px' }}>location_on</span>
               <span className="text-sm text-gray-800 dark:text-gray-200">{location.name}</span>
             </button>
           ))}
@@ -257,7 +256,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
             {/* Arrow */}
             <div className="flex justify-center text-indigo-500 md:rotate-90 md:my-2 md:mx-auto">
-              <ArrowRight size={32} />
+              <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>arrow_forward</span>
             </div>
 
             {/* Relocated */}
@@ -289,7 +288,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                 <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
                   <span className="font-semibold text-gray-800 dark:text-gray-200 min-w-[80px]">{change.planet}</span>
                   <span className="text-gray-500 dark:text-gray-400">House {change.originalHouse}</span>
-                  <ArrowRight size={16} />
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
                   <span className="text-indigo-500 font-semibold">House {change.relocatedHouse}</span>
                 </div>
               ))}
