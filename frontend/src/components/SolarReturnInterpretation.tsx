@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Star, Calendar, TrendingUp, AlertTriangle, Gift, Lightbulb, Download, Share2 } from 'lucide-react';
+
 
 interface LuckyDay {
   date: string;
@@ -104,7 +104,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white m-0">Your {year} Solar Return</h2>
           <p className="flex items-center gap-2 mt-1 text-sm text-gray-500 dark:text-gray-400 m-0">
-            <Calendar size={16} />
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>
             Solar Return: {new Date(returnDate).toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
@@ -117,13 +117,13 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <div className="flex gap-2">
           {onDownload && (
             <button type="button" onClick={onDownload} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition-colors">
-              <Download size={18} />
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>download</span>
               Save
             </button>
           )}
           {onShare && (
             <button type="button" onClick={onShare} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 text-sm font-medium transition-colors">
-              <Share2 size={18} />
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
               Share
             </button>
           )}
@@ -133,7 +133,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {/* Sun House Interpretation */}
       <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
-          <Star className="text-amber-500" size={24} />
+          <span className="material-symbols-outlined text-amber-500" style={{ fontSize: '24px' }}>star</span>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Sun in {HOUSE_NAMES[interpretation.sunHouse.house]}</h3>
         </div>
 
@@ -193,7 +193,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.luckyDays && interpretation.luckyDays.length > 0 && (
         <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <Star className="text-amber-500" size={24} />
+            <span className="material-symbols-outlined text-amber-500" style={{ fontSize: '24px' }}>star</span>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Lucky Days</h3>
           </div>
 
@@ -224,7 +224,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.challenges && interpretation.challenges.length > 0 && (
         <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <AlertTriangle className="text-amber-500" size={24} />
+            <span className="material-symbols-outlined text-amber-500" style={{ fontSize: '24px' }}>warning</span>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Challenges & Growth Opportunities</h3>
           </div>
 
@@ -236,7 +236,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
                 </div>
                 <p className="text-sm text-gray-700 dark:text-gray-300 m-0 mb-3">{challenge.description}</p>
                 <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <Lightbulb size={16} className="shrink-0 mt-0.5" />
+                  <span className="material-symbols-outlined shrink-0 mt-0.5" style={{ fontSize: '16px' }}>lightbulb</span>
                   <span><strong>Advice:</strong> {challenge.advice}</span>
                 </div>
               </div>
@@ -249,7 +249,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.opportunities && interpretation.opportunities.length > 0 && (
         <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <TrendingUp className="text-green-500" size={24} />
+            <span className="material-symbols-outlined text-green-500" style={{ fontSize: '24px' }}>trending_up</span>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Opportunities</h3>
           </div>
 
@@ -257,7 +257,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
             {interpretation.opportunities.map((opportunity, index) => (
               <div key={index} className="p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-r-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Gift size={20} className="text-green-500" />
+                  <span className="material-symbols-outlined text-green-500" style={{ fontSize: '20px' }}>card_giftcard</span>
                   <h4 className="text-base font-semibold text-gray-900 dark:text-white m-0">{opportunity.area}</h4>
                 </div>
                 <p className="text-sm text-gray-700 dark:text-gray-300 m-0 mb-2">{opportunity.description}</p>
@@ -274,7 +274,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.advice && interpretation.advice.length > 0 && (
         <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <Lightbulb className="text-indigo-500" size={24} />
+            <span className="material-symbols-outlined text-indigo-500" style={{ fontSize: '24px' }}>lightbulb</span>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Your Advice for {year}</h3>
           </div>
 
