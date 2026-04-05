@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCreateChart, useCalculateChart, useCharts } from '../hooks';
 
 // Error Message Component with Icon
@@ -11,7 +10,7 @@ interface ErrorMessageProps {
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
     <p id={id} className="error-message" role="alert" aria-live="assertive">
-      <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
+      <span className="material-symbols-outlined error-icon" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -261,7 +260,7 @@ export function BirthDataForm({
                 onChange={handleChange}
                 max={new Date().toISOString().split('T')[0]}
                 aria-required="true"
-                aria-invalid={!!errors.birthDate}
+                aria-invalid={errors.birthDate ? 'true' : undefined}
                 aria-describedby={errors.birthDate ? birthDateErrorId : undefined}
                 className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
                   errors.birthDate
@@ -271,7 +270,7 @@ export function BirthDataForm({
               />
               {errors.birthDate && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -291,8 +290,8 @@ export function BirthDataForm({
                 value={formData.birthTime}
                 onChange={handleChange}
                 disabled={formData.timeUnknown}
-                aria-required={!formData.timeUnknown}
-                aria-invalid={!!errors.birthTime}
+                aria-required={!formData.timeUnknown ? 'true' : 'false'}
+                aria-invalid={errors.birthTime ? 'true' : undefined}
                 aria-describedby={errors.birthTime ? birthTimeErrorId : birthTimeDescId}
                 className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
                   errors.birthTime
@@ -302,7 +301,7 @@ export function BirthDataForm({
               />
               {errors.birthTime && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -349,7 +348,7 @@ export function BirthDataForm({
                 placeholder="Search city or enter coordinates"
                 autoComplete="off"
                 aria-required="true"
-                aria-invalid={!!errors.birthPlace}
+                aria-invalid={errors.birthPlace ? 'true' : undefined}
                 aria-describedby={errors.birthPlace ? birthPlaceErrorId : undefined}
                 className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
                   errors.birthPlace
@@ -359,7 +358,7 @@ export function BirthDataForm({
               />
               {errors.birthPlace && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -413,7 +412,7 @@ export function BirthDataForm({
                 onChange={handleChange}
                 placeholder="My Natal Chart"
                 aria-required="true"
-                aria-invalid={!!errors.chartName}
+                aria-invalid={errors.chartName ? 'true' : undefined}
                 aria-describedby={errors.chartName ? chartNameErrorId : undefined}
                 className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
                   errors.chartName
@@ -423,7 +422,7 @@ export function BirthDataForm({
               />
               {errors.chartName && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
             </div>
