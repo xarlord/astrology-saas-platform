@@ -17,6 +17,7 @@ import { useTransits } from '../hooks/useTransits';
 // Components
 import EnergyMeter from '../components/astrology/EnergyMeter';
 import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
+import { TransitReportCard, TransitReportHistory } from '../components/report';
 import { Button } from '../components/ui/Button';
 import { AppLayout } from '../components';
 
@@ -645,7 +646,7 @@ const DashboardPage: React.FC = () => {
                 data-testid="calendar-quick-action"
                 className="bg-[#141627]/70 backdrop-blur-md p-4 rounded-xl flex flex-col gap-3 hover:bg-white/10 transition-all group border border-white/5"
               >
-                <div className="size-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                <div className="size-10 rounded-lg bg-primary-500/20 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform duration-300">
                   <span className="material-symbols-outlined">calendar_month</span>
                 </div>
                 <div className="text-left">
@@ -696,6 +697,12 @@ const DashboardPage: React.FC = () => {
                 </div>
               </button>
             </motion.div>
+
+            {/* Monthly Transit Report Card */}
+            <TransitReportCard />
+
+            {/* Report History */}
+            <TransitReportHistory recentLimit={6} />
           </div>
         </div>
       </main>

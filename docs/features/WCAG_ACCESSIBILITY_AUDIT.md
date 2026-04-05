@@ -5,7 +5,7 @@
 **Standard:** WCAG 2.1 Level AA
 **Scope:** 7 high-traffic pages/components
 **Branch:** `feature/accessibility-fixes`
-**Status:** 22 of 28 violations fixed (commit `3fdf04f`)
+**Status:** 24 of 28 violations fixed (ShareModal radiogroup + listbox keyboard nav added)
 
 ---
 

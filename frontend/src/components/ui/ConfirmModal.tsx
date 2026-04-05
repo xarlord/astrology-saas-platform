@@ -326,6 +326,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
             {/* Footer */}
             <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-white/10 bg-gray-900/50">
+              <div className="sr-only" aria-live="polite" role="status">
+                {isConfirmed && 'Confirmation text entered. Delete button is now enabled.'}
+              </div>
               <button
                 onClick={onClose}
                 disabled={isSubmitting || isLoading}
