@@ -5,6 +5,7 @@
 **Standard:** WCAG 2.1 Level AA
 **Scope:** 7 high-traffic pages/components
 **Branch:** `feature/accessibility-fixes`
+**Status:** 22 of 28 violations fixed (commit `3fdf04f`)
 
 ---
 
