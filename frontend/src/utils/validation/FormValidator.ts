@@ -338,7 +338,7 @@ export class FormValidator {
       if (!hasAllFields) continue;
 
       const result = validator.validate(formData);
-      if (result) {
+      if (typeof result === 'string') {
         errors.push(this.formatError(result, validator.fields.join('-')));
       }
     }

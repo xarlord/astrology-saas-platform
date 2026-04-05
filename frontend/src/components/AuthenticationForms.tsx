@@ -135,7 +135,6 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 aria-required="true"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? emailErrorId : undefined}
-                data-testid="email-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -182,7 +181,6 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 aria-required="true"
                 aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
-                data-testid="password-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -467,7 +465,6 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={errors.name ? 'true' : 'false'}
                 aria-describedby={errors.name ? nameErrorId : undefined}
-                data-testid="name-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -506,7 +503,6 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? emailErrorId : undefined}
-                data-testid="register-email-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -545,7 +541,6 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? passwordErrorId : undefined}
-                data-testid="register-password-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${
@@ -602,7 +597,6 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-required="true"
                 aria-invalid={errors.confirmPassword ? 'true' : 'false'}
                 aria-describedby={errors.confirmPassword ? confirmPasswordErrorId : undefined}
-                data-testid="confirm-password-input"
                 className={`
                   w-full px-4 py-3 rounded-lg border pr-12 transition-colors
                   ${

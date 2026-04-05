@@ -239,7 +239,7 @@ export function validateForm(
   if (config.crossFieldValidators) {
     for (const crossValidator of config.crossFieldValidators) {
       const error = crossValidator.validate(formData);
-      if (error) {
+      if (typeof error === 'string') {
         // Add to the first field's errors
         const firstField = crossValidator.fields[0];
         if (!errors[firstField]) {

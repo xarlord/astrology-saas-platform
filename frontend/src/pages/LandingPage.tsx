@@ -14,6 +14,16 @@ import {
   Menu,
   X,
   Star,
+  ArrowLeft,
+  ArrowRight,
+  Brain,
+  Calendar,
+  Check,
+  Clock,
+  Pentagon,
+  PlayCircle,
+  Quote,
+  Sun,
 } from "lucide-react";
 
 export default function LandingPage() {
