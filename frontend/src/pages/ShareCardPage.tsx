@@ -65,6 +65,10 @@ export default function ShareCardPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      {/* WCAG 2.1 AA - Skip Navigation Link */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       {/* OG Meta Tags for social previews */}
       {ogMeta && (
         <Helmet>
@@ -131,7 +135,7 @@ export default function ShareCardPage() {
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main id="main-content" className="max-w-4xl mx-auto px-4 py-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-4" />

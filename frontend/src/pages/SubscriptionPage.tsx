@@ -10,7 +10,6 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components';
 import { useAuth } from '../hooks';
 import { billingService, type PlanDetail } from '../services/billing.service';
-import { CheckIcon, StarIcon, SparklesIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 // Static plan definitions – used as fallback when backend plans endpoint is unavailable
 const FALLBACK_PLANS: PlanDetail[] = [
@@ -173,7 +172,7 @@ export default function SubscriptionPage() {
           onClick={() => navigate(-1)}
           className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
         >
-          <ArrowLeftIcon className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
           Back
         </button>
 
@@ -214,8 +213,8 @@ export default function SubscriptionPage() {
         {/* Current plan info */}
         {isAuthenticated && currentTier !== 'free' && (
           <div className="mb-8 text-center">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
-              <StarIcon className="w-4 h-4" />
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-accent-gold text-sm font-medium">
+              <span className="material-symbols-outlined text-[16px]">star</span>
               Current plan: {plans.find((p) => p.id === currentTier)?.name ?? currentTier}
             </span>
             <button
@@ -223,7 +222,7 @@ export default function SubscriptionPage() {
                 void handleManage();
               }}
               disabled={loadingPlan === 'portal'}
-              className="ml-3 text-sm text-indigo-600 dark:text-indigo-400 hover:underline disabled:opacity-50"
+              className="ml-3 text-sm text-primary hover:text-accent-gold hover:underline disabled:opacity-50"
             >
               {loadingPlan === 'portal' ? 'Opening portal...' : 'Manage subscription'}
             </button>
@@ -241,13 +240,13 @@ export default function SubscriptionPage() {
                 key={plan.id}
                 className={`relative rounded-2xl border p-6 flex flex-col transition-shadow hover:shadow-lg ${
                   plan.highlighted
-                    ? 'border-indigo-500 dark:border-indigo-400 ring-2 ring-indigo-500/20'
-                    : 'border-gray-200 dark:border-gray-700'
-                } ${isCurrent ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : 'bg-white dark:bg-gray-800'}`}
+                    ? 'border-primary/50 ring-2 ring-primary/20 bg-[#141627]/70 backdrop-blur-md'
+                    : 'border-white/10 bg-[#141627]/50 backdrop-blur-sm'
+                } ${isCurrent ? 'bg-primary/10' : ''}`}
               >
                 {plan.highlighted && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-full flex items-center gap-1">
-                    <SparklesIcon className="w-3 h-3" />
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px]">auto_awesome</span>
                     Most Popular
                   </div>
                 )}
@@ -281,10 +280,10 @@ export default function SubscriptionPage() {
                       key={i}
                       className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
                     >
-                      <CheckIcon
-                        className="w-4 h-4 mt-0.5 text-green-500 flex-shrink-0"
+                      <span
+                        className="material-symbols-outlined text-[16px] mt-0.5 text-green-500 flex-shrink-0"
                         aria-hidden="true"
-                      />
+                      >check</span>
                       {feature}
                     </li>
                   ))}
@@ -297,7 +296,7 @@ export default function SubscriptionPage() {
                     isCurrent
                       ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-default'
                       : plan.highlighted
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        ? 'bg-primary text-white hover:bg-primary/90'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
