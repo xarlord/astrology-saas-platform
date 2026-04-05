@@ -485,10 +485,12 @@ export const ProfileSettingsPage: React.FC = () => {
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Theme</h3>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3" role="radiogroup" aria-label="Theme">
                         {(['light', 'dark', 'system'] as const).map((theme) => (
                           <button
                             key={theme}
+                            role="radio"
+                            aria-checked={appearance.theme === theme}
                             onClick={() => setAppearance((prev) => ({ ...prev, theme }))}
                             className={clsx(
                               'flex-1 p-4 rounded-xl border transition-all',
@@ -516,10 +518,12 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Interface Density</h3>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3" role="radiogroup" aria-label="Interface density">
                         {(['compact', 'comfortable', 'spacious'] as const).map((density) => (
                           <button
                             key={density}
+                            role="radio"
+                            aria-checked={appearance.density === density}
                             onClick={() => setAppearance((prev) => ({ ...prev, density }))}
                             className={clsx(
                               'flex-1 px-4 py-3 rounded-xl border text-sm font-medium transition-all',
@@ -549,10 +553,12 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Sidebar Position</h3>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3" role="radiogroup" aria-label="Sidebar position">
                         {(['left', 'right'] as const).map((position) => (
                           <button
                             key={position}
+                            role="radio"
+                            aria-checked={appearance.sidebarPosition === position}
                             onClick={() =>
                               setAppearance((prev) => ({ ...prev, sidebarPosition: position }))
                             }

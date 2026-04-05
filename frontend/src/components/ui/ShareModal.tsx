@@ -271,9 +271,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               {/* Link Settings */}
               <div>
                 <h3 className="text-sm font-medium text-gray-300 mb-3">Link Settings</h3>
-                <div className="space-y-2">
+                <div className="space-y-2" role="radiogroup" aria-label="Link visibility">
                   {/* Public */}
                   <button
+                    role="radio"
+                    aria-checked={visibility === 'public'}
                     onClick={() => handleVisibilityChange('public')}
                     className={clsx(
                       'flex items-center w-full p-3 rounded-lg border transition-all',
@@ -317,6 +319,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
                   {/* Private */}
                   <button
+                    role="radio"
+                    aria-checked={visibility === 'private'}
                     onClick={() => handleVisibilityChange('private')}
                     className={clsx(
                       'flex items-center w-full p-3 rounded-lg border transition-all',
@@ -360,6 +364,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
                   {/* Password Protected */}
                   <button
+                    role="radio"
+                    aria-checked={visibility === 'password'}
                     onClick={() => handleVisibilityChange('password')}
                     className={clsx(
                       'flex items-center w-full p-3 rounded-lg border transition-all',
@@ -548,10 +554,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.15 }}
                       className="absolute bottom-full left-0 right-0 mb-1 p-1 rounded-lg bg-gray-800 border border-white/10 shadow-xl"
+                      role="listbox"
+                      aria-label="Link expiry"
                     >
                       {expiryOptions.map((option) => (
                         <button
                           key={option.value}
+                          role="option"
+                          aria-selected={expiry === option.value}
                           onClick={() => handleExpiryChange(option.value)}
                           className={clsx(
                             'w-full px-3 py-2 text-left text-sm rounded transition-colors',

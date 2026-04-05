@@ -479,11 +479,11 @@ const DashboardPage: React.FC = () => {
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4" aria-live="polite" aria-busy={transitsLoading}>
                 {transitsLoading ? (
-                  <div className="text-center py-8 text-slate-400">Loading transits...</div>
+                  <div className="text-center py-8 text-slate-400" role="status">Loading transits...</div>
                 ) : upcomingTransits.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400">No upcoming transits</div>
+                  <div className="text-center py-8 text-slate-400" role="status">No upcoming transits</div>
                 ) : (
                   upcomingTransits.map((transit, index) => (
                     <TransitTimelineCard

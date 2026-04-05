@@ -187,6 +187,21 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
               <div
                 className="absolute right-0 mt-2 w-48 bg-[#1a1d2e] border border-[#2f2645] rounded-lg shadow-xl z-50"
                 role="menu"
+                aria-label="User menu"
+                onKeyDown={(e) => {
+                  const items = (e.currentTarget as HTMLElement).querySelectorAll('[role="menuitem"]');
+                  const arr = Array.from(items) as HTMLElement[];
+                  const idx = arr.indexOf(document.activeElement as HTMLElement);
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    arr[(idx + 1) % arr.length]?.focus();
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    arr[(idx - 1 + arr.length) % arr.length]?.focus();
+                  } else if (e.key === 'Escape') {
+                    setDropdownOpen(false);
+                  }
+                }}
               >
                 <div className="py-2">
                   <Link

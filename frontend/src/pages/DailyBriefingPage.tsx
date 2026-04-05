@@ -332,6 +332,7 @@ const DailyBriefingPage: React.FC = () => {
                     type="button"
                     role="switch"
                     aria-checked={notifications[item.key]}
+                    aria-label={item.label}
                     onClick={() => toggleNotification(item.key)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#141627] ${
                       notifications[item.key] ? 'bg-primary' : 'bg-slate-600'
@@ -370,7 +371,14 @@ const DailyBriefingPage: React.FC = () => {
                       {bar.value}%
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-[#0B0D17]">
+                  <div
+                    className="h-2 w-full rounded-full bg-[#0B0D17]"
+                    role="progressbar"
+                    aria-valuenow={bar.value}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label={`${bar.label} energy: ${bar.value}%`}
+                  >
                     <motion.div
                       className={`h-2 rounded-full ${bar.color}`}
                       initial={{ width: 0 }}
