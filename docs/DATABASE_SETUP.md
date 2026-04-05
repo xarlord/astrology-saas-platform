@@ -1,5 +1,7 @@
 # Database Setup Guide
 
+> **Warning:** Default credentials in this guide are for local development only. Never use these in production. Rotate all secrets before deploying.
+
 ## Quick Start
 
 ### Start PostgreSQL Docker Container

@@ -147,3 +147,45 @@ Here is the translation of the conversation, structured as a **Technical Require
 * **Viz:** Graphics Library.
 * **Auth:** API + Auth.
 * **Ops:** Hosting + Analytics.
+
+## User Stories
+
+### US-1: Natal Chart Generation
+**As a** user interested in astrology,
+**I want to** generate my natal chart from my birth data (date, time, location),
+**So that** I can understand my astrological profile and personality traits.
+
+### US-2: Daily Transit Tracking
+**As a** daily horoscope reader,
+**I want to** see today's planetary transits relative to my natal chart,
+**So that** I can plan my day with astrological insight.
+
+### US-3: AI-Powered Interpretations
+**As a** user seeking deeper self-knowledge,
+**I want to** receive AI-generated interpretations of my chart placements and aspects,
+**So that** I can gain personalized, nuanced insights beyond generic horoscope text.
+
+### US-4: Synastry Compatibility
+**As a** user curious about relationships,
+**I want to** compare two natal charts for compatibility,
+**So that** I can understand the astrological dynamics between myself and another person.
+
+### US-5: Subscription and Billing
+**As a** dedicated user,
+**I want to** subscribe to a premium plan with recurring billing,
+**So that** I can unlock advanced features like AI interpretations and detailed forecasts.
+
+### US-6: Calendar and Event Tracking
+**As a** user who plans around astrology,
+**I want to** view upcoming astrological events (retrogrades, eclipses, moon phases) on a calendar,
+**So that** I can anticipate significant cosmic influences.
+
+### US-7: Shareable Chart Cards
+**As a** user active on social media,
+**I want to** generate visually appealing chart cards for platforms like Instagram and Twitter,
+**So that** I can share my astrological profile with friends and followers.
+
+### US-8: Solar and Lunar Returns
+**As a** user tracking personal cycles,
+**I want to** generate solar return and lunar return charts for specific dates,
+**So that** I can understand yearly and monthly astrological themes for my life.

@@ -235,7 +235,7 @@ docker ps | grep postgres
 
 1. **Test all features** - Verify everything works
 2. **Fix any bugs** - Make note of issues
-3. **Decide on deployment** - Docker Compose, VPS, or keep local
+3. **Decide on deployment** - Railway, VPS, or keep local
 4. **Production setup** - When ready to go live
 
 ---

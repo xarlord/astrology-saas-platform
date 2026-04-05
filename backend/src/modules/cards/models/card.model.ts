@@ -3,6 +3,7 @@
  */
 
 import knex from '../../../config/database';
+import { AppError } from '../../../utils/appError';
 
 export interface GeneratedCard {
   id: string;
@@ -94,13 +95,13 @@ class CardModel {
 
     // Validate template
     if (!VALID_TEMPLATES.includes(template)) {
-      throw new Error(`Invalid template: ${template}. Valid: ${VALID_TEMPLATES.join(', ')}`);
+      throw new AppError(`Invalid template: ${template}. Valid: ${VALID_TEMPLATES.join(', ')}`, 400);
     }
 
     // Validate placements (3-5 planets)
     const validPlacements = placements.filter(p => VALID_PLANETS.includes(p));
     if (validPlacements.length < 3 || validPlacements.length > 5) {
-      throw new Error('Must select between 3 and 5 planet placements');
+      throw new AppError('Must select between 3 and 5 planet placements', 400);
     }
 
     const [card] = await knex(this.tableName)

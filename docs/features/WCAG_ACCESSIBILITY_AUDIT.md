@@ -5,7 +5,7 @@
 **Standard:** WCAG 2.1 Level AA
 **Scope:** 7 high-traffic pages/components
 **Branch:** `feature/accessibility-fixes`
-**Status:** 24 of 28 violations fixed (ShareModal radiogroup + listbox keyboard nav added)
+**Status:** 27 of 28 violations fixed (M12 keep-as-is, L1 false positive — `text-primary-200` valid in config)
 
 ---
 

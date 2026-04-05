@@ -144,9 +144,70 @@ server {
 
 ---
 
+### Option 2: Docker Deployment
+
+#### Docker Compose Setup
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: astrology_db
+      POSTGRES_USER: astrology_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://astrology_user:${POSTGRES_PASSWORD}@postgres:5432/astrology_db
+      NODE_ENV: production
+      PORT: 3001
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: 1h
+      JWT_REFRESH_EXPIRES_IN: 7d
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+#### Deploy with Docker
+```bash
+# Build and start
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
 ---
 
-### Option 3: Cloud Platform (AWS, Render, Fly.io)
+### Option 3: Cloud Platform (AWS, Render, Railway)
 
 #### AWS ECS Deployment
 1. **Push images to ECR**
@@ -161,11 +222,10 @@ server {
 3. **Configure environment variables**
 4. **Deploy automatically on push**
 
-#### Fly.io Deployment
-1. **Install Fly CLI: `curl -L https://fly.io/install.sh | sh`**
-2. **Launch: `fly launch`**
-3. **Add PostgreSQL: `fly postgres create`**
-4. **Deploy: `fly deploy`**
+#### Railway Deployment
+1. **Connect GitHub repo**
+2. **Detects Node.js and PostgreSQL automatically**
+3. **Review and deploy**
 
 ---
 

@@ -78,8 +78,8 @@ export const errorHandler = (
     };
   }
 
-  // Include details for operational errors in production (safe data only)
-  if (isOperational && err.details && typeof err.details === 'object') {
+  // Include details for operational errors only in development
+  if (process.env.NODE_ENV === 'development' && isOperational && err.details && typeof err.details === 'object') {
     errorResponse.error.details = {
       ...err.details as object
     };

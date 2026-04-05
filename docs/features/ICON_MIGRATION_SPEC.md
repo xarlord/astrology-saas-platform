@@ -329,44 +329,48 @@ Lucide's `Loader2` is commonly used as a spinner with `className="animate-spin"`
 ## Implementation Checklist
 
 ### Phase 1: Remove heroicons (5 files)
-- [ ] `pages/SubscriptionPage.tsx`
-- [ ] `components/UserProfile.tsx`
-- [ ] `components/BirthDataForm.tsx`
-- [ ] `components/AuthenticationForms.tsx`
-- [ ] `components/TransitDashboard.tsx`
+- [x] `pages/SubscriptionPage.tsx`
+- [x] `components/UserProfile.tsx`
+- [x] `components/BirthDataForm.tsx`
+- [x] `components/AuthenticationForms.tsx`
+- [x] `components/TransitDashboard.tsx`
 - [ ] Remove `@heroicons/react` from `package.json`
 
-### Phase 2: Migrate lucide (31 files)
-- [ ] `components/AIInterpretationToggle.tsx`
-- [ ] `components/AIInterpretationDisplay.tsx`
-- [ ] `pages/SolarReturnsPage.tsx`
-- [ ] `components/BirthdaySharing.tsx`
-- [ ] `components/CalendarExport.tsx`
-- [ ] `components/CalendarView.tsx`
-- [ ] `components/UsageMeter.tsx`
-- [ ] `components/ErrorFallback.tsx`
-- [ ] `components/SolarReturnChart.tsx`
-- [ ] `components/ReminderSettings.tsx`
-- [ ] `components/DailyWeatherModal.tsx`
-- [ ] `components/RelocationCalculator.tsx`
-- [ ] `components/PushNotificationPermission.tsx`
-- [ ] `components/TransitCalendar.tsx`
-- [ ] `components/SolarReturnDashboard.tsx`
-- [ ] `components/SolarReturnInterpretation.tsx`
-- [ ] `components/ShareManagement.tsx`
-- [ ] `components/report/PDFReportGenerator.tsx`
-- [ ] `components/ui/ConfirmModal.tsx`
-- [ ] `components/ui/ShareModal.tsx`
-- [ ] `components/ui/VideoModal.tsx`
-- [ ] `pages/DailyBriefingPage.tsx`
-- [ ] `pages/LoginPageNew.tsx`
-- [ ] `pages/LandingPage.tsx`
-- [ ] `components/AppLayout.tsx`
-- [ ] `components/chart/PinterestCard.tsx`
-- [ ] `components/chart/LinkedInCard.tsx`
-- [ ] `components/chart/InstagramStoryCard.tsx`
-- [ ] `components/chart/TikTokCard.tsx`
-- [ ] `components/report/MonthlyTransitReportView.tsx`
+### Phase 2: Migrate lucide (34 files)
+- [ ] `components/AIInterpretationToggle.tsx` — agent 4
+- [ ] `components/AIInterpretationDisplay.tsx` — agent 4
+- [ ] `pages/SolarReturnsPage.tsx` — agent 2
+- [ ] `components/BirthdaySharing.tsx` — agent 4
+- [ ] `components/CalendarExport.tsx` — agent 3
+- [ ] `components/CalendarView.tsx` — agent 3
+- [ ] `components/UsageMeter.tsx` — agent 4
+- [ ] `components/ErrorFallback.tsx` — agent 4
+- [ ] `components/SolarReturnChart.tsx` — agent 3
+- [ ] `components/ReminderSettings.tsx` — agent 4
+- [ ] `components/DailyWeatherModal.tsx` — agent 4
+- [ ] `components/RelocationCalculator.tsx` — agent 4
+- [ ] `components/PushNotificationPermission.tsx` — agent 4
+- [ ] `components/TransitCalendar.tsx` — agent 3
+- [ ] `components/SolarReturnDashboard.tsx` — agent 3
+- [ ] `components/SolarReturnInterpretation.tsx` — agent 3
+- [ ] `components/ShareManagement.tsx` — agent 4
+- [ ] `components/report/PDFReportGenerator.tsx` — agent 4
+- [ ] `components/ui/ConfirmModal.tsx` — agent 4
+- [ ] `components/ui/ShareModal.tsx` — agent 4
+- [ ] `components/ui/VideoModal.tsx` — agent 4
+- [x] `pages/DailyBriefingPage.tsx` — commit 13743d7
+- [ ] `pages/LoginPageNew.tsx` — agent 2
+- [ ] `pages/LandingPage.tsx` — agent 2
+- [x] `components/AppLayout.tsx` — commit 0cf6759
+- [ ] `components/chart/PinterestCard.tsx` — agent 1
+- [ ] `components/chart/LinkedInCard.tsx` — agent 1
+- [ ] `components/chart/InstagramStoryCard.tsx` — agent 1
+- [ ] `components/chart/TikTokCard.tsx` — agent 1
+- [ ] `components/report/MonthlyTransitReportView.tsx` — agent 3
+- [ ] `components/chart/ShareCardModal.tsx` — agent 1
+- [ ] `pages/ShareCardPage.tsx` — agent 2
+- [ ] `pages/ChartViewPage.tsx` — agent 2
+- [ ] `components/chart/ShareableChartCard.tsx` — agent 4
 - [ ] Remove `lucide-react` from `package.json`
 
 ### Phase 3: Cleanup
