@@ -10,17 +10,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Sparkles,
-  Star,
-  Sun,
-  TrendingUp,
-  Bell,
-  Activity,
-  LayoutDashboard,
-} from 'lucide-react';
 
 // Hooks
 import { useAuth } from '../hooks/useAuth';
@@ -241,12 +230,12 @@ const DailyBriefingPage: React.FC = () => {
             className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm"
             data-testid="briefing-back-button"
           >
-            <ArrowLeft className="w-[18px] h-[18px]" />
+            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
             Back
           </button>
 
           <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
-            <Sparkles className="w-[18px] h-[18px] text-primary" />
+            <span className="material-symbols-outlined text-[18px] text-primary">auto_awesome</span>
             Briefing
           </span>
         </motion.nav>
@@ -264,7 +253,7 @@ const DailyBriefingPage: React.FC = () => {
             {greeting()}, {user?.name ?? 'Stargazer'}
           </h1>
           <p className="text-primary font-medium mt-1 flex items-center gap-1.5">
-            <Sun className="w-4 h-4" />
+            <span className="material-symbols-outlined text-[16px]">light_mode</span>
             {CURRENT_SEASON}
           </p>
         </motion.header>
@@ -297,7 +286,7 @@ const DailyBriefingPage: React.FC = () => {
           data-testid="briefing-daily-theme"
         >
           <div className="flex items-center gap-2 mb-3">
-            <Star className="w-[18px] h-[18px] text-primary" />
+            <span className="material-symbols-outlined text-[18px] text-primary">star</span>
             <h2 className="text-slate-300 text-sm font-semibold uppercase tracking-wide">
               Today&apos;s Theme
             </h2>
@@ -346,7 +335,7 @@ const DailyBriefingPage: React.FC = () => {
         {/* ---- Top Transits Section ---- */}
         <motion.div initial="hidden" animate="visible" custom={4} variants={cardVariants} data-testid="briefing-transits-heading">
           <h2 className="text-white font-bold text-base mb-3 flex items-center gap-2">
-            <TrendingUp className="w-[18px] h-[18px] text-primary" />
+            <span className="material-symbols-outlined text-[18px] text-primary">trending_up</span>
             Top Transits Today
           </h2>
         </motion.div>
@@ -378,7 +367,7 @@ const DailyBriefingPage: React.FC = () => {
             data-testid="briefing-notification-prefs"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Bell className="w-[18px] h-[18px] text-primary" />
+              <span className="material-symbols-outlined text-[18px] text-primary">notifications</span>
               <h2 className="text-white font-bold text-sm">Notification Preferences</h2>
             </div>
             <div className="space-y-3">
@@ -424,7 +413,7 @@ const DailyBriefingPage: React.FC = () => {
             data-testid="briefing-energy-overview"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Activity className="w-[18px] h-[18px] text-primary" />
+              <span className="material-symbols-outlined text-[18px] text-primary">monitor_heart</span>
               <h2 className="text-white font-bold text-sm">Energy Overview</h2>
             </div>
             <div className="space-y-3">
@@ -469,16 +458,16 @@ const DailyBriefingPage: React.FC = () => {
             className="flex-1 flex items-center justify-center gap-2 bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3.5 text-slate-300 hover:text-white hover:border-primary/40 transition-all group"
             data-testid="briefing-view-transits"
           >
-            <TrendingUp className="w-[18px] h-[18px] text-primary" />
+            <span className="material-symbols-outlined text-[18px] text-primary">trending_up</span>
             <span className="font-semibold text-sm">View Full Transit Details</span>
-            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
           </button>
           <button
             onClick={() => navigate('/dashboard')}
             className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 rounded-2xl px-5 py-3.5 text-white font-semibold text-sm transition-colors"
             data-testid="briefing-go-dashboard"
           >
-            <LayoutDashboard className="w-[18px] h-[18px]" />
+            <span className="material-symbols-outlined text-[18px]">dashboard</span>
             Go to Dashboard
           </button>
         </motion.section>
@@ -491,7 +480,7 @@ const DailyBriefingPage: React.FC = () => {
           transition={{ duration: 0.5, delay: 1.0 }}
         >
           <p className="text-slate-500 text-sm flex items-center justify-center gap-1">
-            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
             AstroVerse
           </p>
         </motion.footer>
