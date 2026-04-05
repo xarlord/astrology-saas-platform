@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { Gift, Mail, Link, Copy, Check, Share2, Calendar, Lock } from 'lucide-react';
 import api from '../services/api';
 import { TIMEOUTS } from '../utils/constants';
 import './BirthdaySharing.css';
@@ -116,7 +115,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     return (
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
         <div className="flex items-center gap-3 mb-3">
-          <Gift size={24} className="text-purple-600" />
+          <span className="material-symbols-outlined text-[24px] text-purple-600">card_giftcard</span>
           <div>
             <h3 className="font-semibold text-gray-800 text-lg">Solar Return Reading for {year}</h3>
             <p className="text-sm text-gray-500">
@@ -160,7 +159,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
         <div className="mt-3 pt-3 border-t border-gray-200">
           <p className="flex items-center gap-2 text-xs text-gray-400">
-            <Lock size={14} />
+            <span className="material-symbols-outlined text-[14px]">lock</span>
             This is a gift from a friend who cares about your journey.
           </p>
         </div>
@@ -171,7 +170,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
   return (
     <div role="region" aria-label="Birthday Sharing" className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
-        <Gift size={32} className="text-purple-600" />
+        <span className="material-symbols-outlined text-[32px] text-purple-600">card_giftcard</span>
         <div>
           <h2 className="text-xl font-bold text-gray-800">Share as Gift</h2>
           <p className="text-sm text-gray-500">Send this solar return reading to someone special</p>
@@ -190,7 +189,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
           aria-live="polite"
           className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4"
         >
-          <Check size={20} className="text-green-600 flex-shrink-0" />
+          <span className="material-symbols-outlined text-[20px] text-green-600 flex-shrink-0">check</span>
           <div>
             <strong className="text-green-800">Success!</strong>
             <p className="text-sm text-green-700">
@@ -237,7 +236,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               }`}
               onClick={() => setShareMethod('link')}
             >
-              <Link size={18} />
+              <span className="material-symbols-outlined text-[18px]">link</span>
               Share Link
             </button>
             <button
@@ -248,7 +247,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               }`}
               onClick={() => setShareMethod('email')}
             >
-              <Mail size={18} />
+              <span className="material-symbols-outlined text-[18px]">mail</span>
               Send Email
             </button>
           </div>
@@ -327,7 +326,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 disabled={loading}
                 className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Share2 size={18} />
+                <span className="material-symbols-outlined text-[18px]">share</span>
                 <span aria-live="polite">{loading ? 'Generating...' : 'Generate Link'}</span>
               </button>
 
@@ -350,17 +349,17 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                       className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                     />
                     <button onClick={() => void handleCopyLink()} className="copy-btn">
-                      {copied ? <Check size={18} /> : <Copy size={18} />}
+                      {copied ? <span className="material-symbols-outlined text-[18px]">check</span> : <span className="material-symbols-outlined text-[18px]">content_copy</span>}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
 
                   <div className="space-y-1 text-xs text-gray-500">
                     <p className="flex items-center gap-1">
-                      <Calendar size={14} /> Expires: {linkSettings.expiresIn} days
+                      <span className="material-symbols-outlined text-[14px]">calendar_month</span> Expires: {linkSettings.expiresIn} days
                     </p>
                     <p className="flex items-center gap-1">
-                      <Lock size={14} /> Max accesses:{' '}
+                      <span className="material-symbols-outlined text-[14px]">lock</span> Max accesses:{' '}
                       {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}
                     </p>
                   </div>
@@ -430,7 +429,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 disabled={loading || !emailSettings.to}
                 className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Mail size={18} />
+                <span className="material-symbols-outlined text-[18px]">mail</span>
                 <span aria-live="polite">{loading ? 'Sending...' : 'Send Email'}</span>
               </button>
             </div>

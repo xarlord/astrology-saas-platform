@@ -4,7 +4,6 @@
  */
 
 import { useState } from 'react';
-import { Download, Calendar, FileDown, CheckCircle, AlertCircle } from 'lucide-react';
 import { exportCalendar } from '../services/calendar.service';
 import { CalendarExportParams } from '../types/calendar.types';
 import { TIMEOUTS } from '../utils/constants';
@@ -115,7 +114,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
     <div className="max-w-[600px] mx-auto p-6 sm:p-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-amber-100 text-amber-500 rounded-xl shrink-0">
-          <FileDown size={24} />
+          <span className="material-symbols-outlined text-[24px]">file_download</span>
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Export Calendar</h2>
@@ -200,7 +199,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
             <span className="text-sm text-gray-700">Include my personal transits</span>
           </label>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-green-50 border-l-[3px] border-emerald-500 rounded bg-[#f0fdf4] text-[13px] text-green-800 leading-snug">
-            <AlertCircle size={14} className="shrink-0 mt-0.5" />
+            <span className="material-symbols-outlined text-[14px] shrink-0 mt-0.5">error</span>
             <span>
               Uncheck to export only global astrological events (retrogrades, eclipses, moon phases)
             </span>
@@ -210,7 +209,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         {/* Success Message */}
         {success && (
           <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-300 rounded-lg text-green-800 text-sm">
-            <CheckCircle size={20} />
+            <span className="material-symbols-outlined text-[20px]">check_circle</span>
             <span>Calendar exported successfully!</span>
           </div>
         )}
@@ -218,7 +217,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         {/* Error Message */}
         {error && (
           <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">
-            <AlertCircle size={20} />
+            <span className="material-symbols-outlined text-[20px]">error</span>
             <span>{error}</span>
           </div>
         )}
@@ -233,7 +232,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
               </>
             ) : (
               <>
-                <Download size={18} />
+                <span className="material-symbols-outlined text-[18px]">download</span>
                 Export as iCal
               </>
             )}
@@ -243,7 +242,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         {/* Info */}
         <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
           <div className="flex items-center gap-2 text-[13px] text-blue-800">
-            <Calendar size={16} />
+            <span className="material-symbols-outlined text-[16px]">calendar_month</span>
             <span>Compatible with Google Calendar, Outlook, Apple Calendar, and more</span>
           </div>
         </div>

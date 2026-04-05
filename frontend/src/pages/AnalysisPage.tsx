@@ -130,7 +130,7 @@ export default function AnalysisPage() {
     );
   }
 
-  if (error || !analysisData) {
+  if (error ?? !analysisData) {
     return (
       <AppLayout>
         <h2 className="text-3xl font-bold mb-6">Personality Analysis</h2>

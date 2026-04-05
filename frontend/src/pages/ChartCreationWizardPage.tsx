@@ -13,7 +13,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
-import type { BirthData as APIBirthData } from '../services/api.types';
+
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Checkbox } from '../components/ui/Checkbox';
@@ -126,19 +126,21 @@ export const ChartCreationWizardPage: React.FC = () => {
     try {
       await createChart({
         name: personalDetails.name,
-        birthDate: birthData.date?.toISOString().split('T')[0] ?? '',
-        birthTime: birthData.unknownTime ? '' : birthData.time,
-        birthPlace: birthData.location,
-        latitude: birthData.latitude,
-        longitude: birthData.longitude,
-        timezone: 'UTC',
-        // Note: chartType, houseSystem, zodiacType, tags, notes would need to be handled separately
-        // or the BirthData type extended to include them
-      } as unknown as APIBirthData);
+        birth_date: birthData.date?.toISOString().split('T')[0] ?? '',
+        birth_time: birthData.unknownTime ? '' : birthData.time,
+        birth_time_unknown: birthData.unknownTime,
+        birth_place_name: birthData.location,
+        birth_latitude: birthData.latitude,
+        birth_longitude: birthData.longitude,
+        birth_timezone: 'UTC',
+        type: chartSettings.chartType,
+        house_system: chartSettings.houseSystem === 'whole-sign' ? 'whole' : chartSettings.houseSystem,
+        zodiac: chartSettings.zodiacType,
+      } as Parameters<typeof createChart>[0]);
 
       navigate('/charts');
-    } catch (error) {
-      console.error('Failed to create chart:', error);
+    } catch {
+      // Error handled by store
     }
   }, [
     isStepValid,
@@ -149,6 +151,9 @@ export const ChartCreationWizardPage: React.FC = () => {
     birthData.location,
     birthData.latitude,
     birthData.longitude,
+    chartSettings.chartType,
+    chartSettings.houseSystem,
+    chartSettings.zodiacType,
     createChart,
     navigate,
   ]);

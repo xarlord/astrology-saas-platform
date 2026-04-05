@@ -16,29 +16,25 @@ import type {
   TransitDashboardData,
 } from '../components/TransitDashboard';
 import { useTodayTransits, useTransitForecast, useTransitCalendar } from '../hooks';
-import type { TransitReading } from '../services/transit.service';
+import type { Transit as ApiTransit } from '../services/api.types';
 import { getErrorMessage } from '../utils/errorHandling';
 
 /**
- * Map a raw TransitReading transit to a Transit object expected by
- * TransitDashboard.
+ * Map an API Transit to the component Transit shape expected by TransitDashboard.
  */
-function mapReadingToTransit(
-  r: TransitReading['transits'][number],
-  reading: TransitReading,
-): TransitType {
+function mapApiTransit(t: ApiTransit): TransitType {
   return {
-    transitingPlanet: r.transitPlanet,
-    natalPlanet: r.natalPlanet,
-    type: r.aspect,
-    orb: r.orb,
-    applying: r.orb > 0,
-    startDate: reading.date,
-    endDate: reading.date,
-    peakDate: reading.date,
-    intensity: Math.max(1, Math.min(10, Math.round(10 - Math.abs(r.orb)))),
+    transitingPlanet: t.planet,
+    natalPlanet: '',
+    type: t.type,
+    orb: 0,
+    applying: false,
+    startDate: t.start_date,
+    endDate: t.end_date,
+    peakDate: t.peak_date,
+    intensity: t.intensity,
     interpretation: {
-      general: `${r.transitPlanet} ${r.aspect} ${r.natalPlanet}`,
+      general: t.influence?.overall ?? `${t.planet} transit`,
       themes: [],
       advice: { positive: [], challenges: [], suggestions: [] },
     },
@@ -46,48 +42,54 @@ function mapReadingToTransit(
 }
 
 /**
- * Derive highlights from today's reading -- the most intense transits
+ * Derive highlights from API Transit[] -- the most intense transits
  * are treated as highlights.
  */
-function deriveHighlights(reading: TransitReading | undefined): TransitHighlight[] {
-  if (!reading) return [];
+function deriveHighlights(transits: ApiTransit[] | undefined): TransitHighlight[] {
+  if (!transits) return [];
 
-  return reading.transits
-    .filter((t) => Math.abs(t.orb) <= 2)
+  return transits
+    .filter((t) => t.intensity >= 7)
     .map((t) => ({
       type: 'major-transit' as const,
-      title: `${t.transitPlanet} ${t.aspect} ${t.natalPlanet}`,
-      date: reading.date,
-      description: `${t.transitPlanet} forms a ${t.aspect} with your natal ${t.natalPlanet}`,
-      intensity: Math.max(1, Math.min(10, Math.round(10 - Math.abs(t.orb)))),
+      title: t.title ?? `${t.planet} transit`,
+      date: t.peak_date,
+      description: t.description ?? t.influence?.overall ?? `${t.planet} transit`,
+      intensity: t.intensity,
     }));
 }
 
 /**
- * Build TransitCalendarDay[] from a TransitReading[] for a given month/year.
+ * Build TransitCalendarDay[] from API Transit[] for a given month/year.
  */
 function buildCalendarDays(
-  readings: TransitReading[],
+  transits: ApiTransit[],
   year: number,
   month: number,
 ): TransitCalendarDay[] {
   const daysInMonth = new Date(year, month, 0).getDate();
-  const readingByDate = new Map<string, TransitReading>();
-  for (const r of readings) {
-    const key = r.date.split('T')[0];
-    if (key) readingByDate.set(key, r);
+
+  // Group transits by peak_date (date only)
+  const transitsByDate = new Map<string, ApiTransit[]>();
+  for (const t of transits) {
+    const key = t.peak_date.split('T')[0];
+    if (key) {
+      const arr = transitsByDate.get(key) ?? [];
+      arr.push(t);
+      transitsByDate.set(key, arr);
+    }
   }
 
   const days: TransitCalendarDay[] = [];
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const reading = readingByDate.get(dateStr);
+    const dayTransits = transitsByDate.get(dateStr);
     days.push({
       date: dateStr,
-      hasMajorTransit: reading ? reading.transits.some((t) => Math.abs(t.orb) <= 2) : false,
+      hasMajorTransit: dayTransits ? dayTransits.some((t) => t.intensity >= 7) : false,
       hasMoonPhase: false,
       hasEclipse: false,
-      transits: reading ? reading.transits.map((t) => mapReadingToTransit(t, reading)) : undefined,
+      transits: dayTransits ? dayTransits.map(mapApiTransit) : undefined,
     });
   }
   return days;
@@ -119,25 +121,21 @@ export default function TransitPage() {
     ? getErrorMessage(queryError, 'Failed to load transit data')
     : null;
 
-  // Build TransitDashboardData from raw readings
+  // Build TransitDashboardData from raw API responses
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: TransitType[] = todayReading
-      ? todayReading.transits.map((t) => mapReadingToTransit(t, todayReading))
+      ? todayReading.transits.map(mapApiTransit)
       : [];
 
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
     const weekTransits: TransitType[] = weekReadings
-      ? weekReadings.flatMap((r: TransitReading) =>
-          r.transits.map((t) => mapReadingToTransit(t, r)),
-        )
+      ? weekReadings.transits.map(mapApiTransit)
       : [];
-    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 
     const monthDays: TransitCalendarDay[] = calendarReadings
-      ? buildCalendarDays(calendarReadings, currentYear, currentMonth)
+      ? buildCalendarDays(calendarReadings.transits, currentYear, currentMonth)
       : [];
 
-    const highlights: TransitHighlight[] = deriveHighlights(todayReading);
+    const highlights: TransitHighlight[] = deriveHighlights(todayReading?.transits);
 
     return {
       today: todayTransits,
@@ -149,7 +147,7 @@ export default function TransitPage() {
 
   return (
     <AppLayout>
-      <div className="mb-8">
+      <div className="mb-8" data-testid="transit-page-header">
         <h2 className="text-3xl font-bold mb-2">Transit Forecast</h2>
         <p className="text-gray-600 dark:text-gray-400">
           Current and upcoming planetary influences
@@ -163,6 +161,7 @@ export default function TransitPage() {
           description={errorMessage}
           actionText="Retry"
           onAction={() => window.location.reload()}
+          data-testid="transit-error-state"
         />
       ) : !dashboardData ? (
         <EmptyState
@@ -173,17 +172,20 @@ export default function TransitPage() {
           onAction={() => navigate('/charts/new')}
           secondaryActionText="Go to Dashboard"
           onSecondaryAction={() => navigate('/dashboard')}
+          data-testid="transit-empty-state"
         />
       ) : (
         <>
           <TransitDashboard
             data={dashboardData}
             onTransitClick={(transit) => setSelectedTransit(transit)}
+            data-testid="transit-dashboard"
           />
           {selectedTransit && (
             <TransitDetailModal
               transit={selectedTransit}
               onClose={() => setSelectedTransit(null)}
+              data-testid="transit-detail-modal"
             />
           )}
         </>

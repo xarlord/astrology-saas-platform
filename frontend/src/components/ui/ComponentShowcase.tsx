@@ -205,7 +205,7 @@ const ComponentShowcase: React.FC = () => {
           </h2>
           <div className="space-y-6">
             <div className="flex flex-wrap gap-6 items-center">
-              <LoadingSpinner size="xs" />
+              <LoadingSpinner size="sm" />
               <LoadingSpinner size="sm" />
               <LoadingSpinner size="md" />
               <LoadingSpinner size="lg" />
@@ -214,7 +214,7 @@ const ComponentShowcase: React.FC = () => {
             <div className="flex flex-wrap gap-6 items-center">
               <LoadingSpinner color="primary" />
               <LoadingSpinner color="white" className="bg-gray-800 p-2 rounded" />
-              <LoadingSpinner color="gray" />
+              <LoadingSpinner color="secondary" />
             </div>
             <div className="space-y-3">
               <h3 className="text-lg font-medium">Skeleton Loaders</h3>
@@ -269,7 +269,7 @@ const ComponentShowcase: React.FC = () => {
               showProgress
               action={{
                 label: 'Undo',
-                onClick: () => console.log('Undo clicked'),
+                onClick: () => { /* undo action */ },
               }}
             />
           </div>

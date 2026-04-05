@@ -7,6 +7,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { getAccessToken } from '../utils/tokenStorage';
 
 export type ReportType = 'personality' | 'transit' | 'synastry' | 'solar-return' | 'lunar-return';
 export type ReportFormat = 'pdf' | 'json';
@@ -134,7 +135,7 @@ export const useReportStore = create<ReportState>()(
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              Authorization: `Bearer ${getAccessToken()}`,
             },
             body: JSON.stringify(request),
           });

@@ -156,3 +156,6 @@ export type { ShareModalProps, ShareVisibility } from './ShareModal';
 // Confirm Modal
 export { ConfirmModal } from './ConfirmModal';
 export type { ConfirmModalProps } from './ConfirmModal';
+
+// Install Button (PWA)
+export { default as InstallButton } from './InstallButton';

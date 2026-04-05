@@ -4,7 +4,36 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Sun, Moon, Circle, Info } from 'lucide-react';
+
+// Material Symbols wrapper for planet icons
+function materialIcon(iconName: string) {
+  return ({ className, style }: { className?: string; style?: React.CSSProperties }) => {
+    // Extract size from className like "w-3 h-3" -> text-[12px], "w-5 h-5" -> text-[20px]
+    const sizeMap: Record<string, string> = {
+      'w-3 h-3': 'text-[12px]',
+      'w-4 h-4': 'text-[16px]',
+      'w-5 h-5': 'text-[20px]',
+      'w-6 h-6': 'text-[24px]',
+    };
+    let sizeClass = '';
+    let remainingClass = className ?? '';
+    for (const [sizeKey, sizeVal] of Object.entries(sizeMap)) {
+      if (remainingClass.includes(sizeKey)) {
+        sizeClass = sizeVal;
+        remainingClass = remainingClass.replace(sizeKey, '');
+        break;
+      }
+    }
+    return (
+      <span
+        className={`material-symbols-outlined ${sizeClass} ${remainingClass}`.trim()}
+        style={style}
+      >
+        {iconName}
+      </span>
+    );
+  };
+}
 
 // Custom planet icons (lucide-react doesn't have planet icons)
 const JupiterIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
@@ -52,10 +81,12 @@ const PlutoIcon = ({ className, style }: { className?: string; style?: React.CSS
   </svg>
 );
 
-// Use Circle for inner planets with different colors
-const MercuryIcon = Circle;
-const VenusIcon = Circle;
-const MarsIcon = Circle;
+// Material Symbols planet icons
+const SunIcon = materialIcon('light_mode');
+const MoonIcon = materialIcon('dark_mode');
+const MercuryIcon = materialIcon('circle');
+const VenusIcon = materialIcon('circle');
+const MarsIcon = materialIcon('circle');
 
 // Types
 export interface Transit {
@@ -80,8 +111,8 @@ export interface TransitCalendarProps {
 
 // Planet configuration
 const PLANET_CONFIG = {
-  sun: { icon: Sun, color: '#FFD700', name: 'Sun' },
-  moon: { icon: Moon, color: '#C0C0C0', name: 'Moon' },
+  sun: { icon: SunIcon, color: '#FFD700', name: 'Sun' },
+  moon: { icon: MoonIcon, color: '#C0C0C0', name: 'Moon' },
   mercury: { icon: MercuryIcon, color: '#8B4513', name: 'Mercury' },
   venus: { icon: VenusIcon, color: '#FF69B4', name: 'Venus' },
   mars: { icon: MarsIcon, color: '#FF0000', name: 'Mars' },
@@ -242,7 +273,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_left</span>
           </button>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -252,7 +283,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
           >
-            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_right</span>
           </button>
         </div>
 
@@ -491,7 +522,7 @@ export function TransitCalendar({
                         {getZodiacSymbol(transit.sign)} {transit.sign} {transit.degree}°
                       </div>
                     </div>
-                    <Info className="w-4 h-4 text-gray-400" />
+                    <span className="material-symbols-outlined text-[16px] text-gray-400">info</span>
                   </div>
                 );
               })}

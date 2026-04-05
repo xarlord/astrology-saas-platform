@@ -121,7 +121,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
   }));
 
   return (
-    <div className="w-full" aria-label={ariaLabel}>
+    <div className="w-full" aria-label={ariaLabel} data-testid="transit-chart-container">
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
           {showGrid && (
@@ -165,12 +165,8 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
-            dot={(
-              props: DotProps & {
-                dataPoint?: TransitDataPoint;
-                onClick?: (point: TransitDataPoint) => void;
-              },
-            ) => {
+            // @ts-expect-error recharts DotType doesn't support custom props but runtime works fine
+            dot={(props: DotProps) => {
               const index =
                 'payload' in props &&
                 props.payload &&
@@ -189,7 +185,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
 
       {/* Legend */}
       {showReferenceLines && (
-        <div className="flex justify-center gap-6 mt-4 text-xs">
+        <div className="flex justify-center gap-6 mt-4 text-xs" data-testid="transit-chart-legend">
           <div className="flex items-center gap-2">
             <div className="w-3 h-0.5 bg-green-500"></div>
             <span className="text-slate-400">High Energy (70+)</span>

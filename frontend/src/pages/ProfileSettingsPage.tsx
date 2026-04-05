@@ -35,6 +35,17 @@ interface NotificationSettings {
   weeklyForecast: boolean;
 }
 
+interface PremiumFeatureSettings {
+  autoDeliveryMonthlyReport: boolean;
+}
+
+interface NotificationPrefSettings {
+  enabled: boolean;
+  time: string;
+  pushEnabled: boolean;
+  emailEnabled: boolean;
+}
+
 interface AppearanceSettings {
   theme: 'light' | 'dark' | 'system';
   density: 'compact' | 'comfortable' | 'spacious';
@@ -67,6 +78,26 @@ export const ProfileSettingsPage: React.FC = () => {
     weeklyForecast: false,
   });
 
+  // Premium feature settings
+  const [premiumFeatures, setPremiumFeatures] = useState<PremiumFeatureSettings>({
+    autoDeliveryMonthlyReport: false,
+  });
+
+  // Notification preferences for daily briefing
+  const [notificationPrefs, setNotificationPrefs] = useState<NotificationPrefSettings>({
+    enabled: true,
+    time: '08:00',
+    pushEnabled: true,
+    emailEnabled: false,
+  });
+
+  const handleNotificationPrefChange = useCallback(
+    (key: keyof NotificationPrefSettings, value: boolean | string) => {
+      setNotificationPrefs((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
+
   // Appearance settings
   const [appearance, setAppearance] = useState<AppearanceSettings>({
     theme: 'dark',
@@ -82,6 +113,13 @@ export const ProfileSettingsPage: React.FC = () => {
   const handleNotificationChange = useCallback(
     (key: keyof NotificationSettings, value: boolean) => {
       setNotifications((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
+
+  const handlePremiumFeatureChange = useCallback(
+    (key: keyof PremiumFeatureSettings, value: boolean) => {
+      setPremiumFeatures((prev) => ({ ...prev, [key]: value }));
     },
     [],
   );
@@ -705,6 +743,72 @@ export const ProfileSettingsPage: React.FC = () => {
                     "Big Three" and all saved transits.
                   </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Premium Features Card */}
+            <div className="bg-card-dark/80 backdrop-blur-md rounded-2xl p-6">
+              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">workspace_premium</span>
+                Premium Features
+              </h2>
+              <div className="space-y-5">
+                <Toggle
+                  checked={premiumFeatures.autoDeliveryMonthlyReport}
+                  onChange={(checked) => handlePremiumFeatureChange('autoDeliveryMonthlyReport', checked)}
+                  label="Auto-deliver Monthly Report"
+                  helperText="Automatically generate and email your transit report each month"
+                />
+              </div>
+            </div>
+
+            {/* Daily Briefing Notifications */}
+            <div className="bg-card-dark/80 backdrop-blur-md rounded-2xl p-6">
+              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">notifications_active</span>
+                Daily Briefing Notifications
+              </h2>
+              <div className="space-y-5">
+                <Toggle
+                  checked={notificationPrefs.enabled}
+                  onChange={(checked) => handleNotificationPrefChange('enabled', checked)}
+                  label="Daily Briefing Reminder"
+                  helperText="Receive a daily reminder to check your cosmic briefing"
+                />
+
+                {notificationPrefs.enabled && (
+                  <>
+                    <div>
+                      <label className="text-sm text-slate-300 font-medium block mb-2">
+                        Preferred Time
+                      </label>
+                      <select
+                        value={notificationPrefs.time}
+                        onChange={(e) => handleNotificationPrefChange('time', e.target.value)}
+                        className="w-full bg-[#0B0D17] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="06:00">6:00 AM — Early riser</option>
+                        <option value="07:00">7:00 AM — Morning routine</option>
+                        <option value="08:00">8:00 AM — Start of day</option>
+                        <option value="09:00">9:00 AM — Mid-morning</option>
+                      </select>
+                    </div>
+
+                    <Toggle
+                      checked={notificationPrefs.pushEnabled}
+                      onChange={(checked) => handleNotificationPrefChange('pushEnabled', checked)}
+                      label="Push Notifications"
+                      helperText="Receive push notifications in your browser"
+                    />
+
+                    <Toggle
+                      checked={notificationPrefs.emailEnabled}
+                      onChange={(checked) => handleNotificationPrefChange('emailEnabled', checked)}
+                      label="Email Digest"
+                      helperText="Receive a daily email summary of your briefing"
+                    />
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { clsx } from 'clsx';
-
 // Types
 interface ChartPosition {
   name: string;
@@ -159,7 +158,7 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({ chartData, insightQuot
           <div className="mt-auto flex justify-between items-center pt-6">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" /> AstroVerse
+              <span className="material-symbols-outlined text-[16px]">auto_awesome</span> AstroVerse
             </div>
             {/* URL */}
             <p className="text-[12px] text-white/40">astroverse.app</p>

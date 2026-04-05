@@ -5,7 +5,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '../services/api';
-import { Calendar, MapPin, Gift, TrendingUp } from 'lucide-react';
 
 interface SolarReturn {
   id: string;
@@ -232,7 +231,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
         </div>
 
         <button className="calculate-new-btn" onClick={handleCalculateCurrentYear}>
-          <Calendar size={18} />
+          <span className="material-symbols-outlined text-[18px]">calendar_month</span>
           Calculate Current Year
         </button>
       </div>
@@ -253,7 +252,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
               </h3>
               {solarReturn.isRelocated && (
                 <span className="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-xs font-medium">
-                  <MapPin size={14} />
+                  <span className="material-symbols-outlined text-[14px]">location_on</span>
                   Relocated
                 </span>
               )}
@@ -261,7 +260,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
             <div className="p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <Calendar size={16} />
+                <span className="material-symbols-outlined text-[16px]">calendar_month</span>
                 {new Date(solarReturn.returnDate).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
@@ -271,7 +270,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
               {solarReturn.returnLocation && (
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <MapPin size={16} />
+                  <span className="material-symbols-outlined text-[16px]">location_on</span>
                   {solarReturn.returnLocation.name}
                 </div>
               )}
@@ -314,14 +313,14 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
                 className="flex items-center gap-1 text-sm text-indigo-500 hover:text-indigo-600 font-medium"
               >
                 View Details
-                <TrendingUp size={16} />
+                <span className="material-symbols-outlined text-[16px]">trending_up</span>
               </button>
               <button
                 type="button"
                 className="p-2 text-gray-400 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-lg transition-colors"
                 title="Share as gift"
               >
-                <Gift size={16} />
+                <span className="material-symbols-outlined text-[16px]">redeem</span>
               </button>
             </div>
           </div>
@@ -330,7 +329,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
       {solarReturns.length === 0 && !loading && (
         <div className="text-center py-16">
-          <Calendar size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+          <span className="material-symbols-outlined text-[48px] mx-auto text-gray-300 dark:text-gray-600 mb-4">calendar_month</span>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             No Solar Returns Yet
           </h3>

@@ -38,7 +38,6 @@ const ReportActions: React.FC<ReportActionsProps> = ({
       // Fallback for browsers that don't support Web Share API
       void navigator.clipboard.writeText(window.location.href);
       // Could show a toast here
-      console.log('URL copied to clipboard');
     }
   };
 

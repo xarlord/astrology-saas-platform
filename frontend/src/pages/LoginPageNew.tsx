@@ -9,16 +9,6 @@ import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Helmet } from 'react-helmet-async';
-import {
-  Sparkles,
-  AlertCircle,
-  Mail,
-  Eye,
-  EyeOff,
-  Lock,
-  RefreshCw,
-  ArrowRight,
-} from 'lucide-react';
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
@@ -36,10 +26,16 @@ export default function LoginPageNew() {
 
     try {
       await login({ email, password });
-      // Redirect to the page they were trying to access, or dashboard by default
+      // Show daily briefing if not viewed today, otherwise go to intended page
       const from =
         (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
-      navigate(from, { replace: true });
+      const lastViewed = localStorage.getItem('dailyBriefingLastViewed');
+      const today = new Date().toISOString().split('T')[0];
+      if (lastViewed !== today && from === '/dashboard') {
+        navigate('/daily-briefing', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       // Error is handled by the hook
     }
@@ -47,7 +43,7 @@ export default function LoginPageNew() {
 
   const handleSocialLogin = (provider: 'google' | 'apple') => {
     // Social login will be implemented later
-    console.log(`Social login with ${provider}`);
+    void provider;
   };
 
   return (
@@ -80,7 +76,7 @@ export default function LoginPageNew() {
               {/* Logo Area */}
               <Link to="/" className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm border border-white/10">
-                  <Sparkles className="w-6 h-6 text-amber-400" />
+                  <span className="material-symbols-outlined text-[24px] text-amber-400">auto_awesome</span>
                 </div>
                 <span className="text-2xl font-bold tracking-tight text-white">AstroVerse</span>
               </Link>
@@ -139,7 +135,7 @@ export default function LoginPageNew() {
               {/* Bottom Quote */}
               <div className="max-w-md">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-primary-200 backdrop-blur-md">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
                   <span>Daily Insight</span>
                 </div>
                 <blockquote className="text-3xl font-medium leading-tight text-white lg:text-4xl">
@@ -159,7 +155,7 @@ export default function LoginPageNew() {
               {/* Mobile Logo (visible only on small screens) */}
               <Link to="/" className="mb-8 flex items-center gap-2 lg:hidden">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
-                  <Sparkles className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
                 </div>
                 <span className="text-2xl font-bold text-white">AstroVerse</span>
               </Link>
@@ -177,7 +173,7 @@ export default function LoginPageNew() {
                   role="alert"
                 >
                   <div className="flex items-start gap-2">
-                    <AlertCircle className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">error_outline</span>
                     <p>{error}</p>
                   </div>
                 </div>
@@ -210,7 +206,7 @@ export default function LoginPageNew() {
                     </label>
                     <div className="relative rounded-xl shadow-sm">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-primary-200/60">
-                        <Mail className="w-5 h-5" />
+                        <span className="material-symbols-outlined text-[20px]">mail</span>
                       </div>
                       <input
                         className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-4 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
@@ -241,7 +237,7 @@ export default function LoginPageNew() {
                     </label>
                     <div className="relative rounded-xl shadow-sm">
                       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-primary-200/60">
-                        <Lock className="w-5 h-5" />
+                        <span className="material-symbols-outlined text-[20px]">lock</span>
                       </div>
                       <input
                         className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-12 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
@@ -264,9 +260,9 @@ export default function LoginPageNew() {
                         data-testid="password-visibility-toggle"
                       >
                         {showPassword ? (
-                          <EyeOff className="w-5 h-5" />
+                          <span className="material-symbols-outlined text-[20px]">visibility_off</span>
                         ) : (
-                          <Eye className="w-5 h-5" />
+                          <span className="material-symbols-outlined text-[20px]">visibility</span>
                         )}
                       </button>
                     </div>
@@ -309,10 +305,10 @@ export default function LoginPageNew() {
                       disabled={isLoading}
                     >
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        {isLoading && <RefreshCw className="w-6 h-6" />}
+                        {isLoading && <span className="material-symbols-outlined text-[24px]">sync</span>}
                       </span>
                       {isLoading ? 'Signing in...' : 'Sign In'}
-                      <ArrowRight className="w-6 h-6" />
+                      <span className="material-symbols-outlined text-[24px]">arrow_forward</span>
                     </button>
                   </div>
                 </form>

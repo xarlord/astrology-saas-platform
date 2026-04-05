@@ -76,7 +76,7 @@ export default function RegisterPageNew() {
 
   const handleSocialLogin = (provider: 'google' | 'apple') => {
     // Social login will be implemented later
-    console.log(`Social login with ${provider}`);
+    void provider;
   };
 
   return (

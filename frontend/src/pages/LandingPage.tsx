@@ -8,23 +8,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import {
-  CheckCircle,
-  Sparkles,
-  Menu,
-  X,
-  Star,
-  ArrowLeft,
-  ArrowRight,
-  Brain,
-  Calendar,
-  Check,
-  Clock,
-  Pentagon,
-  PlayCircle,
-  Quote,
-  Sun,
-} from 'lucide-react';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,7 +28,7 @@ export default function LandingPage() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
               <div className="size-8 text-primary animate-pulse">
-                <Pentagon className="w-10 h-10" />
+                <span className="material-symbols-outlined text-[40px]">pentagon</span>
               </div>
               <span className="text-xl font-bold tracking-tight text-white">AstroVerse</span>
             </Link>
@@ -95,7 +78,7 @@ export default function LandingPage() {
                 className="text-slate-300 hover:text-white p-2"
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <span className="material-symbols-outlined text-[24px]">close</span> : <span className="material-symbols-outlined text-[24px]">menu</span>}
               </button>
             </div>
           </div>
@@ -226,17 +209,16 @@ export default function LandingPage() {
                     }}
                   >
                     Get Started Free
-                    <ArrowRight className="w-4 h-4" />
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                   </Link>
 
                   <button
                     className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white border border-slate-700 hover:border-primary/50 hover:bg-white/5 backdrop-blur-sm transition-all group"
                     onClick={() => {
                       // Video modal would go here
-                      console.log('Open video modal');
                     }}
                   >
-                    <PlayCircle className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">play_circle</span>
                     Watch Demo
                   </button>
                 </div>
@@ -301,7 +283,7 @@ export default function LandingPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-primary/20 p-2 rounded-lg text-primary">
-                      <Sparkles className="w-5 h-5" />
+                      <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
                     </div>
                     <div>
                       <p className="text-xs text-slate-400 uppercase tracking-wider">
@@ -324,7 +306,7 @@ export default function LandingPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-accent-gold/20 p-2 rounded-lg text-accent-gold">
-                      <Sun className="w-5 h-5" />
+                      <span className="material-symbols-outlined text-[20px]">light_mode</span>
                     </div>
                     <div>
                       <p className="text-xs text-slate-400 uppercase tracking-wider">Sun Sign</p>
@@ -377,7 +359,7 @@ export default function LandingPage() {
                     className="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300"
                     style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.1)' }}
                   >
-                    <Clock className="w-8 h-8" />
+                    <span className="material-symbols-outlined text-[32px]">schedule</span>
                   </div>
                   <h4 className="text-xl font-bold text-white mb-3">Natal Charts</h4>
                   <p className="text-slate-400 leading-relaxed">
@@ -406,7 +388,7 @@ export default function LandingPage() {
                     className="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300"
                     style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.1)' }}
                   >
-                    <Brain className="w-8 h-8" />
+                    <span className="material-symbols-outlined text-[32px]">psychology</span>
                   </div>
                   <h4 className="text-xl font-bold text-white mb-3">Personality Insights</h4>
                   <p className="text-slate-400 leading-relaxed">
@@ -435,7 +417,7 @@ export default function LandingPage() {
                     className="w-14 h-14 bg-surface-dark rounded-xl flex items-center justify-center border border-white/10 mb-6 group-hover:scale-110 transition-transform duration-300"
                     style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.1)' }}
                   >
-                    <Calendar className="w-8 h-8" />
+                    <span className="material-symbols-outlined text-[32px]">calendar_month</span>
                   </div>
                   <h4 className="text-xl font-bold text-white mb-3">Transit Forecasts</h4>
                   <p className="text-slate-400 leading-relaxed">
@@ -464,7 +446,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-2">
                   <div className="flex text-accent-gold">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-current" />
+                      <span key={i} className="material-symbols-outlined text-[20px]">star</span>
                     ))}
                   </div>
                   <span className="text-white font-bold text-lg">4.9/5</span>
@@ -476,14 +458,14 @@ export default function LandingPage() {
                   className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center text-white hover:bg-surface-dark transition-colors"
                   aria-label="Previous testimonial"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-[20px]">arrow_back</span>
                 </button>
                 <button
                   className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors"
                   style={{ boxShadow: '0 0 15px rgba(123, 59, 227, 0.2)' }}
                   aria-label="Next testimonial"
                 >
-                  <ArrowRight className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
                 </button>
               </div>
             </div>
@@ -501,7 +483,7 @@ export default function LandingPage() {
               >
                 <div>
                   <div className="text-primary mb-4">
-                    <Quote className="w-10 h-10" />
+                    <span className="material-symbols-outlined text-[40px]">format_quote</span>
                   </div>
                   <p className="text-slate-300 text-lg leading-relaxed mb-6">
                     "AstroVerse completely changed how I plan my month. The transit accuracy is
@@ -533,7 +515,7 @@ export default function LandingPage() {
               >
                 <div>
                   <div className="text-primary mb-4">
-                    <Quote className="w-10 h-10" />
+                    <span className="material-symbols-outlined text-[40px]">format_quote</span>
                   </div>
                   <p className="text-slate-300 text-lg leading-relaxed mb-6">
                     "Finally, an astrology app that combines beautiful design with deep data. Highly
@@ -565,7 +547,7 @@ export default function LandingPage() {
               >
                 <div>
                   <div className="text-primary mb-4">
-                    <Quote className="w-10 h-10" />
+                    <span className="material-symbols-outlined text-[40px]">format_quote</span>
                   </div>
                   <p className="text-slate-300 text-lg leading-relaxed mb-6">
                     "The natal chart breakdown is so detailed, it felt like a professional reading.
@@ -625,15 +607,15 @@ export default function LandingPage() {
                 </Link>
                 <ul className="space-y-4 text-sm text-slate-300">
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     Basic Natal Chart
                   </li>
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     Daily Horoscope
                   </li>
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     Moon Phase Tracker
                   </li>
                 </ul>
@@ -678,19 +660,19 @@ export default function LandingPage() {
                 </Link>
                 <ul className="space-y-4 text-sm text-white font-medium">
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
                     Everything in Seeker
                   </li>
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
                     Full Transit Forecasts
                   </li>
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
                     Synastry (Compatibility)
                   </li>
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
                     Personality Reports
                   </li>
                 </ul>
@@ -720,19 +702,19 @@ export default function LandingPage() {
                 </Link>
                 <ul className="space-y-4 text-sm text-slate-300">
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     Everything in Mystic
                   </li>
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     Unlimited Charts
                   </li>
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     PDF Export Reports
                   </li>
                   <li className="flex items-center gap-3">
-                    <Check className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">check</span>
                     API Access
                   </li>
                 </ul>
@@ -748,7 +730,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">
               <div className="flex items-center gap-2 mb-6">
-                <Pentagon className="w-8 h-8" />
+                <span className="material-symbols-outlined text-[32px]">pentagon</span>
                 <span className="text-2xl font-bold text-white">AstroVerse</span>
               </div>
               <p className="text-slate-400 text-sm mb-6 max-w-xs">

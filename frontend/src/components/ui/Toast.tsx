@@ -124,6 +124,7 @@ export const Toast: React.FC<ToastProps> = React.memo(
 
         return () => clearInterval(timer);
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleClose is stable via useCallback
     }, [duration, isPaused]);
 
     const handleClose = useCallback(() => {

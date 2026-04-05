@@ -170,8 +170,8 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() },
       );
 
-      const notificationBtn = container.querySelector('button span[class*="sr-only"]');
-      expect(notificationBtn?.parentElement).toBeInTheDocument();
+      const notificationBtn = container.querySelector('button[aria-label*="notification"]');
+      expect(notificationBtn).toBeInTheDocument();
     });
 
     it('should show notification badge', () => {
@@ -461,9 +461,9 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() },
       );
 
-      // Check for sr-only elements (ARIA labels)
-      const srOnlyElements = container.querySelectorAll('button span[class*="sr-only"]');
-      expect(srOnlyElements.length).toBeGreaterThan(0);
+      // Check for aria-label attributes on buttons (accessible labels)
+      const ariaLabeledButtons = container.querySelectorAll('button[aria-label]');
+      expect(ariaLabeledButtons.length).toBeGreaterThan(0);
     });
 
     it('should have semantic HTML structure', () => {

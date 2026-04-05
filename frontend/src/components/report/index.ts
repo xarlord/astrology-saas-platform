@@ -7,3 +7,5 @@
 export { default as ReportActions } from './ReportActions';
 export { default as PDFReportGenerator } from './PDFReportGenerator';
 export type { PDFReportGeneratorProps } from './PDFReportGenerator';
+export { TransitReportCard } from './TransitReportCard';
+export { TransitReportHistory } from './TransitReportHistory';

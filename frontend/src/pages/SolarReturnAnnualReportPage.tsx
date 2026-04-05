@@ -105,7 +105,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
     setIsGeneratingPDF(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 3000));
-      console.log('PDF generated for Solar Return', solarData.year);
+      // PDF generation complete
     } catch (error) {
       console.error('Failed to generate PDF:', error);
     } finally {

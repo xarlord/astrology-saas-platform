@@ -381,10 +381,9 @@ function detectTSquare(
           s !== sq1,
       );
 
-      // Using || here is intentional: sq2 is either undefined or a truthy object
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      // sq2 is either undefined or a truthy object — nullish coalescing is safe here
       if (
-        sq2 ||
+        sq2 ??
         (sq1.planet1 === apex && (sq1.planet2 === opp.planet1 || sq1.planet2 === opp.planet2))
       ) {
         const allPlanets = [opp.planet1, opp.planet2, apex];

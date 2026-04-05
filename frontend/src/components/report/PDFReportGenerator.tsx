@@ -9,17 +9,6 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  FileDown,
-  Printer,
-  Eye,
-  Loader2,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  FileText,
-  ChevronDown,
-} from 'lucide-react';
 import { Button } from '../ui/Button';
 import {
   usePDFGeneration,
@@ -396,11 +385,12 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
   return (
     <div
       className={`bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-primary/30 ${className}`}
+      data-testid="pdf-report-generator"
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-primary/20 rounded-lg">
-          <FileText className="w-5 h-5 text-primary" />
+          <span className="material-symbols-outlined text-[20px] text-primary">description</span>
         </div>
         <div>
           <h3 className="text-lg font-semibold text-white">Generate PDF Report</h3>
@@ -418,6 +408,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
             type="button"
             onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
             className="w-full flex items-center justify-between px-4 py-3 bg-surface-dark border border-white/10 rounded-lg text-white hover:border-primary/50 transition-colors"
+            data-testid="pdf-type-dropdown-trigger"
           >
             <div className="flex items-center gap-3">
               <span className="text-lg">{selectedTypeInfo?.icon}</span>
@@ -426,9 +417,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                 <p className="text-xs text-slate-400">{selectedTypeInfo?.pages}</p>
               </div>
             </div>
-            <ChevronDown
-              className={`w-5 h-5 text-slate-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`}
-            />
+            <span
+              className={`material-symbols-outlined text-[20px] text-slate-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`}
+            >expand_more</span>
           </button>
 
           <AnimatePresence>
@@ -438,6 +429,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 className="absolute z-10 mt-2 w-full bg-surface-dark border border-white/10 rounded-lg shadow-lg overflow-hidden"
+              data-testid="pdf-type-dropdown-menu"
               >
                 {getAvailableReportTypes().map((option) => (
                   <button
@@ -456,6 +448,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                         ? 'hover:bg-white/5 cursor-pointer'
                         : 'opacity-50 cursor-not-allowed'
                     } ${selectedReportType === option.value ? 'bg-primary/10' : ''}`}
+                    data-testid={`pdf-type-option-${option.value}`}
                   >
                     <span className="text-lg">{option.icon}</span>
                     <div className="flex-1">
@@ -473,7 +466,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       {/* Progress Bar */}
       {isGenerating && (
-        <div className="mb-6">
+        <div className="mb-6" data-testid="pdf-progress-section">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-slate-300">Generating report...</span>
             <span className="text-sm text-primary font-medium">{progress}%</span>
@@ -491,8 +484,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3" data-testid="pdf-error-message">
+          <span className="material-symbols-outlined text-[20px] text-red-400 flex-shrink-0 mt-0.5">error_outline</span>
           <div className="flex-1">
             <p className="text-sm text-red-400">{error}</p>
             <button
@@ -508,8 +501,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       {/* Success Message */}
       {lastGeneratedBlob && !isGenerating && !error && (
-        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3">
-          <CheckCircle className="w-5 h-5 text-green-400" />
+        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3" data-testid="pdf-success-message">
+          <span className="material-symbols-outlined text-[20px] text-green-400">check_circle</span>
           <p className="text-sm text-green-400">Report generated successfully!</p>
         </div>
       )}
@@ -524,11 +517,12 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
             void handleGenerateReport();
           }}
           disabled={isGenerating}
+          data-testid="pdf-generate-button"
           leftIcon={
             isGenerating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
             ) : (
-              <FileDown className="w-4 h-4" />
+              <span className="material-symbols-outlined text-[16px]">download</span>
             )
           }
         >
@@ -543,7 +537,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
               fullWidth
               onClick={handlePreview}
               disabled={isGenerating}
-              leftIcon={<Eye className="w-4 h-4" />}
+              leftIcon={<span className="material-symbols-outlined text-[16px]">visibility</span>}
+              data-testid="pdf-preview-button"
             >
               Preview
             </Button>
@@ -554,7 +549,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
             fullWidth
             onClick={handlePrint}
             disabled={isGenerating || !lastGeneratedBlob}
-            leftIcon={<Printer className="w-4 h-4" />}
+            leftIcon={<span className="material-symbols-outlined text-[16px]">print</span>}
+            data-testid="pdf-print-button"
           >
             Print
           </Button>
@@ -563,11 +559,12 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
         {/* Download Button (appears after generation) */}
         {lastGeneratedBlob && (
           <Button
-            variant="outline"
+            variant="secondary"
             fullWidth
             onClick={handleDownload}
             disabled={isGenerating}
-            leftIcon={<FileDown className="w-4 h-4" />}
+            leftIcon={<span className="material-symbols-outlined text-[16px]">download</span>}
+            data-testid="pdf-download-button"
             className="border-green-500/50 text-green-400 hover:bg-green-500/10"
           >
             Download PDF
@@ -590,6 +587,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-surface-dark rounded-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col"
+            data-testid="pdf-preview-modal"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-4 border-b border-white/10">
@@ -599,7 +597,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                   onClick={() => setShowPreviewModal(false)}
                   className="text-slate-400 hover:text-white transition-colors"
                 >
-                  <XCircle className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-[20px]">cancel</span>
                 </button>
               </div>
               <div className="flex-1 overflow-auto p-4">
@@ -619,7 +617,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                     handleDownload();
                     setShowPreviewModal(false);
                   }}
-                  leftIcon={<FileDown className="w-4 h-4" />}
+                  leftIcon={<span className="material-symbols-outlined text-[16px]">download</span>}
                 >
                   Download PDF
                 </Button>

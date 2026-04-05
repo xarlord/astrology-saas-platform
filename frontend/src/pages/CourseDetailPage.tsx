@@ -263,7 +263,7 @@ const CourseDetailPage: React.FC = () => {
                     // Track progress every 10%
                     const percent = progress.percentage;
                     if (Math.floor(percent) % 10 === 0 && Math.floor(percent) > 0) {
-                      console.log(`Progress: ${Math.floor(percent)}%`);
+                      // Progress update: ${Math.floor(percent)}%
                     }
                   }}
                   onComplete={() => {

@@ -227,7 +227,7 @@ describe('ForgotPasswordPage', () => {
       });
     });
 
-    it('should log password reset request to console', async () => {
+    it('should handle password reset request submission', async () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
@@ -238,10 +238,7 @@ describe('ForgotPasswordPage', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(consoleLogMock).toHaveBeenCalledWith(
-          'Password reset requested for:',
-          'test@example.com',
-        );
+        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
       });
     });
 

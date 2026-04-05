@@ -8,6 +8,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { authService } from '../services';
+import { getAccessToken } from '../utils/tokenStorage';
 import type { User, LoginCredentials, RegisterData } from '../services/api.types';
 
 interface AuthState {
@@ -49,9 +50,7 @@ export const useAuthStore = create<AuthState>()(
             const response = await authService.login(credentials);
             const { user, accessToken, refreshToken } = response;
 
-            // Store tokens
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            // Zustand persist handles storage — no manual localStorage writes
 
             set({
               user,
@@ -77,9 +76,7 @@ export const useAuthStore = create<AuthState>()(
             const response = await authService.register(data);
             const { user, accessToken, refreshToken } = response;
 
-            // Store tokens
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            // Zustand persist handles storage — no manual localStorage writes
 
             set({
               user,
@@ -105,10 +102,7 @@ export const useAuthStore = create<AuthState>()(
           } catch (error) {
             console.error('Logout error:', error);
           } finally {
-            // Clear tokens from localStorage
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
+            // Zustand persist handles clearing — no manual localStorage removal
 
             // Clear state
             set({
@@ -123,7 +117,7 @@ export const useAuthStore = create<AuthState>()(
 
         // Load user from token
         loadUser: async () => {
-          const token = localStorage.getItem('accessToken');
+          const token = getAccessToken();
           if (!token) {
             set({ isAuthenticated: false });
             return;
@@ -139,9 +133,7 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
             });
           } catch {
-            // Clear invalid tokens
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            // Clear invalid tokens via Zustand persist
             set({
               user: null,
               token: null,

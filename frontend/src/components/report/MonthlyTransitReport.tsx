@@ -61,6 +61,7 @@ function getBarTextColor(favorability: number): string {
 // MOCK DATA
 // ============================================================================
 
+// eslint-disable-next-line react-refresh/only-export-components -- mock data exported alongside component for preview
 export const MONTHLY_TRANSIT_MOCK_DATA: MonthlyTransitReportProps = {
   month: 'April 2026',
   overview:

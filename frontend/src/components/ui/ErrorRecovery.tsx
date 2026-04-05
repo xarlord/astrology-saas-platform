@@ -325,10 +325,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
 
   const handleClick = () => {
     // In a real app, this would send the error details to a logging service
-    console.log('Reporting issue:', {
-      ...errorDetails,
-      reportedAt: new Date().toISOString(),
-    });
+    void { ...errorDetails, reportedAt: new Date().toISOString() };
 
     setIsReported(true);
     onReport?.();

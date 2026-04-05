@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getCalendarMonth } from '../services/calendar.service';
 import { CalendarMonth as CalendarMonthType, AstrologicalEvent } from '../types/calendar.types';
 import { DailyWeatherModal } from './DailyWeatherModal';
@@ -192,7 +191,7 @@ export function CalendarView({
           className="flex items-center justify-center w-10 h-10 border border-gray-200 bg-white rounded-lg cursor-pointer transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:border-indigo-500 hover:text-indigo-500"
           aria-label="Previous month"
         >
-          <ChevronLeft size={20} />
+          <span className="material-symbols-outlined text-[20px]">chevron_left</span>
         </button>
 
         <h2 className="m-0 text-2xl md:text-lg font-semibold text-gray-900">
@@ -205,7 +204,7 @@ export function CalendarView({
           className="flex items-center justify-center w-10 h-10 border border-gray-200 bg-white rounded-lg cursor-pointer transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:border-indigo-500 hover:text-indigo-500"
           aria-label="Next month"
         >
-          <ChevronRight size={20} />
+          <span className="material-symbols-outlined text-[20px]">chevron_right</span>
         </button>
       </div>
 

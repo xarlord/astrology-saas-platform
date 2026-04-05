@@ -12,7 +12,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
-import { AlertTriangle, X, Trash2 } from 'lucide-react';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 export interface ConfirmModalProps {
@@ -214,7 +213,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   className={clsx('p-2 rounded-full', styles.icon)}
                   variants={iconVariants}
                 >
-                  <AlertTriangle className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-[20px]">warning</span>
                 </motion.div>
                 <h2 id="confirm-modal-title" className="text-lg font-semibold text-white">
                   {title}
@@ -226,7 +225,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -249,7 +248,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
               {/* Additional warning */}
               <div className="flex items-start space-x-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                <AlertTriangle className={clsx('w-5 h-5 mt-0.5 flex-shrink-0', styles.iconColor)} />
+                <span className={clsx('material-symbols-outlined text-[20px] mt-0.5 flex-shrink-0', styles.iconColor)}>warning</span>
                 <p className="text-sm text-red-300">
                   This action cannot be undone. All associated data will be permanently removed.
                 </p>
@@ -373,7 +372,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-4 h-4 mr-1.5" />
+                    <span className="material-symbols-outlined text-[16px] mr-1.5">delete</span>
                     {confirmText}
                   </>
                 )}

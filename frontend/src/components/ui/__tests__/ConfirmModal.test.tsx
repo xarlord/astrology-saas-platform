@@ -82,22 +82,20 @@ describe('ConfirmModal', () => {
       expect(input.value).toBe('');
     });
 
-    it('should update input value on change', async () => {
-      const user = userEvent.setup();
+    it('should update input value on change', () => {
       render(<ConfirmModal {...mockProps} />);
 
       const input = screen.getByPlaceholderText('DELETE');
-      await user.type(input, 'DEL');
+      fireEvent.change(input, { target: { value: 'DEL' } });
 
       expect(input).toHaveValue('DEL');
     });
 
-    it('should show green border when DELETE is typed', async () => {
-      const user = userEvent.setup();
+    it('should show green border when DELETE is typed', () => {
       render(<ConfirmModal {...mockProps} />);
 
       const input = screen.getByPlaceholderText('DELETE');
-      await user.type(input, 'DELETE');
+      fireEvent.change(input, { target: { value: 'DELETE' } });
 
       expect(input).toHaveClass('border-green-500/50');
     });
@@ -110,12 +108,11 @@ describe('ConfirmModal', () => {
       expect(confirmButton).toBeDisabled();
     });
 
-    it('should enable confirm button when DELETE is typed', async () => {
-      const user = userEvent.setup();
+    it('should enable confirm button when DELETE is typed', () => {
       render(<ConfirmModal {...mockProps} />);
 
       const input = screen.getByPlaceholderText('DELETE');
-      await user.type(input, 'DELETE');
+      fireEvent.change(input, { target: { value: 'DELETE' } });
 
       const confirmButton = screen.getByText('Delete Forever').closest('button');
       expect(confirmButton).not.toBeDisabled();
@@ -132,8 +129,7 @@ describe('ConfirmModal', () => {
       expect(confirmButton).toBeDisabled();
     });
 
-    it('should use custom confirmation string', async () => {
-      const user = userEvent.setup();
+    it('should use custom confirmation string', () => {
       render(<ConfirmModal {...mockProps} confirmationString="CONFIRM" />);
 
       expect(screen.getByPlaceholderText('CONFIRM')).toBeInTheDocument();
@@ -142,7 +138,7 @@ describe('ConfirmModal', () => {
       expect(confirmLabels.length).toBeGreaterThan(0);
 
       const input = screen.getByPlaceholderText('CONFIRM');
-      await user.type(input, 'CONFIRM');
+      fireEvent.change(input, { target: { value: 'CONFIRM' } });
 
       const confirmButton = screen.getByText('Delete Forever').closest('button');
       expect(confirmButton).not.toBeDisabled();
@@ -177,25 +173,23 @@ describe('ConfirmModal', () => {
       }
     });
 
-    it('should call onConfirm when confirm button is clicked after typing DELETE', async () => {
-      const user = userEvent.setup();
+    it('should call onConfirm when confirm button is clicked after typing DELETE', () => {
       render(<ConfirmModal {...mockProps} />);
 
       const input = screen.getByPlaceholderText('DELETE');
-      await user.type(input, 'DELETE');
+      fireEvent.change(input, { target: { value: 'DELETE' } });
 
-      await user.click(screen.getByText('Delete Forever'));
+      fireEvent.click(screen.getByText('Delete Forever'));
       expect(mockProps.onConfirm).toHaveBeenCalledTimes(1);
     });
 
     it('should call onClose after successful confirm', async () => {
-      const user = userEvent.setup();
       render(<ConfirmModal {...mockProps} />);
 
       const input = screen.getByPlaceholderText('DELETE');
-      await user.type(input, 'DELETE');
+      fireEvent.change(input, { target: { value: 'DELETE' } });
 
-      await user.click(screen.getByText('Delete Forever'));
+      fireEvent.click(screen.getByText('Delete Forever'));
 
       await waitFor(() => {
         expect(mockProps.onClose).toHaveBeenCalledTimes(1);
@@ -207,16 +201,16 @@ describe('ConfirmModal', () => {
     it('should close on Escape key', () => {
       render(<ConfirmModal {...mockProps} />);
 
-      fireEvent.keyDown(document, { key: 'Escape' });
+      const dialog = screen.getByRole('alertdialog');
+      fireEvent.keyDown(dialog, { key: 'Escape' });
       expect(mockProps.onClose).toHaveBeenCalledTimes(1);
     });
 
-    it('should confirm on Enter key when input is correct', async () => {
-      const user = userEvent.setup();
+    it('should confirm on Enter key when input is correct', () => {
       render(<ConfirmModal {...mockProps} />);
 
       const input = screen.getByPlaceholderText('DELETE');
-      await user.type(input, 'DELETE');
+      fireEvent.change(input, { target: { value: 'DELETE' } });
 
       fireEvent.keyDown(document, { key: 'Enter' });
       expect(mockProps.onConfirm).toHaveBeenCalledTimes(1);

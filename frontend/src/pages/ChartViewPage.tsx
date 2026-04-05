@@ -7,7 +7,8 @@ import { SkeletonLoader, EmptyState, ChartWheel, AppLayout } from '../components
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { chartService } from '../services';
-import type { PlanetPosition, CalculatedChartData } from '../services/api.types';
+import { ShareCardModal } from '../components/chart/ShareCardModal';
+import type { PlanetPosition, CalculatedChartData, Chart } from '../services/api.types';
 import type {
   ChartData,
   PlanetPosition as WheelPlanetPosition,
@@ -58,9 +59,10 @@ function toWheelData(data: CalculatedChartData): ChartData {
 
 export default function ChartViewPage() {
   const { chartId } = useParams<{ chartId: string }>();
-  const [chartData, setChartData] = useState<Record<string, unknown> | null>(null);
+  const [chartData, setChartData] = useState<Chart | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     const loadChart = async () => {
@@ -119,14 +121,9 @@ export default function ChartViewPage() {
             <div className="card">
               <h3 className="text-xl font-bold mb-4">Chart Wheel</h3>
               <div className="aspect-square flex items-center justify-center">
-                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
-                {typeof (chartData as Record<string, unknown>).calculated_data !== 'undefined' ? (
-                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                {chartData.calculated_data ? (
                   <ChartWheel
-                    data={toWheelData(
-                      (chartData as Record<string, unknown>)
-                        .calculated_data as unknown as CalculatedChartData,
-                    )}
+                    data={toWheelData(chartData.calculated_data)}
                   />
                 ) : (
                   <p className="text-gray-500">Chart wheel visualization</p>
@@ -138,12 +135,7 @@ export default function ChartViewPage() {
             <div className="card">
               <h3 className="text-xl font-bold mb-4">Planetary Positions</h3>
               <div className="space-y-2" data-testid="planetary-positions">
-                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
-                {(
-                  (chartData as Record<string, unknown>).calculated_data as unknown as
-                    | { planets: PlanetPosition[] }
-                    | undefined
-                )?.planets?.map((planet: PlanetPosition) => (
+                {chartData.calculated_data?.planets?.map((planet: PlanetPosition) => (
                   <div
                     key={planet.planet}
                     className="flex justify-between py-2 border-b dark:border-gray-700"
@@ -173,7 +165,23 @@ export default function ChartViewPage() {
             >
               Edit Chart
             </Link>
+            <button
+              type="button"
+              onClick={() => setShareModalOpen(true)}
+              className="btn-secondary flex items-center gap-2"
+              data-testid="share-card-btn"
+            >
+              <span className="material-symbols-outlined text-[16px]">share</span>
+              Share Card
+            </button>
           </div>
+
+          <ShareCardModal
+            isOpen={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+            chartId={chartId ?? ''}
+            chartName={chartData?.name}
+          />
         </>
       )}
     </AppLayout>

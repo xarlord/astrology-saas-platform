@@ -361,9 +361,9 @@ export function useKeyboardNavigation<T = HTMLElement>(
 
   // Container props
   const getContainerProps = useCallback(
-    (props?: React.HTMLAttributes<HTMLElement>): React.HTMLAttributes<HTMLElement> => ({
+    (props?: React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> }): React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> } => ({
       ...props,
-      ref: containerRef,
+      ref: containerRef as unknown as React.RefCallback<HTMLElement>,
       onKeyDown: (e) => {
         handleKeyDown(e);
         props?.onKeyDown?.(e);
@@ -380,7 +380,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
     (
       index: number,
       props?: React.HTMLAttributes<HTMLElement>,
-    ): React.HTMLAttributes<HTMLElement> => {
+    ): React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> } => {
       const disabled = isItemDisabled?.(items[index], index);
 
       return {

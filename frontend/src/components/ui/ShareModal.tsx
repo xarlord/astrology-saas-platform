@@ -13,20 +13,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
-import {
-  X,
-  Copy,
-  Check,
-  Link,
-  Lock,
-  Globe,
-  Key,
-  Mail,
-  MessageSquare,
-  Share2,
-  QrCode,
-  Clock,
-} from 'lucide-react';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 export type ShareVisibility = 'public' | 'private' | 'password';
@@ -85,14 +71,14 @@ const socialButtons: SocialButton[] = [
   },
   {
     name: 'Email',
-    icon: <Mail className="w-5 h-5" />,
+    icon: <span className="material-symbols-outlined text-[20px]">mail</span>,
     color: 'hover:bg-gray-600 hover:text-white',
     getUrl: (url, title) =>
       `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent('Check this out: ' + url)}`,
   },
   {
     name: 'SMS',
-    icon: <MessageSquare className="w-5 h-5" />,
+    icon: <span className="material-symbols-outlined text-[20px]">chat_bubble</span>,
     color: 'hover:bg-green-600 hover:text-white',
     getUrl: (url, title) => `sms:?body=${encodeURIComponent(title + ' ' + url)}`,
   },
@@ -252,7 +238,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
               <div className="flex items-center space-x-2">
-                <Share2 className="w-5 h-5 text-purple-400" />
+                <span className="material-symbols-outlined text-[20px] text-purple-400">share</span>
                 <h2 id="share-modal-title" className="text-lg font-semibold text-white">
                   Share {itemType.charAt(0).toUpperCase() + itemType.slice(1)}
                 </h2>
@@ -262,7 +248,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -460,7 +446,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 <h3 className="text-sm font-medium text-gray-300 mb-2">Share Link</h3>
                 <div className="flex items-center space-x-2">
                   <div className="flex-1 relative">
-                    <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <span className="material-symbols-outlined text-[16px] text-gray-500 absolute left-3 top-1/2 -translate-y-1/2">link</span>
                     <input
                       ref={inputRef}
                       type="text"
@@ -481,12 +467,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   >
                     {copied ? (
                       <>
-                        <Check className="w-4 h-4 mr-1.5" />
+                        <span className="material-symbols-outlined text-[16px] mr-1.5">check</span>
                         Copied
                       </>
                     ) : (
                       <>
-                        <Copy className="w-4 h-4 mr-1.5" />
+                        <span className="material-symbols-outlined text-[16px] mr-1.5">content_copy</span>
                         Copy
                       </>
                     )}
@@ -526,7 +512,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300"
                 >
                   <span className="flex items-center">
-                    <QrCode className="w-5 h-5 mr-2 text-purple-400" />
+                    <span className="material-symbols-outlined text-[20px] mr-2 text-purple-400">qr_code_2</span>
                     Show QR Code
                   </span>
                   <span className="text-xs text-gray-500">For mobile scanning</span>
@@ -548,7 +534,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                           role="img"
                           aria-label="QR code for sharing"
                         >
-                          <QrCode className="w-24 h-24 text-gray-300" aria-hidden="true" />
+                          <span className="material-symbols-outlined text-[96px] text-gray-300" aria-hidden="true">qr_code_2</span>
                         </div>
                       </div>
                       <p className="mt-2 text-xs text-gray-500 text-center">
@@ -563,7 +549,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <div className="relative">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                   <span className="flex items-center text-sm text-gray-300">
-                    <Clock className="w-4 h-4 mr-2 text-gray-500" />
+                    <span className="material-symbols-outlined text-[16px] mr-2 text-gray-500">schedule</span>
                     Link expires:
                   </span>
                   <button

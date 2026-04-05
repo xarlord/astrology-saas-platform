@@ -256,7 +256,6 @@ export function usePolling<T>(
       start();
     }
     // Note: 'enabled' is tracked via ref, dependency is not needed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start]);
 
   // Handle visibility change

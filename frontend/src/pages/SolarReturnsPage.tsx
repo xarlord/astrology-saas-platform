@@ -14,7 +14,6 @@ import {
   BirthdaySharing,
   AppLayout,
 } from '../components';
-import { Calendar, Settings, Share2, ArrowLeft } from 'lucide-react';
 
 interface RelocationLocation {
   name: string;
@@ -123,7 +122,7 @@ export const SolarReturnsPage: React.FC = () => {
           onClick={() => navigate('/solar-returns')}
           className="flex items-center gap-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
         >
-          <ArrowLeft size={18} />
+          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           Back to Dashboard
         </button>
 
@@ -141,10 +140,10 @@ export const SolarReturnsPage: React.FC = () => {
     if (!selectedReturn) return null;
 
     const tabs: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
-      { mode: 'chart', label: 'Chart', icon: <Calendar size={18} /> },
-      { mode: 'interpretation', label: 'Interpretation', icon: <Calendar size={18} /> },
-      { mode: 'relocate', label: 'Relocate', icon: <Settings size={18} /> },
-      { mode: 'share', label: 'Share', icon: <Share2 size={18} /> },
+      { mode: 'chart', label: 'Chart', icon: <span className="material-symbols-outlined text-[18px]">calendar_month</span> },
+      { mode: 'interpretation', label: 'Interpretation', icon: <span className="material-symbols-outlined text-[18px]">calendar_month</span> },
+      { mode: 'relocate', label: 'Relocate', icon: <span className="material-symbols-outlined text-[18px]">settings</span> },
+      { mode: 'share', label: 'Share', icon: <span className="material-symbols-outlined text-[18px]">share</span> },
     ];
 
     return (

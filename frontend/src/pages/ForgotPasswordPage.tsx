@@ -23,7 +23,6 @@ export default function ForgotPasswordPage() {
     }
 
     // TODO: Implement actual password reset API call
-    console.log('Password reset requested for:', email);
     setIsSubmitted(true);
   };
 

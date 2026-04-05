@@ -1,7 +1,5 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { Sparkles } from 'lucide-react';
-
 // Types
 interface ChartPosition {
   name: string;
@@ -114,7 +112,7 @@ export const InstagramStoryCard: React.FC<InstagramStoryCardProps> = ({
       <div className="relative flex flex-col items-center gap-4 w-full max-w-[20rem] z-10">
         {/* Logo */}
         <div className="absolute top-[120px] left-1/2 -translate-x-1/2 text-xs">
-          <Sparkles className="w-3 h-3" /> AstroVerse
+          <span className="material-symbols-outlined text-[12px]">auto_awesome</span> AstroVerse
         </div>
 
         {/* Tagline */}

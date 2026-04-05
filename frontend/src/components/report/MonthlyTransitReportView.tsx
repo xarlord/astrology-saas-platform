@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet-async';
 import { AppLayout } from '..';
 import { Button } from '../ui/Button';
 import MonthlyTransitReport, { MONTHLY_TRANSIT_MOCK_DATA } from './MonthlyTransitReport';
-import { ArrowLeft, Download, Printer, Share2 } from 'lucide-react';
 
 // ============================================================================
 // COMPONENT
@@ -95,7 +94,7 @@ const MonthlyTransitReportView: React.FC = () => {
               onClick={() => navigate(-1)}
               className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors text-sm"
             >
-              <ArrowLeft className="w-[18px] h-[18px]" />
+              <span className="material-symbols-outlined text-[18px]">arrow_back</span>
               Back
             </button>
 
@@ -107,7 +106,7 @@ const MonthlyTransitReportView: React.FC = () => {
                 onClick={() => {
                   void handleDownloadPDF();
                 }}
-                leftIcon={<Download className="w-4 h-4" />}
+                leftIcon={<span className="material-symbols-outlined text-[16px]">download</span>}
               >
                 Download PDF
               </Button>
@@ -116,7 +115,7 @@ const MonthlyTransitReportView: React.FC = () => {
                 variant="secondary"
                 size="sm"
                 onClick={handlePrint}
-                leftIcon={<Printer className="w-4 h-4" />}
+                leftIcon={<span className="material-symbols-outlined text-[16px]">print</span>}
               >
                 Print
               </Button>
@@ -127,7 +126,7 @@ const MonthlyTransitReportView: React.FC = () => {
                 onClick={() => {
                   void handleShare();
                 }}
-                leftIcon={<Share2 className="w-4 h-4" />}
+                leftIcon={<span className="material-symbols-outlined text-[16px]">share</span>}
               >
                 Share
               </Button>

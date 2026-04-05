@@ -61,9 +61,9 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
-          // Store tokens in localStorage for API interceptor
-          localStorage.setItem('accessToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
+          // Tokens managed by Zustand persist — no manual localStorage writes
+          // Zustand persist handles storage;
+          // Zustand persist handles storage;
         } catch (error: unknown) {
           set({
             error: getErrorMessage(error, 'Login failed'),
@@ -83,8 +83,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
-          localStorage.setItem('accessToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
+          // Zustand persist handles storage;
+          // Zustand persist handles storage;
         } catch (error: unknown) {
           set({
             error: getErrorMessage(error, 'Registration failed'),

@@ -41,6 +41,7 @@ vi.mock('../../hooks/useAuth', () => ({
     error: null,
     logout: mockLogout,
     clearError: vi.fn(),
+    hasAtLeastPlan: vi.fn().mockReturnValue(false),
   }),
 }));
 
@@ -605,7 +606,7 @@ describe('DashboardPage', () => {
     it('should have proper heading hierarchy', () => {
       renderWithProviders(createElement(DashboardPage));
       // Main heading (h2 - "Welcome back")
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     });
 
     it('should have aria-labels on interactive elements', () => {

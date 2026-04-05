@@ -1,7 +1,5 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { Sparkles } from 'lucide-react';
-
 // Types
 interface ChartPosition {
   name: string;
@@ -121,7 +119,7 @@ export const PinterestCard: React.FC<PinterestCardProps> = ({
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" /> AstroVerse
+            <span className="material-symbols-outlined text-[16px]">auto_awesome</span> AstroVerse
           </div>
           <p className="text-[24px] font-bold text-white">Your Birth Chart</p>
         </div>

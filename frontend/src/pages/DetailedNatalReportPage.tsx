@@ -117,7 +117,6 @@ const DetailedNatalReportPage: React.FC = () => {
       // Simulate PDF generation
       await new Promise((resolve) => setTimeout(resolve, 3000));
       // In real app, this would call the API to generate PDF
-      console.log('PDF generated');
     } catch (error) {
       console.error('Failed to generate PDF:', error);
     } finally {

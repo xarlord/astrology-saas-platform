@@ -61,6 +61,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         first.focus();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- trap handler, adding handleDismiss would cause re-renders
   }, []);
 
   // Handle dismiss and mark onboarding complete

@@ -609,7 +609,7 @@ const TransitForecastPage: React.FC = () => {
                   <TransitChart
                     data={energyData}
                     height={300}
-                    onDataPointClick={(point) => console.log('Clicked:', point)}
+                    onDataPointClick={(_point) => { /* handle data point click */ }}
                   />
                 </div>
               )}

@@ -5,6 +5,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Components
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -34,7 +35,9 @@ const DetailedNatalReportPage = lazy(() => import('./pages/DetailedNatalReportPa
 const SolarReturnAnnualReportPage = lazy(() => import('./pages/SolarReturnAnnualReportPage'));
 const ChartCreatePage = lazy(() => import('./pages/ChartCreatePage'));
 const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
+const DailyBriefingPage = lazy(() => import('./pages/DailyBriefingPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
+const ShareCardPage = lazy(() => import('./pages/ShareCardPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Create React Query client
@@ -51,11 +54,12 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ErrorBoundary>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-          <ServiceWorkerUpdateBanner />
-          <Suspense fallback={<LoadingSpinner fullScreen />}>
-            <Routes>
+      <HelmetProvider>
+        <ErrorBoundary>
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <ServiceWorkerUpdateBanner />
+            <Suspense fallback={<LoadingSpinner fullScreen />}>
+              <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
@@ -199,7 +203,16 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/daily-briefing"
+                element={
+                  <ProtectedRoute>
+                    <DailyBriefingPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/subscription" element={<SubscriptionPage />} />
+              <Route path="/share/:shareToken" element={<ShareCardPage />} />
               <Route
                 path="/reports/solar-return/:id"
                 element={
@@ -215,6 +228,7 @@ function App() {
           </Suspense>
         </div>
       </ErrorBoundary>
+      </HelmetProvider>
     </QueryClientProvider>
   );
 }

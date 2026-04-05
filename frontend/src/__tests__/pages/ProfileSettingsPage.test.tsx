@@ -305,9 +305,9 @@ describe('ProfileSettingsPage', () => {
     });
 
     it('should render password change form', () => {
-      expect(screen.getByPlaceholderText('Current password')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('New password')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('Confirm new password')).toBeInTheDocument();
+      expect(screen.getByLabelText('Current password')).toBeInTheDocument();
+      expect(screen.getByLabelText('New password')).toBeInTheDocument();
+      expect(screen.getByLabelText('Confirm new password')).toBeInTheDocument();
     });
 
     it('should render Update Password button', () => {

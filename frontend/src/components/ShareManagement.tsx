@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { Copy, Eye, EyeOff, Lock, Trash2, Share2, Clock, BarChart2 } from 'lucide-react';
 
 interface SharedLink {
   id: string;
@@ -109,7 +108,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
     <div className="bg-white/5 rounded-xl p-6 border border-white/10 dark:bg-black/20">
       <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10 sm:flex-row flex-col sm:items-start gap-4">
         <div className="flex items-center gap-4">
-          <Share2 className="w-6 h-6 text-indigo-500" aria-hidden="true" />
+          <span className="material-symbols-outlined text-[24px] text-indigo-500" aria-hidden="true">share</span>
           <div>
             <h3 className="text-lg font-semibold m-0">Share Chart</h3>
             <p className="text-sm text-white/60 mt-1">{chartName}</p>
@@ -120,7 +119,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
           onClick={() => setShowCreateModal(true)}
           aria-label="Create new share link"
         >
-          <Share2 size={16} aria-hidden="true" />
+          <span className="material-symbols-outlined text-[16px]" aria-hidden="true">share</span>
           Create Link
         </button>
       </div>
@@ -146,7 +145,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                         className="inline-flex items-center gap-1 text-xs py-0.5 px-2 rounded bg-indigo-500/20 text-violet-400"
                         title="Password protected"
                       >
-                        <Lock size={12} aria-hidden="true" />
+                        <span className="material-symbols-outlined text-[12px]" aria-hidden="true">lock</span>
                         Protected
                       </span>
                     )}
@@ -158,12 +157,12 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                   </div>
                   <div className="flex flex-wrap gap-4 text-xs text-white/50 sm:flex-row flex-col sm:gap-4 gap-2">
                     <span className="inline-flex items-center gap-1" title="Access count">
-                      <BarChart2 size={12} aria-hidden="true" />
+                      <span className="material-symbols-outlined text-[12px]" aria-hidden="true">bar_chart</span>
                       {link.accessCount} views
                     </span>
                     {link.expiresAt && (
                       <span className="inline-flex items-center gap-1" title="Expires">
-                        <Clock size={12} aria-hidden="true" />
+                        <span className="material-symbols-outlined text-[12px]" aria-hidden="true">schedule</span>
                         {expired ? 'Expired' : `Expires ${formatDate(link.expiresAt)}`}
                       </span>
                     )}
@@ -206,7 +205,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                         <>Copied!</>
                       ) : (
                         <>
-                          <Copy size={14} aria-hidden="true" />
+                          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">content_copy</span>
                           Copy Link
                         </>
                       )}
@@ -219,7 +218,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                       disabled={isLoading}
                       aria-label="Revoke share link"
                     >
-                      <Trash2 size={14} aria-hidden="true" />
+                      <span className="material-symbols-outlined text-[14px]" aria-hidden="true">delete</span>
                       Revoke
                     </button>
                   </div>
@@ -230,7 +229,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
         </ul>
       ) : (
         <div className="text-center p-8 text-white/50">
-          <Share2 size={32} className="opacity-30 mb-4" aria-hidden="true" />
+          <span className="material-symbols-outlined text-[32px] opacity-30 mb-4" aria-hidden="true">share</span>
           <p className="m-0">No share links created yet</p>
           <p className="m-0 text-sm mt-2">Create a link to share this chart with others</p>
         </div>
@@ -278,7 +277,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                     onClick={() => setShowPasswords((p) => ({ ...p, new: !p.new }))}
                     aria-label={showPasswords.new ? 'Hide password' : 'Show password'}
                   >
-                    {showPasswords.new ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showPasswords.new ? <span className="material-symbols-outlined text-[16px]">visibility_off</span> : <span className="material-symbols-outlined text-[16px]">visibility</span>}
                   </button>
                 </div>
                 <span className="block mt-1 text-xs text-white/50">

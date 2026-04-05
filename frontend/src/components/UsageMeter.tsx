@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import { AlertTriangle, Crown, BarChart3 } from 'lucide-react';
 
 export type Tier = 'free' | 'pro' | 'premium';
 export type WarningLevel = 'none' | 'warning' | 'limit';
@@ -92,13 +91,13 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       {/* Header */}
       <div className="flex justify-between items-center mb-4 sm:flex-row flex-col sm:items-start gap-2">
         <div className="flex items-center gap-2">
-          <Crown size={16} style={{ color: tierConfig.color }} aria-hidden="true" />
+          <span className="material-symbols-outlined text-[16px]" style={{ color: tierConfig.color }} aria-hidden="true">emoji_events</span>
           <span className="font-semibold text-sm" style={{ color: tierConfig.color }}>
             {tierConfig.name} Plan
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-sm text-white/70">
-          <BarChart3 size={14} aria-hidden="true" />
+          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
           <span>
             {currentCount} / {limit} charts
           </span>
@@ -137,7 +136,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
           className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-wrap"
           role="alert"
         >
-          <AlertTriangle size={14} aria-hidden="true" />
+          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
           <span>Approaching storage limit</span>
           {onUpgradeClick && (
             <button
@@ -156,7 +155,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
           className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-red-500/15 text-red-400 border border-red-500/30 flex-wrap"
           role="alert"
         >
-          <AlertTriangle size={14} aria-hidden="true" />
+          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
           <span>Storage limit reached</span>
           {onUpgradeClick && (
             <button

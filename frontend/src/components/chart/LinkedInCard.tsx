@@ -1,7 +1,5 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { Sparkles } from 'lucide-react';
-
 // Types
 interface ChartPosition {
   name: string;
@@ -111,7 +109,7 @@ export const LinkedInCard: React.FC<LinkedInCardProps> = ({
         <div className="flex flex-row items-center gap-8">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" /> AstroVerse
+            <span className="material-symbols-outlined text-[16px]">auto_awesome</span> AstroVerse
           </div>
 
           {/* Chart Wheel */}

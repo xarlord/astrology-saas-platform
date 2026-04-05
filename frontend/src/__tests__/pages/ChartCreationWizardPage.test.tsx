@@ -571,7 +571,6 @@ describe('ChartCreationWizardPage', () => {
     });
 
     it('should handle submission errors gracefully', async () => {
-      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
       mockCreateChart.mockRejectedValueOnce(new Error('API Error'));
 
       const user = userEvent.setup();
@@ -583,11 +582,10 @@ describe('ChartCreationWizardPage', () => {
       const submitButton = screen.getByRole('button', { name: /Generate Chart/i });
       await user.click(submitButton);
 
+      // Should NOT navigate away — error is handled silently by the store
       await waitFor(() => {
-        expect(consoleError).toHaveBeenCalledWith('Failed to create chart:', expect.any(Error));
+        expect(mockNavigate).not.toHaveBeenCalledWith('/charts');
       });
-
-      consoleError.mockRestore();
     });
   });
 

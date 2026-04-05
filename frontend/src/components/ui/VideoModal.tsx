@@ -15,18 +15,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
-import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize,
-  Settings,
-  ChevronDown,
-  ChevronUp,
-  Clock,
-  X,
-} from 'lucide-react';
 
 export interface VideoChapter {
   id: string;
@@ -320,7 +308,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -346,7 +334,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
               >
                 {!isPlaying && (
                   <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                    <Play className="w-10 h-10 text-white ml-1" fill="white" />
+                    <span className="material-symbols-outlined text-[40px] text-white ml-1" style={{ fontVariationSettings: '"FILL" 1' }}>play_arrow</span>
                   </div>
                 )}
               </button>
@@ -401,7 +389,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                     className="p-2 text-white hover:text-purple-400 transition-colors"
                     aria-label={isPlaying ? 'Pause' : 'Play'}
                   >
-                    {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                    {isPlaying ? <span className="material-symbols-outlined text-[24px]">pause</span> : <span className="material-symbols-outlined text-[24px]">play_arrow</span>}
                   </button>
 
                   {/* Volume */}
@@ -411,7 +399,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                       className="p-2 text-white hover:text-purple-400 transition-colors"
                       aria-label={isMuted ? 'Unmute' : 'Mute'}
                     >
-                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                      {isMuted ? <span className="material-symbols-outlined text-[20px]">volume_off</span> : <span className="material-symbols-outlined text-[20px]">volume_up</span>}
                     </button>
                     <input
                       type="range"
@@ -443,7 +431,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                       aria-label="Settings"
                       aria-expanded={showSettings}
                     >
-                      <Settings className="w-5 h-5" />
+                      <span className="material-symbols-outlined text-[20px]">settings</span>
                     </button>
 
                     {showSettings && (
@@ -491,7 +479,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                     className="p-2 text-white hover:text-purple-400 transition-colors"
                     aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
                   >
-                    <Maximize className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">fullscreen</span>
                   </button>
                 </div>
               </div>
@@ -506,13 +494,13 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                   aria-expanded={showTranscript}
                 >
                   <span className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4" />
+                    <span className="material-symbols-outlined text-[16px]">schedule</span>
                     <span>Transcript</span>
                   </span>
                   {showTranscript ? (
-                    <ChevronUp className="w-4 h-4" />
+                    <span className="material-symbols-outlined text-[16px]">expand_less</span>
                   ) : (
-                    <ChevronDown className="w-4 h-4" />
+                    <span className="material-symbols-outlined text-[16px]">expand_more</span>
                   )}
                 </button>
 

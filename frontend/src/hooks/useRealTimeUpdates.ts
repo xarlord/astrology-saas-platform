@@ -261,7 +261,6 @@ export function useRealTimeUpdates(
         const delay = getReconnectDelay(state.reconnectAttempts);
         reconnectTimeoutRef.current = setTimeout(() => {
           if (mountedRef.current) {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             connect();
           }
         }, delay);

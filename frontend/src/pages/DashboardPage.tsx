@@ -19,6 +19,7 @@ import EnergyMeter from '../components/astrology/EnergyMeter';
 import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
 import { TransitReportCard, TransitReportHistory } from '../components/report';
 import { Button } from '../components/ui/Button';
+import { InstallButton } from '../components/ui';
 import { AppLayout } from '../components';
 
 // Mock daily quote data
@@ -288,22 +289,25 @@ const DashboardPage: React.FC = () => {
           </div>
 
           {/* Moon Phase Display */}
-          <div className="flex items-center gap-3 bg-[#141627] border border-white/10 p-2 pr-5 rounded-2xl">
-            <div className="bg-[#1e2136] p-2.5 rounded-xl text-yellow-100">
-              <span className="material-symbols-outlined">dark_mode</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">
-                {new Date().toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 bg-[#141627] border border-white/10 p-2 pr-5 rounded-2xl">
+              <div className="bg-[#1e2136] p-2.5 rounded-xl text-yellow-100">
+                <span className="material-symbols-outlined">dark_mode</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">
+                  {new Date().toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
               </span>
               <span className="text-sm font-bold text-white">
                 {moonPhase.phase.replace('-', ' ')} in {moonSign}
               </span>
             </div>
+          </div>
+          <InstallButton variant="compact" />
           </div>
         </motion.header>
 
@@ -528,7 +532,7 @@ const DashboardPage: React.FC = () => {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Your Charts</h3>
-                <button className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                <button aria-label="Search charts" className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
                   <span className="material-symbols-outlined text-[18px]">search</span>
                 </button>
               </div>

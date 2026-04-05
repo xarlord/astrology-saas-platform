@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Loader2, ZoomIn, ZoomOut, Download } from 'lucide-react';
 
 interface PlanetaryPosition {
   planet: string;
@@ -377,15 +376,15 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
       <div className="chart-controls">
         <button onClick={() => void handleZoomOut()} disabled={zoom <= 0.5}>
-          <ZoomOut size={18} />
+          <span className="material-symbols-outlined text-[18px]">zoom_out</span>
         </button>
         <span className="zoom-level">{Math.round(zoom * 100)}%</span>
         <button onClick={() => void handleZoomIn()} disabled={zoom >= 2}>
-          <ZoomIn size={18} />
+          <span className="material-symbols-outlined text-[18px]">zoom_in</span>
         </button>
 
         <button onClick={() => void handleDownload()} title="Download as PNG">
-          <Download size={18} />
+          <span className="material-symbols-outlined text-[18px]">download</span>
           Download
         </button>
       </div>
@@ -393,7 +392,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       <div className="relative flex justify-center">
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
-            <Loader2 size={32} className="animate-spin text-indigo-500" />
+            <span className="material-symbols-outlined text-[32px] animate-spin text-indigo-500">progress_activity</span>
             <p aria-live="polite" className="mt-2 text-gray-500 dark:text-gray-400">
               Calculating chart...
             </p>

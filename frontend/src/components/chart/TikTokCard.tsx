@@ -1,7 +1,5 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { Sparkles } from 'lucide-react';
-
 // Types
 interface ChartPosition {
   name: string;
@@ -118,7 +116,7 @@ export const TikTokCard: React.FC<TikTokCardProps> = ({ chartData, insightQuote,
       <div className="relative flex flex-col items-center gap-6 w-full max-w-[20rem] z-10">
         {/* Logo - positioned for TikTok safe zone */}
         <div className="absolute top-[80px] left-1/2 -translate-x-1/2 text-xs">
-          <Sparkles className="w-3 h-3" /> AstroVerse
+          <span className="material-symbols-outlined text-[12px]">auto_awesome</span> AstroVerse
         </div>
 
         {/* Title - Trending Transit focus */}

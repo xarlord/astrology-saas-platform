@@ -7,6 +7,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { getAccessToken } from '../utils/tokenStorage';
 
 export interface GeocodeResult {
   id: string;
@@ -95,7 +96,7 @@ export const useLocationStore = create<LocationState>()(
             `/api/v1/location/geocode?query=${encodeURIComponent(query)}&limit=10`,
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                Authorization: `Bearer ${getAccessToken()}`,
               },
             },
           );
@@ -164,7 +165,7 @@ export const useLocationStore = create<LocationState>()(
 
           const response = await fetch(`/api/v1/location/timezone?${params.toString()}`, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              Authorization: `Bearer ${getAccessToken()}`,
             },
           });
 
@@ -199,7 +200,7 @@ export const useLocationStore = create<LocationState>()(
           `/api/v1/location/reverse-geocode?latitude=${latitude}&longitude=${longitude}`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              Authorization: `Bearer ${getAccessToken()}`,
             },
           },
         );
