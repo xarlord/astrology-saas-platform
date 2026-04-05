@@ -58,7 +58,6 @@ describe('authStore', () => {
     useAuthStore.setState({
       user: null,
       token: null,
-      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -81,7 +80,6 @@ describe('authStore', () => {
 
       expect(state.user).toBeNull();
       expect(state.token).toBeNull();
-      expect(state.refreshToken).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeNull();
@@ -93,7 +91,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockResolvedValueOnce(mockResponse);
@@ -107,7 +104,7 @@ describe('authStore', () => {
       expect(authService.login).toHaveBeenCalledWith(mockCredentials);
       expect(state.user).toEqual(mockUser);
       expect(state.token).toBe('access-token-123');
-      expect(state.refreshToken).toBe('refresh-token-123');
+      // refreshToken no longer stored in state (handled via httpOnly cookie)
       expect(state.isAuthenticated).toBe(true);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeNull();
@@ -117,7 +114,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockResolvedValueOnce(mockResponse);
@@ -128,14 +124,13 @@ describe('authStore', () => {
 
       const state = useAuthStore.getState();
       expect(state.token).toBe('access-token-123');
-      expect(state.refreshToken).toBe('refresh-token-123');
+      // refreshToken no longer stored in state (handled via httpOnly cookie)
     });
 
     it('should set loading state during login', async () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockImplementationOnce(
@@ -198,7 +193,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: newUser,
         accessToken: 'access-token-456',
-        refreshToken: 'refresh-token-456',
       };
 
       vi.mocked(authService.register).mockResolvedValueOnce(mockResponse);
@@ -220,7 +214,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-456',
-        refreshToken: 'refresh-token-456',
       };
 
       vi.mocked(authService.register).mockResolvedValueOnce(mockResponse);
@@ -231,7 +224,7 @@ describe('authStore', () => {
 
       const state = useAuthStore.getState();
       expect(state.token).toBe('access-token-456');
-      expect(state.refreshToken).toBe('refresh-token-456');
+      // refreshToken no longer stored in state (handled via httpOnly cookie)
     });
 
     it('should handle register error', async () => {
@@ -275,7 +268,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockResolvedValueOnce(mockResponse);
@@ -296,7 +288,6 @@ describe('authStore', () => {
       expect(authService.logout).toHaveBeenCalled();
       expect(state.user).toBeNull();
       expect(state.token).toBeNull();
-      expect(state.refreshToken).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.error).toBeNull();
     });
@@ -310,7 +301,6 @@ describe('authStore', () => {
 
       const state = useAuthStore.getState();
       expect(state.token).toBeNull();
-      expect(state.refreshToken).toBeNull();
       expect(state.user).toBeNull();
     });
 
