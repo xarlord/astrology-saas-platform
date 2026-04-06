@@ -144,14 +144,6 @@ vi.mock('../../components/ui/Button', () => ({
   ),
 }));
 
-// Mock lucide-react icons
-vi.mock('lucide-react', () => ({
-  Calendar: () => <span data-testid="calendar-icon">Calendar</span>,
-  Settings: () => <span data-testid="settings-icon">Settings</span>,
-  Share2: () => <span data-testid="share-icon">Share</span>,
-  ArrowLeft: () => <span data-testid="arrow-left-icon">Back</span>,
-}));
-
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
   AppLayout: ({ children, ...props }: { children: React.ReactNode } & Record<string, unknown>) => (

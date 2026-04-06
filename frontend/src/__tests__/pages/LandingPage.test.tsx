@@ -14,42 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import LandingPage from '../../pages/LandingPage';
 
-// Helper to create a mock icon component
-const createMockIcon = (name: string) => {
-  const Icon = (props: any) =>
-    createElement('svg', { ...props, 'data-testid': `icon-${name}` }, props.children);
-  Icon.displayName = name;
-  return Icon;
-};
-
-// Mock lucide-react icons imported in the source file
-vi.mock('lucide-react', () => {
-  const createIcon = (name: string) => {
-    const Icon = (props: any) =>
-      createElement('svg', { ...props, 'data-testid': `icon-${name}` }, props.children);
-    Icon.displayName = name;
-    return Icon;
-  };
-  return {
-    CheckCircle: createIcon('CheckCircle'),
-    Sparkles: createIcon('Sparkles'),
-    AlertCircle: createIcon('AlertCircle'),
-    Mail: createIcon('Mail'),
-    Menu: createIcon('Menu'),
-    X: createIcon('X'),
-    Star: createIcon('Star'),
-    ArrowLeft: createIcon('ArrowLeft'),
-    ArrowRight: createIcon('ArrowRight'),
-    Brain: createIcon('Brain'),
-    Calendar: createIcon('Calendar'),
-    Check: createIcon('Check'),
-    Clock: createIcon('Clock'),
-    Pentagon: createIcon('Pentagon'),
-    PlayCircle: createIcon('PlayCircle'),
-    Quote: createIcon('Quote'),
-    Sun: createIcon('Sun'),
-  };
-});
+// Note: Material Symbols are used directly in components - no icon mocks needed
 
 // Mock useAuth hook
 vi.mock('../../hooks', () => ({
