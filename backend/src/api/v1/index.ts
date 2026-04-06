@@ -22,6 +22,7 @@ import { aiRoutes } from '../../modules/ai/routes/ai.routes';
 import { billingRoutes } from '../../modules/billing';
 import { briefingRoutes } from '../../modules/jobs';
 import { cardRoutes } from '../../modules/cards';
+import { monthlyTransitRoutes } from '../../modules/reports';
 
 const router = Router();
 
@@ -41,6 +42,7 @@ router.get('/', (_req, res) => {
       synastry: '/api/v1/synastry',
       'solar-returns': '/api/v1/solar-returns',
       briefing: '/api/v1/briefing',
+      reports: '/api/v1/reports',
       health: '/health'
     }
   });
@@ -99,5 +101,8 @@ router.use('/briefing', briefingRoutes);
 
 // Shareable card endpoints
 router.use('/cards', cardRoutes);
+
+// Monthly transit report endpoints (premium only)
+router.use('/reports', monthlyTransitRoutes);
 
 export default router;

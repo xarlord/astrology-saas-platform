@@ -18,8 +18,6 @@ test.describe('Transit Dashboard', () => {
     await page.getByRole('button', { type: 'submit' }).click();
     await page.waitForURL(/.*dashboard/);
   });
-  const body = await res.json();
-  const { accessToken, refreshToken } = body.data;
 
   test('should display today\'s transits', async ({ page }) => {
     // Navigate to transits page
@@ -28,9 +26,8 @@ test.describe('Transit Dashboard', () => {
 
     // Select "Today" view
     await page.getByRole('button', { name: /today/i }).or(page.locator('[data-range="today"]')).first().click();
-
-  return { accessToken };
-}
+  });
+});
 
 // ------------------------------------------------------------------- tests
 

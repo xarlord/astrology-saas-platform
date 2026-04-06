@@ -25,6 +25,7 @@ interface TestUser {
  */
 export async function cleanDatabase(database: Knex) {
   const tables = [
+    'generated_cards',
     'synastry_reports',
     'monthly_forecasts',
     'lunar_returns',

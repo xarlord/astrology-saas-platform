@@ -450,14 +450,14 @@ describe('AuthenticationForms - RegisterForm', () => {
       expect(passwordInput).toHaveAttribute('type', 'password');
       expect(confirmPasswordInput).toHaveAttribute('type', 'password');
 
-      const buttons = screen.getAllByRole('button');
-      const eyeButtons = buttons.filter((btn) => btn.querySelector('svg'));
+      // Find password visibility toggle buttons by aria-label (same pattern as LoginForm test)
+      const showPasswordButton = screen.getAllByLabelText(/show password/i);
 
-      if (eyeButtons.length >= 2) {
-        await user.click(eyeButtons[0]);
+      if (showPasswordButton.length >= 2) {
+        await user.click(showPasswordButton[0]);
         expect(passwordInput).toHaveAttribute('type', 'text');
 
-        await user.click(eyeButtons[1]);
+        await user.click(showPasswordButton[1]);
         expect(confirmPasswordInput).toHaveAttribute('type', 'text');
       }
     });

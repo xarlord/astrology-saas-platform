@@ -110,7 +110,7 @@ class CardModel {
         chart_id: data.chart_id,
         share_token: data.share_token,
         template,
-        planet_placements: JSON.stringify(validPlacements),
+        planet_placements: validPlacements,
         show_insight: data.show_insight !== false,
         insight_text: data.insight_text || null,
         referral_code: data.referral_code || null,

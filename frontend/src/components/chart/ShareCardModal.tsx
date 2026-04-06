@@ -6,12 +6,12 @@
  * then generates a card via the backend API and offers sharing options.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { clsx } from 'clsx';
 import { Modal } from '../ui/Modal';
 import { cardService } from '@/services/card.service';
-import type { CardTemplate, CardPlanet, GeneratedCard } from '@/types/card.types';
-import { CARD_TEMPLATES } from '@/types/card.types';
+import type { CardTemplate, CardPlanet, GeneratedCard, CardStyle, CardColorTheme } from '@/types/card.types';
+import { CARD_TEMPLATES, CARD_STYLES, CARD_COLOR_THEMES } from '@/types/card.types';
 
 interface ShareCardModalProps {
   isOpen: boolean;
@@ -55,6 +55,25 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // New state for style presets and color themes
+  const [selectedStyle, setSelectedStyle] = useState<CardStyle>('cosmic');
+  const [selectedColorTheme, setSelectedColorTheme] = useState<CardColorTheme>('midnight_purple');
+
+  // Rate limiting state
+  const [rateLimit, setRateLimit] = useState<{ count: number; limit: number; remaining: number; resetAt: string } | null>(null);
+
+  // Load rate limit status when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      cardService.getRateLimitStatus()
+        .then(setRateLimit)
+        .catch(() => {
+          // If rate limit endpoint doesn't exist yet, set default
+          setRateLimit({ count: 0, limit: 10, remaining: 10, resetAt: '' });
+        });
+    }
+  }, [isOpen]);
+
   const handlePlanetToggle = useCallback((planet: CardPlanet) => {
     setSelectedPlanets((prev) => {
       if (prev.includes(planet)) {
@@ -73,11 +92,16 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       const card = await cardService.generateCard({
         chart_id: chartId,
         template,
+        style: selectedStyle,
+        color_theme: selectedColorTheme,
         planet_placements: selectedPlanets,
         show_insight: showInsight,
         insight_text: insightText || undefined,
       });
       setGeneratedCard(card);
+      // Update rate limit after generation
+      const updatedRateLimit = await cardService.getRateLimitStatus().catch(() => rateLimit);
+      setRateLimit(updatedRateLimit);
       setStep('ready');
     } catch (err: unknown) {
       const message =
@@ -86,7 +110,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       setError(message);
       setStep('configure');
     }
-  }, [chartId, template, selectedPlanets, showInsight, insightText]);
+  }, [chartId, template, selectedStyle, selectedColorTheme, selectedPlanets, showInsight, insightText, rateLimit]);
 
   const handleCopyLink = useCallback(async () => {
     if (!generatedCard) return;
@@ -108,32 +132,47 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     link.click();
   }, [generatedCard, chartName]);
 
-  const shareUrl = generatedCard
-    ? `${window.location.origin}/share/${generatedCard.share_token}`
-    : '';
-
   const handleWebShare = useCallback(async () => {
     if (!generatedCard || !navigator.share) return;
+    const currentShareUrl = `${window.location.origin}/share/${generatedCard.share_token}`;
     try {
       await navigator.share({
         title: generatedCard.og_title || 'My Astrology Chart',
         text: generatedCard.og_description || 'Check out my cosmic placements!',
-        url: shareUrl,
+        url: currentShareUrl,
       });
     } catch {
       // User cancelled or share failed
     }
-  }, [generatedCard, shareUrl]);
+  }, [generatedCard]);
 
   const handleTwitterShare = useCallback(() => {
     const text = encodeURIComponent(generatedCard?.og_title ?? 'My Astrology Chart');
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener');
-  }, [generatedCard, shareUrl]);
+    const currentShareUrl = generatedCard ? `${window.location.origin}/share/${generatedCard.share_token}` : '';
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(currentShareUrl)}`, '_blank', 'noopener');
+  }, [generatedCard]);
 
   const handleWhatsAppShare = useCallback(() => {
-    const text = encodeURIComponent(`${generatedCard?.og_title ?? 'My Astrology Chart'} ${shareUrl}`);
+    const currentShareUrl = generatedCard ? `${window.location.origin}/share/${generatedCard.share_token}` : '';
+    const text = encodeURIComponent(`${generatedCard?.og_title ?? 'My Astrology Chart'} ${currentShareUrl}`);
     window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener');
-  }, [generatedCard, shareUrl]);
+  }, [generatedCard]);
+
+  const handleFacebookShare = useCallback(() => {
+    const currentShareUrl = generatedCard ? `${window.location.origin}/share/${generatedCard.share_token}` : '';
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentShareUrl)}`, '_blank', 'noopener');
+  }, [generatedCard]);
+
+  const handleInstagramShare = useCallback(() => {
+    // Instagram doesn't have a direct web share API
+    // Download the image and prompt user to share manually
+    if (generatedCard?.image_url) {
+      handleDownload();
+      alert('Image downloaded! Open Instagram and share this image from your gallery.');
+    } else {
+      alert('Please wait for the card image to be generated, then download and share to Instagram.');
+    }
+  }, [generatedCard, handleDownload]);
 
   const handleClose = useCallback(() => {
     setStep('configure');
@@ -143,6 +182,8 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setShowInsight(true);
     setSelectedPlanets(DEFAULT_PLANETS);
     setTemplate('instagram_story');
+    setSelectedStyle('cosmic');
+    setSelectedColorTheme('midnight_purple');
     onClose();
   }, [onClose]);
 
@@ -150,7 +191,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Share as Card"
+      title="Create Shareable Card"
       size="lg"
       footer={
         step === 'configure' ? (
@@ -180,6 +221,82 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
               {error}
             </div>
           )}
+
+          {/* Rate Limiting UI */}
+          {rateLimit && (
+            <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[16px]">speed</span>
+                <span>Daily generations: {rateLimit.count}/{rateLimit.limit}</span>
+              </div>
+              <div className="text-xs text-blue-500 dark:text-blue-400">
+                {rateLimit.remaining} remaining today
+              </div>
+            </div>
+          )}
+
+          {/* Style Preset Picker */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              Choose Style
+            </h3>
+            <div className="grid grid-cols-3 gap-3">
+              {CARD_STYLES.map((style) => (
+                <button
+                  key={style.id}
+                  type="button"
+                  onClick={() => setSelectedStyle(style.id)}
+                  className={clsx(
+                    'flex flex-col items-center p-4 rounded-lg border-2 transition-all text-center',
+                    selectedStyle === style.id
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
+                  )}
+                >
+                  <span className="text-2xl mb-2">{style.icon}</span>
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                    {style.label}
+                  </span>
+                  <span className="text-[10px] text-gray-500 mt-1">
+                    {style.description}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Color Theme Picker */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              Choose Color Theme
+            </h3>
+            <div className="grid grid-cols-3 gap-3">
+              {CARD_COLOR_THEMES.map((theme) => (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => setSelectedColorTheme(theme.id)}
+                  className={clsx(
+                    'flex flex-col items-center p-3 rounded-lg border-2 transition-all text-center',
+                    selectedColorTheme === theme.id
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
+                  )}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full mb-2"
+                    style={{ background: theme.gradient }}
+                  />
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                    {theme.label}
+                  </span>
+                  <span className="text-[10px] text-gray-500">
+                    {theme.icon}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Template Picker */}
           <div>
@@ -352,11 +469,27 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
             )}
 
             {/* Social share buttons */}
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleFacebookShare}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] text-sm font-medium transition-colors"
+              >
+                <span className="text-base">f</span>
+                Facebook
+              </button>
+              <button
+                type="button"
+                onClick={handleInstagramShare}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-[#833AB4]/20 via-[#FD1D1D]/20 to-[#F77737]/20 hover:from-[#833AB4]/30 hover:via-[#FD1D1D]/30 hover:to-[#F77737]/30 text-[#E1306C] text-sm font-medium transition-colors"
+              >
+                <span className="text-base">📷</span>
+                Instagram
+              </button>
               <button
                 type="button"
                 onClick={handleTwitterShare}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 text-[#1DA1F2] text-sm font-medium transition-colors"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 text-[#1DA1F2] text-sm font-medium transition-colors"
               >
                 <span className="text-base">𝕏</span>
                 Twitter / X
@@ -364,7 +497,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
               <button
                 type="button"
                 onClick={handleWhatsAppShare}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-sm font-medium transition-colors"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-sm font-medium transition-colors"
               >
                 <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
                 WhatsApp

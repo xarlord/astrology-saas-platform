@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { db } from '../db';
 import { isRedisConnected, getRedisClient } from '../modules/shared/services/redis.service';
 import { getAllQueuesHealth, isQueueReady } from '../modules/jobs';
+import { getCsrfToken } from '../middleware/csrf';
 
 const router = Router();
 const startTime = Date.now();
@@ -29,6 +30,12 @@ router.get('/', (_req, res) => {
     },
   });
 });
+
+/**
+ * GET /csrf-token
+ * CSRF token endpoint for frontend and E2E tests
+ */
+router.get('/csrf-token', getCsrfToken);
 
 /**
  * GET /health/db

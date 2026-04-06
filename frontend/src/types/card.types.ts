@@ -3,7 +3,10 @@
  * Types for the shareable chart cards feature
  */
 
-/** Card template options matching backend enum */
+/** Card style presets - aesthetic themes instead of platform templates */
+export type CardStyle = 'cosmic' | 'minimalist' | 'celestial';
+
+/** Legacy platform templates - kept for backward compatibility */
 export type CardTemplate = 'instagram_story' | 'twitter_x' | 'pinterest' | 'square' | 'linkedin';
 
 /** Planet names that can be shown on a card */
@@ -22,10 +25,21 @@ export type CardPlanet =
   | 'north_node'
   | 'chiron';
 
+/** Color theme options for card customization */
+export type CardColorTheme =
+  | 'midnight_purple'    // Deep purple gradients
+  | 'celestial_blue'     // Blue and silver
+  | 'golden_hour'        // Gold and warm tones
+  | 'forest_green'       // Green and earth tones
+  | 'rose_quartz'        // Pink and crystal
+  | 'monochrome';        // Black and white
+
 /** Request to generate a new shareable card */
 export interface GenerateCardRequest {
   chart_id: string;
   template?: CardTemplate;
+  style?: CardStyle;              // New style preset
+  color_theme?: CardColorTheme;   // New color theme
   planet_placements?: CardPlanet[];
   show_insight?: boolean;
   insight_text?: string;
@@ -37,6 +51,8 @@ export interface GeneratedCard {
   id: string;
   share_token: string;
   template: CardTemplate;
+  style?: CardStyle;              // New style preset
+  color_theme?: CardColorTheme;   // New color theme
   planet_placements: CardPlanet[];
   show_insight: boolean;
   insight_text?: string;
@@ -45,12 +61,16 @@ export interface GeneratedCard {
   created_at: string;
   og_title: string;
   og_description: string;
+  daily_generation_count?: number;  // For rate limiting UI
+  daily_generation_limit?: number;  // For rate limiting UI
 }
 
 /** Public card data (no owner-specific fields) */
 export interface PublicCard {
   id: string;
   template: CardTemplate;
+  style?: CardStyle;              // New style preset
+  color_theme?: CardColorTheme;   // New color theme
   planet_placements: CardPlanet[];
   show_insight: boolean;
   insight_text?: string;
@@ -84,7 +104,26 @@ export interface CardTemplateInfo {
   icon: string;
 }
 
-/** All available card templates */
+/** Card style preset display metadata */
+export interface CardStyleInfo {
+  id: CardStyle;
+  label: string;
+  description: string;
+  previewGradient: string;  // CSS gradient for preview
+  icon: string;
+}
+
+/** Card color theme display metadata */
+export interface CardColorThemeInfo {
+  id: CardColorTheme;
+  label: string;
+  description: string;
+  primaryColor: string;     // CSS color
+  gradient: string;         // CSS gradient for preview
+  icon: string;
+}
+
+/** All available card templates (legacy - for backward compatibility) */
 export const CARD_TEMPLATES: CardTemplateInfo[] = [
   {
     id: 'instagram_story',
@@ -125,5 +164,82 @@ export const CARD_TEMPLATES: CardTemplateInfo[] = [
     width: 1080,
     height: 1080,
     icon: '⬛',
+  },
+];
+
+/** All available card style presets */
+export const CARD_STYLES: CardStyleInfo[] = [
+  {
+    id: 'cosmic',
+    label: 'Cosmic',
+    description: 'Deep space with celestial elements',
+    previewGradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+    icon: '🌌',
+  },
+  {
+    id: 'minimalist',
+    label: 'Minimalist',
+    description: 'Clean and simple design',
+    previewGradient: 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)',
+    icon: '✨',
+  },
+  {
+    id: 'celestial',
+    label: 'Celestial',
+    description: 'Ethereal with mystical elements',
+    previewGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    icon: '🌟',
+  },
+];
+
+/** All available card color themes */
+export const CARD_COLOR_THEMES: CardColorThemeInfo[] = [
+  {
+    id: 'midnight_purple',
+    label: 'Midnight Purple',
+    description: 'Deep purple gradients',
+    primaryColor: '#6B46C1',
+    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #4a1a6b 100%)',
+    icon: '🟣',
+  },
+  {
+    id: 'celestial_blue',
+    label: 'Celestial Blue',
+    description: 'Blue and silver',
+    primaryColor: '#4299E1',
+    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #60a5fa 100%)',
+    icon: '🔵',
+  },
+  {
+    id: 'golden_hour',
+    label: 'Golden Hour',
+    description: 'Gold and warm tones',
+    primaryColor: '#D69E2E',
+    gradient: 'linear-gradient(135deg, #744210 0%, #F6E05E 100%)',
+    icon: '🟡',
+  },
+  {
+    id: 'forest_green',
+    label: 'Forest Green',
+    description: 'Green and earth tones',
+    primaryColor: '#38A169',
+    gradient: 'linear-gradient(135deg, #14532d 0%, #4ade80 100%)',
+    icon: '🟢',
+  },
+  {
+    id: 'rose_quartz',
+    label: 'Rose Quartz',
+    description: 'Pink and crystal',
+    primaryColor: '#ED64A6',
+    gradient: 'linear-gradient(135deg, #831843 0%, #f472b6 100%)',
+    icon: '🩷',
+  },
+  {
+    id: 'monochrome',
+    label: 'Monochrome',
+    description: 'Black and white',
+    primaryColor: '#1F2937',
+    gradient: 'linear-gradient(135deg, #000000 0%, #ffffff 100%)',
+    icon: '⚫',
   },
 ];

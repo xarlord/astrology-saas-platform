@@ -54,12 +54,20 @@ export async function register(req: Request, res: Response): Promise<void> {
   // Send welcome email (non-blocking)
   sendWelcomeEmail(user.email, user.name);
 
+  // Set refresh token as httpOnly cookie
+  res.cookie('refreshToken', refreshTokenValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    path: '/api/v1/auth/refresh' // Restrict to refresh endpoint
+  });
+
   res.status(201).json({
     success: true,
     data: {
       user: sanitizeUser(user as unknown as Record<string, unknown>),
       accessToken,
-      refreshToken: refreshTokenValue,
     },
   });
 }
@@ -99,12 +107,20 @@ export async function login(req: Request, res: Response): Promise<void> {
     ip_address: req.ip,
   });
 
+  // Set refresh token as httpOnly cookie
+  res.cookie('refreshToken', refreshTokenValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    path: '/api/v1/auth/refresh' // Restrict to refresh endpoint
+  });
+
   res.status(200).json({
     success: true,
     data: {
       user: sanitizeUser(user as unknown as Record<string, unknown>),
       accessToken,
-      refreshToken: refreshTokenValue,
     },
   });
 }
@@ -176,13 +192,18 @@ export async function updatePreferences(req: AuthenticatedRequest, res: Response
  * Revokes the refresh token to prevent further use
  */
 export async function logout(req: Request, res: Response): Promise<void> {
-  // Get refresh token from request body or header
-  const refreshToken = req.body.refreshToken || req.get('X-Refresh-Token');
+  // Get refresh token from cookie
+  const refreshToken = req.cookies?.refreshToken;
 
   if (refreshToken) {
     // Revoke the refresh token in database
     await RefreshTokenModel.revokeRefreshToken(refreshToken);
   }
+
+  // Clear the httpOnly cookie
+  res.clearCookie('refreshToken', {
+    path: '/api/v1/auth/refresh'
+  });
 
   res.status(200).json({
     success: true,
@@ -196,7 +217,8 @@ export async function logout(req: Request, res: Response): Promise<void> {
  * Implements token rotation by issuing a new refresh token
  */
 export async function refreshToken(req: Request, res: Response): Promise<void> {
-  const { refreshToken: oldRefreshToken } = req.body;
+  // Get refresh token from cookie
+  const oldRefreshToken = req.cookies?.refreshToken;
 
   if (!oldRefreshToken) {
     throw new AppError('Refresh token is required', 400);
@@ -255,11 +277,19 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
     });
   });
 
+  // Set new refresh token as httpOnly cookie
+  res.cookie('refreshToken', newRefreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    path: '/api/v1/auth/refresh' // Restrict to refresh endpoint
+  });
+
   res.status(200).json({
     success: true,
     data: {
       accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
     },
   });
 }

@@ -38,6 +38,7 @@ const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
 const DailyBriefingPage = lazy(() => import('./pages/DailyBriefingPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const ShareCardPage = lazy(() => import('./pages/ShareCardPage'));
+const SharedCardPage = lazy(() => import('./pages/SharedCardPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Create React Query client
@@ -213,6 +214,7 @@ function App() {
               />
               <Route path="/subscription" element={<SubscriptionPage />} />
               <Route path="/share/:shareToken" element={<ShareCardPage />} />
+              <Route path="/shared/cards/:id" element={<SharedCardPage />} />
               <Route
                 path="/reports/solar-return/:id"
                 element={

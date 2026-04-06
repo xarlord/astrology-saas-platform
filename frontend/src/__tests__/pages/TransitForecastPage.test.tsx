@@ -33,11 +33,13 @@ vi.mock('react-router-dom', async () => {
 
 // Mock services
 const mockCalculateTransits = vi.fn();
+const mockGetTodayTransits = vi.fn();
 const mockGetCharts = vi.fn();
 
 vi.mock('../../services/transit.service', () => ({
   transitService: {
     calculateTransits: (...args: any[]) => mockCalculateTransits(...args),
+    getTodayTransits: (...args: any[]) => mockGetTodayTransits(...args),
   },
 }));
 
@@ -180,10 +182,16 @@ describe('TransitForecastPage', () => {
     mockNavigate.mockReset();
     mockGetCharts.mockReset();
     mockCalculateTransits.mockReset();
+    mockGetTodayTransits.mockReset();
 
     // Default successful responses
     mockGetCharts.mockResolvedValue({ charts: mockCharts });
     mockCalculateTransits.mockResolvedValue(mockTransitData);
+    mockGetTodayTransits.mockResolvedValue({
+      transits: [],
+      energyLevel: 5,
+      dateRange: { start: '2026-04-06', end: '2026-04-06' }
+    });
   });
 
   describe('Page Rendering', () => {
