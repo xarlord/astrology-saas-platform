@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
 import { useState, useEffect, useCallback } from 'react';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useCreateChart, useCalculateChart, useCharts } from '../hooks';
 
 // Error Message Component with Icon
@@ -15,7 +14,7 @@ interface ErrorMessageProps {
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
     <p id={id} className="error-message" role="alert" aria-live="assertive">
-      <ExclamationCircleIcon className="error-icon" aria-hidden="true" />
+      <span className="material-symbols-outlined error-icon" aria-hidden="true">error</span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -279,7 +278,9 @@ export function BirthDataForm({
               />
               {errors.birthDate && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                    error
+                  </span>
                 </div>
               )}
             </div>
@@ -314,7 +315,9 @@ export function BirthDataForm({
               />
               {errors.birthTime && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                    error
+                  </span>
                 </div>
               )}
             </div>
@@ -376,7 +379,9 @@ export function BirthDataForm({
               />
               {errors.birthPlace && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                    error
+                  </span>
                 </div>
               )}
             </div>
@@ -444,7 +449,9 @@ export function BirthDataForm({
               />
               {errors.chartName && (
                 <div className="error-icon-wrapper">
-                  <ExclamationCircleIcon className="w-5 h-5 text-red-500" aria-hidden="true" />
+                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                    error
+                  </span>
                 </div>
               )}
             </div>

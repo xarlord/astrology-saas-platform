@@ -1,12 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { PlanetSymbol, AspectSymbol, EmptyState } from './';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CalendarIcon,
-  SunIcon,
-  MoonIcon,
-} from '@heroicons/react/24/outline';
 import { INTENSITY_THRESHOLDS, UI, EVENT_COLORS } from '../utils/constants';
 
 // Types based on findings.md
@@ -141,10 +134,10 @@ function DateSelector({
   onDateChange: (date: string) => void;
 }) {
   const viewModes = [
-    { id: 'today', label: 'Today', icon: SunIcon },
-    { id: 'week', label: 'This Week', icon: CalendarIcon },
-    { id: 'calendar', label: 'This Month', icon: CalendarIcon },
-    { id: 'highlights', label: 'Highlights', icon: MoonIcon },
+    { id: 'today', label: 'Today', icon: 'wb_sunny' },
+    { id: 'week', label: 'This Week', icon: 'date_range' },
+    { id: 'calendar', label: 'This Month', icon: 'calendar_month' },
+    { id: 'highlights', label: 'Highlights', icon: 'star' },
   ];
 
   return (
@@ -153,13 +146,11 @@ function DateSelector({
       ??{' '}
       <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
         ??{' '}
-        {viewModes.map((mode) => {
-          const Icon = mode.icon;
-          return (
-            <button
-              key={mode.id}
-              onClick={() => onViewChange(mode.id as ViewMode)}
-              className={`
+        {viewModes.map((mode) => (
+          <button
+            key={mode.id}
+            onClick={() => onViewChange(mode.id as ViewMode)}
+            className={`
                 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap
                 ${
                   viewMode === mode.id
@@ -167,12 +158,13 @@ function DateSelector({
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
                 }
               `}
-            >
-              <Icon className="w-4 h-4" />
-              {mode.label}
-            </button>
-          );
-        })}
+          >
+            <span className="material-symbols-outlined text-[18px]">
+              {mode.icon}
+            </span>
+            {mode.label}
+          </button>
+        ))}
       </div>
       {/* Date Navigator */}
       <div className="flex items-center gap-2">
@@ -185,7 +177,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           aria-label="Previous day"
         >
-          <ChevronLeftIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_left</span>
         </button>
         <input
           type="date"
@@ -203,7 +195,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           aria-label="Next day"
         >
-          <ChevronRightIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_right</span>
         </button>
       </div>
     </div>

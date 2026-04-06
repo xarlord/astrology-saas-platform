@@ -14,7 +14,6 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
-import { GlobeAltIcon, LockClosedIcon, KeyIcon } from '@heroicons/react/24/outline';
 
 export type ShareVisibility = 'public' | 'private' | 'password';
 
@@ -293,12 +292,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <GlobeAltIcon
+                    <span
                       className={clsx(
-                        'w-5 h-5 mr-3',
+                        'material-symbols-outlined text-[20px] mr-3',
                         visibility === 'public' ? 'text-purple-400' : 'text-gray-400',
                       )}
-                    />
+                    >
+                      public
+                    </span>
                     <div className="text-left">
                       <p
                         className={clsx(
@@ -339,12 +340,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <LockClosedIcon
+                    <span
                       className={clsx(
-                        'w-5 h-5 mr-3',
+                        'material-symbols-outlined text-[20px] mr-3',
                         visibility === 'private' ? 'text-purple-400' : 'text-gray-400',
                       )}
-                    />
+                    >
+                      lock
+                    </span>
                     <div className="text-left">
                       <p
                         className={clsx(
@@ -385,12 +388,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <KeyIcon
+                    <span
                       className={clsx(
-                        'w-5 h-5 mr-3',
+                        'material-symbols-outlined text-[20px] mr-3',
                         visibility === 'password' ? 'text-purple-400' : 'text-gray-400',
                       )}
-                    />
+                    >
+                      key
+                    </span>
                     <div className="text-left flex-1">
                       <p
                         className={clsx(

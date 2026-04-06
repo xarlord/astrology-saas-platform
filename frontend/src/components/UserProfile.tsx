@@ -1,15 +1,5 @@
 import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
-import {
-  CameraIcon,
-  PencilIcon,
-  TrashIcon,
-  PlusIcon,
-  StarIcon,
-  SparklesIcon,
-  CheckIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -283,7 +273,7 @@ function ProfileHeader({
             aria-label="Change avatar"
             title="Change avatar"
           >
-            <CameraIcon className="w-4 h-4 text-indigo-600" />
+            <span className="material-symbols-outlined text-[16px] text-indigo-600">photo_camera</span>
           </button>
         </div>
 
@@ -364,7 +354,7 @@ function ProfileHeader({
                 className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
                 aria-label="Cancel"
               >
-                <XMarkIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </>
           ) : (
@@ -375,7 +365,7 @@ function ProfileHeader({
               title="Edit profile"
               aria-label="Edit profile"
             >
-              <PencilIcon className="w-5 h-5" />
+              <span className="material-symbols-outlined text-[20px]">edit</span>
             </button>
           )}
         </div>
@@ -492,7 +482,7 @@ function ChartsTab({
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
-        <StarIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <span className="material-symbols-outlined text-[64px] text-gray-400 mx-auto mb-4">star</span>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No charts yet</h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Create your first natal chart to get started
@@ -501,7 +491,7 @@ function ChartsTab({
           type="button"
           className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          <PlusIcon className="w-5 h-5 inline mr-2" />
+          <span className="material-symbols-outlined text-[20px] inline mr-2">add</span>
           Create Your First Chart
         </button>
       </div>
@@ -518,7 +508,7 @@ function ChartsTab({
           type="button"
           className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          <PlusIcon className="w-5 h-5" />
+          <span className="material-symbols-outlined text-[20px]">add</span>
           Add New Chart
         </button>
       </div>
@@ -592,7 +582,7 @@ function ChartCard({
           className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           aria-label="Edit chart"
         >
-          <PencilIcon className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">edit</span>
         </button>
         <button
           type="button"
@@ -600,7 +590,7 @@ function ChartCard({
           className="px-3 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
           aria-label="Delete chart"
         >
-          <TrashIcon className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">delete</span>
         </button>
       </div>
     </div>
@@ -851,7 +841,7 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
               </p>
             )}
           </div>
-          <SparklesIcon className="w-8 h-8 text-indigo-500" />
+          <span className="material-symbols-outlined text-[32px] text-indigo-500">auto_awesome</span>
         </div>
       </div>
 
@@ -919,7 +909,7 @@ function PlanCard({
             key={index}
             className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
           >
-            <CheckIcon className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <span className="material-symbols-outlined text-[20px] text-green-500 flex-shrink-0 mt-0.5">check</span>
             {feature}
           </li>
         ))}
