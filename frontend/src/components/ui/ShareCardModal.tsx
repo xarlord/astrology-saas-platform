@@ -275,7 +275,22 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   chartData,
   className = '',
 }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<CardTemplate>('instagram-story');
+  // Load saved template from localStorage or use default
+  const getInitialTemplate = (): CardTemplate => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('astroverse-share-template');
+        if (saved && TEMPLATE_OPTIONS.some((t) => t.id === saved)) {
+          return saved as CardTemplate;
+        }
+      } catch {
+        // Ignore localStorage errors
+      }
+    }
+    return 'instagram-story';
+  };
+
+  const [selectedTemplate, setSelectedTemplate] = useState<CardTemplate>(getInitialTemplate);
   const [exportState, setExportState] = useState<'idle' | 'rendering' | 'success' | 'error'>('idle');
   const [shareState, setShareState] = useState<'idle' | 'rendering' | 'error'>('idle');
 
@@ -291,10 +306,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   // Check for Web Share API support
   const hasShareAPI = typeof navigator !== 'undefined' && 'share' in navigator;
 
-  // Reset selection when modal opens
+  // Reset states when modal opens (but keep saved template)
   useEffect(() => {
     if (isOpen) {
-      setSelectedTemplate('instagram-story');
       setExportState('idle');
       setShareState('idle');
     }
@@ -305,6 +319,13 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setSelectedTemplate(template);
     setExportState('idle');
     setShareState('idle');
+
+    // Save preference to localStorage
+    try {
+      localStorage.setItem('astroverse-share-template', template);
+    } catch {
+      // Ignore localStorage errors
+    }
   }, []);
 
   // Handle download
