@@ -67,6 +67,17 @@ vi.mock('../../components', () => ({
   ),
 }));
 
+// Mock ShareCardModal
+vi.mock('../../components/ui/ShareCardModal', () => ({
+  ShareCardModal: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
+    isOpen ? (
+      <div role="dialog" aria-modal="true" data-testid="share-card-modal">
+        <h2>Share Card</h2>
+        <button onClick={onClose}>Close</button>
+      </div>
+    ) : null,
+  }));
+
 // Import after mocks
 import { NatalChartDetailPage } from '../../pages/NatalChartDetailPage';
 
@@ -710,49 +721,20 @@ describe('NatalChartDetailPage', () => {
       expect(mockRevokeObjectURL).toHaveBeenCalled();
     });
 
-    it('should call handleShare when share button is clicked', async () => {
-      // Mock both navigator.share and navigator.clipboard for jsdom
-      const mockClipboardWrite = vi.fn().mockResolvedValue(undefined);
-      const mockShare = vi.fn().mockResolvedValue(undefined);
-
-      // Store original values
-      const originalShare = navigator.share;
-      const originalClipboard = navigator.clipboard;
-
-      // Use Object.defineProperty to set the mocks
-      Object.defineProperty(global.navigator, 'share', {
-        value: mockShare,
-        writable: true,
-        configurable: true,
-      });
-      Object.defineProperty(global.navigator, 'clipboard', {
-        value: { writeText: mockClipboardWrite },
-        writable: true,
-        configurable: true,
-      });
-
+    it('should open ShareCardModal when share button is clicked', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(NatalChartDetailPage));
 
       const shareButton = screen.getByRole('button', { name: /^share$/i });
       await user.click(shareButton);
 
-      // Either share or clipboard.writeText should be called
-      const shareOrClipboardCalled =
-        mockShare.mock.calls.length > 0 || mockClipboardWrite.mock.calls.length > 0;
-      expect(shareOrClipboardCalled).toBe(true);
+      // ShareCardModal should be visible (it has role="dialog" with aria-modal="true")
+      const modal = await screen.findByRole('dialog', { hidden: true });
+      expect(modal).toBeInTheDocument();
+      expect(modal).toHaveAttribute('aria-modal', 'true');
 
-      // Restore original values
-      Object.defineProperty(global.navigator, 'share', {
-        value: originalShare,
-        writable: true,
-        configurable: true,
-      });
-      Object.defineProperty(global.navigator, 'clipboard', {
-        value: originalClipboard,
-        writable: true,
-        configurable: true,
-      });
+      // Modal should contain "Share Card" title
+      expect(screen.getByText('Share Card')).toBeInTheDocument();
     });
   });
 
