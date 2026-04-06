@@ -18,6 +18,7 @@ import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
 import { ChartWheel, AppLayout } from '../components';
+import { ShareCardModal } from '../components/ui/ShareCardModal';
 import type {
   PlanetPosition as APIPlanetPosition,
   CalculatedChartData,
@@ -207,6 +208,7 @@ export const NatalChartDetailPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<DetailTab>('personality');
   const [_hoveredPlanet, _setHoveredPlanet] = useState<string | null>(null);
+  const [shareCardModalOpen, setShareCardModalOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -277,6 +279,86 @@ export const NatalChartDetailPage: React.FC = () => {
     ];
   }, [calculatedData]);
 
+  // Prepare data for ShareCardModal
+  const shareCardData = useMemo(() => {
+    if (!calculatedData) return null;
+
+    const sun = calculatedData.planets?.find((p: APIPlanetPosition) => p.planet === 'Sun');
+    const moon = calculatedData.planets?.find((p: APIPlanetPosition) => p.planet === 'Moon');
+    const rising = calculatedData.houses?.[0];
+    const risingDegree = rising ? Math.floor(rising.longitude) : undefined;
+
+    // Calculate element distribution
+    const elementCounts = { fire: 0, earth: 0, air: 0, water: 0 };
+    calculatedData.planets?.forEach((planet: APIPlanetPosition) => {
+      const sign = planet.sign.toLowerCase();
+      if (['aries', 'leo', 'sagittarius'].includes(sign)) elementCounts.fire++;
+      else if (['taurus', 'virgo', 'capricorn'].includes(sign)) elementCounts.earth++;
+      else if (['gemini', 'libra', 'aquarius'].includes(sign)) elementCounts.air++;
+      else if (['cancer', 'scorpio', 'pisces'].includes(sign)) elementCounts.water++;
+    });
+
+    const total = calculatedData.planets?.length || 1;
+    const elements = {
+      fire: Math.round((elementCounts.fire / total) * 100),
+      earth: Math.round((elementCounts.earth / total) * 100),
+      air: Math.round((elementCounts.air / total) * 100),
+      water: Math.round((elementCounts.water / total) * 100),
+    };
+
+    // Additional placements (Venus, Mars, Jupiter, Saturn)
+    const additionalPlacements = calculatedData.planets
+      ?.filter((p: APIPlanetPosition) =>
+        ['Venus', 'Mars', 'Jupiter', 'Saturn'].includes(p.planet),
+      )
+      .map((p: APIPlanetPosition) => ({
+        planet: p.planet,
+        sign: p.sign,
+        degree: p.degree,
+      }));
+
+    // Generate a cosmic insight quote based on dominant element
+    const dominantElement = Object.entries(elements).sort((a, b) => b[1] - a[1])[0][0];
+    const insightQuotes: Record<string, string[]> = {
+      fire: [
+        'Your fire burns bright and your spirit knows no bounds',
+        'Passion flows through you like cosmic flame',
+        'You are the spark that ignites the world around you',
+      ],
+      earth: [
+        'Grounded in strength, you move mountains with patience',
+        'Your roots run deep, drawing wisdom from the earth',
+        'Steady and sure, you build foundations that last',
+      ],
+      air: [
+        'Your mind dances among the stars, seeking infinite possibilities',
+        'Thoughts take flight on wings of inspiration',
+        'You breathe life into ideas, turning dreams into reality',
+      ],
+      water: [
+        'Your waters run deep with intuitive wisdom',
+        'You feel the cosmic tides and flow with grace',
+        'Emotion is your superpower, connecting souls across distances',
+      ],
+    };
+    const quotes = insightQuotes[dominantElement] || insightQuotes.fire;
+    const insightQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    return {
+      name: currentChart?.name || 'Birth Chart',
+      sunSign: sun?.sign || 'Unknown',
+      moonSign: moon?.sign || 'Unknown',
+      risingSign: rising?.sign || 'Unknown',
+      sunDegree: sun?.degree,
+      moonDegree: moon?.degree,
+      risingDegree,
+      birthDate: currentChart?.birthData?.birthDate,
+      elements,
+      additionalPlacements,
+      insightQuote,
+    };
+  }, [calculatedData, currentChart]);
+
   const _handleDelete = useCallback(() => {
     console.log('Delete chart:', id);
   }, [id]);
@@ -294,7 +376,11 @@ export const NatalChartDetailPage: React.FC = () => {
     }
   }, [currentChart]);
 
-  const handleShare = useCallback(async () => {
+  const handleShare = useCallback(() => {
+    setShareCardModalOpen(true);
+  }, []);
+
+  const handleShareUrl = useCallback(async () => {
     if (navigator.share && currentChart) {
       try {
         await navigator.share({
@@ -762,6 +848,15 @@ export const NatalChartDetailPage: React.FC = () => {
           </aside>
         </div>
       </main>
+
+      {/* Share Card Modal */}
+      {shareCardData && (
+        <ShareCardModal
+          isOpen={shareCardModalOpen}
+          onClose={() => setShareCardModalOpen(false)}
+          chartData={shareCardData}
+        />
+      )}
     </AppLayout>
   );
 };
