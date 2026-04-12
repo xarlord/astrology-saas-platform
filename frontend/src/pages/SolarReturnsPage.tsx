@@ -12,7 +12,6 @@ import {
   SolarReturnInterpretation,
   RelocationCalculator,
   BirthdaySharing,
-  AppLayout,
 } from '../components';
 
 interface RelocationLocation {
@@ -167,7 +166,7 @@ export const SolarReturnsPage: React.FC = () => {
   };
 
   return (
-    <AppLayout>
+    <>
       <div className="mb-8">
         <h2 className="text-3xl font-bold mb-2">Solar Returns</h2>
         <p className="text-gray-600 dark:text-gray-400">Your birthday year forecasts and themes</p>
@@ -268,7 +267,7 @@ export const SolarReturnsPage: React.FC = () => {
           )}
         </>
       )}
-    </AppLayout>
+    </>
   );
 };
 

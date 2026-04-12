@@ -577,6 +577,7 @@ export const NatalChartDetailPage: React.FC = () => {
                     void handleShare();
                   }}
                   className="w-10 h-10 rounded-full"
+                  data-testid="share-chart-btn"
                 >
                   <span className="material-symbols-outlined text-[20px]">share</span>
                 </Button>

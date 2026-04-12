@@ -272,14 +272,18 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 <span className="material-symbols-outlined text-[20px]">add</span>
                 <span className="font-medium">New Chart</span>
               </Link>
-              <Link
+              <NavLink
                 to="/dashboard"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">dashboard</span>
                 <span>Dashboard</span>
-              </Link>
+              </NavLink>
             </div>
           </section>
 
@@ -289,38 +293,54 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               Features
             </h3>
             <div className="space-y-1">
-              <Link
+              <NavLink
                 to="/calendar"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">calendar_month</span>
                 <span>Calendar</span>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/synastry"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">favorite_border</span>
                 <span>Synastry</span>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/transits"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">sync</span>
                 <span>Transits</span>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/learning"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">school</span>
                 <span>Learning Center</span>
-              </Link>
+              </NavLink>
             </div>
           </section>
 
@@ -330,22 +350,30 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               Returns
             </h3>
             <div className="space-y-1">
-              <Link
+              <NavLink
                 to="/solar-returns"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">light_mode</span>
                 <span>Solar Returns</span>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/lunar-returns"
                 onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`
+                }
               >
                 <span className="material-symbols-outlined text-[20px]">dark_mode</span>
                 <span>Lunar Returns</span>
-              </Link>
+              </NavLink>
             </div>
           </section>
         </div>
@@ -361,13 +389,17 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 </p>
               </div>
               <p className="text-xs text-slate-400 mb-3">You have access to premium features</p>
-              <Link
+              <NavLink
                 to="/subscription"
                 onClick={onClose}
-                className="block text-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                className={({ isActive }) =>
+                  `block text-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? 'bg-emerald-700 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                  }`
+                }
               >
                 Manage Plan
-              </Link>
+              </NavLink>
             </div>
           ) : (
             <div className="bg-gradient-to-br from-primary/10 to-purple-900/20 rounded-lg p-4 border border-primary/20">
@@ -375,13 +407,17 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               <p className="text-xs text-slate-400 mb-3">
                 Get unlimited charts and detailed analysis
               </p>
-              <Link
+              <NavLink
                 to="/subscription"
                 onClick={onClose}
-                className="block text-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+                className={({ isActive }) =>
+                  `block text-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? 'bg-primary/90 text-white' : 'bg-primary text-white hover:bg-primary/90'
+                  }`
+                }
               >
                 Upgrade Now
-              </Link>
+              </NavLink>
             </div>
           )}
         </div>

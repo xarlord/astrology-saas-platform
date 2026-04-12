@@ -49,11 +49,11 @@ setup('authenticate and seed test data', async ({ request }) => {
   const fs = await import('fs');
   const existingState = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf-8'));
 
-  const baseUrl = process.env.BASE_URL ?? 'http://localhost:5173';
+  const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
 
   const localStorageEntries = [
     { name: 'accessToken', value: auth.accessToken },
-    { name: 'refreshToken', value: auth.refreshToken },
+    { name: 'refreshToken', value: auth.refreshToken || '' },
     { name: 'auth-storage', value: zustandAuthState },
   ];
 

@@ -20,9 +20,7 @@ const api = axios.create({
 let csrfToken: string | null = null;
 
 async function fetchCsrfToken(): Promise<string> {
-  const { data } = await axios.get<{ data: { token: string } }>(`${API_URL}/api/v1/csrf-token`, {
-    withCredentials: true,
-  });
+  const { data } = await api.get<{ data: { token: string } }>('/v1/health/csrf-token');
   const token: string = data.data.token;
   csrfToken = token;
   return token;

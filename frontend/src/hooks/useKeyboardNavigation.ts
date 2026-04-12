@@ -454,14 +454,13 @@ export interface UseTypeAheadOptions<T> {
 export function useTypeAhead<T>(options: UseTypeAheadOptions<T>) {
   const { items, getKey = (item) => String(item), onMatch, delay = 500 } = options;
 
-  const [searchString, setSearchString] = useState('');
+  const searchStringRef = useRef('');
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handleKeyPress = useCallback(
     (key: string) => {
-      // Add to search string
-      const newSearchString = searchString + key.toLowerCase();
-      setSearchString(newSearchString);
+      // Update ref immediately (synchronous, no stale closure)
+      searchStringRef.current = searchStringRef.current + key.toLowerCase();
 
       // Clear existing timeout
       if (timeoutRef.current) {
@@ -470,20 +469,23 @@ export function useTypeAhead<T>(options: UseTypeAheadOptions<T>) {
 
       // Set new timeout to clear search string
       timeoutRef.current = setTimeout(() => {
-        setSearchString('');
+        searchStringRef.current = '';
       }, delay);
 
-      // Find matching item
+      // Find matching item using ref value (always current)
       const matchIndex = items.findIndex((item) =>
-        getKey(item).toLowerCase().startsWith(newSearchString),
+        getKey(item).toLowerCase().startsWith(searchStringRef.current),
       );
 
       if (matchIndex !== -1) {
         onMatch?.(matchIndex, items[matchIndex]);
       }
     },
-    [searchString, items, getKey, onMatch, delay],
+    [items, getKey, onMatch, delay],
   );
+
+  // Return the ref value for display purposes
+  const searchString = searchStringRef.current;
 
   // Cleanup timeout on unmount
   useEffect(() => {

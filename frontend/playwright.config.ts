@@ -23,7 +23,7 @@ export default defineConfig({
 
   use: {
     // Base URL for tests - can be overridden via environment
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
 
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
@@ -133,12 +133,12 @@ export default defineConfig({
     {
       command: 'cd ../backend && npm run start:e2e',
       url: 'http://localhost:3001/health',
-      reuseExistingServer: false,
+      reuseExistingServer: true,
       timeout: 120000,
     },
     {
       command: 'npm run dev',
-      url: 'http://localhost:5173',
+      url: 'http://localhost:3000',
       reuseExistingServer: true,
       timeout: 120000,
     },

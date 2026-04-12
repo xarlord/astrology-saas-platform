@@ -25,7 +25,12 @@
     "format:fix": "prettier --write 'backend/src/**/*.ts' 'frontend/src/**/*.{ts,tsx}'",
     "clean": "rm -rf node_modules */node_modules",
     "db:migrate": "npm run db:migrate --workspace=backend",
-    "db:seed": "npm run db:seed --workspace=backend"
+    "db:seed": "npm run db:seed --workspace=backend",
+    "startup": "pwsh -ExecutionPolicy Bypass -File scripts/startup.ps1",
+    "startup:reset": "pwsh -ExecutionPolicy Bypass -File scripts/startup.ps1 -Action reset",
+    "startup:clean": "pwsh -ExecutionPolicy Bypass -File scripts/startup.ps1 -Action clean",
+    "startup:status": "pwsh -ExecutionPolicy Bypass -File scripts/startup.ps1 -Action status",
+    "startup:stop": "pwsh -ExecutionPolicy Bypass -File scripts/startup.ps1 -Action stop"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
