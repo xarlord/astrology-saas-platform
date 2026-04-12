@@ -35,7 +35,15 @@ vi.mock('react-router-dom', async () => {
 
 // Mock CustomDatePicker to simplify testing
 vi.mock('../../components/form/CustomDatePicker', () => ({
-  CustomDatePicker: ({ value, onChange, placeholder }: { value?: Date; onChange?: (date: Date) => void; placeholder?: string }) => {
+  CustomDatePicker: ({
+    value,
+    onChange,
+    placeholder,
+  }: {
+    value?: Date;
+    onChange?: (date: Date) => void;
+    placeholder?: string;
+  }) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (onChange && e.target.value) {
         onChange(new Date(e.target.value));
@@ -56,6 +64,11 @@ vi.mock('../../components/form/CustomDatePicker', () => ({
   },
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import ChartCreationWizardPage from '../../pages/ChartCreationWizardPage';
 
@@ -69,7 +82,7 @@ const createWrapper = (initialRoute = '/charts/create-wizard') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -79,7 +92,10 @@ const renderWithProviders = (ui: React.ReactElement, initialRoute = '/charts/cre
 };
 
 // Helper to select a date using the mocked date picker
-const selectDate = async (user: ReturnType<typeof userEvent.setup>, dateString: string = '1990-01-15') => {
+const selectDate = async (
+  user: ReturnType<typeof userEvent.setup>,
+  dateString: string = '1990-01-15',
+) => {
   const datePicker = screen.getByTestId('mock-date-picker');
   await user.type(datePicker, dateString);
 };
@@ -126,14 +142,14 @@ describe('ChartCreationWizardPage', () => {
       expect(screen.getByText('Create New Chart')).toBeInTheDocument();
     });
 
-    it('should render the header with logo and title', () => {
+    it('should render the page heading', () => {
       renderWithProviders(createElement(ChartCreationWizardPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
+      expect(screen.getByText('Create New Chart')).toBeInTheDocument();
     });
 
-    it('should render help button in header', () => {
+    it('should render the step description', () => {
       renderWithProviders(createElement(ChartCreationWizardPage));
-      expect(screen.getByText('Help')).toBeInTheDocument();
+      expect(screen.getByText('Enter the name and tags for this chart.')).toBeInTheDocument();
     });
 
     it('should render the step indicator with all 3 steps', () => {
@@ -555,7 +571,6 @@ describe('ChartCreationWizardPage', () => {
     });
 
     it('should handle submission errors gracefully', async () => {
-      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
       mockCreateChart.mockRejectedValueOnce(new Error('API Error'));
 
       const user = userEvent.setup();
@@ -567,11 +582,10 @@ describe('ChartCreationWizardPage', () => {
       const submitButton = screen.getByRole('button', { name: /Generate Chart/i });
       await user.click(submitButton);
 
+      // Should NOT navigate away — error is handled silently by the store
       await waitFor(() => {
-        expect(consoleError).toHaveBeenCalledWith('Failed to create chart:', expect.any(Error));
+        expect(mockNavigate).not.toHaveBeenCalledWith('/charts');
       });
-
-      consoleError.mockRestore();
     });
   });
 
@@ -627,7 +641,6 @@ describe('ChartCreationWizardPage', () => {
   describe('Accessibility', () => {
     it('should have proper heading structure', () => {
       renderWithProviders(createElement(ChartCreationWizardPage));
-      expect(screen.getByRole('heading', { name: 'AstroVerse' })).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: 'Create New Chart' })).toBeInTheDocument();
     });
 

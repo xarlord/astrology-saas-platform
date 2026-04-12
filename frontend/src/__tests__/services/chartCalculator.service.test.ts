@@ -20,7 +20,7 @@ describe('ChartCalculator Service', () => {
     date: new Date('1990-06-15T12:00:00Z'),
     time: '12:00',
     latitude: 40.7128, // New York
-    longitude: -74.0060,
+    longitude: -74.006,
     timezone: 'America/New_York',
     houseSystem: 'placidus',
   };
@@ -101,8 +101,8 @@ describe('ChartCalculator Service', () => {
       expect(chart.elements).toHaveProperty('air');
       expect(chart.elements).toHaveProperty('water');
 
-      const total = chart.elements.fire + chart.elements.earth +
-        chart.elements.air + chart.elements.water;
+      const total =
+        chart.elements.fire + chart.elements.earth + chart.elements.air + chart.elements.water;
       expect(total).toBe(10); // Total planets
     });
 
@@ -113,8 +113,7 @@ describe('ChartCalculator Service', () => {
       expect(chart.qualities).toHaveProperty('fixed');
       expect(chart.qualities).toHaveProperty('mutable');
 
-      const total = chart.qualities.cardinal + chart.qualities.fixed +
-        chart.qualities.mutable;
+      const total = chart.qualities.cardinal + chart.qualities.fixed + chart.qualities.mutable;
       expect(total).toBe(10); // Total planets
     });
 
@@ -160,7 +159,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         transitDate,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(transits).toHaveProperty('transitDate');
@@ -175,7 +174,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         transitDate,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(transits.transitPlanets.length).toBeGreaterThan(0);
@@ -187,7 +186,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         transitDate,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       // May or may not have aspects depending on positions
@@ -260,7 +259,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         year,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(solarReturn).toHaveProperty('year', year);
@@ -274,7 +273,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         2024,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(solarReturn.returnDate).toBeInstanceOf(Date);
@@ -285,7 +284,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         2024,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(Array.isArray(solarReturn.themes)).toBe(true);
@@ -296,7 +295,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         2024,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(solarReturn.chart).toHaveProperty('planets');
@@ -318,7 +317,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         targetDate,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(lunarReturn).toHaveProperty('returnDate');
@@ -333,7 +332,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         targetDate,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(typeof lunarReturn.theme).toBe('string');
@@ -346,7 +345,7 @@ describe('ChartCalculator Service', () => {
         natalChart,
         targetDate,
         testBirthData.latitude,
-        testBirthData.longitude
+        testBirthData.longitude,
       );
 
       expect(Array.isArray(lunarReturn.keyAreas)).toBe(true);
@@ -365,7 +364,7 @@ describe('ChartCalculator Service', () => {
       const progressed = calculator.calculateProgressedChart(
         natalChart,
         targetDate,
-        testBirthData.date
+        testBirthData.date,
       );
 
       expect(progressed).toHaveProperty('planets');
@@ -379,7 +378,7 @@ describe('ChartCalculator Service', () => {
       const progressed = calculator.calculateProgressedChart(
         natalChart,
         targetDate,
-        testBirthData.date
+        testBirthData.date,
       );
 
       expect(progressed.planets.length).toBe(10);

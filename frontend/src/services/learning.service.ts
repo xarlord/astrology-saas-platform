@@ -30,12 +30,9 @@ export class LearningService {
       const params = new URLSearchParams();
       if (filters?.category) params.append('category', filters.category);
       if (filters?.level) params.append('level', filters.level);
-      if (filters?.tags) filters.tags.forEach(tag => params.append('tags', tag));
+      if (filters?.tags) filters.tags.forEach((tag) => params.append('tags', tag));
 
-      const response = await api.get<ApiResponse<Lesson[]>>(
-        `${this.baseUrl}/lessons`,
-        { params }
-      );
+      const response = await api.get<ApiResponse<Lesson[]>>(`${this.baseUrl}/lessons`, { params });
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get lessons');
@@ -55,9 +52,7 @@ export class LearningService {
    */
   async getLesson(lessonId: string): Promise<Lesson> {
     try {
-      const response = await api.get<ApiResponse<Lesson>>(
-        `${this.baseUrl}/lessons/${lessonId}`
-      );
+      const response = await api.get<ApiResponse<Lesson>>(`${this.baseUrl}/lessons/${lessonId}`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get lesson');
@@ -77,9 +72,7 @@ export class LearningService {
    */
   async getUserProgress(): Promise<UserProgress[]> {
     try {
-      const response = await api.get<ApiResponse<UserProgress[]>>(
-        `${this.baseUrl}/progress`
-      );
+      const response = await api.get<ApiResponse<UserProgress[]>>(`${this.baseUrl}/progress`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get progress');
@@ -100,7 +93,7 @@ export class LearningService {
   async getLessonProgress(lessonId: string): Promise<UserProgress> {
     try {
       const response = await api.get<ApiResponse<UserProgress>>(
-        `${this.baseUrl}/progress/${lessonId}`
+        `${this.baseUrl}/progress/${lessonId}`,
       );
 
       if (!response.data.success) {
@@ -123,7 +116,7 @@ export class LearningService {
     try {
       const response = await api.post<ApiResponse<UserProgress>>(
         `${this.baseUrl}/progress`,
-        request
+        request,
       );
 
       if (!response.data.success) {
@@ -145,7 +138,7 @@ export class LearningService {
   async completeLesson(lessonId: string): Promise<UserProgress> {
     try {
       const response = await api.post<ApiResponse<UserProgress>>(
-        `${this.baseUrl}/progress/${lessonId}/complete`
+        `${this.baseUrl}/progress/${lessonId}/complete`,
       );
 
       if (!response.data.success) {
@@ -167,7 +160,7 @@ export class LearningService {
   async resetLessonProgress(lessonId: string): Promise<UserProgress> {
     try {
       const response = await api.delete<ApiResponse<UserProgress>>(
-        `${this.baseUrl}/progress/${lessonId}`
+        `${this.baseUrl}/progress/${lessonId}`,
       );
 
       if (!response.data.success) {
@@ -188,9 +181,7 @@ export class LearningService {
    */
   async getLearningPaths(): Promise<LearningPath[]> {
     try {
-      const response = await api.get<ApiResponse<LearningPath[]>>(
-        `${this.baseUrl}/paths`
-      );
+      const response = await api.get<ApiResponse<LearningPath[]>>(`${this.baseUrl}/paths`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get learning paths');
@@ -210,9 +201,7 @@ export class LearningService {
    */
   async getLearningPath(pathId: string): Promise<LearningPath> {
     try {
-      const response = await api.get<ApiResponse<LearningPath>>(
-        `${this.baseUrl}/paths/${pathId}`
-      );
+      const response = await api.get<ApiResponse<LearningPath>>(`${this.baseUrl}/paths/${pathId}`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get learning path');
@@ -232,9 +221,7 @@ export class LearningService {
    */
   async startLearningPath(pathId: string): Promise<void> {
     try {
-      const response = await api.post<ApiResponse<void>>(
-        `${this.baseUrl}/paths/${pathId}/start`
-      );
+      const response = await api.post<ApiResponse<void>>(`${this.baseUrl}/paths/${pathId}/start`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to start learning path');
@@ -253,7 +240,7 @@ export class LearningService {
   async submitQuiz(
     lessonId: string,
     quizId: string,
-    answers: Record<string, string | string[]>
+    answers: Record<string, string | string[]>,
   ): Promise<{ score: number; passed: boolean; feedback: string[] }> {
     try {
       const response = await api.post<
@@ -280,10 +267,9 @@ export class LearningService {
    */
   async searchLessons(query: string): Promise<Lesson[]> {
     try {
-      const response = await api.get<ApiResponse<Lesson[]>>(
-        `${this.baseUrl}/lessons/search`,
-        { params: { q: query } }
-      );
+      const response = await api.get<ApiResponse<Lesson[]>>(`${this.baseUrl}/lessons/search`, {
+        params: { q: query },
+      });
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to search lessons');
@@ -310,10 +296,7 @@ export class LearningService {
       if (filters?.category) params.append('category', filters.category);
       if (filters?.level) params.append('level', filters.level);
 
-      const response = await api.get<ApiResponse<Course[]>>(
-        `${this.baseUrl}/courses`,
-        { params }
-      );
+      const response = await api.get<ApiResponse<Course[]>>(`${this.baseUrl}/courses`, { params });
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get courses');
@@ -333,9 +316,7 @@ export class LearningService {
    */
   async getCourse(courseId: string): Promise<Course> {
     try {
-      const response = await api.get<ApiResponse<Course>>(
-        `${this.baseUrl}/courses/${courseId}`
-      );
+      const response = await api.get<ApiResponse<Course>>(`${this.baseUrl}/courses/${courseId}`);
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to get course');
@@ -355,10 +336,9 @@ export class LearningService {
    */
   async searchCourses(query: string): Promise<Course[]> {
     try {
-      const response = await api.get<ApiResponse<Course[]>>(
-        `${this.baseUrl}/courses/search`,
-        { params: { q: query } }
-      );
+      const response = await api.get<ApiResponse<Course[]>>(`${this.baseUrl}/courses/search`, {
+        params: { q: query },
+      });
 
       if (!response.data.success) {
         throw new Error(response.data.error ?? 'Failed to search courses');

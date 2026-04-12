@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import request from 'supertest';
 import db from '../../config/database';

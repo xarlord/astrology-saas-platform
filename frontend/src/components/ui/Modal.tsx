@@ -79,9 +79,7 @@ export const Modal: React.FC<ModalProps> = ({
       '[tabindex]:not([tabindex="-1"])',
     ].join(', ');
 
-    return Array.from(
-      modalRef.current.querySelectorAll<HTMLElement>(focusableSelectors)
-    );
+    return Array.from(modalRef.current.querySelectorAll<HTMLElement>(focusableSelectors));
   }, []);
 
   // Focus trap handler
@@ -111,7 +109,7 @@ export const Modal: React.FC<ModalProps> = ({
         }
       }
     },
-    [closeOnEscape, getFocusableElements, onClose]
+    [closeOnEscape, getFocusableElements, onClose],
   );
 
   // Set initial focus
@@ -162,7 +160,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     },
-    [closeOnOverlayClick, onClose]
+    [closeOnOverlayClick, onClose],
   );
 
   if (!isOpen) return null;
@@ -191,7 +189,7 @@ export const Modal: React.FC<ModalProps> = ({
           'max-h-[90vh] overflow-hidden flex flex-col',
           sizeClasses[size],
           variantStyles[variant],
-          className
+          className,
         )}
       >
         {/* Header */}
@@ -214,8 +212,19 @@ export const Modal: React.FC<ModalProps> = ({
                 className="ml-4 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
                 aria-label="Close modal"
               >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             )}
@@ -225,10 +234,7 @@ export const Modal: React.FC<ModalProps> = ({
         {/* Body */}
         <div
           id="modal-description"
-          className={clsx(
-            'flex-1 overflow-y-auto p-6',
-            contentClassName
-          )}
+          className={clsx('flex-1 overflow-y-auto p-6', contentClassName)}
         >
           {children}
         </div>
@@ -266,16 +272,16 @@ interface ModalBodyProps {
 }
 
 const ModalBody: React.FC<ModalBodyProps> = ({ children, className }) => (
-  <div className={clsx('flex-1 overflow-y-auto p-6', className)}>
-    {children}
-  </div>
+  <div className={clsx('flex-1 overflow-y-auto p-6', className)}>{children}</div>
 );
 
-(Modal as React.FC<ModalProps> & {
-  Header: React.FC<ModalHeaderProps>;
-  Body: React.FC<ModalBodyProps>;
-  Footer: React.FC<ModalFooterProps>;
-}).Body = ModalBody;
+(
+  Modal as React.FC<ModalProps> & {
+    Header: React.FC<ModalHeaderProps>;
+    Body: React.FC<ModalBodyProps>;
+    Footer: React.FC<ModalFooterProps>;
+  }
+).Body = ModalBody;
 
 // Modal.Footer subcomponent
 interface ModalFooterProps {
@@ -284,28 +290,26 @@ interface ModalFooterProps {
   align?: 'left' | 'center' | 'right';
 }
 
-const ModalFooter: React.FC<ModalFooterProps> = ({
-  children,
-  className,
-  align = 'right',
-}) => (
+const ModalFooter: React.FC<ModalFooterProps> = ({ children, className, align = 'right' }) => (
   <div
     className={clsx(
       'flex items-center border-t border-gray-200 dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-900/50',
       align === 'left' && 'justify-start',
       align === 'center' && 'justify-center',
       align === 'right' && 'justify-end space-x-3',
-      className
+      className,
     )}
   >
     {children}
   </div>
 );
 
-(Modal as React.FC<ModalProps> & {
-  Header: React.FC<ModalHeaderProps>;
-  Body: React.FC<ModalBodyProps>;
-  Footer: React.FC<ModalFooterProps>;
-}).Footer = ModalFooter;
+(
+  Modal as React.FC<ModalProps> & {
+    Header: React.FC<ModalHeaderProps>;
+    Body: React.FC<ModalBodyProps>;
+    Footer: React.FC<ModalFooterProps>;
+  }
+).Footer = ModalFooter;
 
 export default Modal;

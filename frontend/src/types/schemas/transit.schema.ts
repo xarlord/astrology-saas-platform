@@ -38,7 +38,7 @@ export const lunarPhaseTypeSchema = z.enum([
   'full-moon',
   'waning-gibbous',
   'last-quarter',
-  'waning-crescent'
+  'waning-crescent',
 ]);
 
 // ============================================================================
@@ -103,12 +103,14 @@ export const majorTransitSchema = z.object({
   aspects: z.array(transitAspectSchema).optional(),
   significance: transitSignificanceSchema,
   description: z.string(),
-  influence: z.object({
-    overall: z.string(),
-    career: z.string().optional(),
-    relationships: z.string().optional(),
-    personalGrowth: z.string().optional(),
-  }).optional(),
+  influence: z
+    .object({
+      overall: z.string(),
+      career: z.string().optional(),
+      relationships: z.string().optional(),
+      personalGrowth: z.string().optional(),
+    })
+    .optional(),
   intensity: z.number().min(1).max(10).optional(),
 });
 

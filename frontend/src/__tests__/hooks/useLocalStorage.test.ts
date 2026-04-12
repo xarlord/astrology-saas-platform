@@ -22,7 +22,7 @@ const createLocalStorageMock = () => {
       delete store[key];
     }),
     clear: vi.fn(() => {
-      Object.keys(store).forEach(key => delete store[key]);
+      Object.keys(store).forEach((key) => delete store[key]);
     }),
     store,
   };
@@ -200,9 +200,7 @@ describe('useLocalStorage', () => {
     });
 
     it('should handle null values', () => {
-      const { result } = renderHook(() =>
-        useLocalStorage<string | null>('null-key', null)
-      );
+      const { result } = renderHook(() => useLocalStorage<string | null>('null-key', null));
 
       expect(result.current[0]).toBeNull();
 
@@ -283,7 +281,7 @@ describe('useLocalStorageObject', () => {
     }
 
     const { result } = renderHook(() =>
-      useLocalStorageObject<TestObj>('obj-key', { name: 'initial', count: 0 })
+      useLocalStorageObject<TestObj>('obj-key', { name: 'initial', count: 0 }),
     );
 
     act(() => {
@@ -301,7 +299,7 @@ describe('useLocalStorageObject', () => {
     }
 
     const { result } = renderHook(() =>
-      useLocalStorageObject<TestObj>('obj-key', { a: 1, b: 2, c: 3 })
+      useLocalStorageObject<TestObj>('obj-key', { a: 1, b: 2, c: 3 }),
     );
 
     act(() => {
@@ -321,7 +319,7 @@ describe('useLocalStorageObject', () => {
     }
 
     const { result } = renderHook(() =>
-      useLocalStorageObject<TestObj>('obj-key', { name: 'test' })
+      useLocalStorageObject<TestObj>('obj-key', { name: 'test' }),
     );
 
     act(() => {
@@ -366,9 +364,7 @@ describe('useLocalStorageArray', () => {
   });
 
   it('should remove items by index', () => {
-    const { result } = renderHook(() =>
-      useLocalStorageArray<string>('arr-key', ['a', 'b', 'c'])
-    );
+    const { result } = renderHook(() => useLocalStorageArray<string>('arr-key', ['a', 'b', 'c']));
 
     act(() => {
       result.current[1].removeItem(1);
@@ -378,9 +374,7 @@ describe('useLocalStorageArray', () => {
   });
 
   it('should update items by index', () => {
-    const { result } = renderHook(() =>
-      useLocalStorageArray<string>('arr-key', ['a', 'b', 'c'])
-    );
+    const { result } = renderHook(() => useLocalStorageArray<string>('arr-key', ['a', 'b', 'c']));
 
     act(() => {
       result.current[1].updateItem(1, 'B');
@@ -390,9 +384,7 @@ describe('useLocalStorageArray', () => {
   });
 
   it('should clear all items', () => {
-    const { result } = renderHook(() =>
-      useLocalStorageArray<string>('arr-key', ['a', 'b', 'c'])
-    );
+    const { result } = renderHook(() => useLocalStorageArray<string>('arr-key', ['a', 'b', 'c']));
 
     act(() => {
       result.current[1].clear();
@@ -407,9 +399,7 @@ describe('useLocalStorageArray', () => {
       name: string;
     }
 
-    const { result } = renderHook(() =>
-      useLocalStorageArray<Item>('arr-key', [])
-    );
+    const { result } = renderHook(() => useLocalStorageArray<Item>('arr-key', []));
 
     act(() => {
       result.current[1].addItem({ id: 1, name: 'first' });

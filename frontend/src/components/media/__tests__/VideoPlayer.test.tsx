@@ -41,7 +41,7 @@ describe('VideoPlayer', () => {
 
     it('should render with poster image when provided', () => {
       renderWithProviders(
-        <VideoPlayer {...defaultProps} poster="https://example.com/poster.jpg" />
+        <VideoPlayer {...defaultProps} poster="https://example.com/poster.jpg" />,
       );
 
       const videoElement = document.querySelector('video');

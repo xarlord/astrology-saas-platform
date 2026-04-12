@@ -15,9 +15,7 @@ describe('Toast', () => {
     });
 
     it('should render with title and message', () => {
-      render(
-        <Toast id="toast-1" title="Success!" message="Operation completed" />
-      );
+      render(<Toast id="toast-1" title="Success!" message="Operation completed" />);
       expect(screen.getByRole('alert')).toHaveTextContent('Success!');
       expect(screen.getByRole('alert')).toHaveTextContent('Operation completed');
     });
@@ -29,7 +27,7 @@ describe('Toast', () => {
           id="toast-1"
           message="Item deleted"
           action={{ label: 'Undo', onClick: handleAction }}
-        />
+        />,
       );
       expect(screen.getByRole('button', { name: 'Undo' })).toBeInTheDocument();
     });
@@ -111,7 +109,7 @@ describe('Toast', () => {
           message="Item deleted"
           action={{ label: 'Undo', onClick: handleAction }}
           onClose={handleClose}
-        />
+        />,
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Undo' }));

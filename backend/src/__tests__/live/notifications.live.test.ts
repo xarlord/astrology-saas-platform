@@ -13,6 +13,8 @@
  * Run: npx jest --testPathPattern="live/notifications.live" --forceExit --verbose
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   api,
   authed,

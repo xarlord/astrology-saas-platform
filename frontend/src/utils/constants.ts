@@ -106,10 +106,10 @@ export const colors = {
 
   // Zodiac element colors
   zodiac: {
-    fire: '#EF4444',      // Aries, Leo, Sagittarius
-    earth: '#10B981',     // Taurus, Virgo, Capricorn
-    air: '#3B82F6',       // Gemini, Libra, Aquarius
-    water: '#6366F1',     // Cancer, Scorpio, Pisces
+    fire: '#EF4444', // Aries, Leo, Sagittarius
+    earth: '#10B981', // Taurus, Virgo, Capricorn
+    air: '#3B82F6', // Gemini, Libra, Aquarius
+    water: '#6366F1', // Cancer, Scorpio, Pisces
   },
 
   // Planet colors
@@ -151,18 +151,18 @@ export const typography = {
   },
 
   fontSize: {
-    xs: '0.75rem',      // 12px
-    sm: '0.875rem',     // 14px
-    base: '1rem',       // 16px
-    lg: '1.125rem',     // 18px
-    xl: '1.25rem',      // 20px
-    '2xl': '1.5rem',    // 24px
-    '3xl': '1.875rem',  // 30px
-    '4xl': '2.25rem',   // 36px
-    '5xl': '3rem',      // 48px
-    '6xl': '3.75rem',   // 60px
-    '7xl': '4.5rem',    // 72px
-    '8xl': '6rem',      // 96px
+    xs: '0.75rem', // 12px
+    sm: '0.875rem', // 14px
+    base: '1rem', // 16px
+    lg: '1.125rem', // 18px
+    xl: '1.25rem', // 20px
+    '2xl': '1.5rem', // 24px
+    '3xl': '1.875rem', // 30px
+    '4xl': '2.25rem', // 36px
+    '5xl': '3rem', // 48px
+    '6xl': '3.75rem', // 60px
+    '7xl': '4.5rem', // 72px
+    '8xl': '6rem', // 96px
   },
 
   fontWeight: {
@@ -193,15 +193,15 @@ export const typography = {
 // ===========================================
 
 export const spacing = {
-  xs: '0.25rem',    // 4px
-  sm: '0.5rem',     // 8px
-  md: '1rem',       // 16px
-  lg: '1.5rem',     // 24px
-  xl: '2rem',       // 32px
-  '2xl': '3rem',    // 48px
-  '3xl': '4rem',    // 64px
-  '4xl': '6rem',    // 96px
-  '5xl': '8rem',    // 128px
+  xs: '0.25rem', // 4px
+  sm: '0.5rem', // 8px
+  md: '1rem', // 16px
+  lg: '1.5rem', // 24px
+  xl: '2rem', // 32px
+  '2xl': '3rem', // 48px
+  '3xl': '4rem', // 64px
+  '4xl': '6rem', // 96px
+  '5xl': '8rem', // 128px
 } as const;
 
 // ===========================================
@@ -211,12 +211,12 @@ export const spacing = {
 export const borders = {
   radius: {
     none: '0',
-    sm: '0.125rem',   // 2px
-    md: '0.375rem',   // 6px
-    lg: '1rem',       // 16px
-    xl: '1.5rem',     // 24px
-    '2xl': '2rem',    // 32px
-    '3xl': '3rem',    // 48px
+    sm: '0.125rem', // 2px
+    md: '0.375rem', // 6px
+    lg: '1rem', // 16px
+    xl: '1.5rem', // 24px
+    '2xl': '2rem', // 32px
+    '3xl': '3rem', // 48px
     full: '9999px',
   },
 
@@ -270,10 +270,10 @@ export const effects = {
 // ===========================================
 
 export const breakpoints = {
-  sm: '640px',    // Mobile landscape
-  md: '768px',    // Tablet
-  lg: '1024px',   // Desktop
-  xl: '1280px',   // Wide desktop
+  sm: '640px', // Mobile landscape
+  md: '768px', // Tablet
+  lg: '1024px', // Desktop
+  xl: '1280px', // Wide desktop
   '2xl': '1536px', // Extra wide desktop
 } as const;
 
@@ -410,9 +410,9 @@ export const layout = {
 export const forms = {
   // Input heights
   height: {
-    sm: '2rem',     // 32px
-    md: '2.5rem',   // 40px
-    lg: '3rem',     // 48px
+    sm: '2rem', // 32px
+    md: '2.5rem', // 40px
+    lg: '3rem', // 48px
   },
 
   // Validation
@@ -480,9 +480,9 @@ export const api = {
 
   // Timeouts
   timeout: {
-    short: 5000,   // 5s
+    short: 5000, // 5s
     normal: 10000, // 10s
-    long: 30000,   // 30s
+    long: 30000, // 30s
   },
 
   // Retry configuration

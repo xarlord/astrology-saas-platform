@@ -94,7 +94,7 @@ describe('learningStore', () => {
 
     it('should set loading state during load', async () => {
       vi.mocked(learningService.getCourses).mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(() => resolve([]), 100))
+        () => new Promise((resolve) => setTimeout(() => resolve([]), 100)),
       );
 
       const loadPromise = act(async () => {
@@ -181,7 +181,9 @@ describe('learningStore', () => {
         completed: true,
       };
 
-      vi.mocked(learningService.getUserProgress).mockResolvedValueOnce([progressWithCourseId as any]);
+      vi.mocked(learningService.getUserProgress).mockResolvedValueOnce([
+        progressWithCourseId as any,
+      ]);
 
       await act(async () => {
         await useLearningStore.getState().loadProgress();

@@ -33,11 +33,13 @@ vi.mock('react-router-dom', async () => {
 
 // Mock services
 const mockCalculateTransits = vi.fn();
+const mockGetTodayTransits = vi.fn();
 const mockGetCharts = vi.fn();
 
 vi.mock('../../services/transit.service', () => ({
   transitService: {
     calculateTransits: (...args: any[]) => mockCalculateTransits(...args),
+    getTodayTransits: (...args: any[]) => mockGetTodayTransits(...args),
   },
 }));
 
@@ -72,12 +74,7 @@ vi.mock('../../components/transit/TransitChart', () => ({
 vi.mock('../../components/astrology/EnergyMeter', () => ({
   __esModule: true,
   default: ({ value, size, label, ...props }: any) => (
-    <div
-      role="progressbar"
-      aria-valuenow={value}
-      data-testid={`energy-meter-${size}`}
-      {...props}
-    >
+    <div role="progressbar" aria-valuenow={value} data-testid={`energy-meter-${size}`} {...props}>
       {value}%
     </div>
   ),
@@ -121,7 +118,7 @@ const createWrapper = () => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: ['/transits'] }, children)
+      createElement(MemoryRouter, { initialEntries: ['/transits'] }, children),
     );
 };
 
@@ -185,10 +182,16 @@ describe('TransitForecastPage', () => {
     mockNavigate.mockReset();
     mockGetCharts.mockReset();
     mockCalculateTransits.mockReset();
+    mockGetTodayTransits.mockReset();
 
     // Default successful responses
     mockGetCharts.mockResolvedValue({ charts: mockCharts });
     mockCalculateTransits.mockResolvedValue(mockTransitData);
+    mockGetTodayTransits.mockResolvedValue({
+      transits: [],
+      energyLevel: 5,
+      dateRange: { start: '2026-04-06', end: '2026-04-06' }
+    });
   });
 
   describe('Page Rendering', () => {
@@ -349,7 +352,11 @@ describe('TransitForecastPage', () => {
       await user.selectOptions(chartSelector, 'chart-2');
 
       await waitFor(() => {
-        expect(mockCalculateTransits).toHaveBeenCalledWith('chart-2', expect.any(String), expect.any(String));
+        expect(mockCalculateTransits).toHaveBeenCalledWith(
+          'chart-2',
+          expect.any(String),
+          expect.any(String),
+        );
       });
     });
   });
@@ -652,8 +659,8 @@ describe('TransitForecastPage', () => {
 
   describe('Loading State', () => {
     it('should show loading indicator while loading transits', async () => {
-      mockCalculateTransits.mockImplementation(() =>
-        new Promise((resolve) => setTimeout(() => resolve(mockTransitData), 100))
+      mockCalculateTransits.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve(mockTransitData), 100)),
       );
 
       renderWithProviders(createElement(TransitForecastPage));
@@ -665,8 +672,8 @@ describe('TransitForecastPage', () => {
     });
 
     it('should show skeleton loader while loading charts', async () => {
-      mockGetCharts.mockImplementation(() =>
-        new Promise((resolve) => setTimeout(() => resolve({ charts: mockCharts }), 100))
+      mockGetCharts.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ charts: mockCharts }), 100)),
       );
 
       renderWithProviders(createElement(TransitForecastPage));

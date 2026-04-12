@@ -5,11 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { transitService, TransitServiceError } from '../../services/transit.service';
-import {
-  mockTransit,
-  createMockResponse,
-  createMockError,
-} from './utils';
+import { mockTransit, createMockResponse, createMockError } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -53,7 +49,7 @@ describe('transitService', () => {
       const result = await transitService.calculateTransits(
         'chart-123',
         '2024-01-01',
-        '2024-03-01'
+        '2024-03-01',
       );
 
       expect(api.post).toHaveBeenCalledWith(
@@ -63,7 +59,7 @@ describe('transitService', () => {
           startDate: '2024-01-01',
           endDate: '2024-03-01',
         },
-        { timeout: 45000 }
+        { timeout: 45000 },
       );
       expect(result.chart_id).toBe('chart-123');
       expect(result.transits).toHaveLength(1);
@@ -84,7 +80,7 @@ describe('transitService', () => {
       expect(api.post).toHaveBeenCalledWith(
         expect.any(String),
         expect.any(Object),
-        expect.objectContaining({ timeout: 45000 })
+        expect.objectContaining({ timeout: 45000 }),
       );
     });
 
@@ -93,7 +89,7 @@ describe('transitService', () => {
       (api.post as any).mockRejectedValue(mockError);
 
       await expect(
-        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01')
+        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01'),
       ).rejects.toThrow(TransitServiceError);
     });
 
@@ -102,7 +98,7 @@ describe('transitService', () => {
       (api.post as any).mockResolvedValue(mockResponse);
 
       await expect(
-        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01')
+        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01'),
       ).rejects.toThrow('No data received');
     });
 
@@ -111,7 +107,7 @@ describe('transitService', () => {
       (api.post as any).mockRejectedValue(customError);
 
       await expect(
-        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01')
+        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01'),
       ).rejects.toThrow('Custom error');
     });
   });
@@ -267,7 +263,7 @@ describe('transitService', () => {
 
       expect(api.get).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ timeout: 30000 })
+        expect.objectContaining({ timeout: 30000 }),
       );
     });
 
@@ -295,13 +291,17 @@ describe('transitService', () => {
       const mockError = createMockError('Transit not found', 404);
       (api.get as any).mockRejectedValue(mockError);
 
-      await expect(transitService.getTransitDetails('nonexistent')).rejects.toThrow(TransitServiceError);
+      await expect(transitService.getTransitDetails('nonexistent')).rejects.toThrow(
+        TransitServiceError,
+      );
     });
 
     it('should throw error with correct code on no data', async () => {
       (api.get as any).mockResolvedValue({ data: null });
 
-      await expect(transitService.getTransitDetails('transit-123')).rejects.toThrow('No data received');
+      await expect(transitService.getTransitDetails('transit-123')).rejects.toThrow(
+        'No data received',
+      );
     });
 
     it('should preserve TransitServiceError on re-throw', async () => {

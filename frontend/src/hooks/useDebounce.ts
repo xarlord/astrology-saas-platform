@@ -33,20 +33,20 @@ export function useDebounce<T>(value: T, delay = 500): T {
  */
 export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
-  delay = 500
+  delay = 500,
 ): T {
   return useCallback(
     (...args: Parameters<T>) => {
       debounce(callback, delay)(...args);
     },
-    [callback, delay]
+    [callback, delay],
   ) as T;
 }
 
 // Debounce utility function
 function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
 

@@ -29,7 +29,12 @@ const {
   validateRequest,
   doubleCsrfProtection,
 } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || 'csrf-secret-change-in-production-min-32-chars',
+  getSecret: () => {
+    if (!process.env.CSRF_SECRET) {
+      throw new Error('CSRF_SECRET environment variable is required. Set it before starting the server.');
+    }
+    return process.env.CSRF_SECRET;
+  },
   getSessionIdentifier,
   cookieName: 'x-csrf-token',
   cookieOptions: {

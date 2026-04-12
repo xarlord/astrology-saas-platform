@@ -10,13 +10,7 @@ import { Avatar, AvatarGroup } from '../Avatar';
 describe('Avatar Component', () => {
   describe('Rendering', () => {
     it('renders with image', () => {
-      render(
-        <Avatar
-          src="https://example.com/avatar.jpg"
-          alt="User Avatar"
-          name="John Doe"
-        />
-      );
+      render(<Avatar src="https://example.com/avatar.jpg" alt="User Avatar" name="John Doe" />);
 
       const img = screen.getByRole('img');
       expect(img).toHaveAttribute('alt', 'User Avatar');
@@ -29,12 +23,7 @@ describe('Avatar Component', () => {
     });
 
     it('renders with initials when image fails to load', () => {
-      render(
-        <Avatar
-          src="https://invalid-url.com/image.jpg"
-          name="Jane Doe"
-        />
-      );
+      render(<Avatar src="https://invalid-url.com/image.jpg" name="Jane Doe" />);
 
       // Find the image element and trigger error
       const img = screen.getByRole('img');
@@ -193,7 +182,7 @@ describe('AvatarGroup Component', () => {
         <Avatar name="User 1" />
         <Avatar name="User 2" />
         <Avatar name="User 3" />
-      </AvatarGroup>
+      </AvatarGroup>,
     );
 
     expect(screen.getByText('U1')).toBeInTheDocument();
@@ -208,7 +197,7 @@ describe('AvatarGroup Component', () => {
         <Avatar name="User 2" />
         <Avatar name="User 3" />
         <Avatar name="User 4" />
-      </AvatarGroup>
+      </AvatarGroup>,
     );
 
     expect(screen.getByText('U1')).toBeInTheDocument();
@@ -225,7 +214,7 @@ describe('AvatarGroup Component', () => {
         <Avatar name="User 3" />
         <Avatar name="User 4" />
         <Avatar name="User 5" />
-      </AvatarGroup>
+      </AvatarGroup>,
     );
 
     expect(screen.getByText('+2')).toBeInTheDocument();
@@ -236,7 +225,7 @@ describe('AvatarGroup Component', () => {
       <AvatarGroup max={5}>
         <Avatar name="User 1" />
         <Avatar name="User 2" />
-      </AvatarGroup>
+      </AvatarGroup>,
     );
 
     expect(screen.queryByText(/^\+/)).not.toBeInTheDocument();
@@ -247,7 +236,7 @@ describe('AvatarGroup Component', () => {
       <AvatarGroup size="lg">
         <Avatar name="User 1" />
         <Avatar name="User 2" />
-      </AvatarGroup>
+      </AvatarGroup>,
     );
 
     // Check that size class is applied (lg = w-12 h-12)
@@ -259,7 +248,7 @@ describe('AvatarGroup Component', () => {
     render(
       <AvatarGroup className="custom-group">
         <Avatar name="User 1" />
-      </AvatarGroup>
+      </AvatarGroup>,
     );
 
     // The className is on the outer flex container

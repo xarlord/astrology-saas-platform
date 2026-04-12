@@ -82,7 +82,7 @@ const DEFAULT_MAX_ERRORS = 5;
  */
 export function usePolling<T>(
   pollFn: () => Promise<T>,
-  options: PollingOptions<T> = {}
+  options: PollingOptions<T> = {},
 ): [PollingState<T>, PollingActions] {
   const {
     interval = DEFAULT_INTERVAL,
@@ -256,7 +256,6 @@ export function usePolling<T>(
       start();
     }
     // Note: 'enabled' is tracked via ref, dependency is not needed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [start]);
 
   // Handle visibility change

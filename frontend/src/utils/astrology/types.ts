@@ -8,11 +8,21 @@
 // ===========================================
 
 export const ZODIAC_SIGNS = [
-  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+  'Aries',
+  'Taurus',
+  'Gemini',
+  'Cancer',
+  'Leo',
+  'Virgo',
+  'Libra',
+  'Scorpio',
+  'Sagittarius',
+  'Capricorn',
+  'Aquarius',
+  'Pisces',
 ] as const;
 
-export type ZodiacSign = typeof ZODIAC_SIGNS[number];
+export type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
 
 export const ZODIAC_ELEMENTS = {
   fire: ['Aries', 'Leo', 'Sagittarius'],
@@ -36,12 +46,23 @@ export type Quality = keyof typeof ZODIAC_QUALITIES;
 // ===========================================
 
 export const CELESTIAL_BODIES = [
-  'Sun', 'Moon', 'Mercury', 'Venus', 'Mars',
-  'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto',
-  'NorthNode', 'SouthNode', 'Chiron', 'Lilith'
+  'Sun',
+  'Moon',
+  'Mercury',
+  'Venus',
+  'Mars',
+  'Jupiter',
+  'Saturn',
+  'Uranus',
+  'Neptune',
+  'Pluto',
+  'NorthNode',
+  'SouthNode',
+  'Chiron',
+  'Lilith',
 ] as const;
 
-export type CelestialBody = typeof CELESTIAL_BODIES[number];
+export type CelestialBody = (typeof CELESTIAL_BODIES)[number];
 
 export const PERSONAL_PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars'] as const;
 export const SOCIAL_PLANETS = ['Jupiter', 'Saturn'] as const;
@@ -62,16 +83,18 @@ export interface PlanetData {
 // ASPECT TYPES
 // ===========================================
 
-export const MAJOR_ASPECTS = [
-  'conjunction', 'opposition', 'trine', 'square', 'sextile'
-] as const;
+export const MAJOR_ASPECTS = ['conjunction', 'opposition', 'trine', 'square', 'sextile'] as const;
 
 export const MINOR_ASPECTS = [
-  'quincunx', 'semisextile', 'semisquare', 'sesquisquare',
-  'quintile', 'biquintile'
+  'quincunx',
+  'semisextile',
+  'semisquare',
+  'sesquisquare',
+  'quintile',
+  'biquintile',
 ] as const;
 
-export type AspectType = typeof MAJOR_ASPECTS[number] | typeof MINOR_ASPECTS[number];
+export type AspectType = (typeof MAJOR_ASPECTS)[number] | (typeof MINOR_ASPECTS)[number];
 
 export interface AspectDefinition {
   name: string;
@@ -83,17 +106,66 @@ export interface AspectDefinition {
 }
 
 export const ASPECT_DEFINITIONS: Record<AspectType, AspectDefinition> = {
-  conjunction: { name: 'Conjunction', angle: 0, orb: 10, symbol: '\u260c', harmonious: false, major: true },
-  opposition: { name: 'Opposition', angle: 180, orb: 8, symbol: '\u260d', harmonious: false, major: true },
+  conjunction: {
+    name: 'Conjunction',
+    angle: 0,
+    orb: 10,
+    symbol: '\u260c',
+    harmonious: false,
+    major: true,
+  },
+  opposition: {
+    name: 'Opposition',
+    angle: 180,
+    orb: 8,
+    symbol: '\u260d',
+    harmonious: false,
+    major: true,
+  },
   trine: { name: 'Trine', angle: 120, orb: 8, symbol: '\u25b3', harmonious: true, major: true },
   square: { name: 'Square', angle: 90, orb: 8, symbol: '\u25a1', harmonious: false, major: true },
   sextile: { name: 'Sextile', angle: 60, orb: 6, symbol: '\u2606', harmonious: true, major: true },
-  quincunx: { name: 'Quincunx', angle: 150, orb: 3, symbol: '\u26b9', harmonious: false, major: false },
-  semisextile: { name: 'Semi-sextile', angle: 30, orb: 2, symbol: '\u26b9', harmonious: true, major: false },
-  semisquare: { name: 'Semi-square', angle: 45, orb: 2, symbol: '\u2220', harmonious: false, major: false },
-  sesquisquare: { name: 'Sesqui-square', angle: 135, orb: 2, symbol: '\u22c0', harmonious: false, major: false },
+  quincunx: {
+    name: 'Quincunx',
+    angle: 150,
+    orb: 3,
+    symbol: '\u26b9',
+    harmonious: false,
+    major: false,
+  },
+  semisextile: {
+    name: 'Semi-sextile',
+    angle: 30,
+    orb: 2,
+    symbol: '\u26b9',
+    harmonious: true,
+    major: false,
+  },
+  semisquare: {
+    name: 'Semi-square',
+    angle: 45,
+    orb: 2,
+    symbol: '\u2220',
+    harmonious: false,
+    major: false,
+  },
+  sesquisquare: {
+    name: 'Sesqui-square',
+    angle: 135,
+    orb: 2,
+    symbol: '\u22c0',
+    harmonious: false,
+    major: false,
+  },
   quintile: { name: 'Quintile', angle: 72, orb: 1, symbol: 'Q', harmonious: true, major: false },
-  biquintile: { name: 'Bi-quintile', angle: 144, orb: 1, symbol: 'bQ', harmonious: true, major: false },
+  biquintile: {
+    name: 'Bi-quintile',
+    angle: 144,
+    orb: 1,
+    symbol: 'bQ',
+    harmonious: true,
+    major: false,
+  },
 };
 
 export interface AspectData {
@@ -146,7 +218,14 @@ export type ChartAngle = 'Ascendant' | 'Descendant' | 'MC' | 'IC' | 'Vertex' | '
 // CHART TYPES
 // ===========================================
 
-export type ChartType = 'natal' | 'transit' | 'synastry' | 'solar-return' | 'lunar-return' | 'progressed' | 'composite';
+export type ChartType =
+  | 'natal'
+  | 'transit'
+  | 'synastry'
+  | 'solar-return'
+  | 'lunar-return'
+  | 'progressed'
+  | 'composite';
 
 export interface BirthDataInput {
   date: Date;

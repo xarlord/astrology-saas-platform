@@ -4,8 +4,6 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Loader2, ZoomIn, ZoomOut, Download } from 'lucide-react';
-
 
 interface PlanetaryPosition {
   planet: string;
@@ -219,10 +217,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       // Draw house cusp line
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.lineTo(
-        cx + r * 0.7 * Math.cos(angle),
-        cy + r * 0.7 * Math.sin(angle)
-      );
+      ctx.lineTo(cx + r * 0.7 * Math.cos(angle), cy + r * 0.7 * Math.sin(angle));
       ctx.strokeStyle = '#a0aec0';
       ctx.lineWidth = 1;
       ctx.stroke();
@@ -242,7 +237,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
   const drawPlanets = (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) => {
     chartData.planets.forEach((planet) => {
-      const angle = (planet.degree + (getSignIndex(planet.sign) * 30) - 90) * (Math.PI / 180);
+      const angle = (planet.degree + getSignIndex(planet.sign) * 30 - 90) * (Math.PI / 180);
       const distance = r * 0.85;
 
       const x = cx + distance * Math.cos(angle);
@@ -277,7 +272,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
     const planetPositions = new Map<string, { x: number; y: number }>();
 
     chartData.planets.forEach((planet) => {
-      const angle = (planet.degree + (getSignIndex(planet.sign) * 30) - 90) * (Math.PI / 180);
+      const angle = (planet.degree + getSignIndex(planet.sign) * 30 - 90) * (Math.PI / 180);
       const distance = r * 0.85;
       const x = cx + distance * Math.cos(angle);
       const y = cy + distance * Math.sin(angle);
@@ -340,11 +335,11 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
   const getMoonPhaseEmoji = (phase: string): string => {
     const emojis: Record<string, string> = {
-      'new': '🌑',
+      new: '🌑',
       'waxing-crescent': '🌒',
       'first-quarter': '🌓',
       'waxing-gibbous': '🌔',
-      'full': '🌕',
+      full: '🌕',
       'waning-gibbous': '🌖',
       'last-quarter': '🌗',
       'waning-crescent': '🌘',
@@ -373,21 +368,23 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   return (
     <div role="region" aria-label="Solar Return Chart" className="space-y-4" ref={containerRef}>
       <div className="text-center">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white m-0">Solar Return Chart for {year}</h3>
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white m-0">
+          Solar Return Chart for {year}
+        </h3>
         {location && <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">{location}</p>}
       </div>
 
       <div className="chart-controls">
         <button onClick={() => void handleZoomOut()} disabled={zoom <= 0.5}>
-          <ZoomOut size={18} />
+          <span className="material-symbols-outlined text-[18px]">zoom_out</span>
         </button>
         <span className="zoom-level">{Math.round(zoom * 100)}%</span>
         <button onClick={() => void handleZoomIn()} disabled={zoom >= 2}>
-          <ZoomIn size={18} />
+          <span className="material-symbols-outlined text-[18px]">zoom_in</span>
         </button>
 
         <button onClick={() => void handleDownload()} title="Download as PNG">
-          <Download size={18} />
+          <span className="material-symbols-outlined text-[18px]">download</span>
           Download
         </button>
       </div>
@@ -395,8 +392,10 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       <div className="relative flex justify-center">
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
-            <Loader2 size={32} className="animate-spin text-indigo-500" />
-            <p aria-live="polite" className="mt-2 text-gray-500 dark:text-gray-400">Calculating chart...</p>
+            <span className="material-symbols-outlined text-[32px] animate-spin text-indigo-500">progress_activity</span>
+            <p aria-live="polite" className="mt-2 text-gray-500 dark:text-gray-400">
+              Calculating chart...
+            </p>
           </div>
         )}
 
@@ -427,14 +426,13 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
         {showAspects && (
           <>
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mt-4 mb-3">Aspects</h4>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mt-4 mb-3">
+              Aspects
+            </h4>
             <div className="flex flex-wrap gap-3">
               {Object.entries(ASPECT_COLORS).map(([name, color]) => (
                 <div key={name} className="flex items-center gap-1.5 text-sm">
-                  <span
-                    className="w-4 h-0.5 shrink-0"
-                    style={{ backgroundColor: color }}
-                  />
+                  <span className="w-4 h-0.5 shrink-0" style={{ backgroundColor: color }} />
                   <span className="text-gray-500 dark:text-gray-400 capitalize">{name}</span>
                 </div>
               ))}
@@ -445,14 +443,27 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
       {selectedPlanet && (
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{selectedPlanet}</h4>
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            {selectedPlanet}
+          </h4>
           {chartData.planets
             .filter((p) => p.planet === selectedPlanet)
             .map((planet) => (
-              <div key={planet.planet} className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                <p className="m-0"><strong>Sign:</strong> {planet.sign} {planet.degree}&deg;{planet.minute}&apos;</p>
-                <p className="m-0"><strong>House:</strong> {planet.house}</p>
-                {planet.retrograde && <p className="m-0"><strong>Retrograde</strong></p>}
+              <div
+                key={planet.planet}
+                className="space-y-1 text-sm text-gray-600 dark:text-gray-400"
+              >
+                <p className="m-0">
+                  <strong>Sign:</strong> {planet.sign} {planet.degree}&deg;{planet.minute}&apos;
+                </p>
+                <p className="m-0">
+                  <strong>House:</strong> {planet.house}
+                </p>
+                {planet.retrograde && (
+                  <p className="m-0">
+                    <strong>Retrograde</strong>
+                  </p>
+                )}
               </div>
             ))}
         </div>

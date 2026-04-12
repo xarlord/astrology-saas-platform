@@ -54,7 +54,7 @@ describe('KeyboardNavProvider', () => {
       render(
         <KeyboardNavProvider>
           <TestComponent />
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       expect(screen.getByTestId('test-component')).toBeInTheDocument();
@@ -76,7 +76,7 @@ describe('KeyboardNavProvider', () => {
       render(
         <KeyboardNavProvider>
           <div>Content</div>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // Check for aria-live regions
@@ -92,10 +92,7 @@ describe('KeyboardNavProvider', () => {
         const announce = useAnnounce();
 
         return (
-          <button
-            onClick={() => announce('Test announcement')}
-            data-testid="announce-button"
-          >
+          <button onClick={() => announce('Test announcement')} data-testid="announce-button">
             Announce
           </button>
         );
@@ -104,7 +101,7 @@ describe('KeyboardNavProvider', () => {
       render(
         <KeyboardNavProvider>
           <AnnouncerTest />
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       const button = screen.getByTestId('announce-button');
@@ -120,10 +117,7 @@ describe('KeyboardNavProvider', () => {
         const announce = useAnnounce();
 
         return (
-          <button
-            onClick={() => announce('Alert!', 'assertive')}
-            data-testid="alert-button"
-          >
+          <button onClick={() => announce('Alert!', 'assertive')} data-testid="alert-button">
             Alert
           </button>
         );
@@ -132,7 +126,7 @@ describe('KeyboardNavProvider', () => {
       render(
         <KeyboardNavProvider>
           <AssertiveAnnouncerTest />
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       const button = screen.getByTestId('alert-button');
@@ -148,17 +142,13 @@ describe('KeyboardNavProvider', () => {
       const KeyboardUserTest: React.FC = () => {
         const isKeyboardUser = useIsKeyboardUser();
 
-        return (
-          <div data-testid="keyboard-status">
-            {isKeyboardUser ? 'keyboard' : 'mouse'}
-          </div>
-        );
+        return <div data-testid="keyboard-status">{isKeyboardUser ? 'keyboard' : 'mouse'}</div>;
       };
 
       render(
         <KeyboardNavProvider>
           <KeyboardUserTest />
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // Initially should be mouse user
@@ -175,17 +165,13 @@ describe('KeyboardNavProvider', () => {
       const KeyboardUserTest: React.FC = () => {
         const isKeyboardUser = useIsKeyboardUser();
 
-        return (
-          <div data-testid="keyboard-status">
-            {isKeyboardUser ? 'keyboard' : 'mouse'}
-          </div>
-        );
+        return <div data-testid="keyboard-status">{isKeyboardUser ? 'keyboard' : 'mouse'}</div>;
       };
 
       render(
         <KeyboardNavProvider>
           <KeyboardUserTest />
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // First use keyboard
@@ -201,7 +187,7 @@ describe('KeyboardNavProvider', () => {
       render(
         <KeyboardNavProvider>
           <div>Content</div>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // Press Tab key
@@ -221,7 +207,7 @@ describe('KeyboardNavProvider', () => {
             <button data-testid="button-1">Button 1</button>
             <button data-testid="button-2">Button 2</button>
           </div>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button1 = screen.getByTestId('button-1');
@@ -251,7 +237,7 @@ describe('KeyboardNavProvider', () => {
             <button data-testid="button-1">Button 1</button>
             <button data-testid="button-2">Button 2</button>
           </div>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button1 = screen.getByTestId('button-1');
@@ -338,7 +324,7 @@ describe('FocusLock', () => {
         <FocusLock>
           <button>Button</button>
         </FocusLock>
-      </KeyboardNavProvider>
+      </KeyboardNavProvider>,
     );
 
     expect(screen.getByRole('button')).toBeInTheDocument();
@@ -352,7 +338,7 @@ describe('FocusLock', () => {
         <FocusLock onEscape={onEscape}>
           <button>Button</button>
         </FocusLock>
-      </KeyboardNavProvider>
+      </KeyboardNavProvider>,
     );
 
     const container = screen.getByRole('button').parentElement;
@@ -369,7 +355,7 @@ describe('FocusLock', () => {
         <FocusLock enabled={false}>
           <button>Button</button>
         </FocusLock>
-      </KeyboardNavProvider>
+      </KeyboardNavProvider>,
     );
 
     // Focus lock should not be active
@@ -383,7 +369,7 @@ describe('FocusLock', () => {
           <button data-testid="first">First</button>
           <button data-testid="second">Second</button>
         </FocusLock>
-      </KeyboardNavProvider>
+      </KeyboardNavProvider>,
     );
 
     const container = screen.getByTestId('first').parentElement;
@@ -406,7 +392,7 @@ describe('FocusLock', () => {
           <button data-testid="first">First</button>
           <button data-testid="second">Second</button>
         </FocusLock>
-      </KeyboardNavProvider>
+      </KeyboardNavProvider>,
     );
 
     const container = screen.getByTestId('first').parentElement;
@@ -439,9 +425,7 @@ describe('VisuallyHidden', () => {
   });
 
   it('should support custom className', () => {
-    render(
-      <VisuallyHidden className="custom-class">Hidden with class</VisuallyHidden>
-    );
+    render(<VisuallyHidden className="custom-class">Hidden with class</VisuallyHidden>);
 
     const element = screen.getByText('Hidden with class');
     expect(element).toHaveClass('custom-class');
@@ -473,7 +457,7 @@ describe('WCAG 2.1 AA Compliance', () => {
           <FocusLock>
             <button>Inside Modal</button>
           </FocusLock>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       expect(screen.getByRole('button')).toBeInTheDocument();
@@ -485,7 +469,7 @@ describe('WCAG 2.1 AA Compliance', () => {
           <FocusLock enabled={true}>
             <button>Modal Content</button>
           </FocusLock>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       rerender(
@@ -493,7 +477,7 @@ describe('WCAG 2.1 AA Compliance', () => {
           <FocusLock enabled={false}>
             <button>Modal Content</button>
           </FocusLock>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // Focus restoration is handled internally
@@ -505,7 +489,7 @@ describe('WCAG 2.1 AA Compliance', () => {
       render(
         <KeyboardNavProvider>
           <div>Content</div>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       const politeRegion = document.querySelector('[aria-live="polite"]');
@@ -517,7 +501,7 @@ describe('WCAG 2.1 AA Compliance', () => {
       render(
         <KeyboardNavProvider>
           <div>Content</div>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       const assertiveRegion = document.querySelector('[aria-live="assertive"]');
@@ -531,7 +515,7 @@ describe('WCAG 2.1 AA Compliance', () => {
       render(
         <KeyboardNavProvider>
           <div>Content</div>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // Simulate keyboard navigation
@@ -544,7 +528,7 @@ describe('WCAG 2.1 AA Compliance', () => {
       render(
         <KeyboardNavProvider>
           <div>Content</div>
-        </KeyboardNavProvider>
+        </KeyboardNavProvider>,
       );
 
       // Simulate mouse usage

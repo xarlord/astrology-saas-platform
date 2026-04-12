@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../ui/Button';
+import { useNotifications } from '../../hooks/useNotifications';
 
 // Types
 interface ReportActionsProps {
@@ -30,15 +31,15 @@ const ReportActions: React.FC<ReportActionsProps> = ({
   currentTransit,
 }) => {
   const [showTransit, setShowTransit] = useState(true);
+  const { success } = useNotifications();
 
   const handleShare = () => {
     if (typeof navigator.share === 'function' && onShare) {
       onShare();
-    } else if (onShare) {
+    } else {
       // Fallback for browsers that don't support Web Share API
       void navigator.clipboard.writeText(window.location.href);
-      // Could show a toast here
-      console.log('URL copied to clipboard');
+      success('Link copied to clipboard!', 'Share');
     }
   };
 
@@ -96,7 +97,9 @@ const ReportActions: React.FC<ReportActionsProps> = ({
         <Button
           variant="secondary"
           fullWidth
-          onClick={() => { void handleShare(); }}
+          onClick={() => {
+            void handleShare();
+          }}
           leftIcon={<span className="material-symbols-outlined text-[18px]">share</span>}
         >
           Share Report

@@ -5,10 +5,6 @@
 
 import api from './api';
 
-interface ApiResponse<T> {
-  data: T;
-}
-
 export interface PushSubscription {
   id: string;
   endpoint: string;
@@ -42,7 +38,10 @@ class PushNotificationService {
    * Subscribe to push notifications
    */
   async subscribe(subscription: SubscribePayload): Promise<PushSubscription> {
-    const response = await api.post<{ data: PushSubscription }>('/notifications/subscribe', subscription);
+    const response = await api.post<{ data: PushSubscription }>(
+      '/notifications/subscribe',
+      subscription,
+    );
     return response.data.data;
   }
 

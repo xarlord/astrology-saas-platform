@@ -64,7 +64,7 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
         'bg-yellow-500 dark:bg-yellow-600 text-yellow-900 dark:text-yellow-100',
         'px-4 py-3',
         'animate-slide-in',
-        className
+        className,
       )}
       role="status"
       aria-live="polite"
@@ -101,17 +101,13 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
                 'bg-yellow-600 dark:bg-yellow-700 hover:bg-yellow-700 dark:hover:bg-yellow-800',
                 'focus:outline-none focus:ring-2 focus:ring-yellow-800',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
-                'transition-colors'
+                'transition-colors',
               )}
               aria-busy={isRetrying}
             >
               {isRetrying ? (
                 <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
                       cx="12"
@@ -141,16 +137,11 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
               className={clsx(
                 'p-1 rounded-md',
                 'hover:bg-yellow-600 dark:hover:bg-yellow-700',
-                'focus:outline-none focus:ring-2 focus:ring-yellow-800'
+                'focus:outline-none focus:ring-2 focus:ring-yellow-800',
               )}
               aria-label="Dismiss offline notification"
             >
-              <svg
-                className="w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-              >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path
                   fillRule="evenodd"
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -249,10 +240,7 @@ export const ApiErrorPage: React.FC<ApiErrorPageProps> = ({
 
   return (
     <div
-      className={clsx(
-        'min-h-[400px] flex items-center justify-center p-8',
-        className
-      )}
+      className={clsx('min-h-[400px] flex items-center justify-center p-8', className)}
       role="alert"
       aria-live="assertive"
     >
@@ -265,14 +253,14 @@ export const ApiErrorPage: React.FC<ApiErrorPageProps> = ({
                 'inline-flex items-center justify-center',
                 'w-32 h-32 rounded-full',
                 'bg-gradient-to-br from-primary-100 to-primary-200',
-                'dark:from-primary-900/30 dark:to-primary-800/30'
+                'dark:from-primary-900/30 dark:to-primary-800/30',
               )}
             >
               <span
                 className={clsx(
                   'text-5xl font-bold',
                   'text-primary-600 dark:text-primary-400',
-                  'font-display'
+                  'font-display',
                 )}
                 aria-hidden="true"
               >
@@ -288,9 +276,7 @@ export const ApiErrorPage: React.FC<ApiErrorPageProps> = ({
         </h2>
 
         {/* Message */}
-        <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-          {displayMessage}
-        </p>
+        <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">{displayMessage}</p>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -304,17 +290,13 @@ export const ApiErrorPage: React.FC<ApiErrorPageProps> = ({
                 'bg-primary-600 text-white',
                 'hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
-                'transition-colors'
+                'transition-colors',
               )}
               aria-busy={primaryAction.isLoading}
             >
               {primaryAction.isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
                       cx="12"
@@ -346,7 +328,7 @@ export const ApiErrorPage: React.FC<ApiErrorPageProps> = ({
                 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
                 'hover:bg-gray-200 dark:hover:bg-gray-700',
                 'focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2',
-                'transition-colors'
+                'transition-colors',
               )}
             >
               {secondaryAction.label}
@@ -387,10 +369,8 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
     <div
       className={clsx(
         'flex items-center gap-2 text-sm',
-        isConnected
-          ? 'text-success dark:text-success-light'
-          : 'text-error dark:text-error-light',
-        className
+        isConnected ? 'text-success dark:text-success-light' : 'text-error dark:text-error-light',
+        className,
       )}
       role="status"
       aria-live="polite"
@@ -399,7 +379,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
         className={clsx(
           'w-2 h-2 rounded-full',
           isConnected ? 'bg-success animate-pulse' : 'bg-error',
-          isReconnecting && 'animate-pulse'
+          isReconnecting && 'animate-pulse',
         )}
         aria-hidden="true"
       />
@@ -407,10 +387,10 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
         {isReconnecting
           ? 'Reconnecting...'
           : isConnected
-          ? 'Connected'
-          : lastConnected
-          ? `Offline (last seen ${formatTime(lastConnected)})`
-          : 'Offline'}
+            ? 'Connected'
+            : lastConnected
+              ? `Offline (last seen ${formatTime(lastConnected)})`
+              : 'Offline'}
       </span>
     </div>
   );

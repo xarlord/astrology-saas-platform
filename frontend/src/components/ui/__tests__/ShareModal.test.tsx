@@ -175,7 +175,7 @@ describe('ShareModal', () => {
       expect(mockWindowOpen).toHaveBeenCalledWith(
         expect.stringContaining('twitter.com'),
         '_blank',
-        expect.any(String)
+        expect.any(String),
       );
     });
 
@@ -187,7 +187,7 @@ describe('ShareModal', () => {
       expect(mockWindowOpen).toHaveBeenCalledWith(
         expect.stringContaining(encodeURIComponent(mockProps.shareUrl)),
         '_blank',
-        expect.any(String)
+        expect.any(String),
       );
     });
   });
@@ -284,7 +284,8 @@ describe('ShareModal', () => {
     it('should close on Escape key', () => {
       render(<ShareModal {...mockProps} />);
 
-      fireEvent.keyDown(document, { key: 'Escape' });
+      const dialog = screen.getByRole('dialog');
+      fireEvent.keyDown(dialog, { key: 'Escape' });
       expect(mockProps.onClose).toHaveBeenCalledTimes(1);
     });
   });

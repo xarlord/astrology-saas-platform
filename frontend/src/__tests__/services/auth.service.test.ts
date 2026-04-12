@@ -5,12 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { authService } from '../../services/auth.service';
-import {
-  mockUser,
-  createMockResponse,
-  createMockError,
-  setupLocalStorageMock,
-} from './utils';
+import { mockUser, createMockResponse, createMockError, setupLocalStorageMock } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -72,11 +67,13 @@ describe('authService', () => {
       const mockError = createMockError('Email already exists', 400);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(authService.register({
-        name: 'Test User',
-        email: 'existing@example.com',
-        password: 'password123',
-      })).rejects.toThrow();
+      await expect(
+        authService.register({
+          name: 'Test User',
+          email: 'existing@example.com',
+          password: 'password123',
+        }),
+      ).rejects.toThrow();
     });
 
     it('should include all required fields in registration request', async () => {
@@ -93,11 +90,14 @@ describe('authService', () => {
         password: 'ComplexPassword!234',
       });
 
-      expect(api.post).toHaveBeenCalledWith('/auth/register', expect.objectContaining({
-        name: 'John Doe',
-        email: 'john@example.com',
-        password: 'ComplexPassword!234',
-      }));
+      expect(api.post).toHaveBeenCalledWith(
+        '/auth/register',
+        expect.objectContaining({
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'ComplexPassword!234',
+        }),
+      );
     });
   });
 
@@ -126,10 +126,12 @@ describe('authService', () => {
       const mockError = createMockError('Invalid credentials', 401);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(authService.login({
-        email: 'test@example.com',
-        password: 'wrongpassword',
-      })).rejects.toThrow();
+      await expect(
+        authService.login({
+          email: 'test@example.com',
+          password: 'wrongpassword',
+        }),
+      ).rejects.toThrow();
     });
 
     it('should return user and tokens on successful login', async () => {
@@ -279,7 +281,7 @@ describe('authService', () => {
       expect(api.post).toHaveBeenCalledWith(
         '/auth/refresh',
         {},
-        { headers: { Authorization: 'Bearer existing-refresh-token' } }
+        { headers: { Authorization: 'Bearer existing-refresh-token' } },
       );
       expect(result.accessToken).toBe('new-access-token');
     });
@@ -302,7 +304,7 @@ describe('authService', () => {
         expect.any(Object),
         expect.objectContaining({
           headers: { Authorization: 'Bearer my-refresh-token' },
-        })
+        }),
       );
     });
   });

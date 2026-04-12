@@ -132,18 +132,20 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
 
   // Calculate aspect lines
   const aspectLines = useMemo(() => {
-    return chartData.aspects.map((aspect) => {
-      const planet1 = planetPositions.find((p) => p.name === aspect.planet1);
-      const planet2 = planetPositions.find((p) => p.name === aspect.planet2);
-      if (!planet1 || !planet2) return null;
-      return {
-        ...aspect,
-        x1: planet1.x,
-        y1: planet1.y,
-        x2: planet2.x,
-        y2: planet2.y,
-      } as const;
-    }).filter((aspect): aspect is NonNullable<typeof aspect> => aspect !== null);
+    return chartData.aspects
+      .map((aspect) => {
+        const planet1 = planetPositions.find((p) => p.name === aspect.planet1);
+        const planet2 = planetPositions.find((p) => p.name === aspect.planet2);
+        if (!planet1 || !planet2) return null;
+        return {
+          ...aspect,
+          x1: planet1.x,
+          y1: planet1.y,
+          x2: planet2.x,
+          y2: planet2.y,
+        } as const;
+      })
+      .filter((aspect): aspect is NonNullable<typeof aspect> => aspect !== null);
   }, [chartData.aspects, planetPositions]);
 
   // Keyboard navigation
@@ -155,7 +157,9 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
         setFocusedPlanet((prev) => (prev + 1) % chartData.planets.length);
         break;
       case 'ArrowLeft':
-        setFocusedPlanet((prev) => (prev - 1 + chartData.planets.length) % chartData.planets.length);
+        setFocusedPlanet(
+          (prev) => (prev - 1 + chartData.planets.length) % chartData.planets.length,
+        );
         break;
       case 'Enter':
       case ' ':
@@ -238,8 +242,12 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
                 />
                 {/* Zodiac symbol */}
                 <text
-                  x={size / 2 + (size / 2 - 25) * Math.cos(((startAngle + 15 - 90) * Math.PI) / 180)}
-                  y={size / 2 + (size / 2 - 25) * Math.sin(((startAngle + 15 - 90) * Math.PI) / 180)}
+                  x={
+                    size / 2 + (size / 2 - 25) * Math.cos(((startAngle + 15 - 90) * Math.PI) / 180)
+                  }
+                  y={
+                    size / 2 + (size / 2 - 25) * Math.sin(((startAngle + 15 - 90) * Math.PI) / 180)
+                  }
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fontSize={14}
@@ -288,10 +296,15 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
                   strokeWidth={aspect.applying ? 1.5 : 1}
                   strokeDasharray={aspect.type === 'quincunx' ? '4 2' : undefined}
                   className={interactive ? 'cursor-pointer hover:opacity-100' : ''}
-                  opacity={hoveredPlanet && (aspect.planet1 === hoveredPlanet || aspect.planet2 === hoveredPlanet) ? 1 : 0.4}
+                  opacity={
+                    hoveredPlanet &&
+                    (aspect.planet1 === hoveredPlanet || aspect.planet2 === hoveredPlanet)
+                      ? 1
+                      : 0.4
+                  }
                   onClick={() => interactive && onAspectClick?.(aspect)}
                 />
-              ) : null
+              ) : null,
             )}
           </g>
 
@@ -380,14 +393,30 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
                 <line
                   x1={size / 2}
                   y1={size / 2}
-                  x2={size / 2 + (size / 2 - 50) * Math.cos(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)}
-                  y2={size / 2 + (size / 2 - 50) * Math.sin(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)}
+                  x2={
+                    size / 2 +
+                    (size / 2 - 50) *
+                      Math.cos(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)
+                  }
+                  y2={
+                    size / 2 +
+                    (size / 2 - 50) *
+                      Math.sin(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)
+                  }
                   stroke="#fbbf24"
                   strokeWidth="2"
                 />
                 <text
-                  x={size / 2 + (size / 2 - 60) * Math.cos(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)}
-                  y={size / 2 + (size / 2 - 60) * Math.sin(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)}
+                  x={
+                    size / 2 +
+                    (size / 2 - 60) *
+                      Math.cos(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)
+                  }
+                  y={
+                    size / 2 +
+                    (size / 2 - 60) *
+                      Math.sin(((chartData.angles.ascendant.degree - 90) * Math.PI) / 180)
+                  }
                   fontSize={11}
                   fill="#fbbf24"
                   className="select-none"
@@ -401,14 +430,30 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
                 <line
                   x1={size / 2}
                   y1={size / 2}
-                  x2={size / 2 + (size / 2 - 50) * Math.cos(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)}
-                  y2={size / 2 + (size / 2 - 50) * Math.sin(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)}
+                  x2={
+                    size / 2 +
+                    (size / 2 - 50) *
+                      Math.cos(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)
+                  }
+                  y2={
+                    size / 2 +
+                    (size / 2 - 50) *
+                      Math.sin(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)
+                  }
                   stroke="#fbbf24"
                   strokeWidth="2"
                 />
                 <text
-                  x={size / 2 + (size / 2 - 60) * Math.cos(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)}
-                  y={size / 2 + (size / 2 - 60) * Math.sin(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)}
+                  x={
+                    size / 2 +
+                    (size / 2 - 60) *
+                      Math.cos(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)
+                  }
+                  y={
+                    size / 2 +
+                    (size / 2 - 60) *
+                      Math.sin(((chartData.angles.midheaven.degree - 90) * Math.PI) / 180)
+                  }
                   fontSize={11}
                   fill="#fbbf24"
                   className="select-none"

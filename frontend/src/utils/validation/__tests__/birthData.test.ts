@@ -244,7 +244,7 @@ describe('birthData validator', () => {
     });
 
     it('should pass for valid longitude', () => {
-      expect(validator(-74.0060)).toBeUndefined();
+      expect(validator(-74.006)).toBeUndefined();
       expect(validator(151.2093)).toBeUndefined();
       expect(validator(0)).toBeUndefined();
     });
@@ -265,7 +265,7 @@ describe('birthData validator', () => {
   describe('hasSufficientPrecision', () => {
     it('should return true for 2+ decimal places', () => {
       expect(hasSufficientPrecision(40.71, -74.01)).toBe(true);
-      expect(hasSufficientPrecision(40.7128, -74.0060)).toBe(true);
+      expect(hasSufficientPrecision(40.7128, -74.006)).toBe(true);
     });
 
     it('should return false for less than 2 decimal places', () => {
@@ -362,7 +362,7 @@ describe('birthData validator', () => {
         birth_time: '14:30',
         birth_place: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       });
 
@@ -382,7 +382,7 @@ describe('birthData validator', () => {
         birth_date: '1990-06-15',
         birth_place: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       });
 
@@ -400,7 +400,7 @@ describe('birthData validator', () => {
         timezone: 'America/New_York',
       });
 
-      expect(result.warnings.some(w => w.includes('low precision'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('low precision'))).toBe(true);
     });
 
     it('should fail for invalid birth date', () => {
@@ -408,7 +408,7 @@ describe('birthData validator', () => {
         birth_date: 'invalid-date',
         birth_place: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       });
 
@@ -438,7 +438,7 @@ describe('birthData validator', () => {
         birth_time: '14:30',
         birth_place: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       });
 

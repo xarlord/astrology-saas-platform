@@ -42,7 +42,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       expect(result.current.selectedIndex).toBe(0);
@@ -54,7 +54,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           selectedIndex: 2,
           onSelect,
-        })
+        }),
       );
 
       expect(result.current.selectedIndex).toBe(2);
@@ -65,7 +65,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -81,7 +81,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       // First move to index 2
@@ -102,7 +102,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       // First move to index 3
@@ -122,7 +122,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -140,7 +140,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           loop: true,
           onSelect,
-        })
+        }),
       );
 
       // First move to index 4
@@ -161,7 +161,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           loop: true,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -177,7 +177,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           loop: false,
           onSelect,
-        })
+        }),
       );
 
       // First move to index 4
@@ -200,7 +200,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           pageSize: 2,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -216,7 +216,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           pageSize: 2,
           onSelect,
-        })
+        }),
       );
 
       // First move to index 4
@@ -237,7 +237,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           pageSize: 10,
           onSelect,
-        })
+        }),
       );
 
       // First move to index 3
@@ -261,7 +261,7 @@ describe('useKeyboardNavigation', () => {
           skipDisabled: true,
           isItemDisabled: (item) => item.disabled,
           onSelect,
-        })
+        }),
       );
 
       // Navigate from index 1 to next, should skip index 2 (disabled)
@@ -283,7 +283,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           skipDisabled: false,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -305,7 +305,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           onActivate,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -323,7 +323,7 @@ describe('useKeyboardNavigation', () => {
           isItemDisabled: (item) => item.disabled,
           onActivate,
           onSelect,
-        })
+        }),
       );
 
       act(() => {
@@ -340,7 +340,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       const containerProps = result.current.getContainerProps();
@@ -356,7 +356,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           direction: 'horizontal',
           onSelect,
-        })
+        }),
       );
 
       const containerProps = result.current.getContainerProps();
@@ -371,7 +371,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       const itemProps = result.current.getItemProps(0);
@@ -386,7 +386,7 @@ describe('useKeyboardNavigation', () => {
         useKeyboardNavigation({
           items: mockItems,
           onSelect,
-        })
+        }),
       );
 
       const itemProps = result.current.getItemProps(1);
@@ -401,7 +401,7 @@ describe('useKeyboardNavigation', () => {
           items: mockItems,
           isItemDisabled: (item) => item.disabled,
           onSelect,
-        })
+        }),
       );
 
       const disabledItemProps = result.current.getItemProps(2);
@@ -420,7 +420,7 @@ describe('useTypeAhead', () => {
       useTypeAhead({
         items,
         onMatch,
-      })
+      }),
     );
 
     act(() => {
@@ -439,7 +439,7 @@ describe('useTypeAhead', () => {
         items,
         onMatch,
         delay: 1000,
-      })
+      }),
     );
 
     act(() => {
@@ -459,7 +459,7 @@ describe('useTypeAhead', () => {
         items,
         onMatch,
         delay: 100,
-      })
+      }),
     );
 
     act(() => {
@@ -490,7 +490,7 @@ describe('useTypeAhead', () => {
         items,
         getKey: (item) => item.label,
         onMatch,
-      })
+      }),
     );
 
     act(() => {
@@ -513,7 +513,7 @@ describe('WCAG 2.1 AA Compliance', () => {
         onSelect,
         onActivate,
         onEscape,
-      })
+      }),
     );
 
     // Test navigation functions exist
@@ -531,7 +531,7 @@ describe('WCAG 2.1 AA Compliance', () => {
       useKeyboardNavigation({
         items: mockItems,
         onSelect: vi.fn(),
-      })
+      }),
     );
 
     const containerProps = result.current.getContainerProps();
@@ -552,7 +552,7 @@ describe('WCAG 2.1 AA Compliance', () => {
         items: mockItems,
         loop: false,
         onSelect: vi.fn(),
-      })
+      }),
     );
 
     // At first item, previous should stay

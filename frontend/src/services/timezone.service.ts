@@ -97,9 +97,12 @@ class TimezoneServiceClass {
    */
   async searchTimezones(query: string): Promise<TimezoneSearchResult[]> {
     try {
-      const response = await api.get<{ data: { timezones: TimezoneSearchResult[] } }>('/timezone/search', {
-        params: { q: query },
-      });
+      const response = await api.get<{ data: { timezones: TimezoneSearchResult[] } }>(
+        '/timezone/search',
+        {
+          params: { q: query },
+        },
+      );
       return response.data.data.timezones;
     } catch (error) {
       // Fallback to local search
@@ -111,7 +114,10 @@ class TimezoneServiceClass {
    * Local timezone search (fallback)
    */
   private localSearchTimezones(query: string): TimezoneSearchResult[] {
-    const zones: string[] = (Intl as unknown as Record<string, (key: string) => string[]>).supportedValuesOf?.('timeZone') ?? [];
+    const zones: string[] =
+      (Intl as unknown as Record<string, (key: string) => string[]>).supportedValuesOf?.(
+        'timeZone',
+      ) ?? [];
     const normalizedQuery = query.toLowerCase();
     const results: TimezoneSearchResult[] = [];
 
@@ -136,10 +142,7 @@ class TimezoneServiceClass {
   /**
    * Detect timezone from coordinates via API
    */
-  async detectTimezone(
-    latitude: number,
-    longitude: number
-  ): Promise<TimezoneInfo | null> {
+  async detectTimezone(latitude: number, longitude: number): Promise<TimezoneInfo | null> {
     try {
       const response = await api.get<{ data: { info: TimezoneInfo } }>('/timezone/detect', {
         params: { lat: latitude, lng: longitude },
@@ -204,13 +207,15 @@ class TimezoneServiceClass {
     isDST: boolean;
     julianDay: number;
   }> {
-    const response = await api.post<{ data: {
-      utcDate: string;
-      offset: number;
-      offsetStr: string;
-      isDST: boolean;
-      julianDay: number;
-    } }>('/timezone/convert', params);
+    const response = await api.post<{
+      data: {
+        utcDate: string;
+        offset: number;
+        offsetStr: string;
+        isDST: boolean;
+        julianDay: number;
+      };
+    }>('/timezone/convert', params);
     return response.data.data;
   }
 
@@ -232,10 +237,7 @@ class TimezoneServiceClass {
   } {
     const { year, month, day, hour, minute, timezone } = params;
 
-    const localDate = DateTime.fromObject(
-      { year, month, day, hour, minute },
-      { zone: timezone }
-    );
+    const localDate = DateTime.fromObject({ year, month, day, hour, minute }, { zone: timezone });
 
     if (!localDate.isValid) {
       throw new Error(`Invalid date/time: ${localDate.invalidExplanation}`);
@@ -252,11 +254,7 @@ class TimezoneServiceClass {
   /**
    * Format date in timezone
    */
-  formatDateInTimezone(
-    date: Date,
-    timezone: string,
-    format = 'yyyy-MM-dd HH:mm'
-  ): string {
+  formatDateInTimezone(date: Date, timezone: string, format = 'yyyy-MM-dd HH:mm'): string {
     const dt = DateTime.fromJSDate(date, { zone: timezone });
     return dt.toFormat(format);
   }
@@ -292,14 +290,8 @@ class TimezoneServiceClass {
 
   private isDST(dt: DateTime, timezone: string): boolean {
     const year = dt.year;
-    const janOffset = DateTime.fromObject(
-      { year, month: 1, day: 15 },
-      { zone: timezone }
-    ).offset;
-    const julOffset = DateTime.fromObject(
-      { year, month: 7, day: 15 },
-      { zone: timezone }
-    ).offset;
+    const janOffset = DateTime.fromObject({ year, month: 1, day: 15 }, { zone: timezone }).offset;
+    const julOffset = DateTime.fromObject({ year, month: 7, day: 15 }, { zone: timezone }).offset;
     const standardOffset = Math.max(janOffset, julOffset);
     return dt.offset !== standardOffset;
   }
@@ -324,7 +316,7 @@ class TimezoneServiceClass {
       'Australia/Sydney': 'Australian Eastern Time',
       'Australia/Melbourne': 'Australian Eastern Time',
       'Australia/Perth': 'Australian Western Time',
-      'UTC': 'Coordinated Universal Time',
+      UTC: 'Coordinated Universal Time',
     };
 
     return friendlyNames[timezone] || timezone.replace(/_/g, ' ');

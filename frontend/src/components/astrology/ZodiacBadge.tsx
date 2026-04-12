@@ -16,7 +16,10 @@ export interface ZodiacBadgeProps {
   'aria-label'?: string;
 }
 
-const ZODIAC_DATA: Record<string, { symbol: string; element: 'fire' | 'earth' | 'air' | 'water'; color: string }> = {
+const ZODIAC_DATA: Record<
+  string,
+  { symbol: string; element: 'fire' | 'earth' | 'air' | 'water'; color: string }
+> = {
   Aries: { symbol: '♈', element: 'fire', color: '#ef4444' },
   Taurus: { symbol: '♉', element: 'earth', color: '#22c55e' },
   Gemini: { symbol: '♊', element: 'air', color: '#38bdf8' },

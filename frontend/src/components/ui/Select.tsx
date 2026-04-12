@@ -58,7 +58,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       className,
       containerClassName,
     },
-    ref
+    ref,
   ) => {
     const selectId = id ?? `select-${Math.random().toString(36).substr(2, 9)}`;
     const errorId = `${selectId}-error`;
@@ -69,7 +69,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const [searchQuery, setSearchQuery] = useState('');
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [internalValue, setInternalValue] = useState<string | string[]>(
-      defaultValue ?? (multiple ? [] : '')
+      defaultValue ?? (multiple ? [] : ''),
     );
 
     const isControlled = controlledValue !== undefined;
@@ -81,7 +81,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
 
     // Normalize options to groups format
     const groupedOptions: SelectGroup[] = React.useMemo(() => {
-      const hasGroups = options.some((opt) => 'group' in opt || 'label' in opt && 'options' in opt);
+      const hasGroups = options.some(
+        (opt) => 'group' in opt || ('label' in opt && 'options' in opt),
+      );
 
       if (hasGroups) {
         return options as SelectGroup[];
@@ -103,7 +105,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         .map((group) => ({
           ...group,
           options: group.options.filter((opt) =>
-            opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+            opt.label.toLowerCase().includes(searchQuery.toLowerCase()),
           ),
         }))
         .filter((group) => group.options.length > 0);
@@ -141,7 +143,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         }
         onChange?.(newValue);
       },
-      [value, multiple, isControlled, onChange]
+      [value, multiple, isControlled, onChange],
     );
 
     // Handle keyboard navigation
@@ -166,9 +168,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               setIsOpen(true);
             } else {
               const filteredFlat = filteredGroups.flatMap((g) => g.options);
-              setHighlightedIndex((prev) =>
-                prev < filteredFlat.length - 1 ? prev + 1 : prev
-              );
+              setHighlightedIndex((prev) => (prev < filteredFlat.length - 1 ? prev + 1 : prev));
             }
             break;
           case 'ArrowUp':
@@ -185,7 +185,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             break;
         }
       },
-      [disabled, isOpen, highlightedIndex, filteredGroups, handleSelect]
+      [disabled, isOpen, highlightedIndex, filteredGroups, handleSelect],
     );
 
     // Click outside handler
@@ -211,11 +211,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       }
     }, [highlightedIndex, isOpen]);
 
-    const wrapperClass = clsx(
-      'relative',
-      fullWidth && 'w-full',
-      containerClassName
-    );
+    const wrapperClass = clsx('relative', fullWidth && 'w-full', containerClassName);
 
     const triggerClass = clsx(
       'relative w-full cursor-pointer rounded-md border',
@@ -227,7 +223,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       error
         ? 'border-red-300 dark:border-red-700 focus:border-red-500 focus:ring-red-500'
         : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500',
-      className
+      className,
     );
 
     return (
@@ -251,10 +247,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             aria-labelledby={`${selectId}-label`}
             aria-controls={listboxId}
             aria-invalid={Boolean(error)}
-            aria-describedby={clsx(
-              error && errorId,
-              helperText && helperId
-            ).split(' ').filter(Boolean).join(' ') || undefined}
+            aria-describedby={
+              clsx(error && errorId, helperText && helperId)
+                .split(' ')
+                .filter(Boolean)
+                .join(' ') || undefined
+            }
             className={clsx(triggerClass, 'min-h-[38px] px-3 py-2')}
             tabIndex={disabled ? -1 : 0}
             onKeyDown={handleKeyDown}
@@ -266,13 +264,21 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
 
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <svg
-                className={clsx('h-5 w-5 text-gray-400 transition-transform', isOpen && 'rotate-180')}
+                className={clsx(
+                  'h-5 w-5 text-gray-400 transition-transform',
+                  isOpen && 'rotate-180',
+                )}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </div>
           </div>
@@ -288,7 +294,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                 'absolute z-10 mt-1 w-full rounded-md shadow-lg',
                 'bg-white dark:bg-gray-800',
                 'border border-gray-200 dark:border-gray-700',
-                'max-h-60 overflow-auto'
+                'max-h-60 overflow-auto',
               )}
             >
               {/* Search input */}
@@ -318,9 +324,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                     const isSelected = multiple
                       ? Array.isArray(value) && value.includes(option.value)
                       : value === option.value;
-                    const index = filteredGroups
-                      .slice(0, groupIndex)
-                      .reduce((acc, g) => acc + g.options.length, 0) + optionIndex;
+                    const index =
+                      filteredGroups
+                        .slice(0, groupIndex)
+                        .reduce((acc, g) => acc + g.options.length, 0) + optionIndex;
 
                     return (
                       <div
@@ -330,12 +337,13 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                         className={clsx(
                           'relative cursor-pointer select-none py-2 pl-3 pr-9',
                           'transition-colors duration-150',
-                          (highlightedIndex === index || optionIndex === 0 && groupIndex === 0 && highlightedIndex === -1) &&
+                          (highlightedIndex === index ||
+                            (optionIndex === 0 && groupIndex === 0 && highlightedIndex === -1)) &&
                             'bg-gray-100 dark:bg-gray-700',
                           isSelected
                             ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium'
                             : 'text-gray-900 dark:text-gray-100',
-                          option.disabled && 'opacity-50 cursor-not-allowed'
+                          option.disabled && 'opacity-50 cursor-not-allowed',
                         )}
                         onClick={() => !option.disabled && handleSelect(option.value)}
                       >
@@ -385,7 +393,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Select.displayName = 'Select';

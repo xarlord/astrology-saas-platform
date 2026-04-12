@@ -122,13 +122,14 @@ export const useNotificationStore = create<NotificationState>()(
     }),
     {
       name: 'NotificationStore',
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks for optimized re-renders
 export const useNotifications = () => useNotificationStore((state) => state.notifications);
 export const useAddNotification = () => useNotificationStore((state) => state.addNotification);
-export const useRemoveNotification = () => useNotificationStore((state) => state.removeNotification);
+export const useRemoveNotification = () =>
+  useNotificationStore((state) => state.removeNotification);
 
 export default useNotificationStore;

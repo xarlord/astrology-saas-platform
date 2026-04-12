@@ -16,7 +16,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="Tooltip text">
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       expect(screen.getByRole('button', { name: 'Hover me' })).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="Tooltip text">
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
@@ -42,7 +42,7 @@ describe('Tooltip Component', () => {
           }
         >
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       expect(screen.getByRole('button', { name: 'Hover me' })).toBeInTheDocument();
@@ -54,7 +54,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="Tooltip text" disabled>
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       // When disabled, the wrapper with tooltip logic is not rendered
@@ -66,7 +66,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="">
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       const button = screen.getByRole('button', { name: 'Hover me' });
@@ -79,7 +79,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="Tooltip text" className="custom-tooltip">
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       // The tooltip wrapper should exist (className is applied when visible)
@@ -90,7 +90,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="Tooltip text" maxWidth={300}>
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       expect(screen.getByRole('button', { name: 'Hover me' })).toBeInTheDocument();
@@ -102,7 +102,7 @@ describe('Tooltip Component', () => {
       render(
         <Tooltip content="Tooltip text">
           <button>Hover me</button>
-        </Tooltip>
+        </Tooltip>,
       );
 
       const button = screen.getByRole('button', { name: 'Hover me' });

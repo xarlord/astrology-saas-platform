@@ -109,12 +109,14 @@ export const relationshipDynamicSchema = z.object({
 export const synastryRequestSchema = z.object({
   chart1Id: z.string().uuid(),
   chart2Id: z.string().uuid(),
-  options: z.object({
-    orbTolerance: z.number().min(1).max(15).optional().default(8),
-    includeMinorAspects: z.boolean().optional().default(false),
-    includeHouseOverlays: z.boolean().optional().default(true),
-    includeInterpretations: z.boolean().optional().default(true),
-  }).optional(),
+  options: z
+    .object({
+      orbTolerance: z.number().min(1).max(15).optional().default(8),
+      includeMinorAspects: z.boolean().optional().default(false),
+      includeHouseOverlays: z.boolean().optional().default(true),
+      includeInterpretations: z.boolean().optional().default(true),
+    })
+    .optional(),
 });
 
 // ============================================================================

@@ -8,12 +8,17 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
+import * as path from 'path';
 
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { csrfMiddleware } from './middleware/csrf';
+import { connectRedis, disconnectRedis, isRedisConnected } from './modules/shared/services/redis.service';
+import { registerAllProcessors, shutdownQueues } from './modules/jobs';
+import { swaggerSpec } from './config/swagger';
 
 // Import API router with versioning
 import apiRouter from './api';
@@ -23,6 +28,20 @@ import apiRouter from './api';
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+// Build allowed CORS origins from env or defaults
+function getAllowedOrigins(): (string | RegExp)[] {
+  const origins: (string | RegExp)[] = [];
+  if (process.env.ALLOWED_ORIGINS) {
+    origins.push(...process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean));
+  }
+  if (FRONTEND_URL && !origins.includes(FRONTEND_URL)) {
+    origins.push(FRONTEND_URL);
+  }
+  // Always allow local development
+  origins.push('http://localhost:3000', 'http://localhost:5173');
+  return origins;
+}
 
 // ============================================
 // Security Middleware
@@ -48,7 +67,7 @@ app.use(helmet({
 
 // CORS - Cross-Origin Resource Sharing
 app.use(cors({
-  origin: [FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173'],
+  origin: getAllowedOrigins(),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
@@ -67,6 +86,18 @@ app.use(cookieParser());
 // ============================================
 
 app.use(compression());
+
+// ============================================
+// Static File Serving (uploads)
+// ============================================
+
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads'), {
+  maxAge: '7d',
+  immutable: true,
+}));
+
+// Trust proxy for correct IP resolution behind load balancers/reverse proxies
+app.set('trust proxy', 1);
 
 // CSRF Protection (skips safe methods and test env automatically)
 app.use(csrfMiddleware);
@@ -119,6 +150,7 @@ app.get('/health', (_req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development',
+    redis: isRedisConnected() ? 'connected' : 'disconnected',
     api: {
       versions: ['v1', 'v2'],
       current: 'v1',
@@ -138,7 +170,7 @@ app.get('/', (_req: Request, res: Response) => {
       name: 'AstroVerse API',
       description: 'Astrology SaaS Platform - Natal chart generation, personality analysis, and forecasting',
       version: '1.0.0',
-      documentation: '/api/v1',
+      documentation: '/api/docs',
       health: '/health',
       endpoints: {
         auth: '/api/v1/auth',
@@ -153,6 +185,18 @@ app.get('/', (_req: Request, res: Response) => {
       }
     }
   });
+});
+
+// ============================================
+// API Documentation (Swagger)
+// ============================================
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// JSON spec endpoint for tooling
+app.get('/api/docs.json', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
 
 // ============================================
@@ -177,21 +221,34 @@ app.use(errorHandler);
 
 // Only start server if this file is run directly (not when imported by tests)
 if (require.main === module) {
-  const server = app.listen(PORT, () => {
+  const server = app.listen(PORT, async () => {
     logger.info(`🚀 Server is running on port ${PORT}`);
     logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
     logger.info(`🌐 Frontend URL: ${FRONTEND_URL}`);
     logger.info(`💚 Health check: http://localhost:${PORT}/health`);
+
+    // Connect to Redis (non-blocking — falls back gracefully)
+    await connectRedis();
+
+    // Initialize job queues and register processors
+    if (isRedisConnected()) {
+      registerAllProcessors();
+      logger.info('📋 Job queues initialized');
+    } else {
+      logger.warn('📋 Skipping job queue init — Redis not available');
+    }
   });
 
   // ============================================
   // Graceful Shutdown
   // ============================================
 
-  const gracefulShutdown = (signal: string) => {
+  const gracefulShutdown = async (signal: string) => {
     logger.info(`${signal} received. Starting graceful shutdown...`);
 
-    server.close(() => {
+    server.close(async () => {
+      await shutdownQueues();
+      await disconnectRedis();
       logger.info('Server closed successfully');
       process.exit(0);
     });

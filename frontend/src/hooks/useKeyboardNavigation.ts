@@ -59,9 +59,14 @@ export interface UseKeyboardNavigationReturn {
   /** Ref to attach to the container element */
   containerRef: React.RefObject<HTMLElement>;
   /** Props to spread on the container element */
-  getContainerProps: (props?: React.HTMLAttributes<HTMLElement>) => React.HTMLAttributes<HTMLElement>;
+  getContainerProps: (
+    props?: React.HTMLAttributes<HTMLElement>,
+  ) => React.HTMLAttributes<HTMLElement>;
   /** Props to spread on individual item elements */
-  getItemProps: (index: number, props?: React.HTMLAttributes<HTMLElement>) => React.HTMLAttributes<HTMLElement>;
+  getItemProps: (
+    index: number,
+    props?: React.HTMLAttributes<HTMLElement>,
+  ) => React.HTMLAttributes<HTMLElement>;
   /** Navigate to next item */
   navigateNext: () => void;
   /** Navigate to previous item */
@@ -82,7 +87,7 @@ export interface UseKeyboardNavigationReturn {
  * Custom hook for comprehensive keyboard navigation
  */
 export function useKeyboardNavigation<T = HTMLElement>(
-  options: UseKeyboardNavigationOptions<T>
+  options: UseKeyboardNavigationOptions<T>,
 ): UseKeyboardNavigationReturn {
   const {
     items,
@@ -113,7 +118,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
       }
       onSelect?.(index, items[index]);
     },
-    [controlledSelectedIndex, onSelect, items]
+    [controlledSelectedIndex, onSelect, items],
   );
 
   // Check if item is focusable
@@ -124,7 +129,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
       if (!skipDisabled || !isItemDisabled) return true;
       return !isItemDisabled(items[index], index);
     },
-    [items, skipDisabled, isItemDisabled]
+    [items, skipDisabled, isItemDisabled],
   );
 
   // Find next focusable index
@@ -143,7 +148,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
 
       return startIndex;
     },
-    [items.length, skipDisabled, isItemDisabled, isFocusable]
+    [items.length, skipDisabled, isItemDisabled, isFocusable],
   );
 
   // Navigate to a specific index
@@ -157,7 +162,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
         itemElement?.focus();
       }
     },
-    [findNextFocusable, selectedIndex, setSelectedIndex, focusOnSelect]
+    [findNextFocusable, selectedIndex, setSelectedIndex, focusOnSelect],
   );
 
   // Navigation functions
@@ -250,7 +255,10 @@ export function useKeyboardNavigation<T = HTMLElement>(
           if (selectedIndex - columns >= 0) {
             newIndex = selectedIndex - columns;
           } else if (loop) {
-            newIndex = Math.min(items.length - 1 - ((items.length - 1) % columns) + col, items.length - 1);
+            newIndex = Math.min(
+              items.length - 1 - ((items.length - 1) % columns) + col,
+              items.length - 1,
+            );
           }
           break;
       }
@@ -259,7 +267,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
         navigateTo(newIndex);
       }
     },
-    [columns, selectedIndex, items.length, loop, navigateTo]
+    [columns, selectedIndex, items.length, loop, navigateTo],
   );
 
   // Keyboard event handler
@@ -270,7 +278,10 @@ export function useKeyboardNavigation<T = HTMLElement>(
       const { key } = event;
 
       // Handle grid navigation separately
-      if (direction === 'grid' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+      if (
+        direction === 'grid' &&
+        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)
+      ) {
         event.preventDefault();
         navigateGrid(key);
         return;
@@ -345,14 +356,14 @@ export function useKeyboardNavigation<T = HTMLElement>(
       items,
       selectedIndex,
       navigateGrid,
-    ]
+    ],
   );
 
   // Container props
   const getContainerProps = useCallback(
-    (props?: React.HTMLAttributes<HTMLElement>): React.HTMLAttributes<HTMLElement> => ({
+    (props?: React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> }): React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> } => ({
       ...props,
-      ref: containerRef,
+      ref: containerRef as unknown as React.RefCallback<HTMLElement>,
       onKeyDown: (e) => {
         handleKeyDown(e);
         props?.onKeyDown?.(e);
@@ -361,12 +372,15 @@ export function useKeyboardNavigation<T = HTMLElement>(
       'aria-orientation': direction === 'horizontal' ? 'horizontal' : 'vertical',
       tabIndex: 0,
     }),
-    [handleKeyDown, direction]
+    [handleKeyDown, direction],
   );
 
   // Item props
   const getItemProps = useCallback(
-    (index: number, props?: React.HTMLAttributes<HTMLElement>): React.HTMLAttributes<HTMLElement> => {
+    (
+      index: number,
+      props?: React.HTMLAttributes<HTMLElement>,
+    ): React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> } => {
       const disabled = isItemDisabled?.(items[index], index);
 
       return {
@@ -397,7 +411,7 @@ export function useKeyboardNavigation<T = HTMLElement>(
         },
       };
     },
-    [isItemDisabled, items, selectedIndex, navigateTo, onActivate, setSelectedIndex]
+    [isItemDisabled, items, selectedIndex, navigateTo, onActivate, setSelectedIndex],
   );
 
   // Update item refs when items change
@@ -440,14 +454,13 @@ export interface UseTypeAheadOptions<T> {
 export function useTypeAhead<T>(options: UseTypeAheadOptions<T>) {
   const { items, getKey = (item) => String(item), onMatch, delay = 500 } = options;
 
-  const [searchString, setSearchString] = useState('');
+  const searchStringRef = useRef('');
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handleKeyPress = useCallback(
     (key: string) => {
-      // Add to search string
-      const newSearchString = searchString + key.toLowerCase();
-      setSearchString(newSearchString);
+      // Update ref immediately (synchronous, no stale closure)
+      searchStringRef.current = searchStringRef.current + key.toLowerCase();
 
       // Clear existing timeout
       if (timeoutRef.current) {
@@ -456,20 +469,23 @@ export function useTypeAhead<T>(options: UseTypeAheadOptions<T>) {
 
       // Set new timeout to clear search string
       timeoutRef.current = setTimeout(() => {
-        setSearchString('');
+        searchStringRef.current = '';
       }, delay);
 
-      // Find matching item
+      // Find matching item using ref value (always current)
       const matchIndex = items.findIndex((item) =>
-        getKey(item).toLowerCase().startsWith(newSearchString)
+        getKey(item).toLowerCase().startsWith(searchStringRef.current),
       );
 
       if (matchIndex !== -1) {
         onMatch?.(matchIndex, items[matchIndex]);
       }
     },
-    [searchString, items, getKey, onMatch, delay]
+    [items, getKey, onMatch, delay],
   );
+
+  // Return the ref value for display purposes
+  const searchString = searchStringRef.current;
 
   // Cleanup timeout on unmount
   useEffect(() => {

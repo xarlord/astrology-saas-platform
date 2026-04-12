@@ -21,7 +21,8 @@ export interface CardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
 
 const variantStyles: Record<CardVariant, string> = {
   default: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700',
-  glass: 'bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg border border-white/20 dark:border-gray-700/50',
+  glass:
+    'bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg border border-white/20 dark:border-gray-700/50',
   elevated: 'bg-white dark:bg-gray-800 shadow-lg shadow-gray-200/50 dark:shadow-black/30',
 };
 
@@ -42,7 +43,7 @@ const hoverVariants = {
     y: -4,
     transition: {
       duration: 0.2,
-      ease: 'easeOut',
+      ease: 'easeOut' as const,
     },
   },
   tap: {
@@ -75,7 +76,7 @@ export const Card: React.FC<CardProps> & {
         variantStyles[variant],
         paddingStyles[padding],
         isInteractive && 'cursor-pointer',
-        className
+        className,
       )}
       variants={isInteractive ? hoverVariants : undefined}
       initial={isInteractive ? 'rest' : undefined}
@@ -105,7 +106,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
     className={clsx(
       'px-4 py-3 sm:px-6 sm:py-4',
       bordered && 'border-b border-gray-200 dark:border-gray-700',
-      className
+      className,
     )}
     {...props}
   >
@@ -152,7 +153,7 @@ const CardFooter: React.FC<CardFooterProps> = ({
       align === 'center' && 'flex justify-center',
       align === 'right' && 'flex justify-end gap-3',
       align === 'between' && 'flex justify-between items-center',
-      className
+      className,
     )}
     {...props}
   >

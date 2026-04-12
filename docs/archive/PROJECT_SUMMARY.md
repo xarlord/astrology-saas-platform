@@ -266,7 +266,7 @@ mooncalender/
 
 ### Environments
 - **Development:** Local (Docker Compose)
-- **Staging:** Ready (Railway/Render)
+- **Staging:** Ready (Docker Compose/Render)
 - **Production:** Not deployed
 
 ### CI/CD

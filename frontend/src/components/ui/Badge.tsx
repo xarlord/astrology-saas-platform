@@ -35,11 +35,16 @@ export const Badge: React.FC<BadgeProps> = ({
   fullWidth = false,
 }) => {
   const variantStyles: Record<BadgeVariant, ClassValue> = {
-    default: 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700',
-    primary: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 border-indigo-200 dark:border-indigo-800',
-    success: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800',
-    warning: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800',
-    danger: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800',
+    default:
+      'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700',
+    primary:
+      'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 border-indigo-200 dark:border-indigo-800',
+    success:
+      'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800',
+    warning:
+      'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800',
+    danger:
+      'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800',
   };
 
   const sizeStyles: Record<BadgeSize, ClassValue> = {
@@ -69,7 +74,7 @@ export const Badge: React.FC<BadgeProps> = ({
     variantStyles[variant],
     sizeStyles[size],
     fullWidth && 'w-full',
-    className
+    className,
   );
 
   const dotColorClass: Record<BadgeVariant, string> = {
@@ -88,11 +93,7 @@ export const Badge: React.FC<BadgeProps> = ({
     >
       {dot && (
         <span
-          className={clsx(
-            'rounded-full',
-            dotSizeStyles[size],
-            dotColorClass[variant]
-          )}
+          className={clsx('rounded-full', dotSizeStyles[size], dotColorClass[variant])}
           aria-hidden="true"
         />
       )}
@@ -143,18 +144,11 @@ export const DotBadge: React.FC<DotBadgeProps> = ({
   };
 
   return (
-    <span
-      className={clsx(
-        'relative flex h-3 w-3',
-        className
-      )}
-      role="status"
-      aria-label={ariaLabel}
-    >
+    <span className={clsx('relative flex h-3 w-3', className)} role="status" aria-label={ariaLabel}>
       <span
         className={clsx(
           'animate-ping absolute inline-flex h-full w-full rounded-full opacity-75',
-          dotColorClass[variant]
+          dotColorClass[variant],
         )}
         aria-hidden="true"
       />
@@ -162,7 +156,7 @@ export const DotBadge: React.FC<DotBadgeProps> = ({
         className={clsx(
           'relative inline-flex rounded-full',
           dotSizeStyles[size],
-          dotColorClass[variant]
+          dotColorClass[variant],
         )}
         aria-hidden="true"
       />

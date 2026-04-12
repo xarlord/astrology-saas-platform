@@ -20,11 +20,7 @@ describe('Alert', () => {
     });
 
     it('should render title and children', () => {
-      render(
-        <Alert title="Title">
-          Description text
-        </Alert>
-      );
+      render(<Alert title="Title">Description text</Alert>);
       expect(screen.getByRole('alert')).toHaveTextContent('Title');
       expect(screen.getByRole('alert')).toHaveTextContent('Description text');
     });
@@ -66,7 +62,7 @@ describe('Alert', () => {
       render(
         <Alert dismissible onClose={() => {}}>
           Dismissible
-        </Alert>
+        </Alert>,
       );
       expect(screen.getByLabelText('Dismiss alert')).toBeInTheDocument();
     });
@@ -82,7 +78,7 @@ describe('Alert', () => {
       render(
         <Alert dismissible onClose={handleClose}>
           Dismissible
-        </Alert>
+        </Alert>,
       );
 
       fireEvent.click(screen.getByLabelText('Dismiss alert'));
@@ -172,7 +168,7 @@ describe('Alert', () => {
       render(
         <Alert dismissible onClose={handleClose}>
           Dismissible
-        </Alert>
+        </Alert>,
       );
 
       fireEvent.click(screen.getByLabelText('Dismiss alert'));

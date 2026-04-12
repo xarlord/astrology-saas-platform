@@ -2,6 +2,7 @@
  * Utilities
  */
 
+import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 
 /**
@@ -59,11 +60,10 @@ export function validatePassword(password: string): {
 }
 
 /**
- * Generate random token
+ * Generate cryptographically secure random token
  */
 export function generateToken(): string {
-  return Math.random().toString(36).substring(2, 15) +
-         Math.random().toString(36).substring(2, 15);
+  return crypto.randomBytes(32).toString('hex');
 }
 
 /**

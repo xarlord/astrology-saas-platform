@@ -19,7 +19,7 @@ import knex from '../../../config/database';
  */
 export async function getNextLunarReturn(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -74,7 +74,7 @@ export async function getNextLunarReturn(req: Request, res: Response, next: Next
  */
 export async function getCurrentLunarReturn(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -101,7 +101,7 @@ export async function getCurrentLunarReturn(req: Request, res: Response, next: N
  */
 export async function getLunarReturnChart(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -173,7 +173,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
  */
 export async function getLunarMonthForecast(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -272,7 +272,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
  */
 export async function getLunarReturnHistory(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -300,24 +300,24 @@ export async function getLunarReturnHistory(req: Request, res: Response, next: N
     res.json({
       success: true,
       data: {
-        returns: returns.map((lr: any) => ({
+        returns: returns.map((lr: Record<string, unknown>) => ({
           id: lr.id,
           returnDate: lr.returnDate,
           theme: lr.theme,
           intensity: lr.intensity,
           emotionalTheme: lr.emotionalTheme,
-          actionAdvice: JSON.parse(lr.actionAdvice || '[]'),
-          keyDates: JSON.parse(lr.keyDates || '[]'),
-          predictions: JSON.parse(lr.predictions || '[]'),
-          rituals: JSON.parse(lr.rituals || '[]'),
-          journalPrompts: JSON.parse(lr.journalPrompts || '[]'),
+          actionAdvice: JSON.parse((lr.actionAdvice as string) || '[]'),
+          keyDates: JSON.parse((lr.keyDates as string) || '[]'),
+          predictions: JSON.parse((lr.predictions as string) || '[]'),
+          rituals: JSON.parse((lr.rituals as string) || '[]'),
+          journalPrompts: JSON.parse((lr.journalPrompts as string) || '[]'),
           createdAt: lr.createdAt,
         })),
         pagination: {
           page,
           limit,
-          total: (total as any).count,
-          totalPages: Math.ceil((total as any).count / limit),
+          total: (total as Record<string, unknown>).count as number,
+          totalPages: Math.ceil(((total as Record<string, unknown>).count as number) / limit),
         },
       },
     });
@@ -332,7 +332,7 @@ export async function getLunarReturnHistory(req: Request, res: Response, next: N
  */
 export async function deleteLunarReturn(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
     const { id } = req.params;
 
     if (!userId) {
@@ -375,7 +375,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
  */
 export async function calculateCustomLunarReturn(req: Request, res: Response, next: NextFunction) {
   try {
-    const userId = (req as any).user?.id;
+    const userId = (req as { user?: { id: string } }).user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -431,7 +431,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
     // Calculate lunar return chart
     const chart = calculateLunarReturnChart(natalChart, date);
 
-    const result: any = {
+    const result: Record<string, unknown> = {
       chart,
       returnDate: date,
     };

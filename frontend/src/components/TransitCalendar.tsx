@@ -4,56 +4,89 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Sun,
-  Moon,
-  Circle,
-  Info,
-} from 'lucide-react';
+
+// Material Symbols wrapper for planet icons
+function materialIcon(iconName: string) {
+  return ({ className, style }: { className?: string; style?: React.CSSProperties }) => {
+    // Extract size from className like "w-3 h-3" -> text-[12px], "w-5 h-5" -> text-[20px]
+    const sizeMap: Record<string, string> = {
+      'w-3 h-3': 'text-[12px]',
+      'w-4 h-4': 'text-[16px]',
+      'w-5 h-5': 'text-[20px]',
+      'w-6 h-6': 'text-[24px]',
+    };
+    let sizeClass = '';
+    let remainingClass = className ?? '';
+    for (const [sizeKey, sizeVal] of Object.entries(sizeMap)) {
+      if (remainingClass.includes(sizeKey)) {
+        sizeClass = sizeVal;
+        remainingClass = remainingClass.replace(sizeKey, '');
+        break;
+      }
+    }
+    return (
+      <span
+        className={`material-symbols-outlined ${sizeClass} ${remainingClass}`.trim()}
+        style={style}
+      >
+        {iconName}
+      </span>
+    );
+  };
+}
 
 // Custom planet icons (lucide-react doesn't have planet icons)
 const JupiterIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
   <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="8" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <path d="M6 9c4 0 8 1 12 3" strokeWidth="1.5" stroke="currentColor" fill="none"/>
+    <circle cx="12" cy="12" r="8" strokeWidth="2" stroke="currentColor" fill="none" />
+    <path d="M6 9c4 0 8 1 12 3" strokeWidth="1.5" stroke="currentColor" fill="none" />
   </svg>
 );
 
 const SaturnIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
   <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <ellipse cx="12" cy="12" rx="10" ry="3" strokeWidth="1.5" stroke="currentColor" fill="none" transform="rotate(-20 12 12)"/>
+    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none" />
+    <ellipse
+      cx="12"
+      cy="12"
+      rx="10"
+      ry="3"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      fill="none"
+      transform="rotate(-20 12 12)"
+    />
   </svg>
 );
 
 const UranusIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
   <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <line x1="12" y1="2" x2="12" y2="6" strokeWidth="1.5" stroke="currentColor"/>
-    <line x1="12" y1="18" x2="12" y2="22" strokeWidth="1.5" stroke="currentColor"/>
+    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none" />
+    <line x1="12" y1="2" x2="12" y2="6" strokeWidth="1.5" stroke="currentColor" />
+    <line x1="12" y1="18" x2="12" y2="22" strokeWidth="1.5" stroke="currentColor" />
   </svg>
 );
 
 const NeptuneIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
   <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <path d="M8 8l8 8M16 8l-8 8" strokeWidth="1" stroke="currentColor" fill="none"/>
+    <circle cx="12" cy="12" r="6" strokeWidth="2" stroke="currentColor" fill="none" />
+    <path d="M8 8l8 8M16 8l-8 8" strokeWidth="1" stroke="currentColor" fill="none" />
   </svg>
 );
 
 const PlutoIcon = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
   <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="5" strokeWidth="2" stroke="currentColor" fill="none"/>
-    <path d="M12 7v-3M12 20v-3M7 12h-3M20 12h-3" strokeWidth="1.5" stroke="currentColor"/>
+    <circle cx="12" cy="12" r="5" strokeWidth="2" stroke="currentColor" fill="none" />
+    <path d="M12 7v-3M12 20v-3M7 12h-3M20 12h-3" strokeWidth="1.5" stroke="currentColor" />
   </svg>
 );
 
-// Use Circle for inner planets with different colors
-const MercuryIcon = Circle;
-const VenusIcon = Circle;
-const MarsIcon = Circle;
+// Material Symbols planet icons
+const SunIcon = materialIcon('light_mode');
+const MoonIcon = materialIcon('dark_mode');
+const MercuryIcon = materialIcon('circle');
+const VenusIcon = materialIcon('circle');
+const MarsIcon = materialIcon('circle');
 
 // Types
 export interface Transit {
@@ -78,8 +111,8 @@ export interface TransitCalendarProps {
 
 // Planet configuration
 const PLANET_CONFIG = {
-  sun: { icon: Sun, color: '#FFD700', name: 'Sun' },
-  moon: { icon: Moon, color: '#C0C0C0', name: 'Moon' },
+  sun: { icon: SunIcon, color: '#FFD700', name: 'Sun' },
+  moon: { icon: MoonIcon, color: '#C0C0C0', name: 'Moon' },
   mercury: { icon: MercuryIcon, color: '#8B4513', name: 'Mercury' },
   venus: { icon: VenusIcon, color: '#FF69B4', name: 'Venus' },
   mars: { icon: MarsIcon, color: '#FF0000', name: 'Mars' },
@@ -108,8 +141,18 @@ const ZODIAC_SIGNS = [
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export function TransitCalendar({
@@ -212,9 +255,7 @@ export function TransitCalendar({
 
   // Get zodiac symbol for sign
   const getZodiacSymbol = (sign: string): string => {
-    const found = ZODIAC_SIGNS.find(
-      (z) => z.name.toLowerCase() === sign.toLowerCase()
-    );
+    const found = ZODIAC_SIGNS.find((z) => z.name.toLowerCase() === sign.toLowerCase());
     return found?.symbol ?? '';
   };
 
@@ -232,7 +273,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_left</span>
           </button>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -242,7 +283,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
           >
-            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_right</span>
           </button>
         </div>
 
@@ -296,19 +337,18 @@ export function TransitCalendar({
       </div>
 
       {/* Calendar Grid */}
-      <div className="min-w-[320px]" role="grid">
+      <div className="min-w-0 sm:min-w-[320px]" role="grid">
         {Array.from({ length: Math.ceil(calendarDays.length / 7) }, (_, weekIdx) => (
           <div key={weekIdx} className="grid grid-cols-7" role="row">
             {calendarDays.slice(weekIdx * 7, weekIdx * 7 + 7).map((day, cellIdx) => {
               const index = weekIdx * 7 + cellIdx;
-          const isSelected =
-            selectedDate?.toDateString() === day.date.toDateString();
-          const hasRetrograde = day.transits.some((t) => t.retrograde);
+              const isSelected = selectedDate?.toDateString() === day.date.toDateString();
+              const hasRetrograde = day.transits.some((t) => t.retrograde);
 
-          return (
-            <div
-              key={index}
-              className={`
+              return (
+                <div
+                  key={index}
+                  className={`
                 relative min-h-[60px] sm:min-h-[100px] md:min-h-[80px] p-1 sm:p-2 border-b border-r border-gray-200 dark:border-gray-700
                 ${!day.isCurrentMonth ? 'bg-gray-50 dark:bg-gray-900/30' : ''}
                 ${isToday(day.date) ? 'bg-primary-50 dark:bg-primary-900/20' : ''}
@@ -319,81 +359,82 @@ export function TransitCalendar({
                 high-contrast:border-2
                 print:border print:border-gray-300 print:min-h-[60px]
               `}
-              onClick={() => handleDateClick(day.date, day.transits)}
-              role="gridcell"
-              aria-label={`${day.date.getDate()} ${MONTHS[day.date.getMonth()]}, ${day.transits.length} transits`}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleDateClick(day.date, day.transits);
-                }
-              }}
-            >
-              {/* Date Number */}
-              <div className="flex items-center justify-between mb-1">
-                <span
-                  className={`
+                  onClick={() => handleDateClick(day.date, day.transits)}
+                  role="gridcell"
+                  aria-label={`${day.date.getDate()} ${MONTHS[day.date.getMonth()]}, ${day.transits.length} transits`}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleDateClick(day.date, day.transits);
+                    }
+                  }}
+                >
+                  {/* Date Number */}
+                  <div className="flex items-center justify-between mb-1">
+                    <span
+                      className={`
                     text-sm font-medium
                     ${isToday(day.date) ? 'w-7 h-7 flex items-center justify-center bg-primary-600 text-white rounded-full' : ''}
                     ${!day.isCurrentMonth ? 'text-gray-400 dark:text-gray-600' : 'text-gray-900 dark:text-white'}
                   `}
-                >
-                  {day.date.getDate()}
-                </span>
-
-                {/* Retrograde indicator */}
-                {showRetrogrades && hasRetrograde && (
-                  <span
-                    className="text-xs text-red-500"
-                    title="Retrograde activity"
-                    aria-label="Retrograde activity"
-                  >
-                    Ⓡ
-                  </span>
-                )}
-              </div>
-
-              {/* Transits */}
-              <div className="space-y-0.5 overflow-hidden text-[10px] sm:text-xs">
-                {day.transits.slice(0, 3).map((transit, i) => {
-                  const config = PLANET_CONFIG[transit.planet.toLowerCase() as keyof typeof PLANET_CONFIG];
-                  if (!config) return null;
-
-                  const IconComponent = config.icon;
-
-                  return (
-                    <div
-                      key={i}
-                      className="flex items-center gap-1 p-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onTransitClick?.(transit);
-                      }}
-                      title={`${config.name} in ${transit.sign} ${transit.degree}°${transit.retrograde ? ' (R)' : ''}`}
                     >
-                      <IconComponent
-                        className="w-3 h-3 flex-shrink-0"
-                        style={{ color: config.color }}
-                      />
-                      <span className="truncate text-gray-700 dark:text-gray-300">
-                        {getZodiacSymbol(transit.sign)}
-                      </span>
-                      {transit.retrograde && (
-                        <span className="text-red-500 text-[10px]">R</span>
-                      )}
-                    </div>
-                  );
-                })}
+                      {day.date.getDate()}
+                    </span>
 
-                {day.transits.length > 3 && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    +{day.transits.length - 3} more
+                    {/* Retrograde indicator */}
+                    {showRetrogrades && hasRetrograde && (
+                      <span
+                        className="text-xs text-red-500"
+                        title="Retrograde activity"
+                        aria-label="Retrograde activity"
+                      >
+                        Ⓡ
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-          );
+
+                  {/* Transits */}
+                  <div className="space-y-0.5 overflow-hidden text-[10px] sm:text-xs">
+                    {day.transits.slice(0, 3).map((transit, i) => {
+                      const config =
+                        PLANET_CONFIG[transit.planet.toLowerCase() as keyof typeof PLANET_CONFIG];
+                      if (!config) return null;
+
+                      const IconComponent = config.icon;
+
+                      return (
+                        <div
+                          key={i}
+                          className="flex items-center gap-1 p-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onTransitClick?.(transit);
+                          }}
+                          title={`${config.name} in ${transit.sign} ${transit.degree}°${transit.retrograde ? ' (R)' : ''}`}
+                        >
+                          <IconComponent
+                            className="w-3 h-3 flex-shrink-0"
+                            style={{ color: config.color }}
+                          />
+                          <span className="truncate text-gray-700 dark:text-gray-300">
+                            {getZodiacSymbol(transit.sign)}
+                          </span>
+                          {transit.retrograde && (
+                            <span className="text-red-500 text-[10px]">R</span>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {day.transits.length > 3 && (
+                      <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                        +{day.transits.length - 3} more
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
             })}
           </div>
         ))}
@@ -442,7 +483,8 @@ export function TransitCalendar({
           ) : (
             <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {getTransitsForDate(selectedDate).map((transit, i) => {
-                const config = PLANET_CONFIG[transit.planet.toLowerCase() as keyof typeof PLANET_CONFIG];
+                const config =
+                  PLANET_CONFIG[transit.planet.toLowerCase() as keyof typeof PLANET_CONFIG];
                 if (!config) return null;
 
                 const IconComponent = config.icon;
@@ -465,10 +507,7 @@ export function TransitCalendar({
                       className="w-10 h-10 rounded-full flex items-center justify-center"
                       style={{ backgroundColor: `${config.color}20` }}
                     >
-                      <IconComponent
-                        className="w-5 h-5"
-                        style={{ color: config.color }}
-                      />
+                      <IconComponent className="w-5 h-5" style={{ color: config.color }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -476,16 +515,14 @@ export function TransitCalendar({
                           {config.name}
                         </span>
                         {transit.retrograde && (
-                          <span className="text-xs text-red-500 font-medium">
-                            Retrograde
-                          </span>
+                          <span className="text-xs text-red-500 font-medium">Retrograde</span>
                         )}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         {getZodiacSymbol(transit.sign)} {transit.sign} {transit.degree}°
                       </div>
                     </div>
-                    <Info className="w-4 h-4 text-gray-400" />
+                    <span className="material-symbols-outlined text-[16px] text-gray-400">info</span>
                   </div>
                 );
               })}

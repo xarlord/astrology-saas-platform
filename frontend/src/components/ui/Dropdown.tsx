@@ -100,7 +100,10 @@ export const Dropdown: React.FC<DropdownProps> & {
     <DropdownContext.Provider value={{ isOpen, toggle, close }}>
       <div ref={containerRef} className={clsx('relative inline-block', className)}>
         {typeof children === 'function'
-          ? (children as (props: { isOpen: boolean; toggle: () => void }) => ReactNode)({ isOpen, toggle })
+          ? (children as (props: { isOpen: boolean; toggle: () => void }) => ReactNode)({
+              isOpen,
+              toggle,
+            })
           : children}
       </div>
     </DropdownContext.Provider>
@@ -127,11 +130,14 @@ const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
   };
 
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>, {
-      onClick: handleClick,
-      'aria-expanded': isOpen,
-      'aria-haspopup': true,
-    });
+    return React.cloneElement(
+      children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void; 'aria-expanded'?: boolean; 'aria-haspopup'?: boolean }>,
+      {
+        onClick: handleClick,
+        'aria-expanded': isOpen,
+        'aria-haspopup': true,
+      },
+    );
   }
 
   return (
@@ -178,9 +184,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   const getFocusableItems = useCallback(() => {
     if (!menuRef.current) return [];
     return Array.from(
-      menuRef.current.querySelectorAll<HTMLElement>(
-        '[role="menuitem"]:not([disabled])'
-      )
+      menuRef.current.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])'),
     );
   }, []);
 
@@ -210,7 +214,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
           break;
       }
     },
-    [focusedIndex, getFocusableItems, close]
+    [focusedIndex, getFocusableItems, close],
   );
 
   // Focus item when index changes
@@ -240,7 +244,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
             'focus:outline-none',
             align === 'left' ? 'left-0' : 'right-0',
             menuWidths[width],
-            className
+            className,
           )}
           role="menu"
           aria-orientation="vertical"
@@ -296,9 +300,13 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
         'transition-colors duration-150',
         'focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700',
         disabled && 'opacity-50 cursor-not-allowed',
-        danger && !disabled && 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20',
-        !danger && !disabled && 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700',
-        className
+        danger &&
+          !disabled &&
+          'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20',
+        !danger &&
+          !disabled &&
+          'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700',
+        className,
       )}
       tabIndex={-1}
     >
@@ -316,10 +324,7 @@ export interface DropdownDividerProps {
 }
 
 const DropdownDivider: React.FC<DropdownDividerProps> = ({ className }) => (
-  <div
-    className={clsx('my-1 h-px bg-gray-200 dark:bg-gray-700', className)}
-    role="separator"
-  />
+  <div className={clsx('my-1 h-px bg-gray-200 dark:bg-gray-700', className)} role="separator" />
 );
 
 Dropdown.Divider = DropdownDivider;

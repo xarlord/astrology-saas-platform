@@ -448,7 +448,7 @@ export function validateBirthData(data: Partial<BirthData>): BirthDataValidation
   }
 
   // Calculate if overall data is valid
-  const isValid = Object.values(errors).every(arr => arr.length === 0);
+  const isValid = Object.values(errors).every((arr) => arr.length === 0);
 
   return {
     isValid,

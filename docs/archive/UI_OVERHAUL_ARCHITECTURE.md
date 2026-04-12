@@ -79,10 +79,10 @@ Monitoring: Winston (logging)
 ### Infrastructure Stack
 
 ```yaml
-Hosting: Railway (recommended) or AWS
+Hosting: Docker Compose or AWS
 Database: Managed PostgreSQL
 CDN: Cloudflare (assets)
-File Storage: AWS S3 or Railway Volumes
+File Storage: AWS S3
 CI/CD: GitHub Actions
 Error Tracking: Sentry (optional)
 Analytics: PostHog or Plausible (optional)
@@ -1105,7 +1105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - checkout
-      - deploy to Railway
+      - deploy via Docker Compose
 
   deploy-frontend:
     needs: test

@@ -65,10 +65,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       expect(result.current.progress).toBe(100);
@@ -84,10 +81,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       expect(result.current.error).toBe('Generation failed');
@@ -100,10 +94,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       const result_data = await act(async () => {
-        return result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        return result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       expect(result_data.success).toBe(false);
@@ -122,7 +113,7 @@ describe('usePDFGeneration Hook', () => {
       await act(async () => {
         await result.current.generateReport(
           { reportType: 'natal', title: 'Test', onProgress: progressCallback },
-          {} as any
+          {} as any,
         );
       });
 
@@ -139,10 +130,7 @@ describe('usePDFGeneration Hook', () => {
 
       // First generate a report
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       // Then download
@@ -150,7 +138,10 @@ describe('usePDFGeneration Hook', () => {
         result.current.downloadReport();
       });
 
-      expect(mockDownloadPDF).toHaveBeenCalledWith(mockBlob, expect.stringContaining('astroverse-report'));
+      expect(mockDownloadPDF).toHaveBeenCalledWith(
+        mockBlob,
+        expect.stringContaining('astroverse-report'),
+      );
     });
 
     it('should download report with custom filename', async () => {
@@ -160,10 +151,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       act(() => {
@@ -192,10 +180,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       act(() => {
@@ -226,10 +211,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       expect(result.current.error).toBe('Test error');
@@ -250,10 +232,7 @@ describe('usePDFGeneration Hook', () => {
       const { result } = renderHook(() => usePDFGeneration());
 
       await act(async () => {
-        await result.current.generateReport(
-          { reportType: 'natal', title: 'Test' },
-          {} as any
-        );
+        await result.current.generateReport({ reportType: 'natal', title: 'Test' }, {} as any);
       });
 
       expect(result.current.progress).toBe(100);

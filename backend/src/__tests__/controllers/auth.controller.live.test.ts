@@ -27,6 +27,7 @@ async function api(
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(BASE_URL + path, opts);
   const setCookie = res.headers.getSetCookie?.() || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let json: Record<string, any>;
   try {
     json = await res.json();

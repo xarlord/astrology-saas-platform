@@ -7,6 +7,7 @@
  */
 
 import { Request, Response, Router } from 'express';
+import { logger } from '../../../utils/logger';
 
 // Manual validation helpers (replacing express-validator)
 function validateQueryParams(req: Request, rules: Record<string, { optional?: boolean; isString?: boolean; minLen?: number; maxLen?: number }>): string | null {
@@ -44,6 +45,38 @@ const router = Router();
 // Google Places API configuration
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const GOOGLE_PLACES_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
+
+/**
+ * @openapi
+ * /api/v1/location/autocomplete:
+ *   get:
+ *     tags: [Location]
+ *     summary: Proxy for Google Places Autocomplete
+ *     security: []
+ *     parameters:
+ *       - name: input
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *           minLength: 2
+ *           maxLength: 100
+ *       - name: sessiontoken
+ *         in: query
+ *         schema:
+ *           type: string
+ *       - name: language
+ *         in: query
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Location autocomplete predictions
+ *       400:
+ *         description: Invalid or missing input parameter
+ *       500:
+ *         description: Location search failed
+ */
 
 /**
  * @route   GET /api/location/autocomplete
@@ -86,7 +119,7 @@ router.get(
       const data = (await response.json()) as GooglePlacesResponse;
 
       if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-        console.error('Google Places API error:', data.status, data.error_message);
+        logger.error('Google Places API error:', data.status, data.error_message);
         res.status(500).json({ error: 'Location search failed' });
         return;
       }
@@ -102,11 +135,43 @@ router.get(
 
       res.json({ predictions });
     } catch (error) {
-      console.error('Autocomplete error:', error);
+      logger.error('Autocomplete error:', error);
       res.status(500).json({ error: 'Location search failed' });
     }
   }
 );
+
+/**
+ * @openapi
+ * /api/v1/location/details/{placeId}:
+ *   get:
+ *     tags: [Location]
+ *     summary: Get place details including coordinates
+ *     security: []
+ *     parameters:
+ *       - name: placeId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: sessiontoken
+ *         in: query
+ *         schema:
+ *           type: string
+ *       - name: language
+ *         in: query
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Place details with coordinates
+ *       404:
+ *         description: Place not found
+ *       500:
+ *         description: Failed to get place details
+ *       501:
+ *         description: Google Places API key not configured
+ */
 
 /**
  * @route   GET /api/location/details/:placeId
@@ -150,7 +215,7 @@ router.get(
       const data = (await response.json()) as GooglePlacesResponse;
 
       if (data.status !== 'OK') {
-        console.error('Google Places Details API error:', data.status);
+        logger.error('Google Places Details API error:', data.status);
         res.status(404).json({ error: 'Place not found' });
         return;
       }
@@ -189,7 +254,7 @@ router.get(
 
       res.json({ details });
     } catch (error) {
-      console.error('Place details error:', error);
+      logger.error('Place details error:', error);
       res.status(500).json({ error: 'Failed to get place details' });
     }
   }
@@ -233,9 +298,9 @@ async function fetchNominatim(query: string): Promise<any[]> {
       countryCode: item.address?.country_code?.toUpperCase() || '',
     }));
   } catch (error) {
-    console.error('Nominatim error:', error);
+    logger.error('Nominatim error:', error);
     return [];
   }
 }
 
-export default router;
+export { router as locationRoutes };

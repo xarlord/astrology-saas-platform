@@ -15,23 +15,18 @@ vi.mock('recharts', () => ({
       {children}
     </div>
   ),
-  Line: ({ dataKey, stroke }: any) => (
-    <div data-testid={`line-${dataKey}`} data-stroke={stroke} />
-  ),
-  XAxis: ({ dataKey }: any) => (
-    <div data-testid={`x-axis-${dataKey}`} />
-  ),
-  YAxis: ({ domain }: any) => (
-    <div data-testid="y-axis" data-domain={JSON.stringify(domain)} />
-  ),
+  Line: ({ dataKey, stroke }: any) => <div data-testid={`line-${dataKey}`} data-stroke={stroke} />,
+  XAxis: ({ dataKey }: any) => <div data-testid={`x-axis-${dataKey}`} />,
+  YAxis: ({ domain }: any) => <div data-testid="y-axis" data-domain={JSON.stringify(domain)} />,
   CartesianGrid: ({ strokeDasharray }: any) => (
     <div data-testid="cartesian-grid" data-dash={strokeDasharray} />
   ),
-  Tooltip: ({ content }: any) => (
-    <div data-testid="tooltip">{content}</div>
-  ),
+  Tooltip: ({ content }: any) => <div data-testid="tooltip">{content}</div>,
   ResponsiveContainer: ({ children, height }: any) => (
-    <div data-testid="responsive-container" style={{ height: typeof height === 'number' ? `${height}px` : height }}>
+    <div
+      data-testid="responsive-container"
+      style={{ height: typeof height === 'number' ? `${height}px` : height }}
+    >
       {children}
     </div>
   ),
@@ -91,9 +86,7 @@ describe('TransitChart', () => {
     });
 
     it('should render with custom aria-label', () => {
-      renderWithProviders(
-        <TransitChart {...defaultProps} aria-label="Custom chart" />
-      );
+      renderWithProviders(<TransitChart {...defaultProps} aria-label="Custom chart" />);
 
       expect(screen.getByLabelText('Custom chart')).toBeInTheDocument();
     });
@@ -204,9 +197,7 @@ describe('TransitChart', () => {
   describe('Data Point Click', () => {
     it('should accept onDataPointClick callback', () => {
       const onDataPointClick = vi.fn();
-      renderWithProviders(
-        <TransitChart {...defaultProps} onDataPointClick={onDataPointClick} />
-      );
+      renderWithProviders(<TransitChart {...defaultProps} onDataPointClick={onDataPointClick} />);
 
       // Chart should render with the callback
       expect(screen.getByTestId('line-chart')).toBeInTheDocument();
@@ -222,11 +213,7 @@ describe('TransitChart', () => {
     });
 
     it('should handle single data point', () => {
-      renderWithProviders(
-        <TransitChart
-          data={[{ date: '2024-01-15', energy: 50 }]}
-        />
-      );
+      renderWithProviders(<TransitChart data={[{ date: '2024-01-15', energy: 50 }]} />);
 
       const chart = screen.getByTestId('line-chart');
       expect(chart).toHaveAttribute('data-points', '1');
@@ -288,9 +275,7 @@ describe('TransitChart', () => {
     });
 
     it('should handle ISO date strings', () => {
-      const dataWithISODates: TransitDataPoint[] = [
-        { date: '2024-01-15T10:30:00Z', energy: 50 },
-      ];
+      const dataWithISODates: TransitDataPoint[] = [{ date: '2024-01-15T10:30:00Z', energy: 50 }];
 
       renderWithProviders(<TransitChart data={dataWithISODates} />);
 
@@ -391,9 +376,7 @@ describe('TransitChart', () => {
     });
 
     it('should handle energy values over 100', () => {
-      const dataWithHighValues: TransitDataPoint[] = [
-        { date: '2024-01-15', energy: 150 },
-      ];
+      const dataWithHighValues: TransitDataPoint[] = [{ date: '2024-01-15', energy: 150 }];
 
       // Should not throw
       expect(() => {
@@ -405,11 +388,7 @@ describe('TransitChart', () => {
   describe('Combined Options', () => {
     it('should render with all options disabled', () => {
       renderWithProviders(
-        <TransitChart
-          data={createMockData()}
-          showGrid={false}
-          showReferenceLines={false}
-        />
+        <TransitChart data={createMockData()} showGrid={false} showReferenceLines={false} />,
       );
 
       expect(screen.queryByTestId('cartesian-grid')).not.toBeInTheDocument();
@@ -425,7 +404,7 @@ describe('TransitChart', () => {
           color="#00ff00"
           showGrid={true}
           showReferenceLines={true}
-        />
+        />,
       );
 
       const container = screen.getByTestId('responsive-container');

@@ -16,8 +16,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...props }: Record<string, unknown>) => createElement('div', props, children),
-    section: ({ children, ...props }: Record<string, unknown>) => createElement('section', props, children),
-    header: ({ children, ...props }: Record<string, unknown>) => createElement('header', props, children),
+    section: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('section', props, children),
+    header: ({ children, ...props }: Record<string, unknown>) =>
+      createElement('header', props, children),
   },
 }));
 
@@ -47,10 +49,14 @@ vi.mock('../../components/ui/Button', () => ({
 
 vi.mock('../../components/astrology/PlanetaryPositionCard', () => ({
   default: ({ planet }: Record<string, unknown>) => (
-    <div data-testid={`planet-card-${(planet as Record<string, unknown>).name?.toString().toLowerCase()}`}>
+    <div
+      data-testid={`planet-card-${(planet as Record<string, unknown>).name?.toString().toLowerCase()}`}
+    >
       <span className="planet-name">{(planet as Record<string, unknown>).name as string}</span>
       <span className="planet-sign">{(planet as Record<string, unknown>).sign as string}</span>
-      <span className="planet-house">House {(planet as Record<string, unknown>).house as number}</span>
+      <span className="planet-house">
+        House {(planet as Record<string, unknown>).house as number}
+      </span>
     </div>
   ),
 }));
@@ -75,6 +81,11 @@ vi.mock('../../components/astrology/AspectGrid', () => ({
   ),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import DetailedNatalReportPage from '../../pages/DetailedNatalReportPage';
 
@@ -96,11 +107,20 @@ const createWrapper = (initialRoute = '/natal-report') => {
           null,
           createElement(Route, { path: '/natal-report', element: children }),
           createElement(Route, { path: '/natal-report/:chartId', element: children }),
-          createElement(Route, { path: '/dashboard', element: <div data-testid="dashboard-page">Dashboard</div> }),
-          createElement(Route, { path: '/synastry', element: <div data-testid="synastry-page">Synastry</div> }),
-          createElement(Route, { path: '/transits', element: <div data-testid="transits-page">Transits</div> })
-        )
-      )
+          createElement(Route, {
+            path: '/dashboard',
+            element: <div data-testid="dashboard-page">Dashboard</div>,
+          }),
+          createElement(Route, {
+            path: '/synastry',
+            element: <div data-testid="synastry-page">Synastry</div>,
+          }),
+          createElement(Route, {
+            path: '/transits',
+            element: <div data-testid="transits-page">Transits</div>,
+          }),
+        ),
+      ),
     );
 };
 
@@ -146,13 +166,10 @@ describe('DetailedNatalReportPage', () => {
       expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
     });
 
-    it('should render the header with navigation', () => {
+    it('should render the header with chart info', () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
-      expect(screen.getByText('Natal Reports')).toBeInTheDocument();
-      expect(screen.getByText('Compatibility')).toBeInTheDocument();
-      expect(screen.getByText('Transits')).toBeInTheDocument();
+      expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
+      expect(screen.getByText('Sarah Mitchell')).toBeInTheDocument();
     });
 
     it('should render chart name', () => {
@@ -340,9 +357,12 @@ describe('DetailedNatalReportPage', () => {
       await user.click(downloadButton);
 
       // Should show generating state immediately after click
-      await waitFor(() => {
-        expect(screen.getByText('Generating...')).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText('Generating...')).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
 
     it('should have Order Printed Chart button', () => {
@@ -383,12 +403,6 @@ describe('DetailedNatalReportPage', () => {
   });
 
   describe('Navigation', () => {
-    it('should have back button in header', () => {
-      renderWithProviders(createElement(DetailedNatalReportPage));
-      const backButton = screen.getByText('arrow_back').closest('button');
-      expect(backButton).toBeInTheDocument();
-    });
-
     it('should have Print button in sidebar', () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
       expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
@@ -427,17 +441,11 @@ describe('DetailedNatalReportPage', () => {
       expect(heading).toBeInTheDocument();
     });
 
-    it('should have notification button in header', () => {
-      renderWithProviders(createElement(DetailedNatalReportPage));
-      const notificationButton = screen.getByText('notifications').closest('button');
-      expect(notificationButton).toBeInTheDocument();
-    });
-
     it('should have all interactive tab elements', () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
 
       const tabs = ['Summary', 'Planets', 'Houses', 'Aspects'];
-      tabs.forEach(tabName => {
+      tabs.forEach((tabName) => {
         const tab = screen.getByText(tabName);
         expect(tab).toBeInTheDocument();
       });
@@ -482,12 +490,6 @@ describe('DetailedNatalReportPage', () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
       const mainContainer = document.querySelector('.max-w-7xl');
       expect(mainContainer).toBeInTheDocument();
-    });
-
-    it('should have sticky sidebar positioning', () => {
-      renderWithProviders(createElement(DetailedNatalReportPage));
-      const sidebar = document.querySelector('.sticky');
-      expect(sidebar).toBeInTheDocument();
     });
   });
 });

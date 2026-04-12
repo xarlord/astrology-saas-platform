@@ -18,6 +18,13 @@ vi.mock('../../services', () => ({
   },
 }));
 
+// Mock tokenStorage — zustand persist doesn't write to spy localStorage in tests
+const mockGetAccessToken = vi.hoisted(() => vi.fn<() => string | null>().mockReturnValue(null));
+vi.mock('../../utils/tokenStorage', () => ({
+  getAccessToken: mockGetAccessToken,
+  getRefreshToken: vi.fn().mockReturnValue(null),
+}));
+
 // Import after mocking
 import { authService } from '../../services';
 
@@ -51,7 +58,6 @@ describe('authStore', () => {
     useAuthStore.setState({
       user: null,
       token: null,
-      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -74,7 +80,6 @@ describe('authStore', () => {
 
       expect(state.user).toBeNull();
       expect(state.token).toBeNull();
-      expect(state.refreshToken).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeNull();
@@ -86,7 +91,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockResolvedValueOnce(mockResponse);
@@ -100,7 +104,7 @@ describe('authStore', () => {
       expect(authService.login).toHaveBeenCalledWith(mockCredentials);
       expect(state.user).toEqual(mockUser);
       expect(state.token).toBe('access-token-123');
-      expect(state.refreshToken).toBe('refresh-token-123');
+      // refreshToken no longer stored in state (handled via httpOnly cookie)
       expect(state.isAuthenticated).toBe(true);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeNull();
@@ -110,7 +114,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockResolvedValueOnce(mockResponse);
@@ -119,19 +122,19 @@ describe('authStore', () => {
         await useAuthStore.getState().login(mockCredentials);
       });
 
-      expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', 'access-token-123');
-      expect(localStorage.setItem).toHaveBeenCalledWith('refreshToken', 'refresh-token-123');
+      const state = useAuthStore.getState();
+      expect(state.token).toBe('access-token-123');
+      // refreshToken no longer stored in state (handled via httpOnly cookie)
     });
 
     it('should set loading state during login', async () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
-      vi.mocked(authService.login).mockImplementationOnce(() =>
-        new Promise((resolve) => setTimeout(() => resolve(mockResponse), 100))
+      vi.mocked(authService.login).mockImplementationOnce(
+        () => new Promise((resolve) => setTimeout(() => resolve(mockResponse), 100)),
       );
 
       const loginPromise = act(async () => {
@@ -190,7 +193,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: newUser,
         accessToken: 'access-token-456',
-        refreshToken: 'refresh-token-456',
       };
 
       vi.mocked(authService.register).mockResolvedValueOnce(mockResponse);
@@ -212,7 +214,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-456',
-        refreshToken: 'refresh-token-456',
       };
 
       vi.mocked(authService.register).mockResolvedValueOnce(mockResponse);
@@ -221,8 +222,9 @@ describe('authStore', () => {
         await useAuthStore.getState().register(mockRegisterData);
       });
 
-      expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', 'access-token-456');
-      expect(localStorage.setItem).toHaveBeenCalledWith('refreshToken', 'refresh-token-456');
+      const state = useAuthStore.getState();
+      expect(state.token).toBe('access-token-456');
+      // refreshToken no longer stored in state (handled via httpOnly cookie)
     });
 
     it('should handle register error', async () => {
@@ -266,7 +268,6 @@ describe('authStore', () => {
       const mockResponse = {
         user: mockUser,
         accessToken: 'access-token-123',
-        refreshToken: 'refresh-token-123',
       };
 
       vi.mocked(authService.login).mockResolvedValueOnce(mockResponse);
@@ -287,7 +288,6 @@ describe('authStore', () => {
       expect(authService.logout).toHaveBeenCalled();
       expect(state.user).toBeNull();
       expect(state.token).toBeNull();
-      expect(state.refreshToken).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.error).toBeNull();
     });
@@ -299,9 +299,9 @@ describe('authStore', () => {
         await useAuthStore.getState().logout();
       });
 
-      expect(localStorage.removeItem).toHaveBeenCalledWith('accessToken');
-      expect(localStorage.removeItem).toHaveBeenCalledWith('refreshToken');
-      expect(localStorage.removeItem).toHaveBeenCalledWith('user');
+      const state = useAuthStore.getState();
+      expect(state.token).toBeNull();
+      expect(state.user).toBeNull();
     });
 
     it('should clear state even if logout API fails', async () => {
@@ -328,7 +328,8 @@ describe('authStore', () => {
 
   describe('loadUser action', () => {
     it('should load user from token', async () => {
-      vi.mocked(localStorage.getItem).mockReturnValue('existing-token');
+      // Mock tokenStorage to return a token (zustand persist doesn't write to spy localStorage)
+      mockGetAccessToken.mockReturnValue('existing-token');
       vi.mocked(authService.getProfile).mockResolvedValueOnce({ user: mockUser });
 
       await act(async () => {
@@ -345,7 +346,7 @@ describe('authStore', () => {
     });
 
     it('should not load user if no token exists', async () => {
-      vi.mocked(localStorage.getItem).mockReturnValue(null);
+      mockGetAccessToken.mockReturnValue(null);
 
       await act(async () => {
         await useAuthStore.getState().loadUser();
@@ -358,7 +359,8 @@ describe('authStore', () => {
     });
 
     it('should clear tokens if profile fetch fails', async () => {
-      vi.mocked(localStorage.getItem).mockReturnValue('invalid-token');
+      // Mock tokenStorage to return a token so loadUser proceeds to API call
+      mockGetAccessToken.mockReturnValue('invalid-token');
       vi.mocked(authService.getProfile).mockRejectedValueOnce(new Error('Unauthorized'));
 
       await act(async () => {
@@ -367,8 +369,6 @@ describe('authStore', () => {
 
       const state = useAuthStore.getState();
 
-      expect(localStorage.removeItem).toHaveBeenCalledWith('accessToken');
-      expect(localStorage.removeItem).toHaveBeenCalledWith('refreshToken');
       expect(state.user).toBeNull();
       expect(state.token).toBeNull();
       expect(state.isAuthenticated).toBe(false);
@@ -428,7 +428,9 @@ describe('authStore', () => {
     });
 
     it('should handle preferences update error', async () => {
-      vi.mocked(authService.updatePreferences).mockRejectedValueOnce(new Error('Preferences error'));
+      vi.mocked(authService.updatePreferences).mockRejectedValueOnce(
+        new Error('Preferences error'),
+      );
 
       await act(async () => {
         try {

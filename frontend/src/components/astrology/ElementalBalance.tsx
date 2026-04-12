@@ -93,7 +93,12 @@ const ElementalBalance: React.FC<ElementalBalanceProps> = ({
                 ${isVertical ? 'w-12 h-12 text-2xl' : 'w-10 h-10 text-xl'}
                 ${isDominant ? 'ring-2 ring-offset-2 ring-offset-background-dark' : ''}
               `}
-              style={{ backgroundColor: `${element.color}20`, '--tw-ring-color': element.color } as React.CSSProperties}
+              style={
+                {
+                  backgroundColor: `${element.color}20`,
+                  '--tw-ring-color': element.color,
+                } as React.CSSProperties
+              }
             >
               {element.icon}
             </div>

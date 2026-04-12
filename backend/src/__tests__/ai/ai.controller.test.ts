@@ -26,6 +26,7 @@ import openaiService from '../../modules/ai/services/openai.service';
 describe('AI Controller', () => {
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let responseObject: any;
 
   beforeEach(() => {

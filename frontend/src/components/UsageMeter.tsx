@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import { AlertTriangle, Crown, BarChart3 } from 'lucide-react';
 
 export type Tier = 'free' | 'pro' | 'premium';
 export type WarningLevel = 'none' | 'warning' | 'limit';
@@ -86,21 +85,19 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
   const isAtWarning = warningLevel === 'warning';
 
   return (
-    <div className={`bg-white/5 dark:bg-black/20 rounded-xl p-5 border border-white/10 ${className}`}>
+    <div
+      className={`bg-white/5 dark:bg-black/20 rounded-xl p-5 border border-white/10 ${className}`}
+    >
       {/* Header */}
       <div className="flex justify-between items-center mb-4 sm:flex-row flex-col sm:items-start gap-2">
         <div className="flex items-center gap-2">
-          <Crown
-            size={16}
-            style={{ color: tierConfig.color }}
-            aria-hidden="true"
-          />
+          <span className="material-symbols-outlined text-[16px]" style={{ color: tierConfig.color }} aria-hidden="true">emoji_events</span>
           <span className="font-semibold text-sm" style={{ color: tierConfig.color }}>
             {tierConfig.name} Plan
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-sm text-white/70">
-          <BarChart3 size={14} aria-hidden="true" />
+          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
           <span>
             {currentCount} / {limit} charts
           </span>
@@ -125,15 +122,21 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
             }}
           />
         </div>
-        <span className="text-sm font-semibold min-w-[40px] sm:text-right text-left" style={{ color: progressColor }}>
+        <span
+          className="text-sm font-semibold min-w-[40px] sm:text-right text-left"
+          style={{ color: progressColor }}
+        >
           {percentage}%
         </span>
       </div>
 
       {/* Warning/Limit Messages */}
       {isAtWarning && (
-        <div className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-wrap" role="alert">
-          <AlertTriangle size={14} aria-hidden="true" />
+        <div
+          className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-wrap"
+          role="alert"
+        >
+          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
           <span>Approaching storage limit</span>
           {onUpgradeClick && (
             <button
@@ -148,8 +151,11 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       )}
 
       {isAtLimit && (
-        <div className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-red-500/15 text-red-400 border border-red-500/30 flex-wrap" role="alert">
-          <AlertTriangle size={14} aria-hidden="true" />
+        <div
+          className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-red-500/15 text-red-400 border border-red-500/30 flex-wrap"
+          role="alert"
+        >
+          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
           <span>Storage limit reached</span>
           {onUpgradeClick && (
             <button
@@ -168,7 +174,12 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
         <span className="text-xs text-white/50 block mb-2">Plan includes:</span>
         <ul className="list-none p-0 m-0 flex flex-wrap gap-1.5 gap-x-3">
           {tierConfig.features.map((feature, index) => (
-            <li key={index} className="text-xs text-white/70 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500">{feature}</li>
+            <li
+              key={index}
+              className="text-xs text-white/70 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500"
+            >
+              {feature}
+            </li>
           ))}
         </ul>
       </div>

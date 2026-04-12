@@ -22,7 +22,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   const [loading, setLoading] = useState(true);
   const [forecast, setForecast] = useState<LunarMonthForecast | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'predictions' | 'rituals' | 'journal'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'predictions' | 'rituals' | 'journal'>(
+    'overview',
+  );
 
   const loadForecast = useCallback(async () => {
     try {
@@ -53,11 +55,16 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   const getIntensityClasses = (intensity: number): string => {
     const color = getIntensityColor(intensity);
     switch (color) {
-      case 'low': return 'bg-green-600/30';
-      case 'medium': return 'bg-yellow-500/30';
-      case 'high': return 'bg-orange-500/30';
-      case 'extreme': return 'bg-red-500/30';
-      default: return 'bg-white/20';
+      case 'low':
+        return 'bg-green-600/30';
+      case 'medium':
+        return 'bg-yellow-500/30';
+      case 'high':
+        return 'bg-orange-500/30';
+      case 'extreme':
+        return 'bg-red-500/30';
+      default:
+        return 'bg-white/20';
     }
   };
 
@@ -74,7 +81,10 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   };
 
   const renderPredictionCard = (prediction: MonthlyPrediction, index: number) => {
-    const likelihoodBars = Array.from({ length: UI.LIKELIHOOD_MAX }, (_, i) => i < prediction.likelihood);
+    const likelihoodBars = Array.from(
+      { length: UI.LIKELIHOOD_MAX },
+      (_, i) => i < prediction.likelihood,
+    );
 
     return (
       <div key={index} className="bg-gray-50 p-5 rounded-xl border-l-4 border-indigo-500">
@@ -85,17 +95,26 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
             <span className="text-sm">Likelihood:</span>
             <div className="flex gap-0.5">
               {likelihoodBars.map((_, i) => (
-                <span key={i} className={`text-[0.6rem] ${i < prediction.likelihood ? 'text-indigo-500' : 'text-gray-300'}`}>&#9632;</span>
+                <span
+                  key={i}
+                  className={`text-[0.6rem] ${i < prediction.likelihood ? 'text-indigo-500' : 'text-gray-300'}`}
+                >
+                  &#9632;
+                </span>
               ))}
             </div>
-            <span className="number">{prediction.likelihood}/{UI.LIKELIHOOD_MAX}</span>
+            <span className="number">
+              {prediction.likelihood}/{UI.LIKELIHOOD_MAX}
+            </span>
           </div>
         </div>
         <p className="text-gray-700 leading-relaxed m-0 mb-3">{prediction.prediction}</p>
         {prediction.advice && prediction.advice.length > 0 && (
           <ul className="m-0 pl-5">
             {prediction.advice.map((advice, i) => (
-              <li key={i} className="text-gray-500 leading-relaxed mb-1.5">{advice}</li>
+              <li key={i} className="text-gray-500 leading-relaxed mb-1.5">
+                {advice}
+              </li>
             ))}
           </ul>
         )}
@@ -106,9 +125,13 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   const renderRitualCard = (ritual: MonthlyRitual, index: number) => (
     <div key={index} className="bg-gray-50 p-6 rounded-xl">
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-4xl">{ritual.phase === 'new-moon' ? '🌑' : ritual.phase === 'full-moon' ? '🌕' : '🌓'}</span>
+        <span className="text-4xl">
+          {ritual.phase === 'new-moon' ? '🌑' : ritual.phase === 'full-moon' ? '🌕' : '🌓'}
+        </span>
         <h4 className="m-0 text-gray-800 grow">{ritual.title}</h4>
-        <span className="px-3 py-1 bg-indigo-500 text-white rounded-full text-sm">{ritual.phase.replace('-', ' ')}</span>
+        <span className="px-3 py-1 bg-indigo-500 text-white rounded-full text-sm">
+          {ritual.phase.replace('-', ' ')}
+        </span>
       </div>
       <p className="text-gray-700 leading-relaxed m-0 mb-4">{ritual.description}</p>
       {ritual.materials && ritual.materials.length > 0 && (
@@ -116,7 +139,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
           <strong>Materials needed:</strong>
           <ul className="mt-2 pl-5 m-0">
             {ritual.materials.map((material, i) => (
-              <li key={i} className="text-gray-500 leading-relaxed">{material}</li>
+              <li key={i} className="text-gray-500 leading-relaxed">
+                {material}
+              </li>
             ))}
           </ul>
         </div>
@@ -125,7 +150,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <strong>Steps:</strong>
         <ol className="mt-2 pl-5 m-0">
           {ritual.steps.map((step, i) => (
-            <li key={i} className="text-gray-500 leading-loose mb-2">{step}</li>
+            <li key={i} className="text-gray-500 leading-loose mb-2">
+              {step}
+            </li>
           ))}
         </ol>
       </div>
@@ -145,11 +172,24 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
       <div className="lunar-forecast-view">
         <div className="error-message">
           <p>{error}</p>
-          <button onClick={() => { void loadForecast(); }} className="retry-button">
+          <button
+            onClick={() => {
+              void loadForecast();
+            }}
+            className="retry-button"
+          >
             Try Again
           </button>
         </div>
-        {onBack && <button onClick={onBack} type="button" className="inline-block px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600 cursor-pointer mb-4 text-sm hover:bg-gray-100 transition-colors">Back</button>}
+        {onBack && (
+          <button
+            onClick={onBack}
+            type="button"
+            className="inline-block px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600 cursor-pointer mb-4 text-sm hover:bg-gray-100 transition-colors"
+          >
+            Back
+          </button>
+        )}
       </div>
     );
   }
@@ -162,7 +202,15 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
     <div className="max-w-[1000px] mx-auto p-5">
       {/* Header */}
       <div className="text-center mb-6">
-        {onBack && <button onClick={onBack} type="button" className="inline-block px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600 cursor-pointer mb-4 text-sm hover:bg-gray-100 transition-colors">&larr; Back</button>}
+        {onBack && (
+          <button
+            onClick={onBack}
+            type="button"
+            className="inline-block px-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600 cursor-pointer mb-4 text-sm hover:bg-gray-100 transition-colors"
+          >
+            &larr; Back
+          </button>
+        )}
         <h2 className="text-3xl text-gray-800 m-0 mb-2">Lunar Month Forecast</h2>
         <p className="text-gray-400 text-lg">
           {new Date(forecast.returnDate).toLocaleDateString('en-US', {
@@ -178,7 +226,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <button
           type="button"
           className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
-            activeTab === 'overview' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+            activeTab === 'overview'
+              ? 'bg-indigo-500 text-white'
+              : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
           }`}
           onClick={() => setActiveTab('overview')}
         >
@@ -187,7 +237,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <button
           type="button"
           className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
-            activeTab === 'predictions' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+            activeTab === 'predictions'
+              ? 'bg-indigo-500 text-white'
+              : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
           }`}
           onClick={() => setActiveTab('predictions')}
         >
@@ -196,7 +248,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <button
           type="button"
           className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
-            activeTab === 'rituals' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+            activeTab === 'rituals'
+              ? 'bg-indigo-500 text-white'
+              : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
           }`}
           onClick={() => setActiveTab('rituals')}
         >
@@ -205,7 +259,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <button
           type="button"
           className={`px-6 py-3 border-none rounded-lg cursor-pointer font-medium whitespace-nowrap transition-all duration-200 ${
-            activeTab === 'journal' ? 'bg-indigo-500 text-white' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+            activeTab === 'journal'
+              ? 'bg-indigo-500 text-white'
+              : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
           }`}
           onClick={() => setActiveTab('journal')}
         >
@@ -221,7 +277,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl">
               <h3 className="m-0 mb-3 text-xl">Monthly Theme</h3>
               <p className="text-lg leading-relaxed mb-4">{forecast.theme}</p>
-              <div className={`inline-block px-4 py-2 rounded-full font-semibold ${getIntensityClasses(forecast.intensity)}`}>
+              <div
+                className={`inline-block px-4 py-2 rounded-full font-semibold ${getIntensityClasses(forecast.intensity)}`}
+              >
                 <span>Intensity:</span>
                 <span className="ml-1">{forecast.intensity}/10</span>
               </div>
@@ -239,7 +297,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
                 <h3 className="m-0 mb-3 text-gray-800">Actions to Take This Month</h3>
                 <ul className="m-0 pl-5">
                   {forecast.actionAdvice.map((advice, i) => (
-                    <li key={i} className="text-gray-500 leading-loose mb-2">{advice}</li>
+                    <li key={i} className="text-gray-500 leading-loose mb-2">
+                      {advice}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -251,8 +311,13 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
                 <h3 className="m-0 mb-4 text-gray-800">Key Dates</h3>
                 <div className="flex flex-col gap-3">
                   {forecast.keyDates.map((date, i) => (
-                    <div key={i} className="flex flex-col gap-2 p-4 bg-white rounded-lg border-l-4 border-indigo-500">
-                      <span className="inline-block w-fit px-3 py-1 bg-indigo-500 text-white rounded-full text-sm font-semibold">{date.type.replace('-', ' ')}</span>
+                    <div
+                      key={i}
+                      className="flex flex-col gap-2 p-4 bg-white rounded-lg border-l-4 border-indigo-500"
+                    >
+                      <span className="inline-block w-fit px-3 py-1 bg-indigo-500 text-white rounded-full text-sm font-semibold">
+                        {date.type.replace('-', ' ')}
+                      </span>
                       <span className="text-indigo-500 font-semibold">
                         {new Date(date.date).toLocaleDateString('en-US', {
                           month: 'short',
@@ -296,7 +361,9 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
             <div className="flex flex-col gap-4">
               {forecast.journalPrompts.map((prompt, i) => (
                 <div key={i} className="flex gap-4 p-5 bg-gray-50 rounded-xl">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-500 text-white rounded-full font-semibold">{i + 1}</span>
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-500 text-white rounded-full font-semibold">
+                    {i + 1}
+                  </span>
                   <p className="m-0 text-gray-700 leading-relaxed">{prompt}</p>
                 </div>
               ))}

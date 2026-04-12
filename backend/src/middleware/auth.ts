@@ -99,8 +99,8 @@ export const optionalAuthenticate = (
  */
 export const generateToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
   return jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn as string,
-  });
+    expiresIn: config.jwt.expiresIn as string | number,
+  } as jwt.SignOptions);
 };
 
 /**

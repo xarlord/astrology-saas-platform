@@ -15,7 +15,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate();
   const [mercuryStatus, setMercuryStatus] = useState<MercuryStatus>({
     isRetrograde: false,
-    status: 'Direct'
+    status: 'Direct',
   });
 
   useEffect(() => {
@@ -45,13 +45,13 @@ export default function NotFoundPage() {
       ];
 
       const current = new Date(year, month, day);
-      const isRetrograde = retrogradePeriods.some(period =>
-        current >= period.start && current <= period.end
+      const isRetrograde = retrogradePeriods.some(
+        (period) => current >= period.start && current <= period.end,
       );
 
       setMercuryStatus({
         isRetrograde,
-        status: isRetrograde ? 'Retrograde' : 'Direct'
+        status: isRetrograde ? 'Retrograde' : 'Direct',
       });
     };
 
@@ -84,7 +84,8 @@ export default function NotFoundPage() {
             <div
               className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-40 animate-drift"
               style={{
-                backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBcQ5HiHT4Kj_hVmlM-tDWAllVBRF6YrZNrjGFnaVdRXcEIfZ8JpGBxZyT7khNYmuIrLVMp3Q9VQ-QEhoeGvORXzrqmxxKxoBCXuwtKYoT0LrNDHQq5LP8V5gcPL47qJGWFPWGe5xQkhgJsCRY3Ki91VqiDZPkk-eWajvSK-5-b9ZronBRgXUnI0_ChOkHB8wcgUl2GxVsfkNRO2U-KHRicVUN50FioMaGP9527IB69BWsVIgPVIYFPHN5rxA_VK6_iEJ-z81gKcHSw")'
+                backgroundImage:
+                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBcQ5HiHT4Kj_hVmlM-tDWAllVBRF6YrZNrjGFnaVdRXcEIfZ8JpGBxZyT7khNYmuIrLVMp3Q9VQ-QEhoeGvORXzrqmxxKxoBCXuwtKYoT0LrNDHQq5LP8V5gcPL47qJGWFPWGe5xQkhgJsCRY3Ki91VqiDZPkk-eWajvSK-5-b9ZronBRgXUnI0_ChOkHB8wcgUl2GxVsfkNRO2U-KHRicVUN50FioMaGP9527IB69BWsVIgPVIYFPHN5rxA_VK6_iEJ-z81gKcHSw")',
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#0B0D17] to-[#141627]/60 mix-blend-multiply" />
@@ -97,7 +98,14 @@ export default function NotFoundPage() {
               viewBox="0 0 100 100"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="50" cy="50" r="48" stroke="currentColor" strokeDasharray="4 4" strokeWidth="0.5" />
+              <circle
+                cx="50"
+                cy="50"
+                r="48"
+                stroke="currentColor"
+                strokeDasharray="4 4"
+                strokeWidth="0.5"
+              />
               <circle cx="50" cy="50" r="38" stroke="currentColor" strokeWidth="0.2" />
             </svg>
 
@@ -108,15 +116,21 @@ export default function NotFoundPage() {
                 className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(107,61,225,0.4)]"
                 style={{
                   WebkitMaskImage: 'radial-gradient(circle at center, black 60%, transparent 100%)',
-                  maskImage: 'radial-gradient(circle at center, black 60%, transparent 100%)'
+                  maskImage: 'radial-gradient(circle at center, black 60%, transparent 100%)',
                 }}
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp6S0OQNmT7zYyWZLm488Wxx5xjmWtTy7YvAJywkGVL0zghe12sFviXIBN7kFtoMMQS7ezSKmhIV1a2UhpraarpKCTM6gWRKTpyN32OwgfS7AZPT_ImEY-QB0qUGICUIDn-foC1deSgoW5td8xm4Hcfz1TL-fmJhDpJ-IWRygwHlwTlQEZ-oNXBjmprx82lk_k0rsEhlA_49e09iEn-PYm1qRA-pWMpMU10iXrqY6yMQ-fAfqHWy8vwDxGAvkM-JBhkv0fmjr56tJr"
               />
             </div>
 
             {/* Floating Debris Particles */}
-            <div className="absolute top-10 right-10 w-3 h-3 bg-soft-lavender/40 rotate-45 animate-drift" style={{ animationDuration: '15s' }} />
-            <div className="absolute bottom-20 left-10 w-2 h-2 bg-cosmic-blue/40 rounded-full animate-drift" style={{ animationDuration: '20s', animationDirection: 'reverse' }} />
+            <div
+              className="absolute top-10 right-10 w-3 h-3 bg-soft-lavender/40 rotate-45 animate-drift"
+              style={{ animationDuration: '15s' }}
+            />
+            <div
+              className="absolute bottom-20 left-10 w-2 h-2 bg-cosmic-blue/40 rounded-full animate-drift"
+              style={{ animationDuration: '20s', animationDirection: 'reverse' }}
+            />
           </div>
 
           {/* Text Content Area */}

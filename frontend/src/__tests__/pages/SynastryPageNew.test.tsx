@@ -50,7 +50,15 @@ vi.mock('../../services/chart.service', () => ({
 // Mock child components
 vi.mock('../../components/synastry/PersonSelector', () => ({
   __esModule: true,
-  default: ({ charts, chart1Id, chart2Id, onChart1Change, onChart2Change, onSwap, onCreateNew }: any) => (
+  default: ({
+    charts,
+    chart1Id,
+    chart2Id,
+    onChart1Change,
+    onChart2Change,
+    onSwap,
+    onCreateNew,
+  }: any) => (
     <div data-testid="person-selector">
       <select
         data-testid="chart1-select"
@@ -140,7 +148,7 @@ const createWrapper = () => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: ['/synastry'] }, children)
+      createElement(MemoryRouter, { initialEntries: ['/synastry'] }, children),
     );
 };
 
@@ -417,8 +425,8 @@ describe('SynastryPage', () => {
   describe('Loading State', () => {
     it('should show skeleton loader while loading charts', async () => {
       // Delay charts loading
-      mockGetCharts.mockImplementation(() =>
-        new Promise((resolve) => setTimeout(() => resolve({ charts: mockCharts }), 100))
+      mockGetCharts.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ charts: mockCharts }), 100)),
       );
 
       renderWithProviders(createElement(SynastryPage));
@@ -432,7 +440,9 @@ describe('SynastryPage', () => {
       renderWithProviders(createElement(SynastryPage));
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /Synastry & Compatibility/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { name: /Synastry & Compatibility/i }),
+        ).toBeInTheDocument();
       });
     });
 

@@ -304,21 +304,26 @@ describe('VideoAnalytics', () => {
 
     it('should load from localStorage', () => {
       const mockData = {
-        sessions: [['video-1', {
-          videoId: 'video-1',
-          startTime: 1000,
-          totalWatchTime: 50,
-          playCount: 1,
-          pauseCount: 0,
-          seekCount: 0,
-          bufferingEvents: 0,
-          errorCount: 0,
-          progressMilestones: [],
-          lastPosition: 0,
-          completionPercentage: 0,
-          averagePlaybackRate: 1,
-          playbackRateChanges: 0,
-        }]],
+        sessions: [
+          [
+            'video-1',
+            {
+              videoId: 'video-1',
+              startTime: 1000,
+              totalWatchTime: 50,
+              playCount: 1,
+              pauseCount: 0,
+              seekCount: 0,
+              bufferingEvents: 0,
+              errorCount: 0,
+              progressMilestones: [],
+              lastPosition: 0,
+              completionPercentage: 0,
+              averagePlaybackRate: 1,
+              playbackRateChanges: 0,
+            },
+          ],
+        ],
         lastUpdated: Date.now(),
       };
 

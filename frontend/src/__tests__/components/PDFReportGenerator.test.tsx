@@ -225,7 +225,7 @@ describe('PDFReportGenerator Component', () => {
 
       // Find button containing natal chart report text
       const buttons = screen.getAllByRole('button');
-      const dropdownButton = buttons.find(btn => btn.textContent?.includes('Natal Chart Report'));
+      const dropdownButton = buttons.find((btn) => btn.textContent?.includes('Natal Chart Report'));
       expect(dropdownButton).toBeDefined();
       await user.click(dropdownButton!);
 
@@ -238,7 +238,7 @@ describe('PDFReportGenerator Component', () => {
       render(<PDFReportGenerator chart={createMockChart()} />);
 
       const buttons = screen.getAllByRole('button');
-      const dropdownButton = buttons.find(btn => btn.textContent?.includes('Natal Chart Report'));
+      const dropdownButton = buttons.find((btn) => btn.textContent?.includes('Natal Chart Report'));
       await user.click(dropdownButton!);
 
       // Transit should be disabled since no transit data provided
@@ -248,15 +248,10 @@ describe('PDFReportGenerator Component', () => {
 
     it('should enable report types when data is provided', async () => {
       const user = userEvent.setup();
-      render(
-        <PDFReportGenerator
-          chart={createMockChart()}
-          transits={createMockTransits()}
-        />
-      );
+      render(<PDFReportGenerator chart={createMockChart()} transits={createMockTransits()} />);
 
       const buttons = screen.getAllByRole('button');
-      const dropdownButton = buttons.find(btn => btn.textContent?.includes('Natal Chart Report'));
+      const dropdownButton = buttons.find((btn) => btn.textContent?.includes('Natal Chart Report'));
       await user.click(dropdownButton!);
 
       const transitOption = screen.getByText('Transit Report').closest('button');
@@ -265,15 +260,10 @@ describe('PDFReportGenerator Component', () => {
 
     it('should change selected report type', async () => {
       const user = userEvent.setup();
-      render(
-        <PDFReportGenerator
-          chart={createMockChart()}
-          transits={createMockTransits()}
-        />
-      );
+      render(<PDFReportGenerator chart={createMockChart()} transits={createMockTransits()} />);
 
       const buttons = screen.getAllByRole('button');
-      const dropdownButton = buttons.find(btn => btn.textContent?.includes('Natal Chart Report'));
+      const dropdownButton = buttons.find((btn) => btn.textContent?.includes('Natal Chart Report'));
       await user.click(dropdownButton!);
 
       const transitOption = screen.getByText('Transit Report').closest('button');
@@ -302,7 +292,7 @@ describe('PDFReportGenerator Component', () => {
           transits={createMockTransits()}
           chartName="Test Transit"
           defaultReportType="transit"
-        />
+        />,
       );
       expect(screen.getByText('Generate PDF Report')).toBeInTheDocument();
     });
@@ -314,7 +304,7 @@ describe('PDFReportGenerator Component', () => {
           person1Name="Alice"
           person2Name="Bob"
           defaultReportType="synastry"
-        />
+        />,
       );
       expect(screen.getByText('Generate PDF Report')).toBeInTheDocument();
     });
@@ -325,7 +315,7 @@ describe('PDFReportGenerator Component', () => {
           solarReturn={createMockSolarReturn()}
           chartName="Test Solar"
           defaultReportType="solar-return"
-        />
+        />,
       );
       expect(screen.getByText('Generate PDF Report')).toBeInTheDocument();
     });
@@ -336,7 +326,7 @@ describe('PDFReportGenerator Component', () => {
           lunarReturn={createMockLunarReturn()}
           chartName="Test Lunar"
           defaultReportType="lunar-return"
-        />
+        />,
       );
       expect(screen.getByText('Generate PDF Report')).toBeInTheDocument();
     });
@@ -345,7 +335,7 @@ describe('PDFReportGenerator Component', () => {
   describe('Custom Props', () => {
     it('should apply custom className', () => {
       const { container } = render(
-        <PDFReportGenerator chart={createMockChart()} className="custom-class" />
+        <PDFReportGenerator chart={createMockChart()} className="custom-class" />,
       );
       expect(container.firstChild).toHaveClass('custom-class');
     });

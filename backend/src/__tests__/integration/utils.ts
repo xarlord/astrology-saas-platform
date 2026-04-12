@@ -25,6 +25,7 @@ interface TestUser {
  */
 export async function cleanDatabase(database: Knex) {
   const tables = [
+    'generated_cards',
     'synastry_reports',
     'monthly_forecasts',
     'lunar_returns',
@@ -39,6 +40,7 @@ export async function cleanDatabase(database: Knex) {
     'interpretations',
     'transit_readings',
     'charts',
+    'password_reset_tokens',
     'refresh_tokens',
     'audit_log',
     'users',
@@ -140,7 +142,8 @@ export function generateRefreshToken(user: { id: string; email: string }): strin
  * Make an authenticated request
  */
 export function authenticatedRequest(app: Application, method: string, url: string, token: string) {
-  return (request(app) as Record<string, (url: string) => request.Test>)[method.toLowerCase()](url)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (request(app) as any)[method.toLowerCase()](url)
     .set('Authorization', `Bearer ${token}`);
 }
 

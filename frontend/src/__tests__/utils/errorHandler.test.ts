@@ -211,9 +211,7 @@ describe('errorHandler', () => {
         code: 'NETWORK_ERROR',
         statusCode: 403,
       };
-      expect(getUserFriendlyError(error)).toBe(
-        "You don't have permission to access this resource"
-      );
+      expect(getUserFriendlyError(error)).toBe("You don't have permission to access this resource");
     });
 
     it('should return not found message for 404 NETWORK_ERROR', () => {
@@ -222,9 +220,7 @@ describe('errorHandler', () => {
         code: 'NETWORK_ERROR',
         statusCode: 404,
       };
-      expect(getUserFriendlyError(error)).toBe(
-        'The requested resource was not found'
-      );
+      expect(getUserFriendlyError(error)).toBe('The requested resource was not found');
     });
 
     it('should return server error message for 500 NETWORK_ERROR', () => {
@@ -325,8 +321,8 @@ describe('errorHandler', () => {
       };
       logError(error);
       const calls = consoleSpy.mock.calls;
-      const hasErrorCodeLog = calls.some(call =>
-        call.some(arg => typeof arg === 'string' && arg.includes('Error Code:'))
+      const hasErrorCodeLog = calls.some((call) =>
+        call.some((arg) => typeof arg === 'string' && arg.includes('Error Code:')),
       );
       expect(hasErrorCodeLog).toBe(false);
     });
@@ -397,9 +393,11 @@ describe('errorHandler', () => {
       const onError = vi.fn();
       await withErrorHandling(fn, onError);
       expect(onError).toHaveBeenCalled();
-      expect(onError).toHaveBeenCalledWith(expect.objectContaining({
-        message: 'Test error',
-      }));
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Test error',
+        }),
+      );
     });
 
     it('should not call onError callback on success', async () => {

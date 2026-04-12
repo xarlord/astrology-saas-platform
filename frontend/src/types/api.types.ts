@@ -17,6 +17,10 @@
 // RE-EXPORT FROM ZOD SCHEMAS
 // ============================================================================
 
+// Local imports for types used in interface definitions below
+import type { AspectPattern } from './schemas/chart.schema';
+import type { LunarPhase, PlanetaryIngress } from './schemas/transit.schema';
+
 // Base API types
 export type {
   ApiResponse,
@@ -36,7 +40,6 @@ export type {
   User,
   UserSettings,
   UserPreferences,
-  NotificationSettings,
   LoginRequest,
   RegisterRequest,
   AuthResponse,
@@ -90,7 +93,6 @@ export type {
   TransitTheme,
   TransitInfluenceDetail,
   TransitSignificance,
-  TransitInfluence,
   EnergyLevel,
   LunarPhaseType,
 } from './schemas/transit.schema';

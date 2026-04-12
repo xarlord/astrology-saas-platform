@@ -7,6 +7,7 @@ import OpenAI from 'openai';
 import { openaiConfig, PROMPT_TEMPLATES, INTERPRETATION_PARAMS } from '../config/openai.config';
 import logger from '../../../utils/logger';
 import aiUsageService from './aiUsage.service';
+import { RedisCache } from '../../shared/services/redis.service';
 
 /**
  * Get or create OpenAI client instance
@@ -89,11 +90,11 @@ export interface InterpretationResult {
 }
 
 /**
- * Simple in-memory cache for AI interpretations
- * In production, this should be replaced with Redis or database caching
+ * Redis-backed cache for AI interpretations
+ * Falls back to in-memory when Redis is unavailable
  */
-const interpretationCache = new Map<string, { data: ParsedInterpretation; timestamp: number }>();
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+const interpretationCache = new RedisCache('openai:');
+const CACHE_TTL = 24 * 60 * 60; // 24 hours (seconds)
 
 class OpenAIService {
   /**
@@ -103,7 +104,7 @@ class OpenAIService {
     try {
       // Check cache first
       const cacheKey = this.getCacheKey('natal', chartData);
-      const cached = this.getCachedResult(cacheKey);
+      const cached = await this.getCachedResult(cacheKey);
       if (cached) {
         return {
           success: true,
@@ -142,7 +143,7 @@ class OpenAIService {
       const interpretation = this.parseInterpretation(completion.choices[0].message.content || '');
 
       // Cache the result
-      this.setCachedResult(cacheKey, interpretation);
+      await this.setCachedResult(cacheKey, interpretation);
 
       // Track usage if userId provided
       if (userId && completion.usage) {
@@ -181,7 +182,7 @@ class OpenAIService {
     try {
       // Check cache first
       const cacheKey = this.getCacheKey('transit', transitData);
-      const cached = this.getCachedResult(cacheKey);
+      const cached = await this.getCachedResult(cacheKey);
       if (cached) {
         return {
           success: true,
@@ -220,7 +221,7 @@ class OpenAIService {
       const interpretation = this.parseInterpretation(completion.choices[0].message.content || '');
 
       // Cache the result
-      this.setCachedResult(cacheKey, interpretation);
+      await this.setCachedResult(cacheKey, interpretation);
 
       // Track usage if userId provided
       if (userId && completion.usage) {
@@ -259,7 +260,7 @@ class OpenAIService {
     try {
       // Check cache first
       const cacheKey = this.getCacheKey('compatibility', synastryData);
-      const cached = this.getCachedResult(cacheKey);
+      const cached = await this.getCachedResult(cacheKey);
       if (cached) {
         return {
           success: true,
@@ -299,7 +300,7 @@ class OpenAIService {
       const interpretation = this.parseInterpretation(completion.choices[0].message.content || '');
 
       // Cache the result
-      this.setCachedResult(cacheKey, interpretation);
+      await this.setCachedResult(cacheKey, interpretation);
 
       // Track usage if userId provided
       if (userId && completion.usage) {
@@ -337,7 +338,7 @@ class OpenAIService {
   async generateLunarReturnInterpretation(chartData: NatalChartInput, userId?: string): Promise<InterpretationResult> {
     try {
       const cacheKey = this.getCacheKey('lunar-return', chartData);
-      const cached = this.getCachedResult(cacheKey);
+      const cached = await this.getCachedResult(cacheKey);
       if (cached) {
         return {
           success: true,
@@ -373,7 +374,7 @@ class OpenAIService {
       });
 
       const interpretation = this.parseInterpretation(completion.choices[0].message.content || '');
-      this.setCachedResult(cacheKey, interpretation);
+      await this.setCachedResult(cacheKey, interpretation);
 
       // Track usage if userId provided
       if (userId && completion.usage) {
@@ -408,10 +409,58 @@ class OpenAIService {
   /**
    * Generate AI-powered solar return interpretation
    */
+  async generateCardInsight(placements: string[], userId?: string): Promise<string | null> {
+    try {
+      if (!this.isConfigured()) {
+        return null;
+      }
+
+      const placementsStr = placements.join(', ');
+      const prompt = this.formatPrompt(PROMPT_TEMPLATES.cardInsight, {
+        placements: placementsStr,
+      });
+
+      const client = getOpenAIClient();
+      const completion = await client.chat.completions.create({
+        model: openaiConfig.model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are an expert astrologer creating short, shareable insights for social media. Be concise, empowering, and specific.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        max_tokens: INTERPRETATION_PARAMS.cardInsight.maxTokens,
+        temperature: INTERPRETATION_PARAMS.cardInsight.temperature,
+      });
+
+      const insight = completion.choices[0].message.content?.trim() || null;
+
+      if (userId && completion.usage) {
+        await aiUsageService.record({
+          userId,
+          type: 'card-insight',
+          inputTokens: completion.usage.prompt_tokens,
+          outputTokens: completion.usage.completion_tokens,
+          metadata: { interpretationType: 'card-insight' },
+        });
+      }
+
+      return insight;
+    } catch (error: unknown) {
+      logger.error('OpenAI card insight error:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Generate AI-powered solar return interpretation
+   */
   async generateSolarReturnInterpretation(chartData: NatalChartInput, userId?: string): Promise<InterpretationResult> {
     try {
       const cacheKey = this.getCacheKey('solar-return', chartData);
-      const cached = this.getCachedResult(cacheKey);
+      const cached = await this.getCachedResult(cacheKey);
       if (cached) {
         return {
           success: true,
@@ -447,7 +496,7 @@ class OpenAIService {
       });
 
       const interpretation = this.parseInterpretation(completion.choices[0].message.content || '');
-      this.setCachedResult(cacheKey, interpretation);
+      await this.setCachedResult(cacheKey, interpretation);
 
       // Track usage if userId provided
       if (userId && completion.usage) {
@@ -480,12 +529,32 @@ class OpenAIService {
   }
 
   /**
-   * Format prompt template with data
+   * Maximum character length for any single user-provided prompt field.
+   * Prevents prompt injection via excessively long inputs.
+   */
+  private static readonly MAX_PROMPT_FIELD_LENGTH = 500;
+
+  /**
+   * Sanitize a user-provided string for safe inclusion in AI prompts.
+   * Strips control characters and truncates to a safe length.
+   */
+  private sanitizePromptInput(value: string): string {
+    if (typeof value !== 'string') return '';
+    // Remove control characters (except newline/tab)
+    const cleaned = value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+    // Truncate to prevent excessively long injections
+    return cleaned.length > OpenAIService.MAX_PROMPT_FIELD_LENGTH
+      ? cleaned.slice(0, OpenAIService.MAX_PROMPT_FIELD_LENGTH) + '...'
+      : cleaned;
+  }
+
+  /**
+   * Format prompt template with data (sanitized)
    */
   private formatPrompt(template: string, data: Record<string, string>): string {
     let prompt = template;
     for (const [key, value] of Object.entries(data)) {
-      prompt = prompt.replace(`{${key}}`, value);
+      prompt = prompt.replace(`{${key}}`, this.sanitizePromptInput(value));
     }
     return prompt;
   }
@@ -662,31 +731,24 @@ class OpenAIService {
   }
 
   /**
-   * Get cached result if available and not expired
+   * Get cached result if available
    */
-  private getCachedResult(key: string): ParsedInterpretation | null {
-    const cached = interpretationCache.get(key);
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-      return cached.data;
-    }
-    if (cached) {
-      interpretationCache.delete(key);
-    }
-    return null;
+  private async getCachedResult(key: string): Promise<ParsedInterpretation | null> {
+    return interpretationCache.get<ParsedInterpretation>(key);
   }
 
   /**
-   * Cache result with timestamp
+   * Cache result
    */
-  private setCachedResult(key: string, data: any): void {
-    interpretationCache.set(key, { data, timestamp: Date.now() });
+  private async setCachedResult(key: string, data: unknown): Promise<void> {
+    await interpretationCache.set(key, data, CACHE_TTL);
   }
 
   /**
    * Clear cache entries
    */
-  clearCache(): void {
-    interpretationCache.clear();
+  async clearCache(): Promise<void> {
+    await interpretationCache.deleteByPrefix('');
   }
 
   /**
@@ -716,7 +778,7 @@ class OpenAIService {
   /**
    * Get usage statistics (placeholder for future implementation)
    */
-  async getUsageStats(): Promise<any> {
+  async getUsageStats(): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
     // This would call OpenAI API to get usage/billing info
     return {
       available: true,

@@ -8,6 +8,35 @@ import type { APIRequestContext } from '@playwright/test';
 
 const API_BASE = 'http://localhost:3001/api/v1';
 
+// Cache CSRF token to avoid fetching it for every request
+let csrfToken: string | null = null;
+
+/**
+ * Fetch a CSRF token from the backend.
+ * Caches the token for subsequent requests.
+ * Returns empty string if CSRF is disabled (test environment).
+ */
+async function getCsrfToken(request: APIRequestContext): Promise<string> {
+  if (csrfToken) {
+    return csrfToken;
+  }
+
+  try {
+    const response = await request.get(`${API_BASE}/health/csrf-token`);
+    if (response.status() === 200) {
+      const body = await response.json();
+      csrfToken = body.data.token;
+      return csrfToken;
+    }
+  } catch (error) {
+    // CSRF endpoint might not exist or CSRF is disabled in test environment
+    console.log('CSRF token fetch failed, proceeding without CSRF token');
+  }
+
+  // Return empty string if CSRF is disabled or not available
+  return '';
+}
+
 // --- Response Types ---
 
 export interface UserProfile {
@@ -66,11 +95,19 @@ interface ApiError {
 
 // --- Helper ---
 
-function authHeaders(token: string): Record<string, string> {
-  return {
+async function authHeaders(token: string, request: APIRequestContext): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   };
+
+  // Add CSRF token for state-changing requests (if available)
+  const csrf = await getCsrfToken(request);
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+
+  return headers;
 }
 
 // --- Auth ---
@@ -82,8 +119,19 @@ export async function registerUser(
   request: APIRequestContext,
   userData: { name: string; email: string; password: string },
 ): Promise<AuthResponse> {
+  const csrf = await getCsrfToken(request);
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  // Only add CSRF token if it's available (not disabled)
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+
   const response = await request.post(`${API_BASE}/auth/register`, {
     data: userData,
+    headers,
   });
 
   if (response.status() !== 201) {
@@ -103,8 +151,19 @@ export async function loginUser(
   email: string,
   password: string,
 ): Promise<AuthResponse> {
+  const csrf = await getCsrfToken(request);
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  // Only add CSRF token if it's available (not disabled)
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+
   const response = await request.post(`${API_BASE}/auth/login`, {
     data: { email, password },
+    headers,
   });
 
   if (response.status() !== 200) {
@@ -144,8 +203,9 @@ export async function createChart(
   token: string,
   chartData: ChartData,
 ): Promise<Chart> {
+  const headers = await authHeaders(token, request);
   const response = await request.post(`${API_BASE}/charts`, {
-    headers: authHeaders(token),
+    headers,
     data: chartData,
   });
 
@@ -167,8 +227,9 @@ export async function getCharts(
   page = 1,
   limit = 20,
 ): Promise<{ charts: Chart[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> {
+  const headers = await authHeaders(token, request);
   const response = await request.get(`${API_BASE}/charts?page=${page}&limit=${limit}`, {
-    headers: authHeaders(token),
+    headers,
   });
 
   if (response.status() !== 200) {
@@ -188,8 +249,9 @@ export async function deleteChart(
   token: string,
   chartId: string,
 ): Promise<void> {
+  const headers = await authHeaders(token, request);
   const response = await request.delete(`${API_BASE}/charts/${chartId}`, {
-    headers: authHeaders(token),
+    headers,
   });
 
   if (response.status() !== 200 && response.status() !== 204) {

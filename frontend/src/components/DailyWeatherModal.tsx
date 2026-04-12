@@ -6,7 +6,6 @@
  */
 
 import { useEffect } from 'react';
-import { X, Moon, Star, Sparkles } from 'lucide-react';
 import { DailyWeather as DailyWeatherType, AstrologicalEvent } from '../types/calendar.types';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { INTENSITY_THRESHOLDS, EVENT_COLORS, UI } from '../utils/constants';
@@ -95,33 +94,39 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 sm:p-4 border-b border-gray-200">
-          <h2 id="modal-title" className="m-0 text-xl sm:text-lg font-semibold text-gray-900">{formatDate(date)}</h2>
+          <h2 id="modal-title" className="m-0 text-xl sm:text-lg font-semibold text-gray-900">
+            {formatDate(date)}
+          </h2>
           <button
             onClick={onClose}
             className="flex items-center justify-center w-8 h-8 border-none bg-transparent text-gray-500 cursor-pointer rounded-lg transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 focus-visible:bg-gray-100"
             aria-label="Close modal"
           >
-            <X size={24} />
+            <span className="material-symbols-outlined text-[24px]">close</span>
           </button>
         </div>
 
         {/* Rating */}
         <div className="rating-section" style={{ backgroundColor: getRatingColor(weather.rating) }}>
           <div className="rating-content">
-            <div className="rating-number">{weather.rating}/{UI.INTENSITY_MAX}</div>
+            <div className="rating-number">
+              {weather.rating}/{UI.INTENSITY_MAX}
+            </div>
             <div className="rating-label">{getRatingLabel(weather.rating)}</div>
           </div>
         </div>
 
         {/* Summary */}
         <div className="px-6 pb-4">
-          <p className="m-0 text-base leading-relaxed text-gray-700 text-center">{weather.summary}</p>
+          <p className="m-0 text-base leading-relaxed text-gray-700 text-center">
+            {weather.summary}
+          </p>
         </div>
 
         {/* Moon Phase */}
         <div className="p-4 px-6 bg-gray-50 rounded-lg mx-6 mb-4">
           <div className="flex items-center gap-2 mb-3">
-            <Moon size={20} />
+            <span className="material-symbols-outlined text-[20px]">dark_mode</span>
             <h3 className="m-0 text-base font-semibold text-gray-900">Moon Phase</h3>
           </div>
           <div className="flex items-center gap-4 sm:flex-col sm:text-center">
@@ -134,7 +139,8 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
                   .join(' ')}
               </div>
               <div className="text-sm text-gray-500">
-                in {weather.moonPhase.sign.charAt(0).toUpperCase() + weather.moonPhase.sign.slice(1)} •{' '}
+                in{' '}
+                {weather.moonPhase.sign.charAt(0).toUpperCase() + weather.moonPhase.sign.slice(1)} •{' '}
                 {weather.moonPhase.illumination}% illuminated
               </div>
             </div>
@@ -145,7 +151,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {weather.globalEvents.length > 0 && (
           <div className="px-6 pb-4">
             <div className="flex items-center gap-2 mb-3">
-              <Star size={20} />
+              <span className="material-symbols-outlined text-[20px]">star</span>
               <h3 className="m-0 text-base font-semibold text-gray-900">Astrological Events</h3>
             </div>
             <div className="flex flex-col gap-3">
@@ -160,7 +166,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {weather.personalTransits.length > 0 && (
           <div className="px-6 pb-4">
             <div className="flex items-center gap-2 mb-3">
-              <Sparkles size={20} />
+              <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
               <h3 className="m-0 text-base font-semibold text-gray-900">Your Transits</h3>
             </div>
             <div className="flex flex-col gap-3">
@@ -176,10 +182,14 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
           <div className="p-4 px-6 bg-gray-50 rounded-lg mx-6 mb-6 flex gap-4 sm:flex-col">
             {weather.luckyActivities.length > 0 && (
               <div className="flex-1">
-                <h4 className="m-0 mb-2 text-sm font-semibold text-emerald-500">✨ Favorable For:</h4>
+                <h4 className="m-0 mb-2 text-sm font-semibold text-emerald-500">
+                  ✨ Favorable For:
+                </h4>
                 <ul className="m-0 pl-5 list-disc">
                   {weather.luckyActivities.map((activity, index) => (
-                    <li key={index} className="text-[13px] text-gray-700 mb-1 leading-snug">{activity}</li>
+                    <li key={index} className="text-[13px] text-gray-700 mb-1 leading-snug">
+                      {activity}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -190,7 +200,9 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
                 <h4 className="m-0 mb-2 text-sm font-semibold text-red-500">⚠️ Challenging For:</h4>
                 <ul className="m-0 pl-5 list-disc">
                   {weather.challengingActivities.map((activity, index) => (
-                    <li key={index} className="text-[13px] text-gray-700 mb-1 leading-snug">{activity}</li>
+                    <li key={index} className="text-[13px] text-gray-700 mb-1 leading-snug">
+                      {activity}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -240,7 +252,14 @@ function EventCard({ event }: EventCardProps) {
       </div>
       <div
         className="event-intensity"
-        style={{ backgroundColor: event.intensity >= INTENSITY_THRESHOLDS.HIGH_MAX ? EVENT_COLORS.HIGH_INTENSITY : event.intensity <= INTENSITY_THRESHOLDS.CHALLENGING_MAX ? EVENT_COLORS.CHALLENGING : EVENT_COLORS.NEUTRAL }}
+        style={{
+          backgroundColor:
+            event.intensity >= INTENSITY_THRESHOLDS.HIGH_MAX
+              ? EVENT_COLORS.HIGH_INTENSITY
+              : event.intensity <= INTENSITY_THRESHOLDS.CHALLENGING_MAX
+                ? EVENT_COLORS.CHALLENGING
+                : EVENT_COLORS.NEUTRAL,
+        }}
       >
         {event.intensity}
       </div>

@@ -14,6 +14,7 @@ import { clsx } from 'clsx';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Toggle } from '../components/ui/Toggle';
+import { AppLayout } from '../components';
 import { TIMEOUTS } from '../utils/constants';
 
 type TabType = 'profile' | 'account' | 'subscription' | 'appearance';
@@ -34,6 +35,17 @@ interface NotificationSettings {
   weeklyForecast: boolean;
 }
 
+interface PremiumFeatureSettings {
+  autoDeliveryMonthlyReport: boolean;
+}
+
+interface NotificationPrefSettings {
+  enabled: boolean;
+  time: string;
+  pushEnabled: boolean;
+  emailEnabled: boolean;
+}
+
 interface AppearanceSettings {
   theme: 'light' | 'dark' | 'system';
   density: 'compact' | 'comfortable' | 'spacious';
@@ -42,7 +54,7 @@ interface AppearanceSettings {
 }
 
 export const ProfileSettingsPage: React.FC = () => {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { user, updateProfile, isLoading: _isLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<TabType>('profile');
@@ -66,6 +78,26 @@ export const ProfileSettingsPage: React.FC = () => {
     weeklyForecast: false,
   });
 
+  // Premium feature settings
+  const [premiumFeatures, setPremiumFeatures] = useState<PremiumFeatureSettings>({
+    autoDeliveryMonthlyReport: false,
+  });
+
+  // Notification preferences for daily briefing
+  const [notificationPrefs, setNotificationPrefs] = useState<NotificationPrefSettings>({
+    enabled: true,
+    time: '08:00',
+    pushEnabled: true,
+    emailEnabled: false,
+  });
+
+  const handleNotificationPrefChange = useCallback(
+    (key: keyof NotificationPrefSettings, value: boolean | string) => {
+      setNotificationPrefs((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
+
   // Appearance settings
   const [appearance, setAppearance] = useState<AppearanceSettings>({
     theme: 'dark',
@@ -78,9 +110,19 @@ export const ProfileSettingsPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  const handleNotificationChange = useCallback((key: keyof NotificationSettings, value: boolean) => {
-    setNotifications((prev) => ({ ...prev, [key]: value }));
-  }, []);
+  const handleNotificationChange = useCallback(
+    (key: keyof NotificationSettings, value: boolean) => {
+      setNotifications((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
+
+  const handlePremiumFeatureChange = useCallback(
+    (key: keyof PremiumFeatureSettings, value: boolean) => {
+      setPremiumFeatures((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
 
   const handleSaveProfile = async () => {
     setSaveStatus('saving');
@@ -120,46 +162,7 @@ export const ProfileSettingsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627]">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-50 bg-card-dark/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="text-primary p-1.5 rounded-lg bg-primary/10">
-                <span className="material-symbols-outlined text-2xl">auto_awesome</span>
-              </div>
-              <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                AstroVerse
-              </span>
-            </div>
-
-            {/* Right Nav Actions */}
-            <div className="flex items-center gap-4">
-              <button className="p-2 rounded-full hover:bg-white/5 text-slate-400 hover:text-white transition-colors">
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
-              <div className="h-8 w-[1px] bg-white/10" />
-              <div
-                className="flex items-center gap-3 cursor-pointer group"
-                onClick={() => navigate('/profile')}
-              >
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium text-white group-hover:text-primary transition-colors">
-                    {user?.name ?? 'User'}
-                  </p>
-                  <p className="text-xs text-slate-500">Pro Member</p>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary">person</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Hero Profile Card */}
         <div className="bg-card-dark/80 backdrop-blur-md rounded-2xl p-6 md:p-8 relative overflow-hidden group">
@@ -177,7 +180,7 @@ export const ProfileSettingsPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-2 right-2 bg-gold text-background-dark text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-background-dark flex items-center gap-1">
+              <div className="absolute -bottom-2 right-2 bg-amber-400 text-[#0B0D17] text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-[#0B0D17] flex items-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">stars</span>
                 <span>PRO</span>
               </div>
@@ -241,28 +244,59 @@ export const ProfileSettingsPage: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="border-b border-white/10 overflow-x-auto">
-          <nav className="flex space-x-8 min-w-max" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={clsx(
-                  'border-b-2 py-4 px-1 text-sm font-medium flex items-center gap-2 transition-colors',
-                  activeTab === tab.id
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-slate-400 hover:border-slate-300 hover:text-slate-200'
-                )}
-              >
-                <span className="material-symbols-outlined text-[20px]">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+        <div className="border-b border-white/10 overflow-x-auto" role="tablist" aria-label="Settings sections">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              role="tab"
+              id={`tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls={`panel-${tab.id}`}
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => setActiveTab(tab.id)}
+              onKeyDown={(e) => {
+                const idx = tabs.findIndex((t) => t.id === tab.id);
+                if (e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  const next = tabs[(idx + 1) % tabs.length];
+                  setActiveTab(next.id);
+                  document.getElementById(`tab-${next.id}`)?.focus();
+                } else if (e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
+                  setActiveTab(prev.id);
+                  document.getElementById(`tab-${prev.id}`)?.focus();
+                } else if (e.key === 'Home') {
+                  e.preventDefault();
+                  setActiveTab(tabs[0].id);
+                  document.getElementById(`tab-${tabs[0].id}`)?.focus();
+                } else if (e.key === 'End') {
+                  e.preventDefault();
+                  setActiveTab(tabs[tabs.length - 1].id);
+                  document.getElementById(`tab-${tabs[tabs.length - 1].id}`)?.focus();
+                }
+              }}
+              className={clsx(
+                'border-b-2 py-4 px-1 text-sm font-medium flex items-center gap-2 transition-colors',
+                activeTab === tab.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-slate-400 hover:border-slate-300 hover:text-slate-200',
+              )}
+            >
+              <span className="material-symbols-outlined text-[20px]">{tab.icon}</span>
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Tab Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
+          tabIndex={0}
+        >
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {activeTab === 'profile' && (
@@ -340,11 +374,13 @@ export const ProfileSettingsPage: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="pt-4 flex justify-end">
+                    <div className="pt-4 flex justify-end" aria-live="polite">
                       <Button
                         variant="primary"
                         size="lg"
-                        onClick={() => { void handleSaveProfile(); }}
+                        onClick={() => {
+                          void handleSaveProfile();
+                        }}
                         isLoading={saveStatus === 'saving'}
                         className="flex items-center gap-2"
                         data-testid="save-profile-button"
@@ -370,21 +406,39 @@ export const ProfileSettingsPage: React.FC = () => {
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Change Password</h3>
                       <div className="space-y-3">
-                        <input
-                          type="password"
-                          placeholder="Current password"
-                          className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                        />
-                        <input
-                          type="password"
-                          placeholder="New password"
-                          className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                        />
-                        <input
-                          type="password"
-                          placeholder="Confirm new password"
-                          className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                        />
+                        <div className="space-y-2">
+                          <label htmlFor="current-password" className="text-sm font-medium text-slate-300">
+                            Current password
+                          </label>
+                          <input
+                            id="current-password"
+                            type="password"
+                            autoComplete="current-password"
+                            className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="new-password" className="text-sm font-medium text-slate-300">
+                            New password
+                          </label>
+                          <input
+                            id="new-password"
+                            type="password"
+                            autoComplete="new-password"
+                            className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="confirm-password" className="text-sm font-medium text-slate-300">
+                            Confirm new password
+                          </label>
+                          <input
+                            id="confirm-password"
+                            type="password"
+                            autoComplete="new-password"
+                            className="w-full rounded-xl px-4 py-3 bg-surface-dark/50 border border-white/10 text-slate-100 placeholder-slate-500 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                          />
+                        </div>
                       </div>
                       <Button variant="primary" size="md">
                         Update Password
@@ -396,7 +450,8 @@ export const ProfileSettingsPage: React.FC = () => {
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-red-400">Danger Zone</h3>
                       <p className="text-sm text-slate-400">
-                        Permanently delete your account and all associated data. This action cannot be undone.
+                        Permanently delete your account and all associated data. This action cannot
+                        be undone.
                       </p>
                       <Button variant="danger" size="md">
                         Delete Account
@@ -419,7 +474,7 @@ export const ProfileSettingsPage: React.FC = () => {
                     <div className="p-6 rounded-xl bg-gradient-to-br from-surface-dark to-background-dark border border-white/5">
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <p className="text-xs font-bold text-gold uppercase tracking-wider mb-1">
+                          <p className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">
                             Current Plan
                           </p>
                           <h3 className="text-2xl font-bold text-white">Pro Plan ✨</h3>
@@ -468,21 +523,45 @@ export const ProfileSettingsPage: React.FC = () => {
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Theme</h3>
-                      <div className="flex gap-3">
+                      <div
+                        className="flex gap-3"
+                        role="radiogroup"
+                        aria-label="Theme"
+                        onKeyDown={(e) => {
+                          const themes = ['light', 'dark', 'system'] as const;
+                          const idx = themes.indexOf(appearance.theme);
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const next = themes[(idx + 1) % themes.length];
+                            setAppearance((prev) => ({ ...prev, theme: next }));
+                          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            const prev = themes[(idx - 1 + themes.length) % themes.length];
+                            setAppearance((p) => ({ ...p, theme: prev }));
+                          }
+                        }}
+                      >
                         {(['light', 'dark', 'system'] as const).map((theme) => (
                           <button
                             key={theme}
+                            role="radio"
+                            aria-checked={appearance.theme === theme}
+                            tabIndex={appearance.theme === theme ? 0 : -1}
                             onClick={() => setAppearance((prev) => ({ ...prev, theme }))}
                             className={clsx(
                               'flex-1 p-4 rounded-xl border transition-all',
                               appearance.theme === theme
                                 ? 'border-primary bg-primary/20 text-white'
-                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20'
+                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20',
                             )}
                           >
                             <div className="text-center">
                               <span className="material-symbols-outlined text-2xl mb-1">
-                                {theme === 'light' ? 'light_mode' : theme === 'dark' ? 'dark_mode' : 'brightness_4'}
+                                {theme === 'light'
+                                  ? 'light_mode'
+                                  : theme === 'dark'
+                                    ? 'dark_mode'
+                                    : 'brightness_4'}
                               </span>
                               <p className="text-xs capitalize">{theme}</p>
                             </div>
@@ -495,16 +574,36 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Interface Density</h3>
-                      <div className="flex gap-3">
+                      <div
+                        className="flex gap-3"
+                        role="radiogroup"
+                        aria-label="Interface density"
+                        onKeyDown={(e) => {
+                          const densities = ['compact', 'comfortable', 'spacious'] as const;
+                          const idx = densities.indexOf(appearance.density);
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const next = densities[(idx + 1) % densities.length];
+                            setAppearance((prev) => ({ ...prev, density: next }));
+                          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            const prev = densities[(idx - 1 + densities.length) % densities.length];
+                            setAppearance((p) => ({ ...p, density: prev }));
+                          }
+                        }}
+                      >
                         {(['compact', 'comfortable', 'spacious'] as const).map((density) => (
                           <button
                             key={density}
+                            role="radio"
+                            aria-checked={appearance.density === density}
+                            tabIndex={appearance.density === density ? 0 : -1}
                             onClick={() => setAppearance((prev) => ({ ...prev, density }))}
                             className={clsx(
                               'flex-1 px-4 py-3 rounded-xl border text-sm font-medium transition-all',
                               appearance.density === density
                                 ? 'border-primary bg-primary/20 text-white'
-                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20'
+                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20',
                             )}
                           >
                             {density}
@@ -517,7 +616,9 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <Toggle
                       checked={appearance.animations}
-                      onChange={(checked) => setAppearance((prev) => ({ ...prev, animations: checked }))}
+                      onChange={(checked) =>
+                        setAppearance((prev) => ({ ...prev, animations: checked }))
+                      }
                       label="Enable Animations"
                       helperText="Smooth transitions and micro-interactions"
                     />
@@ -526,16 +627,38 @@ export const ProfileSettingsPage: React.FC = () => {
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium text-slate-300">Sidebar Position</h3>
-                      <div className="flex gap-3">
+                      <div
+                        className="flex gap-3"
+                        role="radiogroup"
+                        aria-label="Sidebar position"
+                        onKeyDown={(e) => {
+                          const positions = ['left', 'right'] as const;
+                          const idx = positions.indexOf(appearance.sidebarPosition);
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            const next = positions[(idx + 1) % positions.length];
+                            setAppearance((prev) => ({ ...prev, sidebarPosition: next }));
+                          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            const prev = positions[(idx - 1 + positions.length) % positions.length];
+                            setAppearance((p) => ({ ...p, sidebarPosition: prev }));
+                          }
+                        }}
+                      >
                         {(['left', 'right'] as const).map((position) => (
                           <button
                             key={position}
-                            onClick={() => setAppearance((prev) => ({ ...prev, sidebarPosition: position }))}
+                            role="radio"
+                            aria-checked={appearance.sidebarPosition === position}
+                            tabIndex={appearance.sidebarPosition === position ? 0 : -1}
+                            onClick={() =>
+                              setAppearance((prev) => ({ ...prev, sidebarPosition: position }))
+                            }
                             className={clsx(
                               'flex-1 px-4 py-3 rounded-xl border text-sm font-medium capitalize transition-all',
                               appearance.sidebarPosition === position
                                 ? 'border-primary bg-primary/20 text-white'
-                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20'
+                                : 'border-white/10 bg-surface-dark/50 text-slate-400 hover:border-white/20',
                             )}
                           >
                             {position}
@@ -616,16 +739,82 @@ export const ProfileSettingsPage: React.FC = () => {
                     info
                   </span>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Updating your birth data will recalculate your entire profile, including your "Big Three"
-                    and all saved transits.
+                    Updating your birth data will recalculate your entire profile, including your
+                    "Big Three" and all saved transits.
                   </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Premium Features Card */}
+            <div className="bg-card-dark/80 backdrop-blur-md rounded-2xl p-6">
+              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">workspace_premium</span>
+                Premium Features
+              </h2>
+              <div className="space-y-5">
+                <Toggle
+                  checked={premiumFeatures.autoDeliveryMonthlyReport}
+                  onChange={(checked) => handlePremiumFeatureChange('autoDeliveryMonthlyReport', checked)}
+                  label="Auto-deliver Monthly Report"
+                  helperText="Automatically generate and email your transit report each month"
+                />
+              </div>
+            </div>
+
+            {/* Daily Briefing Notifications */}
+            <div className="bg-card-dark/80 backdrop-blur-md rounded-2xl p-6">
+              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">notifications_active</span>
+                Daily Briefing Notifications
+              </h2>
+              <div className="space-y-5">
+                <Toggle
+                  checked={notificationPrefs.enabled}
+                  onChange={(checked) => handleNotificationPrefChange('enabled', checked)}
+                  label="Daily Briefing Reminder"
+                  helperText="Receive a daily reminder to check your cosmic briefing"
+                />
+
+                {notificationPrefs.enabled && (
+                  <>
+                    <div>
+                      <label className="text-sm text-slate-300 font-medium block mb-2">
+                        Preferred Time
+                      </label>
+                      <select
+                        value={notificationPrefs.time}
+                        onChange={(e) => handleNotificationPrefChange('time', e.target.value)}
+                        className="w-full bg-[#0B0D17] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      >
+                        <option value="06:00">6:00 AM — Early riser</option>
+                        <option value="07:00">7:00 AM — Morning routine</option>
+                        <option value="08:00">8:00 AM — Start of day</option>
+                        <option value="09:00">9:00 AM — Mid-morning</option>
+                      </select>
+                    </div>
+
+                    <Toggle
+                      checked={notificationPrefs.pushEnabled}
+                      onChange={(checked) => handleNotificationPrefChange('pushEnabled', checked)}
+                      label="Push Notifications"
+                      helperText="Receive push notifications in your browser"
+                    />
+
+                    <Toggle
+                      checked={notificationPrefs.emailEnabled}
+                      onChange={(checked) => handleNotificationPrefChange('emailEnabled', checked)}
+                      label="Email Digest"
+                      helperText="Receive a daily email summary of your briefing"
+                    />
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

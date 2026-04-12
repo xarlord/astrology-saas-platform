@@ -13,20 +13,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
-import {
-  X,
-  Copy,
-  Check,
-  Link,
-  Lock,
-  Globe,
-  Key,
-  Mail,
-  MessageSquare,
-  Share2,
-  QrCode,
-  Clock,
-} from 'lucide-react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 export type ShareVisibility = 'public' | 'private' | 'password';
 
@@ -84,17 +71,16 @@ const socialButtons: SocialButton[] = [
   },
   {
     name: 'Email',
-    icon: <Mail className="w-5 h-5" />,
+    icon: <span className="material-symbols-outlined text-[20px]">mail</span>,
     color: 'hover:bg-gray-600 hover:text-white',
     getUrl: (url, title) =>
       `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent('Check this out: ' + url)}`,
   },
   {
     name: 'SMS',
-    icon: <MessageSquare className="w-5 h-5" />,
+    icon: <span className="material-symbols-outlined text-[20px]">chat_bubble</span>,
     color: 'hover:bg-green-600 hover:text-white',
-    getUrl: (url, title) =>
-      `sms:?body=${encodeURIComponent(title + ' ' + url)}`,
+    getUrl: (url, title) => `sms:?body=${encodeURIComponent(title + ' ' + url)}`,
   },
 ];
 
@@ -124,6 +110,29 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const [showQR, setShowQR] = useState(false);
   const [showExpiryDropdown, setShowExpiryDropdown] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
+  // Save the element that opened the modal before it opens
+  useEffect(() => {
+    if (isOpen) {
+      triggerRef.current = document.activeElement as HTMLElement;
+    }
+  }, [isOpen]);
+
+  // Restore focus when modal closes
+  useEffect(() => {
+    if (!isOpen && triggerRef.current) {
+      triggerRef.current.focus();
+      triggerRef.current = null;
+    }
+  }, [isOpen]);
+
+  // Focus trap for WCAG 2.1 AA compliance
+  const trapRef = useFocusTrap<HTMLDivElement>({
+    active: isOpen,
+    onEscape: onClose,
+    autoFocusDelay: 150,
+  });
 
   // Handle visibility change
   const handleVisibilityChange = useCallback(
@@ -131,7 +140,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       setVisibility(newVisibility);
       onVisibilityChange?.(newVisibility);
     },
-    [onVisibilityChange]
+    [onVisibilityChange],
   );
 
   // Handle copy link
@@ -157,7 +166,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       const url = social.getUrl(shareUrl, title);
       window.open(url, '_blank', 'width=600,height=400');
     },
-    [shareUrl, title]
+    [shareUrl, title],
   );
 
   // Handle expiry change
@@ -167,7 +176,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       onExpiryChange?.(newExpiry);
       setShowExpiryDropdown(false);
     },
-    [onExpiryChange]
+    [onExpiryChange],
   );
 
   // Handle password change
@@ -176,28 +185,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       setPassword(e.target.value);
       onPasswordSet?.(e.target.value);
     },
-    [onPasswordSet]
+    [onPasswordSet],
   );
 
-  // Focus input on open
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isOpen]);
-
-  // Handle escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  // Focus trap handles Escape and initial focus via useFocusTrap
 
   // Animation variants
   const backdropVariants = {
@@ -230,12 +221,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
           {/* Modal */}
           <motion.div
+            ref={trapRef}
             className={clsx(
               'relative w-full max-w-md rounded-2xl overflow-hidden',
               'bg-gradient-to-br from-gray-900/95 to-gray-800/95',
               'backdrop-blur-xl border border-white/10',
               'shadow-2xl shadow-purple-500/20',
-              className
+              className,
             )}
             variants={modalVariants}
             transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -246,11 +238,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
               <div className="flex items-center space-x-2">
-                <Share2 className="w-5 h-5 text-purple-400" />
-                <h2
-                  id="share-modal-title"
-                  className="text-lg font-semibold text-white"
-                >
+                <span className="material-symbols-outlined text-[20px] text-purple-400">share</span>
+                <h2 id="share-modal-title" className="text-lg font-semibold text-white">
                   Share {itemType.charAt(0).toUpperCase() + itemType.slice(1)}
                 </h2>
               </div>
@@ -259,7 +248,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -267,45 +256,67 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             <div className="p-6 space-y-6">
               {/* Link Settings */}
               <div>
-                <h3 className="text-sm font-medium text-gray-300 mb-3">
-                  Link Settings
-                </h3>
-                <div className="space-y-2">
+                <h3 className="text-sm font-medium text-gray-300 mb-3">Link Settings</h3>
+                <div
+                  className="space-y-2"
+                  role="radiogroup"
+                  aria-label="Link visibility"
+                  onKeyDown={(e) => {
+                    const options: ShareVisibility[] = ['public', 'private', 'password'];
+                    const idx = options.indexOf(visibility);
+                    let nextIdx: number;
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                      e.preventDefault();
+                      nextIdx = (idx + 1) % options.length;
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                      e.preventDefault();
+                      nextIdx = (idx - 1 + options.length) % options.length;
+                    } else {
+                      return;
+                    }
+                    handleVisibilityChange(options[nextIdx]);
+                    const radios = (e.currentTarget as HTMLElement).querySelectorAll('[role="radio"]');
+                    (radios[nextIdx] as HTMLElement)?.focus();
+                  }}
+                >
                   {/* Public */}
                   <button
+                    role="radio"
+                    aria-checked={visibility === 'public'}
+                    tabIndex={visibility === 'public' ? 0 : -1}
                     onClick={() => handleVisibilityChange('public')}
                     className={clsx(
                       'flex items-center w-full p-3 rounded-lg border transition-all',
                       visibility === 'public'
                         ? 'border-purple-500 bg-purple-500/10'
-                        : 'border-white/10 bg-white/5 hover:bg-white/10'
+                        : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <Globe
+                    <span
                       className={clsx(
-                        'w-5 h-5 mr-3',
-                        visibility === 'public' ? 'text-purple-400' : 'text-gray-400'
+                        'material-symbols-outlined text-[20px] mr-3',
+                        visibility === 'public' ? 'text-purple-400' : 'text-gray-400',
                       )}
-                    />
+                    >
+                      public
+                    </span>
                     <div className="text-left">
                       <p
                         className={clsx(
                           'text-sm font-medium',
-                          visibility === 'public' ? 'text-white' : 'text-gray-300'
+                          visibility === 'public' ? 'text-white' : 'text-gray-300',
                         )}
                       >
                         Public
                       </p>
-                      <p className="text-xs text-gray-500">
-                        Anyone with the link can view
-                      </p>
+                      <p className="text-xs text-gray-500">Anyone with the link can view</p>
                     </div>
                     <div
                       className={clsx(
                         'ml-auto w-4 h-4 rounded-full border-2',
                         visibility === 'public'
                           ? 'border-purple-500 bg-purple-500'
-                          : 'border-gray-500'
+                          : 'border-gray-500',
                       )}
                     >
                       {visibility === 'public' && (
@@ -318,39 +329,42 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
                   {/* Private */}
                   <button
+                    role="radio"
+                    aria-checked={visibility === 'private'}
+                    tabIndex={visibility === 'private' ? 0 : -1}
                     onClick={() => handleVisibilityChange('private')}
                     className={clsx(
                       'flex items-center w-full p-3 rounded-lg border transition-all',
                       visibility === 'private'
                         ? 'border-purple-500 bg-purple-500/10'
-                        : 'border-white/10 bg-white/5 hover:bg-white/10'
+                        : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <Lock
+                    <span
                       className={clsx(
-                        'w-5 h-5 mr-3',
-                        visibility === 'private' ? 'text-purple-400' : 'text-gray-400'
+                        'material-symbols-outlined text-[20px] mr-3',
+                        visibility === 'private' ? 'text-purple-400' : 'text-gray-400',
                       )}
-                    />
+                    >
+                      lock
+                    </span>
                     <div className="text-left">
                       <p
                         className={clsx(
                           'text-sm font-medium',
-                          visibility === 'private' ? 'text-white' : 'text-gray-300'
+                          visibility === 'private' ? 'text-white' : 'text-gray-300',
                         )}
                       >
                         Private
                       </p>
-                      <p className="text-xs text-gray-500">
-                        Requires login to view
-                      </p>
+                      <p className="text-xs text-gray-500">Requires login to view</p>
                     </div>
                     <div
                       className={clsx(
                         'ml-auto w-4 h-4 rounded-full border-2',
                         visibility === 'private'
                           ? 'border-purple-500 bg-purple-500'
-                          : 'border-gray-500'
+                          : 'border-gray-500',
                       )}
                     >
                       {visibility === 'private' && (
@@ -363,39 +377,42 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
                   {/* Password Protected */}
                   <button
+                    role="radio"
+                    aria-checked={visibility === 'password'}
+                    tabIndex={visibility === 'password' ? 0 : -1}
                     onClick={() => handleVisibilityChange('password')}
                     className={clsx(
                       'flex items-center w-full p-3 rounded-lg border transition-all',
                       visibility === 'password'
                         ? 'border-purple-500 bg-purple-500/10'
-                        : 'border-white/10 bg-white/5 hover:bg-white/10'
+                        : 'border-white/10 bg-white/5 hover:bg-white/10',
                     )}
                   >
-                    <Key
+                    <span
                       className={clsx(
-                        'w-5 h-5 mr-3',
-                        visibility === 'password' ? 'text-purple-400' : 'text-gray-400'
+                        'material-symbols-outlined text-[20px] mr-3',
+                        visibility === 'password' ? 'text-purple-400' : 'text-gray-400',
                       )}
-                    />
+                    >
+                      key
+                    </span>
                     <div className="text-left flex-1">
                       <p
                         className={clsx(
                           'text-sm font-medium',
-                          visibility === 'password' ? 'text-white' : 'text-gray-300'
+                          visibility === 'password' ? 'text-white' : 'text-gray-300',
                         )}
                       >
                         Password Protected
                       </p>
-                      <p className="text-xs text-gray-500">
-                        Requires password to view
-                      </p>
+                      <p className="text-xs text-gray-500">Requires password to view</p>
                     </div>
                     <div
                       className={clsx(
                         'ml-auto w-4 h-4 rounded-full border-2',
                         visibility === 'password'
                           ? 'border-purple-500 bg-purple-500'
-                          : 'border-gray-500'
+                          : 'border-gray-500',
                       )}
                     >
                       {visibility === 'password' && (
@@ -421,6 +438,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                           value={password}
                           onChange={handlePasswordChange}
                           placeholder="Enter password"
+                          aria-label="Share link password"
                           className="w-full mt-2 px-3 py-2 rounded-lg bg-gray-800 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         />
                       </motion.div>
@@ -431,17 +449,16 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
               {/* Share Link */}
               <div>
-                <h3 className="text-sm font-medium text-gray-300 mb-2">
-                  Share Link
-                </h3>
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Share Link</h3>
                 <div className="flex items-center space-x-2">
                   <div className="flex-1 relative">
-                    <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <span className="material-symbols-outlined text-[16px] text-gray-500 absolute left-3 top-1/2 -translate-y-1/2">link</span>
                     <input
                       ref={inputRef}
                       type="text"
                       value={shareUrl}
                       readOnly
+                      aria-label="Share link URL"
                       className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-800 border border-white/10 text-white text-sm truncate focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
@@ -451,17 +468,17 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       'flex items-center px-4 py-2.5 rounded-lg font-medium text-sm transition-all',
                       copied
                         ? 'bg-green-500 text-white'
-                        : 'bg-purple-500 hover:bg-purple-600 text-white'
+                        : 'bg-purple-500 hover:bg-purple-600 text-white',
                     )}
                   >
                     {copied ? (
                       <>
-                        <Check className="w-4 h-4 mr-1.5" />
+                        <span className="material-symbols-outlined text-[16px] mr-1.5">check</span>
                         Copied
                       </>
                     ) : (
                       <>
-                        <Copy className="w-4 h-4 mr-1.5" />
+                        <span className="material-symbols-outlined text-[16px] mr-1.5">content_copy</span>
                         Copy
                       </>
                     )}
@@ -484,7 +501,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       onClick={() => handleSocialShare(social)}
                       className={clsx(
                         'p-3 rounded-full bg-white/5 text-gray-400 transition-all',
-                        social.color
+                        social.color,
                       )}
                       aria-label={`Share on ${social.name}`}
                     >
@@ -501,12 +518,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300"
                 >
                   <span className="flex items-center">
-                    <QrCode className="w-5 h-5 mr-2 text-purple-400" />
+                    <span className="material-symbols-outlined text-[20px] mr-2 text-purple-400">qr_code_2</span>
                     Show QR Code
                   </span>
-                  <span className="text-xs text-gray-500">
-                    For mobile scanning
-                  </span>
+                  <span className="text-xs text-gray-500">For mobile scanning</span>
                 </button>
 
                 <AnimatePresence>
@@ -520,8 +535,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     >
                       <div className="mt-3 p-4 rounded-lg bg-white flex items-center justify-center">
                         {/* Placeholder for QR code - in real implementation, use a QR library */}
-                        <div className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <QrCode className="w-24 h-24 text-gray-300" />
+                        <div
+                          className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center"
+                          role="img"
+                          aria-label="QR code for sharing"
+                        >
+                          <span className="material-symbols-outlined text-[96px] text-gray-300" aria-hidden="true">qr_code_2</span>
                         </div>
                       </div>
                       <p className="mt-2 text-xs text-gray-500 text-center">
@@ -536,7 +555,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <div className="relative">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                   <span className="flex items-center text-sm text-gray-300">
-                    <Clock className="w-4 h-4 mr-2 text-gray-500" />
+                    <span className="material-symbols-outlined text-[16px] mr-2 text-gray-500">schedule</span>
                     Link expires:
                   </span>
                   <button
@@ -555,16 +574,37 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.15 }}
                       className="absolute bottom-full left-0 right-0 mb-1 p-1 rounded-lg bg-gray-800 border border-white/10 shadow-xl"
+                      role="listbox"
+                      aria-label="Link expiry"
+                      onKeyDown={(e) => {
+                        const idx = expiryOptions.findIndex((o) => o.value === expiry);
+                        let nextIdx: number;
+                        if (e.key === 'ArrowDown') {
+                          e.preventDefault();
+                          nextIdx = (idx + 1) % expiryOptions.length;
+                        } else if (e.key === 'ArrowUp') {
+                          e.preventDefault();
+                          nextIdx = (idx - 1 + expiryOptions.length) % expiryOptions.length;
+                        } else {
+                          return;
+                        }
+                        handleExpiryChange(expiryOptions[nextIdx].value);
+                        const opts = (e.currentTarget as HTMLElement).querySelectorAll('[role="option"]');
+                        (opts[nextIdx] as HTMLElement)?.focus();
+                      }}
                     >
                       {expiryOptions.map((option) => (
                         <button
                           key={option.value}
+                          role="option"
+                          aria-selected={expiry === option.value}
+                          tabIndex={expiry === option.value ? 0 : -1}
                           onClick={() => handleExpiryChange(option.value)}
                           className={clsx(
                             'w-full px-3 py-2 text-left text-sm rounded transition-colors',
                             expiry === option.value
                               ? 'bg-purple-500/20 text-purple-400'
-                              : 'text-gray-300 hover:bg-white/5'
+                              : 'text-gray-300 hover:bg-white/5',
                           )}
                         >
                           {option.label}
@@ -588,7 +628,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 onClick={() => void handleCopy()}
                 className="flex items-center px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-colors"
               >
-                <Copy className="w-4 h-4 mr-1.5" />
+                <span className="material-symbols-outlined text-[16px] mr-1.5">content_copy</span>
                 Copy Link
               </button>
             </div>

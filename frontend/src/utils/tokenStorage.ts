@@ -1,16 +1,14 @@
 /**
- * Token Storage - Single source of truth for auth tokens
+ * Token Storage - Reads access token from Zustand in-memory state
  *
- * Reads tokens from Zustand's persisted state (key: 'auth-storage').
- * Eliminates the dual-write problem where tokens were stored both in
- * Zustand persist AND raw localStorage keys.
+ * Refresh token is NOT stored on the frontend.
+ * Backend sets refresh token as httpOnly cookie which the browser sends automatically.
  */
 
 const AUTH_STORAGE_KEY = 'auth-storage';
 
 interface PersistedAuthState {
   accessToken: string | null;
-  refreshToken: string | null;
 }
 
 interface PersistedState {
@@ -32,6 +30,3 @@ export function getAccessToken(): string | null {
   return readPersistedState()?.accessToken ?? null;
 }
 
-export function getRefreshToken(): string | null {
-  return readPersistedState()?.refreshToken ?? null;
-}

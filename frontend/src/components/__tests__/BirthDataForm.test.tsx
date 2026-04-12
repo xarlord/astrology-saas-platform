@@ -23,18 +23,17 @@ const mockCalculateChart = vi.fn();
 const mockCurrentChart = { id: 'chart-123' };
 
 vi.mock('../hooks', () => ({
-  useCreateChart: () => ({
-    mutateAsync: mockCreateChart,
-    isPending: false,
-  }),
-  useCalculateChart: () => ({
-    mutateAsync: mockCalculateChart,
-    isPending: false,
-  }),
-  useCharts: () => ({
-    currentChart: mockCurrentChart,
-    charts: [],
-  }),
+  useCreateChart: () => ({ mutateAsync: mockCreateChart, isPending: false }),
+  useCalculateChart: () => ({ mutateAsync: mockCalculateChart, isPending: false }),
+  useCharts: () => ({ currentChart: mockCurrentChart, charts: [] }),
+}));
+
+// Mock the components barrel to avoid circular import SyntaxError from TransitDashboard
+vi.mock('../', () => ({
+  SkeletonLoader: ({ children }: any) => <div data-testid="skeleton-loader">{children}</div>,
+  EmptyState: ({ children }: any) => <div data-testid="empty-state">{children}</div>,
+  PlanetSymbol: ({ name }: any) => <span data-testid="planet-symbol">{name}</span>,
+  AspectSymbol: ({ name }: any) => <span data-testid="aspect-symbol">{name}</span>,
 }));
 
 // Mock fetch for geocoding API
@@ -51,9 +50,7 @@ const createTestWrapper = () => {
   });
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
@@ -96,7 +93,9 @@ describe('BirthDataForm Component', () => {
       renderWithQueryClient(<BirthDataForm />);
 
       expect(screen.getByLabelText(/house system/i)).toBeInTheDocument();
-      expect(screen.getByDisplayValue('Placidus - Most commonly used house system')).toBeInTheDocument();
+      expect(
+        screen.getByDisplayValue('Placidus - Most commonly used house system'),
+      ).toBeInTheDocument();
     });
 
     it('should render zodiac type selector', () => {
@@ -162,7 +161,9 @@ describe('BirthDataForm Component', () => {
 
       // The form validates and shows time error since timeUnknown is false and time is empty
       await waitFor(() => {
-        expect(screen.getByText('Birth time is required (or check "Time unknown")')).toBeInTheDocument();
+        expect(
+          screen.getByText('Birth time is required (or check "Time unknown")'),
+        ).toBeInTheDocument();
       });
     });
 
@@ -274,9 +275,12 @@ describe('BirthDataForm Component', () => {
       await user.type(birthDateInput, '1990-01-01');
 
       // Error should be cleared when user types a valid date
-      await waitFor(() => {
-        expect(screen.queryByText('Birth date is required')).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText('Birth date is required')).not.toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
     });
   });
 
@@ -284,13 +288,14 @@ describe('BirthDataForm Component', () => {
     it('should show place suggestions when typing valid place name', async () => {
       const user = userEvent.setup();
       (global.fetch as any).mockResolvedValue({
-        json: () => Promise.resolve([
-          {
-            display_name: 'New York, NY, USA',
-            lat: '40.7128',
-            lon: '-74.0060',
-          },
-        ]),
+        json: () =>
+          Promise.resolve([
+            {
+              display_name: 'New York, NY, USA',
+              lat: '40.7128',
+              lon: '-74.0060',
+            },
+          ]),
       });
 
       renderWithQueryClient(<BirthDataForm />);
@@ -298,9 +303,12 @@ describe('BirthDataForm Component', () => {
       const birthPlaceInput = screen.getByLabelText(/birth place/i);
       await user.type(birthPlaceInput, 'New York');
 
-      await waitFor(() => {
-        expect(screen.getByText('New York, NY, USA')).toBeInTheDocument();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText('New York, NY, USA')).toBeInTheDocument();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it('should not show suggestions for queries less than 3 characters', async () => {
@@ -310,21 +318,25 @@ describe('BirthDataForm Component', () => {
       const birthPlaceInput = screen.getByLabelText(/birth place/i);
       await user.type(birthPlaceInput, 'NY');
 
-      await waitFor(() => {
-        expect(screen.queryByText('New York, NY, USA')).not.toBeInTheDocument();
-      }, { timeout: 500 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText('New York, NY, USA')).not.toBeInTheDocument();
+        },
+        { timeout: 500 },
+      );
     });
 
     it('should set coordinates when selecting a place suggestion', async () => {
       const user = userEvent.setup();
       (global.fetch as any).mockResolvedValue({
-        json: () => Promise.resolve([
-          {
-            display_name: 'London, UK',
-            lat: '51.5074',
-            lon: '-0.1278',
-          },
-        ]),
+        json: () =>
+          Promise.resolve([
+            {
+              display_name: 'London, UK',
+              lat: '51.5074',
+              lon: '-0.1278',
+            },
+          ]),
       });
 
       renderWithQueryClient(<BirthDataForm />);
@@ -357,9 +369,12 @@ describe('BirthDataForm Component', () => {
       await user.type(birthPlaceInput, 'Paris');
 
       // Should not crash, just no suggestions
-      await waitFor(() => {
-        expect(screen.queryByText('Paris')).not.toBeInTheDocument();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText('Paris')).not.toBeInTheDocument();
+        },
+        { timeout: 1000 },
+      );
     });
   });
 
@@ -393,9 +408,12 @@ describe('BirthDataForm Component', () => {
       await user.click(submitButton);
 
       // Should show error about needing to select a valid place
-      await waitFor(() => {
-        expect(screen.getByText(/select a valid place/i)).toBeInTheDocument();
-      }, { timeout: 2000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/select a valid place/i)).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
     });
 
     it('should show loading state during submission', () => {
@@ -434,9 +452,12 @@ describe('BirthDataForm Component', () => {
       await user.click(submitButton);
 
       // Should show error about needing to select a valid place (validation error)
-      await waitFor(() => {
-        expect(screen.getByText(/select a valid place/i)).toBeInTheDocument();
-      }, { timeout: 2000 });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/select a valid place/i)).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
     });
   });
 

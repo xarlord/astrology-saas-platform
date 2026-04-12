@@ -60,7 +60,7 @@ const renderRegisterPage = () => {
   return render(
     <BrowserRouter>
       <RegisterPage />
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 

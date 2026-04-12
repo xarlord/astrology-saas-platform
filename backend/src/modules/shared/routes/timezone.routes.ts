@@ -13,6 +13,25 @@ const router = Router();
  * @desc    Search timezones by query
  * @access  Public
  */
+/**
+ * @openapi
+ * /api/v1/timezone/search:
+ *   get:
+ *     tags: [Timezone]
+ *     summary: Search timezones by query
+ *     security: []
+ *     parameters:
+ *       - name: q
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Matching timezones
+ *       400:
+ *         description: Missing query parameter
+ */
 router.get('/search', asyncHandler(async (req, res) => {
   const { q } = req.query;
 
@@ -37,6 +56,22 @@ router.get('/search', asyncHandler(async (req, res) => {
  * @desc    Get common timezones by region
  * @access  Public
  */
+/**
+ * @openapi
+ * /api/v1/timezone/common:
+ *   get:
+ *     tags: [Timezone]
+ *     summary: Get common timezones by region
+ *     security: []
+ *     parameters:
+ *       - name: region
+ *         in: query
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of common timezones
+ */
 router.get('/common', asyncHandler(async (req, res) => {
   const { region } = req.query;
 
@@ -52,6 +87,32 @@ router.get('/common', asyncHandler(async (req, res) => {
  * @route   GET /api/timezone/detect
  * @desc    Detect timezone from coordinates
  * @access  Public
+ */
+/**
+ * @openapi
+ * /api/v1/timezone/detect:
+ *   get:
+ *     tags: [Timezone]
+ *     summary: Detect timezone from coordinates
+ *     security: []
+ *     parameters:
+ *       - name: lat
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - name: lng
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: number
+ *     responses:
+ *       200:
+ *         description: Detected timezone info
+ *       400:
+ *         description: Invalid coordinates
+ *       404:
+ *         description: Could not detect timezone
  */
 router.get('/detect', asyncHandler(async (req, res) => {
   const lat = parseFloat(req.query.lat as string);
@@ -91,6 +152,29 @@ router.get('/detect', asyncHandler(async (req, res) => {
  * @desc    Get timezone info
  * @access  Public
  */
+/**
+ * @openapi
+ * /api/v1/timezone/{timezone}:
+ *   get:
+ *     tags: [Timezone]
+ *     summary: Get timezone info
+ *     security: []
+ *     parameters:
+ *       - name: timezone
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: date
+ *         in: query
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Timezone information
+ *       400:
+ *         description: Invalid timezone
+ */
 router.get('/:timezone', asyncHandler(async (req, res) => {
   const { timezone } = req.params;
   const { date } = req.query;
@@ -117,6 +201,43 @@ router.get('/:timezone', asyncHandler(async (req, res) => {
  * @route   POST /api/timezone/convert
  * @desc    Convert birth time to UTC
  * @access  Public
+ */
+/**
+ * @openapi
+ * /api/v1/timezone/convert:
+ *   post:
+ *     tags: [Timezone]
+ *     summary: Convert birth time to UTC
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [year, month, day, hour, minute, timezone]
+ *             properties:
+ *               year:
+ *                 type: integer
+ *               month:
+ *                 type: integer
+ *               day:
+ *                 type: integer
+ *               hour:
+ *                 type: integer
+ *               minute:
+ *                 type: integer
+ *               timezone:
+ *                 type: string
+ *               latitude:
+ *                 type: number
+ *               longitude:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Converted UTC date and offset
+ *       400:
+ *         description: Invalid input or conversion failed
  */
 router.post('/convert', asyncHandler(async (req, res) => {
   const { year, month, day, hour, minute, timezone, latitude, longitude } = req.body;
@@ -173,6 +294,29 @@ router.post('/convert', asyncHandler(async (req, res) => {
  * @route   GET /api/timezone/:timezone/dst
  * @desc    Get DST transitions for a year
  * @access  Public
+ */
+/**
+ * @openapi
+ * /api/v1/timezone/{timezone}/dst:
+ *   get:
+ *     tags: [Timezone]
+ *     summary: Get DST transitions for a year
+ *     security: []
+ *     parameters:
+ *       - name: timezone
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: year
+ *         in: query
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: DST transition dates
+ *       400:
+ *         description: Invalid timezone
  */
 router.get('/:timezone/dst', asyncHandler(async (req, res) => {
   const { timezone } = req.params;

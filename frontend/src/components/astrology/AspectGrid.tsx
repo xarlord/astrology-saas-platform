@@ -62,7 +62,7 @@ const AspectGrid: React.FC<AspectGridProps> = ({
       aspects.find(
         (a) =>
           (a.planet1 === planet1 && a.planet2 === planet2) ||
-          (a.planet1 === planet2 && a.planet2 === planet1)
+          (a.planet1 === planet2 && a.planet2 === planet1),
       ) ?? null
     );
   };
@@ -116,9 +116,7 @@ const AspectGrid: React.FC<AspectGridProps> = ({
                   );
                 }
 
-                const aspectInfo = aspect?.aspect
-                  ? ASPECT_SYMBOLS[aspect.aspect]
-                  : null;
+                const aspectInfo = aspect?.aspect ? ASPECT_SYMBOLS[aspect.aspect] : null;
 
                 return (
                   <td
@@ -136,20 +134,13 @@ const AspectGrid: React.FC<AspectGridProps> = ({
                   >
                     {aspectInfo ? (
                       <div className="flex flex-col items-center gap-0.5">
-                        <span
-                          className="text-lg"
-                          style={{ color: aspectInfo.color }}
-                        >
+                        <span className="text-lg" style={{ color: aspectInfo.color }}>
                           {aspectInfo.symbol}
                         </span>
                         {showOrbs && aspect?.orb !== undefined && (
-                          <span className="text-[9px] text-slate-500">
-                            {aspect.orb}°
-                          </span>
+                          <span className="text-[9px] text-slate-500">{aspect.orb}°</span>
                         )}
-                        {aspect?.applying && (
-                          <span className="text-[8px] text-green-400">A</span>
-                        )}
+                        {aspect?.applying && <span className="text-[8px] text-green-400">A</span>}
                       </div>
                     ) : (
                       <span className="text-slate-700 text-sm">·</span>

@@ -144,7 +144,9 @@ describe('LunarChartView', () => {
     it('should display aspect interpretation', () => {
       render(<LunarChartView chart={mockChart} onBack={mockOnBack} />);
 
-      expect(screen.getByText(/Your conscious and emotional nature are aligned/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Your conscious and emotional nature are aligned/),
+      ).toBeInTheDocument();
     });
 
     it('should display applying badge', () => {

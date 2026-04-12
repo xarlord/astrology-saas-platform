@@ -6,9 +6,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import aiService from '../services/ai.service';
-import type { AIInterpretationResponse } from '../services/ai.service';
-
-type ChartData = Record<string, unknown>;
 
 import type { Chart } from '../services/api.types';
 
@@ -83,7 +80,8 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     generateNatal: natalMutation.mutateAsync,
     generateTransit: transitMutation.mutateAsync,
     generateCompatibility: compatibilityMutation.mutateAsync,
-    isGenerating: natalMutation.isPending || transitMutation.isPending || compatibilityMutation.isPending,
+    isGenerating:
+      natalMutation.isPending || transitMutation.isPending || compatibilityMutation.isPending,
     error,
     isAvailable: status?.available ?? false,
   };

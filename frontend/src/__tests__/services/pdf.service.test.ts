@@ -49,7 +49,9 @@ vi.mock('jspdf', () => ({
     getNumberOfPages: vi.fn().mockReturnValue(1),
     setPage: vi.fn(),
     output: vi.fn().mockReturnValue(new Blob(['pdf content'], { type: 'application/pdf' })),
-    get currentPage(): number { return 1; },
+    get currentPage(): number {
+      return 1;
+    },
     internal: {
       pageSize: { width: 210, height: 297 },
     },
@@ -477,8 +479,12 @@ describe('PDF Service', () => {
         click: vi.fn(),
       };
       vi.spyOn(document, 'createElement').mockReturnValue(mockLink as unknown as HTMLAnchorElement);
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => mockLink as unknown as HTMLAnchorElement);
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => mockLink as unknown as HTMLAnchorElement);
+      vi.spyOn(document.body, 'appendChild').mockImplementation(
+        () => mockLink as unknown as HTMLAnchorElement,
+      );
+      vi.spyOn(document.body, 'removeChild').mockImplementation(
+        () => mockLink as unknown as HTMLAnchorElement,
+      );
 
       pdfService.downloadPDF(blob, 'test-report.pdf');
 

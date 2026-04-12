@@ -5,6 +5,7 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppLayout } from '../components';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 
 export default function ChartCreatePage() {
@@ -16,9 +17,11 @@ export default function ChartCreatePage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
-      <LoadingSpinner size="lg" />
-      <span className="ml-3 text-slate-400">Redirecting to chart creation...</span>
-    </div>
+    <AppLayout>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingSpinner size="lg" />
+        <span className="ml-3 text-slate-400">Redirecting to chart creation...</span>
+      </div>
+    </AppLayout>
   );
 }

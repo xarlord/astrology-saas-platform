@@ -262,9 +262,10 @@ describe('CacheManager', () => {
     it('should deduplicate concurrent fetches', async () => {
       let resolveFetch: () => void;
       const fetcher = vi.fn().mockImplementation(
-        () => new Promise<string>((resolve) => {
-          resolveFetch = () => resolve('data');
-        })
+        () =>
+          new Promise<string>((resolve) => {
+            resolveFetch = () => resolve('data');
+          }),
       );
 
       // Start multiple concurrent fetches

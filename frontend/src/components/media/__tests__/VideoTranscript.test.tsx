@@ -7,12 +7,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '../../../__tests__/test-utils';
-import {
-  VideoTranscript,
-  parseSRT,
-  parseWebVTT,
-  TranscriptCue,
-} from '../VideoTranscript';
+import { VideoTranscript, parseSRT, parseWebVTT, TranscriptCue } from '../VideoTranscript';
 
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = vi.fn();
@@ -51,13 +46,7 @@ describe('VideoTranscript', () => {
 
   describe('Rendering', () => {
     it('should render transcript cues', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} />);
 
       expect(screen.getByText('Welcome to this introduction video.')).toBeInTheDocument();
       expect(screen.getByText('Today we will learn about astrology.')).toBeInTheDocument();
@@ -71,7 +60,7 @@ describe('VideoTranscript', () => {
           currentTime={0}
           onSeek={mockOnSeek}
           showTimestamps={true}
-        />
+        />,
       );
 
       expect(screen.getByLabelText('Jump to 0:00')).toBeInTheDocument();
@@ -80,12 +69,7 @@ describe('VideoTranscript', () => {
 
     it('should render speakers when enabled', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSpeakers={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSpeakers={true} />,
       );
 
       expect(screen.getByText('Narrator')).toBeInTheDocument();
@@ -99,20 +83,14 @@ describe('VideoTranscript', () => {
           currentTime={0}
           onSeek={mockOnSeek}
           showSpeakers={false}
-        />
+        />,
       );
 
       expect(screen.queryByText('Narrator')).not.toBeInTheDocument();
     });
 
     it('should show empty state when no cues', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={[]}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={[]} currentTime={0} onSeek={mockOnSeek} />);
 
       expect(screen.getByText('No transcript available')).toBeInTheDocument();
     });
@@ -121,12 +99,7 @@ describe('VideoTranscript', () => {
   describe('Search', () => {
     it('should render search input when enabled', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       expect(screen.getByPlaceholderText('Search transcript...')).toBeInTheDocument();
@@ -134,12 +107,7 @@ describe('VideoTranscript', () => {
 
     it('should hide search when disabled', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={false}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={false} />,
       );
 
       expect(screen.queryByPlaceholderText('Search transcript...')).not.toBeInTheDocument();
@@ -147,12 +115,7 @@ describe('VideoTranscript', () => {
 
     it('should filter cues by search query', async () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       const searchInput = screen.getByPlaceholderText('Search transcript...');
@@ -166,12 +129,7 @@ describe('VideoTranscript', () => {
 
     it('should highlight search matches', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       const searchInput = screen.getByPlaceholderText('Search transcript...');
@@ -185,12 +143,7 @@ describe('VideoTranscript', () => {
 
     it('should show result count', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       const searchInput = screen.getByPlaceholderText('Search transcript...');
@@ -201,12 +154,7 @@ describe('VideoTranscript', () => {
 
     it('should show no results message', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       const searchInput = screen.getByPlaceholderText('Search transcript...');
@@ -217,12 +165,7 @@ describe('VideoTranscript', () => {
 
     it('should clear search when clear button clicked', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       const searchInput = screen.getByPlaceholderText('Search transcript...');
@@ -236,12 +179,7 @@ describe('VideoTranscript', () => {
 
     it('should jump to first result on Enter', () => {
       renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-          showSearch={true}
-        />
+        <VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} showSearch={true} />,
       );
 
       const searchInput = screen.getByPlaceholderText('Search transcript...');
@@ -254,13 +192,7 @@ describe('VideoTranscript', () => {
 
   describe('Current Cue Highlighting', () => {
     it('should highlight current cue', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={7}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={7} onSeek={mockOnSeek} />);
 
       const currentCueText = screen.getByText('Today we will learn about astrology.');
       expect(currentCueText.closest('[aria-current="true"]')).toBeInTheDocument();
@@ -268,23 +200,13 @@ describe('VideoTranscript', () => {
 
     it('should update highlighting when time changes', () => {
       const { rerender } = renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={7}
-          onSeek={mockOnSeek}
-        />
+        <VideoTranscript cues={mockCues} currentTime={7} onSeek={mockOnSeek} />,
       );
 
       let currentCueText = screen.getByText('Today we will learn about astrology.');
       expect(currentCueText.closest('[aria-current="true"]')).toBeInTheDocument();
 
-      rerender(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={12}
-          onSeek={mockOnSeek}
-        />
-      );
+      rerender(<VideoTranscript cues={mockCues} currentTime={12} onSeek={mockOnSeek} />);
 
       currentCueText = screen.getByText('Astrology is an ancient practice.');
       expect(currentCueText.closest('[aria-current="true"]')).toBeInTheDocument();
@@ -293,15 +215,11 @@ describe('VideoTranscript', () => {
 
   describe('Click to Seek', () => {
     it('should seek when cue is clicked', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} />);
 
-      const cueElement = screen.getByText('Today we will learn about astrology.').closest('[role="listitem"]');
+      const cueElement = screen
+        .getByText('Today we will learn about astrology.')
+        .closest('[role="listitem"]');
       fireEvent.click(cueElement!);
 
       expect(mockOnSeek).toHaveBeenCalledWith(5);
@@ -314,7 +232,7 @@ describe('VideoTranscript', () => {
           currentTime={0}
           onSeek={mockOnSeek}
           showTimestamps={true}
-        />
+        />,
       );
 
       const timestampButton = screen.getByLabelText('Jump to 0:10');
@@ -324,15 +242,11 @@ describe('VideoTranscript', () => {
     });
 
     it('should handle keyboard navigation', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} />);
 
-      const cueElement = screen.getByText('Today we will learn about astrology.').closest('[role="listitem"]');
+      const cueElement = screen
+        .getByText('Today we will learn about astrology.')
+        .closest('[role="listitem"]');
       fireEvent.keyDown(cueElement!, { key: 'Enter' });
 
       expect(mockOnSeek).toHaveBeenCalledWith(5);
@@ -341,13 +255,7 @@ describe('VideoTranscript', () => {
 
   describe('Jump to Current Button', () => {
     it('should show jump to current button', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={7}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={7} onSeek={mockOnSeek} />);
 
       expect(screen.getByText('Jump to current')).toBeInTheDocument();
     });
@@ -356,13 +264,7 @@ describe('VideoTranscript', () => {
       const mockScrollIntoView = vi.fn();
       Element.prototype.scrollIntoView = mockScrollIntoView;
 
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={7}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={7} onSeek={mockOnSeek} />);
 
       const jumpButton = screen.getByText('Jump to current');
       fireEvent.click(jumpButton);
@@ -373,51 +275,27 @@ describe('VideoTranscript', () => {
 
   describe('Accessibility', () => {
     it('should have list role', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} />);
 
       expect(screen.getByRole('list', { name: 'Transcript' })).toBeInTheDocument();
     });
 
     it('should have listitem role for cues', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} />);
 
       const listItems = screen.getAllByRole('listitem');
       expect(listItems).toHaveLength(3);
     });
 
     it('should have aria-current on current cue', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={7}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={7} onSeek={mockOnSeek} />);
 
       const currentCue = screen.getByRole('listitem', { current: true });
       expect(currentCue).toBeInTheDocument();
     });
 
     it('should be keyboard focusable', () => {
-      renderWithProviders(
-        <VideoTranscript
-          cues={mockCues}
-          currentTime={0}
-          onSeek={mockOnSeek}
-        />
-      );
+      renderWithProviders(<VideoTranscript cues={mockCues} currentTime={0} onSeek={mockOnSeek} />);
 
       const listItems = screen.getAllByRole('listitem');
       listItems.forEach((item) => {

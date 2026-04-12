@@ -58,6 +58,7 @@ describe('HouseCalculationService', () => {
       const lst = 185.5;
       const latitude = 40.7128;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const houses = service.calculateHouses(lst, latitude, 'Unknown' as any);
       expect(houses.system).toBe('Placidus');
     });

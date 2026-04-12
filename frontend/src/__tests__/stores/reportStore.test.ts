@@ -4,11 +4,7 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { act } from '@testing-library/react';
-import {
-  useReportStore,
-  type Report,
-  type ReportRequest,
-} from '../../stores/reportStore';
+import { useReportStore, type Report, type ReportRequest } from '../../stores/reportStore';
 
 // Mock fetch and localStorage
 const mockFetch = vi.fn();
@@ -247,7 +243,9 @@ describe('reportStore', () => {
       // Check pending state was created
       const stateDuringGeneration = useReportStore.getState();
       const reports = Object.values(stateDuringGeneration.reports);
-      const pendingReport = reports.find((r) => r.status === 'pending' || r.status === 'processing');
+      const pendingReport = reports.find(
+        (r) => r.status === 'pending' || r.status === 'processing',
+      );
       expect(pendingReport).toBeDefined();
 
       await generatePromise;
@@ -424,7 +422,9 @@ describe('reportStore', () => {
       useReportStore.setState({ activeReportId: 'non-existent' });
 
       const state = useReportStore.getState();
-      const activeReport = state.activeReportId ? state.reports[state.activeReportId] || null : null;
+      const activeReport = state.activeReportId
+        ? state.reports[state.activeReportId] || null
+        : null;
 
       expect(activeReport).toBeNull();
     });

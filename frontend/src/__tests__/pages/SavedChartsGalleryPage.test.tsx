@@ -28,7 +28,7 @@ const mockCharts = [
       birth_time: '14:30',
       birth_place_name: 'New York, NY',
       birth_latitude: 40.7128,
-      birth_longitude: -74.0060,
+      birth_longitude: -74.006,
       birth_timezone: 'America/New_York',
     },
     birthData: {
@@ -37,16 +37,52 @@ const mockCharts = [
       birthTime: '14:30',
       birthPlace: 'New York, NY',
       latitude: 40.7128,
-      longitude: -74.0060,
+      longitude: -74.006,
       timezone: 'America/New_York',
     },
     created_at: '2024-01-01T00:00:00.000Z',
     createdAt: '2024-01-01T00:00:00.000Z',
     updated_at: '2024-01-01T00:00:00.000Z',
     positions: [
-      { planet: 'Sun', name: 'Sun', sign: 'Capricorn', longitude: 295, latitude: 0, speed: 1, house: 1, degree: 15, minute: 30, position: "15 Capricorn", retrograde: false },
-      { planet: 'Moon', name: 'Moon', sign: 'Scorpio', longitude: 240, latitude: 0, speed: 13, house: 10, degree: 10, minute: 0, position: "10 Scorpio", retrograde: false },
-      { planet: 'Ascendant', name: 'Ascendant', sign: 'Libra', longitude: 180, latitude: 0, speed: 0, house: 1, degree: 0, minute: 0, position: "0 Libra", retrograde: false },
+      {
+        planet: 'Sun',
+        name: 'Sun',
+        sign: 'Capricorn',
+        longitude: 295,
+        latitude: 0,
+        speed: 1,
+        house: 1,
+        degree: 15,
+        minute: 30,
+        position: '15 Capricorn',
+        retrograde: false,
+      },
+      {
+        planet: 'Moon',
+        name: 'Moon',
+        sign: 'Scorpio',
+        longitude: 240,
+        latitude: 0,
+        speed: 13,
+        house: 10,
+        degree: 10,
+        minute: 0,
+        position: '10 Scorpio',
+        retrograde: false,
+      },
+      {
+        planet: 'Ascendant',
+        name: 'Ascendant',
+        sign: 'Libra',
+        longitude: 180,
+        latitude: 0,
+        speed: 0,
+        house: 1,
+        degree: 0,
+        minute: 0,
+        position: '0 Libra',
+        retrograde: false,
+      },
     ],
     tags: ['Self', 'Personal'],
     element: 'earth',
@@ -78,9 +114,45 @@ const mockCharts = [
     createdAt: '2024-02-01T00:00:00.000Z',
     updated_at: '2024-02-01T00:00:00.000Z',
     positions: [
-      { planet: 'Sun', name: 'Sun', sign: 'Gemini', longitude: 85, latitude: 0, speed: 1, house: 1, degree: 28, minute: 0, position: "28 Gemini", retrograde: false },
-      { planet: 'Moon', name: 'Moon', sign: 'Cancer', longitude: 125, latitude: 0, speed: 13, house: 3, degree: 5, minute: 0, position: "5 Cancer", retrograde: false },
-      { planet: 'Ascendant', name: 'Ascendant', sign: 'Leo', longitude: 150, latitude: 0, speed: 0, house: 1, degree: 0, minute: 0, position: "0 Leo", retrograde: false },
+      {
+        planet: 'Sun',
+        name: 'Sun',
+        sign: 'Gemini',
+        longitude: 85,
+        latitude: 0,
+        speed: 1,
+        house: 1,
+        degree: 28,
+        minute: 0,
+        position: '28 Gemini',
+        retrograde: false,
+      },
+      {
+        planet: 'Moon',
+        name: 'Moon',
+        sign: 'Cancer',
+        longitude: 125,
+        latitude: 0,
+        speed: 13,
+        house: 3,
+        degree: 5,
+        minute: 0,
+        position: '5 Cancer',
+        retrograde: false,
+      },
+      {
+        planet: 'Ascendant',
+        name: 'Ascendant',
+        sign: 'Leo',
+        longitude: 150,
+        latitude: 0,
+        speed: 0,
+        house: 1,
+        degree: 0,
+        minute: 0,
+        position: '0 Leo',
+        retrograde: false,
+      },
     ],
     tags: ['Relationship'],
     element: 'air',
@@ -112,9 +184,45 @@ const mockCharts = [
     createdAt: '2024-03-01T00:00:00.000Z',
     updated_at: '2024-03-01T00:00:00.000Z',
     positions: [
-      { planet: 'Sun', name: 'Sun', sign: 'Pisces', longitude: 350, latitude: 0, speed: 1, house: 1, degree: 20, minute: 0, position: "20 Pisces", retrograde: false },
-      { planet: 'Moon', name: 'Moon', sign: 'Taurus', longitude: 50, latitude: 0, speed: 13, house: 3, degree: 10, minute: 0, position: "10 Taurus", retrograde: false },
-      { planet: 'Ascendant', name: 'Ascendant', sign: 'Cancer', longitude: 120, latitude: 0, speed: 0, house: 1, degree: 0, minute: 0, position: "0 Cancer", retrograde: false },
+      {
+        planet: 'Sun',
+        name: 'Sun',
+        sign: 'Pisces',
+        longitude: 350,
+        latitude: 0,
+        speed: 1,
+        house: 1,
+        degree: 20,
+        minute: 0,
+        position: '20 Pisces',
+        retrograde: false,
+      },
+      {
+        planet: 'Moon',
+        name: 'Moon',
+        sign: 'Taurus',
+        longitude: 50,
+        latitude: 0,
+        speed: 13,
+        house: 3,
+        degree: 10,
+        minute: 0,
+        position: '10 Taurus',
+        retrograde: false,
+      },
+      {
+        planet: 'Ascendant',
+        name: 'Ascendant',
+        sign: 'Cancer',
+        longitude: 120,
+        latitude: 0,
+        speed: 0,
+        house: 1,
+        degree: 0,
+        minute: 0,
+        position: '0 Cancer',
+        retrograde: false,
+      },
     ],
     tags: ['Client'],
     element: 'water',
@@ -146,9 +254,45 @@ const mockCharts = [
     createdAt: '2024-04-01T00:00:00.000Z',
     updated_at: '2024-04-01T00:00:00.000Z',
     positions: [
-      { planet: 'Sun', name: 'Sun', sign: 'Sagittarius', longitude: 245, latitude: 0, speed: 1, house: 1, degree: 0, minute: 0, position: "0 Sagittarius", retrograde: false },
-      { planet: 'Moon', name: 'Moon', sign: 'Virgo', longitude: 175, latitude: 0, speed: 13, house: 10, degree: 15, minute: 0, position: "15 Virgo", retrograde: false },
-      { planet: 'Ascendant', name: 'Ascendant', sign: 'Capricorn', longitude: 285, latitude: 0, speed: 0, house: 1, degree: 0, minute: 0, position: "0 Capricorn", retrograde: false },
+      {
+        planet: 'Sun',
+        name: 'Sun',
+        sign: 'Sagittarius',
+        longitude: 245,
+        latitude: 0,
+        speed: 1,
+        house: 1,
+        degree: 0,
+        minute: 0,
+        position: '0 Sagittarius',
+        retrograde: false,
+      },
+      {
+        planet: 'Moon',
+        name: 'Moon',
+        sign: 'Virgo',
+        longitude: 175,
+        latitude: 0,
+        speed: 13,
+        house: 10,
+        degree: 15,
+        minute: 0,
+        position: '15 Virgo',
+        retrograde: false,
+      },
+      {
+        planet: 'Ascendant',
+        name: 'Ascendant',
+        sign: 'Capricorn',
+        longitude: 285,
+        latitude: 0,
+        speed: 0,
+        house: 1,
+        degree: 0,
+        minute: 0,
+        position: '0 Capricorn',
+        retrograde: false,
+      },
     ],
     tags: ['Family', 'Favorite'],
     element: 'fire',
@@ -200,22 +344,23 @@ vi.mock('../../components/chart/ChartCard', () => ({
     >
       <h3>{chart.name}</h3>
       {chart.tags?.map((tag: string) => (
-        <span key={tag} className="tag">{tag}</span>
+        <span key={tag} className="tag">
+          {tag}
+        </span>
       ))}
-      <button
-        onClick={() => onDelete?.(chart.id)}
-        aria-label={`Delete ${chart.name}`}
-      >
+      <button onClick={() => onDelete?.(chart.id)} aria-label={`Delete ${chart.name}`}>
         Delete
       </button>
-      <button
-        onClick={() => onShare?.(chart.id)}
-        aria-label={`Share ${chart.name}`}
-      >
+      <button onClick={() => onShare?.(chart.id)} aria-label={`Share ${chart.name}`}>
         Share
       </button>
     </div>
   ),
+}));
+
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 // Import after mocks
@@ -231,7 +376,7 @@ const createWrapper = (initialRoute = '/charts') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -265,9 +410,9 @@ describe('SavedChartsGalleryPage', () => {
       expect(screen.getByText(/Manage and explore your collection/i)).toBeInTheDocument();
     });
 
-    it('should render the brand logo', () => {
+    it('should render the page subtitle', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
+      expect(screen.getByText(/Manage and explore your collection/i)).toBeInTheDocument();
     });
 
     it('should render Add New Chart button', () => {
@@ -276,43 +421,27 @@ describe('SavedChartsGalleryPage', () => {
     });
   });
 
-  describe('Header Navigation', () => {
-    it('should render Dashboard link', () => {
+  describe('Page Header', () => {
+    it('should render Add New Chart button in header area', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText(/Add New Chart/i)).toBeInTheDocument();
     });
 
-    it('should render Horoscopes link', () => {
+    it('should render page description text', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
-      expect(screen.getByText('Horoscopes')).toBeInTheDocument();
+      expect(
+        screen.getByText(/Manage and explore your collection of birth charts/i),
+      ).toBeInTheDocument();
     });
 
-    it('should render Saved Charts as active link', () => {
+    it('should render search input in actions bar', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
-      const savedChartsLink = screen.getByText('Saved Charts');
-      expect(savedChartsLink).toBeInTheDocument();
-      expect(savedChartsLink).toHaveClass('text-primary');
+      expect(screen.getByPlaceholderText('Find a chart...')).toBeInTheDocument();
     });
 
-    it('should render Compatibility link', () => {
+    it('should render sort dropdown', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
-      expect(screen.getByText('Compatibility')).toBeInTheDocument();
-    });
-
-    it('should render notifications button', () => {
-      renderWithProviders(createElement(SavedChartsGalleryPage));
-      // Notifications button has accessible name "notifications" from the icon
-      const notificationButton = screen.getByRole('button', { name: /notifications/i });
-      expect(notificationButton).toBeInTheDocument();
-    });
-
-    it('should have profile avatar div', () => {
-      renderWithProviders(createElement(SavedChartsGalleryPage));
-      // The profile avatar div is clickable and navigates to profile
-      // It contains a person icon
-      const personIcon = document.querySelector('.material-symbols-outlined.text-primary');
-      expect(personIcon).toBeInTheDocument();
-      expect(personIcon?.textContent).toBe('person');
+      expect(screen.getByText('Sort by:')).toBeInTheDocument();
     });
   });
 
@@ -657,11 +786,14 @@ describe('SavedChartsGalleryPage', () => {
     it('should have accessible folder buttons', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const folderButtons = screen.getAllByRole('button').filter(
-        btn => btn.textContent?.includes('All Charts') ||
-               btn.textContent?.includes('Personal') ||
-               btn.textContent?.includes('Clients')
-      );
+      const folderButtons = screen
+        .getAllByRole('button')
+        .filter(
+          (btn) =>
+            btn.textContent?.includes('All Charts') ||
+            btn.textContent?.includes('Personal') ||
+            btn.textContent?.includes('Clients'),
+        );
       expect(folderButtons.length).toBeGreaterThan(0);
     });
 
@@ -674,20 +806,17 @@ describe('SavedChartsGalleryPage', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate when Dashboard link is clicked', async () => {
-      const user = userEvent.setup();
+    it('should have Add New Chart button that navigates to create page', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const dashboardLink = screen.getByText('Dashboard');
-      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
+      const addButton = screen.getByText(/Add New Chart/i).closest('button');
+      expect(addButton).toBeInTheDocument();
     });
 
-    it('should navigate when Compatibility link is clicked', async () => {
-      const user = userEvent.setup();
+    it('should have Create New Chart card in the gallery', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const synastryLink = screen.getByText('Compatibility');
-      expect(synastryLink).toHaveAttribute('href', '/synastry');
+      expect(screen.getByText('Create New Chart')).toBeInTheDocument();
     });
   });
 

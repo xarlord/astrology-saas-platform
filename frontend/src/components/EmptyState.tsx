@@ -106,13 +106,17 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         </div>
 
         {/* Title */}
-        <h3 className={`${titleSizeClasses[size]} font-bold text-gray-900 dark:text-gray-50 mb-3 leading-snug`}>
+        <h3
+          className={`${titleSizeClasses[size]} font-bold text-gray-900 dark:text-gray-50 mb-3 leading-snug`}
+        >
           {title}
         </h3>
 
         {/* Description */}
         {description && (
-          <p className={`${descriptionSizeClasses[size]} text-gray-500 dark:text-gray-400 leading-relaxed`}>
+          <p
+            className={`${descriptionSizeClasses[size]} text-gray-500 dark:text-gray-400 leading-relaxed`}
+          >
             {description}
           </p>
         )}
@@ -144,7 +148,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 // Pre-configured empty states for common use cases
-// eslint-disable-next-line react-refresh/only-export-components
 export const EmptyStates = {
   // No charts
   NoCharts: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (

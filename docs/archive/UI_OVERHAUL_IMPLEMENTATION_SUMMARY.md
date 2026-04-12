@@ -439,7 +439,7 @@ A complete modernization and redesign of the Astrology SaaS Platform frontend, t
 - **GitHub**: Repository hosting
 - **Node.js**: Runtime environment
 - **npm**: Package management
-- **Railway**: Production deployment
+- **Docker Compose**: Production deployment
 - **PostgreSQL**: Production database
 - **Vercel**: Frontend hosting (alternative)
 - **Cloudflare**: CDN and caching
@@ -988,14 +988,14 @@ CORS_ORIGIN=https://your-frontend.com
 
 ### 10.3 Deployment Steps
 
-**Option 1: Railway (Recommended)**
+**Option 1: Docker Compose (Recommended)**
 
-1. Connect GitHub repository to Railway
+1. Connect GitHub repository to Docker Compose
 2. Create two projects: `astrology-saas-frontend` and `astrology-saas-backend`
 3. Configure environment variables
 4. Deploy!
 
-**Option 2: Vercel (Frontend) + Railway (Backend)**
+**Option 2: Vercel (Frontend) + Docker Compose (Backend)**
 
 1. Deploy frontend to Vercel:
    ```bash
@@ -1003,8 +1003,8 @@ CORS_ORIGIN=https://your-frontend.com
    vercel deploy
    ```
 
-2. Deploy backend to Railway:
-   - Follow Railway deployment guide
+2. Deploy backend to Docker Compose:
+   - Follow docker compose deployment guide
    - Configure CORS to allow Vercel domain
 
 **Option 3: Self-Hosted**
@@ -1041,15 +1041,15 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Railway
-        run: railway deploy
+      - name: Deploy to Docker Compose
+        run: docker compose deploy
 
   deploy-backend:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Railway
-        run: railway deploy
+      - name: Deploy to Docker Compose
+        run: docker compose deploy
 ```
 
 ---

@@ -72,6 +72,31 @@ const knexConfig = {
     },
   },
 
+  staging: {
+    client: 'pg',
+    connection: process.env.DATABASE_URL
+      ? { connectionString: process.env.DATABASE_URL, ...(process.env.DATABASE_SSL !== 'false' && { ssl: { rejectUnauthorized: false } }) }
+      : {
+          host: process.env.DATABASE_HOST || 'localhost',
+          port: parseInt(process.env.DATABASE_PORT || '5434', 10),
+          user: process.env.DATABASE_USER || 'staging_user',
+          password: process.env.DATABASE_PASSWORD || 'staging_password',
+          database: process.env.DATABASE_NAME || 'astrology_staging',
+          ...(process.env.DATABASE_SSL !== 'false' && { ssl: { rejectUnauthorized: false } }),
+        },
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      directory: './migrations',
+      tableName: 'knex_migrations',
+    },
+    seeds: {
+      directory: './seeds',
+    },
+  },
+
   test: {
     client: 'pg',
     connection: buildConnection(),

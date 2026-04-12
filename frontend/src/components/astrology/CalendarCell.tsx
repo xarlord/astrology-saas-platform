@@ -86,9 +86,7 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
 
           {/* Event count badge */}
           {events.length > 3 && (
-            <span className="text-[9px] text-slate-400 text-center">
-              +{remainingEvents}
-            </span>
+            <span className="text-[9px] text-slate-400 text-center">+{remainingEvents}</span>
           )}
         </div>
       )}

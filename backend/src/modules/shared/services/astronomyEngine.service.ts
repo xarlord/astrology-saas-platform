@@ -230,6 +230,73 @@ export class AstronomyEngineService {
     };
   }
   /**
+   * Get all planetary positions for a given date (daily transits).
+   * Returns a plain object keyed by lowercase planet names for compatibility
+   * with the legacy swissEphemeris.getDailyTransits() shape.
+   */
+  getDailyTransits(date: Date): Record<string, {
+    longitude: number;
+    latitude: number;
+    speed: number;
+    retrograde: boolean;
+    sign: string;
+    degree: number;
+  }> {
+    const positions = this.calculatePlanetaryPositions(date, 0, 0);
+    const chiron = this.calculateChiron(date);
+    const nodes = this.calculateLunarNodes(date);
+
+    const result: Record<string, {
+      longitude: number;
+      latitude: number;
+      speed: number;
+      retrograde: boolean;
+      sign: string;
+      degree: number;
+    }> = {};
+
+    for (const [name, pos] of positions) {
+      result[name.toLowerCase()] = {
+        longitude: pos.longitude,
+        latitude: pos.latitude,
+        speed: pos.speed,
+        retrograde: pos.isRetrograde,
+        sign: pos.sign.toLowerCase(),
+        degree: pos.degree,
+      };
+    }
+
+    result['chiron'] = {
+      longitude: chiron.longitude,
+      latitude: 0,
+      speed: 0,
+      retrograde: chiron.isRetrograde,
+      sign: chiron.sign.toLowerCase(),
+      degree: chiron.degree,
+    };
+
+    result['northnode'] = {
+      longitude: nodes.northNode.longitude,
+      latitude: 0,
+      speed: 0,
+      retrograde: false,
+      sign: nodes.northNode.sign.toLowerCase(),
+      degree: nodes.northNode.degree,
+    };
+
+    result['southnode'] = {
+      longitude: nodes.southNode.longitude,
+      latitude: 0,
+      speed: 0,
+      retrograde: false,
+      sign: nodes.southNode.sign.toLowerCase(),
+      degree: nodes.southNode.degree,
+    };
+
+    return result;
+  }
+
+  /**
    * Calculate Julian Day from Date
    */
   calculateJulianDay(date: Date): number {

@@ -15,6 +15,7 @@ import { useCalendarEvents } from '../hooks/useCalendarEvents';
 // Components
 import CalendarCell from '../components/astrology/CalendarCell';
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 
 // Types
 import type { CalendarEvent, LunarPhase } from '../services/api.types';
@@ -24,24 +25,24 @@ const EVENT_TYPE_COLORS: Record<string, string> = {
   'new-moon': '#C0C0C0',
   'full-moon': '#FFD700',
   'lunar-phase': '#94a3b8',
-  'retrograde': '#FF6B6B',
-  'eclipse': '#F59E0B',
-  'ingress': '#4D96FF',
-  'transit': '#6b3de1',
-  'aspect': '#a855f7',
-  'custom': '#22c55e',
+  retrograde: '#FF6B6B',
+  eclipse: '#F59E0B',
+  ingress: '#4D96FF',
+  transit: '#6b3de1',
+  aspect: '#a855f7',
+  custom: '#22c55e',
 };
 
 const EVENT_TYPE_LABELS: Record<string, string> = {
   'new-moon': 'New Moon',
   'full-moon': 'Full Moon',
   'lunar-phase': 'Moon Phase',
-  'retrograde': 'Retrograde',
-  'eclipse': 'Eclipse',
-  'ingress': 'Ingress',
-  'transit': 'Transit',
-  'aspect': 'Aspect',
-  'custom': 'Custom',
+  retrograde: 'Retrograde',
+  eclipse: 'Eclipse',
+  ingress: 'Ingress',
+  transit: 'Transit',
+  aspect: 'Aspect',
+  custom: 'Custom',
 };
 
 // Event Detail Panel Component
@@ -75,9 +76,11 @@ const EventDetailPanel: React.FC<EventDetailPanelProps> = ({
 
   const isToday = (d: Date): boolean => {
     const today = new Date();
-    return d.getDate() === today.getDate() &&
+    return (
+      d.getDate() === today.getDate() &&
       d.getMonth() === today.getMonth() &&
-      d.getFullYear() === today.getFullYear();
+      d.getFullYear() === today.getFullYear()
+    );
   };
 
   return (
@@ -201,7 +204,9 @@ const EventDetailPanel: React.FC<EventDetailPanelProps> = ({
                         <div className="flex items-start gap-3">
                           <div
                             className="size-2 rounded-full mt-2 flex-shrink-0"
-                            style={{ backgroundColor: EVENT_TYPE_COLORS[event.event_type] ?? '#6b3de1' }}
+                            style={{
+                              backgroundColor: EVENT_TYPE_COLORS[event.event_type] ?? '#6b3de1',
+                            }}
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-2 mb-1">
@@ -225,7 +230,9 @@ const EventDetailPanel: React.FC<EventDetailPanelProps> = ({
                             )}
                             {event.start_date && (
                               <div className="flex items-center gap-1 mt-2 text-xs text-slate-500">
-                                <span className="material-symbols-outlined text-[12px]">schedule</span>
+                                <span className="material-symbols-outlined text-[12px]">
+                                  schedule
+                                </span>
                                 {new Date(event.start_date).toLocaleTimeString('en-US', {
                                   hour: 'numeric',
                                   minute: '2-digit',
@@ -245,7 +252,9 @@ const EventDetailPanel: React.FC<EventDetailPanelProps> = ({
                 variant="secondary"
                 fullWidth
                 leftIcon={<span className="material-symbols-outlined">add_circle</span>}
-                onClick={() => {/* TODO: Implement add event modal */}}
+                onClick={() => {
+                  /* TODO: Implement add event modal */
+                }}
               >
                 Add Personal Event
               </Button>
@@ -298,41 +307,50 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   const today = new Date();
 
   // Get events for specific date
-  const getEventsForDate = useCallback((date: Date) => {
-    return events.filter((event) => {
-      const eventDate = new Date(event.start_date);
-      return (
-        eventDate.getDate() === date.getDate() &&
-        eventDate.getMonth() === date.getMonth() &&
-        eventDate.getFullYear() === date.getFullYear()
-      );
-    });
-  }, [events]);
+  const getEventsForDate = useCallback(
+    (date: Date) => {
+      return events.filter((event) => {
+        const eventDate = new Date(event.start_date);
+        return (
+          eventDate.getDate() === date.getDate() &&
+          eventDate.getMonth() === date.getMonth() &&
+          eventDate.getFullYear() === date.getFullYear()
+        );
+      });
+    },
+    [events],
+  );
 
   // Get lunar phase for date
-  const getLunarPhaseForDate = useCallback((date: Date) => {
-    return lunarPhases.find((phase) => {
-      const phaseDate = new Date(phase.date);
-      return (
-        phaseDate.getDate() === date.getDate() &&
-        phaseDate.getMonth() === date.getMonth() &&
-        phaseDate.getFullYear() === date.getFullYear()
-      );
-    });
-  }, [lunarPhases]);
+  const getLunarPhaseForDate = useCallback(
+    (date: Date) => {
+      return lunarPhases.find((phase) => {
+        const phaseDate = new Date(phase.date);
+        return (
+          phaseDate.getDate() === date.getDate() &&
+          phaseDate.getMonth() === date.getMonth() &&
+          phaseDate.getFullYear() === date.getFullYear()
+        );
+      });
+    },
+    [lunarPhases],
+  );
 
   // Filter events based on selected filters
-  const getFilteredEventsForDate = useCallback((date: Date) => {
-    const dayEvents = getEventsForDate(date);
-    return dayEvents.filter((event) => {
-      if (event.event_type === 'lunar-phase' && !filters.moonPhases) return false;
-      if (event.event_type === 'transit' && !filters.transits) return false;
-      if (event.event_type === 'retrograde' && !filters.retrogrades) return false;
-      if (event.event_type === 'eclipse' && !filters.eclipses) return false;
-      if (event.event_type === 'custom' && !filters.custom) return false;
-      return true;
-    });
-  }, [getEventsForDate, filters]);
+  const getFilteredEventsForDate = useCallback(
+    (date: Date) => {
+      const dayEvents = getEventsForDate(date);
+      return dayEvents.filter((event) => {
+        if (event.event_type === 'lunar-phase' && !filters.moonPhases) return false;
+        if (event.event_type === 'transit' && !filters.transits) return false;
+        if (event.event_type === 'retrograde' && !filters.retrogrades) return false;
+        if (event.event_type === 'eclipse' && !filters.eclipses) return false;
+        if (event.event_type === 'custom' && !filters.custom) return false;
+        return true;
+      });
+    },
+    [getEventsForDate, filters],
+  );
 
   // Generate calendar cells
   const cells: React.ReactNode[] = [];
@@ -348,7 +366,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         aria-hidden="true"
       >
         <span className="text-sm font-medium">{day}</span>
-      </div>
+      </div>,
     );
   }
 
@@ -389,7 +407,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         events={cellEvents}
         onClick={() => onDateClick(date)}
         aria-label={`${date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}${cellEvents.length > 0 ? `, ${cellEvents.length} events` : ''}`}
-      />
+      />,
     );
   }
 
@@ -404,14 +422,20 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         aria-hidden="true"
       >
         <span className="text-sm font-medium">{i}</span>
-      </div>
+      </div>,
     );
   }
 
   return (
-    <div className="bg-[#141627] rounded-2xl border border-[#2f2645] overflow-hidden shadow-2xl" data-testid="calendar-grid">
+    <div
+      className="bg-[#141627] rounded-2xl border border-[#2f2645] overflow-hidden shadow-2xl"
+      data-testid="calendar-grid"
+    >
       {/* Days of Week Header */}
-      <div className="grid grid-cols-7 border-b border-[#2f2645] bg-[#1a1d2d]" data-testid="calendar-weekdays">
+      <div
+        className="grid grid-cols-7 border-b border-[#2f2645] bg-[#1a1d2d]"
+        data-testid="calendar-weekdays"
+      >
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
           <div
             key={day}
@@ -462,25 +486,32 @@ const CalendarPage: React.FC = () => {
   const monthEvents = useMemo(() => monthEventsResponse?.data ?? [], [monthEventsResponse]);
 
   // Calculate daily energy level (simplified)
-  const getEnergyLevelForDate = useCallback((date: Date): number => {
-    const dayEvents = monthEvents.filter((event: CalendarEvent) => {
-      const eventDate = new Date(event.start_date);
-      return (
-        eventDate.getDate() === date.getDate() &&
-        eventDate.getMonth() === date.getMonth() &&
-        eventDate.getFullYear() === date.getFullYear()
-      );
-    }) ?? [];
+  const getEnergyLevelForDate = useCallback(
+    (date: Date): number => {
+      const dayEvents =
+        monthEvents.filter((event: CalendarEvent) => {
+          const eventDate = new Date(event.start_date);
+          return (
+            eventDate.getDate() === date.getDate() &&
+            eventDate.getMonth() === date.getMonth() &&
+            eventDate.getFullYear() === date.getFullYear()
+          );
+        }) ?? [];
 
-    // Base energy + events
-    return Math.min(100, 50 + dayEvents.length * 10);
-  }, [monthEvents]);
+      // Base energy + events
+      return Math.min(100, 50 + dayEvents.length * 10);
+    },
+    [monthEvents],
+  );
 
   // Handle date click
-  const handleDateClick = useCallback((date: Date) => {
-    setSelectedDate(date);
-    setIsPanelOpen(true);
-  }, [setSelectedDate]);
+  const handleDateClick = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+      setIsPanelOpen(true);
+    },
+    [setSelectedDate],
+  );
 
   // Handle filter toggle
   const handleFilterToggle = useCallback((filterKey: keyof typeof filters) => {
@@ -517,27 +548,9 @@ const CalendarPage: React.FC = () => {
   }, [selectedDate, monthEvents]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="border-b border-[#2f2645] bg-[#141627]/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="size-8 text-primary">
-              <span className="material-symbols-outlined text-3xl">auto_awesome</span>
-            </div>
-            <h1 className="text-white text-xl font-bold tracking-tight">AstroVerse</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-[1px] bg-[#2f2645]"></div>
-            <div className="size-9 rounded-full bg-gradient-to-br from-primary to-[#8b5cf6] flex items-center justify-center text-white text-xs font-bold">
-              U
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       {/* Main Content */}
-      <main className="pt-24 pb-12 px-6 max-w-[1600px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6">
+      <main className="pb-12 px-6 max-w-[1600px] mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6">
         {/* Left Column: Calendar */}
         <div className="flex-1 flex flex-col gap-6">
           {/* Header & Controls */}
@@ -552,7 +565,9 @@ const CalendarPage: React.FC = () => {
                 <span className="text-xs font-bold uppercase tracking-wider">Cosmic Events</span>
               </div>
               <h2 className="text-3xl font-bold text-white mb-1">Astrological Calendar</h2>
-              <p className="text-slate-400 text-sm">Track moon phases, retrogrades, and cosmic alignments.</p>
+              <p className="text-slate-400 text-sm">
+                Track moon phases, retrogrades, and cosmic alignments.
+              </p>
             </div>
 
             <div className="flex items-center gap-3 bg-[#141627]/50 p-1.5 rounded-xl border border-[#2f2645]">
@@ -572,7 +587,10 @@ const CalendarPage: React.FC = () => {
               >
                 <span className="material-symbols-outlined text-sm">arrow_back_ios_new</span>
               </button>
-              <span className="text-white font-bold min-w-[120px] text-center" data-testid="calendar-current-month">
+              <span
+                className="text-white font-bold min-w-[120px] text-center"
+                data-testid="calendar-current-month"
+              >
                 {selectedDate?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </span>
               <button
@@ -659,18 +677,20 @@ const CalendarPage: React.FC = () => {
                 { key: 'eclipses', label: 'Eclipses', color: '#F59E0B' },
                 { key: 'custom', label: 'Custom Events', color: '#22c55e' },
               ].map(({ key, label, color }) => (
-                <label
-                  key={key}
-                  className="flex items-center gap-3 cursor-pointer group"
-                >
+                <label key={key} className="flex items-center gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={filters[key as keyof typeof filters]}
                     onChange={() => handleFilterToggle(key as keyof typeof filters)}
                     className="w-4 h-4 rounded border-[#2f2645] bg-[#0B0D17] text-primary focus:ring-primary focus:ring-offset-0"
                   />
-                  <span className="size-2.5 rounded-full shadow-[0_0_8px]" style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}66` }}></span>
-                  <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{label}</span>
+                  <span
+                    className="size-2.5 rounded-full shadow-[0_0_8px]"
+                    style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}66` }}
+                  ></span>
+                  <span className="text-sm text-slate-300 group-hover:text-white transition-colors">
+                    {label}
+                  </span>
                 </label>
               ))}
             </div>
@@ -685,7 +705,9 @@ const CalendarPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-white font-bold flex items-center gap-2">
-                <span className="material-symbols-outlined text-slate-400 text-lg">event_upcoming</span>
+                <span className="material-symbols-outlined text-slate-400 text-lg">
+                  event_upcoming
+                </span>
                 Upcoming
               </h3>
             </div>
@@ -716,9 +738,7 @@ const CalendarPage: React.FC = () => {
                     <h4 className="text-white font-bold text-sm mb-1 group-hover:text-primary transition-colors">
                       {event.title}
                     </h4>
-                    <p className="text-slate-400 text-xs line-clamp-2">
-                      {event.description}
-                    </p>
+                    <p className="text-slate-400 text-xs line-clamp-2">{event.description}</p>
                   </motion.div>
                 ))
               ) : (
@@ -740,7 +760,7 @@ const CalendarPage: React.FC = () => {
         onClose={() => setIsPanelOpen(false)}
         isOpen={isPanelOpen}
       />
-    </div>
+    </AppLayout>
   );
 };
 

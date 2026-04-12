@@ -37,9 +37,7 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
     <div className={className} role="status" aria-live="polite" aria-label="Loading content">
       <span className="sr-only">Loading...</span>
       {Array.from({ length: count }).map((_, index) => (
-        <React.Fragment key={index}>
-          {renderSkeleton()}
-        </React.Fragment>
+        <React.Fragment key={index}>{renderSkeleton()}</React.Fragment>
       ))}
     </div>
   );
@@ -47,7 +45,10 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
 
 // Card Skeleton - matches chart card layout
 const SkeletonCard = () => (
-  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700" aria-hidden="true">
+  <div
+    className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+    aria-hidden="true"
+  >
     <div className="flex justify-between items-center mb-4">
       <div className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded w-3/5 h-6" />
       <div className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded w-12 h-6" />
@@ -99,12 +100,20 @@ const SkeletonCalendar = () => (
     </div>
     <div className="grid grid-cols-7 gap-2 mb-2">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-        <div key={day} className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded text-center p-2 text-sm font-medium text-gray-500 dark:text-gray-400">{day}</div>
+        <div
+          key={day}
+          className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded text-center p-2 text-sm font-medium text-gray-500 dark:text-gray-400"
+        >
+          {day}
+        </div>
       ))}
     </div>
     <div className="grid grid-cols-7 gap-2">
       {Array.from({ length: 35 }).map((_, index) => (
-        <div key={index} className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md aspect-square" />
+        <div
+          key={index}
+          className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md aspect-square"
+        />
       ))}
     </div>
   </div>
@@ -119,7 +128,10 @@ const SkeletonChart = () => (
     </div>
     <div className="flex flex-col gap-3">
       {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
+        <div
+          key={index}
+          className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700"
+        >
           <div className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded w-24 h-4" />
           <div className="bg-gray-200 dark:bg-gray-700 animate-pulse rounded w-32 h-4" />
         </div>

@@ -417,9 +417,7 @@ describe('FormValidator', () => {
 
     it('should get debounce time', () => {
       const schema = {
-        fields: [
-          { name: 'email', validators: [], debounce: 500 },
-        ],
+        fields: [{ name: 'email', validators: [], debounce: 500 }],
       };
 
       const validator = new FormValidator(schema);
@@ -513,9 +511,7 @@ describe('FormSchemaBuilder', () => {
       .addCrossFieldValidator({
         fields: ['password', 'confirmPassword'],
         validate: (formData) =>
-          formData.password !== formData.confirmPassword
-            ? 'Passwords must match'
-            : undefined,
+          formData.password !== formData.confirmPassword ? 'Passwords must match' : undefined,
       })
       .build();
 

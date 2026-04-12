@@ -103,7 +103,7 @@ const DEFAULT_HEARTBEAT_INTERVAL = 30000;
  * ```
  */
 export function useRealTimeUpdates(
-  options: RealTimeUpdateOptions
+  options: RealTimeUpdateOptions,
 ): [RealTimeUpdateState, RealTimeUpdateActions] {
   const {
     url,
@@ -162,7 +162,7 @@ export function useRealTimeUpdates(
       const delay = reconnectDelay * Math.pow(2, attempt);
       return Math.min(delay, maxReconnectDelay);
     },
-    [reconnectDelay, maxReconnectDelay]
+    [reconnectDelay, maxReconnectDelay],
   );
 
   /**
@@ -204,7 +204,7 @@ export function useRealTimeUpdates(
         console.error('Failed to parse WebSocket message:', err);
       }
     },
-    [onMessage]
+    [onMessage],
   );
 
   /**
@@ -223,9 +223,7 @@ export function useRealTimeUpdates(
 
     // Re-subscribe to channels
     state.subscriptions.forEach((channel) => {
-      wsRef.current?.send(
-        JSON.stringify({ type: 'subscribe', channel })
-      );
+      wsRef.current?.send(JSON.stringify({ type: 'subscribe', channel }));
     });
 
     startHeartbeat();
@@ -263,7 +261,6 @@ export function useRealTimeUpdates(
         const delay = getReconnectDelay(state.reconnectAttempts);
         reconnectTimeoutRef.current = setTimeout(() => {
           if (mountedRef.current) {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             connect();
           }
         }, delay);
@@ -278,7 +275,7 @@ export function useRealTimeUpdates(
       clearTimers,
       onClose,
       getReconnectDelay,
-    ]
+    ],
   );
 
   /**
@@ -294,7 +291,7 @@ export function useRealTimeUpdates(
 
       onError?.(event);
     },
-    [onError]
+    [onError],
   );
 
   /**
@@ -329,10 +326,7 @@ export function useRealTimeUpdates(
 
       // Set connection timeout
       connectionTimeoutRef.current = setTimeout(() => {
-        if (
-          wsRef.current?.readyState === WebSocket.CONNECTING &&
-          mountedRef.current
-        ) {
+        if (wsRef.current?.readyState === WebSocket.CONNECTING && mountedRef.current) {
           wsRef.current.close();
           setState((prev) => ({
             ...prev,
@@ -348,14 +342,7 @@ export function useRealTimeUpdates(
         error: err instanceof Error ? err.message : 'Failed to connect',
       }));
     }
-  }, [
-    url,
-    connectionTimeout,
-    handleOpen,
-    handleClose,
-    handleError,
-    handleMessage,
-  ]);
+  }, [url, connectionTimeout, handleOpen, handleClose, handleError, handleMessage]);
 
   /**
    * Disconnect from WebSocket
@@ -383,7 +370,7 @@ export function useRealTimeUpdates(
   /**
    * Send a message
    */
-  const send = useCallback(<T,>(type: string, payload: T): boolean => {
+  const send = useCallback(<T>(type: string, payload: T): boolean => {
     if (wsRef.current?.readyState !== WebSocket.OPEN) {
       console.warn('WebSocket is not connected');
       return false;
@@ -395,7 +382,7 @@ export function useRealTimeUpdates(
           type,
           payload,
           timestamp: Date.now(),
-        })
+        }),
       );
       return true;
     } catch (err) {
@@ -407,44 +394,34 @@ export function useRealTimeUpdates(
   /**
    * Subscribe to a channel
    */
-  const subscribe = useCallback(
-    (channel: string) => {
-      setState((prev) => {
-        const newSubscriptions = new Set(prev.subscriptions);
-        newSubscriptions.add(channel);
-        return { ...prev, subscriptions: newSubscriptions };
-      });
+  const subscribe = useCallback((channel: string) => {
+    setState((prev) => {
+      const newSubscriptions = new Set(prev.subscriptions);
+      newSubscriptions.add(channel);
+      return { ...prev, subscriptions: newSubscriptions };
+    });
 
-      // Send subscription if connected
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(
-          JSON.stringify({ type: 'subscribe', channel })
-        );
-      }
-    },
-    []
-  );
+    // Send subscription if connected
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'subscribe', channel }));
+    }
+  }, []);
 
   /**
    * Unsubscribe from a channel
    */
-  const unsubscribe = useCallback(
-    (channel: string) => {
-      setState((prev) => {
-        const newSubscriptions = new Set(prev.subscriptions);
-        newSubscriptions.delete(channel);
-        return { ...prev, subscriptions: newSubscriptions };
-      });
+  const unsubscribe = useCallback((channel: string) => {
+    setState((prev) => {
+      const newSubscriptions = new Set(prev.subscriptions);
+      newSubscriptions.delete(channel);
+      return { ...prev, subscriptions: newSubscriptions };
+    });
 
-      // Send unsubscription if connected
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(
-          JSON.stringify({ type: 'unsubscribe', channel })
-        );
-      }
-    },
-    []
-  );
+    // Send unsubscription if connected
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'unsubscribe', channel }));
+    }
+  }, []);
 
   /**
    * Manual reconnect

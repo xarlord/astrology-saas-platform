@@ -15,8 +15,18 @@ import { z } from 'zod';
  * Zodiac sign schema
  */
 export const zodiacSignSchema = z.enum([
-  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+  'aries',
+  'taurus',
+  'gemini',
+  'cancer',
+  'leo',
+  'virgo',
+  'libra',
+  'scorpio',
+  'sagittarius',
+  'capricorn',
+  'aquarius',
+  'pisces',
 ]);
 
 /**
@@ -37,7 +47,14 @@ export const chartTypeSchema = z.enum(['natal', 'draconic', 'harmonic', 'composi
 /**
  * House system schema
  */
-export const houseSystemSchema = z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign', 'topocentric']);
+export const houseSystemSchema = z.enum([
+  'placidus',
+  'koch',
+  'porphyry',
+  'equal',
+  'whole-sign',
+  'topocentric',
+]);
 
 /**
  * Aspect type schema
@@ -53,17 +70,31 @@ export const aspectTypeSchema = z.enum([
   'sesquisquare',
   'semisquare',
   'quintile',
-  'biquintile'
+  'biquintile',
 ]);
 
 /**
  * Planet name schema
  */
 export const planetNameSchema = z.enum([
-  'sun', 'moon', 'mercury', 'venus', 'mars',
-  'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-  'north-node', 'south-node', 'chiron', 'lilith',
-  'ascendant', 'mc', 'descendant', 'ic'
+  'sun',
+  'moon',
+  'mercury',
+  'venus',
+  'mars',
+  'jupiter',
+  'saturn',
+  'uranus',
+  'neptune',
+  'pluto',
+  'north-node',
+  'south-node',
+  'chiron',
+  'lilith',
+  'ascendant',
+  'mc',
+  'descendant',
+  'ic',
 ]);
 
 // ============================================================================
@@ -76,7 +107,9 @@ export const planetNameSchema = z.enum([
 export const birthDataSchema = z.object({
   name: z.string().min(1).max(100),
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Birth date must be in YYYY-MM-DD format'),
-  birthTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Birth time must be in HH:MM format'),
+  birthTime: z
+    .string()
+    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Birth time must be in HH:MM format'),
   birthPlace: z.string().min(1).max(200),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
@@ -132,15 +165,17 @@ export const planetPositionSchema = z.object({
 /**
  * Dignity score schema for aspects
  */
-export const dignityScoreSchema = z.object({
-  rulership: z.number().default(0),
-  exaltation: z.number().default(0),
-  detriment: z.number().default(0),
-  fall: z.number().default(0),
-  triplicity: z.number().default(0),
-  terms: z.number().default(0),
-  face: z.number().default(0),
-}).optional();
+export const dignityScoreSchema = z
+  .object({
+    rulership: z.number().default(0),
+    exaltation: z.number().default(0),
+    detriment: z.number().default(0),
+    fall: z.number().default(0),
+    triplicity: z.number().default(0),
+    terms: z.number().default(0),
+    face: z.number().default(0),
+  })
+  .optional();
 
 /**
  * Aspect schema
@@ -222,7 +257,7 @@ export const aspectPatternTypeSchema = z.enum([
   'tsquare',
   'ystod',
   'kite',
-  'mystic-rectangle'
+  'mystic-rectangle',
 ]);
 
 /**

@@ -84,9 +84,7 @@ const PlanetaryPositionCard: React.FC<PlanetaryPositionCardProps> = ({
             className="rounded-full flex items-center justify-center"
             style={{ backgroundColor: `${planetColor}20`, color: planetColor }}
           >
-            <span className={`material-symbols-outlined ${symbolSize[size]}`}>
-              {planet.symbol}
-            </span>
+            <span className={`material-symbols-outlined ${symbolSize[size]}`}>{planet.symbol}</span>
           </div>
           <span className="font-medium text-white">{planet.name}</span>
         </div>
@@ -107,11 +105,7 @@ const PlanetaryPositionCard: React.FC<PlanetaryPositionCardProps> = ({
             {planet.degree}° {planet.minute.toString().padStart(2, '0')}'
           </span>
         </div>
-        {showHouse && (
-          <div className="text-[10px] text-slate-500 mt-1">
-            House {planet.house}
-          </div>
-        )}
+        {showHouse && <div className="text-[10px] text-slate-500 mt-1">House {planet.house}</div>}
       </div>
     </motion.div>
   );

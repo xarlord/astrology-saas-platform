@@ -26,9 +26,9 @@ export interface LoadingSpinnerProps {
 }
 
 const sizeClasses = {
-  sm: 'h-4 w-4 border-2',   // 16px - inline loading
+  sm: 'h-4 w-4 border-2', // 16px - inline loading
   md: 'h-8 w-8 border-[3px]', // 32px - default
-  lg: 'h-12 w-12 border-4',   // 48px - page loading
+  lg: 'h-12 w-12 border-4', // 48px - page loading
   xl: 'h-16 w-16 border-[5px]', // 64px - full screen
 };
 
@@ -51,7 +51,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         'inline-block rounded-full animate-spin',
         sizeClasses[size],
         colorClasses[color],
-        className
+        className,
       )}
       role="status"
       aria-live="polite"

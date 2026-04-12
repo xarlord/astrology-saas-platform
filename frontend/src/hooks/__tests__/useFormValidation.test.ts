@@ -504,9 +504,11 @@ describe('useFormValidation', () => {
     });
 
     it('should track validating state', async () => {
-      const asyncValidator = vi.fn().mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve(undefined), 100))
-      );
+      const asyncValidator = vi
+        .fn()
+        .mockImplementation(
+          () => new Promise((resolve) => setTimeout(() => resolve(undefined), 100)),
+        );
 
       const config = {
         fields: {
@@ -602,9 +604,7 @@ describe('useFieldValidation', () => {
   });
 
   it('should validate field value', async () => {
-    const { result } = renderHook(() =>
-      useFieldValidation('email', '', [required(), email()])
-    );
+    const { result } = renderHook(() => useFieldValidation('email', '', [required(), email()]));
 
     act(() => {
       result.current.setTouched(true);
@@ -623,8 +623,8 @@ describe('useFieldValidation', () => {
     const { result } = renderHook(() =>
       useFieldValidation('email', 'test@example.com', [required(), email()], {
         debounce: 300,
-        validateOnChange: true
-      })
+        validateOnChange: true,
+      }),
     );
 
     // Hook should be initialized
@@ -634,7 +634,7 @@ describe('useFieldValidation', () => {
 
   it('should handle blur validation', async () => {
     const { result } = renderHook(() =>
-      useFieldValidation('email', '', [required(), email()], { validateOnBlur: true })
+      useFieldValidation('email', '', [required(), email()], { validateOnBlur: true }),
     );
 
     // Trigger blur
@@ -648,7 +648,7 @@ describe('useFieldValidation', () => {
 
   it('should pass for valid value', async () => {
     const { result } = renderHook(() =>
-      useFieldValidation('email', 'test@example.com', [required(), email()])
+      useFieldValidation('email', 'test@example.com', [required(), email()]),
     );
 
     act(() => {
@@ -664,9 +664,7 @@ describe('useFieldValidation', () => {
   });
 
   it('should not show error when not touched', async () => {
-    const { result } = renderHook(() =>
-      useFieldValidation('email', '', [required(), email()])
-    );
+    const { result } = renderHook(() => useFieldValidation('email', '', [required(), email()]));
 
     await act(async () => {
       await result.current.validate();
@@ -678,12 +676,15 @@ describe('useFieldValidation', () => {
   });
 
   it('should track validating state', async () => {
-    const asyncValidator = vi.fn().mockImplementation(
-      () => new Promise<string | undefined>(resolve => setTimeout(() => resolve(undefined), 100))
-    );
+    const asyncValidator = vi
+      .fn()
+      .mockImplementation(
+        () =>
+          new Promise<string | undefined>((resolve) => setTimeout(() => resolve(undefined), 100)),
+      );
 
     const { result } = renderHook(() =>
-      useFieldValidation('email', 'test@example.com', [], { asyncValidators: [asyncValidator] })
+      useFieldValidation('email', 'test@example.com', [], { asyncValidators: [asyncValidator] }),
     );
 
     act(() => {

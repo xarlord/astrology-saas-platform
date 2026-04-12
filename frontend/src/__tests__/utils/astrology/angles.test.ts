@@ -23,19 +23,19 @@ describe('Angle Calculator', () => {
   const testDate = new Date('1990-06-15T12:00:00Z');
   const testTime = '12:00';
   const testLatitude = 40.7128; // New York
-  const testLongitude = -74.0060;
+  const testLongitude = -74.006;
 
   describe('calculateAngles', () => {
     it('should calculate all chart angles', () => {
       const angles = calculateAngles(testDate, testTime, testLatitude, testLongitude);
 
       expect(angles).toHaveLength(6);
-      expect(angles.map(a => a.name)).toContain('Ascendant');
-      expect(angles.map(a => a.name)).toContain('Descendant');
-      expect(angles.map(a => a.name)).toContain('MC');
-      expect(angles.map(a => a.name)).toContain('IC');
-      expect(angles.map(a => a.name)).toContain('Vertex');
-      expect(angles.map(a => a.name)).toContain('AntiVertex');
+      expect(angles.map((a) => a.name)).toContain('Ascendant');
+      expect(angles.map((a) => a.name)).toContain('Descendant');
+      expect(angles.map((a) => a.name)).toContain('MC');
+      expect(angles.map((a) => a.name)).toContain('IC');
+      expect(angles.map((a) => a.name)).toContain('Vertex');
+      expect(angles.map((a) => a.name)).toContain('AntiVertex');
     });
 
     it('should have valid properties for each angle', () => {
@@ -56,8 +56,8 @@ describe('Angle Calculator', () => {
     it('should have Descendant opposite Ascendant', () => {
       const angles = calculateAngles(testDate, testTime, testLatitude, testLongitude);
 
-      const asc = angles.find(a => a.name === 'Ascendant');
-      const desc = angles.find(a => a.name === 'Descendant');
+      const asc = angles.find((a) => a.name === 'Ascendant');
+      const desc = angles.find((a) => a.name === 'Descendant');
 
       expect(asc).toBeDefined();
       expect(desc).toBeDefined();
@@ -69,8 +69,8 @@ describe('Angle Calculator', () => {
     it('should have IC opposite MC', () => {
       const angles = calculateAngles(testDate, testTime, testLatitude, testLongitude);
 
-      const mc = angles.find(a => a.name === 'MC');
-      const ic = angles.find(a => a.name === 'IC');
+      const mc = angles.find((a) => a.name === 'MC');
+      const ic = angles.find((a) => a.name === 'IC');
 
       expect(mc).toBeDefined();
       expect(ic).toBeDefined();
@@ -82,8 +82,8 @@ describe('Angle Calculator', () => {
     it('should have AntiVertex opposite Vertex', () => {
       const angles = calculateAngles(testDate, testTime, testLatitude, testLongitude);
 
-      const vertex = angles.find(a => a.name === 'Vertex');
-      const antiVertex = angles.find(a => a.name === 'AntiVertex');
+      const vertex = angles.find((a) => a.name === 'Vertex');
+      const antiVertex = angles.find((a) => a.name === 'AntiVertex');
 
       expect(vertex).toBeDefined();
       expect(antiVertex).toBeDefined();
@@ -96,10 +96,10 @@ describe('Angle Calculator', () => {
     it('should assign houses to angles', () => {
       const angles = calculateAngles(testDate, testTime, testLatitude, testLongitude);
 
-      const asc = angles.find(a => a.name === 'Ascendant');
-      const desc = angles.find(a => a.name === 'Descendant');
-      const mc = angles.find(a => a.name === 'MC');
-      const ic = angles.find(a => a.name === 'IC');
+      const asc = angles.find((a) => a.name === 'Ascendant');
+      const desc = angles.find((a) => a.name === 'Descendant');
+      const mc = angles.find((a) => a.name === 'MC');
+      const ic = angles.find((a) => a.name === 'IC');
 
       expect(asc?.house).toBe(1);
       expect(desc?.house).toBe(7);
@@ -127,7 +127,7 @@ describe('Angle Calculator', () => {
     });
 
     it('should vary with location', () => {
-      const ascNY = calculateAscendant(testDate, testTime, 40.7128, -74.0060);
+      const ascNY = calculateAscendant(testDate, testTime, 40.7128, -74.006);
       const ascLA = calculateAscendant(testDate, testTime, 34.0522, -118.2437);
 
       expect(ascNY.longitude).not.toBe(ascLA.longitude);
@@ -289,8 +289,8 @@ describe('Angle Calculator', () => {
       const parts = calculateArabicParts(0, 90, 180, true);
 
       expect(parts.length).toBeGreaterThan(0);
-      expect(parts.map(p => p.name)).toContain('Part of Fortune');
-      expect(parts.map(p => p.name)).toContain('Part of Spirit');
+      expect(parts.map((p) => p.name)).toContain('Part of Fortune');
+      expect(parts.map((p) => p.name)).toContain('Part of Spirit');
     });
 
     it('should have valid properties for each part', () => {

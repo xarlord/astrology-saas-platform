@@ -295,7 +295,10 @@ describe('uiStore', () => {
       const state = useUIStore.getState();
 
       expect(state.fontSize).toBe('medium');
-      expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-font-size', 'medium');
+      expect(document.documentElement.setAttribute).toHaveBeenCalledWith(
+        'data-font-size',
+        'medium',
+      );
     });
 
     it('should set font size to large', () => {
@@ -453,8 +456,14 @@ describe('uiStore', () => {
       });
 
       expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-theme', 'light');
-      expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-font-size', 'medium');
-      expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-reduced-motion', 'false');
+      expect(document.documentElement.setAttribute).toHaveBeenCalledWith(
+        'data-font-size',
+        'medium',
+      );
+      expect(document.documentElement.setAttribute).toHaveBeenCalledWith(
+        'data-reduced-motion',
+        'false',
+      );
     });
   });
 

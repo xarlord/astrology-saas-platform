@@ -5,11 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { chartService } from '../../services/chart.service';
-import {
-  mockChart,
-  createMockResponse,
-  createMockError,
-} from './utils';
+import { mockChart, createMockResponse, createMockError } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -99,15 +95,17 @@ describe('chartService', () => {
       const mockError = createMockError('Invalid birth data', 400);
       (api.post as any).mockRejectedValue(mockError);
 
-      await expect(chartService.createChart({
-        name: '',
-        birth_date: 'invalid-date',
-        birth_time: '',
-        birth_place_name: '',
-        birth_latitude: 0,
-        birth_longitude: 0,
-        birth_timezone: '',
-      })).rejects.toThrow();
+      await expect(
+        chartService.createChart({
+          name: '',
+          birth_date: 'invalid-date',
+          birth_time: '',
+          birth_place_name: '',
+          birth_latitude: 0,
+          birth_longitude: 0,
+          birth_timezone: '',
+        }),
+      ).rejects.toThrow();
     });
   });
 
@@ -275,8 +273,32 @@ describe('chartService', () => {
         ...mockChart,
         calculated_data: {
           planets: [
-            { planet: 'Sun', name: 'Sun', longitude: 295.5, latitude: 0, speed: 1, house: 4, sign: 'Capricorn', degree: 25, minute: 30, position: "25deg30' Capricorn", retrograde: false },
-            { planet: 'Moon', name: 'Moon', longitude: 120.5, latitude: 0, speed: 13, house: 10, sign: 'Leo', degree: 0, minute: 30, position: "0deg30' Leo", retrograde: false },
+            {
+              planet: 'Sun',
+              name: 'Sun',
+              longitude: 295.5,
+              latitude: 0,
+              speed: 1,
+              house: 4,
+              sign: 'Capricorn',
+              degree: 25,
+              minute: 30,
+              position: "25deg30' Capricorn",
+              retrograde: false,
+            },
+            {
+              planet: 'Moon',
+              name: 'Moon',
+              longitude: 120.5,
+              latitude: 0,
+              speed: 13,
+              house: 10,
+              sign: 'Leo',
+              degree: 0,
+              minute: 30,
+              position: "0deg30' Leo",
+              retrograde: false,
+            },
           ],
           houses: [],
           aspects: [],

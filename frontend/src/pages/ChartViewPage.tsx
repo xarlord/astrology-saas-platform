@@ -7,49 +7,62 @@ import { SkeletonLoader, EmptyState, ChartWheel, AppLayout } from '../components
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { chartService } from '../services';
-import type { PlanetPosition, CalculatedChartData } from '../services/api.types';
-import type { ChartData, PlanetPosition as WheelPlanetPosition, HouseCusp as WheelHouseCusp, Aspect as WheelAspect } from '../components/ChartWheel';
+import { ShareCardModal } from '../components/chart/ShareCardModal';
+import type { PlanetPosition, CalculatedChartData, Chart } from '../services/api.types';
+import type {
+  ChartData,
+  PlanetPosition as WheelPlanetPosition,
+  HouseCusp as WheelHouseCusp,
+  Aspect as WheelAspect,
+} from '../components/ChartWheel';
 
 // Convert API's CalculatedChartData to ChartWheel's ChartData format
 function toWheelData(data: CalculatedChartData): ChartData {
   return {
-    planets: data.planets.map((p): WheelPlanetPosition => ({
-      planet: p.planet,
-      sign: p.sign,
-      degree: p.degree,
-      minute: p.minute,
-      second: 0, // API doesn't provide seconds
-      house: p.house,
-      retrograde: p.retrograde,
-      latitude: p.latitude,
-      longitude: p.longitude,
-      speed: p.speed,
-    })),
-    houses: data.houses.map((h): WheelHouseCusp => ({
-      house: h.house,
-      sign: h.sign,
-      degree: h.longitude % 30,
-      minute: 0,
-      second: 0,
-    })),
-    aspects: data.aspects.map((a): WheelAspect => ({
-      planet1: a.planet1,
-      planet2: a.planet2,
-      type: a.type as WheelAspect['type'],
-      degree: a.degree,
-      minute: 0,
-      orb: a.orb,
-      applying: a.applying,
-      separating: !a.applying,
-    })),
+    planets: data.planets.map(
+      (p): WheelPlanetPosition => ({
+        planet: p.planet,
+        sign: p.sign,
+        degree: p.degree,
+        minute: p.minute,
+        second: 0, // API doesn't provide seconds
+        house: p.house,
+        retrograde: p.retrograde,
+        latitude: p.latitude,
+        longitude: p.longitude,
+        speed: p.speed,
+      }),
+    ),
+    houses: data.houses.map(
+      (h): WheelHouseCusp => ({
+        house: h.house,
+        sign: h.sign,
+        degree: h.longitude % 30,
+        minute: 0,
+        second: 0,
+      }),
+    ),
+    aspects: data.aspects.map(
+      (a): WheelAspect => ({
+        planet1: a.planet1,
+        planet2: a.planet2,
+        type: a.type as WheelAspect['type'],
+        degree: a.degree,
+        minute: 0,
+        orb: a.orb,
+        applying: a.applying,
+        separating: !a.applying,
+      }),
+    ),
   };
 }
 
 export default function ChartViewPage() {
   const { chartId } = useParams<{ chartId: string }>();
-  const [chartData, setChartData] = useState<Record<string, unknown> | null>(null);
+  const [chartData, setChartData] = useState<Chart | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     const loadChart = async () => {
@@ -87,7 +100,9 @@ export default function ChartViewPage() {
           actionText="Retry"
           onAction={() => window.location.reload()}
           secondaryActionText="Back to Dashboard"
-          onSecondaryAction={() => { window.location.href = '/dashboard'; }}
+          onSecondaryAction={() => {
+            window.location.href = '/dashboard';
+          }}
         />
       ) : !chartData ? (
         <EmptyState
@@ -95,7 +110,9 @@ export default function ChartViewPage() {
           title="Chart not found"
           description="The requested chart could not be found. It may have been deleted or you may not have access to it."
           actionText="Back to Dashboard"
-          onAction={() => { window.location.href = '/dashboard'; }}
+          onAction={() => {
+            window.location.href = '/dashboard';
+          }}
         />
       ) : (
         <>
@@ -104,10 +121,10 @@ export default function ChartViewPage() {
             <div className="card">
               <h3 className="text-xl font-bold mb-4">Chart Wheel</h3>
               <div className="aspect-square flex items-center justify-center">
-                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
-                {typeof (chartData as Record<string, unknown>).calculated_data !== 'undefined' ? (
-                  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                  <ChartWheel data={toWheelData((chartData as Record<string, unknown>).calculated_data as unknown as CalculatedChartData)} />
+                {chartData.calculated_data ? (
+                  <ChartWheel
+                    data={toWheelData(chartData.calculated_data)}
+                  />
                 ) : (
                   <p className="text-gray-500">Chart wheel visualization</p>
                 )}
@@ -118,17 +135,17 @@ export default function ChartViewPage() {
             <div className="card">
               <h3 className="text-xl font-bold mb-4">Planetary Positions</h3>
               <div className="space-y-2" data-testid="planetary-positions">
-                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
-                {((chartData as Record<string, unknown>).calculated_data as unknown as { planets: PlanetPosition[] } | undefined)?.planets?.map((planet: PlanetPosition) => (
-                  <div key={planet.planet} className="flex justify-between py-2 border-b dark:border-gray-700">
+                {chartData.calculated_data?.planets?.map((planet: PlanetPosition) => (
+                  <div
+                    key={planet.planet}
+                    className="flex justify-between py-2 border-b dark:border-gray-700"
+                  >
                     <span className="font-medium">{planet.planet}</span>
                     <span className="text-gray-600 dark:text-gray-400">
                       {planet.sign} {planet.degree}°{planet.minute}'
                     </span>
                   </div>
-                )) ?? (
-                  <p className="text-gray-500">No planetary data available</p>
-                )}
+                )) ?? <p className="text-gray-500">No planetary data available</p>}
               </div>
             </div>
           </div>
@@ -148,7 +165,23 @@ export default function ChartViewPage() {
             >
               Edit Chart
             </Link>
+            <button
+              type="button"
+              onClick={() => setShareModalOpen(true)}
+              className="btn-secondary flex items-center gap-2"
+              data-testid="share-card-btn"
+            >
+              <span className="material-symbols-outlined text-[16px]">share</span>
+              Share Card
+            </button>
           </div>
+
+          <ShareCardModal
+            isOpen={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+            chartId={chartId ?? ''}
+            chartName={chartData?.name}
+          />
         </>
       )}
     </AppLayout>

@@ -12,7 +12,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
-import { AlertTriangle, X, Trash2 } from 'lucide-react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -54,6 +54,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Focus trap for WCAG 2.1 AA compliance
+  const trapRef = useFocusTrap<HTMLDivElement>({
+    active: isOpen,
+    onEscape: onClose,
+    autoFocusDelay: 150,
+  });
+
   const isConfirmed = inputValue === confirmationString;
 
   // Handle confirm
@@ -81,7 +88,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onAdditionalOptionChange?.(e.target.checked);
     },
-    [onAdditionalOptionChange]
+    [onAdditionalOptionChange],
   );
 
   // Focus input on open
@@ -96,21 +103,22 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     }
   }, [isOpen]);
 
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+  // Handle Enter key for quick confirm (Escape handled by useFocusTrap)
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
       if (!isOpen) return;
-
-      if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === 'Enter' && isConfirmed && !isSubmitting && !isLoading) {
+      if (e.key === 'Enter' && isConfirmed && !isSubmitting && !isLoading) {
         void handleConfirm();
       }
-    };
+    },
+    [isOpen, isConfirmed, isSubmitting, isLoading, handleConfirm],
+  );
 
+  useEffect(() => {
+    if (!isOpen) return;
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isConfirmed, isSubmitting, isLoading, handleConfirm, onClose]);
+  }, [isOpen, handleKeyDown]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -136,13 +144,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   const iconVariants = {
-    hidden: { scale: 0, rotate: -180 },
+    hidden: { scale: 0, rotate: -180, transition: { type: 'spring', stiffness: 200, damping: 15 } },
     visible: {
       scale: 1,
       rotate: 0,
       transition: { type: 'spring', stiffness: 200, damping: 15 },
     },
-  };
+  } as const;
 
   const variantStyles = {
     danger: {
@@ -181,6 +189,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
           {/* Modal */}
           <motion.div
+            ref={trapRef}
             className={clsx(
               'relative w-full max-w-md rounded-2xl overflow-hidden',
               'bg-gradient-to-br from-gray-900/95 to-gray-800/95',
@@ -188,7 +197,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               'shadow-2xl',
               variant === 'danger' && 'shadow-red-500/20',
               variant === 'warning' && 'shadow-yellow-500/20',
-              className
+              className,
             )}
             variants={modalVariants}
             transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -204,12 +213,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   className={clsx('p-2 rounded-full', styles.icon)}
                   variants={iconVariants}
                 >
-                  <AlertTriangle className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-[20px]">warning</span>
                 </motion.div>
-                <h2
-                  id="confirm-modal-title"
-                  className="text-lg font-semibold text-white"
-                >
+                <h2 id="confirm-modal-title" className="text-lg font-semibold text-white">
                   {title}
                 </h2>
               </div>
@@ -219,7 +225,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -231,23 +237,18 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   {itemName ? (
                     <>
                       Are you sure you want to delete{' '}
-                      <span className="font-medium text-white">
-                        &quot;{itemName}&quot;
-                      </span>
-                      ?
+                      <span className="font-medium text-white">&quot;{itemName}&quot;</span>?
                     </>
                   ) : (
                     message
                   )}
                 </p>
-                {itemName && (
-                  <p className="mt-2 text-sm text-gray-400">{message}</p>
-                )}
+                {itemName && <p className="mt-2 text-sm text-gray-400">{message}</p>}
               </div>
 
               {/* Additional warning */}
               <div className="flex items-start space-x-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                <AlertTriangle className={clsx('w-5 h-5 mt-0.5 flex-shrink-0', styles.iconColor)} />
+                <span className={clsx('material-symbols-outlined text-[20px] mt-0.5 flex-shrink-0', styles.iconColor)}>warning</span>
                 <p className="text-sm text-red-300">
                   This action cannot be undone. All associated data will be permanently removed.
                 </p>
@@ -293,7 +294,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   htmlFor="confirm-input"
                   className="block text-sm font-medium text-gray-300 mb-2"
                 >
-                  Type <span className="font-mono font-bold text-red-400">{confirmationString}</span> to
+                  Type{' '}
+                  <span className="font-mono font-bold text-red-400">{confirmationString}</span> to
                   confirm:
                 </label>
                 <input
@@ -311,9 +313,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     'focus:outline-none focus:ring-2',
                     'disabled:opacity-50 disabled:cursor-not-allowed',
                     'transition-all duration-200',
-                    isConfirmed
-                      ? 'border-green-500/50 focus:ring-green-500'
-                      : styles.input
+                    isConfirmed ? 'border-green-500/50 focus:ring-green-500' : styles.input,
                   )}
                   autoComplete="off"
                   autoCorrect="off"
@@ -325,6 +325,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
             {/* Footer */}
             <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-white/10 bg-gray-900/50">
+              <div className="sr-only" aria-live="polite" role="status">
+                {isConfirmed && 'Confirmation text entered. Delete button is now enabled.'}
+              </div>
               <button
                 onClick={onClose}
                 disabled={isSubmitting || isLoading}
@@ -341,10 +344,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900',
                   'disabled:opacity-50 disabled:cursor-not-allowed',
                   'transition-all duration-200',
-                  styles.button
+                  styles.button,
                 )}
               >
-                {(isSubmitting || isLoading) ? (
+                {isSubmitting || isLoading ? (
                   <>
                     <svg
                       className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
@@ -369,7 +372,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-4 h-4 mr-1.5" />
+                    <span className="material-symbols-outlined text-[16px] mr-1.5">delete</span>
                     {confirmText}
                   </>
                 )}

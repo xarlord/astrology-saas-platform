@@ -11,6 +11,7 @@ import {
   getHouseInterpretation,
   getTransitInterpretation,
   type PlanetInSignInterpretation,
+  type AspectInterpretation,
   type TransitInterpretation,
 } from '../../../data/interpretations';
 import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
@@ -35,7 +36,7 @@ export interface PersonalityAnalysisResponse {
     planet: string;
     sign: string;
     house: number;
-    interpretation: PlanetInSignInterpretation;
+    interpretation: PlanetInSignInterpretation | null;
   }>;
   houses: Array<{
     house: number;
@@ -114,7 +115,7 @@ export function generateCompletePersonalityAnalysis(
 
   // Generate aspects analysis
   const aspectsAnalysis = aspects.map((aspect) => {
-    const aspectInterp = getAspectInterpretation(aspect.type);
+    const aspectInterp = getAspectInterpretation(aspect.type) as AspectInterpretation | null;
 
     return {
       planet1: aspect.planet1,
@@ -137,7 +138,7 @@ export function generateCompletePersonalityAnalysis(
       sunSign,
       moonSign,
       ascendantSign: ascendantSign
-        ? {
+        ? ({
             planet: 'ascendant',
             sign: ascendantSign.toLowerCase(),
             keywords: ['outer personality', 'first impressions', 'approach to life'],
@@ -145,7 +146,7 @@ export function generateCompletePersonalityAnalysis(
             strengths: [],
             challenges: [],
             advice: [],
-          }
+          } as unknown as PlanetInSignInterpretation)
         : undefined,
     },
     planetsInSigns,
@@ -223,6 +224,17 @@ function detectAspectPatterns(
       description: `A beneficial configuration involving ${kitePlanets.join(', ')}. This enhances the Grand Trine's potential and provides an outlet for expression.`,
       planets: kitePlanets,
       intensity: 8,
+    });
+  });
+
+  // Detect Mystic Rectangle (two trines + two sextiles forming a rectangle)
+  const mysticRectangles = findMysticRectangles(trines, sextiles, oppositions, planets);
+  mysticRectangles.forEach((rectPlanets) => {
+    patterns.push({
+      type: 'Mystic Rectangle',
+      description: `A harmonious configuration involving ${rectPlanets.join(', ')}. This creates a natural flow of energy that balances opposing forces and channels tension into creative expression.`,
+      planets: rectPlanets,
+      intensity: 7,
     });
   });
 
@@ -455,6 +467,76 @@ function findKites(
   return patterns;
 }
 
+/**
+ * Find Mystic Rectangle patterns
+ * Two oppositions connected by sextiles and trines, forming a rectangle:
+ *   Planet A —trine— Planet B
+ *   |                      |
+ * sextile            sextile
+ *   |                      |
+ *   Planet D —trine— Planet C
+ * With A opposing C, and B opposing D
+ */
+function findMysticRectangles(
+  trines: Aspect[],
+  sextiles: Aspect[],
+  oppositions: Aspect[],
+  _planets: PlanetPosition[]
+): string[][] {
+  const patterns: string[][] = [];
+  const seen = new Set<string>();
+
+  // Need two oppositions that don't share planets
+  for (let i = 0; i < oppositions.length; i++) {
+    for (let j = i + 1; j < oppositions.length; j++) {
+      const opp1 = oppositions[i];
+      const opp2 = oppositions[j];
+
+      // Must be disjoint
+      const opp1Planets = new Set([opp1.planet1, opp1.planet2]);
+      if (opp1Planets.has(opp2.planet1) || opp1Planets.has(opp2.planet2)) continue;
+
+      const four = [opp1.planet1, opp1.planet2, opp2.planet1, opp2.planet2];
+
+      // Check: each planet in opp1 should trine one planet in opp2 and sextile the other
+      // opp1.planet1 trines opp2.planet1 and sextiles opp2.planet2 (or vice versa)
+      const hasTrine = (a: string, b: string) =>
+        trines.some(t =>
+          (t.planet1 === a && t.planet2 === b) || (t.planet1 === b && t.planet2 === a)
+        );
+      const hasSextile = (a: string, b: string) =>
+        sextiles.some(s =>
+          (s.planet1 === a && s.planet2 === b) || (s.planet1 === b && s.planet2 === a)
+        );
+
+      // Two possible configurations:
+      // Config 1: opp1.p1 trine opp2.p1, opp1.p1 sextile opp2.p2, opp1.p2 sextile opp2.p1, opp1.p2 trine opp2.p2
+      const config1 =
+        hasTrine(opp1.planet1, opp2.planet1) &&
+        hasSextile(opp1.planet1, opp2.planet2) &&
+        hasSextile(opp1.planet2, opp2.planet1) &&
+        hasTrine(opp1.planet2, opp2.planet2);
+
+      // Config 2: swap trine/sextile roles
+      const config2 =
+        hasSextile(opp1.planet1, opp2.planet1) &&
+        hasTrine(opp1.planet1, opp2.planet2) &&
+        hasTrine(opp1.planet2, opp2.planet1) &&
+        hasSextile(opp1.planet2, opp2.planet2);
+
+      if (config1 || config2) {
+        const key = [...four].sort().join(',');
+        if (!seen.has(key)) {
+          seen.add(key);
+          patterns.push(four);
+        }
+      }
+    }
+  }
+
+  return patterns;
+}
+
 // ============================================================================
 // TRANSIT ANALYSIS
 // ============================================================================
@@ -519,7 +601,7 @@ export function generateTransitAnalysis(
         const interpretation = getTransitInterpretation(
           transitingPlanet.planet,
           aspect.type,
-          natalPlanet.planet
+          natalPlanet.planet,
         );
 
         activeTransits.push({
@@ -565,7 +647,7 @@ export function generateTransitAnalysis(
         type: 'major-transit',
         title: `${transit.transitingPlanet} ${transit.aspect} ${transit.natalPlanet}`,
         date,
-        description: transit.interpretation.description,
+        description: transit.interpretation?.description || '',
         intensity: 10 - transit.orb,
       });
     }

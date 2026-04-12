@@ -22,10 +22,7 @@ import {
 } from '../useShortcut';
 
 // Helper to create keyboard events
-function createKeyboardEvent(
-  key: string,
-  options: Partial<KeyboardEvent> = {}
-): KeyboardEvent {
+function createKeyboardEvent(key: string, options: Partial<KeyboardEvent> = {}): KeyboardEvent {
   return new KeyboardEvent('keydown', {
     key,
     bubbles: true,
@@ -47,7 +44,7 @@ describe('useShortcut', () => {
         useShortcut({
           key: 'a',
           handler,
-        })
+        }),
       );
 
       // Simulate key press
@@ -66,8 +63,8 @@ describe('useShortcut', () => {
             key: 'a',
             handler,
           },
-          { enabled: false }
-        )
+          { enabled: false },
+        ),
       );
 
       const event = createKeyboardEvent('a');
@@ -84,7 +81,7 @@ describe('useShortcut', () => {
           key: 's',
           ctrl: true,
           handler,
-        })
+        }),
       );
 
       const event = createKeyboardEvent('s', { ctrlKey: true });
@@ -103,7 +100,7 @@ describe('useShortcut', () => {
           key: 'a',
           handler,
           preventDefault: false,
-        })
+        }),
       );
 
       const event = createKeyboardEvent('a');
@@ -124,7 +121,7 @@ describe('useShortcut', () => {
           key: 's',
           ctrl: true,
           handler,
-        })
+        }),
       );
 
       // Regular 's' should not trigger
@@ -146,7 +143,7 @@ describe('useShortcut', () => {
           key: 'f',
           alt: true,
           handler,
-        })
+        }),
       );
 
       const altEvent = createKeyboardEvent('f', { altKey: true });
@@ -163,7 +160,7 @@ describe('useShortcut', () => {
           key: '?',
           shift: true,
           handler,
-        })
+        }),
       );
 
       const shiftEvent = createKeyboardEvent('?', { shiftKey: true });
@@ -180,7 +177,7 @@ describe('useShortcut', () => {
           key: 's',
           meta: true,
           handler,
-        })
+        }),
       );
 
       const metaEvent = createKeyboardEvent('s', { metaKey: true });
@@ -198,7 +195,7 @@ describe('useShortcut', () => {
           ctrl: true,
           shift: true,
           handler,
-        })
+        }),
       );
 
       const multiEvent = createKeyboardEvent('k', {
@@ -219,7 +216,7 @@ describe('useShortcut', () => {
         useShortcut({
           key: 'a',
           handler,
-        })
+        }),
       );
 
       const input = document.createElement('input');
@@ -245,8 +242,8 @@ describe('useShortcut', () => {
             handler,
             allowInInput: true,
           },
-          { allowInInput: true }
-        )
+          { allowInInput: true },
+        ),
       );
 
       const input = document.createElement('input');
@@ -272,7 +269,7 @@ describe('useShortcut', () => {
         useShortcut([
           { key: 'a', handler: handlerA },
           { key: 'b', handler: handlerB },
-        ])
+        ]),
       );
 
       document.dispatchEvent(createKeyboardEvent('a'));
@@ -290,7 +287,7 @@ describe('useShortcut', () => {
         useShortcut({
           key: 'test-key-unique-1',
           handler: vi.fn(),
-        })
+        }),
       );
 
       expect(result.current.isRegistered).toBeDefined();
@@ -303,7 +300,7 @@ describe('useShortcut', () => {
         useShortcut({
           key: 'x',
           handler,
-        })
+        }),
       );
 
       // Unregister the shortcut
@@ -323,9 +320,7 @@ describe('useScopedShortcuts', () => {
   it('should start inactive by default', () => {
     const handler = vi.fn();
 
-    const { result } = renderHook(() =>
-      useScopedShortcuts([{ key: 'a', handler }], 'test-scope')
-    );
+    const { result } = renderHook(() => useScopedShortcuts([{ key: 'a', handler }], 'test-scope'));
 
     expect(result.current.isActive).toBe(false);
 
@@ -338,7 +333,7 @@ describe('useScopedShortcuts', () => {
     const handler = vi.fn();
 
     const { result } = renderHook(() =>
-      useScopedShortcuts([{ key: 'a', handler }], 'test-scope-2')
+      useScopedShortcuts([{ key: 'a', handler }], 'test-scope-2'),
     );
 
     // Activate
@@ -416,12 +411,8 @@ describe('AppShortcuts', () => {
   });
 
   it('should have groups for shortcuts', () => {
-    const navigationShortcuts = Object.values(AppShortcuts).filter(
-      (s) => s.group === 'navigation'
-    );
-    const actionShortcuts = Object.values(AppShortcuts).filter(
-      (s) => s.group === 'actions'
-    );
+    const navigationShortcuts = Object.values(AppShortcuts).filter((s) => s.group === 'navigation');
+    const actionShortcuts = Object.values(AppShortcuts).filter((s) => s.group === 'actions');
 
     expect(navigationShortcuts.length).toBeGreaterThan(0);
     expect(actionShortcuts.length).toBeGreaterThan(0);
@@ -437,7 +428,7 @@ describe('WCAG 2.1 AA Compliance', () => {
         useShortcut({
           key: 'Enter',
           handler,
-        })
+        }),
       );
 
       document.dispatchEvent(createKeyboardEvent('Enter'));
@@ -453,7 +444,7 @@ describe('WCAG 2.1 AA Compliance', () => {
         useShortcut({
           key: 'Escape',
           handler: onEscape,
-        })
+        }),
       );
 
       document.dispatchEvent(createKeyboardEvent('Escape'));

@@ -16,13 +16,12 @@ import {
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { SolarReturnCalculationParams } from '../models/types';
 
-export class SolarReturnController {
-  /**
-   * Calculate solar return for a given year
-   * POST /api/v1/solar-returns/calculate
-   */
-  calculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Calculate solar return for a given year
+ * POST /api/v1/solar-returns/calculate
+ */
+export const calculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -93,12 +92,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Get solar return for a specific year
-   * GET /api/v1/solar-returns/year/:year
-   */
-  getSolarReturnByYear = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Get solar return for a specific year
+ * GET /api/v1/solar-returns/year/:year
+ */
+export const getSolarReturnByYear = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -122,12 +121,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Get solar return by ID
-   * GET /api/v1/solar-returns/:id
-   */
-  getSolarReturnById = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Get solar return by ID
+ * GET /api/v1/solar-returns/:id
+ */
+export const getSolarReturnById = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -151,12 +150,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Get user's solar return history
-   * GET /api/v1/solar-returns/history
-   */
-  getSolarReturnHistory = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Get user's solar return history
+ * GET /api/v1/solar-returns/history
+ */
+export const getSolarReturnHistory = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -178,12 +177,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Recalculate solar return with new location
-   * POST /api/v1/solar-returns/:id/recalculate
-   */
-  recalculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Recalculate solar return with new location
+ * POST /api/v1/solar-returns/:id/recalculate
+ */
+export const recalculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -246,12 +245,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Get solar return statistics
-   * GET /api/v1/solar-returns/stats
-   */
-  getSolarReturnStats = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Get solar return statistics
+ * GET /api/v1/solar-returns/stats
+ */
+export const getSolarReturnStats = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -264,12 +263,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Delete solar return
-   * DELETE /api/v1/solar-returns/:id
-   */
-  deleteSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Delete solar return
+ * DELETE /api/v1/solar-returns/:id
+ */
+export const deleteSolarReturn = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -295,12 +294,12 @@ export class SolarReturnController {
     });
   });
 
-  /**
-   * Get available years for solar returns
-   * GET /api/v1/solar-returns/years/available
-   */
-  getAvailableYears = asyncHandler(async (req: Request, res: Response) => {
-    const userId = (req as any).user?.id;
+/**
+ * Get available years for solar returns
+ * GET /api/v1/solar-returns/years/available
+ */
+export const getAvailableYears = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as { user?: { id: string } }).user?.id;
     if (!userId) {
       throw new UnauthorizedError('User authentication required');
     }
@@ -313,6 +312,3 @@ export class SolarReturnController {
       data: availableYears,
     });
   });
-}
-
-export default new SolarReturnController();

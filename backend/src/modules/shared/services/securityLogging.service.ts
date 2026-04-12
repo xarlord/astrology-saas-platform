@@ -249,7 +249,7 @@ export async function logRateLimitExceeded(
  */
 export async function logSuspiciousActivity(
   type: string,
-  details: Record<string, any>,
+  details: Record<string, unknown>,
   metadata: {
     userId?: string;
     ipAddress?: string;

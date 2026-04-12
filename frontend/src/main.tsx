@@ -24,7 +24,7 @@ window.addEventListener('error', (event) => {
 // Import service worker hook only in production
 if (import.meta.env.PROD) {
   void import('./hooks/useServiceWorkerUpdate').then(() => {
-    console.log('Service worker registration initialized');
+    // Service worker registration initialized
   });
 }
 
@@ -33,5 +33,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

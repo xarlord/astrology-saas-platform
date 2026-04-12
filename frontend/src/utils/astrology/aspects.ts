@@ -33,7 +33,7 @@ export function angularDifference(long1: number, long2: number): number {
 export function findAspect(
   long1: number,
   long2: number,
-  orbs: OrbConfig = DEFAULT_ORBS
+  orbs: OrbConfig = DEFAULT_ORBS,
 ): { type: AspectType; orb: number; exact: boolean } | null {
   const diff = angularDifference(long1, long2);
 
@@ -63,7 +63,7 @@ export function isAspectApplying(
   speed1: number,
   long2: number,
   speed2: number,
-  aspectAngle: number
+  aspectAngle: number,
 ): boolean {
   // Calculate the angle from planet1 to planet2
   let angle = normalizeAngle(long2) - normalizeAngle(long1);
@@ -88,9 +88,9 @@ export function isAspectApplying(
   if (aspectAngle === 180) {
     const absAngle = Math.abs(angle);
     if (relativeSpeed > 0) {
-      return (absAngle > 180 - aspectAngle) !== (angle > 0);
+      return absAngle > 180 - aspectAngle !== angle > 0;
     } else {
-      return (absAngle < 180 - aspectAngle) !== (angle > 0);
+      return absAngle < 180 - aspectAngle !== angle > 0;
     }
   }
 
@@ -101,7 +101,9 @@ export function isAspectApplying(
   // Estimate future separation
   const futureLong1 = normalizeAngle(long1 + relativeSpeed);
   const futureAngle = normalizeAngle(long2) - futureLong1;
-  const futureSeparation = Math.abs(Math.abs(futureAngle > 180 ? 360 - futureAngle : futureAngle) - aspectAngle);
+  const futureSeparation = Math.abs(
+    Math.abs(futureAngle > 180 ? 360 - futureAngle : futureAngle) - aspectAngle,
+  );
 
   return futureSeparation < currentSeparation;
 }
@@ -113,7 +115,7 @@ export function calculateAspects(
   planets1: PlanetData[],
   planets2: PlanetData[],
   orbs: OrbConfig = DEFAULT_ORBS,
-  includeMinor = false
+  includeMinor = false,
 ): AspectData[] {
   const aspects: AspectData[] = [];
 
@@ -139,7 +141,7 @@ export function calculateAspects(
           planet1.speed,
           planet2.longitude,
           planet2.speed,
-          definition.angle
+          definition.angle,
         );
 
         aspects.push({
@@ -165,7 +167,7 @@ export function calculateAspects(
 export function calculateNatalAspects(
   planets: PlanetData[],
   orbs: OrbConfig = DEFAULT_ORBS,
-  includeMinor = false
+  includeMinor = false,
 ): AspectData[] {
   const aspects: AspectData[] = [];
 
@@ -189,7 +191,7 @@ export function calculateNatalAspects(
           planet1.speed,
           planet2.longitude,
           planet2.speed,
-          definition.angle
+          definition.angle,
         );
 
         aspects.push({
@@ -229,7 +231,7 @@ export function getMajorAspects(): AspectType[] {
 export function detectAspectPatterns(
   planets: PlanetData[],
   aspects: AspectData[],
-  maxOrb = 8
+  maxOrb = 8,
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
 
@@ -300,12 +302,10 @@ function detectStelliums(planets: PlanetData[]): AspectPattern[] {
 function detectGrandTrine(
   planetList: PlanetData[],
   aspects: AspectData[],
-  maxOrb: number
+  maxOrb: number,
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
-  const trineAspects = aspects.filter(
-    a => a.type === 'trine' && a.orb <= maxOrb
-  );
+  const trineAspects = aspects.filter((a) => a.type === 'trine' && a.orb <= maxOrb);
 
   // Look for 3 planets all trining each other
   for (let i = 0; i < trineAspects.length; i++) {
@@ -315,17 +315,24 @@ function detectGrandTrine(
         const a2 = trineAspects[j];
         const a3 = trineAspects[k];
 
-        const uniquePlanets = new Set([a1.planet1, a1.planet2, a2.planet1, a2.planet2, a3.planet1, a3.planet2]);
+        const uniquePlanets = new Set([
+          a1.planet1,
+          a1.planet2,
+          a2.planet1,
+          a2.planet2,
+          a3.planet1,
+          a3.planet2,
+        ]);
 
         if (uniquePlanets.size === 3) {
           const planetArray = Array.from(uniquePlanets);
-          const elements = planetArray.map(p => {
-            const planet = planetList.find(pl => pl.name === p);
+          const elements = planetArray.map((p) => {
+            const planet = planetList.find((pl) => pl.name === p);
             return planet ? getSignElement(planet.sign) : null;
           });
 
           // Check if all same element
-          if (elements.every(e => e === elements[0])) {
+          if (elements.every((e) => e === elements[0])) {
             patterns.push({
               type: 'grand-trine',
               planets: planetArray,
@@ -347,46 +354,42 @@ function detectGrandTrine(
 function detectTSquare(
   planets: PlanetData[],
   aspects: AspectData[],
-  maxOrb: number
+  maxOrb: number,
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
-  const oppositions = aspects.filter(
-    a => a.type === 'opposition' && a.orb <= maxOrb
-  );
-  const squares = aspects.filter(
-    a => a.type === 'square' && a.orb <= maxOrb
-  );
+  const oppositions = aspects.filter((a) => a.type === 'opposition' && a.orb <= maxOrb);
+  const squares = aspects.filter((a) => a.type === 'square' && a.orb <= maxOrb);
 
   for (const opp of oppositions) {
     const apexCandidates = squares.filter(
-      sq =>
-        (sq.planet1 === opp.planet1 || sq.planet2 === opp.planet1) ||
-        (sq.planet1 === opp.planet2 || sq.planet2 === opp.planet2)
+      (sq) =>
+        sq.planet1 === opp.planet1 ||
+        sq.planet2 === opp.planet1 ||
+        sq.planet1 === opp.planet2 ||
+        sq.planet2 === opp.planet2,
     );
 
     for (const sq1 of apexCandidates) {
-      const apex = sq1.planet1 === opp.planet1 || sq1.planet1 === opp.planet2
-        ? sq1.planet2
-        : sq1.planet1;
+      const apex =
+        sq1.planet1 === opp.planet1 || sq1.planet1 === opp.planet2 ? sq1.planet2 : sq1.planet1;
 
       // Find the second square from apex to the other opposition planet
       const sq2 = squares.find(
-        s =>
+        (s) =>
           ((s.planet1 === apex && s.planet2 === opp.planet1) ||
             (s.planet1 === apex && s.planet2 === opp.planet2)) &&
-          s !== sq1
+          s !== sq1,
       );
 
-      // Using || here is intentional: sq2 is either undefined or a truthy object
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      if (sq2 || (sq1.planet1 === apex &&
-        ((sq1.planet2 === opp.planet1) || (sq1.planet2 === opp.planet2)))) {
+      // sq2 is either undefined or a truthy object — nullish coalescing is safe here
+      if (
+        sq2 ??
+        (sq1.planet1 === apex && (sq1.planet2 === opp.planet1 || sq1.planet2 === opp.planet2))
+      ) {
         const allPlanets = [opp.planet1, opp.planet2, apex];
 
         // Check we haven't already found this pattern
-        const exists = patterns.some(
-          p => p.planets.sort().join() === allPlanets.sort().join()
-        );
+        const exists = patterns.some((p) => p.planets.sort().join() === allPlanets.sort().join());
 
         if (!exists) {
           patterns.push({
@@ -409,15 +412,11 @@ function detectTSquare(
 function detectGrandCross(
   planets: PlanetData[],
   aspects: AspectData[],
-  maxOrb: number
+  maxOrb: number,
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
-  const oppositions = aspects.filter(
-    a => a.type === 'opposition' && a.orb <= maxOrb
-  );
-  const squares = aspects.filter(
-    a => a.type === 'square' && a.orb <= maxOrb
-  );
+  const oppositions = aspects.filter((a) => a.type === 'opposition' && a.orb <= maxOrb);
+  const squares = aspects.filter((a) => a.type === 'square' && a.orb <= maxOrb);
 
   // Find two oppositions that form a cross
   for (let i = 0; i < oppositions.length; i++) {
@@ -425,10 +424,7 @@ function detectGrandCross(
       const opp1 = oppositions[i];
       const opp2 = oppositions[j];
 
-      const planets = new Set([
-        opp1.planet1, opp1.planet2,
-        opp2.planet1, opp2.planet2
-      ]);
+      const planets = new Set([opp1.planet1, opp1.planet2, opp2.planet1, opp2.planet2]);
 
       if (planets.size === 4) {
         // Check for squares connecting the opposition pairs
@@ -462,25 +458,17 @@ function detectGrandCross(
 /**
  * Detect Yod (2 planets sextile, both quincunx a third)
  */
-function detectYod(
-  planets: PlanetData[],
-  aspects: AspectData[],
-  maxOrb: number
-): AspectPattern[] {
+function detectYod(planets: PlanetData[], aspects: AspectData[], maxOrb: number): AspectPattern[] {
   const patterns: AspectPattern[] = [];
-  const sextiles = aspects.filter(
-    a => a.type === 'sextile' && a.orb <= maxOrb
-  );
-  const quincunxes = aspects.filter(
-    a => a.type === 'quincunx' && a.orb <= maxOrb
-  );
+  const sextiles = aspects.filter((a) => a.type === 'sextile' && a.orb <= maxOrb);
+  const quincunxes = aspects.filter((a) => a.type === 'quincunx' && a.orb <= maxOrb);
 
   for (const sextile of sextiles) {
     const apex1Quincunxes = quincunxes.filter(
-      q => (q.planet1 === sextile.planet1 || q.planet2 === sextile.planet1)
+      (q) => q.planet1 === sextile.planet1 || q.planet2 === sextile.planet1,
     );
     const apex2Quincunxes = quincunxes.filter(
-      q => (q.planet1 === sextile.planet2 || q.planet2 === sextile.planet2)
+      (q) => q.planet1 === sextile.planet2 || q.planet2 === sextile.planet2,
     );
 
     // Find common apex
@@ -508,23 +496,15 @@ function detectYod(
 /**
  * Detect Kite (Grand Trine with opposition)
  */
-function detectKite(
-  planets: PlanetData[],
-  aspects: AspectData[],
-  maxOrb: number
-): AspectPattern[] {
+function detectKite(planets: PlanetData[], aspects: AspectData[], maxOrb: number): AspectPattern[] {
   const patterns: AspectPattern[] = [];
   const grandTrines = detectGrandTrine(planets, aspects, maxOrb);
-  const oppositions = aspects.filter(
-    a => a.type === 'opposition' && a.orb <= maxOrb
-  );
+  const oppositions = aspects.filter((a) => a.type === 'opposition' && a.orb <= maxOrb);
 
   for (const gt of grandTrines) {
     for (const opp of oppositions) {
       // Check if opposition connects to one planet in grand trine
-      const gtPlanet = gt.planets.find(
-        p => p === opp.planet1 || p === opp.planet2
-      );
+      const gtPlanet = gt.planets.find((p) => p === opp.planet1 || p === opp.planet2);
 
       if (gtPlanet) {
         const fourthPlanet = opp.planet1 === gtPlanet ? opp.planet2 : opp.planet1;
@@ -550,14 +530,12 @@ function detectKite(
 function detectMysticRectangle(
   planets: PlanetData[],
   aspects: AspectData[],
-  maxOrb: number
+  maxOrb: number,
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
-  const oppositions = aspects.filter(
-    a => a.type === 'opposition' && a.orb <= maxOrb
-  );
-  const trines = aspects.filter(a => a.type === 'trine' && a.orb <= maxOrb);
-  const sextiles = aspects.filter(a => a.type === 'sextile' && a.orb <= maxOrb);
+  const oppositions = aspects.filter((a) => a.type === 'opposition' && a.orb <= maxOrb);
+  const trines = aspects.filter((a) => a.type === 'trine' && a.orb <= maxOrb);
+  const sextiles = aspects.filter((a) => a.type === 'sextile' && a.orb <= maxOrb);
 
   // Look for two oppositions connected by trines and sextiles
   for (let i = 0; i < oppositions.length; i++) {
@@ -565,10 +543,7 @@ function detectMysticRectangle(
       const opp1 = oppositions[i];
       const opp2 = oppositions[j];
 
-      const planets = new Set([
-        opp1.planet1, opp1.planet2,
-        opp2.planet1, opp2.planet2
-      ]);
+      const planets = new Set([opp1.planet1, opp1.planet2, opp2.planet1, opp2.planet2]);
 
       if (planets.size === 4) {
         const planetArray = Array.from(planets);

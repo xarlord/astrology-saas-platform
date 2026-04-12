@@ -4,7 +4,11 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { act } from '@testing-library/react';
-import { useNotificationStore, type Notification, type NotificationVariant } from '../../stores/notificationStore';
+import {
+  useNotificationStore,
+  type Notification,
+  type NotificationVariant,
+} from '../../stores/notificationStore';
 
 describe('notificationStore', () => {
   // Helper to reset store state
@@ -326,7 +330,10 @@ describe('notificationStore', () => {
     });
 
     it('convenience methods should work without title', () => {
-      const variants: { method: 'showInfo' | 'showSuccess' | 'showWarning' | 'showError'; variant: NotificationVariant }[] = [
+      const variants: {
+        method: 'showInfo' | 'showSuccess' | 'showWarning' | 'showError';
+        variant: NotificationVariant;
+      }[] = [
         { method: 'showInfo', variant: 'info' },
         { method: 'showSuccess', variant: 'success' },
         { method: 'showWarning', variant: 'warning' },
@@ -352,9 +359,7 @@ describe('notificationStore', () => {
   describe('selector hooks', () => {
     it('useNotifications should return notifications', () => {
       useNotificationStore.setState({
-        notifications: [
-          { id: '1', variant: 'info', message: 'Test', timestamp: Date.now() },
-        ],
+        notifications: [{ id: '1', variant: 'info', message: 'Test', timestamp: Date.now() }],
       });
 
       const notifications = useNotificationStore.getState().notifications;
@@ -373,9 +378,7 @@ describe('notificationStore', () => {
 
     it('useRemoveNotification should return removeNotification function', () => {
       useNotificationStore.setState({
-        notifications: [
-          { id: 'test-id', variant: 'info', message: 'Test', timestamp: Date.now() },
-        ],
+        notifications: [{ id: 'test-id', variant: 'info', message: 'Test', timestamp: Date.now() }],
       });
 
       const removeNotification = useNotificationStore.getState().removeNotification;

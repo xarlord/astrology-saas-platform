@@ -60,12 +60,15 @@ describe('useRealTimeUpdates', () => {
 
     // Capture WebSocket instance
     const OriginalMockWebSocket = MockWebSocket;
-    vi.stubGlobal('WebSocket', class extends OriginalMockWebSocket {
-      constructor(url: string) {
-        super(url);
-        mockWs = this;
-      }
-    });
+    vi.stubGlobal(
+      'WebSocket',
+      class extends OriginalMockWebSocket {
+        constructor(url: string) {
+          super(url);
+          mockWs = this;
+        }
+      },
+    );
   });
 
   afterEach(() => {
@@ -81,7 +84,7 @@ describe('useRealTimeUpdates', () => {
 
   it('should initialize with disconnected status', () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: false })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: false }),
     );
 
     expect(result.current[0].status).toBe('disconnected');
@@ -92,7 +95,7 @@ describe('useRealTimeUpdates', () => {
 
   it('should auto-connect when autoConnect is true', async () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: true })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: true }),
     );
 
     expect(result.current[0].status).toBe('connecting');
@@ -107,7 +110,7 @@ describe('useRealTimeUpdates', () => {
 
   it('should connect manually', async () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: false })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: false }),
     );
 
     expect(result.current[0].status).toBe('disconnected');
@@ -127,7 +130,7 @@ describe('useRealTimeUpdates', () => {
 
   it('should disconnect manually', async () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: true })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: true }),
     );
 
     await act(async () => {
@@ -146,7 +149,7 @@ describe('useRealTimeUpdates', () => {
 
   it('should send messages when connected', async () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: true })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: true }),
     );
 
     await act(async () => {
@@ -159,14 +162,12 @@ describe('useRealTimeUpdates', () => {
     });
 
     expect(sent!).toBe(true);
-    expect(mockWs?.sentMessages).toContainEqual(
-      expect.stringContaining('"type":"test-type"')
-    );
+    expect(mockWs?.sentMessages).toContainEqual(expect.stringContaining('"type":"test-type"'));
   });
 
   it('should not send messages when disconnected', () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: false })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: false }),
     );
 
     const sent = result.current[1].send('test-type', { data: 'test' });
@@ -177,7 +178,7 @@ describe('useRealTimeUpdates', () => {
     const onMessage = vi.fn();
 
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: true, onMessage })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: true, onMessage }),
     );
 
     await act(async () => {
@@ -204,7 +205,7 @@ describe('useRealTimeUpdates', () => {
         ...defaultOptions,
         autoConnect: true,
         subscriptions: ['channel1'],
-      })
+      }),
     );
 
     await act(async () => {
@@ -235,7 +236,7 @@ describe('useRealTimeUpdates', () => {
         autoConnect: true,
         autoReconnect: false,
         onError,
-      })
+      }),
     );
 
     await act(async () => {
@@ -258,7 +259,7 @@ describe('useRealTimeUpdates', () => {
         ...defaultOptions,
         autoConnect: true,
         onOpen,
-      })
+      }),
     );
 
     await act(async () => {
@@ -276,7 +277,7 @@ describe('useRealTimeUpdates', () => {
         ...defaultOptions,
         autoConnect: true,
         onClose,
-      })
+      }),
     );
 
     await act(async () => {
@@ -292,7 +293,7 @@ describe('useRealTimeUpdates', () => {
 
   it('should manually reconnect', async () => {
     const { result } = renderHook(() =>
-      useRealTimeUpdates({ ...defaultOptions, autoConnect: true })
+      useRealTimeUpdates({ ...defaultOptions, autoConnect: true }),
     );
 
     await act(async () => {
@@ -318,7 +319,7 @@ describe('useRealTimeUpdates', () => {
         ...defaultOptions,
         autoConnect: true,
         autoReconnect: false,
-      })
+      }),
     );
 
     await act(async () => {

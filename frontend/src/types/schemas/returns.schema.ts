@@ -35,7 +35,10 @@ export const solarReturnRequestSchema = z.object({
   chartId: z.string().uuid(),
   year: z.number().int().min(1900).max(2100),
   location: returnLocationSchema.optional(),
-  houseSystem: z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign']).optional().default('placidus'),
+  houseSystem: z
+    .enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign'])
+    .optional()
+    .default('placidus'),
 });
 
 /**
@@ -57,30 +60,46 @@ export const solarReturnAnalysisSchema = z.object({
   houseEmphasis: z.array(z.number().int().min(1).max(12)),
   majorAspects: z.array(aspectSchema),
   recommendations: z.array(z.string()),
-  sunHouse: z.object({
-    house: z.number().int().min(1).max(12),
-    interpretation: z.string(),
-    focus: z.array(z.string()),
-  }).optional(),
-  moonPhase: z.object({
-    phase: z.string(),
-    interpretation: z.string(),
-  }).optional(),
-  luckyDays: z.array(z.object({
-    date: z.string().datetime(),
-    reason: z.string(),
-    intensity: z.number().min(1).max(10),
-  })).optional(),
-  challenges: z.array(z.object({
-    area: z.string(),
-    description: z.string(),
-    advice: z.string(),
-  })).optional(),
-  opportunities: z.array(z.object({
-    area: z.string(),
-    description: z.string(),
-    timing: z.string(),
-  })).optional(),
+  sunHouse: z
+    .object({
+      house: z.number().int().min(1).max(12),
+      interpretation: z.string(),
+      focus: z.array(z.string()),
+    })
+    .optional(),
+  moonPhase: z
+    .object({
+      phase: z.string(),
+      interpretation: z.string(),
+    })
+    .optional(),
+  luckyDays: z
+    .array(
+      z.object({
+        date: z.string().datetime(),
+        reason: z.string(),
+        intensity: z.number().min(1).max(10),
+      }),
+    )
+    .optional(),
+  challenges: z
+    .array(
+      z.object({
+        area: z.string(),
+        description: z.string(),
+        advice: z.string(),
+      }),
+    )
+    .optional(),
+  opportunities: z
+    .array(
+      z.object({
+        area: z.string(),
+        description: z.string(),
+        timing: z.string(),
+      }),
+    )
+    .optional(),
   advice: z.array(z.string()).optional(),
   keywords: z.array(z.string()).optional(),
 });
@@ -114,7 +133,10 @@ export const lunarReturnRequestSchema = z.object({
   chartId: z.string().uuid(),
   date: z.string().datetime(),
   location: returnLocationSchema.optional(),
-  houseSystem: z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign']).optional().default('placidus'),
+  houseSystem: z
+    .enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign'])
+    .optional()
+    .default('placidus'),
 });
 
 /**

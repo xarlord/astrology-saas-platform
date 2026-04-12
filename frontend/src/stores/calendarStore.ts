@@ -71,7 +71,7 @@ export const useCalendarStore = create<CalendarState>()(
             const response = await calendarService.getMonthEvents(
               year,
               month,
-              get().filters.showGlobal
+              get().filters.showGlobal,
             );
 
             // Filter events based on filters
@@ -102,7 +102,9 @@ export const useCalendarStore = create<CalendarState>()(
             const lunarPhases: LunarPhase[] = response.data
               .filter((event) => event.event_type === 'lunar-phase')
               .map((event) => ({
-                date: event.event_date ? new Date(event.event_date).toISOString() : new Date().toISOString(),
+                date: event.event_date
+                  ? new Date(event.event_date).toISOString()
+                  : new Date().toISOString(),
                 phase: (event.event_data as { phase?: string })?.phase ?? 'unknown',
                 illumination: (event.event_data as { illumination?: number })?.illumination ?? 0,
                 sign: (event.event_data as { sign?: string })?.sign ?? '',
@@ -201,10 +203,10 @@ export const useCalendarStore = create<CalendarState>()(
           viewMode: state.viewMode,
           filters: state.filters,
         }),
-      }
+      },
     ),
-    { name: 'CalendarStore' }
-  )
+    { name: 'CalendarStore' },
+  ),
 );
 
 // Selector hooks for optimized re-renders

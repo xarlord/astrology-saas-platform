@@ -344,7 +344,7 @@ dist/assets/vendor.js        160.60 kB │ gzip: 52.24 kB
 **Supported Platforms:**
 - ✅ Vercel
 - ✅ Netlify
-- ✅ Railway
+- ✅ Docker Compose
 - ✅ Docker
 
 **Platform-specific configurations documented in PWA_GUIDE.md**

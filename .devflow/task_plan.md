@@ -168,7 +168,7 @@ docker-compose -f docker-compose.staging.yml logs -f
 1. **Deploy to staging** - Test in staging environment
 2. **Run full E2E suite** - With production build
 3. **Performance audit** - Lighthouse 90+
-4. **Deploy to production** - Railway/Railway
+4. **Deploy to production** - Docker Compose/Docker Compose
 
 ---
 

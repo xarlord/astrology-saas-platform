@@ -12,10 +12,14 @@ import PersonSelector, { PersonSelectorProps, Chart } from '../PersonSelector';
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, className, ...props }: any) => (
-      <div className={className} {...props}>{children}</div>
+      <div className={className} {...props}>
+        {children}
+      </div>
     ),
     button: ({ children, onClick, className, ...props }: any) => (
-      <button onClick={onClick} className={className} {...props}>{children}</button>
+      <button onClick={onClick} className={className} {...props}>
+        {children}
+      </button>
     ),
   },
 }));
@@ -76,9 +80,7 @@ describe('PersonSelector', () => {
     });
 
     it('should render with custom aria-label', () => {
-      renderWithProviders(
-        <PersonSelector {...defaultProps} aria-label="Custom selector" />
-      );
+      renderWithProviders(<PersonSelector {...defaultProps} aria-label="Custom selector" />);
 
       expect(screen.getByLabelText('Custom selector')).toBeInTheDocument();
     });
@@ -86,9 +88,7 @@ describe('PersonSelector', () => {
     it('should use default aria-label when not provided', () => {
       renderWithProviders(<PersonSelector {...defaultProps} />);
 
-      expect(
-        screen.getByLabelText('Person selector for synastry comparison')
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText('Person selector for synastry comparison')).toBeInTheDocument();
     });
   });
 
@@ -160,7 +160,13 @@ describe('PersonSelector', () => {
       ];
 
       renderWithProviders(
-        <PersonSelector charts={charts} chart1Id="chart-1" chart2Id="" onChart1Change={vi.fn()} onChart2Change={vi.fn()} />
+        <PersonSelector
+          charts={charts}
+          chart1Id="chart-1"
+          chart2Id=""
+          onChart1Change={vi.fn()}
+          onChart2Change={vi.fn()}
+        />,
       );
 
       // Name appears in both h3 and option - check it exists
@@ -231,7 +237,7 @@ describe('PersonSelector', () => {
           chart2Id=""
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       // Should show the person icon placeholder
@@ -249,7 +255,7 @@ describe('PersonSelector', () => {
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
           onCreateNew={onCreateNew}
-        />
+        />,
       );
 
       expect(screen.getByText('Or create new chart')).toBeInTheDocument();
@@ -271,7 +277,7 @@ describe('PersonSelector', () => {
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
           onCreateNew={onCreateNew}
-        />
+        />,
       );
 
       fireEvent.click(screen.getByText('Or create new chart'));
@@ -339,7 +345,7 @@ describe('PersonSelector', () => {
           chart2Id="chart-2"
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       // Should only show one sun sign badge (for chart-2 which has sunSign)
@@ -372,7 +378,7 @@ describe('PersonSelector', () => {
           chart2Id="chart-2"
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       const moonBadges = screen.getAllByText('dark_mode');
@@ -404,7 +410,7 @@ describe('PersonSelector', () => {
           chart2Id="chart-2"
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       const ascendantBadges = screen.getAllByText('arrow_upward');
@@ -437,7 +443,7 @@ describe('PersonSelector', () => {
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
           onCreateNew={onCreateNew}
-        />
+        />,
       );
 
       // The link should be accessible - there are two "create new chart" links (one for each empty person card)
@@ -455,7 +461,7 @@ describe('PersonSelector', () => {
           chart2Id=""
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       // Should still render both selectors
@@ -471,7 +477,7 @@ describe('PersonSelector', () => {
           chart2Id="another-invalid"
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       // Should show person placeholders for invalid IDs
@@ -487,7 +493,7 @@ describe('PersonSelector', () => {
           chart2Id="chart-1"
           onChart1Change={vi.fn()}
           onChart2Change={vi.fn()}
-        />
+        />,
       );
 
       // Should show the same chart for both - name appears in h3 AND option elements

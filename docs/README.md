@@ -22,7 +22,6 @@ docs/
 ├── LOCAL_DEPLOYMENT.md    # Local development setup
 ├── STAGING_DEPLOYMENT.md  # Staging environment
 ├── PRODUCTION_DEPLOYMENT.md
-├── RAILWAY_QUICK_START.md
 │
 ├── # Feature Documentation
 ├── FEATURE_SPEC_CALENDAR.md

@@ -314,12 +314,13 @@ test.describe('PWA - Service Worker Registration', () => {
             window.removeEventListener('beforeinstallprompt', handler);
             resolve(fired);
           };
-        }
-        return null;
-      } catch {
-        return null;
-      }
-    });
+
+          window.addEventListener('beforeinstallprompt', handler);
+
+          // Timeout if event doesn't fire within 5 seconds
+          setTimeout(() => resolve(fired), 5000);
+        });
+      });
 
     // If an SW is registered (production build), verify it is activated
     if (registration) {

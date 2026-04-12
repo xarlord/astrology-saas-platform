@@ -54,7 +54,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       expect(screen.getByText('Introduction')).toBeInTheDocument();
@@ -69,7 +69,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       // Check for timestamp text (multiple elements may have same text)
@@ -86,7 +86,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           showThumbnails={true}
-        />
+        />,
       );
 
       const thumbnails = screen.getAllByRole('img');
@@ -101,7 +101,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           showThumbnails={true}
-        />
+        />,
       );
 
       // Check that Chapter 3 title is rendered (it doesn't have a thumbnail)
@@ -115,7 +115,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       expect(container.firstChild).toBeNull();
@@ -130,7 +130,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       const nav = screen.getByRole('navigation');
@@ -145,7 +145,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           layout="horizontal"
-        />
+        />,
       );
 
       const nav = screen.getByRole('navigation');
@@ -161,7 +161,7 @@ describe('VideoChapters', () => {
           currentTime={90}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       const chapter2Button = screen.getByRole('button', { name: /Chapter 2/ });
@@ -176,7 +176,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           showProgress={true}
-        />
+        />,
       );
 
       const progressbar = screen.getByRole('progressbar');
@@ -191,7 +191,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           showProgress={true}
-        />
+        />,
       );
 
       // Chapter 2: 60-180 seconds, current 120
@@ -209,7 +209,7 @@ describe('VideoChapters', () => {
           currentTime={150}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       // Chapter 1 is completed (0-60, current is 150)
@@ -230,7 +230,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       const chapter2Button = screen.getByRole('button', { name: /Chapter 2/ });
@@ -246,7 +246,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       const chapter2Button = screen.getByRole('button', { name: /Chapter 2/ });
@@ -262,7 +262,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       const chapter2Button = screen.getByRole('button', { name: /Chapter 2/ });
@@ -280,7 +280,7 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       expect(screen.getByRole('navigation', { name: 'Video chapters' })).toBeInTheDocument();
@@ -293,7 +293,7 @@ describe('VideoChapters', () => {
           currentTime={90}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
       const chapter2Button = screen.getByRole('button', { name: /Chapter 2/ });
@@ -307,10 +307,12 @@ describe('VideoChapters', () => {
           currentTime={0}
           duration={300}
           onChapterClick={mockOnChapterClick}
-        />
+        />,
       );
 
-      expect(screen.getByRole('button', { name: /Introduction, starts at 0:00/ })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /Introduction, starts at 0:00/ }),
+      ).toBeInTheDocument();
     });
   });
 
@@ -323,7 +325,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           className="custom-class"
-        />
+        />,
       );
 
       const nav = screen.getByRole('navigation');
@@ -338,7 +340,7 @@ describe('VideoChapters', () => {
           duration={300}
           onChapterClick={mockOnChapterClick}
           activeChapterClassName="active-custom"
-        />
+        />,
       );
 
       const chapter1Button = screen.getByRole('button', { name: /Introduction/ });
@@ -349,25 +351,21 @@ describe('VideoChapters', () => {
 
 describe('ChapterMarkers', () => {
   it('should render chapter markers on progress bar', () => {
-    renderWithProviders(
-      <ChapterMarkers chapters={mockChapters} duration={300} />
-    );
+    renderWithProviders(<ChapterMarkers chapters={mockChapters} duration={300} />);
 
     const markers = screen.getAllByRole('presentation');
     expect(markers).toHaveLength(3);
   });
 
   it('should return null when no chapters', () => {
-    const { container } = renderWithProviders(
-      <ChapterMarkers chapters={[]} duration={300} />
-    );
+    const { container } = renderWithProviders(<ChapterMarkers chapters={[]} duration={300} />);
 
     expect(container.firstChild).toBeNull();
   });
 
   it('should return null when duration is 0', () => {
     const { container } = renderWithProviders(
-      <ChapterMarkers chapters={mockChapters} duration={0} />
+      <ChapterMarkers chapters={mockChapters} duration={0} />,
     );
 
     expect(container.firstChild).toBeNull();

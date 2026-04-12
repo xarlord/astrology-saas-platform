@@ -12,7 +12,7 @@ export class SynastryServiceError extends Error {
     message: string,
     public code: string,
     public statusCode?: number,
-    public retryable = false
+    public retryable = false,
   ) {
     super(message);
     this.name = 'SynastryServiceError';
@@ -25,13 +25,10 @@ const MAX_RETRIES = 2;
 const RETRY_DELAY = 2000;
 
 // Helper: delay for retry
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Helper: retry with exponential backoff
-async function retryWithBackoff<T>(
-  fn: () => Promise<T>,
-  maxRetries = MAX_RETRIES
-): Promise<T> {
+async function retryWithBackoff<T>(fn: () => Promise<T>, maxRetries = MAX_RETRIES): Promise<T> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await fn();
@@ -55,7 +52,14 @@ async function retryWithBackoff<T>(
 export interface SynastryAspect {
   planet1: string;
   planet2: string;
-  aspect: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile';
+  aspect:
+    | 'conjunction'
+    | 'opposition'
+    | 'trine'
+    | 'square'
+    | 'sextile'
+    | 'quincunx'
+    | 'semi-sextile';
   orb: number;
   applying: boolean;
   interpretation: string;
@@ -96,13 +100,16 @@ export interface SynastryChart {
 export interface CompositeChart {
   chart1Id: string;
   chart2Id: string;
-  planets: Record<string, {
+  planets: Record<
+    string,
+    {
       name: string;
       degree: number;
       minute: number;
       second: number;
       sign: string;
-    }>;
+    }
+  >;
   interpretation: string;
 }
 
@@ -141,35 +148,33 @@ export interface SynastryReport {
 export async function compareCharts(
   chart1Id: string,
   chart2Id: string,
-  retryAttempts = MAX_RETRIES
+  retryAttempts = MAX_RETRIES,
 ): Promise<SynastryChart> {
   return retryWithBackoff(async () => {
     try {
       const response = await api.post<{ data: SynastryChart }>(
         '/synastry/compare',
         { chart1Id, chart2Id },
-        { timeout: SYNASTRY_TIMEOUT }
+        { timeout: SYNASTRY_TIMEOUT },
       );
 
       if (!response.data?.data) {
-        throw new SynastryServiceError(
-          'Invalid response from synastry API',
-          'INVALID_RESPONSE'
-        );
+        throw new SynastryServiceError('Invalid response from synastry API', 'INVALID_RESPONSE');
       }
 
       return response.data.data;
     } catch (error) {
       if (error instanceof SynastryServiceError) throw error;
 
-      const isTimeout = error instanceof Error &&
+      const isTimeout =
+        error instanceof Error &&
         (error.message.includes('timeout') || error.message.includes('ECONNABORTED'));
 
       throw new SynastryServiceError(
         error instanceof Error ? error.message : 'Failed to compare charts',
         'COMPARE_FAILED',
         undefined,
-        isTimeout // Retryable if it's a timeout
+        isTimeout, // Retryable if it's a timeout
       );
     }
   }, retryAttempts);
@@ -183,7 +188,7 @@ export async function getCompatibility(
   chart1Id: string,
   chart2Id: string,
   includeComposite = false,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<{
   chart1Id: string;
   chart2Id: string;
@@ -193,27 +198,27 @@ export async function getCompatibility(
 }> {
   return retryWithBackoff(async () => {
     try {
-      const response = await api.post<
-        { data: {
+      const response = await api.post<{
+        data: {
           chart1Id: string;
           chart2Id: string;
           scores: CompatibilityScores;
           elementalBalance: ElementalBalance;
           compositeChart?: CompositeChart;
-        }}
-      >(
+        };
+      }>(
         '/synastry/compatibility',
         { chart1Id, chart2Id, includeComposite },
         {
           timeout: SYNASTRY_TIMEOUT,
           signal, // Allow cancellation via AbortController
-        }
+        },
       );
 
       if (!response.data?.data) {
         throw new SynastryServiceError(
           'Invalid response from compatibility API',
-          'INVALID_RESPONSE'
+          'INVALID_RESPONSE',
         );
       }
 
@@ -221,14 +226,15 @@ export async function getCompatibility(
     } catch (error) {
       if (error instanceof SynastryServiceError) throw error;
 
-      const isTimeout = error instanceof Error &&
+      const isTimeout =
+        error instanceof Error &&
         (error.message.includes('timeout') || error.message.includes('ECONNABORTED'));
 
       throw new SynastryServiceError(
         error instanceof Error ? error.message : 'Failed to calculate compatibility',
         'COMPATIBILITY_FAILED',
         undefined,
-        isTimeout
+        isTimeout,
       );
     }
   });
@@ -247,7 +253,7 @@ export function createSynastryController(): AbortController {
  */
 export async function generateCompatibilityReport(
   chart1Id: string,
-  chart2Id: string
+  chart2Id: string,
 ): Promise<CompatibilityReport> {
   const [synastryData, compatibilityData] = await Promise.all([
     compareCharts(chart1Id, chart2Id),
@@ -270,7 +276,10 @@ export async function generateCompatibilityReport(
 /**
  * Get all synastry reports for the current user
  */
-export async function getSynastryReports(page = 1, limit = 10): Promise<{
+export async function getSynastryReports(
+  page = 1,
+  limit = 10,
+): Promise<{
   reports: SynastryReport[];
   pagination: {
     page: number;
@@ -279,15 +288,17 @@ export async function getSynastryReports(page = 1, limit = 10): Promise<{
     totalPages: number;
   };
 }> {
-  const response = await api.get<{ data: {
-    reports: SynastryReport[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
+  const response = await api.get<{
+    data: {
+      reports: SynastryReport[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
     };
-  } }>('/synastry/reports', {
+  }>('/synastry/reports', {
     params: { page, limit },
   });
   return response.data.data;
@@ -309,7 +320,7 @@ export async function updateSynastryReport(
   updates: {
     isFavorite?: boolean;
     notes?: string;
-  }
+  },
 ): Promise<void> {
   await api.patch(`/synastry/reports/${id}`, updates);
 }

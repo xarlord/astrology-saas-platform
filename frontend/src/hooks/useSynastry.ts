@@ -28,9 +28,12 @@ export const useSynastry = () => {
   } = useSynastryStore();
 
   // Set persons wrapper
-  const handleSetPersons = useCallback((p1: Chart | null, p2: Chart | null) => {
-    setPersons(p1, p2);
-  }, [setPersons]);
+  const handleSetPersons = useCallback(
+    (p1: Chart | null, p2: Chart | null) => {
+      setPersons(p1, p2);
+    },
+    [setPersons],
+  );
 
   // Compare charts wrapper
   const handleCompare = useCallback(
@@ -42,7 +45,7 @@ export const useSynastry = () => {
         return false;
       }
     },
-    [compare]
+    [compare],
   );
 
   // Get compatibility wrapper
@@ -55,7 +58,7 @@ export const useSynastry = () => {
         return false;
       }
     },
-    [getCompatibility]
+    [getCompatibility],
   );
 
   // Generate full report wrapper
@@ -68,7 +71,7 @@ export const useSynastry = () => {
         return false;
       }
     },
-    [generateFullReport]
+    [generateFullReport],
   );
 
   // Get score label
@@ -108,9 +111,7 @@ export const useSynastry = () => {
       { name: 'Intellectual', value: breakdown.intellectual },
     ];
 
-    const highest = areas.reduce((prev, current) =>
-      prev.value > current.value ? prev : current
-    );
+    const highest = areas.reduce((prev, current) => (prev.value > current.value ? prev : current));
 
     return highest.name;
   }, [breakdown]);
@@ -127,9 +128,7 @@ export const useSynastry = () => {
       { name: 'Intellectual', value: breakdown.intellectual },
     ];
 
-    const lowest = areas.reduce((prev, current) =>
-      prev.value < current.value ? prev : current
-    );
+    const lowest = areas.reduce((prev, current) => (prev.value < current.value ? prev : current));
 
     return lowest.name;
   }, [breakdown]);

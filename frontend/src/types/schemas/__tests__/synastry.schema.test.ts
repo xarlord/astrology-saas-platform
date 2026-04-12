@@ -20,7 +20,7 @@ describe('Synastry Schemas', () => {
   describe('synastryAspectInfluenceSchema', () => {
     it('should validate all influence types', () => {
       const types = ['harmonious', 'tense', 'neutral'];
-      types.forEach(type => {
+      types.forEach((type) => {
         expect(synastryAspectInfluenceSchema.safeParse(type).success).toBe(true);
       });
     });
@@ -33,7 +33,7 @@ describe('Synastry Schemas', () => {
   describe('synastrySignificanceSchema', () => {
     it('should validate all significance levels', () => {
       const levels = ['minor', 'moderate', 'major'];
-      levels.forEach(level => {
+      levels.forEach((level) => {
         expect(synastrySignificanceSchema.safeParse(level).success).toBe(true);
       });
     });
@@ -268,7 +268,7 @@ describe('Synastry Schemas', () => {
         birthTime: '14:30',
         birthPlace: 'New York',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       },
       createdAt: '2024-01-01T00:00:00Z',

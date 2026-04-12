@@ -47,9 +47,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
 
   // Find current cue
   const currentCue = useMemo(() => {
-    return cues.find(
-      (cue) => currentTime >= cue.startTime && currentTime < cue.endTime
-    );
+    return cues.find((cue) => currentTime >= cue.startTime && currentTime < cue.endTime);
   }, [cues, currentTime]);
 
   // Filter cues by search query
@@ -58,9 +56,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
 
     const query = searchQuery.toLowerCase();
     return cues.filter(
-      (cue) =>
-        cue.text.toLowerCase().includes(query) ||
-        cue.speaker?.toLowerCase().includes(query)
+      (cue) => cue.text.toLowerCase().includes(query) || cue.speaker?.toLowerCase().includes(query),
     );
   }, [cues, searchQuery]);
 
@@ -68,9 +64,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
   useEffect(() => {
     if (!autoScroll || !currentCue || !containerRef.current) return;
 
-    const cueElement = containerRef.current.querySelector(
-      `[data-cue-id="${currentCue.id}"]`
-    );
+    const cueElement = containerRef.current.querySelector(`[data-cue-id="${currentCue.id}"]`);
 
     if (cueElement && typeof cueElement.scrollIntoView === 'function') {
       cueElement.scrollIntoView({
@@ -103,7 +97,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
       onSeek(cue.startTime);
       setHighlightedCueId(cue.id);
     },
-    [onSeek]
+    [onSeek],
   );
 
   // Handle keyboard navigation in search
@@ -114,7 +108,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
         handleCueClick(firstMatch);
       }
     },
-    [filteredCues, handleCueClick]
+    [filteredCues, handleCueClick],
   );
 
   // Check if text matches search query and get parts
@@ -128,10 +122,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
       return parts.map((part, index) => {
         if (part.toLowerCase() === searchQuery.toLowerCase()) {
           return (
-            <mark
-              key={index}
-              className="bg-yellow-400/50 text-white rounded px-0.5"
-            >
+            <mark key={index} className="bg-yellow-400/50 text-white rounded px-0.5">
               {part}
             </mark>
           );
@@ -139,7 +130,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
         return part;
       });
     },
-    [searchQuery]
+    [searchQuery],
   );
 
   // Escape regex special characters
@@ -186,7 +177,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
                 'bg-white/5 border border-white/10',
                 'text-white placeholder-white/50',
                 'focus:outline-none focus:ring-2 focus:ring-purple-500',
-                'transition-all duration-200'
+                'transition-all duration-200',
               )}
               aria-label="Search transcript"
             />
@@ -245,9 +236,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
           Object.entries(groupedCues).map(([speaker, speakerCues]) => (
             <div key={speaker || 'no-speaker'} className="space-y-1">
               {speaker && (
-                <div className="text-xs font-medium text-purple-400 mt-3 mb-1 px-2">
-                  {speaker}
-                </div>
+                <div className="text-xs font-medium text-purple-400 mt-3 mb-1 px-2">{speaker}</div>
               )}
               {speakerCues.map((cue) => {
                 const isActive = currentCue?.id === cue.id;
@@ -272,7 +261,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
                       'focus:outline-none focus:ring-2 focus:ring-purple-500',
                       'hover:bg-white/10',
                       isActive && highlightColor,
-                      isHighlighted && 'ring-2 ring-yellow-400 animate-pulse'
+                      isHighlighted && 'ring-2 ring-yellow-400 animate-pulse',
                     )}
                     aria-current={isActive ? 'true' : undefined}
                   >
@@ -288,7 +277,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
                           'flex-shrink-0 text-xs px-1.5 py-0.5 rounded',
                           'text-white/60 hover:text-white hover:bg-white/10',
                           'transition-colors duration-200',
-                          isActive && 'text-purple-300'
+                          isActive && 'text-purple-300',
                         )}
                         aria-label={`Jump to ${formatTime(cue.startTime)}`}
                       >
@@ -300,7 +289,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
                     <p
                       className={clsx(
                         'flex-1 text-sm leading-relaxed',
-                        isActive ? 'text-white' : 'text-white/80'
+                        isActive ? 'text-white' : 'text-white/80',
                       )}
                     >
                       {searchQuery ? getHighlightedText(cue.text) : cue.text}
@@ -319,7 +308,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
           type="button"
           onClick={() => {
             const cueElement = containerRef.current?.querySelector(
-              `[data-cue-id="${currentCue.id}"]`
+              `[data-cue-id="${currentCue.id}"]`,
             );
             cueElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }}
@@ -327,7 +316,7 @@ export const VideoTranscript: React.FC<VideoTranscriptProps> = ({
             'mt-3 w-full py-2 rounded-lg',
             'bg-purple-600/20 hover:bg-purple-600/30 text-purple-300',
             'text-sm font-medium',
-            'transition-colors duration-200'
+            'transition-colors duration-200',
           )}
         >
           Jump to current
@@ -363,7 +352,7 @@ export function parseSRT(srtContent: string): TranscriptCue[] {
 
     // Parse timestamp line (format: 00:00:00,000 --> 00:00:00,000)
     const timeMatch = lines[1].match(
-      /(\d{2}):(\d{2}):(\d{2}),(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2}),(\d{3})/
+      /(\d{2}):(\d{2}):(\d{2}),(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2}),(\d{3})/,
     );
 
     if (!timeMatch) continue;
@@ -381,7 +370,10 @@ export function parseSRT(srtContent: string): TranscriptCue[] {
       parseInt(timeMatch[8]) / 1000;
 
     // Join remaining lines as text
-    const text = lines.slice(2).join(' ').replace(/<[^>]+>/g, ''); // Strip HTML tags
+    const text = lines
+      .slice(2)
+      .join(' ')
+      .replace(/<[^>]+>/g, ''); // Strip HTML tags
 
     cues.push({
       id: `cue-${cues.length}`,
@@ -410,7 +402,7 @@ export function parseWebVTT(vttContent: string): TranscriptCue[] {
   while (i < lines.length) {
     // Find timestamp line
     const timeMatch = lines[i].match(
-      /(\d{2}):(\d{2}):(\d{2})\.(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})\.(\d{3})/
+      /(\d{2}):(\d{2}):(\d{2})\.(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})\.(\d{3})/,
     );
 
     if (!timeMatch) {

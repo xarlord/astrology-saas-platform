@@ -16,7 +16,7 @@ describe('Tabs Component', () => {
             <Tab value="tab1">Tab 1</Tab>
             <Tab value="tab2">Tab 2</Tab>
           </TabList>
-        </Tabs>
+        </Tabs>,
       );
 
       // Use getAllByRole since there's a tablist inside TabList
@@ -37,7 +37,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       expect(screen.getByText('Panel 1')).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute('aria-selected', 'true');
@@ -82,7 +82,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       expect(screen.getByRole('tab', { name: 'Tab 1' })).toHaveAttribute('aria-selected', 'true');
@@ -98,7 +98,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute('aria-selected', 'true');
@@ -113,7 +113,7 @@ describe('Tabs Component', () => {
             <Tab value="tab1">Tab 1</Tab>
             <Tab value="tab2">Tab 2</Tab>
           </TabList>
-        </Tabs>
+        </Tabs>,
       );
 
       await userEvent.click(screen.getByRole('tab', { name: 'Tab 2' }));
@@ -133,7 +133,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       const tab2 = screen.getByRole('tab', { name: 'Tab 2' });
@@ -156,7 +156,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       const tab2 = screen.getByRole('tab', { name: 'Tab 2' });
@@ -179,7 +179,7 @@ describe('Tabs Component', () => {
               Tab 2
             </Tab>
           </TabList>
-        </Tabs>
+        </Tabs>,
       );
 
       const tab2 = screen.getByRole('tab', { name: 'Tab 2' });
@@ -200,7 +200,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       await userEvent.click(screen.getByRole('tab', { name: 'Tab 2' }));
@@ -217,7 +217,7 @@ describe('Tabs Component', () => {
           <TabList>
             <Tab value="tab1">Tab 1</Tab>
           </TabList>
-        </Tabs>
+        </Tabs>,
       );
 
       // TabList has role="tablist" internally
@@ -231,7 +231,7 @@ describe('Tabs Component', () => {
           <TabList>
             <Tab value="tab1">Tab 1</Tab>
           </TabList>
-        </Tabs>
+        </Tabs>,
       );
 
       // Container has aria-orientation
@@ -250,7 +250,7 @@ describe('Tabs Component', () => {
               Tab 1
             </Tab>
           </TabList>
-        </Tabs>
+        </Tabs>,
       );
 
       expect(screen.getByTestId('icon')).toBeInTheDocument();
@@ -269,7 +269,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       // Active panel should be visible
@@ -287,7 +287,7 @@ describe('Tabs Component', () => {
             <TabPanel value="tab1">Panel 1</TabPanel>
             <TabPanel value="tab2">Panel 2</TabPanel>
           </TabPanels>
-        </Tabs>
+        </Tabs>,
       );
 
       // Inactive panel should not be visible

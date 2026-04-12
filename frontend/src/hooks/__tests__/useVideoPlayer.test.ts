@@ -82,7 +82,7 @@ describe('useVideoPlayer', () => {
           muted: true,
           playbackRate: 1.5,
           startTime: 30,
-        })
+        }),
       );
 
       expect(result.current.state.volume).toBe(0.5);
@@ -318,9 +318,7 @@ describe('useVideoPlayer', () => {
 
     it('should handle error callback', () => {
       const onError = vi.fn();
-      const { result } = renderHook(() =>
-        useVideoPlayer({ onError })
-      );
+      const { result } = renderHook(() => useVideoPlayer({ onError }));
 
       const mockVideo = {
         ...createMockVideoElement(),

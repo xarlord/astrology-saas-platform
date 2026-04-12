@@ -85,6 +85,11 @@ vi.mock('../../components/ui/Toggle', () => ({
   ),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 // Import after mocks
 import { ProfileSettingsPage } from '../../pages/ProfileSettingsPage';
 
@@ -98,7 +103,7 @@ const createWrapper = () => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: ['/profile/settings'] }, children)
+      createElement(MemoryRouter, { initialEntries: ['/profile/settings'] }, children),
     );
 };
 
@@ -122,9 +127,10 @@ describe('ProfileSettingsPage', () => {
       expect(userElements.length).toBeGreaterThan(0);
     });
 
-    it('should render the app header with logo', () => {
+    it('should render the page heading with user name', () => {
       renderWithProviders(createElement(ProfileSettingsPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
+      const userElements = screen.getAllByText('Test User');
+      expect(userElements.length).toBeGreaterThan(0);
     });
 
     it('should render user display name in header', () => {
@@ -299,9 +305,9 @@ describe('ProfileSettingsPage', () => {
     });
 
     it('should render password change form', () => {
-      expect(screen.getByPlaceholderText('Current password')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('New password')).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('Confirm new password')).toBeInTheDocument();
+      expect(screen.getByLabelText('Current password')).toBeInTheDocument();
+      expect(screen.getByLabelText('New password')).toBeInTheDocument();
+      expect(screen.getByLabelText('Confirm new password')).toBeInTheDocument();
     });
 
     it('should render Update Password button', () => {
@@ -372,14 +378,14 @@ describe('ProfileSettingsPage', () => {
       // Dark button should have the primary border class
       const darkButtons = screen.getAllByText('dark');
       // Find the theme button (in Appearance section)
-      const themeDarkButton = darkButtons.find(btn => btn.closest('button'));
+      const themeDarkButton = darkButtons.find((btn) => btn.closest('button'));
       expect(themeDarkButton?.closest('button')).toHaveClass('border-primary');
     });
 
     it('should change theme when clicked', async () => {
       const user = userEvent.setup();
       const lightButtons = screen.getAllByText('light');
-      const themeLightButton = lightButtons.find(btn => btn.closest('button'));
+      const themeLightButton = lightButtons.find((btn) => btn.closest('button'));
       await user.click(themeLightButton!);
 
       expect(themeLightButton?.closest('button')).toHaveClass('border-primary');
@@ -471,16 +477,15 @@ describe('ProfileSettingsPage', () => {
       expect(notificationButtons.length).toBeGreaterThan(0);
     });
 
-    it('should navigate to profile when user avatar clicked', async () => {
+    it('should have Edit Profile button that activates profile tab', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(ProfileSettingsPage));
 
-      // Find the clickable user area - it contains the user name
-      const userArea = screen.getByText('Pro Member').closest('.group');
-      if (userArea) {
-        await user.click(userArea);
-        expect(mockNavigate).toHaveBeenCalledWith('/profile');
-      }
+      const editButton = screen.getByText('Edit Profile');
+      await user.click(editButton);
+
+      // Should show profile form
+      expect(screen.getByTestId('full-name-input')).toBeInTheDocument();
     });
   });
 

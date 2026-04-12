@@ -33,10 +33,7 @@ export interface UsePDFGenerationReturn {
   lastGeneratedBlob: Blob | null;
 
   // Actions
-  generateReport: (
-    options: PDFGenerationOptions,
-    data: ReportData
-  ) => Promise<PDFGenerationResult>;
+  generateReport: (options: PDFGenerationOptions, data: ReportData) => Promise<PDFGenerationResult>;
   downloadReport: (filename?: string) => void;
   printReport: () => void;
   clearError: () => void;
@@ -61,10 +58,7 @@ export function usePDFGeneration(): UsePDFGenerationReturn {
    * Generate a PDF report
    */
   const generateReport = useCallback(
-    async (
-      options: PDFGenerationOptions,
-      data: ReportData
-    ): Promise<PDFGenerationResult> => {
+    async (options: PDFGenerationOptions, data: ReportData): Promise<PDFGenerationResult> => {
       // Cancel any ongoing generation
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -87,7 +81,7 @@ export function usePDFGeneration(): UsePDFGenerationReturn {
               options.onProgress?.(progress);
             },
           },
-          data
+          data,
         );
 
         if (result.success && result.blob) {
@@ -124,7 +118,7 @@ export function usePDFGeneration(): UsePDFGenerationReturn {
         };
       }
     },
-    []
+    [],
   );
 
   /**
@@ -140,13 +134,11 @@ export function usePDFGeneration(): UsePDFGenerationReturn {
         return;
       }
 
-      const defaultFilename = `astroverse-report-${new Date()
-        .toISOString()
-        .split('T')[0]}.pdf`;
+      const defaultFilename = `astroverse-report-${new Date().toISOString().split('T')[0]}.pdf`;
 
       pdfService.downloadPDF(state.lastGeneratedBlob, filename ?? defaultFilename);
     },
-    [state.lastGeneratedBlob]
+    [state.lastGeneratedBlob],
   );
 
   /**
@@ -234,10 +226,7 @@ export function getExpectedPageCount(type: ReportType): string {
 /**
  * Generate default filename for report
  */
-export function generateReportFilename(
-  type: ReportType,
-  chartName?: string
-): string {
+export function generateReportFilename(type: ReportType, chartName?: string): string {
   const date = new Date().toISOString().split('T')[0];
   // Remove special characters and replace spaces with dashes
   const sanitizedName = chartName

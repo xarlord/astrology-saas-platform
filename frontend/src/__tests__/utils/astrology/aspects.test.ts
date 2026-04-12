@@ -23,17 +23,13 @@ import {
 
 describe('Aspect Calculator', () => {
   // Mock planet data for testing
-  const createMockPlanet = (
-    name: string,
-    longitude: number,
-    speed: number = 1
-  ): PlanetData => ({
+  const createMockPlanet = (name: string, longitude: number, speed: number = 1): PlanetData => ({
     name,
     longitude,
     latitude: 0,
     speed,
     retrograde: speed < 0,
-    sign: ZODIAC_SIGNS[Math.floor(((longitude % 360) + 360) % 360 / 30)],
+    sign: ZODIAC_SIGNS[Math.floor((((longitude % 360) + 360) % 360) / 30)],
     degree: longitude % 30,
   });
 
@@ -166,26 +162,25 @@ describe('Aspect Calculator', () => {
 
       // Should find Sun-Moon trine
       const sunMoonAspect = aspects.find(
-        a => (a.planet1 === 'Sun' && a.planet2 === 'Moon') ||
-             (a.planet1 === 'Moon' && a.planet2 === 'Sun')
+        (a) =>
+          (a.planet1 === 'Sun' && a.planet2 === 'Moon') ||
+          (a.planet1 === 'Moon' && a.planet2 === 'Sun'),
       );
       expect(sunMoonAspect).toBeDefined();
       expect(sunMoonAspect?.type).toBe('trine');
 
       // Should find Sun-Mars square
       const sunMarsAspect = aspects.find(
-        a => (a.planet1 === 'Sun' && a.planet2 === 'Mars') ||
-             (a.planet1 === 'Mars' && a.planet2 === 'Sun')
+        (a) =>
+          (a.planet1 === 'Sun' && a.planet2 === 'Mars') ||
+          (a.planet1 === 'Mars' && a.planet2 === 'Sun'),
       );
       expect(sunMarsAspect).toBeDefined();
       expect(sunMarsAspect?.type).toBe('square');
     });
 
     it('should not create duplicate aspects', () => {
-      const planets: PlanetData[] = [
-        createMockPlanet('Sun', 0),
-        createMockPlanet('Moon', 120),
-      ];
+      const planets: PlanetData[] = [createMockPlanet('Sun', 0), createMockPlanet('Moon', 120)];
 
       const aspects = calculateNatalAspects(planets);
 
@@ -216,7 +211,7 @@ describe('Aspect Calculator', () => {
       const aspects = calculateNatalAspects(planets, DEFAULT_ORBS, false);
 
       // Should not include semisextile
-      expect(aspects.find(a => a.type === 'semisextile')).toBeUndefined();
+      expect(aspects.find((a) => a.type === 'semisextile')).toBeUndefined();
     });
 
     it('should include minor aspects when requested', () => {
@@ -228,7 +223,7 @@ describe('Aspect Calculator', () => {
       const aspects = calculateNatalAspects(planets, DEFAULT_ORBS, true);
 
       // Should include semisextile
-      expect(aspects.find(a => a.type === 'semisextile')).toBeDefined();
+      expect(aspects.find((a) => a.type === 'semisextile')).toBeDefined();
     });
   });
 
@@ -249,25 +244,19 @@ describe('Aspect Calculator', () => {
       expect(aspects.length).toBeGreaterThan(0);
 
       // Should find aspects between charts
-      const trineAspect = aspects.find(a => a.type === 'trine');
+      const trineAspect = aspects.find((a) => a.type === 'trine');
       expect(trineAspect).toBeDefined();
     });
 
     it('should calculate aspects between same planet in different charts', () => {
-      const chart1Planets: PlanetData[] = [
-        createMockPlanet('Sun', 0),
-      ];
+      const chart1Planets: PlanetData[] = [createMockPlanet('Sun', 0)];
 
-      const chart2Planets: PlanetData[] = [
-        createMockPlanet('Sun', 90),
-      ];
+      const chart2Planets: PlanetData[] = [createMockPlanet('Sun', 90)];
 
       const aspects = calculateAspects(chart1Planets, chart2Planets);
 
       // Should include Sun-Sun square
-      const sunSunAspect = aspects.find(
-        a => a.planet1 === 'Sun' && a.planet2 === 'Sun'
-      );
+      const sunSunAspect = aspects.find((a) => a.planet1 === 'Sun' && a.planet2 === 'Sun');
       expect(sunSunAspect).toBeDefined();
       expect(sunSunAspect?.type).toBe('square');
     });
@@ -276,9 +265,17 @@ describe('Aspect Calculator', () => {
   describe('getAspectDefinition', () => {
     it('should return definition for each aspect type', () => {
       const types = [
-        'conjunction', 'opposition', 'trine', 'square', 'sextile',
-        'quincunx', 'semisextile', 'semisquare', 'sesquisquare',
-        'quintile', 'biquintile'
+        'conjunction',
+        'opposition',
+        'trine',
+        'square',
+        'sextile',
+        'quincunx',
+        'semisextile',
+        'semisquare',
+        'sesquisquare',
+        'quintile',
+        'biquintile',
       ] as const;
 
       for (const type of types) {
@@ -336,7 +333,7 @@ describe('Aspect Calculator', () => {
       const aspects = calculateNatalAspects(planets);
       const patterns = detectAspectPatterns(planets, aspects);
 
-      const stellium = patterns.find(p => p.type === 'stellium');
+      const stellium = patterns.find((p) => p.type === 'stellium');
       expect(stellium).toBeDefined();
       expect(stellium?.planets.length).toBeGreaterThanOrEqual(3);
     });
@@ -351,7 +348,7 @@ describe('Aspect Calculator', () => {
       const aspects = calculateNatalAspects(planets);
       const patterns = detectAspectPatterns(planets, aspects);
 
-      const grandTrine = patterns.find(p => p.type === 'grand-trine');
+      const grandTrine = patterns.find((p) => p.type === 'grand-trine');
       expect(grandTrine).toBeDefined();
     });
 

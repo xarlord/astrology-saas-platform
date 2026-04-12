@@ -34,7 +34,7 @@ const createWrapper = (initialRoute = '/nonexistent') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children)
+      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
     );
 };
 
@@ -161,9 +161,12 @@ describe('NotFoundPage', () => {
     it('should apply correct color class based on status', () => {
       renderWithProviders(createElement(NotFoundPage));
       // Should have either amber (retrograde) or emerald (direct) color
-      const statusDot = document.querySelector('.bg-amber-400') || document.querySelector('.bg-emerald-400');
+      const statusDot =
+        document.querySelector('.bg-amber-400') || document.querySelector('.bg-emerald-400');
       // One of the colors should be present
-      expect(statusDot !== null || document.querySelector('.animate-pulse.rounded-full') !== null).toBe(true);
+      expect(
+        statusDot !== null || document.querySelector('.animate-pulse.rounded-full') !== null,
+      ).toBe(true);
     });
   });
 
@@ -287,11 +290,13 @@ describe('NotFoundPage', () => {
       expect(glassPanel).toBeInTheDocument();
     });
 
-    it('should have bg-deep-space background', () => {
+    it('should have gradient background from deep space colors', () => {
       renderWithProviders(createElement(NotFoundPage));
 
-      const mainContainer = document.querySelector('.bg-deep-space');
+      // The page uses from-[#0B0D17] to-[#141627] gradient
+      const mainContainer = document.querySelector('.min-h-screen');
       expect(mainContainer).toBeInTheDocument();
+      expect(mainContainer?.className).toContain('bg-gradient-to-br');
     });
 
     it('should have min-h-screen class for full height', () => {

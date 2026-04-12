@@ -14,6 +14,7 @@ function uniqueEmail(): string {
   return `e2e-auth-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`;
 }
 
+test.describe('Authentication Flow', () => {
   test('should register new user and redirect to dashboard', async ({ page }) => {
     // Use test auth utility to register user
     await registerTestUser(page, testUser);

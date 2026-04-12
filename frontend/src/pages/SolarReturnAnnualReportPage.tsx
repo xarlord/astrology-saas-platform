@@ -10,6 +10,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
+import { AppLayout } from '../components';
 import { Button } from '../components/ui/Button';
 
 // Types
@@ -104,7 +105,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
     setIsGeneratingPDF(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 3000));
-      console.log('PDF generated for Solar Return', solarData.year);
+      // PDF generation complete
     } catch (error) {
       console.error('Failed to generate PDF:', error);
     } finally {
@@ -113,43 +114,12 @@ const SolarReturnAnnualReportPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 relative overflow-x-hidden">
+    <AppLayout>
       {/* Background Decorative Elements */}
       <div className="fixed top-1/4 -left-64 w-[500px] h-[500px] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
       <div className="fixed bottom-1/4 -right-64 w-[600px] h-[600px] bg-amber-400/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-[#0B0D17]/80 border-b border-white/10 px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-amber-400 p-1.5 rounded-lg flex items-center justify-center">
-              <span className="material-symbols-outlined text-[#0B0D17] font-bold">flare</span>
-            </div>
-            <h1 className="text-xl font-extrabold tracking-tight text-white uppercase">AstroVerse</h1>
-          </div>
-          <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => navigate('/dashboard')} className="text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors">
-              Dashboard
-            </button>
-            <button onClick={() => navigate('/solar-returns')} className="text-sm font-medium text-amber-400 border-b-2 border-amber-400 pb-1">
-              Reports
-            </button>
-            <button onClick={() => navigate('/synastry')} className="text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors">
-              Compatibility
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/learning')}
-              className="text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors"
-            >
-              Academy
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <main className="pt-24 pb-20 px-4 md:px-10 max-w-7xl mx-auto space-y-10">
+      <main className="pb-20 px-4 md:px-10 max-w-7xl mx-auto space-y-10">
         {/* Header Section */}
         <motion.header
           className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2"
@@ -160,7 +130,9 @@ const SolarReturnAnnualReportPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-amber-400">wb_sunny</span>
-              <span className="text-amber-400 font-bold tracking-widest text-sm uppercase">Annual Forecast</span>
+              <span className="text-amber-400 font-bold tracking-widest text-sm uppercase">
+                Annual Forecast
+              </span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
               Solar Return Report {solarData.year}
@@ -241,7 +213,9 @@ const SolarReturnAnnualReportPage: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-2xl font-bold text-white">Chart Comparison: Natal vs. Solar Return</h3>
+            <h3 className="text-2xl font-bold text-white">
+              Chart Comparison: Natal vs. Solar Return
+            </h3>
             <span className="text-slate-400 text-sm flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">info</span>
               Swipe to compare details
@@ -250,7 +224,9 @@ const SolarReturnAnnualReportPage: React.FC = () => {
           <div className="relative flex flex-col md:flex-row gap-6 items-center">
             {/* Natal Chart Card */}
             <div className="flex-1 w-full bg-white/5 backdrop-blur-sm rounded-xl p-8 flex flex-col items-center gap-6 border-l-4 border-slate-500">
-              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Natal Birth Chart</p>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                Natal Birth Chart
+              </p>
               <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-slate-700/50 flex items-center justify-center bg-black/20">
                 <img
                   src="https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=400&q=80"
@@ -258,12 +234,12 @@ const SolarReturnAnnualReportPage: React.FC = () => {
                   className="w-full h-full object-cover rounded-full opacity-60"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[100px] text-slate-500/30">auto_awesome</span>
+                  <span className="material-symbols-outlined text-[100px] text-slate-500/30">
+                    auto_awesome
+                  </span>
                 </div>
               </div>
-              <p className="text-center text-slate-300 text-sm">
-                Fixed positions at time of birth
-              </p>
+              <p className="text-center text-slate-300 text-sm">Fixed positions at time of birth</p>
             </div>
 
             {/* Central Badge */}
@@ -289,7 +265,9 @@ const SolarReturnAnnualReportPage: React.FC = () => {
                   className="w-full h-full object-cover rounded-full opacity-80"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[100px] text-amber-400/40">flare</span>
+                  <span className="material-symbols-outlined text-[100px] text-amber-400/40">
+                    flare
+                  </span>
                 </div>
               </div>
               <p className="text-center text-slate-300 text-sm">
@@ -311,13 +289,18 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             <div className="w-12 h-12 rounded-lg bg-amber-400/20 flex items-center justify-center text-amber-400 mb-6">
               <span className="material-symbols-outlined">home</span>
             </div>
-            <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest">The Solar House</h4>
+            <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest">
+              The Solar House
+            </h4>
             <div className="space-y-1">
-              <p className="text-2xl font-bold text-white">Sun in the {solarData.sunHouse}th House</p>
+              <p className="text-2xl font-bold text-white">
+                Sun in the {solarData.sunHouse}th House
+              </p>
               <p className="text-amber-400 font-medium">Horizon Expansion</p>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Your vital energy is focused on travel, higher learning, and spiritual philosophy. A prime year for academic pursuits or international ventures.
+              Your vital energy is focused on travel, higher learning, and spiritual philosophy. A
+              prime year for academic pursuits or international ventures.
             </p>
           </div>
 
@@ -326,13 +309,16 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 mb-6">
               <span className="material-symbols-outlined">stars</span>
             </div>
-            <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest">Yearly Ruler</h4>
+            <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest">
+              Yearly Ruler
+            </h4>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white">{solarData.yearlyRuler}</p>
               <p className="text-purple-400 font-medium">Benevolent Growth</p>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Jupiter acts as your personal advocate this year, magnifying abundance in whichever house it currently transits. Focus on "Yes" as your default.
+              Jupiter acts as your personal advocate this year, magnifying abundance in whichever
+              house it currently transits. Focus on "Yes" as your default.
             </p>
           </div>
 
@@ -341,13 +327,16 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400 mb-6">
               <span className="material-symbols-outlined">trending_up</span>
             </div>
-            <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest">Crucial Aspect</h4>
+            <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest">
+              Crucial Aspect
+            </h4>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white">{solarData.crucialAspect}</p>
               <p className="text-orange-400 font-medium">Public Peak</p>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              A rare alignment signaling a professional peak. Your visibility is at an all-time high; the world is watching your career moves closely.
+              A rare alignment signaling a professional peak. Your visibility is at an all-time
+              high; the world is watching your career moves closely.
             </p>
           </div>
         </motion.section>
@@ -410,13 +399,18 @@ const SolarReturnAnnualReportPage: React.FC = () => {
         >
           <h3 className="text-2xl font-bold text-white px-2 mb-6">Detailed Interpretations</h3>
           {Object.entries(INTERPRETATIONS).map(([key, data]) => (
-            <div key={key} className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
+            <div
+              key={key}
+              className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10"
+            >
               <button
                 onClick={() => toggleAccordion(key)}
                 className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg ${data.color} flex items-center justify-center`}>
+                  <div
+                    className={`w-10 h-10 rounded-lg ${data.color} flex items-center justify-center`}
+                  >
                     <span className="material-symbols-outlined">{data.icon}</span>
                   </div>
                   <span className="text-lg font-bold text-white">{data.title}</span>
@@ -449,11 +443,15 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             onClick={() => navigate('/solar-returns')}
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
           >
-            <span className="material-symbols-outlined group-hover:scale-110 transition-transform">compare_arrows</span>
+            <span className="material-symbols-outlined group-hover:scale-110 transition-transform">
+              compare_arrows
+            </span>
             <span className="font-bold">Compare with Previous Year</span>
           </button>
           <button className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors group">
-            <span className="material-symbols-outlined group-hover:scale-110 transition-transform">calendar_add_on</span>
+            <span className="material-symbols-outlined group-hover:scale-110 transition-transform">
+              calendar_add_on
+            </span>
             <span className="font-bold">Add Power Dates to Calendar</span>
           </button>
           <div className="w-px h-6 bg-white/20 hidden md:block"></div>
@@ -462,7 +460,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
           </Button>
         </motion.section>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

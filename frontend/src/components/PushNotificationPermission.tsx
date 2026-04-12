@@ -5,7 +5,6 @@
 
 import React from 'react';
 import { usePushNotifications } from '../hooks/usePushNotifications';
-import { Bell, X } from 'lucide-react';
 
 interface PushNotificationPermissionProps {
   autoShow?: boolean;
@@ -52,12 +51,12 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
             onClick={handleDismiss}
             aria-label="Dismiss notification"
           >
-            <X size={18} />
+            <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
 
           <div className="flex flex-col gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white self-start">
-              <Bell size={32} />
+              <span className="material-symbols-outlined text-[32px]">notifications</span>
             </div>
 
             <div>
@@ -65,8 +64,8 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
                 Enable Notifications
               </h3>
               <p className="m-0 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Get notified about your astrological forecasts, lunar returns, and important
-                transit events.
+                Get notified about your astrological forecasts, lunar returns, and important transit
+                events.
               </p>
             </div>
 

@@ -26,7 +26,10 @@ interface SynastryCalculatorProps {
   onReportSave?: (report: SynastryChart) => void;
 }
 
-const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onReportSave: _onReportSave }) => {
+const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
+  charts,
+  onReportSave: _onReportSave,
+}) => {
   const [chart1, setChart1] = useState<string>('');
   const [chart2, setChart2] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,9 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
     elementalBalance: ElementalBalance;
     compositeChart?: CompositeChart;
   } | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'aspects' | 'composite' | 'scores'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'aspects' | 'composite' | 'scores'>(
+    'overview',
+  );
 
   const handleCalculate = async () => {
     if (!chart1 || !chart2) {
@@ -89,7 +94,12 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
   if (loading) {
     return (
-      <div className="max-w-screen-xl mx-auto p-4 md:p-8" role="region" aria-label="Synastry Chart Calculator" aria-busy="true">
+      <div
+        className="max-w-screen-xl mx-auto p-4 md:p-8"
+        role="region"
+        aria-label="Synastry Chart Calculator"
+        aria-busy="true"
+      >
         <div className="flex flex-col items-center justify-center py-16 px-8">
           <div className="w-[50px] h-[50px] border-4 border-gray-200 dark:border-gray-700 border-t-indigo-500 dark:border-t-indigo-400 rounded-full animate-spin mb-4" />
           <p>Calculating compatibility...</p>
@@ -120,13 +130,24 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto p-4 md:p-8" role="region" aria-label="Synastry Chart Calculator">
+    <div
+      className="max-w-screen-xl mx-auto p-4 md:p-8"
+      role="region"
+      aria-label="Synastry Chart Calculator"
+    >
       {/* Chart Selection */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-8 mb-8 shadow-sm">
-        <h2 className="m-0 mb-6 text-gray-900 dark:text-white text-center text-xl font-semibold">Compare Two Charts</h2>
+        <h2 className="m-0 mb-6 text-gray-900 dark:text-white text-center text-xl font-semibold">
+          Compare Two Charts
+        </h2>
         <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
           <div className="flex-1 w-full">
-            <label htmlFor="chart1" className="block mb-2 text-gray-500 dark:text-gray-400 text-sm font-medium">First Chart</label>
+            <label
+              htmlFor="chart1"
+              className="block mb-2 text-gray-500 dark:text-gray-400 text-sm font-medium"
+            >
+              First Chart
+            </label>
             <select
               id="chart1"
               value={chart1}
@@ -143,10 +164,17 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
             </select>
           </div>
 
-          <div className="flex items-center justify-center w-[50px] h-[50px] bg-indigo-500 text-white rounded-full font-bold text-xl shrink-0 md:rotate-0 rotate-0">VS</div>
+          <div className="flex items-center justify-center w-[50px] h-[50px] bg-indigo-500 text-white rounded-full font-bold text-xl shrink-0 md:rotate-0 rotate-0">
+            VS
+          </div>
 
           <div className="flex-1 w-full">
-            <label htmlFor="chart2" className="block mb-2 text-gray-500 dark:text-gray-400 text-sm font-medium">Second Chart</label>
+            <label
+              htmlFor="chart2"
+              className="block mb-2 text-gray-500 dark:text-gray-400 text-sm font-medium"
+            >
+              Second Chart
+            </label>
             <select
               id="chart2"
               value={chart2}
@@ -172,21 +200,37 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
           Calculate Compatibility
         </button>
 
-        {error && <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-center" role="alert">{error}</div>}
+        {error && (
+          <div
+            className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-center"
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
       </div>
 
       {/* Results */}
       {synastryData && compatibilityData && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden" aria-live="polite">
+        <div
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden"
+          aria-live="polite"
+        >
           {/* Overall Score */}
-          <div className={`flex flex-col md:flex-row items-center gap-8 p-8 bg-gradient-to-br ${scoreGradient[getScoreColor(compatibilityData.scores.overall)]} text-white`}>
+          <div
+            className={`flex flex-col md:flex-row items-center gap-8 p-8 bg-gradient-to-br ${scoreGradient[getScoreColor(compatibilityData.scores.overall)]} text-white`}
+          >
             <div className="flex flex-col items-center justify-center w-[120px] h-[120px] bg-white/20 rounded-full shrink-0">
-              <span className="text-5xl font-bold leading-none">{compatibilityData.scores.overall}</span>
+              <span className="text-5xl font-bold leading-none">
+                {compatibilityData.scores.overall}
+              </span>
               <span className="text-xl opacity-90">/10</span>
             </div>
             <div>
               <h3 className="m-0 mb-2 text-3xl">Overall Compatibility</h3>
-              <p className="m-0 text-lg opacity-95 leading-relaxed">{synastryData.relationshipTheme}</p>
+              <p className="m-0 text-lg opacity-95 leading-relaxed">
+                {synastryData.relationshipTheme}
+              </p>
             </div>
           </div>
 
@@ -224,15 +268,21 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               <div className="flex flex-col gap-8">
                 {/* Strengths */}
                 <div className="strengths-section">
- ??                  <h3>Strengths</h3>
+                  ?? <h3>Strengths</h3>
                   <ul className="strengths-list">
                     {synastryData.strengths.map((strength, index) => (
-                      <li key={index} className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded">
-                        <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full shrink-0 font-bold text-sm">✓</span>
+                      <li
+                        key={index}
+                        className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded"
+                      >
+                        <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full shrink-0 font-bold text-sm">
+                          ✓
+                        </span>
                         {strength}
                       </li>
                     ))}
- ??                  </ul>
+                    ??{' '}
+                  </ul>
                 </div>
 
                 {/* Challenges */}
@@ -240,8 +290,13 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                   <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">Challenges</h3>
                   <ul className="list-none p-0 m-0 flex flex-col gap-3">
                     {synastryData.challenges.map((challenge, index) => (
-                      <li key={index} className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded">
-                        <span className="flex items-center justify-center w-6 h-6 bg-red-500 text-white rounded-full shrink-0 font-bold text-sm">!</span>
+                      <li
+                        key={index}
+                        className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded"
+                      >
+                        <span className="flex items-center justify-center w-6 h-6 bg-red-500 text-white rounded-full shrink-0 font-bold text-sm">
+                          !
+                        </span>
                         {challenge}
                       </li>
                     ))}
@@ -250,39 +305,66 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
                 {/* Advice */}
                 <div>
-                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">Relationship Advice</h3>
-                  <p className="m-0 p-4 bg-gray-50 dark:bg-gray-700 border-l-4 border-indigo-500 rounded leading-relaxed">{synastryData.advice}</p>
+                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">
+                    Relationship Advice
+                  </h3>
+                  <p className="m-0 p-4 bg-gray-50 dark:bg-gray-700 border-l-4 border-indigo-500 rounded leading-relaxed">
+                    {synastryData.advice}
+                  </p>
                 </div>
 
                 {/* Elemental Balance */}
                 <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">Elemental Balance</h3>
+                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">
+                    Elemental Balance
+                  </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-red-500">
                       <span className="text-4xl">🔥</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">{compatibilityData.elementalBalance.fire}</span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">Fire</span>
+                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                        {compatibilityData.elementalBalance.fire}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                        Fire
+                      </span>
                     </div>
                     <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-amber-700">
                       <span className="text-4xl">🌍</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">{compatibilityData.elementalBalance.earth}</span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">Earth</span>
+                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                        {compatibilityData.elementalBalance.earth}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                        Earth
+                      </span>
                     </div>
                     <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-blue-300">
                       <span className="text-4xl">💨</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">{compatibilityData.elementalBalance.air}</span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">Air</span>
+                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                        {compatibilityData.elementalBalance.air}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                        Air
+                      </span>
                     </div>
                     <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-blue-500">
                       <span className="text-4xl">💧</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">{compatibilityData.elementalBalance.water}</span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">Water</span>
+                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                        {compatibilityData.elementalBalance.water}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                        Water
+                      </span>
                     </div>
                   </div>
-                  <p className={`text-center text-lg font-semibold capitalize ${
-                    getBalanceType(compatibilityData.elementalBalance) === 'well-balanced' ? 'text-green-500' :
-                    getBalanceType(compatibilityData.elementalBalance) === 'balanced' ? 'text-amber-500' : 'text-red-500'
-                  }`}>
+                  <p
+                    className={`text-center text-lg font-semibold capitalize ${
+                      getBalanceType(compatibilityData.elementalBalance) === 'well-balanced'
+                        ? 'text-green-500'
+                        : getBalanceType(compatibilityData.elementalBalance) === 'balanced'
+                          ? 'text-amber-500'
+                          : 'text-red-500'
+                    }`}
+                  >
                     {getBalanceType(compatibilityData.elementalBalance).replace('-', ' ')}
                   </p>
                 </div>
@@ -291,7 +373,9 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
             {activeTab === 'scores' && (
               <div>
-                <h3 className="m-0 mb-6 text-gray-900 dark:text-white text-2xl">Compatibility by Category</h3>
+                <h3 className="m-0 mb-6 text-gray-900 dark:text-white text-2xl">
+                  Compatibility by Category
+                </h3>
                 <div className="flex flex-col gap-6">
                   {Object.entries(compatibilityData.scores).map(([category, score]) => (
                     <div key={category} className="flex flex-col gap-2">
@@ -317,9 +401,13 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
             {activeTab === 'aspects' && (
               <div>
-                <h3 className="m-0 mb-6 text-gray-900 dark:text-white text-2xl">Cross-Chart Aspects</h3>
+                <h3 className="m-0 mb-6 text-gray-900 dark:text-white text-2xl">
+                  Cross-Chart Aspects
+                </h3>
                 {synastryData.synastryAspects.length === 0 ? (
-                  <p className="text-center text-gray-400 dark:text-gray-500 italic">No significant aspects found between these charts.</p>
+                  <p className="text-center text-gray-400 dark:text-gray-500 italic">
+                    No significant aspects found between these charts.
+                  </p>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
                     {synastryData.synastryAspects.map((aspect, index) => (
@@ -338,18 +426,23 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                             <PlanetSymbol planet={aspect.planet2} />
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {aspect.orb.toFixed(1)}°
-                            {aspect.applying ? ' ⚡' : ''}
+                            {aspect.orb.toFixed(1)}°{aspect.applying ? ' ⚡' : ''}
                           </div>
                         </div>
                         <div className="mb-4">
-                          <p className="m-0 mb-2 leading-relaxed text-gray-900 dark:text-white">{aspect.interpretation}</p>
+                          <p className="m-0 mb-2 leading-relaxed text-gray-900 dark:text-white">
+                            {aspect.interpretation}
+                          </p>
                           {aspect.soulmateIndicator && (
-                            <span className="inline-block px-3 py-1 bg-pink-500 text-white rounded-xl text-xs font-semibold">Soulmate Connection</span>
+                            <span className="inline-block px-3 py-1 bg-pink-500 text-white rounded-xl text-xs font-semibold">
+                              Soulmate Connection
+                            </span>
                           )}
                         </div>
                         <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-600">
-                          <span className="text-sm text-gray-500 dark:text-gray-400">Weight: {aspect.weight}/5</span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
+                            Weight: {aspect.weight}/5
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -362,19 +455,21 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               <div>
                 <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-2xl">Composite Chart</h3>
                 <p className="m-0 mb-8 text-gray-500 dark:text-gray-400 text-lg leading-relaxed">
-                  The composite chart represents your relationship as a separate entity.
-                  It shows the midpoint of your two charts.
+                  The composite chart represents your relationship as a separate entity. It shows
+                  the midpoint of your two charts.
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
-                  {Object.entries(compatibilityData.compositeChart.planets).map(([name, planet]) => (
-                    <div key={name} className="composite-planet">
-                      <PlanetSymbol planet={name} />
-                      <ZodiacBadge sign={planet.sign} />
-                      <span className="degree">
-                        {planet.degree}° {planet.minute}' {planet.second}"
-                      </span>
-                    </div>
-                  ))}
+                  {Object.entries(compatibilityData.compositeChart.planets).map(
+                    ([name, planet]) => (
+                      <div key={name} className="composite-planet">
+                        <PlanetSymbol planet={name} />
+                        <ZodiacBadge sign={planet.sign} />
+                        <span className="degree">
+                          {planet.degree}° {planet.minute}' {planet.second}"
+                        </span>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
             )}

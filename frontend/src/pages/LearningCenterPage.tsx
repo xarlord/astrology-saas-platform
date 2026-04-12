@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 
 // Components
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 
 // Hooks
 import { useLearning } from '../hooks/useLearning';
@@ -71,11 +72,7 @@ const KNOWLEDGE_BASE: KnowledgeCategory[] = [
     icon: 'change_history',
     color: 'text-green-400 bg-green-400/10',
     topics: 15,
-    items: [
-      'Conjunctions: Fusion of Energy',
-      'Squares: Dynamic Tension',
-      'Trines: Natural Flow',
-    ],
+    items: ['Conjunctions: Fusion of Energy', 'Squares: Dynamic Tension', 'Trines: Natural Flow'],
   },
 ];
 
@@ -102,9 +99,9 @@ const LearningCenterPage: React.FC = () => {
   // Derive latest lessons from courses
   const latestLessons = useMemo(() => {
     const allLessons: (Lesson & { courseTitle?: string })[] = [];
-    courses.forEach(course => {
+    courses.forEach((course) => {
       if (course.lessons) {
-        course.lessons.forEach(lesson => {
+        course.lessons.forEach((lesson) => {
           allLessons.push({ ...lesson, courseTitle: course.title });
         });
       }
@@ -127,19 +124,23 @@ const LearningCenterPage: React.FC = () => {
   // Filter courses based on search query
   const filteredCourses = useMemo(() => {
     if (!searchQuery) return courses;
-    return courses.filter(course =>
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchQuery.toLowerCase())
+    return courses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.description.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [courses, searchQuery]);
 
   // Get course status based on progress
-  const getCourseStatus = useCallback((course: Course): 'in-progress' | 'locked' | 'not-started' => {
-    const progress = getCourseProgressPercentage(course.id);
-    if (progress > 0) return 'in-progress';
-    // For now, all courses are unlocked. In future, could check prerequisites
-    return 'not-started';
-  }, [getCourseProgressPercentage]);
+  const getCourseStatus = useCallback(
+    (course: Course): 'in-progress' | 'locked' | 'not-started' => {
+      const progress = getCourseProgressPercentage(course.id);
+      if (progress > 0) return 'in-progress';
+      // For now, all courses are unlocked. In future, could check prerequisites
+      return 'not-started';
+    },
+    [getCourseProgressPercentage],
+  );
 
   // Format duration
   const formatDuration = useCallback((minutes: number): string => {
@@ -164,77 +165,55 @@ const LearningCenterPage: React.FC = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          <p className="text-slate-400">Loading courses...</p>
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <p className="text-slate-400">Loading courses...</p>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
-          <span className="material-symbols-outlined text-5xl text-red-400">error</span>
-          <h2 className="text-xl font-bold text-white">Failed to Load Courses</h2>
-          <p className="text-slate-400">{error}</p>
-          <Button variant="primary" onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4 text-center max-w-md px-6">
+            <span className="material-symbols-outlined text-5xl text-red-400">error</span>
+            <h2 className="text-xl font-bold text-white">Failed to Load Courses</h2>
+            <p className="text-slate-400">{error}</p>
+            <Button variant="primary" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-[#0B0D17]/80 border-b border-primary/20 px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary p-2 rounded-lg flex items-center justify-center text-white">
-              <span className="material-symbols-outlined text-[24px]">school</span>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight text-white">The AstroVerse Academy</h1>
-              <p className="text-[10px] uppercase tracking-widest text-primary font-semibold">Premium Learning Hub</p>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="flex-1 max-w-xl mx-12 hidden md:block">
-            <div className="relative group">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
-                search
-              </span>
-              <input
-                type="text"
-                placeholder="Search cosmic secrets (e.g., 'What is a Square aspect?')..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-500 text-sm"
-                aria-label="Search courses and lessons"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="text-slate-400 hover:text-primary transition-colors text-sm font-medium"
-            >
-              Dashboard
-            </button>
-            <button className="relative p-2 rounded-lg hover:bg-white/5 transition-colors">
-              <span className="material-symbols-outlined text-slate-300">notifications</span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full border-2 border-[#0B0D17]"></span>
-            </button>
+    <AppLayout>
+      {/* Search Bar */}
+      <div className="max-w-7xl mx-auto w-full px-6 pt-6">
+        <div className="flex-1 max-w-xl">
+          <div className="relative group">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Search cosmic secrets (e.g., 'What is a Square aspect?')..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-500 text-sm"
+              aria-label="Search courses and lessons"
+            />
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-12">
@@ -259,7 +238,9 @@ const LearningCenterPage: React.FC = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-blue-500/20">
-                    <span className="material-symbols-outlined text-6xl text-primary/50">school</span>
+                    <span className="material-symbols-outlined text-6xl text-primary/50">
+                      school
+                    </span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D17]/80 to-transparent flex items-end p-6">
@@ -275,7 +256,9 @@ const LearningCenterPage: React.FC = () => {
                   <div className="space-y-3 mb-8">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-400 font-medium">Your Progress</span>
-                      <span className="text-primary font-bold">{getCourseProgressPercentage(currentCourse.id)}% Complete</span>
+                      <span className="text-primary font-bold">
+                        {getCourseProgressPercentage(currentCourse.id)}% Complete
+                      </span>
                     </div>
                     <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
                       <div
@@ -292,7 +275,9 @@ const LearningCenterPage: React.FC = () => {
                       e.stopPropagation();
                       handleCourseClick(currentCourse.id);
                     }}
-                    leftIcon={<span className="material-symbols-outlined text-[18px]">play_arrow</span>}
+                    leftIcon={
+                      <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                    }
                   >
                     Resume Learning
                   </Button>
@@ -339,7 +324,7 @@ const LearningCenterPage: React.FC = () => {
                 return (
                   <div
                     key={course.id}
-                    className={`min-w-[320px] rounded-xl p-6 border-l-4 cursor-pointer transition-all hover:bg-white/5 ${
+                    className={`min-w-0 rounded-xl p-6 border-l-4 cursor-pointer transition-all hover:bg-white/5 ${
                       status === 'in-progress'
                         ? 'bg-white/5 backdrop-blur-sm border-l-primary'
                         : 'bg-white/5 backdrop-blur-sm border-l-slate-700 opacity-70'
@@ -349,7 +334,9 @@ const LearningCenterPage: React.FC = () => {
                     <div className="flex justify-between items-start mb-4">
                       <div
                         className={`p-2 rounded-lg ${
-                          status === 'in-progress' ? 'bg-primary/10 text-primary' : 'bg-white/5 text-slate-400'
+                          status === 'in-progress'
+                            ? 'bg-primary/10 text-primary'
+                            : 'bg-white/5 text-slate-400'
                         }`}
                       >
                         <span className="material-symbols-outlined">
@@ -363,7 +350,11 @@ const LearningCenterPage: React.FC = () => {
                             : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
                         }`}
                       >
-                        {status === 'in-progress' ? 'In Progress' : status === 'locked' ? 'Locked' : 'Not Started'}
+                        {status === 'in-progress'
+                          ? 'In Progress'
+                          : status === 'locked'
+                            ? 'Locked'
+                            : 'Not Started'}
                       </span>
                     </div>
                     <h4 className="text-white font-bold mb-2">{course.title}</h4>
@@ -373,9 +364,7 @@ const LearningCenterPage: React.FC = () => {
                         <span className="material-symbols-outlined text-sm">schedule</span>
                         {formatDuration(course.duration)}
                       </div>
-                      <span>
-                        {course.lessons?.length || 0} Lessons
-                      </span>
+                      <span>{course.lessons?.length || 0} Lessons</span>
                     </div>
                     {progress > 0 && (
                       <div className="mt-4">
@@ -385,7 +374,9 @@ const LearningCenterPage: React.FC = () => {
                             style={{ width: `${progress}%` }}
                           ></div>
                         </div>
-                        <span className="text-[10px] text-primary mt-1 inline-block">{progress}% complete</span>
+                        <span className="text-[10px] text-primary mt-1 inline-block">
+                          {progress}% complete
+                        </span>
                       </div>
                     )}
                   </div>
@@ -415,14 +406,19 @@ const LearningCenterPage: React.FC = () => {
                   onClick={() => handleCategoryClick(category.id)}
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${category.color}`}>
+                    <div
+                      className={`w-12 h-12 rounded-lg flex items-center justify-center ${category.color}`}
+                    >
                       <span className="material-symbols-outlined text-3xl">{category.icon}</span>
                     </div>
                     <h4 className="text-white font-bold text-lg">{category.title}</h4>
                   </div>
                   <ul className="space-y-3 text-sm text-slate-400">
                     {category.items.map((item, index) => (
-                      <li key={index} className="flex items-center gap-2 hover:text-white transition-colors">
+                      <li
+                        key={index}
+                        className="flex items-center gap-2 hover:text-white transition-colors"
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
                         {item}
                       </li>
@@ -452,7 +448,9 @@ const LearningCenterPage: React.FC = () => {
               </div>
               <div className="space-y-4">
                 {latestLessons.length === 0 ? (
-                  <p className="text-slate-500 text-sm text-center py-4">No lessons available yet.</p>
+                  <p className="text-slate-500 text-sm text-center py-4">
+                    No lessons available yet.
+                  </p>
                 ) : (
                   latestLessons.map((lesson) => (
                     <div
@@ -463,11 +461,15 @@ const LearningCenterPage: React.FC = () => {
                       <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/5">
                         {lesson.videoUrl ? (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-blue-500/20 relative">
-                            <span className="material-symbols-outlined text-2xl text-white/80">play_circle</span>
+                            <span className="material-symbols-outlined text-2xl text-white/80">
+                              play_circle
+                            </span>
                           </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-orange-500/20">
-                            <span className="material-symbols-outlined text-2xl text-white/80">article</span>
+                            <span className="material-symbols-outlined text-2xl text-white/80">
+                              article
+                            </span>
                           </div>
                         )}
                       </div>
@@ -478,7 +480,8 @@ const LearningCenterPage: React.FC = () => {
                           </h5>
                           <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
                             <span>
-                              {lesson.videoUrl ? 'Video' : 'Article'} - {formatDuration(lesson.duration)}
+                              {lesson.videoUrl ? 'Video' : 'Article'} -{' '}
+                              {formatDuration(lesson.duration)}
                             </span>
                             <span className="text-slate-700">-</span>
                             <span>{lesson.category}</span>
@@ -522,7 +525,7 @@ const LearningCenterPage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

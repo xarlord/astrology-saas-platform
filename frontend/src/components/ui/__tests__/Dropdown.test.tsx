@@ -22,7 +22,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Trigger>
             <button>Menu</button>
           </Dropdown.Trigger>
-        </Dropdown>
+        </Dropdown>,
       );
 
       expect(screen.getByRole('button', { name: 'Menu' })).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       expect(screen.queryByRole('menu')).not.toBeInTheDocument();
@@ -54,7 +54,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -76,7 +76,7 @@ describe('Dropdown Component', () => {
             </Dropdown.Menu>
           </Dropdown>
           <button>Outside</button>
-        </div>
+        </div>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -101,7 +101,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -128,7 +128,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -151,7 +151,7 @@ describe('Dropdown Component', () => {
             <Dropdown.Item>Item 2</Dropdown.Item>
             <Dropdown.Item>Item 3</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -172,7 +172,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -199,7 +199,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item onClick={handleItemClick}>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -222,7 +222,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item icon={<MoreIcon />}>Item with Icon</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -241,7 +241,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item disabled>Disabled Item</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -261,7 +261,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item danger>Delete</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -285,7 +285,7 @@ describe('Dropdown Component', () => {
             <Dropdown.Divider />
             <Dropdown.Item>Item 2</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -308,7 +308,7 @@ describe('Dropdown Component', () => {
             <Dropdown.Item>Item 2</Dropdown.Item>
             <Dropdown.Item>Item 3</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -335,7 +335,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -363,7 +363,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu>
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -383,7 +383,7 @@ describe('Dropdown Component', () => {
           <Dropdown.Menu align="right">
             <Dropdown.Item>Item 1</Dropdown.Item>
           </Dropdown.Menu>
-        </Dropdown>
+        </Dropdown>,
       );
 
       await userEvent.click(screen.getByRole('button', { name: 'Menu' }));

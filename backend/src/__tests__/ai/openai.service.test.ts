@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Set test environment before importing anything
 process.env.NODE_ENV = 'test';
@@ -57,9 +58,9 @@ import openaiService from '../../modules/ai/services/openai.service';
 
 describe('OpenAI Service', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockCreate.mockClear();
+    MockOpenAI.mockImplementation(() => mockOpenAIInstance);
     openaiService.clearCache();
-    // Default mock behavior
     mockCreate.mockResolvedValue({
       choices: [{ message: { content: 'test response' } }],
       usage: {

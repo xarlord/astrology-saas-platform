@@ -62,9 +62,7 @@ export interface CrossFieldValidator {
  * Compose multiple validators into a single validator
  * Returns first error encountered, or undefined if all pass
  */
-export function composeValidators<T = unknown>(
-  ...validators: Validator<T>[]
-): Validator<T> {
+export function composeValidators<T = unknown>(...validators: Validator<T>[]): Validator<T> {
   return (value: T, formData?: FormData): ValidationResult => {
     for (const validator of validators) {
       const error = validator(value, formData);
@@ -79,9 +77,7 @@ export function composeValidators<T = unknown>(
 /**
  * Compose validators and return all errors
  */
-export function composeValidatorsAll<T = unknown>(
-  ...validators: Validator<T>[]
-): Validator<T>[] {
+export function composeValidatorsAll<T = unknown>(...validators: Validator<T>[]): Validator<T>[] {
   return validators;
 }
 
@@ -131,7 +127,7 @@ export function validateField(
   value: unknown,
   validators: Validator[],
   formData?: FormData,
-  options: ValidationOptions = {}
+  options: ValidationOptions = {},
 ): FieldErrors {
   const errors: string[] = [];
   const { stopOnFirstError = true, transformError } = options;
@@ -158,7 +154,7 @@ export async function validateFieldAsync(
   validators: Validator[],
   asyncValidators: AsyncValidator[],
   formData?: FormData,
-  options: AsyncValidationOptions = {}
+  options: AsyncValidationOptions = {},
 ): Promise<FieldErrors> {
   // First run sync validators
   const syncErrors = validateField(value, validators, formData, options);
@@ -175,7 +171,7 @@ export async function validateFieldAsync(
       const error = await Promise.race([
         validator(value, formData),
         new Promise<undefined>((_, reject) =>
-          setTimeout(() => reject(new Error('Validation timeout')), timeout)
+          setTimeout(() => reject(new Error('Validation timeout')), timeout),
         ),
       ]);
 
@@ -205,10 +201,7 @@ export async function validateFieldAsync(
 /**
  * Validate an entire form
  */
-export function validateForm(
-  formData: FormData,
-  config: FormValidationConfig
-): FormErrors {
+export function validateForm(formData: FormData, config: FormValidationConfig): FormErrors {
   const errors: FormErrors = {};
   const { fields, options = {} } = config;
 
@@ -217,17 +210,12 @@ export function validateForm(
     const fieldValidators = fieldConfig.validators || [];
 
     if (fieldValidators.length > 0) {
-      const fieldErrors = validateField(
-        value,
-        fieldValidators,
-        formData,
-        {
-          ...options,
-          transformError: options.transformError
-            ? (err) => options.transformError!(err, fieldName)
-            : undefined,
-        }
-      );
+      const fieldErrors = validateField(value, fieldValidators, formData, {
+        ...options,
+        transformError: options.transformError
+          ? (err) => options.transformError!(err, fieldName)
+          : undefined,
+      });
 
       if (fieldErrors.length > 0) {
         errors[fieldName] = fieldErrors;
@@ -239,7 +227,7 @@ export function validateForm(
   if (config.crossFieldValidators) {
     for (const crossValidator of config.crossFieldValidators) {
       const error = crossValidator.validate(formData);
-      if (error) {
+      if (typeof error === 'string') {
         // Add to the first field's errors
         const firstField = crossValidator.fields[0];
         if (!errors[firstField]) {
@@ -259,7 +247,7 @@ export function validateForm(
 export async function validateFormAsync(
   formData: FormData,
   config: FormValidationConfig,
-  options: AsyncValidationOptions = {}
+  options: AsyncValidationOptions = {},
 ): Promise<FormErrors> {
   const errors: FormErrors = {};
   const { fields, crossFieldValidators, options: configOptions = {} } = config;
@@ -282,11 +270,11 @@ export async function validateFormAsync(
           transformError: mergedOptions.transformError
             ? (err) => mergedOptions.transformError!(err, fieldName)
             : undefined,
-        }
+        },
       );
 
       return { fieldName, errors: fieldErrors };
-    })
+    }),
   );
 
   // Collect results
@@ -321,7 +309,7 @@ export async function validateFormAsync(
  * Check if form has any errors
  */
 export function hasErrors(errors: FormErrors): boolean {
-  return Object.values(errors).some(fieldErrors => fieldErrors.length > 0);
+  return Object.values(errors).some((fieldErrors) => fieldErrors.length > 0);
 }
 
 /**
@@ -426,10 +414,7 @@ export function createValidationState(): ValidationState {
 /**
  * Update validation state with new errors
  */
-export function updateValidationState(
-  state: ValidationState,
-  errors: FormErrors
-): ValidationState {
+export function updateValidationState(state: ValidationState, errors: FormErrors): ValidationState {
   return {
     ...state,
     errors,
@@ -458,11 +443,7 @@ export function dirtyField(state: ValidationState, fieldName: string): Validatio
 /**
  * Check if field should show error (touched or submitted)
  */
-export function shouldShowError(
-  state: ValidationState,
-  fieldName: string,
-  submitted = false
-) {
+export function shouldShowError(state: ValidationState, fieldName: string, submitted = false) {
   return (state.touched.has(fieldName) || submitted) && fieldHasError(state.errors, fieldName);
 }
 

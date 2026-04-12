@@ -39,7 +39,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       containerClassName,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [internalChecked, setInternalChecked] = useState(Boolean(defaultChecked));
     const [isIndeterminate, setIsIndeterminate] = useState(indeterminate);
@@ -90,7 +90,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       'relative flex items-start',
       labelPosition === 'end' ? 'flex-row' : 'flex-row-reverse',
       fullWidth && 'w-full',
-      containerClassName
+      containerClassName,
     );
 
     const checkboxClass = clsx(
@@ -101,7 +101,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       error
         ? 'border-red-300 dark:border-red-700 text-red-600 focus:ring-red-500 checked:bg-red-600'
         : 'border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 checked:bg-indigo-600',
-      'dark:checked:bg-indigo-500'
+      'dark:checked:bg-indigo-500',
     );
 
     const labelClass = clsx(
@@ -109,7 +109,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       labelPosition === 'end' ? 'ml-2' : 'mr-2',
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
       error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
-      labelSizeStyles[size]
+      labelSizeStyles[size],
     );
 
     return (
@@ -127,13 +127,15 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               'appearance-none',
               'checked:bg-current',
               'relative cursor-pointer',
-              className
+              className,
             )}
             aria-invalid={Boolean(error)}
-            aria-describedby={clsx(
-              error && errorId,
-              helperText && helperId
-            ).split(' ').filter(Boolean).join(' ') || undefined}
+            aria-describedby={
+              clsx(error && errorId, helperText && helperId)
+                .split(' ')
+                .filter(Boolean)
+                .join(' ') || undefined
+            }
             {...props}
           />
 
@@ -145,7 +147,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               sizeStyles[size],
               'transition-opacity duration-200',
               isChecked || isIndeterminate ? 'opacity-100' : 'opacity-0',
-              labelPosition === 'end' ? 'left-0' : 'right-0'
+              labelPosition === 'end' ? 'left-0' : 'right-0',
             )}
             viewBox="0 0 24 24"
             fill="currentColor"
@@ -182,7 +184,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Checkbox.displayName = 'Checkbox';

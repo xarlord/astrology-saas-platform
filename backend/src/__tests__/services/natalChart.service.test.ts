@@ -5,6 +5,8 @@
  * @requirement REQ-API-001
  */
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { NatalChartService } from '../../modules/shared/services/natalChart.service';
 
 describe('NatalChartService', () => {

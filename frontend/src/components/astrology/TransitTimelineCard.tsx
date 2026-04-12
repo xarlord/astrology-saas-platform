@@ -22,9 +22,22 @@ export interface TransitTimelineCardProps {
   'aria-label'?: string;
 }
 
-const TRANSIT_CONFIG: Record<TransitType, { color: string; bgColor: string; label: string; icon: TransitIconType }> = {
-  favorable: { color: '#22c55e', bgColor: 'bg-emerald-500/10', label: 'Favorable', icon: 'check_circle' },
-  challenging: { color: '#ef4444', bgColor: 'bg-rose-500/10', label: 'Challenging', icon: 'warning' },
+const TRANSIT_CONFIG: Record<
+  TransitType,
+  { color: string; bgColor: string; label: string; icon: TransitIconType }
+> = {
+  favorable: {
+    color: '#22c55e',
+    bgColor: 'bg-emerald-500/10',
+    label: 'Favorable',
+    icon: 'check_circle',
+  },
+  challenging: {
+    color: '#ef4444',
+    bgColor: 'bg-rose-500/10',
+    label: 'Challenging',
+    icon: 'warning',
+  },
   neutral: { color: '#3b82f6', bgColor: 'bg-blue-500/10', label: 'Neutral', icon: 'info' },
   major: { color: '#fbbf24', bgColor: 'bg-yellow-500/10', label: 'Major', icon: 'star' },
 };

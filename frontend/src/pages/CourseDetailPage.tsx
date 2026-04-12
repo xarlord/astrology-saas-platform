@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 
 // Components
 import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components';
 import VideoPlayer from '../components/media/VideoPlayer';
 
 // Types
@@ -44,7 +45,8 @@ const MOCK_COURSES: Record<string, Course> = {
   'master-houses': {
     id: 'master-houses',
     title: 'Master the Houses',
-    description: 'Deep dive into the 12 celestial houses. Understand how the positions of planets define specific life areas.',
+    description:
+      'Deep dive into the 12 celestial houses. Understand how the positions of planets define specific life areas.',
     instructor: 'Dr. Stella Nova',
     duration: '4.5 hours',
     difficulty: 'Intermediate',
@@ -180,7 +182,7 @@ const CourseDetailPage: React.FC = () => {
     const updatedModules = course.modules.map((module) => ({
       ...module,
       lessons: module.lessons.map((lesson) =>
-        lesson.id === lessonId ? { ...lesson, completed: !lesson.completed } : lesson
+        lesson.id === lessonId ? { ...lesson, completed: !lesson.completed } : lesson,
       ),
     }));
     setCourse({ ...course, modules: updatedModules });
@@ -221,58 +223,26 @@ const CourseDetailPage: React.FC = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 flex items-center justify-center">
+      <AppLayout>
         <div className="text-center">
           <p className="text-slate-400 mb-4">Course not found</p>
           <Button variant="primary" onClick={() => navigate('/learning')}>
             Back to Learning Center
           </Button>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
   const completedLessons = course.modules.reduce(
     (sum, m) => sum + m.lessons.filter((l) => l.completed).length,
-    0
+    0,
   );
-  const progress = Math.round((completedLessons / totalLessons) * 100);
+  const _progress = Math.round((completedLessons / totalLessons) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="border-b border-white/10 bg-[#0B0D17]/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/learning')}
-              className="p-2 rounded-lg hover:bg-white/5 transition-colors"
-            >
-              <span className="material-symbols-outlined text-white">arrow_back</span>
-            </button>
-            <div>
-              <h1 className="text-lg font-bold text-white">{course.title}</h1>
-              <p className="text-xs text-slate-400">
-                {course.instructor} • {course.difficulty}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-xs text-slate-400">Progress</p>
-              <p className="text-sm font-bold text-primary">{progress}%</p>
-            </div>
-            <div className="w-32 bg-white/10 h-2 rounded-full overflow-hidden">
-              <div
-                className="bg-primary h-full rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Video Player */}
@@ -293,7 +263,7 @@ const CourseDetailPage: React.FC = () => {
                     // Track progress every 10%
                     const percent = progress.percentage;
                     if (Math.floor(percent) % 10 === 0 && Math.floor(percent) > 0) {
-                      console.log(`Progress: ${Math.floor(percent)}%`);
+                      // Progress update: ${Math.floor(percent)}%
                     }
                   }}
                   onComplete={() => {
@@ -322,7 +292,9 @@ const CourseDetailPage: React.FC = () => {
                   </div>
                   {currentLesson && (
                     <button
-                      onClick={() => { void handleMarkComplete(currentLesson.id); }}
+                      onClick={() => {
+                        void handleMarkComplete(currentLesson.id);
+                      }}
                       className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
                         currentLesson.completed
                           ? 'bg-green-500/20 text-green-400 border border-green-500/30'
@@ -342,15 +314,21 @@ const CourseDetailPage: React.FC = () => {
                   <Button
                     variant="secondary"
                     onClick={handlePreviousLesson}
-                    disabled={!currentLesson || course.modules[0].lessons[0].id === currentLesson.id}
-                    leftIcon={<span className="material-symbols-outlined text-[18px]">skip_previous</span>}
+                    disabled={
+                      !currentLesson || course.modules[0].lessons[0].id === currentLesson.id
+                    }
+                    leftIcon={
+                      <span className="material-symbols-outlined text-[18px]">skip_previous</span>
+                    }
                   >
                     Previous
                   </Button>
                   <Button
                     variant="primary"
                     onClick={handleNextLesson}
-                    rightIcon={<span className="material-symbols-outlined text-[18px]">skip_next</span>}
+                    rightIcon={
+                      <span className="material-symbols-outlined text-[18px]">skip_next</span>
+                    }
                   >
                     Next Lesson
                   </Button>
@@ -445,8 +423,8 @@ const CourseDetailPage: React.FC = () => {
                           <div className="text-left">
                             <p className="text-white font-medium text-sm">{module.title}</p>
                             <p className="text-xs text-slate-500">
-                              {module.lessons.filter((l) => l.completed).length}/{module.lessons.length}{' '}
-                              completed
+                              {module.lessons.filter((l) => l.completed).length}/
+                              {module.lessons.length} completed
                             </p>
                           </div>
                         </div>
@@ -469,12 +447,14 @@ const CourseDetailPage: React.FC = () => {
                                   lesson.completed
                                     ? 'bg-green-500/20 text-green-400'
                                     : currentLessonId === lesson.id
-                                    ? 'bg-primary text-white'
-                                    : 'bg-white/10 text-slate-400'
+                                      ? 'bg-primary text-white'
+                                      : 'bg-white/10 text-slate-400'
                                 }`}
                               >
                                 {lesson.completed ? (
-                                  <span className="material-symbols-outlined text-[14px]">check</span>
+                                  <span className="material-symbols-outlined text-[14px]">
+                                    check
+                                  </span>
                                 ) : (
                                   lessonIndex + 1
                                 )}
@@ -518,7 +498,9 @@ const CourseDetailPage: React.FC = () => {
                         key={index}
                         className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3"
                       >
-                        <span className="material-symbols-outlined text-slate-400">{item.icon}</span>
+                        <span className="material-symbols-outlined text-slate-400">
+                          {item.icon}
+                        </span>
                         <span className="text-sm text-white">{item.name}</span>
                       </button>
                     ))}
@@ -529,7 +511,7 @@ const CourseDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

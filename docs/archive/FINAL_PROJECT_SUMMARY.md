@@ -47,7 +47,7 @@
 ### Production Deployment Setup
 - ✅ Backend Docker configuration complete
 - ✅ Frontend Docker configuration complete
-- ✅ Railway deployment scripts ready
+- ✅ Docker Compose deployment scripts ready
 - ✅ Environment variables configured
 - ✅ JWT_SECRET generated
 - ✅ Database migrations ready
@@ -58,33 +58,33 @@
 - ✅ PRODUCTION_DEPLOYMENT.md (comprehensive guide)
 - ✅ PRODUCTION_DEPLOYMENT_CHECKLIST.md
 - ✅ FRONTEND_DEPLOYMENT_README.md
-- ✅ RAILWAY_QUICK_START.md
+- ✅ DEPLOYMENT_GUIDE.md
 - ✅ And 8+ more deployment guides
 
 ---
 
 ## 🚀 DEPLOYMENT INSTRUCTIONS
 
-### Quick Deploy to Railway (15 minutes)
+### Quick Deploy to Docker Compose (15 minutes)
 
 #### Step 1: Deploy Backend
 ```bash
-# Option A: Railway Web Dashboard (Easiest)
-1. Visit https://railway.app/new
+# Option A: Docker Compose Web Dashboard (Easiest)
+1. Visit https://docker compose.app/new
 2. Click "Deploy from GitHub repo"
 3. Select your repository
 4. Set root directory to "backend"
 5. Click "Deploy"
 
-# Option B: Railway CLI
-railway login
+# Option B: Docker Compose CLI
+docker compose login
 cd backend
-railway init
-railway up
+docker compose init
+docker compose up
 ```
 
 #### Step 2: Configure Backend
-**Add Environment Variables in Railway Dashboard:**
+**Add Environment Variables in Docker Compose Dashboard:**
 ```bash
 NODE_ENV=production
 PORT=3001
@@ -94,36 +94,36 @@ JWT_REFRESH_EXPIRES_IN=7d
 ```
 
 **Add PostgreSQL Service:**
-- In Railway dashboard, click "New Service"
+- In Docker Compose dashboard, click "New Service"
 - Select "Database" → "PostgreSQL"
-- Railway will provide DATABASE_URL
+- Docker Compose will provide DATABASE_URL
 
 **Run Migrations:**
 ```bash
-# Via Railway Console
+# Via Docker Compose Console
 npx knex migrate:latest
 ```
 
 #### Step 3: Deploy Frontend
 ```bash
-# Option A: Railway Web Dashboard
-1. In Railway dashboard, click "New Service"
+# Option A: Docker Compose Web Dashboard
+1. In Docker Compose dashboard, click "New Service"
 2. Select "Deploy from GitHub repo"
 3. Set root directory to "frontend"
 4. Add environment variable:
-   VITE_API_URL=https://your-backend-url.up.railway.app
+   VITE_API_URL=https://your-backend-url.up.docker compose.app
 5. Click "Deploy"
 
-# Option B: Railway CLI
+# Option B: Docker Compose CLI
 cd frontend
-railway init
-railway up
+docker compose init
+docker compose up
 ```
 
 #### Step 4: Verify Deployment
 ```bash
 # Test backend health
-curl https://your-backend.up.railway.app/health
+curl https://your-backend.up.docker compose.app/health
 
 # Test frontend
 # Open your frontend URL in browser
@@ -159,7 +159,7 @@ curl https://your-backend.up.railway.app/health
 
 ### Infrastructure
 - **Docker configurations** for production
-- **Railway deployment** scripts
+- **Docker Compose deployment** scripts
 - **Environment variable** templates
 - **Database migration** files
 - **Smoke test** automation
@@ -168,7 +168,7 @@ curl https://your-backend.up.railway.app/health
 
 ## 💰 ESTIMATED COSTS
 
-### Railway (Recommended)
+### Docker Compose (Recommended)
 ```
 Backend:        $5/month (512MB RAM)
 Frontend:       $0/month (free tier)
@@ -268,7 +268,7 @@ Total:          $45/month
 ### Documentation Index
 1. **PROJECT_COMPLETION_REPORT.md** - Comprehensive 35+ page report
 2. **PRODUCTION_DEPLOYMENT.md** - Complete deployment guide
-3. **RAILWAY_QUICK_START.md** - Quick deployment guide
+3. **DEPLOYMENT_GUIDE.md** - Docker Compose deployment guide
 4. **DEPLOY_NOW.md** - 15-minute deployment guide
 5. **PRODUCTION_URLS.md** - URLs template (update after deploy)
 6. **README.md** - Project overview
@@ -276,8 +276,8 @@ Total:          $45/month
 8. **FINDINGS.md** - Resolved findings
 
 ### External Resources
-- **Railway Docs:** https://docs.railway.app
-- **Railway Support:** support@railway.app
+- **Docker Compose Docs:** https://docs.docker compose.app
+- **Docker Compose Support:** support@docker compose.app
 - **PostgreSQL Docs:** https://www.postgresql.org/docs/
 - **Swiss Ephemeris:** https://www.astro.com/swisseph/
 
@@ -305,7 +305,7 @@ Your **Astrology SaaS Platform** is:
 - 100% test pass rate
 
 ### Next Steps
-1. **Deploy to Railway** (15 minutes)
+1. **Deploy to Docker Compose** (15 minutes)
 2. **Test with real users** (week 1)
 3. **Gather feedback** (ongoing)
 4. **Iterate and improve** (ongoing)
@@ -330,7 +330,7 @@ Your **Astrology SaaS Platform** is:
 
 ## 📧 CONTACT
 
-For questions or support, refer to the documentation index above or Railway's support channels.
+For questions or support, refer to the documentation index above or Docker Compose's support channels.
 
 ---
 

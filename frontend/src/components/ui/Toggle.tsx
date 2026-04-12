@@ -8,7 +8,10 @@
 import React, { forwardRef, useState, useEffect, useCallback } from 'react';
 import { clsx } from 'clsx';
 
-export interface ToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size' | 'onChange' | 'checked'> {
+export interface ToggleProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'size' | 'onChange' | 'checked'
+> {
   checked?: boolean;
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
@@ -40,7 +43,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       containerClassName,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [internalChecked, setInternalChecked] = useState(defaultChecked);
     const toggleId = `toggle-${Math.random().toString(36).substr(2, 9)}`;
@@ -109,7 +112,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       labelPosition === 'top' && 'flex-col gap-1',
       labelPosition === 'bottom' && 'flex-col-reverse gap-1',
       fullWidth && 'w-full',
-      containerClassName
+      containerClassName,
     );
 
     const switchClass = clsx(
@@ -118,22 +121,20 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       toggleSizeStyles[size].track,
-      isChecked
-        ? 'bg-indigo-600 dark:bg-indigo-500'
-        : 'bg-gray-200 dark:bg-gray-700',
-      error && !isChecked && 'border-red-500'
+      isChecked ? 'bg-indigo-600 dark:bg-indigo-500' : 'bg-gray-200 dark:bg-gray-700',
+      error && !isChecked && 'border-red-500',
     );
 
     const thumbClass = clsx(
       'pointer-events-none inline-block rounded-full bg-white shadow transform transition-transform duration-200 ease-in-out',
       toggleSizeStyles[size].thumb,
-      isChecked ? toggleSizeStyles[size].thumbChecked : toggleSizeStyles[size].thumb
+      isChecked ? toggleSizeStyles[size].thumbChecked : toggleSizeStyles[size].thumb,
     );
 
     const labelClass = clsx(
       'text-sm font-medium',
       disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
-      error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+      error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
     );
 
     return (
@@ -161,10 +162,12 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
           aria-checked={isChecked}
           aria-disabled={disabled}
           aria-invalid={Boolean(error)}
-          aria-describedby={clsx(
-            error && errorId,
-            helperText && helperId
-          ).split(' ').filter(Boolean).join(' ') || undefined}
+          aria-describedby={
+            clsx(error && errorId, helperText && helperId)
+              .split(' ')
+              .filter(Boolean)
+              .join(' ') || undefined
+          }
           aria-label={label}
           disabled={disabled}
           className={clsx(switchClass, className)}
@@ -203,7 +206,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Toggle.displayName = 'Toggle';

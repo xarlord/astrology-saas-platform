@@ -63,7 +63,13 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
   const displayLabel = label ?? `${Math.round(clampedValue)}%`;
 
   return (
-    <div className={clsx('w-full', className)} role="progressbar" aria-valuenow={indeterminate ? undefined : clampedValue} aria-valuemin={0} aria-valuemax={100} aria-label={indeterminate ? 'Loading...' : `Progress: ${clampedValue}%`}
+    <div
+      className={clsx('w-full', className)}
+      role="progressbar"
+      aria-valuenow={indeterminate ? undefined : clampedValue}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={indeterminate ? 'Loading...' : `Progress: ${clampedValue}%`}
     >
       {showLabel && labelPosition === 'top' && (
         <div className="flex justify-between mb-1 text-sm text-gray-600 dark:text-gray-400">
@@ -74,7 +80,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
       <div
         className={clsx(
           'w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden',
-          linearSizeClasses[size]
+          linearSizeClasses[size],
         )}
       >
         {indeterminate ? (
@@ -83,7 +89,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
               'h-full w-full',
               linearColorClasses[color],
               'animate-[shimmer_2s_linear_infinite]',
-              'bg-[length:200%_100%]'
+              'bg-[length:200%_100%]',
             )}
             style={{
               background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)`,
@@ -94,7 +100,7 @@ export const LinearProgress: React.FC<LinearProgressProps> = ({
           <div
             className={clsx(
               'h-full rounded-full transition-all duration-300 ease-out',
-              linearColorClasses[color]
+              linearColorClasses[color],
             )}
             style={{ width: `${clampedValue}%` }}
           />
@@ -180,10 +186,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
       style={{ width: size, height: size }}
     >
       <svg
-        className={clsx(
-          'transform -rotate-90',
-          indeterminate && 'animate-spin'
-        )}
+        className={clsx('transform -rotate-90', indeterminate && 'animate-spin')}
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
@@ -202,7 +205,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
           className={clsx(
             colors.progress,
             'transition-all duration-300 ease-out',
-            indeterminate && 'opacity-75'
+            indeterminate && 'opacity-75',
           )}
           fill="none"
           strokeWidth={strokeWidth}
@@ -217,20 +220,13 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
 
       {/* Center content */}
       {(showValue || label) && !indeterminate && (
-        <div
-          className={clsx(
-            'absolute inset-0 flex items-center justify-center',
-            colors.text
-          )}
-        >
+        <div className={clsx('absolute inset-0 flex items-center justify-center', colors.text)}>
           <span className="text-lg font-semibold">{displayLabel}</span>
         </div>
       )}
 
       {/* Screen reader text */}
-      <span className="sr-only">
-        {indeterminate ? 'Loading...' : `${clampedValue}% complete`}
-      </span>
+      <span className="sr-only">{indeterminate ? 'Loading...' : `${clampedValue}% complete`}</span>
     </div>
   );
 };

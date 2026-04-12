@@ -335,7 +335,9 @@ describe('calendarStore', () => {
     });
 
     it('should handle create event error', async () => {
-      vi.mocked(calendarService.createCustomEvent).mockRejectedValueOnce(new Error('Create failed'));
+      vi.mocked(calendarService.createCustomEvent).mockRejectedValueOnce(
+        new Error('Create failed'),
+      );
 
       await act(async () => {
         try {

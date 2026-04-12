@@ -1,0 +1,26 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - heading "Create Account" [level=1] [ref=e7]
+    - paragraph [ref=e8]: Start your astrological journey
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e11]: Full Name
+      - textbox "Full Name" [ref=e12]:
+        - /placeholder: Your full name
+    - generic [ref=e13]:
+      - generic [ref=e14]: Email Address
+      - textbox "Email Address" [ref=e15]:
+        - /placeholder: you@example.com
+    - generic [ref=e16]:
+      - generic [ref=e17]: Password
+      - textbox "Password" [ref=e18]:
+        - /placeholder: Create a password (min 8 chars, uppercase, lowercase, number)
+    - generic [ref=e19]:
+      - generic [ref=e20]: Confirm Password
+      - textbox "Confirm Password" [ref=e21]:
+        - /placeholder: Confirm your password
+    - button "Create Account" [ref=e22] [cursor=pointer]
+    - generic [ref=e23]:
+      - generic [ref=e24]: Already have an account?
+      - link "Sign in" [ref=e25] [cursor=pointer]:
+        - /url: /login

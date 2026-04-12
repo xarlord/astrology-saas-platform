@@ -108,12 +108,7 @@ describe('CalendarView Component', () => {
     mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     const today = new Date();
-    render(
-      <CalendarView
-        initialMonth={today.getMonth() + 2}
-        initialYear={today.getFullYear()}
-      />
-    );
+    render(<CalendarView initialMonth={today.getMonth() + 2} initialYear={today.getFullYear()} />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /today/i })).toBeInTheDocument();
@@ -238,7 +233,7 @@ describe('DailyWeatherModal Component', () => {
   test('should close modal when clicking overlay', () => {
     const onClose = vi.fn();
     const { container } = render(
-      <DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />
+      <DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />,
     );
 
     const overlay = container.querySelector('.modal-overlay');
@@ -385,9 +380,7 @@ describe('CalendarExport Component', () => {
     render(<CalendarExport />);
 
     const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
-      .toISOString()
-      .split('T')[0];
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
 
     const startDateInput = screen.getByLabelText(/from/i);
     expect(startDateInput).toHaveValue(firstDay);
@@ -404,8 +397,12 @@ describe('CalendarExport Component', () => {
 
     // After clicking "This Month", dates should be set to first and last day of current month
     const today = new Date();
-    const expectedFirstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
+    const expectedFirstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+      .toISOString()
+      .split('T')[0];
+    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+      .toISOString()
+      .split('T')[0];
 
     expect((startDateInput as HTMLInputElement).value).toBe(expectedFirstDay);
     expect((endDateInput as HTMLInputElement).value).toBe(expectedLastDay);

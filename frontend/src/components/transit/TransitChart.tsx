@@ -67,8 +67,9 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
   return null;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unnecessary-type-assertion
-const CustomDot = (props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void }) => {
+const CustomDot = (
+  props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void },
+) => {
   const { cx, cy, dataPoint, onClick } = props;
 
   if (!dataPoint || !dataPoint.isMajorEvent) {
@@ -107,7 +108,6 @@ const TransitChart: React.FC<TransitChartProps> = ({
   onDataPointClick,
   'aria-label': ariaLabel = 'Transit energy chart',
 }) => {
-
   // Format date for X-axis
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -121,7 +121,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
   }));
 
   return (
-    <div className="w-full" aria-label={ariaLabel}>
+    <div className="w-full" aria-label={ariaLabel} data-testid="transit-chart-container">
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
           {showGrid && (
@@ -142,7 +142,13 @@ const TransitChart: React.FC<TransitChartProps> = ({
             domain={[0, 100]}
             tick={{ fill: '#64748b', fontSize: 12 }}
             stroke="rgba(255, 255, 255, 0.1)"
-            label={{ value: 'Energy', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }}
+            label={{
+              value: 'Energy',
+              angle: -90,
+              position: 'insideLeft',
+              fill: '#64748b',
+              fontSize: 11,
+            }}
           />
 
           {showReferenceLines && (
@@ -159,17 +165,16 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
-            dot={(props: DotProps & { dataPoint?: TransitDataPoint; onClick?: (point: TransitDataPoint) => void }) => {
-              const index = 'payload' in props && props.payload && typeof props.payload === 'object' && 'index' in props.payload
-                ? (props.payload.index as number)
-                : 0;
-              return (
-                <CustomDot
-                  {...props}
-                  dataPoint={data[index]}
-                  onClick={onDataPointClick}
-                />
-              );
+            // @ts-expect-error recharts DotType doesn't support custom props but runtime works fine
+            dot={(props: DotProps) => {
+              const index =
+                'payload' in props &&
+                props.payload &&
+                typeof props.payload === 'object' &&
+                'index' in props.payload
+                  ? (props.payload.index as number)
+                  : 0;
+              return <CustomDot {...props} dataPoint={data[index]} onClick={onDataPointClick} />;
             }}
             activeDot={{ r: 6, fill: color, stroke: '#fff', strokeWidth: 2 }}
             animationDuration={1000}
@@ -180,7 +185,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
 
       {/* Legend */}
       {showReferenceLines && (
-        <div className="flex justify-center gap-6 mt-4 text-xs">
+        <div className="flex justify-center gap-6 mt-4 text-xs" data-testid="transit-chart-legend">
           <div className="flex items-center gap-2">
             <div className="w-3 h-0.5 bg-green-500"></div>
             <span className="text-slate-400">High Energy (70+)</span>

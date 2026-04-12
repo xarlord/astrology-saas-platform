@@ -5,7 +5,13 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { learningService } from '../../services/learning.service';
-import type { Lesson, Course, UserProgress, LearningPath, ApiResponse } from '../../types/api.types';
+import type {
+  Lesson,
+  Course,
+  UserProgress,
+  LearningPath,
+  ApiResponse,
+} from '../../types/api.types';
 import { setupLocalStorageMock } from './utils';
 
 // Helper to create mock axios response
@@ -80,7 +86,9 @@ describe('learningService', () => {
 
       const result = await learningService.getLessons();
 
-      expect(mockApi.get).toHaveBeenCalledWith('/learning/lessons', { params: expect.any(URLSearchParams) });
+      expect(mockApi.get).toHaveBeenCalledWith('/learning/lessons', {
+        params: expect.any(URLSearchParams),
+      });
       expect(result).toEqual(mockLessons);
     });
 
@@ -117,7 +125,11 @@ describe('learningService', () => {
     });
 
     it('should handle API error with error field', async () => {
-      const response: ApiResponse<Lesson[]> = { success: false, data: [] as Lesson[], error: 'Failed to fetch lessons' };
+      const response: ApiResponse<Lesson[]> = {
+        success: false,
+        data: [] as Lesson[],
+        error: 'Failed to fetch lessons',
+      };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(learningService.getLessons()).rejects.toThrow('Failed to fetch lessons');
@@ -162,7 +174,11 @@ describe('learningService', () => {
     });
 
     it('should throw error when lesson not found', async () => {
-      const response: ApiResponse<Lesson> = { success: false, data: mockLesson, error: 'Lesson not found' };
+      const response: ApiResponse<Lesson> = {
+        success: false,
+        data: mockLesson,
+        error: 'Lesson not found',
+      };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(learningService.getLesson('invalid-id')).rejects.toThrow('Lesson not found');
@@ -197,7 +213,11 @@ describe('learningService', () => {
     });
 
     it('should handle error when fetching progress', async () => {
-      const response: ApiResponse<UserProgress[]> = { success: false, data: [], error: 'Unauthorized' };
+      const response: ApiResponse<UserProgress[]> = {
+        success: false,
+        data: [],
+        error: 'Unauthorized',
+      };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(learningService.getUserProgress()).rejects.toThrow('Unauthorized');
@@ -303,10 +323,16 @@ describe('learningService', () => {
     });
 
     it('should handle completion error', async () => {
-      const response: ApiResponse<UserProgress> = { success: false, data: mockProgress, error: 'Cannot complete lesson' };
+      const response: ApiResponse<UserProgress> = {
+        success: false,
+        data: mockProgress,
+        error: 'Cannot complete lesson',
+      };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
-      await expect(learningService.completeLesson('lesson-1')).rejects.toThrow('Cannot complete lesson');
+      await expect(learningService.completeLesson('lesson-1')).rejects.toThrow(
+        'Cannot complete lesson',
+      );
     });
   });
 
@@ -392,24 +418,37 @@ describe('learningService', () => {
     });
 
     it('should handle start error', async () => {
-      const response: ApiResponse<void> = { success: false, data: undefined as unknown as void, error: 'Path not found' };
+      const response: ApiResponse<void> = {
+        success: false,
+        data: undefined as unknown as void,
+        error: 'Path not found',
+      };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
-      await expect(learningService.startLearningPath('invalid-id')).rejects.toThrow('Path not found');
+      await expect(learningService.startLearningPath('invalid-id')).rejects.toThrow(
+        'Path not found',
+      );
     });
   });
 
   describe('submitQuiz', () => {
     it('should submit quiz answers and return results', async () => {
-      const mockResult = { score: 90, passed: true, feedback: ['Great job!', 'Question 3 was incorrect'] };
+      const mockResult = {
+        score: 90,
+        passed: true,
+        feedback: ['Great job!', 'Question 3 was incorrect'],
+      };
       const response: ApiResponse<typeof mockResult> = { success: true, data: mockResult };
       mockApi.post.mockResolvedValueOnce(createMockResponse(response));
 
       const result = await learningService.submitQuiz('lesson-1', 'quiz-1', { q1: 'a', q2: 'b' });
 
-      expect(mockApi.post).toHaveBeenCalledWith('/learning/lessons/lesson-1/quizzes/quiz-1/submit', {
-        answers: { q1: 'a', q2: 'b' },
-      });
+      expect(mockApi.post).toHaveBeenCalledWith(
+        '/learning/lessons/lesson-1/quizzes/quiz-1/submit',
+        {
+          answers: { q1: 'a', q2: 'b' },
+        },
+      );
       expect(result).toEqual(mockResult);
     });
 
@@ -446,7 +485,9 @@ describe('learningService', () => {
 
       const result = await learningService.searchLessons('sun aries');
 
-      expect(mockApi.get).toHaveBeenCalledWith('/learning/lessons/search', { params: { q: 'sun aries' } });
+      expect(mockApi.get).toHaveBeenCalledWith('/learning/lessons/search', {
+        params: { q: 'sun aries' },
+      });
       expect(result).toEqual(mockLessons);
     });
 
@@ -480,7 +521,9 @@ describe('learningService', () => {
 
       const result = await learningService.getCourses();
 
-      expect(mockApi.get).toHaveBeenCalledWith('/learning/courses', { params: expect.any(URLSearchParams) });
+      expect(mockApi.get).toHaveBeenCalledWith('/learning/courses', {
+        params: expect.any(URLSearchParams),
+      });
       expect(result).toEqual(mockCourses);
     });
 
@@ -517,7 +560,11 @@ describe('learningService', () => {
     });
 
     it('should handle course not found', async () => {
-      const response: ApiResponse<Course> = { success: false, data: mockCourse, error: 'Course not found' };
+      const response: ApiResponse<Course> = {
+        success: false,
+        data: mockCourse,
+        error: 'Course not found',
+      };
       mockApi.get.mockResolvedValueOnce(createMockResponse(response));
 
       await expect(learningService.getCourse('invalid-id')).rejects.toThrow('Course not found');
@@ -544,7 +591,9 @@ describe('learningService', () => {
 
       const result = await learningService.searchCourses('transits');
 
-      expect(mockApi.get).toHaveBeenCalledWith('/learning/courses/search', { params: { q: 'transits' } });
+      expect(mockApi.get).toHaveBeenCalledWith('/learning/courses/search', {
+        params: { q: 'transits' },
+      });
       expect(result).toEqual(mockCourses);
     });
   });

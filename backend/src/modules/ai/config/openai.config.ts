@@ -117,6 +117,20 @@ Solar Return Chart:
 {chartData}
 
 Provide a comprehensive solar year forecast.`,
+
+  /**
+   * Card insight prompt
+   * Generates a short, shareable astrological insight for social media cards
+   */
+  cardInsight: `Generate a short, shareable astrological insight (1-2 sentences) based on these placements: {placements}
+
+The insight should be:
+- Empowering and positive
+- Specific to the placements shown
+- Catchy enough for social media sharing
+- Written in second person ("your", "you")
+
+Return only the insight text, no labels or prefixes.`,
 };
 
 /**
@@ -142,6 +156,10 @@ export const INTERPRETATION_PARAMS = {
   solarReturn: {
     maxTokens: 2500,
     temperature: 0.7,
+  },
+  cardInsight: {
+    maxTokens: 150,
+    temperature: 0.9,
   },
 };
 

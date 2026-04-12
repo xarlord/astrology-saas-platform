@@ -51,16 +51,12 @@ export const nameSchema = z
 /**
  * User ID schema (UUID format)
  */
-export const userIdSchema = z
-  .string()
-  .uuid('Invalid user ID format');
+export const userIdSchema = z.string().uuid('Invalid user ID format');
 
 /**
  * JWT token schema
  */
-export const tokenSchema = z
-  .string()
-  .min(1, 'Token is required');
+export const tokenSchema = z.string().min(1, 'Token is required');
 
 // ============================================================================
 // USER SCHEMA
@@ -95,7 +91,9 @@ export const userSettingsSchema = z.object({
 export const userPreferencesSchema = z.object({
   defaultChartType: z.enum(['natal', 'draconic', 'harmonic']).default('natal'),
   defaultOrb: z.number().min(1).max(15).default(8),
-  defaultHouseSystem: z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign']).default('placidus'),
+  defaultHouseSystem: z
+    .enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign'])
+    .default('placidus'),
   showAspects: z.boolean().default(true),
   showMidpoints: z.boolean().default(false),
   theme: z.enum(['light', 'dark', 'system']).default('system'),
@@ -151,7 +149,10 @@ export const registerRequestSchema = z.object({
   firstName: nameSchema,
   lastName: nameSchema,
   birthDate: z.string().datetime().optional(),
-  birthTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
+  birthTime: z
+    .string()
+    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+    .optional(),
   birthPlace: z.string().max(200).optional(),
 });
 

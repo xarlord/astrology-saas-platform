@@ -80,7 +80,12 @@ export type { InlineErrorProps, FormErrorSummaryProps, FieldErrorProps } from '.
 
 // Network Error
 export { OfflineBanner, ApiErrorPage, ConnectionStatus } from './NetworkError';
-export type { OfflineBannerProps, ApiErrorPageProps, ApiErrorCode, ConnectionStatusProps } from './NetworkError';
+export type {
+  OfflineBannerProps,
+  ApiErrorPageProps,
+  ApiErrorCode,
+  ConnectionStatusProps,
+} from './NetworkError';
 
 // Error Recovery
 export {
@@ -103,11 +108,24 @@ export type { ErrorBoundaryProps, ErrorBoundaryState } from './ErrorBoundary';
 
 // Card
 export { Card } from './Card';
-export type { CardProps, CardVariant, CardHeaderProps, CardBodyProps, CardFooterProps } from './Card';
+export type {
+  CardProps,
+  CardVariant,
+  CardHeaderProps,
+  CardBodyProps,
+  CardFooterProps,
+} from './Card';
 
 // Tabs
 export { Tabs, TabList, Tab, TabPanel, TabPanels } from './Tabs';
-export type { TabsProps, TabsOrientation, TabProps, TabPanelProps, TabListProps, TabPanelsProps } from './Tabs';
+export type {
+  TabsProps,
+  TabsOrientation,
+  TabProps,
+  TabPanelProps,
+  TabListProps,
+  TabPanelsProps,
+} from './Tabs';
 
 // Tooltip
 export { Tooltip } from './Tooltip';
@@ -115,7 +133,13 @@ export type { TooltipProps, TooltipPosition, TooltipTheme } from './Tooltip';
 
 // Dropdown
 export { Dropdown } from './Dropdown';
-export type { DropdownProps, DropdownTriggerProps, DropdownMenuProps, DropdownItemProps, DropdownDividerProps } from './Dropdown';
+export type {
+  DropdownProps,
+  DropdownTriggerProps,
+  DropdownMenuProps,
+  DropdownItemProps,
+  DropdownDividerProps,
+} from './Dropdown';
 
 // Avatar
 export { Avatar, AvatarGroup } from './Avatar';
@@ -132,3 +156,6 @@ export type { ShareModalProps, ShareVisibility } from './ShareModal';
 // Confirm Modal
 export { ConfirmModal } from './ConfirmModal';
 export type { ConfirmModalProps } from './ConfirmModal';
+
+// Install Button (PWA)
+export { default as InstallButton } from './InstallButton';

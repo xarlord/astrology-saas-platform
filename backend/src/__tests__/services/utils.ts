@@ -2,6 +2,8 @@
  * Test utility functions for Swiss Ephemeris service tests
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Convert JavaScript Date to Julian Day
  */

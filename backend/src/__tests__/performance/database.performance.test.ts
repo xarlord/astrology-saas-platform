@@ -3,6 +3,8 @@
  * Tests query performance, connection pooling, and indexing effectiveness
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { performance } from 'perf_hooks';
 import { db } from '../db';
 import { cleanDatabase, createTestUser, createTestChart } from '../utils';

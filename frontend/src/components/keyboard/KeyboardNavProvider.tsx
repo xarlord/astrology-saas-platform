@@ -146,7 +146,9 @@ export const KeyboardNavProvider: React.FC<KeyboardNavProviderProps> = ({
   void _showHelpOnQuestion;
 
   const [state, dispatch] = useReducer(keyboardNavReducer, initialState);
-  const [announcements, setAnnouncements] = useState<{ id: number; message: string; priority: 'polite' | 'assertive' }[]>([]);
+  const [announcements, setAnnouncements] = useState<
+    { id: number; message: string; priority: 'polite' | 'assertive' }[]
+  >([]);
   const announcementIdRef = useRef(0);
   const keyboardTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -171,12 +173,15 @@ export const KeyboardNavProvider: React.FC<KeyboardNavProviderProps> = ({
   }, []);
 
   // Focus management
-  const pushFocus = useCallback((element: HTMLElement) => {
-    if (state.focusState.currentFocus) {
-      dispatch({ type: 'PUSH_FOCUS_HISTORY', payload: state.focusState.currentFocus });
-    }
-    dispatch({ type: 'SET_FOCUS', payload: element });
-  }, [state.focusState.currentFocus]);
+  const pushFocus = useCallback(
+    (element: HTMLElement) => {
+      if (state.focusState.currentFocus) {
+        dispatch({ type: 'PUSH_FOCUS_HISTORY', payload: state.focusState.currentFocus });
+      }
+      dispatch({ type: 'SET_FOCUS', payload: element });
+    },
+    [state.focusState.currentFocus],
+  );
 
   const popFocus = useCallback((): HTMLElement | null => {
     const history = state.focusState.focusHistory;
@@ -389,7 +394,7 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
         'focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2',
         'transition-all duration-200',
         'transform -translate-y-full focus:translate-y-0',
-        className
+        className,
       )}
     >
       {children}
@@ -423,7 +428,7 @@ export const FocusLock: React.FC<FocusLockProps> = ({
 
     // Focus first focusable element
     const focusable = containerRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     if (focusable.length > 0) {
       focusable[0].focus();
@@ -449,8 +454,8 @@ export const FocusLock: React.FC<FocusLockProps> = ({
 
     const focusable = Array.from(
       containerRef.current.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
     );
 
     if (focusable.length === 0) return;
@@ -493,11 +498,10 @@ export const VisuallyHidden: React.FC<VisuallyHiddenProps> = ({
       className={clsx(
         'sr-only',
         {
-          'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0':
-            true,
+          'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0': true,
           '[clip:rect(0,0,0,0)]': true,
         },
-        className
+        className,
       )}
       style={{
         position: 'absolute',
@@ -525,7 +529,7 @@ export function withKeyboardAnnouncements<P extends object>(
     onFocus?: string;
     onSelect?: string;
     onAction?: string;
-  }
+  },
 ): React.FC<P> {
   const WithKeyboardAnnouncements: React.FC<P> = (props) => {
     const { announce } = useKeyboardNav();

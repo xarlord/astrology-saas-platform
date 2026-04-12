@@ -48,7 +48,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onBlur,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasValue, setHasValue] = useState(Boolean(value));
@@ -73,11 +73,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       props.onChange?.(e);
     };
 
-    const wrapperClass = clsx(
-      'relative',
-      fullWidth && 'w-full',
-      containerClassName
-    );
+    const wrapperClass = clsx('relative', fullWidth && 'w-full', containerClassName);
 
     const inputClass = clsx(
       'block w-full rounded-md border',
@@ -95,12 +91,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       leftIcon && 'pl-10',
       rightIcon && 'pr-10',
       leftIcon && rightIcon && 'px-10',
-      className
+      className,
     );
 
     const labelClass = clsx(
       'block text-sm font-medium mb-1.5',
-      error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+      error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
     );
 
     const floatingLabelClass = clsx(
@@ -115,8 +111,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       error
         ? 'text-red-600 dark:text-red-400'
         : isFocused
-        ? 'text-indigo-600 dark:text-indigo-400'
-        : 'text-gray-500 dark:text-gray-400'
+          ? 'text-indigo-600 dark:text-indigo-400'
+          : 'text-gray-500 dark:text-gray-400',
     );
 
     return (
@@ -132,7 +128,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <div
               className={clsx(
                 'absolute left-3 top-1/2 -translate-y-1/2',
-                leftIconClickable ? 'cursor-pointer' : 'pointer-events-none'
+                leftIconClickable ? 'cursor-pointer' : 'pointer-events-none',
               )}
               onClick={leftIconClickable ? onLeftIconClick : undefined}
               aria-hidden="true"
@@ -145,15 +141,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={type}
             id={inputId}
-            className={clsx(
-              inputClass,
-              floatingLabel && 'pt-5 pb-2'
-            )}
+            className={clsx(inputClass, floatingLabel && 'pt-5 pb-2')}
             aria-invalid={Boolean(error)}
-            aria-describedby={clsx(
-              error && errorId,
-              helperText && helperId
-            ).split(' ').filter(Boolean).join(' ') || undefined}
+            aria-describedby={
+              clsx(error && errorId, helperText && helperId)
+                .split(' ')
+                .filter(Boolean)
+                .join(' ') || undefined
+            }
             value={value}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -171,7 +166,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <div
               className={clsx(
                 'absolute right-3 top-1/2 -translate-y-1/2',
-                rightIconClickable ? 'cursor-pointer' : 'pointer-events-none'
+                rightIconClickable ? 'cursor-pointer' : 'pointer-events-none',
               )}
               onClick={rightIconClickable ? onRightIconClick : undefined}
               aria-hidden="true"
@@ -182,12 +177,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
           {error && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
-              <svg
-                className="h-5 w-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-              >
+              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path
                   fillRule="evenodd"
                   d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -211,7 +201,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

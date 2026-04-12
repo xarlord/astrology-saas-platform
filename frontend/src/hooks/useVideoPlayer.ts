@@ -145,35 +145,44 @@ export function useVideoPlayer(options: VideoPlayerOptions = {}) {
   }, [state.isPlaying, play, pause]);
 
   // Seek to specific time
-  const seek = useCallback((time: number) => {
-    const video = videoRef.current;
-    if (!video) return;
+  const seek = useCallback(
+    (time: number) => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    const clampedTime = Math.max(0, Math.min(time, video.duration || 0));
-    video.currentTime = clampedTime;
-    updateState({ currentTime: clampedTime });
-  }, [updateState]);
+      const clampedTime = Math.max(0, Math.min(time, video.duration || 0));
+      video.currentTime = clampedTime;
+      updateState({ currentTime: clampedTime });
+    },
+    [updateState],
+  );
 
   // Seek relative to current time
-  const seekRelative = useCallback((seconds: number) => {
-    const video = videoRef.current;
-    if (!video) return;
+  const seekRelative = useCallback(
+    (seconds: number) => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    const newTime = Math.max(0, Math.min(video.currentTime + seconds, video.duration || 0));
-    video.currentTime = newTime;
-    updateState({ currentTime: newTime });
-  }, [updateState]);
+      const newTime = Math.max(0, Math.min(video.currentTime + seconds, video.duration || 0));
+      video.currentTime = newTime;
+      updateState({ currentTime: newTime });
+    },
+    [updateState],
+  );
 
   // Set volume
-  const setVolume = useCallback((newVolume: number) => {
-    const video = videoRef.current;
-    if (!video) return;
+  const setVolume = useCallback(
+    (newVolume: number) => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    const clampedVolume = Math.max(0, Math.min(1, newVolume));
-    video.volume = clampedVolume;
-    video.muted = clampedVolume === 0;
-    updateState({ volume: clampedVolume, isMuted: clampedVolume === 0 });
-  }, [updateState]);
+      const clampedVolume = Math.max(0, Math.min(1, newVolume));
+      video.volume = clampedVolume;
+      video.muted = clampedVolume === 0;
+      updateState({ volume: clampedVolume, isMuted: clampedVolume === 0 });
+    },
+    [updateState],
+  );
 
   // Toggle mute
   const toggleMute = useCallback(() => {
@@ -186,15 +195,18 @@ export function useVideoPlayer(options: VideoPlayerOptions = {}) {
   }, [updateState]);
 
   // Set playback rate
-  const setPlaybackRate = useCallback((rate: number) => {
-    const video = videoRef.current;
-    if (!video) return;
+  const setPlaybackRate = useCallback(
+    (rate: number) => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    if (PLAYBACK_RATES.includes(rate)) {
-      video.playbackRate = rate;
-      updateState({ playbackRate: rate });
-    }
-  }, [updateState]);
+      if (PLAYBACK_RATES.includes(rate)) {
+        video.playbackRate = rate;
+        updateState({ playbackRate: rate });
+      }
+    },
+    [updateState],
+  );
 
   // Toggle fullscreen
   const toggleFullscreen = useCallback(async () => {
@@ -331,10 +343,7 @@ export function useVideoPlayer(options: VideoPlayerOptions = {}) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't capture if typing in an input
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       }
 
@@ -408,7 +417,16 @@ export function useVideoPlayer(options: VideoPlayerOptions = {}) {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay, seekRelative, setVolume, state.volume, toggleMute, toggleFullscreen, togglePiP, seek]);
+  }, [
+    togglePlay,
+    seekRelative,
+    setVolume,
+    state.volume,
+    toggleMute,
+    toggleFullscreen,
+    togglePiP,
+    seek,
+  ]);
 
   // Fullscreen change listener
   useEffect(() => {

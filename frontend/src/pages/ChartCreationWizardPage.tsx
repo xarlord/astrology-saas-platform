@@ -13,11 +13,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
-import type { BirthData as APIBirthData } from '../services/api.types';
+
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Checkbox } from '../components/ui/Checkbox';
 import { CustomDatePicker } from '../components/form/CustomDatePicker';
+import { AppLayout } from '../components';
 
 type WizardStep = 1 | 2 | 3;
 
@@ -125,28 +126,42 @@ export const ChartCreationWizardPage: React.FC = () => {
     try {
       await createChart({
         name: personalDetails.name,
-        birthDate: birthData.date?.toISOString().split('T')[0] ?? '',
-        birthTime: birthData.unknownTime ? '' : birthData.time,
-        birthPlace: birthData.location,
-        latitude: birthData.latitude,
-        longitude: birthData.longitude,
-        timezone: 'UTC',
-        // Note: chartType, houseSystem, zodiacType, tags, notes would need to be handled separately
-        // or the BirthData type extended to include them
-      } as unknown as APIBirthData);
+        birth_date: birthData.date?.toISOString().split('T')[0] ?? '',
+        birth_time: birthData.unknownTime ? '' : birthData.time,
+        birth_time_unknown: birthData.unknownTime,
+        birth_place_name: birthData.location,
+        birth_latitude: birthData.latitude,
+        birth_longitude: birthData.longitude,
+        birth_timezone: 'UTC',
+        type: chartSettings.chartType,
+        house_system: chartSettings.houseSystem === 'whole-sign' ? 'whole' : chartSettings.houseSystem,
+        zodiac: chartSettings.zodiacType,
+      } as Parameters<typeof createChart>[0]);
 
       navigate('/charts');
-    } catch (error) {
-      console.error('Failed to create chart:', error);
+    } catch {
+      // Error handled by store
     }
-  }, [isStepValid, personalDetails.name, birthData.date, birthData.unknownTime, birthData.time, birthData.location, birthData.latitude, birthData.longitude, createChart, navigate]);
+  }, [
+    isStepValid,
+    personalDetails.name,
+    birthData.date,
+    birthData.unknownTime,
+    birthData.time,
+    birthData.location,
+    birthData.latitude,
+    birthData.longitude,
+    chartSettings.chartType,
+    chartSettings.houseSystem,
+    chartSettings.zodiacType,
+    createChart,
+    navigate,
+  ]);
 
   const toggleTag = (tag: string) => {
     setPersonalDetails((prev) => ({
       ...prev,
-      tags: prev.tags.includes(tag)
-        ? prev.tags.filter((t) => t !== tag)
-        : [...prev.tags, tag],
+      tags: prev.tags.includes(tag) ? prev.tags.filter((t) => t !== tag) : [...prev.tags, tag],
     }));
   };
 
@@ -174,28 +189,12 @@ export const ChartCreationWizardPage: React.FC = () => {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] flex flex-col overflow-hidden">
+    <AppLayout>
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-600/10 rounded-full blur-[100px]" />
       </div>
-
-      {/* Top Navigation */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-card-dark/80 backdrop-blur-md z-50 px-6 flex items-center justify-between border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 text-primary flex items-center justify-center bg-primary/10 rounded-lg">
-            <span className="material-symbols-outlined text-[24px]">auto_awesome</span>
-          </div>
-          <h1 className="text-white text-xl font-bold tracking-tight">AstroVerse</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 text-slate-300 transition-colors text-sm font-medium">
-            <span className="material-symbols-outlined text-[20px]">help</span>
-            <span className="hidden sm:inline">Help</span>
-          </button>
-        </div>
-      </header>
 
       {/* Main Content Area */}
       <main className="relative z-10 flex flex-1 flex-col pt-20 pb-6 px-4 sm:px-8 h-screen max-h-screen overflow-hidden">
@@ -215,17 +214,21 @@ export const ChartCreationWizardPage: React.FC = () => {
                       currentStep === step.number
                         ? 'bg-primary border-primary shadow-[0_0_15px_rgba(107,61,225,0.5)] ring-4 ring-primary/20'
                         : currentStep > step.number
-                        ? 'bg-primary border-primary'
-                        : 'bg-surface-dark border-white/20 opacity-50'
+                          ? 'bg-primary border-primary'
+                          : 'bg-surface-dark border-white/20 opacity-50',
                     )}
                   >
                     {currentStep > step.number ? (
-                      <span className="material-symbols-outlined text-white text-[20px]">check</span>
+                      <span className="material-symbols-outlined text-white text-[20px]">
+                        check
+                      </span>
                     ) : (
                       <span
                         className={clsx(
                           'material-symbols-outlined',
-                          currentStep === step.number ? 'text-white text-[20px]' : 'text-slate-400 text-[16px]'
+                          currentStep === step.number
+                            ? 'text-white text-[20px]'
+                            : 'text-slate-400 text-[16px]',
                         )}
                       >
                         {step.icon}
@@ -235,7 +238,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                   <span
                     className={clsx(
                       'text-xs font-medium',
-                      currentStep === step.number ? 'text-white' : 'text-slate-400'
+                      currentStep === step.number ? 'text-white' : 'text-slate-400',
                     )}
                   >
                     {step.title}
@@ -247,7 +250,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                   <div
                     className={clsx(
                       'flex-1 h-[2px] mx-2',
-                      currentStep > step.number ? 'bg-primary' : 'bg-white/10'
+                      currentStep > step.number ? 'bg-primary' : 'bg-white/10',
                     )}
                   />
                 )}
@@ -267,7 +270,8 @@ export const ChartCreationWizardPage: React.FC = () => {
               </div>
               <p className="text-slate-400 text-sm">
                 {currentStep === 1 && 'Enter the name and tags for this chart.'}
-                {currentStep === 2 && 'Enter the birth details. Precision is key for an accurate reading.'}
+                {currentStep === 2 &&
+                  'Enter the birth details. Precision is key for an accurate reading.'}
                 {currentStep === 3 && 'Configure chart calculation settings.'}
               </p>
             </div>
@@ -301,7 +305,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                             'px-4 py-2 rounded-lg border text-sm font-medium transition-all',
                             personalDetails.tags.includes(tag)
                               ? 'bg-primary/20 border-primary text-white'
-                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20'
+                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20',
                           )}
                         >
                           {tag}
@@ -311,7 +315,9 @@ export const ChartCreationWizardPage: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="text-slate-300 text-sm font-medium ml-1">Notes (Optional)</label>
+                    <label className="text-slate-300 text-sm font-medium ml-1">
+                      Notes (Optional)
+                    </label>
                     <textarea
                       value={personalDetails.notes}
                       onChange={(e) =>
@@ -337,7 +343,9 @@ export const ChartCreationWizardPage: React.FC = () => {
 
                     {!birthData.unknownTime && (
                       <div className="flex flex-col gap-2">
-                        <label className="text-slate-300 text-sm font-medium ml-1">Time of Birth</label>
+                        <label className="text-slate-300 text-sm font-medium ml-1">
+                          Time of Birth
+                        </label>
                         <Input
                           type="time"
                           value={birthData.time}
@@ -360,7 +368,9 @@ export const ChartCreationWizardPage: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="text-slate-300 text-sm font-medium ml-1">Birth Location</label>
+                    <label className="text-slate-300 text-sm font-medium ml-1">
+                      Birth Location
+                    </label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 material-symbols-outlined">
                         location_on
@@ -386,8 +396,8 @@ export const ChartCreationWizardPage: React.FC = () => {
                         Why is birth time important?
                       </p>
                       <p className="text-slate-400 text-xs leading-relaxed">
-                        Accurate birth time is essential for precise house calculations and rising sign
-                        determination. If unknown, a Noon chart will be used.
+                        Accurate birth time is essential for precise house calculations and rising
+                        sign determination. If unknown, a Noon chart will be used.
                       </p>
                     </div>
                   </div>
@@ -411,7 +421,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                             'p-4 rounded-xl border text-left transition-all',
                             chartSettings.chartType === type.value
                               ? 'bg-primary/20 border-primary text-white'
-                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20'
+                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20',
                           )}
                         >
                           <p className="font-semibold text-sm">{type.label}</p>
@@ -435,7 +445,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                             'p-4 rounded-xl border text-left transition-all',
                             chartSettings.houseSystem === system.value
                               ? 'bg-primary/20 border-primary text-white'
-                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20'
+                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20',
                           )}
                         >
                           <p className="font-semibold text-sm">{system.label}</p>
@@ -459,7 +469,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                             'flex-1 px-4 py-3 rounded-xl border text-sm font-medium capitalize transition-all',
                             chartSettings.zodiacType === zodiac
                               ? 'bg-primary/20 border-primary text-white'
-                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20'
+                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20',
                           )}
                         >
                           {zodiac}
@@ -488,7 +498,8 @@ export const ChartCreationWizardPage: React.FC = () => {
 
               <div className="flex items-center gap-4">
                 <span className="hidden md:block text-xs text-slate-500">
-                  Press <span className="font-mono bg-white/10 px-1 py-0.5 rounded text-slate-300">
+                  Press{' '}
+                  <span className="font-mono bg-white/10 px-1 py-0.5 rounded text-slate-300">
                     ⌘ Enter
                   </span>{' '}
                   to continue
@@ -499,7 +510,9 @@ export const ChartCreationWizardPage: React.FC = () => {
                     size="lg"
                     onClick={handleNext}
                     disabled={!isStepValid()}
-                    rightIcon={<span className="material-symbols-outlined text-[20px]">arrow_forward</span>}
+                    rightIcon={
+                      <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    }
                   >
                     Next: {currentStep === 1 ? 'Location' : 'Options'}
                   </Button>
@@ -507,10 +520,14 @@ export const ChartCreationWizardPage: React.FC = () => {
                   <Button
                     variant="primary"
                     size="lg"
-                    onClick={() => { void handleSubmit(); }}
+                    onClick={() => {
+                      void handleSubmit();
+                    }}
                     disabled={!isStepValid() || isLoading}
                     isLoading={isLoading}
-                    leftIcon={<span className="material-symbols-outlined text-[20px]">auto_awesome</span>}
+                    leftIcon={
+                      <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
+                    }
                   >
                     Generate Chart
                   </Button>
@@ -526,7 +543,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                 Chart Preview
               </h3>
               {birthData.date && (
-                <div className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <div className="bg-accent-gold/10 text-accent-gold border border-accent-gold/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">sunny</span>
                   Calculating...
                 </div>
@@ -543,7 +560,11 @@ export const ChartCreationWizardPage: React.FC = () => {
                 <circle cx="50" cy="50" fill="none" r="48" stroke="#333" strokeWidth="0.5" />
                 <circle cx="50" cy="50" fill="none" r="35" stroke="#333" strokeWidth="0.5" />
                 <circle cx="50" cy="50" fill="none" r="15" stroke="#6b3de1" strokeWidth="0.5" />
-                <path d="M50 2 L50 98 M2 50 L98 50 M16 16 L84 84 M16 84 L84 16" stroke="#333" strokeWidth="0.2" />
+                <path
+                  d="M50 2 L50 98 M2 50 L98 50 M16 16 L84 84 M16 84 L84 16"
+                  stroke="#333"
+                  strokeWidth="0.2"
+                />
               </svg>
 
               {/* Center content */}
@@ -564,7 +585,9 @@ export const ChartCreationWizardPage: React.FC = () => {
               {personalDetails.name && (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-slate-400 text-[16px]">badge</span>
+                    <span className="material-symbols-outlined text-slate-400 text-[16px]">
+                      badge
+                    </span>
                   </div>
                   <div className="flex flex-col gap-1">
                     <p className="text-xs text-slate-400">Name</p>
@@ -576,7 +599,9 @@ export const ChartCreationWizardPage: React.FC = () => {
               {birthData.date && (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-slate-400 text-[16px]">event</span>
+                    <span className="material-symbols-outlined text-slate-400 text-[16px]">
+                      event
+                    </span>
                   </div>
                   <div className="flex flex-col gap-1">
                     <p className="text-xs text-slate-400">Date</p>
@@ -591,7 +616,9 @@ export const ChartCreationWizardPage: React.FC = () => {
                 <>
                   <div className="flex items-center gap-3 opacity-50">
                     <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-slate-400 text-[16px]">badge</span>
+                      <span className="material-symbols-outlined text-slate-400 text-[16px]">
+                        badge
+                      </span>
                     </div>
                     <div className="flex flex-col gap-1 w-full">
                       <div className="h-2 w-16 bg-white/10 rounded-full" />
@@ -600,7 +627,9 @@ export const ChartCreationWizardPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-3 opacity-50">
                     <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-slate-400 text-[16px]">event</span>
+                      <span className="material-symbols-outlined text-slate-400 text-[16px]">
+                        event
+                      </span>
                     </div>
                     <div className="flex flex-col gap-1 w-full">
                       <div className="h-2 w-12 bg-white/10 rounded-full" />
@@ -624,7 +653,7 @@ export const ChartCreationWizardPage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

@@ -8,13 +8,13 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { authService } from '../services';
+import { getAccessToken } from '../utils/tokenStorage';
 import type { User, LoginCredentials, RegisterData } from '../services/api.types';
 
 interface AuthState {
   // State
   user: User | null;
-  token: string | null;
-  refreshToken: string | null;
+  token: string | null; // In-memory only (not persisted)
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -37,7 +37,6 @@ export const useAuthStore = create<AuthState>()(
         // Initial state
         user: null,
         token: null,
-        refreshToken: null,
         isAuthenticated: false,
         isLoading: false,
         error: null,
@@ -47,16 +46,13 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: true, error: null });
           try {
             const response = await authService.login(credentials);
-            const { user, accessToken, refreshToken } = response;
+            const { user, accessToken } = response;
 
-            // Store tokens
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            // Store only access token in-memory; refresh token handled via httpOnly cookie
 
             set({
               user,
               token: accessToken,
-              refreshToken,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -75,16 +71,13 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: true, error: null });
           try {
             const response = await authService.register(data);
-            const { user, accessToken, refreshToken } = response;
+            const { user, accessToken } = response;
 
-            // Store tokens
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            // Store only access token in-memory; refresh token handled via httpOnly cookie
 
             set({
               user,
               token: accessToken,
-              refreshToken,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -105,16 +98,10 @@ export const useAuthStore = create<AuthState>()(
           } catch (error) {
             console.error('Logout error:', error);
           } finally {
-            // Clear tokens from localStorage
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
-
             // Clear state
             set({
               user: null,
               token: null,
-              refreshToken: null,
               isAuthenticated: false,
               error: null,
             });
@@ -123,7 +110,7 @@ export const useAuthStore = create<AuthState>()(
 
         // Load user from token
         loadUser: async () => {
-          const token = localStorage.getItem('accessToken');
+          const token = getAccessToken();
           if (!token) {
             set({ isAuthenticated: false });
             return;
@@ -139,13 +126,10 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
             });
           } catch {
-            // Clear invalid tokens
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            // Clear invalid tokens via Zustand persist
             set({
               user: null,
               token: null,
-              refreshToken: null,
               isAuthenticated: false,
               isLoading: false,
             });
@@ -198,14 +182,12 @@ export const useAuthStore = create<AuthState>()(
         name: 'auth-storage',
         partialize: (state) => ({
           user: state.user,
-          token: state.token,
-          refreshToken: state.refreshToken,
           isAuthenticated: state.isAuthenticated,
         }),
-      }
+      },
     ),
-    { name: 'AuthStore' }
-  )
+    { name: 'AuthStore' },
+  ),
 );
 
 // Selector hooks for optimized re-renders

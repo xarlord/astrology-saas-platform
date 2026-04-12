@@ -5,11 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import locationService from '../../services/location.service';
-import {
-  mockLocation,
-  createMockResponse,
-  setupLocalStorageMock,
-} from './utils';
+import { mockLocation, createMockResponse, setupLocalStorageMock } from './utils';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -65,7 +61,7 @@ describe('locationService', () => {
       const result = await locationService.searchLocation('New York');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('geocoding-api.open-meteo.com/v1/search')
+        expect.stringContaining('geocoding-api.open-meteo.com/v1/search'),
       );
       expect(result.locations).toHaveLength(1);
       expect(result.locations[0].name).toBe('New York, United States');
@@ -131,7 +127,7 @@ describe('locationService', () => {
       await locationService.searchLocation('New York, NY');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(encodeURIComponent('New York, NY'))
+        expect.stringContaining(encodeURIComponent('New York, NY')),
       );
     });
 
@@ -173,7 +169,7 @@ describe('locationService', () => {
       const result = await locationService.getTimezone(40.7128, -74.006);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('timezone-api.open-meteo.com/v1/timezone')
+        expect.stringContaining('timezone-api.open-meteo.com/v1/timezone'),
       );
       expect(result).toBe('America/New_York');
     });
@@ -315,17 +311,21 @@ describe('locationService', () => {
     });
 
     it('should accept boundary values', () => {
-      expect(locationService.validateLocation({
-        name: 'Test',
-        latitude: 90,
-        longitude: 180,
-      })).toBe(true);
+      expect(
+        locationService.validateLocation({
+          name: 'Test',
+          latitude: 90,
+          longitude: 180,
+        }),
+      ).toBe(true);
 
-      expect(locationService.validateLocation({
-        name: 'Test',
-        latitude: -90,
-        longitude: -180,
-      })).toBe(true);
+      expect(
+        locationService.validateLocation({
+          name: 'Test',
+          latitude: -90,
+          longitude: -180,
+        }),
+      ).toBe(true);
     });
   });
 
@@ -377,7 +377,9 @@ describe('locationService', () => {
     it('should throw error on save failure', async () => {
       (api.post as any).mockRejectedValue(new Error('Save failed'));
 
-      await expect(locationService.saveLocation(mockLocation)).rejects.toThrow('Failed to save location');
+      await expect(locationService.saveLocation(mockLocation)).rejects.toThrow(
+        'Failed to save location',
+      );
     });
   });
 
@@ -395,7 +397,9 @@ describe('locationService', () => {
     it('should throw error on delete failure', async () => {
       (api.delete as any).mockRejectedValue(new Error('Delete failed'));
 
-      await expect(locationService.deleteLocation('location-123')).rejects.toThrow('Failed to delete location');
+      await expect(locationService.deleteLocation('location-123')).rejects.toThrow(
+        'Failed to delete location',
+      );
     });
   });
 
@@ -452,7 +456,7 @@ describe('locationService', () => {
 
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
         'recentLocationSearches',
-        JSON.stringify([mockLocation])
+        JSON.stringify([mockLocation]),
       );
     });
 
@@ -478,10 +482,12 @@ describe('locationService', () => {
     });
 
     it('should limit to 10 items', () => {
-      const existingSearches = Array(10).fill(null).map((_, i) => ({
-        ...mockLocation,
-        name: `Location ${i}`,
-      }));
+      const existingSearches = Array(10)
+        .fill(null)
+        .map((_, i) => ({
+          ...mockLocation,
+          name: `Location ${i}`,
+        }));
       localStorageMock.getItem.mockReturnValue(JSON.stringify(existingSearches));
 
       locationService.addRecentSearch({ ...mockLocation, name: 'New Location' });

@@ -64,7 +64,12 @@ describe('LunarHistoryView', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetLunarReturnHistory.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
+      mockGetLunarReturnHistory.mockImplementation(
+        () =>
+          new Promise(() => {
+            /* intentional empty - never resolves */
+          }),
+      );
 
       render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 
@@ -76,7 +81,7 @@ describe('LunarHistoryView', () => {
     it('should display error message when API fails', async () => {
       const errorMessage = 'Failed to load history';
       mockGetLunarReturnHistory.mockRejectedValue({
-        response: { data: { error: errorMessage } }
+        response: { data: { error: errorMessage } },
       });
 
       render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
@@ -336,9 +341,7 @@ describe('LunarHistoryView', () => {
         },
       });
 
-      render(
-        <LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />
-      );
+      render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 
       await waitFor(() => {
         expect(screen.getByText(/Page 1 of 3/i)).toBeInTheDocument();

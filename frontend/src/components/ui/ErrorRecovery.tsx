@@ -57,10 +57,7 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
   const [cooldownRemaining, setCooldownRemaining] = React.useState(0);
 
   const isDisabled =
-    disabled ||
-    isLoading ||
-    isCoolingDown ||
-    (maxRetries > 0 && retryCount >= maxRetries);
+    disabled || isLoading || isCoolingDown || (maxRetries > 0 && retryCount >= maxRetries);
 
   const handleClick = () => {
     if (isDisabled) return;
@@ -85,10 +82,7 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: [
-      'bg-primary-600 text-white',
-      'hover:bg-primary-700 focus:ring-primary-500',
-    ],
+    primary: ['bg-primary-600 text-white', 'hover:bg-primary-700 focus:ring-primary-500'],
     secondary: [
       'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
       'hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-gray-500',
@@ -124,18 +118,13 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
         'transition-colors',
         ...variantClasses[variant],
         sizeClasses[size],
-        className
+        className,
       )}
       aria-busy={isLoading}
       aria-label={`${label}${retryCount > 0 ? ` (attempt ${retryCount + 1})` : ''}`}
     >
       {isLoading && (
-        <svg
-          className="animate-spin h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
+        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24" aria-hidden="true">
           <circle
             className="opacity-25"
             cx="12"
@@ -268,7 +257,7 @@ export const ErrorRecoveryActions: React.FC<ErrorRecoveryActionsProps> = ({
       className={clsx(
         'flex gap-3',
         direction === 'vertical' ? 'flex-col' : 'flex-row flex-wrap',
-        className
+        className,
       )}
       role="group"
       aria-label="Error recovery actions"
@@ -293,7 +282,7 @@ export const ErrorRecoveryActions: React.FC<ErrorRecoveryActionsProps> = ({
             'transition-colors',
             size === 'sm' && 'px-3 py-1.5 text-sm',
             size === 'md' && 'px-4 py-2 text-sm',
-            size === 'lg' && 'px-6 py-3 text-base'
+            size === 'lg' && 'px-6 py-3 text-base',
           )}
         >
           {secondaryLabel}
@@ -336,10 +325,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
 
   const handleClick = () => {
     // In a real app, this would send the error details to a logging service
-    console.log('Reporting issue:', {
-      ...errorDetails,
-      reportedAt: new Date().toISOString(),
-    });
+    void { ...errorDetails, reportedAt: new Date().toISOString() };
 
     setIsReported(true);
     onReport?.();
@@ -370,7 +356,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'transition-colors',
         sizeClasses[size],
-        className
+        className,
       )}
       aria-live="polite"
     >
@@ -383,12 +369,7 @@ export const ReportIssueButton: React.FC<ReportIssueButtonProps> = ({
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <span>Reported!</span>
         </>
@@ -469,7 +450,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'transition-colors',
           sizeClasses[size],
-          className
+          className,
         )}
         aria-label={isLoading ? 'Refreshing...' : label}
         aria-busy={isLoading}
@@ -508,7 +489,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
         size === 'sm' && 'px-3 py-1.5 text-sm',
         size === 'md' && 'px-4 py-2 text-sm',
         size === 'lg' && 'px-6 py-3 text-base',
-        className
+        className,
       )}
       aria-busy={isLoading}
     >

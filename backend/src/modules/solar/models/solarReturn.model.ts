@@ -4,7 +4,22 @@
  */
 
 import knex from '../../../config/database';
-import { SolarReturn, SolarReturnInput, SolarReturnLocation, SolarReturnChartData } from './types';
+import { SolarReturn, SolarReturnInput, SolarReturnLocation, SolarReturnChartData, SolarReturnInterpretation } from './types';
+
+interface SolarReturnRow {
+  id: string;
+  user_id: string;
+  chart_id: string;
+  year: number;
+  return_date: Date | string;
+  return_location: SolarReturnLocation;
+  calculated_data: SolarReturnChartData;
+  interpretation?: unknown;
+  is_relocated: boolean;
+  notes?: string;
+  created_at: Date | string;
+  updated_at: Date | string;
+}
 
 export class SolarReturnModel {
   private tableName = 'solar_returns';
@@ -19,15 +34,18 @@ export class SolarReturnModel {
         chart_id: data.chartId,
         year: data.year,
         return_date: data.returnDate,
-        return_location: data.returnLocation as any,
-        calculated_data: data.calculatedData as any,
-        interpretation: data.interpretation as any,
+        return_location: data.returnLocation as unknown as Record<string, unknown>,
+        calculated_data: data.calculatedData as unknown as Record<string, unknown>,
+        interpretation: data.interpretation as unknown as Record<string, unknown>,
         is_relocated: data.isRelocated || false,
         notes: data.notes,
       })
       .returning('*');
 
-    return this.mapToSolarReturn(solarReturn);
+    if (!solarReturn) {
+      throw new Error('Failed to create solar return');
+    }
+    return this.mapToSolarReturn(solarReturn) as SolarReturn;
   }
 
   /**
@@ -60,7 +78,7 @@ export class SolarReturnModel {
       .where({ user_id: userId })
       .orderBy('year', 'desc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -72,7 +90,7 @@ export class SolarReturnModel {
       .whereBetween('return_date', [startDate, endDate])
       .orderBy('return_date', 'asc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -84,7 +102,7 @@ export class SolarReturnModel {
       .orderBy('year', 'desc')
       .limit(limit);
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -95,7 +113,7 @@ export class SolarReturnModel {
       .where({ user_id: userId, is_relocated: true })
       .orderBy('year', 'desc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -106,9 +124,9 @@ export class SolarReturnModel {
       .where({ id })
       .update({
         ...(data.returnDate && { return_date: data.returnDate }),
-        ...(data.returnLocation && { return_location: data.returnLocation as any }),
-        ...(data.calculatedData && { calculated_data: data.calculatedData as any }),
-        ...(data.interpretation && { interpretation: data.interpretation as any }),
+        ...(data.returnLocation && { return_location: data.returnLocation as unknown as Record<string, unknown> }),
+        ...(data.calculatedData && { calculated_data: data.calculatedData as unknown as Record<string, unknown> }),
+        ...(data.interpretation && { interpretation: data.interpretation as unknown as Record<string, unknown> }),
         ...(data.notes !== undefined && { notes: data.notes }),
         updated_at: new Date().toISOString(),
       })
@@ -162,7 +180,7 @@ export class SolarReturnModel {
   /**
    * Map database row to SolarReturn interface
    */
-  private mapToSolarReturn(row: any): SolarReturn | null {
+  private mapToSolarReturn(row: SolarReturnRow): SolarReturn | null {
     return {
       id: row.id,
       userId: row.user_id,
@@ -171,7 +189,7 @@ export class SolarReturnModel {
       returnDate: new Date(row.return_date),
       returnLocation: row.return_location as SolarReturnLocation,
       calculatedData: row.calculated_data as SolarReturnChartData,
-      interpretation: row.interpretation,
+      interpretation: row.interpretation as SolarReturnInterpretation | undefined,
       isRelocated: row.is_relocated,
       notes: row.notes,
       createdAt: new Date(row.created_at),

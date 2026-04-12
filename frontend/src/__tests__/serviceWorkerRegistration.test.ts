@@ -219,7 +219,10 @@ describe('Service Worker Registration', () => {
 
       await registerSW({ onNeedRefresh, onOfflineReady: vi.fn() });
 
-      expect(mockRegistration.addEventListener).toHaveBeenCalledWith('updatefound', expect.any(Function));
+      expect(mockRegistration.addEventListener).toHaveBeenCalledWith(
+        'updatefound',
+        expect.any(Function),
+      );
     });
 
     it('should reload page on controller change', async () => {

@@ -29,10 +29,7 @@ export { BirthDataForm } from './BirthDataForm';
 export type { BirthData } from './BirthDataForm';
 
 // Transit
-export {
-  TransitDashboard,
-  TransitDetailModal,
-} from './TransitDashboard';
+export { TransitDashboard, TransitDetailModal } from './TransitDashboard';
 export type {
   Transit,
   TransitHighlight,
@@ -88,4 +85,3 @@ export type { EmptyStateProps } from './EmptyState';
 // Error Handling
 export { ErrorBoundary } from './ErrorBoundary';
 export { default as ErrorFallback } from './ErrorFallback';
-

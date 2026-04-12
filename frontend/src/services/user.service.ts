@@ -6,10 +6,7 @@
 
 import api from './api';
 import type { User, UserPreferences, ApiResponse } from './api.types';
-import {
-  transformUser,
-  type APIUser,
-} from '@/utils/apiTransformers';
+import { transformUser, type APIUser } from '@/utils/apiTransformers';
 
 /**
  * User Service Class
@@ -68,27 +65,28 @@ class UserService {
       const response = await api.put<ApiResponse<{ user: User }>>(
         '/auth/me/preferences',
         { preferences },
-        { timeout: this.TIMEOUT }
+        { timeout: this.TIMEOUT },
       );
       return response.data.data.user;
     } catch (error: unknown) {
-      throw new Error(`Failed to update preferences: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to update preferences: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
   /**
    * Change password
    */
-  async changePassword(data: {
-    currentPassword: string;
-    newPassword: string;
-  }): Promise<void> {
+  async changePassword(data: { currentPassword: string; newPassword: string }): Promise<void> {
     try {
       await api.post('/auth/change-password', data, {
         timeout: this.TIMEOUT,
       });
     } catch (error: unknown) {
-      throw new Error(`Failed to change password: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to change password: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -101,7 +99,9 @@ class UserService {
         timeout: this.TIMEOUT,
       });
     } catch (error: unknown) {
-      throw new Error(`Failed to delete account: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete account: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -121,12 +121,14 @@ class UserService {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        }
+        },
       );
 
       return response.data.data;
     } catch (error: unknown) {
-      throw new Error(`Failed to upload avatar: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to upload avatar: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -139,7 +141,9 @@ class UserService {
         timeout: this.TIMEOUT,
       });
     } catch (error: unknown) {
-      throw new Error(`Failed to delete avatar: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete avatar: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -153,17 +157,21 @@ class UserService {
     cancelAtPeriodEnd: boolean;
   }> {
     try {
-      const response = await api.get<ApiResponse<{
-        plan: string;
-        status: string;
-        renewalDate?: string;
-        cancelAtPeriodEnd: boolean;
-      }>>('/auth/me/subscription', {
+      const response = await api.get<
+        ApiResponse<{
+          plan: string;
+          status: string;
+          renewalDate?: string;
+          cancelAtPeriodEnd: boolean;
+        }>
+      >('/auth/me/subscription', {
         timeout: this.TIMEOUT,
       });
       return response.data.data;
     } catch (error: unknown) {
-      throw new Error(`Failed to fetch subscription: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch subscription: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -172,11 +180,17 @@ class UserService {
    */
   async cancelSubscription(): Promise<void> {
     try {
-      await api.post('/auth/me/subscription/cancel', {}, {
-        timeout: this.TIMEOUT,
-      });
+      await api.post(
+        '/auth/me/subscription/cancel',
+        {},
+        {
+          timeout: this.TIMEOUT,
+        },
+      );
     } catch (error: unknown) {
-      throw new Error(`Failed to cancel subscription: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to cancel subscription: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -185,11 +199,17 @@ class UserService {
    */
   async reactivateSubscription(): Promise<void> {
     try {
-      await api.post('/auth/me/subscription/reactivate', {}, {
-        timeout: this.TIMEOUT,
-      });
+      await api.post(
+        '/auth/me/subscription/reactivate',
+        {},
+        {
+          timeout: this.TIMEOUT,
+        },
+      );
     } catch (error: unknown) {
-      throw new Error(`Failed to reactivate subscription: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to reactivate subscription: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 }

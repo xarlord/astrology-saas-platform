@@ -549,8 +549,8 @@ app.use('/api/v2', v2Routes);
 
 ### Environments
 - **Development:** Local with Docker Compose
-- **Staging:** Railway/Render (automatic deploys from develop)
-- **Production:** Railway/Render (manual deploys from main)
+- **Staging:** Docker Compose (automatic deploys from develop)
+- **Production:** Docker Compose (manual deploys from main)
 
 ### CI/CD Pipeline
 ```yaml
@@ -572,10 +572,10 @@ jobs:
     - Push to registry
 
   deploy-staging:
-    - Deploy to Railway (develop branch)
+    - Deploy via Docker Compose (develop branch)
 
   deploy-production:
-    - Deploy to Railway (main branch, manual approval)
+    - Deploy via Docker Compose (main branch, manual approval)
 ```
 
 ---

@@ -5,10 +5,13 @@
 
 import React, { useState } from 'react';
 import { useAIInterpretation } from '../hooks/useAIInterpretation';
-import { Sparkles, Info } from 'lucide-react';
 
 interface AIInterpretationToggleProps {
-  onInterpretationGenerated?: (interpretation: { interpretation: string; ai: boolean; source: string }) => void;
+  onInterpretationGenerated?: (interpretation: {
+    interpretation: string;
+    ai: boolean;
+    source: string;
+  }) => void;
   chartData?: { chartId: string; birthData: unknown };
 }
 
@@ -31,7 +34,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
       const interpretation = await generateNatal(chartData);
 
       if (onInterpretationGenerated) {
-        onInterpretationGenerated(interpretation as unknown as Record<string, unknown>);
+        onInterpretationGenerated(interpretation as { interpretation: string; ai: boolean; source: string });
       }
     } catch (err) {
       console.error('AI generation failed:', err);
@@ -46,10 +49,15 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   };
 
   return (
-    <div role="region" aria-label="AI interpretation controls" aria-busy={isGenerating} className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white mb-5">
+    <div
+      role="region"
+      aria-label="AI interpretation controls"
+      aria-busy={isGenerating}
+      className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-5 text-white mb-5"
+    >
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2 font-semibold text-base">
-          <Sparkles className="animate-pulse" size={18} />
+          <span className="material-symbols-outlined text-[18px] animate-pulse">auto_awesome</span>
           <span>AI-Enhanced Interpretations</span>
         </div>
         <button
@@ -58,15 +66,15 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
           onClick={() => setShowInfo(!showInfo)}
           aria-label="Toggle AI info"
         >
-          <Info size={16} />
+          <span className="material-symbols-outlined text-[16px]">info</span>
         </button>
       </div>
 
       {showInfo && (
         <div className="bg-white/10 rounded-lg p-3 mb-3 text-sm leading-relaxed">
           <p className="m-0 mb-2 last:m-0">
-            Enable AI to generate personalized, nuanced interpretations powered by GPT-4.
-            AI enhances the rule-based readings with deeper insights and specific guidance.
+            Enable AI to generate personalized, nuanced interpretations powered by GPT-4. AI
+            enhances the rule-based readings with deeper insights and specific guidance.
           </p>
           <p className="m-0 opacity-90 italic">
             <small>Note: AI interpretations take longer to generate and use API credits.</small>
@@ -94,13 +102,14 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
             />
           </button>
         </div>
-        <span className="text-sm font-medium">
-          {enabled ? 'Enabled' : 'Disabled'}
-        </span>
+        <span className="text-sm font-medium">{enabled ? 'Enabled' : 'Disabled'}</span>
       </div>
 
       {error && (
-        <div role="alert" className="bg-red-500/20 border border-red-500/50 rounded-md py-2 px-3 mt-3 text-[13px]">
+        <div
+          role="alert"
+          className="bg-red-500/20 border border-red-500/50 rounded-md py-2 px-3 mt-3 text-[13px]"
+        >
           Failed to generate AI interpretation. Using rule-based instead.
         </div>
       )}

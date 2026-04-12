@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Response } from 'express';
 import {
@@ -29,6 +30,15 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
   },
 }));
 
+// Mock knex for transit_readings lookups
+jest.mock('../../config/database', () => {
+  const first = jest.fn();
+  const where = jest.fn(() => ({ first }));
+  const knex = jest.fn(() => ({ where }));
+  (knex as any).raw = jest.fn();
+  return { __esModule: true, default: knex };
+});
+
 // Auto-mock AstronomyEngineService. jest.mock (not jest.doMock!) hoists the
  module,
 // creating a mock class. The controller creates a module-level singleton at import time.
@@ -36,6 +46,16 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
 jest.mock('../../modules/shared/services/astronomyEngine.service');
 
 import { AstronomyEngineService } from '../../modules/shared/services/astronomyEngine.service';
+import knex from '../../config/database';
+
+// Access the chained mock functions from the hoisted mock
+const getKnexMocks = () => {
+  // knex() returns { where }, where() returns { first }
+  const first = jest.fn();
+  const where = jest.fn(() => ({ first }));
+  (knex as jest.Mock).mockReturnValue({ where });
+  return { first, where };
+};
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -216,21 +236,33 @@ describe('Transit Controller', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
-    it('should throw 404 if no charts found', async () => {
+    it('should fall back to general transits if no charts found', async () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('No charts found');
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({ isGeneral: true }),
+        }),
+      );
     });
 
-    it('should throw 400 if chart not calculated', async () => {
+    it('should fall back to general transits if chart not calculated', async () => {
       const mockChart = {
         id: '456',
         calculated_data: null,
       };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getTodayTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({ isGeneral: true }),
+        }),
+      );
     });
   });
 
@@ -266,16 +298,74 @@ describe('Transit Controller', () => {
   });
 
   describe('getTransitDetails', () => {
-    it('should return transit details response', async () => {
-      mockRequest.params = { id: '789' };
+    it('should return stored transit reading by ID', async () => {
+      mockRequest.params = { id: 'reading-789' };
+
+      const { first } = getKnexMocks();
+      const mockReading = {
+        id: 'reading-789',
+        user_id: '123',
+        chart_id: 'chart-456',
+        start_date: '2024-01-01',
+        end_date: '2024-01-31',
+        transit_data: { readings: [{ date: '2024-01-15', aspects: [] }] },
+        moon_phases: null,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:00Z',
+      };
+      first.mockResolvedValue(mockReading);
+
+      await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
+
+      expect(knex).toHaveBeenCalledWith('transit_readings');
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({
+            id: 'reading-789',
+            chartId: 'chart-456',
+            startDate: '2024-01-01',
+            endDate: '2024-01-31',
+          }),
+        }),
+      );
+    });
+
+    it('should throw 404 if transit reading not found', async () => {
+      mockRequest.params = { id: 'nonexistent' };
+      const { first } = getKnexMocks();
+      first.mockResolvedValue(null);
+
+      await expect(getTransitDetails(mockRequest, mockResponse as Response, mockNext))
+        .rejects.toThrow(AppError);
+      await expect(getTransitDetails(mockRequest, mockResponse as Response, mockNext))
+        .rejects.toThrow('Transit reading not found');
+    });
+
+    it('should parse string transit_data and moon_phases', async () => {
+      mockRequest.params = { id: 'reading-json' };
+
+      const { first } = getKnexMocks();
+      const mockReading = {
+        id: 'reading-json',
+        user_id: '123',
+        chart_id: 'chart-1',
+        start_date: '2024-02-01',
+        end_date: '2024-02-28',
+        transit_data: JSON.stringify({ readings: [] }),
+        moon_phases: JSON.stringify([{ phase: 'full' }]),
+        created_at: '2024-02-01T00:00:00Z',
+        updated_at: '2024-02-01T00:00:00Z',
+      };
+      first.mockResolvedValue(mockReading);
 
       await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: true,
-        data: { transit: null },
-      });
+      const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
+      expect(response.data.transitData).toEqual({ readings: [] });
+      expect(response.data.moonPhases).toEqual([{ phase: 'full' }]);
     });
   });
 

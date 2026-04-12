@@ -109,7 +109,8 @@ export const useSynastryStore = create<SynastryState>()(
           isLoading: false,
         });
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to calculate compatibility';
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to calculate compatibility';
         set({
           error: errorMessage,
           isLoading: false,
@@ -162,14 +163,15 @@ export const useSynastryStore = create<SynastryState>()(
 
     // Clear error
     clearError: () => set({ error: null }),
-  }))
+  })),
 );
 
 // Selector hooks for optimized re-renders
-export const useSynastryPersons = () => useSynastryStore((state) => ({
-  person1: state.person1,
-  person2: state.person2,
-}));
+export const useSynastryPersons = () =>
+  useSynastryStore((state) => ({
+    person1: state.person1,
+    person2: state.person2,
+  }));
 export const useSynastryScore = () => useSynastryStore((state) => state.score);
 export const useSynastryBreakdown = () => useSynastryStore((state) => state.breakdown);
 export const useSynastryComparison = () => useSynastryStore((state) => state.comparison);

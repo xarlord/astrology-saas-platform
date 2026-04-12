@@ -9,7 +9,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
   // Get initial value from localStorage or use initialValue
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -27,18 +27,21 @@ export function useLocalStorage<T>(
   });
 
   // Update localStorage when value changes
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      try {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
 
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+      } catch (error) {
+        console.error(`Error setting localStorage key "${key}":`, error);
       }
-    } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
-    }
-  }, [key, storedValue]);
+    },
+    [key, storedValue],
+  );
 
   // Remove value from localStorage
   const removeValue = useCallback(() => {
@@ -76,14 +79,17 @@ export function useLocalStorage<T>(
 // Hook for managing an object in localStorage
 export function useLocalStorageObject<T extends Record<string, unknown>>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, (updates: Partial<T>) => void, () => void] {
   const [value, setValue, removeValue] = useLocalStorage<T>(key, initialValue);
 
   // Update specific fields in the object
-  const updateFields = useCallback((updates: Partial<T>) => {
-    setValue((prev) => ({ ...prev, ...updates }));
-  }, [setValue]);
+  const updateFields = useCallback(
+    (updates: Partial<T>) => {
+      setValue((prev) => ({ ...prev, ...updates }));
+    },
+    [setValue],
+  );
 
   return [value, updateFields, removeValue];
 }
@@ -91,26 +97,38 @@ export function useLocalStorageObject<T extends Record<string, unknown>>(
 // Hook for managing an array in localStorage
 export function useLocalStorageArray<T>(
   key: string,
-  initialValue: T[]
-): [T[], {
-  addItem: (item: T) => void;
-  removeItem: (index: number) => void;
-  updateItem: (index: number, item: T) => void;
-  clear: () => void;
-}] {
+  initialValue: T[],
+): [
+  T[],
+  {
+    addItem: (item: T) => void;
+    removeItem: (index: number) => void;
+    updateItem: (index: number, item: T) => void;
+    clear: () => void;
+  },
+] {
   const [value, setValue, _removeValue] = useLocalStorage<T[]>(key, initialValue);
 
-  const addItem = useCallback((item: T) => {
-    setValue((prev) => [...prev, item]);
-  }, [setValue]);
+  const addItem = useCallback(
+    (item: T) => {
+      setValue((prev) => [...prev, item]);
+    },
+    [setValue],
+  );
 
-  const removeItem = useCallback((index: number) => {
-    setValue((prev) => prev.filter((_, i) => i !== index));
-  }, [setValue]);
+  const removeItem = useCallback(
+    (index: number) => {
+      setValue((prev) => prev.filter((_, i) => i !== index));
+    },
+    [setValue],
+  );
 
-  const updateItem = useCallback((index: number, item: T) => {
-    setValue((prev) => prev.map((v, i) => (i === index ? item : v)));
-  }, [setValue]);
+  const updateItem = useCallback(
+    (index: number, item: T) => {
+      setValue((prev) => prev.map((v, i) => (i === index ? item : v)));
+    },
+    [setValue],
+  );
 
   const clear = useCallback(() => {
     setValue([]);

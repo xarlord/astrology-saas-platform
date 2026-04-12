@@ -4,7 +4,11 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '@/services/lunarReturn.api';
+import {
+  SavedLunarReturn,
+  getLunarReturnHistory,
+  deleteLunarReturn,
+} from '@/services/lunarReturn.api';
 import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
 
@@ -70,16 +74,24 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
   const getIntensityBadgeClasses = (intensity: number): string => {
     const color = getIntensityColor(intensity);
     switch (color) {
-      case 'low': return 'bg-green-200 text-green-800';
-      case 'medium': return 'bg-yellow-200 text-yellow-800';
-      case 'high': return 'bg-orange-200 text-orange-900';
-      case 'extreme': return 'bg-red-200 text-red-900';
-      default: return 'bg-white/20 text-white';
+      case 'low':
+        return 'bg-green-200 text-green-800';
+      case 'medium':
+        return 'bg-yellow-200 text-yellow-800';
+      case 'high':
+        return 'bg-orange-200 text-orange-900';
+      case 'extreme':
+        return 'bg-red-200 text-red-900';
+      default:
+        return 'bg-white/20 text-white';
     }
   };
 
   const renderReturnCard = (lunarReturn: SavedLunarReturn) => (
-    <div key={lunarReturn.id} className="bg-white rounded-xl shadow-sm shadow-black/10 overflow-hidden">
+    <div
+      key={lunarReturn.id}
+      className="bg-white rounded-xl shadow-sm shadow-black/10 overflow-hidden"
+    >
       <div className="flex justify-between items-start p-5 bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
         <div>
           <h4 className="m-0 mb-2 text-xl">
@@ -91,7 +103,9 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
           </h4>
           <p className="m-0 opacity-90">{lunarReturn.theme}</p>
         </div>
-        <div className={`px-3 py-1.5 rounded-full font-semibold ${getIntensityBadgeClasses(lunarReturn.intensity)}`}>
+        <div
+          className={`px-3 py-1.5 rounded-full font-semibold ${getIntensityBadgeClasses(lunarReturn.intensity)}`}
+        >
           {lunarReturn.intensity}/10
         </div>
       </div>
@@ -102,7 +116,9 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
         </p>
 
         <button
-          onClick={() => { if (onSelect) onSelect(lunarReturn); }}
+          onClick={() => {
+            if (onSelect) onSelect(lunarReturn);
+          }}
           type="button"
           className="px-5 py-2.5 border-none rounded-md font-semibold cursor-pointer transition-all duration-200 bg-indigo-500 text-white hover:bg-indigo-600"
         >
@@ -133,7 +149,11 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
     <div className="max-w-[900px] mx-auto p-5">
       {/* Header */}
       <div className="history-header">
-        {onBack && <button onClick={() => onBack()} className="back-button">← Back</button>}
+        {onBack && (
+          <button onClick={() => onBack()} className="back-button">
+            ← Back
+          </button>
+        )}
         <h2>Lunar Return History</h2>
         <p className="subtitle">Your past lunar returns and forecasts</p>
       </div>
@@ -156,7 +176,11 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
             <p className="text-gray-400 mb-6">
               Your lunar return history will appear here once you start tracking them.
             </p>
-            <button onClick={onBack} type="button" className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg font-semibold cursor-pointer hover:bg-indigo-600 transition-colors">
+            <button
+              onClick={onBack}
+              type="button"
+              className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg font-semibold cursor-pointer hover:bg-indigo-600 transition-colors"
+            >
               Calculate Your First Lunar Return
             </button>
           </div>

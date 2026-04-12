@@ -28,17 +28,13 @@ export const SkeletonText: React.FC<SkeletonTextProps> = ({
   width = '100%',
   className,
 }) => {
-  const widths: string[] = Array.isArray(width) ? width : Array(lines).fill(width) as string[];
+  const widths: string[] = Array.isArray(width) ? width : (Array(lines).fill(width) as string[]);
 
   return (
     <div className={clsx('space-y-2', className)} role="status" aria-live="polite">
       <span className="sr-only">Loading text content...</span>
       {Array.from({ length: lines }).map((_, i) => (
-        <div
-          key={i}
-          className={clsx(skeletonBase, 'h-4')}
-          style={{ width: widths[i] ?? '100%' }}
-        />
+        <div key={i} className={clsx(skeletonBase, 'h-4')} style={{ width: widths[i] ?? '100%' }} />
       ))}
     </div>
   );
@@ -50,10 +46,7 @@ export interface SkeletonCircleProps {
   className?: string;
 }
 
-export const SkeletonCircle: React.FC<SkeletonCircleProps> = ({
-  size = 40,
-  className,
-}) => (
+export const SkeletonCircle: React.FC<SkeletonCircleProps> = ({ size = 40, className }) => (
   <div
     className={clsx(skeletonBase, 'rounded-full', className)}
     style={{ width: size, height: size }}
@@ -80,7 +73,7 @@ export const SkeletonRect: React.FC<SkeletonRectProps> = ({
     className={clsx(skeletonBase, className)}
     style={{
       width: typeof width === 'number' ? `${width}px` : width,
-      height: aspectRatio ? undefined : (typeof height === 'number' ? `${height}px` : height),
+      height: aspectRatio ? undefined : typeof height === 'number' ? `${height}px` : height,
       aspectRatio,
     }}
     role="status"
@@ -112,10 +105,7 @@ export const SkeletonChartWheel: React.FC<SkeletonProps> = ({ className }) => (
     role="status"
     aria-label="Loading chart wheel"
   >
-    <div
-      className={clsx(skeletonBase, 'rounded-full')}
-      style={{ width: 400, height: 400 }}
-    />
+    <div className={clsx(skeletonBase, 'rounded-full')} style={{ width: 400, height: 400 }} />
   </div>
 );
 
@@ -141,10 +131,7 @@ export const SkeletonTable: React.FC<SkeletonTableProps> = ({
     {Array.from({ length: rows }).map((_, rowIndex) => (
       <div key={rowIndex} className="flex space-x-4">
         {Array.from({ length: columns }).map((_, colIndex) => (
-          <div
-            key={`cell-${rowIndex}-${colIndex}`}
-            className={clsx(skeletonBase, 'h-10 flex-1')}
-          />
+          <div key={`cell-${rowIndex}-${colIndex}`} className={clsx(skeletonBase, 'h-10 flex-1')} />
         ))}
       </div>
     ))}

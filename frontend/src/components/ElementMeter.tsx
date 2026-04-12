@@ -85,14 +85,10 @@ export function ElementMeter({
                 <span className="text-xl" role="img" aria-label={`${info.name} element`}>
                   {info.symbol}
                 </span>
-                <span className="font-medium text-gray-900 dark:text-white">
-                  {info.name}
-                </span>
+                <span className="font-medium text-gray-900 dark:text-white">{info.name}</span>
               </div>
               {showPercentages && (
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {percentage}%
-                </span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{percentage}%</span>
               )}
             </div>
 
@@ -131,7 +127,13 @@ export function ElementMeter({
 /**
  * Compact Element Meter for inline display
  */
-export function ElementMeterCompact({ elements, total }: { elements: ElementCount; total: number }) {
+export function ElementMeterCompact({
+  elements,
+  total,
+}: {
+  elements: ElementCount;
+  total: number;
+}) {
   return (
     <div className="flex items-center gap-1" role="img" aria-label="Element distribution">
       {Object.entries(ELEMENT_INFO).map(([key, info]) => {
@@ -153,9 +155,7 @@ export function ElementMeterCompact({ elements, total }: { elements: ElementCoun
               {info.symbol}
             </span>
             {percentage > 0 && (
-              <span className="text-xs ml-0.5 text-gray-600 dark:text-gray-400">
-                {percentage}%
-              </span>
+              <span className="text-xs ml-0.5 text-gray-600 dark:text-gray-400">{percentage}%</span>
             )}
           </div>
         );
@@ -168,9 +168,7 @@ export function ElementMeterCompact({ elements, total }: { elements: ElementCoun
  * Calculate element distribution from planet positions
  */
 // eslint-disable-next-line react-refresh/only-export-components
-export function calculateElementDistribution(
-  planets: { sign: string }[]
-): ElementCount {
+export function calculateElementDistribution(planets: { sign: string }[]): ElementCount {
   const elements: ElementCount = { fire: 0, earth: 0, air: 0, water: 0 };
 
   planets.forEach((planet) => {

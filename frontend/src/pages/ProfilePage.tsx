@@ -30,9 +30,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <UserProfile
-        onViewChart={(chartId) => navigate(`/charts/${chartId}`)}
-      />
+      <UserProfile onViewChart={(chartId) => navigate(`/charts/${chartId}`)} />
     </AppLayout>
   );
 }

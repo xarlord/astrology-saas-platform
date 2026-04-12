@@ -51,7 +51,10 @@ function transformTransitToEvent(transit: Transit): TransitEvent {
   };
 
   // Map API TransitType to component type
-  const mapType = (transitType: string, impact?: string): 'favorable' | 'challenging' | 'neutral' | 'major' => {
+  const mapType = (
+    transitType: string,
+    impact?: string,
+  ): 'favorable' | 'challenging' | 'neutral' | 'major' => {
     if (transitType === 'major') return 'major';
     if (impact === 'positive') return 'favorable';
     if (impact === 'negative') return 'challenging';
@@ -83,7 +86,7 @@ function generateEnergyData(
   energyLevel: number,
   startDate: string,
   endDate: string,
-  transits: Transit[]
+  transits: Transit[],
 ): TransitDataPoint[] {
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -91,7 +94,7 @@ function generateEnergyData(
 
   // Create a map of transit dates for marking major events
   const transitDates = new Map<string, Transit>();
-  transits.forEach(t => {
+  transits.forEach((t) => {
     const peakDate = t.peak_date || t.start_date;
     if (peakDate) {
       transitDates.set(peakDate.split('T')[0], t);
@@ -112,7 +115,8 @@ function generateEnergyData(
       date: dateStr,
       energy: Math.round(baseEnergy),
       isMajorEvent: transit?.type === 'major',
-      eventName: transit?.title ?? `${transit?.planet}${transit?.aspect ? ` ${transit.aspect}` : ''}`,
+      eventName:
+        transit?.title ?? `${transit?.planet}${transit?.aspect ? ` ${transit.aspect}` : ''}`,
       eventDescription: transit?.influence?.overall,
     });
 
@@ -192,7 +196,7 @@ const TransitForecastPage: React.FC = () => {
       const data = await transitService.getTodayTransits();
 
       // Transform transits to current positions
-      const positions: CurrentTransit[] = data.transits.map(transit => ({
+      const positions: CurrentTransit[] = data.transits.map((transit) => ({
         planet: transit.planet,
         sign: transit.aspect ?? '',
         degree: transit.intensity ?? 0,
@@ -216,7 +220,11 @@ const TransitForecastPage: React.FC = () => {
       setError(null);
 
       // Fetch transit data from API
-      const data: TransitChartType = await transitService.calculateTransits(selectedChartId, startDate, endDate);
+      const data: TransitChartType = await transitService.calculateTransits(
+        selectedChartId,
+        startDate,
+        endDate,
+      );
 
       // Transform API Transit[] to component TransitEvent[]
       const transitEvents: TransitEvent[] = (data.transits || []).map(transformTransitToEvent);
@@ -227,7 +235,7 @@ const TransitForecastPage: React.FC = () => {
         data.energy_level || 50,
         startDate,
         endDate,
-        data.transits || []
+        data.transits || [],
       );
       setEnergyData(energyPoints);
 
@@ -239,7 +247,7 @@ const TransitForecastPage: React.FC = () => {
       // Calculate summary stats
       setSummaryStats({
         totalTransits: transitEvents.length,
-        majorAspects: transitEvents.filter(e => e.type === 'major').length,
+        majorAspects: transitEvents.filter((e) => e.type === 'major').length,
         bestDay: { date: bestDay.date, score: bestDay.energy },
         worstDay: { date: worstDay.date, score: worstDay.energy },
       });
@@ -320,12 +328,16 @@ const TransitForecastPage: React.FC = () => {
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-1">Transit Forecast</h2>
             <p className="text-slate-400">
-              Daily planetary influences for {charts.find((c) => c.id === selectedChartId)?.name ?? 'your chart'}
+              Daily planetary influences for{' '}
+              {charts.find((c) => c.id === selectedChartId)?.name ?? 'your chart'}
             </p>
           </div>
 
           {/* Date Range Toggle */}
-          <div className="glass-panel p-1 rounded-xl flex items-center" data-testid="duration-buttons">
+          <div
+            className="glass-panel p-1 rounded-xl flex items-center"
+            data-testid="duration-buttons"
+          >
             {(['week', 'month', 'quarter', 'year'] as const).map((d) => (
               <button
                 key={d}
@@ -337,7 +349,13 @@ const TransitForecastPage: React.FC = () => {
                 }`}
                 data-testid={`duration-${d}`}
               >
-                {d === 'week' ? 'This Week' : d === 'month' ? 'This Month' : d === 'quarter' ? '3 Months' : 'This Year'}
+                {d === 'week'
+                  ? 'This Week'
+                  : d === 'month'
+                    ? 'This Month'
+                    : d === 'quarter'
+                      ? '3 Months'
+                      : 'This Year'}
               </button>
             ))}
           </div>
@@ -353,7 +371,7 @@ const TransitForecastPage: React.FC = () => {
               className="w-full px-4 py-2 bg-surface border border-glass-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
               data-testid="chart-selector"
             >
-                      {charts.map((chart) => (
+              {charts.map((chart) => (
                 <option key={chart.id} value={chart.id}>
                   {chart.name}
                 </option>
@@ -441,7 +459,9 @@ const TransitForecastPage: React.FC = () => {
                       <input
                         type="checkbox"
                         checked={filters.showFavorable}
-                        onChange={(e) => setFilters({ ...filters, showFavorable: e.target.checked })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, showFavorable: e.target.checked })
+                        }
                         className="rounded bg-surface border-glass-border text-green-500 focus:ring-green-500"
                       />
                       Favorable
@@ -450,7 +470,9 @@ const TransitForecastPage: React.FC = () => {
                       <input
                         type="checkbox"
                         checked={filters.showChallenging}
-                        onChange={(e) => setFilters({ ...filters, showChallenging: e.target.checked })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, showChallenging: e.target.checked })
+                        }
                         className="rounded bg-surface border-glass-border text-red-500 focus:ring-red-500"
                       />
                       Challenging
@@ -518,14 +540,23 @@ const TransitForecastPage: React.FC = () => {
                     <div>
                       <div className="text-primary text-sm font-bold uppercase tracking-widest mb-1">
                         {summaryStats.bestDay.date
-                          ? new Date(summaryStats.bestDay.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                          ? new Date(summaryStats.bestDay.date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })
                           : 'Today'}
                       </div>
                       <h3 className="text-2xl font-bold text-white leading-tight">
-                        {summaryStats.bestDay.score >= 70 ? 'High Energy' : summaryStats.bestDay.score >= 40 ? 'Moderate Energy' : 'Low Energy'}
+                        {summaryStats.bestDay.score >= 70
+                          ? 'High Energy'
+                          : summaryStats.bestDay.score >= 40
+                            ? 'Moderate Energy'
+                            : 'Low Energy'}
                       </h3>
                       <p className="text-slate-400 text-sm mt-1">
-                        {summaryStats.bestDay.score >= 70 ? 'Great for initiating new projects' : 'Good for reflection and planning'}
+                        {summaryStats.bestDay.score >= 70
+                          ? 'Great for initiating new projects'
+                          : 'Good for reflection and planning'}
                       </p>
                     </div>
                   </div>
@@ -541,13 +572,18 @@ const TransitForecastPage: React.FC = () => {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-400 text-sm">Major Aspects</span>
-                      <span className="text-accent-gold font-bold">{summaryStats.majorAspects}</span>
+                      <span className="text-accent-gold font-bold">
+                        {summaryStats.majorAspects}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-400 text-sm">Best Day</span>
                       <span className="text-accent-green font-bold">
                         {summaryStats.bestDay.date
-                          ? new Date(summaryStats.bestDay.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                          ? new Date(summaryStats.bestDay.date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })
                           : 'N/A'}
                       </span>
                     </div>
@@ -555,7 +591,10 @@ const TransitForecastPage: React.FC = () => {
                       <span className="text-slate-400 text-sm">Most Challenging</span>
                       <span className="text-accent-red font-bold">
                         {summaryStats.worstDay.date
-                          ? new Date(summaryStats.worstDay.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                          ? new Date(summaryStats.worstDay.date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })
                           : 'N/A'}
                       </span>
                     </div>
@@ -567,7 +606,11 @@ const TransitForecastPage: React.FC = () => {
               {energyData.length > 0 && (
                 <div className="glass-panel rounded-2xl p-6">
                   <h3 className="text-lg font-bold text-white mb-4">Energy Levels Over Time</h3>
-                  <TransitChart data={energyData} height={300} onDataPointClick={(point) => console.log('Clicked:', point)} />
+                  <TransitChart
+                    data={energyData}
+                    height={300}
+                    onDataPointClick={(_point) => { /* handle data point click */ }}
+                  />
                 </div>
               )}
 
@@ -579,14 +622,26 @@ const TransitForecastPage: React.FC = () => {
                 {/* Events */}
                 {filteredEvents.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
-                    <span className="material-symbols-outlined text-4xl mb-2 block">event_busy</span>
+                    <span className="material-symbols-outlined text-4xl mb-2 block">
+                      event_busy
+                    </span>
                     <p>No transits match your current filters</p>
                   </div>
                 ) : (
                   filteredEvents.map((event, index) => (
-                    <div key={event.id ?? index} className="relative z-10 mb-8" data-testid="transit-item">
+                    <div
+                      key={event.id ?? index}
+                      className="relative z-10 mb-8"
+                      data-testid="transit-item"
+                    >
                       <TransitTimelineCard
-                        time={event.time ?? new Date(event.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                        time={
+                          event.time ??
+                          new Date(event.date).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
+                        }
                         date={event.date}
                         title={event.title}
                         description={event.description}
@@ -605,7 +660,10 @@ const TransitForecastPage: React.FC = () => {
               <div className="glass-panel rounded-xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-white font-bold text-lg">
-                    {new Date(startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    {new Date(startDate).toLocaleDateString('en-US', {
+                      month: 'long',
+                      year: 'numeric',
+                    })}
                   </h4>
                 </div>
                 <div className="grid grid-cols-7 gap-1 text-center mb-2">
@@ -642,7 +700,8 @@ const TransitForecastPage: React.FC = () => {
                             )}
                           </div>
                           <span className="text-slate-400">
-                            {transit.sign} {transit.degree > 0 ? `${transit.degree.toFixed(1)}deg` : ''}
+                            {transit.sign}{' '}
+                            {transit.degree > 0 ? `${transit.degree.toFixed(1)}deg` : ''}
                           </span>
                         </div>
                       ))}

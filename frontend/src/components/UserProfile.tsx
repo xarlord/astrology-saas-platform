@@ -1,15 +1,5 @@
 import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
-import {
-  CameraIcon,
-  PencilIcon,
-  TrashIcon,
-  PlusIcon,
-  StarIcon,
-  SparklesIcon,
-  CheckIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -100,33 +90,35 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
   const { charts, deleteChart } = useCharts();
 
   // Convert User to UserProfile if needed
-  const userProfile: UserProfile | undefined = user ? {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    avatar: user.avatar,
-    createdAt: new Date(user.createdAt ?? Date.now()),
-    timezone: user.timezone ?? 'UTC',
-    subscription: {
-      plan: (user.plan as 'free' | 'premium' | 'professional') ?? 'free',
-      status: 'active',
-    },
-    preferences: {
-      theme: (user.preferences?.theme as 'light' | 'dark' | 'auto') ?? 'auto',
-      defaultHouseSystem: (user.preferences?.defaultHouseSystem as HouseSystem) ?? 'placidus',
-      defaultZodiac: (user.preferences?.defaultZodiac as 'tropical' | 'sidereal') ?? 'tropical',
-      aspectOrbs: {
-        conjunction: 10,
-        opposition: 10,
-        trine: 8,
-        square: 8,
-        sextile: 6,
-      },
-    },
-  } : undefined;
+  const userProfile: UserProfile | undefined = user
+    ? {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        createdAt: new Date(user.createdAt ?? Date.now()),
+        timezone: user.timezone ?? 'UTC',
+        subscription: {
+          plan: (user.plan as 'free' | 'premium' | 'professional') ?? 'free',
+          status: 'active',
+        },
+        preferences: {
+          theme: (user.preferences?.theme as 'light' | 'dark' | 'auto') ?? 'auto',
+          defaultHouseSystem: (user.preferences?.defaultHouseSystem as HouseSystem) ?? 'placidus',
+          defaultZodiac: (user.preferences?.defaultZodiac as 'tropical' | 'sidereal') ?? 'tropical',
+          aspectOrbs: {
+            conjunction: 10,
+            opposition: 10,
+            trine: 8,
+            square: 8,
+            sextile: 6,
+          },
+        },
+      }
+    : undefined;
 
   // Convert service Chart to UserProfile Chart type
-  const chartsForDisplay: Chart[] = (charts ?? []).map(chart => ({
+  const chartsForDisplay: Chart[] = (charts ?? []).map((chart) => ({
     id: chart.id,
     userId: '', // Not available in service Chart type
     name: chart.name,
@@ -146,12 +138,16 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
       houseSystem: 'placidus',
       zodiac: 'tropical',
     },
-    calculatedData: chart.positions ? Object.fromEntries(chart.positions.map(p => [p.name, p])) : undefined,
+    calculatedData: chart.positions
+      ? Object.fromEntries(chart.positions.map((p) => [p.name, p]))
+      : undefined,
     createdAt: new Date(chart.createdAt ?? Date.now()),
     updatedAt: new Date(chart.createdAt ?? Date.now()),
   }));
 
-  const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');
+  const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>(
+    'account',
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     name: user?.name ?? '',
@@ -192,7 +188,9 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
         editData={editData}
         onEditToggle={() => setIsEditing(!isEditing)}
         onDataChange={setEditData}
-        onSave={() => { void handleSaveProfile(); }}
+        onSave={() => {
+          void handleSaveProfile();
+        }}
       />
 
       {/* Tabbed Content */}
@@ -230,7 +228,9 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
               charts={chartsForDisplay}
               onEditChart={onEditChart}
               onViewChart={onViewChart}
-              onDeleteChart={(chartId) => { void handleDeleteChart(chartId); }}
+              onDeleteChart={(chartId) => {
+                void handleDeleteChart(chartId);
+              }}
             />
           )}
           {activeTab === 'preferences' && <PreferencesTab user={userProfile} />}
@@ -273,7 +273,7 @@ function ProfileHeader({
             aria-label="Change avatar"
             title="Change avatar"
           >
-            <CameraIcon className="w-4 h-4 text-indigo-600" />
+            <span className="material-symbols-outlined text-[16px] text-indigo-600">photo_camera</span>
           </button>
         </div>
 
@@ -324,7 +324,11 @@ function ProfileHeader({
               <h1 className="text-2xl font-bold">{user.name}</h1>
               <p className="text-white/80">{user.email}</p>
               <p className="text-sm text-white/60 mt-1">
-                Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                Member since{' '}
+                {new Date(user.createdAt).toLocaleDateString('en-US', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
               </p>
             </div>
           )}
@@ -336,7 +340,9 @@ function ProfileHeader({
             <>
               <button
                 type="button"
-                onClick={() => { void onSave(); }}
+                onClick={() => {
+                  void onSave();
+                }}
                 className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
                 aria-label="Save"
               >
@@ -348,7 +354,7 @@ function ProfileHeader({
                 className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
                 aria-label="Cancel"
               >
-                <XMarkIcon className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </>
           ) : (
@@ -359,7 +365,7 @@ function ProfileHeader({
               title="Edit profile"
               aria-label="Edit profile"
             >
-              <PencilIcon className="w-5 h-5" />
+              <span className="material-symbols-outlined text-[20px]">edit</span>
             </button>
           )}
         </div>
@@ -436,7 +442,10 @@ function AccountTab({ user }: { user?: UserProfile }) {
       {/* Change Password Section */}
       <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
         <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Security</h4>
-        <button type="button" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button
+          type="button"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        >
           Change Password
         </button>
       </div>
@@ -444,7 +453,10 @@ function AccountTab({ user }: { user?: UserProfile }) {
       {/* Danger Zone */}
       <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
         <h4 className="text-md font-medium text-red-600 dark:text-red-400 mb-4">Danger Zone</h4>
-        <button type="button" className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">
+        <button
+          type="button"
+          className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+        >
           Delete My Account
         </button>
         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -470,13 +482,16 @@ function ChartsTab({
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
-        <StarIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <span className="material-symbols-outlined text-[64px] text-gray-400 mx-auto mb-4">star</span>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No charts yet</h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Create your first natal chart to get started
         </p>
-        <button type="button" className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          <PlusIcon className="w-5 h-5 inline mr-2" />
+        <button
+          type="button"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        >
+          <span className="material-symbols-outlined text-[20px] inline mr-2">add</span>
           Create Your First Chart
         </button>
       </div>
@@ -489,8 +504,11 @@ function ChartsTab({
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           My Charts ({charts.length})
         </h3>
-        <button type="button" className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          <PlusIcon className="w-5 h-5" />
+        <button
+          type="button"
+          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        >
+          <span className="material-symbols-outlined text-[20px]">add</span>
           Add New Chart
         </button>
       </div>
@@ -564,7 +582,7 @@ function ChartCard({
           className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           aria-label="Edit chart"
         >
-          <PencilIcon className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">edit</span>
         </button>
         <button
           type="button"
@@ -572,7 +590,7 @@ function ChartCard({
           className="px-3 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
           aria-label="Delete chart"
         >
-          <TrashIcon className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">delete</span>
         </button>
       </div>
     </div>
@@ -590,7 +608,10 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Default House System */}
         <div>
-          <label htmlFor="house-system" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="house-system"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Default House System
           </label>
           <select
@@ -609,7 +630,10 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
         {/* Default Zodiac Type */}
         <div>
-          <label htmlFor="zodiac-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="zodiac-type"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Default Zodiac Type
           </label>
           <select
@@ -625,11 +649,16 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
       {/* Aspect Orbs */}
       <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Aspect Orb Sensitivity</h4>
+        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">
+          Aspect Orb Sensitivity
+        </h4>
         <div className="space-y-4">
           <div>
             <div className="flex justify-between mb-2">
-              <label htmlFor="conjunction-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="conjunction-orb"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Conjunction/ Opposition
               </label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -647,7 +676,12 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label htmlFor="trine-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">Trine/ Square</label>
+              <label
+                htmlFor="trine-orb"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Trine/ Square
+              </label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {user.preferences.aspectOrbs.trine}°
               </span>
@@ -663,7 +697,12 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label htmlFor="sextile-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">Sextile</label>
+              <label
+                htmlFor="sextile-orb"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Sextile
+              </label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {user.preferences.aspectOrbs.sextile}°
               </span>
@@ -706,7 +745,9 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
                 `}
               >
                 <div className="text-2xl mb-2">{theme.icon}</div>
-                <div className="text-sm font-medium text-gray-900 dark:text-white">{theme.label}</div>
+                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  {theme.label}
+                </div>
               </button>
             ))}
           </div>
@@ -715,7 +756,10 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
       {/* Save Button */}
       <div className="pt-6">
-        <button type="button" className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button
+          type="button"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        >
           Save Preferences
         </button>
       </div>
@@ -731,7 +775,12 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
     {
       name: 'Free',
       price: '$0/month',
-      features: ['3 natal charts', 'Basic personality analysis', 'Daily transits', 'Community support'],
+      features: [
+        '3 natal charts',
+        'Basic personality analysis',
+        'Daily transits',
+        'Community support',
+      ],
       cta: 'Current Plan',
       disabled: true,
       highlight: false,
@@ -774,14 +823,17 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">
-              Current Plan: {user.subscription.plan.charAt(0).toUpperCase() + user.subscription.plan.slice(1)}
+              Current Plan:{' '}
+              {user.subscription.plan.charAt(0).toUpperCase() + user.subscription.plan.slice(1)}
             </h3>
             <p className="text-sm text-indigo-700 dark:text-indigo-300">
-              Status: {user.subscription.status.charAt(0).toUpperCase() + user.subscription.status.slice(1)}
+              Status:{' '}
+              {user.subscription.status.charAt(0).toUpperCase() + user.subscription.status.slice(1)}
             </p>
             {user.subscription.renewalDate && (
               <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
-                Renews on {new Date(user.subscription.renewalDate).toLocaleDateString('en-US', {
+                Renews on{' '}
+                {new Date(user.subscription.renewalDate).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric',
@@ -789,13 +841,15 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
               </p>
             )}
           </div>
-          <SparklesIcon className="w-8 h-8 text-indigo-500" />
+          <span className="material-symbols-outlined text-[32px] text-indigo-500">auto_awesome</span>
         </div>
       </div>
 
       {/* Available Plans */}
       <div>
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Available Plans</h4>
+        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Available Plans
+        </h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <PlanCard key={plan.name} plan={plan} />
@@ -805,7 +859,9 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
 
       {/* Billing History */}
       <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Billing History</h4>
+        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Billing History
+        </h4>
         <div className="bg-gray-50 dark:bg-gray-750 rounded-lg p-6 text-center">
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             No billing history available for your account.
@@ -849,8 +905,11 @@ function PlanCard({
       </div>
       <ul className="space-y-3 mb-6">
         {plan.features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <CheckIcon className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+          <li
+            key={index}
+            className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
+          >
+            <span className="material-symbols-outlined text-[20px] text-green-500 flex-shrink-0 mt-0.5">check</span>
             {feature}
           </li>
         ))}
@@ -864,8 +923,8 @@ function PlanCard({
             plan.disabled
               ? 'bg-gray-100 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed'
               : plan.highlight
-              ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-              : 'bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-500'
+                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                : 'bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-500'
           }
         `}
       >

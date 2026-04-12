@@ -17,28 +17,53 @@ import { useTransits } from '../hooks/useTransits';
 // Components
 import EnergyMeter from '../components/astrology/EnergyMeter';
 import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
+import { TransitReportCard, TransitReportHistory } from '../components/report';
 import { Button } from '../components/ui/Button';
+import { InstallButton } from '../components/ui';
+import { AppLayout } from '../components';
 
 // Mock daily quote data
 const DAILY_QUOTES = [
-  { text: "The stars don't dictate your fate, they illuminate the path you choose.", author: "Cosmic Wisdom" },
-  { text: "Today's cosmic energy supports new beginnings and bold decisions.", author: "AstroGuide" },
-  { text: "Trust your intuition - the Moon's position enhances your inner knowing.", author: "Lunar Insight" },
-  { text: "Mercury's alignment brings clarity to communication and thought.", author: "Mercury Messenger" },
+  {
+    text: "The stars don't dictate your fate, they illuminate the path you choose.",
+    author: 'Cosmic Wisdom',
+  },
+  {
+    text: "Today's cosmic energy supports new beginnings and bold decisions.",
+    author: 'AstroGuide',
+  },
+  {
+    text: "Trust your intuition - the Moon's position enhances your inner knowing.",
+    author: 'Lunar Insight',
+  },
+  {
+    text: "Mercury's alignment brings clarity to communication and thought.",
+    author: 'Mercury Messenger',
+  },
 ];
 
 const getZodiacSymbol = (sign: string): string => {
   const symbols: Record<string, string> = {
-    Aries: 'sunny', Taurus: 'dark_mode', Gemini: 'bedtime',
-    Cancer: 'water_drop', Leo: 'whatshot', Virgo: 'spa',
-    Libra: 'balance', Scorpio: 'scorpion', Sagittarius: 'explore',
-    Capricorn: 'terrain', Aquarius: 'air', Pisces: 'waves'
+    Aries: 'sunny',
+    Taurus: 'dark_mode',
+    Gemini: 'bedtime',
+    Cancer: 'water_drop',
+    Leo: 'whatshot',
+    Virgo: 'spa',
+    Libra: 'balance',
+    Scorpio: 'scorpion',
+    Sagittarius: 'explore',
+    Capricorn: 'terrain',
+    Aquarius: 'air',
+    Pisces: 'waves',
   };
   return symbols[sign] ?? 'circle';
 };
 
 // Energy level calculation helper
-const calculateEnergyLevels = (transitsCount: number): {
+const calculateEnergyLevels = (
+  transitsCount: number,
+): {
   physical: number;
   emotional: number;
   mental: number;
@@ -72,8 +97,18 @@ const PLANET_CONFIG: Record<string, { icon: string; color: string; bgColor: stri
 
 // Zodiac signs
 const ZODIAC_SIGNS = [
-  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+  'Aries',
+  'Taurus',
+  'Gemini',
+  'Cancer',
+  'Leo',
+  'Virgo',
+  'Libra',
+  'Scorpio',
+  'Sagittarius',
+  'Capricorn',
+  'Aquarius',
+  'Pisces',
 ];
 
 // Get zodiac sign from longitude
@@ -101,8 +136,8 @@ const DashboardPage: React.FC = () => {
     spiritual: 58,
   });
 
-  const [dailyQuote] = useState(() =>
-    DAILY_QUOTES[Math.floor(Math.random() * DAILY_QUOTES.length)]
+  const [dailyQuote] = useState(
+    () => DAILY_QUOTES[Math.floor(Math.random() * DAILY_QUOTES.length)],
   );
 
   const [moonPhase] = useState({
@@ -112,13 +147,15 @@ const DashboardPage: React.FC = () => {
   });
 
   // Current planetary positions
-  const [planetaryPositions, setPlanetaryPositions] = useState<{
-    name: string;
-    longitude: number;
-    sign: string;
-    degree: number;
-    retrograde: boolean;
-  }[]>([]);
+  const [planetaryPositions, setPlanetaryPositions] = useState<
+    {
+      name: string;
+      longitude: number;
+      sign: string;
+      degree: number;
+      retrograde: boolean;
+    }[]
+  >([]);
 
   useEffect(() => {
     // Load today's transits
@@ -131,12 +168,15 @@ const DashboardPage: React.FC = () => {
       try {
         const response = await fetch('/api/v1/transits/today');
         if (response.ok) {
-          const data = await response.json() as {
+          const data = (await response.json()) as {
             data?: {
-              transitPlanets?: Record<string, {
-                longitude: number;
-                retrograde?: boolean;
-              }>;
+              transitPlanets?: Record<
+                string,
+                {
+                  longitude: number;
+                  retrograde?: boolean;
+                }
+              >;
             };
           };
           if (data.data?.transitPlanets) {
@@ -182,7 +222,9 @@ const DashboardPage: React.FC = () => {
   // Get moon sign from first chart
   const moonSign = useMemo(() => {
     if (recentCharts[0]?.calculated_data?.planets) {
-      const moon = recentCharts[0].calculated_data.planets.find((p: { name: string }) => p.name === 'Moon');
+      const moon = recentCharts[0].calculated_data.planets.find(
+        (p: { name: string }) => p.name === 'Moon',
+      );
       return moon?.sign ?? 'Taurus';
     }
     return 'Taurus';
@@ -193,7 +235,7 @@ const DashboardPage: React.FC = () => {
   const handleSynastry = () => navigate('/synastry');
   const handleChartClick = (chartId: string) => navigate(`/charts/${chartId}`);
 
-  const handleLogout = async () => {
+  const _handleLogout = async () => {
     try {
       await logout();
       navigate('/login');
@@ -205,7 +247,7 @@ const DashboardPage: React.FC = () => {
   const getInitials = (name: string): string => {
     return name
       .split(' ')
-      .map(n => n[0])
+      .map((n) => n[0])
       .join('')
       .toUpperCase()
       .slice(0, 2);
@@ -222,63 +264,7 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100">
-      {/* Header */}
-      <header className="border-b border-[#2f2645] bg-[#141627]/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="size-9 bg-gradient-to-br from-primary to-[#8b5cf6] rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-[24px]">auto_awesome</span>
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">AstroVerse</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="primary"
-              onClick={handleCreateChart}
-              leftIcon={<span className="material-symbols-outlined text-[18px]">add</span>}
-              data-testid="new-chart-header-button"
-            >
-              New Chart
-            </Button>
-            <div className="relative group">
-              <button
-                className="flex items-center gap-3 pl-2 cursor-pointer group-hover:opacity-80 transition-opacity"
-                aria-label="User menu"
-              >
-                <div
-                  className="size-10 rounded-full bg-cover bg-center border-2 border-white/10 group-hover:border-primary transition-colors"
-                  style={{ backgroundImage: user?.avatar_url ? `url(${user.avatar_url})` : undefined }}
-                >
-                  {!user?.avatar_url && (
-                    <div className={`size-full rounded-full bg-gradient-to-br ${getAvatarGradient(0)} flex items-center justify-center text-white text-xs font-bold`}>
-                      {getInitials(user?.name ?? 'User')}
-                    </div>
-                  )}
-                </div>
-              </button>
-              {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-48 bg-[#1a1d2e] border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <div className="py-2">
-                  <div className="px-4 py-2 border-b border-white/10">
-                    <p className="text-sm font-medium text-white">{user?.name ?? 'User'}</p>
-                    <p className="text-xs text-slate-400 truncate">{user?.email ?? ''}</p>
-                  </div>
-                  <button
-                    onClick={() => { void handleLogout(); }}
-                    className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
-                    data-testid="logout-button"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">logout</span>
-                    Logout
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <AppLayout>
       {/* Main Content */}
       <main className="max-w-[1400px] mx-auto px-6 py-8 pb-20">
         {/* Welcome Section */}
@@ -293,30 +279,35 @@ const DashboardPage: React.FC = () => {
               <span className="material-symbols-outlined text-[16px]">wb_twilight</span>
               Daily Insights
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              Welcome back, {user?.name ?? 'Stargazer'} ✨
-            </h2>
-            <p className="text-slate-400 text-lg max-w-2xl">
-              {dailyQuote.text}
-            </p>
+            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Welcome back, {user?.name ?? 'Stargazer'} <span aria-hidden="true">✨</span>
+            </h1>
+            <p className="text-slate-400 text-lg max-w-2xl">{dailyQuote.text}</p>
             {dailyQuote.author && (
               <p className="text-sm text-slate-500 italic">— {dailyQuote.author}</p>
             )}
           </div>
 
           {/* Moon Phase Display */}
-          <div className="flex items-center gap-3 bg-[#141627] border border-white/10 p-2 pr-5 rounded-2xl">
-            <div className="bg-[#1e2136] p-2.5 rounded-xl text-yellow-100">
-              <span className="material-symbols-outlined">dark_mode</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">
-                {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 bg-[#141627] border border-white/10 p-2 pr-5 rounded-2xl">
+              <div className="bg-[#1e2136] p-2.5 rounded-xl text-yellow-100">
+                <span className="material-symbols-outlined">dark_mode</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">
+                  {new Date().toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
               </span>
               <span className="text-sm font-bold text-white">
                 {moonPhase.phase.replace('-', ' ')} in {moonSign}
               </span>
             </div>
+          </div>
+          <InstallButton variant="compact" />
           </div>
         </motion.header>
 
@@ -332,10 +323,25 @@ const DashboardPage: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
             >
               {[
-                { key: 'physical', label: 'Physical', value: energyLevels.physical, color: '#22c55e' },
-                { key: 'emotional', label: 'Emotional', value: energyLevels.emotional, color: '#3b82f6' },
+                {
+                  key: 'physical',
+                  label: 'Physical',
+                  value: energyLevels.physical,
+                  color: '#22c55e',
+                },
+                {
+                  key: 'emotional',
+                  label: 'Emotional',
+                  value: energyLevels.emotional,
+                  color: '#3b82f6',
+                },
                 { key: 'mental', label: 'Mental', value: energyLevels.mental, color: '#fbbf24' },
-                { key: 'spiritual', label: 'Spiritual', value: energyLevels.spiritual, color: '#a855f7' },
+                {
+                  key: 'spiritual',
+                  label: 'Spiritual',
+                  value: energyLevels.spiritual,
+                  color: '#a855f7',
+                },
               ].map((energy) => (
                 <div
                   key={energy.key}
@@ -354,13 +360,19 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <p
                     className={`text-xs mt-2 flex items-center gap-1 z-10 ${
-                      energy.value >= 70 ? 'text-emerald-400' :
-                      energy.value >= 40 ? 'text-yellow-400' :
-                      'text-red-400'
+                      energy.value >= 70
+                        ? 'text-emerald-400'
+                        : energy.value >= 40
+                          ? 'text-yellow-400'
+                          : 'text-red-400'
                     }`}
                   >
                     <span className="material-symbols-outlined text-[14px]">
-                      {energy.value >= 70 ? 'trending_up' : energy.value >= 40 ? 'remove' : 'trending_down'}
+                      {energy.value >= 70
+                        ? 'trending_up'
+                        : energy.value >= 40
+                          ? 'remove'
+                          : 'trending_down'}
                     </span>
                     {energy.value >= 70 ? 'High' : energy.value >= 40 ? 'Moderate' : 'Low'}
                   </p>
@@ -395,7 +407,9 @@ const DashboardPage: React.FC = () => {
                       key={planet.name}
                       className="bg-[#0B0D17] p-3 rounded-xl border border-white/5 hover:border-primary/50 transition-all text-center"
                     >
-                      <div className={`w-10 h-10 rounded-full ${config.bgColor} ${config.color} flex items-center justify-center mx-auto mb-2`}>
+                      <div
+                        className={`w-10 h-10 rounded-full ${config.bgColor} ${config.color} flex items-center justify-center mx-auto mb-2`}
+                      >
                         <span className="material-symbols-outlined text-[20px]">{config.icon}</span>
                       </div>
                       <p className="text-white text-sm font-medium">{planet.name}</p>
@@ -420,9 +434,13 @@ const DashboardPage: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               data-testid="major-transit-card"
             >
-              <div className="absolute inset-0 z-0 bg-cover bg-center opacity-40" style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=1200&q=80")'
-              }}></div>
+              <div
+                className="absolute inset-0 z-0 bg-cover bg-center opacity-40"
+                style={{
+                  backgroundImage:
+                    'url("https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=1200&q=80")',
+                }}
+              ></div>
               <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0B0D17] via-[#0B0D17]/80 to-transparent"></div>
 
               <div className="relative z-10 flex justify-between items-start">
@@ -436,11 +454,14 @@ const DashboardPage: React.FC = () => {
                   {upcomingTransits[0]?.title ?? 'Venus enters Pisces'}
                 </h3>
                 <p className="text-slate-300 text-sm mb-4 line-clamp-2">
-                  {upcomingTransits[0]?.description ?? 'A time of heightened sensitivity and romantic idealism. Creativity flows effortlessly under this transit.'}
+                  {upcomingTransits[0]?.description ??
+                    'A time of heightened sensitivity and romantic idealism. Creativity flows effortlessly under this transit.'}
                 </p>
                 <button className="flex items-center gap-2 text-white text-sm font-semibold hover:gap-3 transition-all group">
                   Read Forecast
-                  <span className="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors">arrow_forward</span>
+                  <span className="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors">
+                    arrow_forward
+                  </span>
                 </button>
               </div>
             </motion.div>
@@ -463,20 +484,35 @@ const DashboardPage: React.FC = () => {
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4" aria-live="polite" aria-busy={transitsLoading}>
                 {transitsLoading ? (
-                  <div className="text-center py-8 text-slate-400">Loading transits...</div>
+                  <div className="text-center py-8 text-slate-400" role="status">Loading transits...</div>
                 ) : upcomingTransits.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400">No upcoming transits</div>
+                  <div className="text-center py-8 text-slate-400" role="status">No upcoming transits</div>
                 ) : (
                   upcomingTransits.map((transit, index) => (
                     <TransitTimelineCard
                       key={transit.id ?? index}
-                      time={transit.start_date ? new Date(transit.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Today'}
+                      time={
+                        transit.start_date
+                          ? new Date(transit.start_date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })
+                          : 'Today'
+                      }
                       date={transit.start_date}
                       title={transit.title ?? 'Transit Event'}
                       description={transit.description ?? ''}
-                      type={transit.type === 'major' ? 'major' : transit.impact === 'positive' ? 'favorable' : transit.impact === 'negative' ? 'challenging' : 'neutral'}
+                      type={
+                        transit.type === 'major'
+                          ? 'major'
+                          : transit.impact === 'positive'
+                            ? 'favorable'
+                            : transit.impact === 'negative'
+                              ? 'challenging'
+                              : 'neutral'
+                      }
                       onClick={() => navigate('/transits')}
                     />
                   ))
@@ -496,7 +532,7 @@ const DashboardPage: React.FC = () => {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Your Charts</h3>
-                <button className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                <button aria-label="Search charts" className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
                   <span className="material-symbols-outlined text-[18px]">search</span>
                 </button>
               </div>
@@ -519,45 +555,69 @@ const DashboardPage: React.FC = () => {
                 ) : (
                   <>
                     {recentCharts.map((chart, index) => (
-                      <div
+                      <button
                         key={chart.id}
+                        type="button"
                         onClick={() => handleChartClick(chart.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleChartClick(chart.id);
+                          }
+                        }}
+                        aria-label={`View ${chart.name} chart`}
                         data-testid={`chart-card-${chart.id}`}
-                        className="bg-[#0B0D17] p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-all cursor-pointer group relative overflow-hidden"
+                        className="bg-[#0B0D17] p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-all cursor-pointer group relative overflow-hidden text-left w-full"
                       >
                         <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-3xl"></div>
 
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex items-center gap-3">
-                            <div className={`size-10 rounded-full bg-gradient-to-br ${getAvatarGradient(index)} flex items-center justify-center text-white text-xs font-bold shadow-lg`}>
+                            <div
+                              className={`size-10 rounded-full bg-gradient-to-br ${getAvatarGradient(index)} flex items-center justify-center text-white text-xs font-bold shadow-lg`}
+                            >
                               {getInitials(chart.name)}
                             </div>
                             <div>
-                              <h4 className="text-white font-bold text-sm" data-testid={`chart-name-${chart.id}`}>{chart.name}</h4>
-                              <span className="text-[10px] uppercase text-primary font-bold tracking-wide" data-testid={`chart-type-${chart.id}`}>
+                              <span
+                                className="text-white font-bold text-sm block"
+                                data-testid={`chart-name-${chart.id}`}
+                              >
+                                {chart.name}
+                              </span>
+                              <span
+                                className="text-[10px] uppercase text-primary font-bold tracking-wide"
+                                data-testid={`chart-type-${chart.id}`}
+                              >
                                 {chart.type ?? 'Birth Chart'}
                               </span>
                             </div>
                           </div>
-                          <button className="text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" data-testid={`edit-chart-${chart.id}`}>
+                          <span
+                            className="text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            data-testid={`edit-chart-${chart.id}`}
+                            aria-hidden="true"
+                          >
                             <span className="material-symbols-outlined text-[18px]">edit</span>
-                          </button>
+                          </span>
                         </div>
 
                         <div className="flex gap-2 flex-wrap">
-                          {chart.calculated_data?.planets?.slice(0, 3).map((planet: { sign: string; name: string }) => (
-                            <span
-                              key={planet.name}
-                              className="bg-[#1e2136] px-2 py-1 rounded text-[10px] text-slate-300 font-medium border border-white/5 flex items-center gap-1"
-                            >
-                              <span className="material-symbols-outlined text-[10px]">
-                                {getZodiacSymbol(planet.sign)}
+                          {chart.calculated_data?.planets
+                            ?.slice(0, 3)
+                            .map((planet: { sign: string; name: string }) => (
+                              <span
+                                key={planet.name}
+                                className="bg-[#1e2136] px-2 py-1 rounded text-[10px] text-slate-300 font-medium border border-white/5 flex items-center gap-1"
+                              >
+                                <span className="material-symbols-outlined text-[10px]">
+                                  {getZodiacSymbol(planet.sign)}
+                                </span>
+                                {planet.sign}
                               </span>
-                              {planet.sign}
-                            </span>
-                          ))}
+                            ))}
                         </div>
-                      </div>
+                      </button>
                     ))}
 
                     {/* Create New Card */}
@@ -590,7 +650,7 @@ const DashboardPage: React.FC = () => {
                 data-testid="calendar-quick-action"
                 className="bg-[#141627]/70 backdrop-blur-md p-4 rounded-xl flex flex-col gap-3 hover:bg-white/10 transition-all group border border-white/5"
               >
-                <div className="size-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                <div className="size-10 rounded-lg bg-primary-500/20 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform duration-300">
                   <span className="material-symbols-outlined">calendar_month</span>
                 </div>
                 <div className="text-left">
@@ -641,10 +701,16 @@ const DashboardPage: React.FC = () => {
                 </div>
               </button>
             </motion.div>
+
+            {/* Monthly Transit Report Card */}
+            <TransitReportCard />
+
+            {/* Report History */}
+            <TransitReportHistory recentLimit={6} />
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   );
 };
 

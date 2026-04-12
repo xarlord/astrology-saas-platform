@@ -293,7 +293,7 @@ describe('Base Schemas', () => {
 
     it('should validate all status types', () => {
       const statuses = ['up', 'down', 'degraded'] as const;
-      statuses.forEach(status => {
+      statuses.forEach((status) => {
         const result = serviceHealthSchema.safeParse({
           ...validService,
           status,
@@ -331,7 +331,7 @@ describe('Base Schemas', () => {
 
     it('should validate all health statuses', () => {
       const statuses = ['healthy', 'degraded', 'unhealthy'] as const;
-      statuses.forEach(status => {
+      statuses.forEach((status) => {
         const result = healthCheckResponseSchema.safeParse({
           ...validHealth,
           status,

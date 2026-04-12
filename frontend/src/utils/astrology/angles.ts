@@ -3,17 +3,8 @@
  * Calculate chart angles: Ascendant, Midheaven, Descendant, IC, Vertex
  */
 
-import {
-  AngleData,
-  ChartAngle,
-  ZodiacSign,
-} from './types';
-import {
-  normalizeAngle,
-  getZodiacSign,
-  getDegreeInSign,
-  dateToJulianDay,
-} from './planetPosition';
+import { AngleData, ChartAngle } from './types';
+import { normalizeAngle, getZodiacSign, getDegreeInSign, dateToJulianDay } from './planetPosition';
 import {
   calculateLST,
   calculateMC as calcMC,
@@ -31,7 +22,7 @@ export function calculateAngles(
   date: Date,
   time: string,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): AngleData[] {
   // Parse time
   const [hours, minutes] = time.split(':').map(Number);
@@ -106,7 +97,7 @@ export function calculateAscendant(
   date: Date,
   time: string,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): AngleData {
   const [hours, minutes] = time.split(':').map(Number);
   const dateTime = new Date(date);
@@ -129,11 +120,7 @@ export function calculateAscendant(
 /**
  * Calculate Midheaven only
  */
-export function calculateMidheaven(
-  date: Date,
-  time: string,
-  longitude: number
-): AngleData {
+export function calculateMidheaven(date: Date, time: string, longitude: number): AngleData {
   const [hours, minutes] = time.split(':').map(Number);
   const dateTime = new Date(date);
   dateTime.setUTCHours(hours, minutes, 0, 0);
@@ -159,7 +146,7 @@ export function calculateDescendant(
   date: Date,
   time: string,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): AngleData {
   const ascendant = calculateAscendant(date, time, latitude, longitude);
   const descendant = normalizeAngle(ascendant.longitude + 180);
@@ -177,11 +164,7 @@ export function calculateDescendant(
 /**
  * Calculate IC (Imum Coeli) only
  */
-export function calculateIC(
-  date: Date,
-  time: string,
-  longitude: number
-): AngleData {
+export function calculateIC(date: Date, time: string, longitude: number): AngleData {
   const mc = calculateMidheaven(date, time, longitude);
   const ic = normalizeAngle(mc.longitude + 180);
 
@@ -202,7 +185,7 @@ export function calculateVertex(
   date: Date,
   time: string,
   latitude: number,
-  longitude: number
+  longitude: number,
 ): AngleData {
   const [hours, minutes] = time.split(':').map(Number);
   const dateTime = new Date(date);
@@ -230,7 +213,7 @@ export function calculatePartOfFortune(
   ascendant: number,
   sunLongitude: number,
   moonLongitude: number,
-  isDayBirth: boolean
+  isDayBirth: boolean,
 ): AngleData {
   let longitude: number;
 
@@ -258,7 +241,7 @@ export function calculatePartOfSpirit(
   ascendant: number,
   sunLongitude: number,
   moonLongitude: number,
-  isDayBirth: boolean
+  isDayBirth: boolean,
 ): AngleData {
   let longitude: number;
 
@@ -284,7 +267,7 @@ export function calculateArabicParts(
   ascendant: number,
   sunLongitude: number,
   moonLongitude: number,
-  isDayBirth: boolean
+  isDayBirth: boolean,
 ): AngleData[] {
   return [
     calculatePartOfFortune(ascendant, sunLongitude, moonLongitude, isDayBirth),
@@ -300,7 +283,7 @@ export function calculateArabicParts(
 export function calculatePartOfLove(
   ascendant: number,
   _sunLongitude: number,
-  moonLongitude: number
+  moonLongitude: number,
 ): AngleData {
   // Part of Eros: Ascendant + Venus - Moon (using simplified formula)
   const venusLongitude = moonLongitude + 60; // Approximate Venus position
@@ -321,7 +304,7 @@ export function calculatePartOfLove(
 export function calculatePartOfMarriage(
   ascendant: number,
   sunLongitude: number,
-  _moonLongitude: number
+  _moonLongitude: number,
 ): AngleData {
   // Part of Marriage: Ascendant + 7th House - Venus (simplified)
   const longitude = normalizeAngle(ascendant + 180 - sunLongitude);
@@ -353,10 +336,7 @@ export function getAngleSymbol(angle: ChartAngle): string {
 /**
  * Check if Sun is above horizon (day birth)
  */
-export function isDayBirth(
-  sunLongitude: number,
-  ascendant: number
-): boolean {
+export function isDayBirth(sunLongitude: number, ascendant: number): boolean {
   // Calculate the Sun's house position relative to ascendant
   const distance = normalizeAngle(sunLongitude - ascendant);
 

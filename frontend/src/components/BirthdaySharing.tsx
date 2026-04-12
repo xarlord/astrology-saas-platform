@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { Gift, Mail, Link, Copy, Check, Share2, Calendar, Lock } from 'lucide-react';
 import api from '../services/api';
 import { TIMEOUTS } from '../utils/constants';
 import './BirthdaySharing.css';
@@ -55,15 +54,17 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await api.post<{ data: { url: string } }>(`/solar-returns/${solarReturn.id}/share`, {
-        type: 'link',
-        expiresInDays: parseInt(linkSettings.expiresIn),
-        maxAccesses: linkSettings.maxAccesses,
-        requirePassword: linkSettings.requirePassword,
-        password: linkSettings.password,
-      });
+      const response = await api.post<{ data: { url: string } }>(
+        `/solar-returns/${solarReturn.id}/share`,
+        {
+          type: 'link',
+          expiresInDays: parseInt(linkSettings.expiresIn),
+          maxAccesses: linkSettings.maxAccesses,
+          requirePassword: linkSettings.requirePassword,
+          password: linkSettings.password,
+        },
+      );
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       setGeneratedLink(response.data.data.url);
       setSuccess(true);
     } catch (err) {
@@ -114,7 +115,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     return (
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
         <div className="flex items-center gap-3 mb-3">
-          <Gift size={24} className="text-purple-600" />
+          <span className="material-symbols-outlined text-[24px] text-purple-600">card_giftcard</span>
           <div>
             <h3 className="font-semibold text-gray-800 text-lg">Solar Return Reading for {year}</h3>
             <p className="text-sm text-gray-500">
@@ -133,18 +134,24 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <h4 className="font-medium text-gray-700 mb-1">Themes for {year}:</h4>
               <div className="flex flex-wrap gap-2">
                 {interpretation.themes?.slice(0, 4).map((theme: string, i: number) => (
-                  <span key={i} className="preview-theme-tag">{theme}</span>
+                  <span key={i} className="preview-theme-tag">
+                    {theme}
+                  </span>
                 ))}
-              {(interpretation.themes?.length ?? 0) > 4 && (
-                <span className="preview-more">+{(interpretation.themes?.length ?? 0) - 4} more</span>
-              )}
+                {(interpretation.themes?.length ?? 0) > 4 && (
+                  <span className="preview-more">
+                    +{(interpretation.themes?.length ?? 0) - 4} more
+                  </span>
+                )}
               </div>
             </div>
 
             {interpretation.sunHouse && (
               <div>
                 <h4 className="font-medium text-gray-700 mb-1">Your Focus:</h4>
-                <p className="text-sm text-gray-600">{interpretation.sunHouse.interpretation.slice(0, 150)}...</p>
+                <p className="text-sm text-gray-600">
+                  {interpretation.sunHouse.interpretation.slice(0, 150)}...
+                </p>
               </div>
             )}
           </div>
@@ -152,7 +159,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
         <div className="mt-3 pt-3 border-t border-gray-200">
           <p className="flex items-center gap-2 text-xs text-gray-400">
-            <Lock size={14} />
+            <span className="material-symbols-outlined text-[14px]">lock</span>
             This is a gift from a friend who cares about your journey.
           </p>
         </div>
@@ -163,7 +170,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
   return (
     <div role="region" aria-label="Birthday Sharing" className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
-        <Gift size={32} className="text-purple-600" />
+        <span className="material-symbols-outlined text-[32px] text-purple-600">card_giftcard</span>
         <div>
           <h2 className="text-xl font-bold text-gray-800">Share as Gift</h2>
           <p className="text-sm text-gray-500">Send this solar return reading to someone special</p>
@@ -178,11 +185,16 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Success Message */}
       {success && !generatedLink && (
-        <div aria-live="polite" className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4">
-          <Check size={20} className="text-green-600 flex-shrink-0" />
+        <div
+          aria-live="polite"
+          className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4"
+        >
+          <span className="material-symbols-outlined text-[20px] text-green-600 flex-shrink-0">check</span>
           <div>
             <strong className="text-green-800">Success!</strong>
-            <p className="text-sm text-green-700">{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
+            <p className="text-sm text-green-700">
+              {shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}
+            </p>
           </div>
           <button
             onClick={() => {
@@ -198,9 +210,17 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700">
+        <div
+          role="alert"
+          className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700"
+        >
           <span>{error}</span>
-          <button onClick={() => setError(null)} className="ml-auto text-red-500 hover:text-red-700 font-bold">✕</button>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-500 hover:text-red-700 font-bold"
+          >
+            ✕
+          </button>
         </div>
       )}
 
@@ -216,7 +236,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               }`}
               onClick={() => setShareMethod('link')}
             >
-              <Link size={18} />
+              <span className="material-symbols-outlined text-[18px]">link</span>
               Share Link
             </button>
             <button
@@ -227,7 +247,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               }`}
               onClick={() => setShareMethod('email')}
             >
-              <Mail size={18} />
+              <span className="material-symbols-outlined text-[18px]">mail</span>
               Send Email
             </button>
           </div>
@@ -257,7 +277,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 <label className="block text-sm font-medium text-gray-700">Maximum Accesses</label>
                 <select
                   value={linkSettings.maxAccesses}
-                  onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })
+                  }
                   aria-label="Maximum number of accesses"
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 >
@@ -274,10 +296,14 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   type="checkbox"
                   id="requirePassword"
                   checked={linkSettings.requirePassword}
-                  onChange={(e) => setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })}
+                  onChange={(e) =>
+                    setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="requirePassword" className="text-sm text-gray-700">Require password</label>
+                <label htmlFor="requirePassword" className="text-sm text-gray-700">
+                  Require password
+                </label>
               </div>
 
               {linkSettings.requirePassword && (
@@ -300,13 +326,18 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 disabled={loading}
                 className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Share2 size={18} />
+                <span className="material-symbols-outlined text-[18px]">share</span>
                 <span aria-live="polite">{loading ? 'Generating...' : 'Generate Link'}</span>
               </button>
 
               {generatedLink && (
                 <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <label htmlFor="share-link-input" className="block text-sm font-medium text-gray-700">Your Share Link:</label>
+                  <label
+                    htmlFor="share-link-input"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Your Share Link:
+                  </label>
                   <div className="flex gap-2">
                     <input
                       id="share-link-input"
@@ -318,14 +349,19 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                       className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                     />
                     <button onClick={() => void handleCopyLink()} className="copy-btn">
-                      {copied ? <Check size={18} /> : <Copy size={18} />}
+                      {copied ? <span className="material-symbols-outlined text-[18px]">check</span> : <span className="material-symbols-outlined text-[18px]">content_copy</span>}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
 
                   <div className="space-y-1 text-xs text-gray-500">
-                    <p className="flex items-center gap-1"><Calendar size={14} /> Expires: {linkSettings.expiresIn} days</p>
-                    <p className="flex items-center gap-1"><Lock size={14} /> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
+                    <p className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">calendar_month</span> Expires: {linkSettings.expiresIn} days
+                    </p>
+                    <p className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">lock</span> Max accesses:{' '}
+                      {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}
+                    </p>
                   </div>
                 </div>
               )}
@@ -378,10 +414,14 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   type="checkbox"
                   id="includeChart"
                   checked={emailSettings.includeChart}
-                  onChange={(e) => setEmailSettings({ ...emailSettings, includeChart: e.target.checked })}
+                  onChange={(e) =>
+                    setEmailSettings({ ...emailSettings, includeChart: e.target.checked })
+                  }
                   className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 />
-                <label htmlFor="includeChart" className="text-sm text-gray-700">Include chart visualization</label>
+                <label htmlFor="includeChart" className="text-sm text-gray-700">
+                  Include chart visualization
+                </label>
               </div>
 
               <button
@@ -389,7 +429,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 disabled={loading || !emailSettings.to}
                 className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Mail size={18} />
+                <span className="material-symbols-outlined text-[18px]">mail</span>
                 <span aria-live="polite">{loading ? 'Sending...' : 'Send Email'}</span>
               </button>
             </div>

@@ -78,9 +78,13 @@ export interface UseFormValidationReturn {
   /** Set field touched */
   setFieldTouched: (name: string, touched?: boolean) => void;
   /** Handle change event */
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => void;
   /** Handle blur event */
-  handleBlur: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  handleBlur: (
+    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => void;
   /** Validate single field */
   validateField: (name: string) => Promise<FieldErrors>;
   /** Validate all fields */
@@ -98,7 +102,9 @@ export interface UseFormValidationReturn {
   /** Check if field should show error */
   shouldShowError: (name: string) => boolean;
   /** Submit handler wrapper */
-  handleSubmit: <T>(onSubmit: (values: FormData) => T | Promise<T>) => (e?: React.FormEvent) => Promise<T | undefined>;
+  handleSubmit: <T>(
+    onSubmit: (values: FormData) => T | Promise<T>,
+  ) => (e?: React.FormEvent) => Promise<T | undefined>;
 }
 
 // ============================================================================
@@ -108,9 +114,7 @@ export interface UseFormValidationReturn {
 /**
  * Custom hook for form validation
  */
-export function useFormValidation(
-  config: FormValidationConfig
-): UseFormValidationReturn {
+export function useFormValidation(config: FormValidationConfig): UseFormValidationReturn {
   const { fields, options = {}, validateOnMount = false } = config;
 
   // Extract initial values from config
@@ -142,53 +146,68 @@ export function useFormValidation(
   // --------------------------------------------------------------------------
 
   const setFieldValue = useCallback((name: string, value: unknown) => {
-    setValuesState(prev => ({ ...prev, [name]: value }));
-    setDirty(prev => new Set(prev).add(name));
+    setValuesState((prev) => ({ ...prev, [name]: value }));
+    setDirty((prev) => new Set(prev).add(name));
 
     // Store debounced value
     debouncedValues.current.set(name, value);
   }, []);
 
-  const setValues = useCallback((newValues: Partial<FormData>) => {
-    setValuesState(prev => ({ ...prev, ...newValues }));
-    const newDirty = new Set(dirty);
-    Object.keys(newValues).forEach(key => newDirty.add(key));
-    setDirty(newDirty);
-  }, [dirty]);
+  const setValues = useCallback(
+    (newValues: Partial<FormData>) => {
+      setValuesState((prev) => ({ ...prev, ...newValues }));
+      const newDirty = new Set(dirty);
+      Object.keys(newValues).forEach((key) => newDirty.add(key));
+      setDirty(newDirty);
+    },
+    [dirty],
+  );
 
   // --------------------------------------------------------------------------
   // Field Error Management
   // --------------------------------------------------------------------------
 
   const setFieldError = useCallback((name: string, error: string | string[]) => {
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       [name]: Array.isArray(error) ? error : [error],
     }));
   }, []);
 
-  const getFieldErrorFn = useCallback((name: string): string | undefined => {
-    return getFieldError(errors, name);
-  }, [errors]);
+  const getFieldErrorFn = useCallback(
+    (name: string): string | undefined => {
+      return getFieldError(errors, name);
+    },
+    [errors],
+  );
 
-  const getFieldErrors = useCallback((name: string): string[] => {
-    return errors[name] || [];
-  }, [errors]);
+  const getFieldErrors = useCallback(
+    (name: string): string[] => {
+      return errors[name] || [];
+    },
+    [errors],
+  );
 
-  const hasFieldError = useCallback((name: string): boolean => {
-    return (errors[name]?.length ?? 0) > 0;
-  }, [errors]);
+  const hasFieldError = useCallback(
+    (name: string): boolean => {
+      return (errors[name]?.length ?? 0) > 0;
+    },
+    [errors],
+  );
 
-  const shouldShowError = useCallback((name: string): boolean => {
-    return (touched.has(name) || isSubmitted) && hasFieldError(name);
-  }, [touched, isSubmitted, hasFieldError]);
+  const shouldShowError = useCallback(
+    (name: string): boolean => {
+      return (touched.has(name) || isSubmitted) && hasFieldError(name);
+    },
+    [touched, isSubmitted, hasFieldError],
+  );
 
   // --------------------------------------------------------------------------
   // Field Touch Management
   // --------------------------------------------------------------------------
 
   const setFieldTouched = useCallback((name: string, isTouched = true) => {
-    setTouched(prev => {
+    setTouched((prev) => {
       const next = new Set(prev);
       if (isTouched) {
         next.add(name);
@@ -203,47 +222,50 @@ export function useFormValidation(
   // Validation
   // --------------------------------------------------------------------------
 
-  const validateFieldByName = useCallback(async (name: string): Promise<FieldErrors> => {
-    const fieldConfig = fields[name];
-    if (!fieldConfig) return [];
+  const validateFieldByName = useCallback(
+    async (name: string): Promise<FieldErrors> => {
+      const fieldConfig = fields[name];
+      if (!fieldConfig) return [];
 
-    const value = values[name];
-    const validators = fieldConfig.validators || [];
-    const asyncValidators = fieldConfig.asyncValidators || [];
+      const value = values[name];
+      const validators = fieldConfig.validators || [];
+      const asyncValidators = fieldConfig.asyncValidators || [];
 
-    // Mark field as validating
-    setValidatingFields(prev => new Set(prev).add(name));
+      // Mark field as validating
+      setValidatingFields((prev) => new Set(prev).add(name));
 
-    try {
-      const fieldErrors = await validateFieldAsync(
-        value,
-        validators,
-        asyncValidators,
-        values,
-        options
-      );
+      try {
+        const fieldErrors = await validateFieldAsync(
+          value,
+          validators,
+          asyncValidators,
+          values,
+          options,
+        );
 
-      // Update errors for this field
-      setErrors(prev => {
-        const next = { ...prev };
-        if (fieldErrors.length > 0) {
-          next[name] = fieldErrors;
-        } else {
-          delete next[name];
-        }
-        return next;
-      });
+        // Update errors for this field
+        setErrors((prev) => {
+          const next = { ...prev };
+          if (fieldErrors.length > 0) {
+            next[name] = fieldErrors;
+          } else {
+            delete next[name];
+          }
+          return next;
+        });
 
-      return fieldErrors;
-    } finally {
-      // Remove from validating fields
-      setValidatingFields(prev => {
-        const next = new Set(prev);
-        next.delete(name);
-        return next;
-      });
-    }
-  }, [fields, values, options]);
+        return fieldErrors;
+      } finally {
+        // Remove from validating fields
+        setValidatingFields((prev) => {
+          const next = new Set(prev);
+          next.delete(name);
+          return next;
+        });
+      }
+    },
+    [fields, values, options],
+  );
 
   const validateAllFields = useCallback(async (): Promise<FormErrors> => {
     setIsValidating(true);
@@ -256,11 +278,11 @@ export function useFormValidation(
             Object.entries(fields).map(([name, config]) => [
               name,
               { validators: config.validators, asyncValidators: config.asyncValidators },
-            ])
+            ]),
           ),
           options,
         },
-        { timeout: 5000 }
+        { timeout: 5000 },
       );
 
       setErrors(formErrors);
@@ -271,21 +293,24 @@ export function useFormValidation(
   }, [values, fields, options]);
 
   // Debounced field validation
-  const debouncedValidateField = useCallback((name: string, debounceMs: number) => {
-    // Clear existing timer
-    const existingTimer = debounceTimers.current.get(name);
-    if (existingTimer) {
-      clearTimeout(existingTimer);
-    }
+  const debouncedValidateField = useCallback(
+    (name: string, debounceMs: number) => {
+      // Clear existing timer
+      const existingTimer = debounceTimers.current.get(name);
+      if (existingTimer) {
+        clearTimeout(existingTimer);
+      }
 
-    // Set new timer
-    const timer = setTimeout(() => {
-      void validateFieldByName(name);
-      debounceTimers.current.delete(name);
-    }, debounceMs);
+      // Set new timer
+      const timer = setTimeout(() => {
+        void validateFieldByName(name);
+        debounceTimers.current.delete(name);
+      }, debounceMs);
 
-    debounceTimers.current.set(name, timer);
-  }, [validateFieldByName]);
+      debounceTimers.current.set(name, timer);
+    },
+    [validateFieldByName],
+  );
 
   // --------------------------------------------------------------------------
   // Event Handlers
@@ -306,7 +331,7 @@ export function useFormValidation(
         debouncedValidateField(name, debounceMs);
       }
     },
-    [fields, setFieldValue, debouncedValidateField]
+    [fields, setFieldValue, debouncedValidateField],
   );
 
   const handleBlur = useCallback(
@@ -321,7 +346,7 @@ export function useFormValidation(
         void validateFieldByName(name);
       }
     },
-    [fields, setFieldTouched, validateFieldByName]
+    [fields, setFieldTouched, validateFieldByName],
   );
 
   // --------------------------------------------------------------------------
@@ -338,42 +363,45 @@ export function useFormValidation(
     setValidatingFields(new Set());
 
     // Clear debounce timers
-    debounceTimers.current.forEach(timer => clearTimeout(timer));
+    debounceTimers.current.forEach((timer) => clearTimeout(timer));
     debounceTimers.current.clear();
   }, [initialValues]);
 
-  const resetField = useCallback((name: string) => {
-    setValuesState(prev => {
-      const next = { ...prev };
-      next[name] = fields[name]?.initialValue ?? '';
-      return next;
-    });
+  const resetField = useCallback(
+    (name: string) => {
+      setValuesState((prev) => {
+        const next = { ...prev };
+        next[name] = fields[name]?.initialValue ?? '';
+        return next;
+      });
 
-    setErrors(prev => {
-      const next = { ...prev };
-      delete next[name];
-      return next;
-    });
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
 
-    setTouched(prev => {
-      const next = new Set(prev);
-      next.delete(name);
-      return next;
-    });
+      setTouched((prev) => {
+        const next = new Set(prev);
+        next.delete(name);
+        return next;
+      });
 
-    setDirty(prev => {
-      const next = new Set(prev);
-      next.delete(name);
-      return next;
-    });
-  }, [fields]);
+      setDirty((prev) => {
+        const next = new Set(prev);
+        next.delete(name);
+        return next;
+      });
+    },
+    [fields],
+  );
 
   // --------------------------------------------------------------------------
   // Submit Handler
   // --------------------------------------------------------------------------
 
   const handleSubmit = useCallback(
-    <T,>(onSubmit: (values: FormData) => T | Promise<T>) =>
+    <T>(onSubmit: (values: FormData) => T | Promise<T>) =>
       async (e?: React.FormEvent): Promise<T | undefined> => {
         e?.preventDefault();
 
@@ -390,7 +418,7 @@ export function useFormValidation(
         // Call submit handler
         return onSubmit(values);
       },
-    [values, validateAllFields]
+    [values, validateAllFields],
   );
 
   // --------------------------------------------------------------------------
@@ -408,7 +436,7 @@ export function useFormValidation(
   useEffect(() => {
     const timers = debounceTimers.current;
     return () => {
-      timers.forEach(timer => clearTimeout(timer));
+      timers.forEach((timer) => clearTimeout(timer));
     };
   }, []);
 
@@ -465,9 +493,14 @@ export function useFieldValidation(
     debounce?: number;
     validateOnChange?: boolean;
     validateOnBlur?: boolean;
-  } = {}
+  } = {},
 ) {
-  const { asyncValidators = [], debounce = 300, validateOnChange = false, validateOnBlur = true } = options;
+  const {
+    asyncValidators = [],
+    debounce = 300,
+    validateOnChange = false,
+    validateOnBlur = true,
+  } = options;
 
   const [error, setError] = useState<string | undefined>();
   const [isValidating, setIsValidating] = useState(false);
@@ -483,7 +516,7 @@ export function useFieldValidation(
         validators,
         asyncValidators,
         {},
-        { stopOnFirstError: true }
+        { stopOnFirstError: true },
       );
       setError(errors[0]);
       return errors;

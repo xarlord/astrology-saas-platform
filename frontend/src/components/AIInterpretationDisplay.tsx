@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { Sparkles, AlertCircle } from 'lucide-react';
 
 interface AIInterpretationDisplayProps {
   interpretation: {
@@ -37,7 +36,10 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
     return (
       <div className="flex flex-col gap-4">
         {Object.entries(content).map(([key, value]) => (
-          <div key={key} className="border-b border-gray-200 dark:border-gray-600 pb-4 last:border-b-0 last:pb-0">
+          <div
+            key={key}
+            className="border-b border-gray-200 dark:border-gray-600 pb-4 last:border-b-0 last:pb-0"
+          >
             <h4 className="text-base font-semibold text-gray-600 dark:text-gray-300 m-0 mb-2 capitalize">
               {key.replace(/([A-Z])/g, ' $1').trim()}
             </h4>
@@ -47,9 +49,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
               ) : Array.isArray(value) ? (
                 <ul>
                   {value.map((item, i) => (
-                    <li key={i}>
-                      {typeof item === 'string' ? item : JSON.stringify(item)}
-                    </li>
+                    <li key={i}>{typeof item === 'string' ? item : JSON.stringify(item)}</li>
                   ))}
                 </ul>
               ) : typeof value === 'object' && value !== null ? (
@@ -65,10 +65,14 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
   };
 
   return (
-    <div role="article" aria-label="AI-enhanced interpretation" className="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-700 dark:to-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl p-4 sm:p-6 my-4 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+    <div
+      role="article"
+      aria-label="AI-enhanced interpretation"
+      className="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-700 dark:to-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl p-4 sm:p-6 my-4 shadow-[0_4px_12px_rgba(0,0,0,0.08)]"
+    >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center items-start gap-2 mb-4">
         <div className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-full font-semibold text-sm shadow-[0_2px_8px_rgba(102,126,234,0.3)] w-full sm:w-auto justify-center">
-          <Sparkles size={16} />
+          <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
           <span>AI-Enhanced</span>
         </div>
         <div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400 flex-wrap flex-col sm:flex-row">
@@ -84,9 +88,14 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
       </div>
 
       {interpretation.enhanced && (
-        <div aria-live="polite" className="bg-white dark:bg-gray-700 p-4 rounded-lg mb-4 border border-gray-200 dark:border-gray-600">
+        <div
+          aria-live="polite"
+          className="bg-white dark:bg-gray-700 p-4 rounded-lg mb-4 border border-gray-200 dark:border-gray-600"
+        >
           {typeof interpretation.enhanced === 'string' ? (
-            <p className="leading-relaxed text-gray-900 dark:text-gray-200 m-0 text-base">{interpretation.enhanced}</p>
+            <p className="leading-relaxed text-gray-900 dark:text-gray-200 m-0 text-base">
+              {interpretation.enhanced}
+            </p>
           ) : typeof interpretation.enhanced === 'object' ? (
             renderStructuredContent(interpretation.enhanced)
           ) : null}
@@ -94,9 +103,10 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
       )}
 
       <div className="flex items-start gap-2 p-3 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-md text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-        <AlertCircle size={14} className="shrink-0 mt-0.5" />
+        <span className="material-symbols-outlined text-[14px] shrink-0 mt-0.5">error_outline</span>
         <small className="flex-1">
-          AI interpretations are generated using GPT-4 and may vary. Use as guidance alongside traditional astrological wisdom.
+          AI interpretations are generated using GPT-4 and may vary. Use as guidance alongside
+          traditional astrological wisdom.
         </small>
       </div>
     </div>

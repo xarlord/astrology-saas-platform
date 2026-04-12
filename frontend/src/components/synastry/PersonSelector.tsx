@@ -56,10 +56,11 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
     selectedId: string,
     onChange: (id: string) => void,
     personNumber: 1 | 2,
-    colorTheme: 'primary' | 'secondary'
+    colorTheme: 'primary' | 'secondary',
   ) => {
     const borderColor = colorTheme === 'primary' ? 'border-primary/30' : 'border-secondary/30';
-    const hoverBorder = colorTheme === 'primary' ? 'hover:border-primary/50' : 'hover:border-secondary/50';
+    const hoverBorder =
+      colorTheme === 'primary' ? 'hover:border-primary/50' : 'hover:border-secondary/50';
     const glowColor = colorTheme === 'primary' ? 'shadow-glow' : 'shadow-glow-pink';
 
     return (
@@ -76,7 +77,7 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
               {chart ? (
                 <div
                   className={`w-full h-full rounded-full bg-gradient-to-br ${getAvatarColor(
-                    charts.indexOf(chart)
+                    charts.indexOf(chart),
                   )} flex items-center justify-center text-white text-3xl font-bold`}
                 >
                   {chart.name.charAt(0).toUpperCase()}
@@ -126,19 +127,25 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
               <div className="flex gap-2 mt-3 justify-center flex-wrap">
                 {chart.sunSign && (
                   <div className="px-3 py-1 rounded-full bg-surface border border-glass-border flex items-center gap-1 text-xs">
-                    <span className="text-accent-gold material-symbols-outlined text-sm">light_mode</span>
+                    <span className="text-accent-gold material-symbols-outlined text-sm">
+                      light_mode
+                    </span>
                     {chart.sunSign}
                   </div>
                 )}
                 {chart.moonSign && (
                   <div className="px-3 py-1 rounded-full bg-surface border border-glass-border flex items-center gap-1 text-xs">
-                    <span className="text-slate-300 material-symbols-outlined text-sm">dark_mode</span>
+                    <span className="text-slate-300 material-symbols-outlined text-sm">
+                      dark_mode
+                    </span>
                     {chart.moonSign}
                   </div>
                 )}
                 {chart.ascendantSign && (
                   <div className="px-3 py-1 rounded-full bg-surface border border-glass-border flex items-center gap-1 text-xs">
-                    <span className="text-slate-300 material-symbols-outlined text-sm">arrow_upward</span>
+                    <span className="text-slate-300 material-symbols-outlined text-sm">
+                      arrow_upward
+                    </span>
                     {chart.ascendantSign}
                   </div>
                 )}
@@ -160,7 +167,10 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 items-center mb-16 relative" aria-label={ariaLabel}>
+    <div
+      className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 items-center mb-16 relative"
+      aria-label={ariaLabel}
+    >
       {/* Cosmic Beam Background */}
       <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent -translate-y-1/2 z-0 hidden lg:block" />
 

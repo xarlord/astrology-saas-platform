@@ -40,9 +40,10 @@ describe('useOptimisticUpdate', () => {
   it('should optimistically update value', async () => {
     let resolveUpdate: () => void;
     const updateFn = vi.fn().mockImplementation(
-      () => new Promise<void>((resolve) => {
-        resolveUpdate = resolve;
-      })
+      () =>
+        new Promise<void>((resolve) => {
+          resolveUpdate = resolve;
+        }),
     );
     const options = createMockOptions({ updateFn });
 
@@ -150,7 +151,7 @@ describe('useOptimisticUpdate', () => {
 
     const { result, rerender } = renderHook(
       ({ currentValue }) => useOptimisticUpdate({ ...options, currentValue }),
-      { initialProps: { currentValue: 'initial' } }
+      { initialProps: { currentValue: 'initial' } },
     );
 
     // Update value
@@ -174,9 +175,10 @@ describe('useOptimisticUpdate', () => {
   it('should track pending count for concurrent updates', async () => {
     const resolvers: (() => void)[] = [];
     const updateFn = vi.fn().mockImplementation(
-      () => new Promise<void>((resolve) => {
-        resolvers.push(resolve);
-      })
+      () =>
+        new Promise<void>((resolve) => {
+          resolvers.push(resolve);
+        }),
     );
     const options = createMockOptions({ updateFn });
 
@@ -218,7 +220,7 @@ describe('useOptimisticUpdate', () => {
         currentValue: { x: 0, y: 0 },
         updateFn,
         isEqual,
-      })
+      }),
     );
 
     await act(async () => {

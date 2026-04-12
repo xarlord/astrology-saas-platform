@@ -177,10 +177,10 @@ export const useUIStore = create<UIState>()(
       {
         name: 'ui-storage',
         // Persist all UI state
-      }
+      },
     ),
-    { name: 'UIStore' }
-  )
+    { name: 'UIStore' },
+  ),
 );
 
 // Selector hooks for optimized re-renders

@@ -3,6 +3,8 @@
  * Shared utilities for all live test suites
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export const BASE_URL = 'http://localhost:3001/api/v1';
 
 export const TEST_USER = {
@@ -138,7 +140,7 @@ export async function getCsrf(cookies?: string): Promise<{ csrf: string; cookies
   try {
     const res = await api('GET', '/csrf-token', undefined, headers, 1);
     const merged = mergeCookies(cookies || '', res.cookies);
-    const csrf = res.data?.data?.token || '';
+    const csrf = (res.data as any)?.data?.token || '';
     return { csrf, cookies: merged };
   } catch {
     return { csrf: '', cookies: cookies || '' };
@@ -188,11 +190,12 @@ export async function registerTestUser(): Promise<{
 
   const authCookies = mergeCookies('', res.cookies);
 
+  const data = (res.data as any).data;
   return {
-    accessToken: res.data.data.accessToken,
-    refreshToken: res.data.data.refreshToken,
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
     cookies: authCookies,
-    user: res.data.data.user,
+    user: data.user,
   };
 }
 
@@ -222,15 +225,15 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
         throw new Error(`Chart creation failed: ${chartRes.status} ${JSON.stringify(chartRes.data)}`);
       }
 
-      const createdChart = chartRes.data.data.chart;
+        const createdChart = (chartRes.data as any).data.chart;
 
       // Calculate the chart so analysis and other endpoints have data
       const { csrf: calcCsrf, cookies: calcCookies } = await getCsrf(auth.cookies);
       const calcRes = await authed('POST', `/charts/${createdChart.id}/calculate`, auth.accessToken, calcCookies, calcCsrf, {});
 
-      if (calcRes.status === 200 && calcRes.data?.data?.chart) {
+      if (calcRes.status === 200 && (calcRes.data as any)?.data?.chart) {
         // Use the fully-calculated chart object
-        return { ...auth, cookies: calcCookies, chart: calcRes.data.data.chart };
+        return { ...auth, cookies: calcCookies, chart: (calcRes.data as any).data.chart };
       }
 
       return {
@@ -256,8 +259,8 @@ export async function cleanupTestData(accessToken: string, cookies: string): Pro
   try {
     // Get user's charts and delete them
     const chartsRes = await authed('GET', '/charts', accessToken, cookies, '');
-    if (chartsRes.status === 200 && Array.isArray(chartsRes.data?.data?.charts)) {
-      for (const chart of chartsRes.data.data.charts) {
+    if (chartsRes.status === 200 && Array.isArray((chartsRes.data as any)?.data?.charts)) {
+      for (const chart of (chartsRes.data as any).data.charts) {
         if (chart.id) {
           await authed('DELETE', `/charts/${chart.id}`, accessToken, cookies, '');
         }

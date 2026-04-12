@@ -131,11 +131,7 @@ class VideoAnalytics {
   /**
    * Track a video event
    */
-  trackEvent(
-    videoId: string,
-    type: VideoEventType,
-    data: Record<string, unknown> = {}
-  ): void {
+  trackEvent(videoId: string, type: VideoEventType, data: Record<string, unknown> = {}): void {
     const event: VideoAnalyticsEvent = {
       type,
       timestamp: Date.now(),
@@ -158,7 +154,7 @@ class VideoAnalytics {
   private updateSessionFromEvent(
     videoId: string,
     type: VideoEventType,
-    data: Record<string, unknown>
+    data: Record<string, unknown>,
   ): void {
     let session = this.sessions.get(videoId);
     if (!session) {
@@ -196,7 +192,7 @@ class VideoAnalytics {
         if (typeof data.rate === 'number') {
           // Calculate running average
           session.averagePlaybackRate =
-            (session.averagePlaybackRate * (session.playbackRateChanges - 1) + (data.rate)) /
+            (session.averagePlaybackRate * (session.playbackRateChanges - 1) + data.rate) /
             session.playbackRateChanges;
         }
         break;
@@ -214,11 +210,7 @@ class VideoAnalytics {
   /**
    * Check and record progress milestones
    */
-  private checkMilestones(
-    session: VideoSessionData,
-    currentTime: number,
-    duration: number
-  ): void {
+  private checkMilestones(session: VideoSessionData, currentTime: number, duration: number): void {
     if (!duration || duration === 0) return;
 
     const percentage = Math.round((currentTime / duration) * 100);
@@ -415,8 +407,7 @@ export function useVideoAnalytics(videoId: string) {
     getSession: () => analytics.getSession(videoId),
     getCompletionPercentage: () => analytics.getCompletionPercentage(videoId),
     getLastPosition: () => analytics.getLastPosition(videoId),
-    wasMilestoneReached: (milestone: number) =>
-      analytics.wasMilestoneReached(videoId, milestone),
+    wasMilestoneReached: (milestone: number) => analytics.wasMilestoneReached(videoId, milestone),
   };
 }
 

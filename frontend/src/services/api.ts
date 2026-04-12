@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios';
-import { getAccessToken, getRefreshToken } from '../utils/tokenStorage';
+import { getAccessToken } from '../utils/tokenStorage';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
@@ -20,7 +20,7 @@ const api = axios.create({
 let csrfToken: string | null = null;
 
 async function fetchCsrfToken(): Promise<string> {
-  const { data } = await axios.get<{ data: { token: string } }>(`${API_URL}/api/v1/csrf-token`, { withCredentials: true });
+  const { data } = await api.get<{ data: { token: string } }>('/v1/health/csrf-token');
   const token: string = data.data.token;
   csrfToken = token;
   return token;
@@ -48,7 +48,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor - Handle token refresh + CSRF retry
@@ -62,7 +62,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // CSRF token invalid — refresh and retry once
-    if (error.response?.status === 403 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._csrfRetry) {
+    if (
+      error.response?.status === 403 &&
+      originalRequest &&
+      !(originalRequest as unknown as Record<string, unknown>)._csrfRetry
+    ) {
       const errorCode = (error.response?.data as { code?: string } | undefined)?.code;
       if (errorCode === 'CSRF_TOKEN_INVALID' || errorCode === 'CSRF_VALIDATION_ERROR') {
         (originalRequest as unknown as Record<string, unknown>)._csrfRetry = true;
@@ -77,18 +81,17 @@ api.interceptors.response.use(
     }
 
     // If 401 and not already retrying
-    if (error.response?.status === 401 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._retry) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !(originalRequest as unknown as Record<string, unknown>)._retry
+    ) {
       (originalRequest as unknown as Record<string, unknown>)._retry = true;
 
       try {
-        const refreshToken = getRefreshToken();
-        if (!refreshToken) {
-          throw new Error('No refresh token');
-        }
-
-        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh', {
-          refreshToken,
-        });
+        // Call refresh endpoint without sending refreshToken in body
+        // Backend reads refreshToken from httpOnly cookie
+        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh');
 
         const { accessToken } = data.data;
 
@@ -107,7 +110,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

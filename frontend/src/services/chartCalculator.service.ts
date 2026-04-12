@@ -52,11 +52,7 @@ import {
 } from '../utils/astrology/houses';
 
 // Angle utilities
-import {
-  calculateAngles,
-  calculatePartOfFortune,
-  isDayBirth,
-} from '../utils/astrology/angles';
+import { calculateAngles } from '../utils/astrology/angles';
 
 /**
  * Chart Calculator Service
@@ -66,10 +62,7 @@ export class ChartCalculator {
   private orbs: OrbConfig;
   private houseSystem: HouseSystem;
 
-  constructor(
-    houseSystem: HouseSystem = 'placidus',
-    orbs: OrbConfig = DEFAULT_ORBS
-  ) {
+  constructor(houseSystem: HouseSystem = 'placidus', orbs: OrbConfig = DEFAULT_ORBS) {
     this.houseSystem = houseSystem;
     this.orbs = orbs;
   }
@@ -83,7 +76,7 @@ export class ChartCalculator {
       input.date,
       input.time,
       input.latitude,
-      input.longitude
+      input.longitude,
     );
 
     // Calculate Julian Day
@@ -96,7 +89,7 @@ export class ChartCalculator {
     const lst = calculateLST(jd, input.longitude);
 
     // Calculate houses
-    const houses = calculateHouses(lst, input.latitude, input.houseSystem || this.houseSystem);
+    const houses = calculateHouses(lst, input.latitude, input.houseSystem ?? this.houseSystem);
 
     // Assign planets to houses
     const planetsWithHouses = assignPlanetsToHouses(planets, houses);
@@ -134,7 +127,7 @@ export class ChartCalculator {
     natalChart: CalculatedChart,
     transitDate: Date,
     latitude: number,
-    longitude: number
+    longitude: number,
   ): TransitData {
     // Calculate transit planet positions
     const transitTime = '12:00'; // Use noon for transit calculations
@@ -142,16 +135,11 @@ export class ChartCalculator {
       transitDate,
       transitTime,
       latitude,
-      longitude
+      longitude,
     );
 
     // Calculate aspects between transit planets and natal planets
-    const aspects = calculateAspects(
-      transitPlanets,
-      natalChart.planets,
-      this.orbs,
-      false
-    );
+    const aspects = calculateAspects(transitPlanets, natalChart.planets, this.orbs, false);
 
     return {
       transitDate,
@@ -164,17 +152,9 @@ export class ChartCalculator {
   /**
    * Calculate synastry between two charts
    */
-  calculateSynastry(
-    chart1: CalculatedChart,
-    chart2: CalculatedChart
-  ): SynastryData {
+  calculateSynastry(chart1: CalculatedChart, chart2: CalculatedChart): SynastryData {
     // Calculate aspects between charts
-    const aspects = calculateAspects(
-      chart1.planets,
-      chart2.planets,
-      this.orbs,
-      false
-    );
+    const aspects = calculateAspects(chart1.planets, chart2.planets, this.orbs, false);
 
     // Calculate compatibility scores
     const compatibility = this.calculateCompatibility(chart1, chart2, aspects);
@@ -194,7 +174,7 @@ export class ChartCalculator {
     natalChart: CalculatedChart,
     year: number,
     latitude: number,
-    longitude: number
+    longitude: number,
   ): SolarReturnData {
     // Find the solar return date (when Sun returns to natal position)
     const returnDate = this.findSolarReturnDate(natalChart, year, longitude);
@@ -227,7 +207,7 @@ export class ChartCalculator {
     natalChart: CalculatedChart,
     targetDate: Date,
     latitude: number,
-    longitude: number
+    longitude: number,
   ): LunarReturnData {
     // Find the lunar return date (when Moon returns to natal position)
     const returnDate = this.findLunarReturnDate(natalChart, targetDate, longitude);
@@ -260,7 +240,7 @@ export class ChartCalculator {
   calculateProgressedChart(
     natalChart: CalculatedChart,
     targetDate: Date,
-    birthDate: Date
+    birthDate: Date,
   ): CalculatedChart {
     // Calculate progression date (day-for-a-year)
     const daysToProgress = this.calculateYearsDifference(birthDate, targetDate);
@@ -270,7 +250,7 @@ export class ChartCalculator {
     // Use natal location for progressed chart
     // In a real implementation, we would get this from natalChart
     const latitude = 40.7128; // Default to NYC
-    const longitude = -74.0060;
+    const longitude = -74.006;
 
     // Calculate progressed chart
     const progressedChart = this.calculateNatalChart({
@@ -288,10 +268,7 @@ export class ChartCalculator {
   /**
    * Calculate composite chart (for relationships)
    */
-  calculateCompositeChart(
-    chart1: CalculatedChart,
-    chart2: CalculatedChart
-  ): CalculatedChart {
+  calculateCompositeChart(chart1: CalculatedChart, chart2: CalculatedChart): CalculatedChart {
     // Calculate midpoint positions for all planets
     const compositePlanets: PlanetData[] = chart1.planets.map((p1, index) => {
       const p2 = chart2.planets[index];
@@ -419,7 +396,10 @@ export class ChartCalculator {
    * Get element from sign
    */
   private getElementFromSign(sign: ZodiacSign): Element | null {
-    for (const [element, signs] of Object.entries(ZODIAC_ELEMENTS) as [Element, readonly ZodiacSign[]][]) {
+    for (const [element, signs] of Object.entries(ZODIAC_ELEMENTS) as [
+      Element,
+      readonly ZodiacSign[],
+    ][]) {
       if ((signs as readonly string[]).includes(sign)) {
         return element;
       }
@@ -431,7 +411,10 @@ export class ChartCalculator {
    * Get quality from sign
    */
   private getQualityFromSign(sign: ZodiacSign): Quality | null {
-    for (const [quality, signs] of Object.entries(ZODIAC_QUALITIES) as [Quality, readonly ZodiacSign[]][]) {
+    for (const [quality, signs] of Object.entries(ZODIAC_QUALITIES) as [
+      Quality,
+      readonly ZodiacSign[],
+    ][]) {
       if ((signs as readonly string[]).includes(sign)) {
         return quality;
       }
@@ -471,13 +454,9 @@ export class ChartCalculator {
   /**
    * Find solar return date
    */
-  private findSolarReturnDate(
-    natalChart: CalculatedChart,
-    year: number,
-    _longitude: number
-  ): Date {
+  private findSolarReturnDate(natalChart: CalculatedChart, year: number, _longitude: number): Date {
     // Find the natal Sun position
-    const natalSun = natalChart.planets.find(p => p.name === 'Sun');
+    const natalSun = natalChart.planets.find((p) => p.name === 'Sun');
     if (!natalSun) {
       return new Date(year, 5, 21); // Default to June 21
     }
@@ -497,16 +476,16 @@ export class ChartCalculator {
   private findLunarReturnDate(
     natalChart: CalculatedChart,
     targetDate: Date,
-    _longitude: number
+    _longitude: number,
   ): Date {
     // Find the natal Moon position
-    const natalMoon = natalChart.planets.find(p => p.name === 'Moon');
+    const natalMoon = natalChart.planets.find((p) => p.name === 'Moon');
     if (!natalMoon) {
       return targetDate;
     }
 
     // Moon returns to same position every ~27.3 days
-    const natalDegree = natalMoon.longitude;
+    const _natalDegree = natalMoon.longitude;
 
     // Approximate lunar return
     const lunarCycle = 27.3 * 24 * 60 * 60 * 1000; // milliseconds
@@ -522,7 +501,7 @@ export class ChartCalculator {
   private calculateCompatibility(
     chart1: CalculatedChart,
     chart2: CalculatedChart,
-    aspects: AspectData[]
+    aspects: AspectData[],
   ): CompatibilityScore {
     let totalScore = 50; // Base score
 
@@ -533,10 +512,7 @@ export class ChartCalculator {
     }
 
     // Element compatibility
-    const elementScore = this.calculateElementCompatibility(
-      chart1.elements,
-      chart2.elements
-    );
+    const elementScore = this.calculateElementCompatibility(chart1.elements, chart2.elements);
     totalScore += elementScore;
 
     // Normalize to 0-100
@@ -573,7 +549,7 @@ export class ChartCalculator {
    */
   private calculateElementCompatibility(
     elements1: Record<Element, number>,
-    elements2: Record<Element, number>
+    elements2: Record<Element, number>,
   ): number {
     // Compatible elements: fire-air, earth-water
     const fireAir = (elements1.fire + elements1.air) * (elements2.fire + elements2.air);
@@ -589,8 +565,7 @@ export class ChartCalculator {
     let score = 50;
 
     for (const aspect of aspects) {
-      const isRomanticPlanet = (p: string) =>
-        ['Venus', 'Mars', 'Moon', 'Sun'].includes(p);
+      const isRomanticPlanet = (p: string) => ['Venus', 'Mars', 'Moon', 'Sun'].includes(p);
 
       if (isRomanticPlanet(aspect.planet1) || isRomanticPlanet(aspect.planet2)) {
         if (aspect.type === 'trine' || aspect.type === 'sextile') {
@@ -611,8 +586,7 @@ export class ChartCalculator {
     let score = 50;
 
     for (const aspect of aspects) {
-      const isCommPlanet = (p: string) =>
-        ['Mercury', 'Jupiter', 'Gemini'].includes(p);
+      const isCommPlanet = (p: string) => ['Mercury', 'Jupiter', 'Gemini'].includes(p);
 
       if (isCommPlanet(aspect.planet1) || isCommPlanet(aspect.planet2)) {
         if (aspect.type === 'trine' || aspect.type === 'sextile') {
@@ -633,8 +607,7 @@ export class ChartCalculator {
     let score = 50;
 
     for (const aspect of aspects) {
-      const isEmotionalPlanet = (p: string) =>
-        ['Moon', 'Venus', 'Neptune', 'Cancer'].includes(p);
+      const isEmotionalPlanet = (p: string) => ['Moon', 'Venus', 'Neptune', 'Cancer'].includes(p);
 
       if (isEmotionalPlanet(aspect.planet1) || isEmotionalPlanet(aspect.planet2)) {
         if (aspect.type === 'trine' || aspect.type === 'sextile') {
@@ -655,8 +628,7 @@ export class ChartCalculator {
     let score = 50;
 
     for (const aspect of aspects) {
-      const isIntelPlanet = (p: string) =>
-        ['Mercury', 'Uranus', 'Aquarius'].includes(p);
+      const isIntelPlanet = (p: string) => ['Mercury', 'Uranus', 'Aquarius'].includes(p);
 
       if (isIntelPlanet(aspect.planet1) || isIntelPlanet(aspect.planet2)) {
         if (aspect.type === 'trine' || aspect.type === 'sextile') {
@@ -673,10 +645,7 @@ export class ChartCalculator {
   /**
    * Calculate values compatibility score
    */
-  private calculateValuesScore(
-    chart1: CalculatedChart,
-    chart2: CalculatedChart
-  ): number {
+  private calculateValuesScore(chart1: CalculatedChart, chart2: CalculatedChart): number {
     // Compare element distributions
     const elements1 = chart1.elements;
     const elements2 = chart2.elements;
@@ -686,7 +655,7 @@ export class ChartCalculator {
 
     for (const element of ['fire', 'earth', 'air', 'water'] as Element[]) {
       const diff = Math.abs(elements1[element] - elements2[element]);
-      similarity += (10 - diff * 2);
+      similarity += 10 - diff * 2;
       total += 10;
     }
 
@@ -749,7 +718,7 @@ export class ChartCalculator {
    * Determine lunar return theme
    */
   private determineLunarReturnTheme(chart: CalculatedChart): string {
-    const moon = chart.planets.find(p => p.name === 'Moon');
+    const moon = chart.planets.find((p) => p.name === 'Moon');
     if (!moon) return 'Emotional renewal';
 
     const signThemes: Record<string, string> = {
@@ -777,7 +746,7 @@ export class ChartCalculator {
     const areas: string[] = [];
 
     // Check Moon's house
-    const moon = chart.planets.find(p => p.name === 'Moon');
+    const moon = chart.planets.find((p) => p.name === 'Moon');
     if (moon?.house) {
       const houseAreas: Record<number, string[]> = {
         1: ['Self-image', 'Personal goals', 'Physical appearance'],
@@ -806,7 +775,7 @@ export const chartCalculator = new ChartCalculator();
 // Export factory function for custom configurations
 export function createChartCalculator(
   houseSystem: HouseSystem = 'placidus',
-  orbs: OrbConfig = DEFAULT_ORBS
+  orbs: OrbConfig = DEFAULT_ORBS,
 ): ChartCalculator {
   return new ChartCalculator(houseSystem, orbs);
 }

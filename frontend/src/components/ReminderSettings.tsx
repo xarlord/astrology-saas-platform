@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { Bell, Mail, Smartphone, Check, Info } from 'lucide-react';
 import { ReminderFormData, UserReminder } from '../types/calendar.types';
 import { setReminder } from '../services/calendar.service';
 import { TIMEOUTS } from '../utils/constants';
@@ -101,15 +100,22 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
     <div className="max-w-[600px] mx-auto p-6 sm:p-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-blue-50 text-blue-500 rounded-xl shrink-0">
-          <Bell size={24} />
+          <span className="material-symbols-outlined text-[24px]">notifications</span>
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Event Reminders</h2>
-          <p className="m-0 text-sm text-gray-500">Get notified about important astrological events</p>
+          <p className="m-0 text-sm text-gray-500">
+            Get notified about important astrological events
+          </p>
         </div>
       </div>
 
-      <form onSubmit={(e) => { void handleSubmit(e); }} className="reminder-form">
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(e);
+        }}
+        className="reminder-form"
+      >
         {/* Event Type Selection */}
         <div className="flex flex-col gap-3">
           <label className="text-sm font-semibold text-gray-700">Which events?</label>
@@ -138,7 +144,9 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
 
         {/* Reminder Type */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-gray-700">How would you like to be notified?</label>
+          <label className="text-sm font-semibold text-gray-700">
+            How would you like to be notified?
+          </label>
           <div className="flex gap-3 sm:flex-col">
             <label
               className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 ${formData.reminderType === 'email' ? '!border-indigo-500 !bg-blue-50 !text-blue-500' : ''}`}
@@ -151,7 +159,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 onChange={() => handleReminderTypeChange('email')}
                 className="hidden"
               />
-              <Mail size={20} />
+              <span className="material-symbols-outlined text-[20px]">mail</span>
               <span className="text-sm font-medium">Email</span>
             </label>
 
@@ -166,7 +174,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 onChange={() => handleReminderTypeChange('push')}
                 className="hidden"
               />
-              <Smartphone size={20} />
+              <span className="material-symbols-outlined text-[20px]">phone_android</span>
               <span className="text-sm font-medium">Push Notification</span>
             </label>
           </div>
@@ -189,13 +197,13 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 />
                 <span className="flex-1 text-sm text-gray-700">{option.label}</span>
                 {formData.reminderAdvanceHours.includes(option.value) && (
-                  <Check size={16} className="text-emerald-500 shrink-0" />
+                  <span className="material-symbols-outlined text-[16px] text-emerald-500 shrink-0">check</span>
                 )}
               </label>
             ))}
           </div>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-amber-50 border-l-[3px] border-amber-500 rounded text-[13px] text-amber-800 leading-snug">
-            <Info size={14} className="shrink-0 mt-0.5" />
+            <span className="material-symbols-outlined text-[14px] shrink-0 mt-0.5">info</span>
             <span>Select multiple timing options to receive reminders at different intervals</span>
           </div>
         </div>
@@ -209,8 +217,12 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
               onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
               className="hidden"
             />
-            <span className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${formData.isActive ? 'bg-indigo-500' : 'bg-gray-200'}`}>
-              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-sm ${formData.isActive ? 'translate-x-6' : ''}`}></span>
+            <span
+              className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${formData.isActive ? 'bg-indigo-500' : 'bg-gray-200'}`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-sm ${formData.isActive ? 'translate-x-6' : ''}`}
+              ></span>
             </span>
             <span className="text-sm font-medium text-gray-700">
               Enable reminders {formData.isActive ? 'ON' : 'OFF'}
@@ -221,17 +233,25 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
         {/* Success Message */}
         {success && (
           <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-300 rounded-lg text-green-800 text-sm">
-            <Check size={20} />
+            <span className="material-symbols-outlined text-[20px]">check</span>
             <span>Reminder settings saved successfully!</span>
           </div>
         )}
 
         {/* Error Message */}
-        {error && <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">{error}</div>}
+        {error && (
+          <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">
+            {error}
+          </div>
+        )}
 
         {/* Submit Button */}
         <div className="flex justify-end pt-2 border-t border-gray-200 mt-2 sm:justify-stretch">
-          <button type="submit" className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed sm:w-full" disabled={loading}>
+          <button
+            type="submit"
+            className="px-6 py-3 bg-indigo-500 text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed sm:w-full"
+            disabled={loading}
+          >
             {loading ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
