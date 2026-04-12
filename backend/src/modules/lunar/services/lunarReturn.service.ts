@@ -12,6 +12,7 @@ import {
   calculateMoonPhase,
 } from '../../calendar/services/calendar.service';
 import { MoonPhase } from '../../calendar/models/calendar.model';
+import knex from '../../../config/database';
 
 // Module-level singleton for the real calculation engine
 const astronomyEngine = new AstronomyEngineService();
@@ -751,20 +752,38 @@ function getActionAdvice(chart: LunarReturnChart): string[] {
 
 /**
  * Get current lunar return for a user
+ * Fetches the user's natal chart from database and calculates next lunar return
  */
-export async function getCurrentLunarReturn(_userId: string): Promise<{
+export async function getCurrentLunarReturn(userId: string): Promise<{
   returnDate: Date;
   daysUntil: number;
+  natalMoon: {
+    sign: string;
+    degree: number;
+    minute: number;
+    second: number;
+  };
 }> {
-  // In production, fetch from database
-  // For now, return a calculated value
+  // Get user's primary birth chart from database
+  const userChart = await knex('charts')
+    .where({ userId, isBirthChart: true })
+    .first();
 
-  // Get user's natal chart (mock)
+  if (!userChart) {
+    // Return default values if no birth chart exists
+    const today = new Date();
+    return {
+      returnDate: new Date(today.getTime() + 28 * 24 * 60 * 60 * 1000), // ~28 days from now
+      daysUntil: 28,
+      natalMoon: { sign: 'aries', degree: 0, minute: 0, second: 0 },
+    };
+  }
+
   const natalMoon = {
-    sign: 'leo',
-    degree: 15,
-    minute: 30,
-    second: 0,
+    sign: userChart.moonSign || 'aries',
+    degree: userChart.moonDegree || 0,
+    minute: userChart.moonMinute || 0,
+    second: userChart.moonSecond || 0,
   };
 
   const nextReturn = calculateNextLunarReturn(natalMoon);
@@ -774,6 +793,7 @@ export async function getCurrentLunarReturn(_userId: string): Promise<{
   return {
     returnDate: nextReturn,
     daysUntil,
+    natalMoon,
   };
 }
 
