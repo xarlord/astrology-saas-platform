@@ -27,19 +27,19 @@ export type CardPlanet =
 
 /** Color theme options for card customization */
 export type CardColorTheme =
-  | 'midnight_purple'    // Deep purple gradients
-  | 'celestial_blue'     // Blue and silver
-  | 'golden_hour'        // Gold and warm tones
-  | 'forest_green'       // Green and earth tones
-  | 'rose_quartz'        // Pink and crystal
-  | 'monochrome';        // Black and white
+  | 'midnight_purple' // Deep purple gradients
+  | 'celestial_blue' // Blue and silver
+  | 'golden_hour' // Gold and warm tones
+  | 'forest_green' // Green and earth tones
+  | 'rose_quartz' // Pink and crystal
+  | 'monochrome'; // Black and white
 
 /** Request to generate a new shareable card */
 export interface GenerateCardRequest {
   chart_id: string;
   template?: CardTemplate;
-  style?: CardStyle;              // New style preset
-  color_theme?: CardColorTheme;   // New color theme
+  style?: CardStyle; // New style preset
+  color_theme?: CardColorTheme; // New color theme
   planet_placements?: CardPlanet[];
   show_insight?: boolean;
   insight_text?: string;
@@ -51,8 +51,8 @@ export interface GeneratedCard {
   id: string;
   share_token: string;
   template: CardTemplate;
-  style?: CardStyle;              // New style preset
-  color_theme?: CardColorTheme;   // New color theme
+  style?: CardStyle; // New style preset
+  color_theme?: CardColorTheme; // New color theme
   planet_placements: CardPlanet[];
   show_insight: boolean;
   insight_text?: string;
@@ -61,16 +61,16 @@ export interface GeneratedCard {
   created_at: string;
   og_title: string;
   og_description: string;
-  daily_generation_count?: number;  // For rate limiting UI
-  daily_generation_limit?: number;  // For rate limiting UI
+  daily_generation_count?: number; // For rate limiting UI
+  daily_generation_limit?: number; // For rate limiting UI
 }
 
 /** Public card data (no owner-specific fields) */
 export interface PublicCard {
   id: string;
   template: CardTemplate;
-  style?: CardStyle;              // New style preset
-  color_theme?: CardColorTheme;   // New color theme
+  style?: CardStyle; // New style preset
+  color_theme?: CardColorTheme; // New color theme
   planet_placements: CardPlanet[];
   show_insight: boolean;
   insight_text?: string;
@@ -109,7 +109,7 @@ export interface CardStyleInfo {
   id: CardStyle;
   label: string;
   description: string;
-  previewGradient: string;  // CSS gradient for preview
+  previewGradient: string; // CSS gradient for preview
   icon: string;
 }
 
@@ -118,8 +118,8 @@ export interface CardColorThemeInfo {
   id: CardColorTheme;
   label: string;
   description: string;
-  primaryColor: string;     // CSS color
-  gradient: string;         // CSS gradient for preview
+  primaryColor: string; // CSS color
+  gradient: string; // CSS gradient for preview
   icon: string;
 }
 

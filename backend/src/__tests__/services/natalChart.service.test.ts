@@ -22,7 +22,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'Placidus' as const,
       };
 
@@ -41,7 +41,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.julianDay).toBeGreaterThan(2400000);
@@ -52,7 +52,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.localSiderealTime).toBeGreaterThanOrEqual(0);
@@ -63,10 +63,21 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
-      const planetNames = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+      const planetNames = [
+        'Sun',
+        'Moon',
+        'Mercury',
+        'Venus',
+        'Mars',
+        'Jupiter',
+        'Saturn',
+        'Uranus',
+        'Neptune',
+        'Pluto',
+      ];
       for (const name of planetNames) {
         expect(chart.planets.has(name)).toBe(true);
       }
@@ -77,7 +88,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       for (const planet of chart.planets.values()) {
@@ -91,7 +102,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.lunarNodes).toBeDefined();
@@ -106,7 +117,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.aspects).toBeDefined();
@@ -118,7 +129,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       const aspect = chart.aspects[0];
@@ -136,7 +147,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.elements).toBeDefined();
@@ -153,7 +164,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.modalities).toBeDefined();
@@ -169,7 +180,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.chiron).toBeDefined();
@@ -182,7 +193,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         includeChiron: false,
       };
       const chart = service.calculateNatalChart(input);
@@ -196,7 +207,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'Placidus',
       };
       const chart = service.calculateNatalChart(input);
@@ -208,7 +219,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'Koch',
       };
       const chart = service.calculateNatalChart(input);
@@ -220,7 +231,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'Equal',
       };
       const chart = service.calculateNatalChart(input);
@@ -232,7 +243,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'WholeSign',
       };
       const chart = service.calculateNatalChart(input);
@@ -246,7 +257,7 @@ describe('NatalChartService', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 0, 0, 0)),
         birthTime: '14:30',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.birthData.date.getHours()).toBe(12); // production code always sets hours to 12 local
@@ -257,7 +268,7 @@ describe('NatalChartService', () => {
       const input = {
         birthDate: new Date(Date.UTC(1990, 5, 15)),
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.birthData.date.getHours()).toBe(12); // production code defaults to noon local

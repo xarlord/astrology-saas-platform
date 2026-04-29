@@ -284,7 +284,9 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
                   {challenge.description}
                 </p>
                 <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <span className="material-symbols-outlined text-[16px] shrink-0 mt-0.5">lightbulb</span>
+                  <span className="material-symbols-outlined text-[16px] shrink-0 mt-0.5">
+                    lightbulb
+                  </span>
                   <span>
                     <strong>Advice:</strong> {challenge.advice}
                   </span>
@@ -299,7 +301,9 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.opportunities && interpretation.opportunities.length > 0 && (
         <section className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <span className="material-symbols-outlined text-[24px] text-green-500">trending_up</span>
+            <span className="material-symbols-outlined text-[24px] text-green-500">
+              trending_up
+            </span>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white m-0">
               Opportunities
             </h3>
@@ -312,7 +316,9 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
                 className="p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-r-lg"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="material-symbols-outlined text-[20px] text-green-500">redeem</span>
+                  <span className="material-symbols-outlined text-[20px] text-green-500">
+                    redeem
+                  </span>
                   <h4 className="text-base font-semibold text-gray-900 dark:text-white m-0">
                     {opportunity.area}
                   </h4>

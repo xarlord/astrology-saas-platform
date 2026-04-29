@@ -23,7 +23,7 @@ export const ZODIAC_SIGNS = [
   'pisces',
 ] as const;
 
-export type ZodiacSign = typeof ZODIAC_SIGNS[number];
+export type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
 
 // Planet symbols for display
 export const PLANET_SYMBOLS: Record<string, string> = {
@@ -62,7 +62,7 @@ const natalChartService = new NatalChartService();
  * Get zodiac sign from longitude
  */
 function getZodiacSign(longitude: number): ZodiacSign {
-  const index = Math.floor(((longitude % 360) + 360) % 360 / 30) % 12;
+  const index = Math.floor((((longitude % 360) + 360) % 360) / 30) % 12;
   return ZODIAC_SIGNS[index];
 }
 
@@ -85,7 +85,10 @@ export function calculateNatalChart(params: {
   });
 
   // Convert NatalChartService output to the legacy swissEphemeris shape
-  const planets: Record<string, { longitude: number; latitude: number; speed: number; sign: string }> = {};
+  const planets: Record<
+    string,
+    { longitude: number; latitude: number; speed: number; sign: string }
+  > = {};
   for (const [name, pos] of chart.planets) {
     planets[name.toLowerCase()] = {
       longitude: pos.longitude,
@@ -183,7 +186,10 @@ export function calculateTransits(params: {
  * Uses real planetary positions from stored chart data.
  * Scoring is algorithmic (not mock) — aspects are calculated from actual longitudes.
  */
-export function calculateCompatibility(chart1: Record<string, unknown>, chart2: Record<string, unknown>) {
+export function calculateCompatibility(
+  chart1: Record<string, unknown>,
+  chart2: Record<string, unknown>,
+) {
   const planets1 = (chart1?.planets ?? {}) as Record<string, { longitude: number }>;
   const planets2 = (chart2?.planets ?? {}) as Record<string, { longitude: number }>;
 
@@ -237,11 +243,12 @@ export function calculateCompatibility(chart1: Record<string, unknown>, chart2: 
 
   function categoryScore(relevantPlanets: string[]): number {
     const relevant = crossAspects.filter(
-      a => relevantPlanets.includes(a.planet1.planet) || relevantPlanets.includes(a.planet2.planet)
+      (a) =>
+        relevantPlanets.includes(a.planet1.planet) || relevantPlanets.includes(a.planet2.planet),
     );
     if (relevant.length === 0) return overallScore; // Fall back to overall if no relevant aspects
-    const harm = relevant.filter(a => a.harmonious).length;
-    const challenge = relevant.filter(a => !a.harmonious).length;
+    const harm = relevant.filter((a) => a.harmonious).length;
+    const challenge = relevant.filter((a) => !a.harmonious).length;
     const catTotal = harm + challenge || 1;
     return Math.min(100, Math.max(0, Math.round(50 + (harm / catTotal) * 50)));
   }
@@ -253,14 +260,14 @@ export function calculateCompatibility(chart1: Record<string, unknown>, chart2: 
 
   // Generate strengths and challenges from actual aspects
   const strengths = crossAspects
-    .filter(a => a.harmonious)
+    .filter((a) => a.harmonious)
     .slice(0, 3)
-    .map(a => `${a.planet1.planet} ${a.type} ${a.planet2.planet} — harmonious connection`);
+    .map((a) => `${a.planet1.planet} ${a.type} ${a.planet2.planet} — harmonious connection`);
 
   const challenges = crossAspects
-    .filter(a => !a.harmonious)
+    .filter((a) => !a.harmonious)
     .slice(0, 2)
-    .map(a => `${a.planet1.planet} ${a.type} ${a.planet2.planet} — tension area`);
+    .map((a) => `${a.planet1.planet} ${a.type} ${a.planet2.planet} — tension area`);
 
   return {
     overallScore,
@@ -350,7 +357,10 @@ export function calculateLunarReturn(params: {
 /**
  * Calculate composite chart from two real natal charts
  */
-export function calculateCompositeChart(chart1: Record<string, unknown>, chart2: Record<string, unknown>) {
+export function calculateCompositeChart(
+  chart1: Record<string, unknown>,
+  chart2: Record<string, unknown>,
+) {
   const planets1 = (chart1?.planets ?? {}) as Record<string, { longitude: number }>;
   const planets2 = (chart2?.planets ?? {}) as Record<string, { longitude: number }>;
 

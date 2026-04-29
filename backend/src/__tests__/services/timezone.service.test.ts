@@ -88,7 +88,7 @@ describe('TimezoneService', () => {
           hour: 12,
           minute: 0,
           timezone: 'America/New_York',
-        })
+        }),
       ).toThrow(/Invalid date/);
     });
 
@@ -101,7 +101,7 @@ describe('TimezoneService', () => {
           hour: 12,
           minute: 0,
           timezone: 'Invalid/Timezone',
-        })
+        }),
       ).toThrow();
     });
 
@@ -236,7 +236,7 @@ describe('TimezoneService', () => {
     it('should find results for "America"', () => {
       const results = service.searchTimezones('America');
       expect(results.length).toBeGreaterThan(0);
-      results.forEach(r => {
+      results.forEach((r) => {
         expect(r.id.toLowerCase()).toContain('america');
       });
     });
@@ -244,7 +244,7 @@ describe('TimezoneService', () => {
     it('should find results for "Europe"', () => {
       const results = service.searchTimezones('Europe');
       expect(results.length).toBeGreaterThan(0);
-      results.forEach(r => {
+      results.forEach((r) => {
         expect(r.id.toLowerCase()).toContain('europe');
       });
     });
@@ -289,28 +289,28 @@ describe('TimezoneService', () => {
     it('should return US timezones', () => {
       const results = service.getCommonTimezones('US');
       expect(results.length).toBe(6);
-      expect(results.some(r => r.id === 'America/New_York')).toBe(true);
-      expect(results.some(r => r.id === 'America/Los_Angeles')).toBe(true);
+      expect(results.some((r) => r.id === 'America/New_York')).toBe(true);
+      expect(results.some((r) => r.id === 'America/Los_Angeles')).toBe(true);
     });
 
     it('should return EU timezones', () => {
       const results = service.getCommonTimezones('EU');
       expect(results.length).toBe(5);
-      expect(results.some(r => r.id === 'Europe/London')).toBe(true);
-      expect(results.some(r => r.id === 'Europe/Paris')).toBe(true);
+      expect(results.some((r) => r.id === 'Europe/London')).toBe(true);
+      expect(results.some((r) => r.id === 'Europe/Paris')).toBe(true);
     });
 
     it('should return ASIA timezones', () => {
       const results = service.getCommonTimezones('ASIA');
       expect(results.length).toBe(5);
-      expect(results.some(r => r.id === 'Asia/Tokyo')).toBe(true);
-      expect(results.some(r => r.id === 'Asia/Shanghai')).toBe(true);
+      expect(results.some((r) => r.id === 'Asia/Tokyo')).toBe(true);
+      expect(results.some((r) => r.id === 'Asia/Shanghai')).toBe(true);
     });
 
     it('should return AU timezones', () => {
       const results = service.getCommonTimezones('AU');
       expect(results.length).toBe(4);
-      expect(results.some(r => r.id === 'Australia/Sydney')).toBe(true);
+      expect(results.some((r) => r.id === 'Australia/Sydney')).toBe(true);
     });
 
     it('should return empty for unknown region', () => {

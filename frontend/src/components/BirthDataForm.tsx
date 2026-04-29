@@ -14,7 +14,9 @@ interface ErrorMessageProps {
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
     <p id={id} className="error-message" role="alert" aria-live="assertive">
-      <span className="material-symbols-outlined error-icon" aria-hidden="true">error</span>
+      <span className="material-symbols-outlined error-icon" aria-hidden="true">
+        error
+      </span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -242,10 +244,7 @@ export function BirthDataForm({
   );
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-8"
-    >
+    <form onSubmit={handleSubmit} className="space-y-8">
       {/* Date & Time Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Date & Time</h3>
@@ -278,7 +277,10 @@ export function BirthDataForm({
               />
               {errors.birthDate && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
                     error
                   </span>
                 </div>
@@ -315,7 +317,10 @@ export function BirthDataForm({
               />
               {errors.birthTime && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
                     error
                   </span>
                 </div>
@@ -379,7 +384,10 @@ export function BirthDataForm({
               />
               {errors.birthPlace && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
                     error
                   </span>
                 </div>
@@ -449,7 +457,10 @@ export function BirthDataForm({
               />
               {errors.chartName && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
                     error
                   </span>
                 </div>

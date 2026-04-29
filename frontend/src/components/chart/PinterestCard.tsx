@@ -36,7 +36,7 @@ export const PinterestCard: React.FC<PinterestCardProps> = ({
 }) => {
   // Extract planetary data
   const getPlanetSign = (planetName: string): ChartPosition | undefined => {
-    return chartData.positions?.find(p => p.name.toLowerCase() === planetName.toLowerCase());
+    return chartData.positions?.find((p) => p.name.toLowerCase() === planetName.toLowerCase());
   };
 
   // Get zodiac symbol
@@ -107,7 +107,12 @@ export const PinterestCard: React.FC<PinterestCardProps> = ({
   const saturn = getPlanetSign('Saturn');
 
   return (
-    <div className={clsx('relative w-[1000px] h-[1500px] flex flex-col items-center justify-center px-6', className)}>
+    <div
+      className={clsx(
+        'relative w-[1000px] h-[1500px] flex flex-col items-center justify-center px-6',
+        className,
+      )}
+    >
       {/* Background with top-corner radial glow */}
       <div className="absolute inset-0 bg-[rgb(11,13,23)]">
         {/* Top-left radial glow */}
@@ -134,69 +139,82 @@ export const PinterestCard: React.FC<PinterestCardProps> = ({
 
         {/* Big 3 Section */}
         <div className="flex items-center gap-6 text-center">
-          {[sun, moon, rising].map((planet, index) => {
-            if (!planet) return null;
-            const planetColor = PLANET_COLORS[planet.name.toLowerCase()] || '#ffffff';
-            return (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full"
-                     style={{ backgroundColor: `${planetColor}33`, color: planetColor }}>
-                  {getZodiacSymbol(planet.sign)}
+          {[sun, moon, rising]
+            .map((planet, index) => {
+              if (!planet) return null;
+              const planetColor = PLANET_COLORS[planet.name.toLowerCase()] || '#ffffff';
+              return (
+                <div key={index} className="flex flex-col items-center">
+                  <div
+                    className="w-6 h-6 flex items-center justify-center rounded-full"
+                    style={{ backgroundColor: `${planetColor}33`, color: planetColor }}
+                  >
+                    {getZodiacSymbol(planet.sign)}
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium text-[18px] text-white">{planet.sign}</div>
+                    <div className="text-[12px] text-slate-400">
+                      {getZodiacSymbol(planet.sign)} {planet.degree}°
+                    </div>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="font-medium text-[18px] text-white">{planet.sign}</div>
-                  <div className="text-[12px] text-slate-400">{getZodiacSymbol(planet.sign)} {planet.degree}°</div>
-                </div>
-              </div>
-            );
-          }).filter(Boolean)}
+              );
+            })
+            .filter(Boolean)}
         </div>
 
         {/* Keywords for each planet */}
         <div className="space-y-4 text-center">
-          {[sun, moon, rising].map((planet, index) => {
-            if (!planet) return null;
-            // Simple keyword mapping based on planet
-            const keywords: Record<string, string> = {
-              sun: 'Creative, bold, warm',
-              moon: 'Intuitive, dreamy',
-              rising: 'Intense, magnetic'
-            };
-            const planetName = ['sun', 'moon', 'rising'][index];
-            return (
-              <p key={index} className="text-[14px] text-slate-400 max-w-[80%]">
-                {keywords[planetName]}
-              </p>
-            );
-          }).filter(Boolean)}
+          {[sun, moon, rising]
+            .map((planet, index) => {
+              if (!planet) return null;
+              // Simple keyword mapping based on planet
+              const keywords: Record<string, string> = {
+                sun: 'Creative, bold, warm',
+                moon: 'Intuitive, dreamy',
+                rising: 'Intense, magnetic',
+              };
+              const planetName = ['sun', 'moon', 'rising'][index];
+              return (
+                <p key={index} className="text-[14px] text-slate-400 max-w-[80%]">
+                  {keywords[planetName]}
+                </p>
+              );
+            })
+            .filter(Boolean)}
         </div>
 
         {/* Additional Placements Grid */}
         <div className="w-[24rem] grid grid-cols-2 gap-4 mt-6">
-          {[mercury, venus, mars, jupiter, saturn].map((planet, index) => {
-            if (!planet) return null;
-            const planetColor = PLANET_COLORS[planet.name.toLowerCase()] || '#ffffff';
-            return (
-              <div key={index} className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-                <div className="w-5 h-5 flex items-center justify-center rounded-full"
-                     style={{ backgroundColor: `${planetColor}33`, color: planetColor }}>
-                  {getZodiacSymbol(planet.sign)}
-                </div>
-                <div className="flex-1 space-y-1">
-                  <div className="font-medium text-white">{planet.name}</div>
-                  <div className="text-sm text-slate-400">
-                    {getZodiacSymbol(planet.sign)} {planet.sign} {planet.degree}°
+          {[mercury, venus, mars, jupiter, saturn]
+            .map((planet, index) => {
+              if (!planet) return null;
+              const planetColor = PLANET_COLORS[planet.name.toLowerCase()] || '#ffffff';
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"
+                >
+                  <div
+                    className="w-5 h-5 flex items-center justify-center rounded-full"
+                    style={{ backgroundColor: `${planetColor}33`, color: planetColor }}
+                  >
+                    {getZodiacSymbol(planet.sign)}
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <div className="font-medium text-white">{planet.name}</div>
+                    <div className="text-sm text-slate-400">
+                      {getZodiacSymbol(planet.sign)} {planet.sign} {planet.degree}°
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          }).filter(Boolean)}
+              );
+            })
+            .filter(Boolean)}
         </div>
 
         {/* Footer */}
-        <p className="mt-auto text-[14px] text-white/40">
-          astroverse.app
-        </p>
+        <p className="mt-auto text-[14px] text-white/40">astroverse.app</p>
       </div>
     </div>
   );

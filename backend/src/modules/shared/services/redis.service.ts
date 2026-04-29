@@ -66,7 +66,9 @@ export async function connectRedis(): Promise<void> {
     await client.ping();
     logger.info('[Redis] PING OK');
   } catch (err) {
-    logger.warn(`[Redis] PING failed: ${err instanceof Error ? err.message : err}. Running in fallback mode.`);
+    logger.warn(
+      `[Redis] PING failed: ${err instanceof Error ? err.message : err}. Running in fallback mode.`,
+    );
   }
 }
 
@@ -125,7 +127,9 @@ export class RedisCache {
         }
         return null;
       } catch (err) {
-        logger.debug(`[RedisCache] GET error for ${fullKey}: ${err instanceof Error ? err.message : err}`);
+        logger.debug(
+          `[RedisCache] GET error for ${fullKey}: ${err instanceof Error ? err.message : err}`,
+        );
       }
     }
 
@@ -151,7 +155,9 @@ export class RedisCache {
         await client.set(fullKey, serialized, 'EX', ttlSeconds);
         return;
       } catch (err) {
-        logger.debug(`[RedisCache] SET error for ${fullKey}: ${err instanceof Error ? err.message : err}`);
+        logger.debug(
+          `[RedisCache] SET error for ${fullKey}: ${err instanceof Error ? err.message : err}`,
+        );
       }
     }
 

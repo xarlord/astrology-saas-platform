@@ -52,7 +52,7 @@ export const useReports = () => {
       try {
         const report = await retryReport(id);
         return report;
-      } catch (error: unknown) {
+      } catch {
         return null;
       }
     },

@@ -51,9 +51,7 @@ describe('AI Controller', () => {
   describe('generateNatal', () => {
     it('should generate AI natal interpretation successfully', async () => {
       const chartData = {
-        planets: [
-          { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-        ],
+        planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }],
       };
 
       mockRequest.body = chartData;
@@ -84,7 +82,7 @@ describe('AI Controller', () => {
       mockRequest.body = {};
 
       await expect(
-        generateNatal(mockRequest as Request, mockResponse as Response)
+        generateNatal(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow();
 
       expect(aiInterpretationService.generateNatal).not.toHaveBeenCalled();
@@ -129,7 +127,7 @@ describe('AI Controller', () => {
       mockRequest.body = {};
 
       await expect(
-        generateTransit(mockRequest as Request, mockResponse as Response)
+        generateTransit(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow();
 
       expect(aiInterpretationService.generateTransit).not.toHaveBeenCalled();
@@ -173,7 +171,7 @@ describe('AI Controller', () => {
       };
 
       await expect(
-        generateCompatibility(mockRequest as Request, mockResponse as Response)
+        generateCompatibility(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow();
     });
 
@@ -183,7 +181,7 @@ describe('AI Controller', () => {
       };
 
       await expect(
-        generateCompatibility(mockRequest as Request, mockResponse as Response)
+        generateCompatibility(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow();
     });
   });
@@ -191,9 +189,7 @@ describe('AI Controller', () => {
   describe('generateLunarReturn', () => {
     it('should generate AI lunar return interpretation successfully', async () => {
       const chartData = {
-        planets: [
-          { planet: 'moon', sign: 'cancer', degree: 15, house: 4 },
-        ],
+        planets: [{ planet: 'moon', sign: 'cancer', degree: 15, house: 4 }],
       };
 
       mockRequest.body = chartData;
@@ -203,7 +199,9 @@ describe('AI Controller', () => {
         interpretation: 'Monthly forecast',
       };
 
-      (aiInterpretationService.generateLunarReturn as jest.Mock).mockResolvedValue(mockInterpretation);
+      (aiInterpretationService.generateLunarReturn as jest.Mock).mockResolvedValue(
+        mockInterpretation,
+      );
 
       await generateLunarReturn(mockRequest as Request, mockResponse as Response);
 
@@ -219,7 +217,7 @@ describe('AI Controller', () => {
       mockRequest.body = {};
 
       await expect(
-        generateLunarReturn(mockRequest as Request, mockResponse as Response)
+        generateLunarReturn(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow();
     });
   });
@@ -227,9 +225,7 @@ describe('AI Controller', () => {
   describe('generateSolarReturn', () => {
     it('should generate AI solar return interpretation successfully', async () => {
       const chartData = {
-        planets: [
-          { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-        ],
+        planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }],
       };
 
       mockRequest.body = chartData;
@@ -239,7 +235,9 @@ describe('AI Controller', () => {
         interpretation: 'Yearly forecast',
       };
 
-      (aiInterpretationService.generateSolarReturn as jest.Mock).mockResolvedValue(mockInterpretation);
+      (aiInterpretationService.generateSolarReturn as jest.Mock).mockResolvedValue(
+        mockInterpretation,
+      );
 
       await generateSolarReturn(mockRequest as Request, mockResponse as Response);
 
@@ -255,7 +253,7 @@ describe('AI Controller', () => {
       mockRequest.body = {};
 
       await expect(
-        generateSolarReturn(mockRequest as Request, mockResponse as Response)
+        generateSolarReturn(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow();
     });
   });

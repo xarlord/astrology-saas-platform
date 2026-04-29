@@ -275,7 +275,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       return;
                     }
                     handleVisibilityChange(options[nextIdx]);
-                    const radios = (e.currentTarget as HTMLElement).querySelectorAll('[role="radio"]');
+                    const radios = (e.currentTarget as HTMLElement).querySelectorAll(
+                      '[role="radio"]',
+                    );
                     (radios[nextIdx] as HTMLElement)?.focus();
                   }}
                 >
@@ -452,7 +454,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 <h3 className="text-sm font-medium text-gray-300 mb-2">Share Link</h3>
                 <div className="flex items-center space-x-2">
                   <div className="flex-1 relative">
-                    <span className="material-symbols-outlined text-[16px] text-gray-500 absolute left-3 top-1/2 -translate-y-1/2">link</span>
+                    <span className="material-symbols-outlined text-[16px] text-gray-500 absolute left-3 top-1/2 -translate-y-1/2">
+                      link
+                    </span>
                     <input
                       ref={inputRef}
                       type="text"
@@ -478,7 +482,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       </>
                     ) : (
                       <>
-                        <span className="material-symbols-outlined text-[16px] mr-1.5">content_copy</span>
+                        <span className="material-symbols-outlined text-[16px] mr-1.5">
+                          content_copy
+                        </span>
                         Copy
                       </>
                     )}
@@ -518,7 +524,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300"
                 >
                   <span className="flex items-center">
-                    <span className="material-symbols-outlined text-[20px] mr-2 text-purple-400">qr_code_2</span>
+                    <span className="material-symbols-outlined text-[20px] mr-2 text-purple-400">
+                      qr_code_2
+                    </span>
                     Show QR Code
                   </span>
                   <span className="text-xs text-gray-500">For mobile scanning</span>
@@ -540,7 +548,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                           role="img"
                           aria-label="QR code for sharing"
                         >
-                          <span className="material-symbols-outlined text-[96px] text-gray-300" aria-hidden="true">qr_code_2</span>
+                          <span
+                            className="material-symbols-outlined text-[96px] text-gray-300"
+                            aria-hidden="true"
+                          >
+                            qr_code_2
+                          </span>
                         </div>
                       </div>
                       <p className="mt-2 text-xs text-gray-500 text-center">
@@ -555,7 +568,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <div className="relative">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                   <span className="flex items-center text-sm text-gray-300">
-                    <span className="material-symbols-outlined text-[16px] mr-2 text-gray-500">schedule</span>
+                    <span className="material-symbols-outlined text-[16px] mr-2 text-gray-500">
+                      schedule
+                    </span>
                     Link expires:
                   </span>
                   <button
@@ -589,7 +604,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                           return;
                         }
                         handleExpiryChange(expiryOptions[nextIdx].value);
-                        const opts = (e.currentTarget as HTMLElement).querySelectorAll('[role="option"]');
+                        const opts = (e.currentTarget as HTMLElement).querySelectorAll(
+                          '[role="option"]',
+                        );
                         (opts[nextIdx] as HTMLElement)?.focus();
                       }}
                     >

@@ -211,7 +211,7 @@ export const RETROGRADE_INTERPRETATIONS: Record<Planet, RetrogradeInterpretation
       'expansion pause',
     ],
     description:
-      'Jupiter retrograde shifts focus from external expansion to inner growth. It\'s a time for philosophical reflection, ethical review, and reassessing beliefs and education.',
+      "Jupiter retrograde shifts focus from external expansion to inner growth. It's a time for philosophical reflection, ethical review, and reassessing beliefs and education.",
     generalAdvice: [
       'Reflect on your beliefs and philosophy of life',
       'Review your educational path and knowledge goals',
@@ -536,7 +536,7 @@ export const MOON_PHASE_INTERPRETATIONS: Record<MoonPhase, MoonPhaseInterpretati
     intention: 'Share and distribute',
     energy: 'Sharing, teaching, grateful',
     advice:
-      'After the full moon, share your wisdom and express gratitude. Teach others what you\'ve learned and distribute the fruits of your labor.',
+      "After the full moon, share your wisdom and express gratitude. Teach others what you've learned and distribute the fruits of your labor.",
     ritual:
       'Share your knowledge with others. Express gratitude for your blessings. Give back to your community.',
   },

@@ -33,7 +33,7 @@ export default function RegisterPage() {
     try {
       await register({ name, email, password });
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       // Error is handled by the store
     }
   };

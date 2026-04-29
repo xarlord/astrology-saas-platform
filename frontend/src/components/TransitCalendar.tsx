@@ -273,7 +273,9 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
           >
-            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_left</span>
+            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">
+              chevron_left
+            </span>
           </button>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -283,7 +285,9 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
           >
-            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">
+              chevron_right
+            </span>
           </button>
         </div>
 
@@ -522,7 +526,9 @@ export function TransitCalendar({
                         {getZodiacSymbol(transit.sign)} {transit.sign} {transit.degree}°
                       </div>
                     </div>
-                    <span className="material-symbols-outlined text-[16px] text-gray-400">info</span>
+                    <span className="material-symbols-outlined text-[16px] text-gray-400">
+                      info
+                    </span>
                   </div>
                 );
               })}

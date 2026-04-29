@@ -9,7 +9,12 @@ import request from 'supertest';
 import bcrypt from 'bcryptjs';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken, generateRefreshToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 // Import app
 import app from '../../server';
@@ -44,10 +49,7 @@ describe('Authentication Routes Integration Tests', () => {
         name: 'New User',
       };
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(201);
+      const response = await request(app).post('/api/auth/register').send(userData).expect(201);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body.data).toHaveProperty('user');
@@ -70,9 +72,7 @@ describe('Authentication Routes Integration Tests', () => {
         name: 'New User',
       };
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       expect(response.body).toHaveProperty('success', false);
     });
@@ -86,9 +86,7 @@ describe('Authentication Routes Integration Tests', () => {
         name: 'New User',
       };
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       expect(response.body).toHaveProperty('success', false);
     });
@@ -105,9 +103,7 @@ describe('Authentication Routes Integration Tests', () => {
       await createTestUser(db, { email: userData.email });
 
       // Try to create duplicate
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      const response = await request(app).post('/api/auth/register').send(userData);
 
       expect(response.body).toHaveProperty('success', false);
       expect([400, 409]).toContain(response.status);
@@ -122,10 +118,7 @@ describe('Authentication Routes Integration Tests', () => {
         name: 'Password Test',
       };
 
-      await request(app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(201);
+      await request(app).post('/api/auth/register').send(userData).expect(201);
 
       const [user] = await db('users').where({ email: userData.email }).select('*');
       expect(user.password_hash).not.toBe(userData.password);
@@ -143,12 +136,10 @@ describe('Authentication Routes Integration Tests', () => {
         password_hash: hashedPassword,
       });
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: user.email,
-          password: password,
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        email: user.email,
+        password: password,
+      });
 
       // Currently returns 500, implementation needed
       expect(response.body).toHaveProperty('success', true);
@@ -205,9 +196,7 @@ describe('Authentication Routes Integration Tests', () => {
 
     it('should return 401 without token', async () => {
       if (!isDatabaseAvailable()) return;
-      const response = await request(app)
-        .get('/api/auth/me')
-        .expect(401);
+      const response = await request(app).get('/api/auth/me').expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });

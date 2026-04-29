@@ -11,7 +11,7 @@ import { ChartModel } from '../modules/charts/models';
 import aiUsageModel from '../modules/ai/models/aiUsage.model';
 
 interface PlanLimits {
-  maxCharts: number;    // -1 = unlimited
+  maxCharts: number; // -1 = unlimited
   maxAIMonthly: number; // -1 = unlimited
 }
 
@@ -27,7 +27,7 @@ const PLAN_LIMITS: Record<string, PlanLimits> = {
 export async function enforceChartLimit(
   req: AuthenticatedRequest,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> {
   try {
     if (!req.user) throw new AppError('Unauthorized', 401);
@@ -47,7 +47,7 @@ export async function enforceChartLimit(
     if (chartCount >= limits.maxCharts) {
       throw new AppError(
         `Chart limit reached. Your ${user.plan} plan allows up to ${limits.maxCharts} charts. Upgrade to create more.`,
-        403
+        403,
       );
     }
 
@@ -63,7 +63,7 @@ export async function enforceChartLimit(
 export async function enforceAILimit(
   req: AuthenticatedRequest,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> {
   try {
     if (!req.user) throw new AppError('Unauthorized', 401);
@@ -84,16 +84,12 @@ export async function enforceAILimit(
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    const monthlyUsage = await aiUsageModel.getByDateRange(
-      req.user.id,
-      startOfMonth,
-      new Date()
-    );
+    const monthlyUsage = await aiUsageModel.getByDateRange(req.user.id, startOfMonth, new Date());
 
     if (monthlyUsage.length >= limits.maxAIMonthly) {
       throw new AppError(
         `AI interpretation limit reached. Your ${user.plan} plan allows ${limits.maxAIMonthly} AI interpretations per month. Upgrade for more.`,
-        403
+        403,
       );
     }
 

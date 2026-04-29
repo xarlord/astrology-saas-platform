@@ -4,7 +4,11 @@
  * Tests real planetary position calculations using astronomy-engine library
  */
 
-import { AstronomyEngineService, ZODIAC_SIGNS, PLANET_SYMBOLS } from '../../modules/shared/services/astronomyEngine.service';
+import {
+  AstronomyEngineService,
+  ZODIAC_SIGNS,
+  PLANET_SYMBOLS,
+} from '../../modules/shared/services/astronomyEngine.service';
 
 describe('Astronomy Engine Service', () => {
   let service: AstronomyEngineService;
@@ -42,7 +46,7 @@ describe('Astronomy Engine Service', () => {
   describe('Planetary Position Calculations', () => {
     test('should calculate positions for all major planets', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
-      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       expect(positions).toBeDefined();
       expect(positions.size).toBe(10); // Sun through Pluto
@@ -62,7 +66,7 @@ describe('Astronomy Engine Service', () => {
 
     test('should return valid position structure for each planet', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
-      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       for (const [name, pos] of positions) {
         expect(pos.name).toBe(name);
@@ -84,7 +88,7 @@ describe('Astronomy Engine Service', () => {
 
     test('should calculate correct zodiac sign for known positions', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0)); // Jan 1, 2024
-      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       const sun = positions.get('Sun');
       expect(sun).toBeDefined();
@@ -99,7 +103,7 @@ describe('Astronomy Engine Service', () => {
       // Use a date when Mercury is known to be retrograde
       // Mercury retrograde periods in 2024 include Apr 1-25
       const retroDate = new Date(Date.UTC(2024, 3, 15, 12, 0, 0)); // April 15, 2024
-      const positions = service.calculatePlanetaryPositions(retroDate, 40.7128, -74.0060);
+      const positions = service.calculatePlanetaryPositions(retroDate, 40.7128, -74.006);
 
       const mercury = positions.get('Mercury');
       expect(mercury).toBeDefined();
@@ -112,8 +116,8 @@ describe('Astronomy Engine Service', () => {
       const date1 = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
       const date2 = new Date(Date.UTC(2024, 5, 15, 12, 0, 0));
 
-      const positions1 = service.calculatePlanetaryPositions(date1, 40.7128, -74.0060);
-      const positions2 = service.calculatePlanetaryPositions(date2, 40.7128, -74.0060);
+      const positions1 = service.calculatePlanetaryPositions(date1, 40.7128, -74.006);
+      const positions2 = service.calculatePlanetaryPositions(date2, 40.7128, -74.006);
 
       // Moon moves quickly - should be in different positions
       const moon1 = positions1.get('Moon');
@@ -128,8 +132,8 @@ describe('Astronomy Engine Service', () => {
     test('should calculate positions consistently for same date', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
 
-      const positions1 = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
-      const positions2 = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      const positions1 = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
+      const positions2 = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       const sun1 = positions1.get('Sun');
       const sun2 = positions2.get('Sun');
@@ -228,7 +232,7 @@ describe('Astronomy Engine Service', () => {
   describe('Local Sidereal Time Calculation', () => {
     test('should calculate LST for given date and longitude', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
-      const lst = service.calculateLocalSiderealTime(date, -74.0060);
+      const lst = service.calculateLocalSiderealTime(date, -74.006);
 
       expect(lst).toBeGreaterThanOrEqual(0);
       expect(lst).toBeLessThan(360);
@@ -237,7 +241,7 @@ describe('Astronomy Engine Service', () => {
     test('should return different LST for different longitudes', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
 
-      const lstNY = service.calculateLocalSiderealTime(date, -74.0060); // New York
+      const lstNY = service.calculateLocalSiderealTime(date, -74.006); // New York
       const lstLondon = service.calculateLocalSiderealTime(date, -0.1278); // London
 
       expect(lstNY).not.toBe(lstLondon);
@@ -271,7 +275,7 @@ describe('Astronomy Engine Service', () => {
 
     test('should handle dates in the past', () => {
       const date = new Date(Date.UTC(1900, 0, 1, 12, 0, 0));
-      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       expect(positions.size).toBe(10);
       const sun = positions.get('Sun');
@@ -280,7 +284,7 @@ describe('Astronomy Engine Service', () => {
 
     test('should handle dates in the future', () => {
       const date = new Date(Date.UTC(2050, 0, 1, 12, 0, 0));
-      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      const positions = service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       expect(positions.size).toBe(10);
       const sun = positions.get('Sun');
@@ -305,7 +309,7 @@ describe('Astronomy Engine Service', () => {
       const date = new Date(Date.UTC(2024, 0, 1, 12, 0, 0));
       const startTime = Date.now();
 
-      service.calculatePlanetaryPositions(date, 40.7128, -74.0060);
+      service.calculatePlanetaryPositions(date, 40.7128, -74.006);
 
       const elapsed = Date.now() - startTime;
       // Should complete in under 100ms

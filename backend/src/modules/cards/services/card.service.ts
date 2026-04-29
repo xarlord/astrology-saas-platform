@@ -30,7 +30,7 @@ export class CardService {
       show_insight?: boolean;
       insight_text?: string;
       referral_code?: string;
-    } = {}
+    } = {},
   ): Promise<GeneratedCard> {
     // Rate limit check
     const dailyCount = await cardModel.countByUserToday(userId);
@@ -48,7 +48,7 @@ export class CardService {
     if (options.template && !cardModel.isValidTemplate(options.template)) {
       throw new AppError(
         `Invalid template: ${options.template}. Valid: ${cardModel.getValidTemplates().join(', ')}`,
-        400
+        400,
       );
     }
 
@@ -81,7 +81,7 @@ export class CardService {
     let insightText = card.insight_text;
     if (card.show_insight && !insightText) {
       try {
-        insightText = await openaiService.generateCardInsight(placements, userId) ?? undefined;
+        insightText = (await openaiService.generateCardInsight(placements, userId)) ?? undefined;
       } catch {
         logger.warn('Failed to generate AI insight for card', { cardId: card.id });
       }
@@ -99,7 +99,7 @@ export class CardService {
     };
 
     // Generate card image asynchronously (non-blocking — image_url updated after generation)
-    this.generateCardImage(card, result.insight_text).catch(err => {
+    this.generateCardImage(card, result.insight_text).catch((err) => {
       logger.warn('Background card image generation failed', {
         cardId: card.id,
         error: err instanceof Error ? err.message : String(err),
@@ -201,7 +201,7 @@ export class CardService {
   }
 
   private async generateOgTitle(card: GeneratedCard): Promise<string> {
-    return `My ${card.template.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} Chart Card - AstroVerse`;
+    return `My ${card.template.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())} Chart Card - AstroVerse`;
   }
 
   private async generateOgDescription(card: GeneratedCard): Promise<string> {
@@ -231,7 +231,7 @@ export class CardService {
         card.id,
         imageResult.imageUrl,
         imageResult.width,
-        imageResult.height
+        imageResult.height,
       );
       logger.info('Card image saved', {
         cardId: card.id,

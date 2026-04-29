@@ -40,20 +40,26 @@ describe('Request Logger Middleware', () => {
   it('should log incoming request', () => {
     requestLogger(mockRequest as Request, mockResponse as Response, mockNext);
 
-    expect(mockedLogger.info).toHaveBeenCalledWith('Incoming request', expect.objectContaining({
-      method: 'GET',
-      path: '/api/test',
-      query: { page: '1' },
-      ip: '127.0.0.1',
-    }));
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Incoming request',
+      expect.objectContaining({
+        method: 'GET',
+        path: '/api/test',
+        query: { page: '1' },
+        ip: '127.0.0.1',
+      }),
+    );
   });
 
   it('should log user agent', () => {
     requestLogger(mockRequest as Request, mockResponse as Response, mockNext);
 
-    expect(mockedLogger.info).toHaveBeenCalledWith('Incoming request', expect.objectContaining({
-      userAgent: 'Mozilla/5.0',
-    }));
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Incoming request',
+      expect.objectContaining({
+        userAgent: 'Mozilla/5.0',
+      }),
+    );
   });
 
   it('should register finish event listener', () => {
@@ -84,12 +90,15 @@ describe('Request Logger Middleware', () => {
       finishCallback();
     }
 
-    expect(mockedLogger.info).toHaveBeenCalledWith('Request completed', expect.objectContaining({
-      method: 'GET',
-      path: '/api/test',
-      statusCode: 200,
-      duration: expect.any(String),
-    }));
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Request completed',
+      expect.objectContaining({
+        method: 'GET',
+        path: '/api/test',
+        statusCode: 200,
+        duration: expect.any(String),
+      }),
+    );
   });
 
   it('should log duration in milliseconds', () => {
@@ -107,9 +116,12 @@ describe('Request Logger Middleware', () => {
       finishCallback();
     }
 
-    expect(mockedLogger.info).toHaveBeenCalledWith('Request completed', expect.objectContaining({
-      duration: expect.stringMatching(/\d+ms/),
-    }));
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Request completed',
+      expect.objectContaining({
+        duration: expect.stringMatching(/\d+ms/),
+      }),
+    );
   });
 
   it('should log warning for 4xx status codes', () => {
@@ -129,9 +141,12 @@ describe('Request Logger Middleware', () => {
       finishCallback();
     }
 
-    expect(mockedLogger.warn).toHaveBeenCalledWith('Request completed', expect.objectContaining({
-      statusCode: 404,
-    }));
+    expect(mockedLogger.warn).toHaveBeenCalledWith(
+      'Request completed',
+      expect.objectContaining({
+        statusCode: 404,
+      }),
+    );
   });
 
   it('should log warning for 5xx status codes', () => {
@@ -151,9 +166,12 @@ describe('Request Logger Middleware', () => {
       finishCallback();
     }
 
-    expect(mockedLogger.warn).toHaveBeenCalledWith('Request completed', expect.objectContaining({
-      statusCode: 500,
-    }));
+    expect(mockedLogger.warn).toHaveBeenCalledWith(
+      'Request completed',
+      expect.objectContaining({
+        statusCode: 500,
+      }),
+    );
   });
 
   it('should log info for 2xx status codes', () => {
@@ -173,9 +191,12 @@ describe('Request Logger Middleware', () => {
       finishCallback();
     }
 
-    expect(mockedLogger.info).toHaveBeenCalledWith('Request completed', expect.objectContaining({
-      statusCode: 201,
-    }));
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Request completed',
+      expect.objectContaining({
+        statusCode: 201,
+      }),
+    );
   });
 
   it('should log info for 3xx status codes', () => {
@@ -195,8 +216,11 @@ describe('Request Logger Middleware', () => {
       finishCallback();
     }
 
-    expect(mockedLogger.info).toHaveBeenCalledWith('Request completed', expect.objectContaining({
-      statusCode: 301,
-    }));
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      'Request completed',
+      expect.objectContaining({
+        statusCode: 301,
+      }),
+    );
   });
 });

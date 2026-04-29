@@ -33,7 +33,12 @@ import {
 // Mock knex (chainable mock — same pattern as synastry controller tests)
 // ---------------------------------------------------------------------------
 
+// `var` is required because jest.mock factory functions are hoisted above
+// `let`/`const` declarations, causing TDZ errors.  `var` is hoisted and
+// initialised to undefined, so the factory can safely assign to it.
+// eslint-disable-next-line no-var
 var mockKnexChain: any;
+// eslint-disable-next-line no-var
 var mockKnex: jest.Mock;
 
 jest.mock('../../config/database', () => {

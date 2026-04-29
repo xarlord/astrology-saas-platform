@@ -46,7 +46,11 @@ function applyMocks() {
   modelMock.set = jest.fn((_key: string, data: Record<string, unknown>, ttlSeconds?: number) => {
     const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : null;
     memoryStore.set(_key, { data, expiresAt });
-    return Promise.resolve({ cache_key: _key, data, expires_at: expiresAt ? new Date(expiresAt) : null });
+    return Promise.resolve({
+      cache_key: _key,
+      data,
+      expires_at: expiresAt ? new Date(expiresAt) : null,
+    });
   });
 
   modelMock.delete = jest.fn((key: string) => {
@@ -79,7 +83,11 @@ function applyMocks() {
         active++;
       }
     }
-    return Promise.resolve({ totalEntries: memoryStore.size, expiredEntries: expired, activeEntries: active });
+    return Promise.resolve({
+      totalEntries: memoryStore.size,
+      expiredEntries: expired,
+      activeEntries: active,
+    });
   });
 
   // Reset logger mock call counts (but keep the same object reference)
@@ -141,7 +149,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key, data, { ttl: 1 }); // 1 second TTL
 
       // Wait for expiration
-      await new Promise(resolve => setTimeout(resolve, 1100));
+      await new Promise((resolve) => setTimeout(resolve, 1100));
 
       const cached = await aiCacheService.get(key);
       expect(cached).toBeNull();
@@ -154,7 +162,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key, data, { ttl: 60 }); // 60 seconds TTL
 
       // Should still be cached after short delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const cached = await aiCacheService.get(key);
       expect(cached).toEqual(data);
 
@@ -195,9 +203,7 @@ describe('AI Cache Service', () => {
   describe('Key Generation', () => {
     it('should generate cache key from chart data', async () => {
       const chartData = {
-        planets: [
-          { planet: 'sun', sign: 'aries', degree: 15 },
-        ],
+        planets: [{ planet: 'sun', sign: 'aries', degree: 15 }],
       };
 
       const key = aiCacheService.generateKey(chartData);
@@ -209,9 +215,7 @@ describe('AI Cache Service', () => {
 
     it('should generate consistent keys for identical data', () => {
       const chartData = {
-        planets: [
-          { planet: 'sun', sign: 'aries', degree: 15 },
-        ],
+        planets: [{ planet: 'sun', sign: 'aries', degree: 15 }],
       };
 
       const key1 = aiCacheService.generateKey(chartData);
@@ -280,7 +284,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.getOrGenerate(key, generator, { ttl: 1 });
 
       // Wait for expiration
-      await new Promise(resolve => setTimeout(resolve, 1100));
+      await new Promise((resolve) => setTimeout(resolve, 1100));
 
       const cached = await aiCacheService.get(key);
       expect(cached).toBeNull();
@@ -315,7 +319,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key2, { data: '2' }, { ttl: 10 });
 
       // Wait for first entry to expire
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const deletedCount = await aiCacheService.clearExpired();
 

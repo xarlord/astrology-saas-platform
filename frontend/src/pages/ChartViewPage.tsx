@@ -122,9 +122,7 @@ export default function ChartViewPage() {
               <h3 className="text-xl font-bold mb-4">Chart Wheel</h3>
               <div className="aspect-square flex items-center justify-center">
                 {chartData.calculated_data ? (
-                  <ChartWheel
-                    data={toWheelData(chartData.calculated_data)}
-                  />
+                  <ChartWheel data={toWheelData(chartData.calculated_data)} />
                 ) : (
                   <p className="text-gray-500">Chart wheel visualization</p>
                 )}

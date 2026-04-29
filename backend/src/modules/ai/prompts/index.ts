@@ -33,7 +33,7 @@ export class PromptBuilder {
     let prompt = template.userPrompt;
 
     // Replace parameters in the prompt
-    template.parameters.forEach(param => {
+    template.parameters.forEach((param) => {
       const placeholder = `{${param}}`;
       const value = params[param] || '';
       prompt = prompt.replace(new RegExp(placeholder, 'g'), value);

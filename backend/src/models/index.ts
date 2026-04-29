@@ -20,20 +20,18 @@ export * from '../modules/auth/models/refreshToken.model';
 export * from '../modules/calendar/models/calendar.model';
 
 // CalendarEvent — skip Planet, MoonPhase, PlanetPosition to avoid conflicts
-export {
-    type CalendarEvent,
-} from '../modules/calendar/models/calendarEvent.model';
+export { type CalendarEvent } from '../modules/calendar/models/calendarEvent.model';
 
 // Lunar model — skip NatalChart, ZodiacSign, MoonPhase to avoid conflicts
 export {
-    type LunarReturnChart,
-    type LunarAspect,
-    type LunarMonthForecast,
-    type KeyDate,
-    type MonthlyPrediction,
-    type MonthlyRitual,
-    type UserLunarReturn,
-    type CurrentLunarReturn,
+  type LunarReturnChart,
+  type LunarAspect,
+  type LunarMonthForecast,
+  type KeyDate,
+  type MonthlyPrediction,
+  type MonthlyRitual,
+  type UserLunarReturn,
+  type CurrentLunarReturn,
 } from '../modules/lunar/models/lunarReturn.model';
 
 export * from '../modules/notifications/models/pushSubscription.model';

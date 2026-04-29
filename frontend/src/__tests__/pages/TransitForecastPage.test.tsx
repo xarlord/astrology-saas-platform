@@ -190,7 +190,7 @@ describe('TransitForecastPage', () => {
     mockGetTodayTransits.mockResolvedValue({
       transits: [],
       energyLevel: 5,
-      dateRange: { start: '2026-04-06', end: '2026-04-06' }
+      dateRange: { start: '2026-04-06', end: '2026-04-06' },
     });
   });
 

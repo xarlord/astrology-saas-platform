@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import '@testing-library/jest-dom/vitest';
+import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { SolarReturnDashboard } from '../../components/SolarReturnDashboard';
 import { SolarReturnChart } from '../../components/SolarReturnChart';
@@ -314,9 +314,7 @@ describe('SolarReturnChart', () => {
     render(<SolarReturnChart chartData={mockChartData} year={2026} />);
 
     const buttons = screen.getAllByRole('button');
-    const zoomButtons = buttons.filter((btn) =>
-      btn.querySelector('.material-symbols-outlined'),
-    );
+    const zoomButtons = buttons.filter((btn) => btn.querySelector('.material-symbols-outlined'));
 
     expect(zoomButtons.length).toBeGreaterThan(0);
 

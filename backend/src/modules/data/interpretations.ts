@@ -81,14 +81,22 @@ export function getPlanetInSignInterpretation(planet: string, sign: string): str
     },
   };
 
-  return interpretations[planet]?.[sign] || `${planet.charAt(0).toUpperCase() + planet.slice(1)} in ${sign.charAt(0).toUpperCase() + sign.slice(1)}`;
+  return (
+    interpretations[planet]?.[sign] ||
+    `${planet.charAt(0).toUpperCase() + planet.slice(1)} in ${sign.charAt(0).toUpperCase() + sign.slice(1)}`
+  );
 }
 
 // ============================================================================
 // ASPECT INTERPRETATIONS
 // ============================================================================
 
-export function getAspectInterpretation(aspect: { type: string; planet1: string; planet2: string }): string {  const { type, planet1, planet2 } = aspect;
+export function getAspectInterpretation(aspect: {
+  type: string;
+  planet1: string;
+  planet2: string;
+}): string {
+  const { type, planet1, planet2 } = aspect;
 
   const aspectMeanings: Record<string, string> = {
     conjunction: 'combines energies',
@@ -132,7 +140,12 @@ export function getHouseInterpretation(houseNumber: number, sign: string): strin
 // TRANSIT INTERPRETATIONS
 // ============================================================================
 
-export function getTransitInterpretation(transit: { planet1: string; planet2: string; type: string }): string {  const { planet1, planet2, type } = transit;
+export function getTransitInterpretation(transit: {
+  planet1: string;
+  planet2: string;
+  type: string;
+}): string {
+  const { planet1, planet2, type } = transit;
 
   return `Transiting ${planet1} ${type} your natal ${planet2}. This energy influences your current experiences and personal growth.`;
 }
@@ -175,12 +188,7 @@ export function generatePersonalityAnalysis(data: {
       'Intellectual curiosity',
       'Adaptability',
     ],
-    challenges: [
-      'Impatience',
-      'Stubbornness',
-      'Overthinking',
-      'Sensitivity',
-    ],
+    challenges: ['Impatience', 'Stubbornness', 'Overthinking', 'Sensitivity'],
     advice: [
       'Embrace your unique strengths',
       'Work on areas that challenge you',
@@ -195,7 +203,20 @@ export function generatePersonalityAnalysis(data: {
 // ============================================================================
 
 function getZodiacSign(longitude: number): string {
-  const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+  const signs = [
+    'aries',
+    'taurus',
+    'gemini',
+    'cancer',
+    'leo',
+    'virgo',
+    'libra',
+    'scorpio',
+    'sagittarius',
+    'capricorn',
+    'aquarius',
+    'pisces',
+  ];
   const index = Math.floor(longitude / 30) % 12;
   return signs[index];
 }

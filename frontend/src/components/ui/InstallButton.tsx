@@ -18,7 +18,9 @@ const InstallButton: React.FC<InstallButtonProps> = ({ variant = 'default', clas
 
   if (pwaInstall.isInstalled || !pwaInstall.isInstallable) return null;
 
-  const handleClick = () => { void pwaInstall.install(); };
+  const handleClick = () => {
+    void pwaInstall.install();
+  };
 
   if (variant === 'compact') {
     return (

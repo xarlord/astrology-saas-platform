@@ -14,6 +14,11 @@ jest.mock('../../utils/logger', () => ({
   },
 }));
 
+// Mock the security logger
+jest.mock('../../utils/securityLogger', () => ({
+  logCSRFViolation: jest.fn(),
+}));
+
 describe('CSRF Middleware', () => {
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
@@ -98,7 +103,7 @@ describe('CSRF Middleware', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: false,
-        })
+        }),
       );
       expect(mockNext).not.toHaveBeenCalled();
     });

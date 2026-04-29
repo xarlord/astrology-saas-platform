@@ -7,7 +7,14 @@
 
 import { Job } from 'bullmq';
 import logger from '../../../utils/logger';
-import { JobType, JobPayload, JobResult, DailyBriefingPayload, MonthlyReportPayload, EmailDigestPayload } from '../job.types';
+import {
+  JobType,
+  JobPayload,
+  JobResult,
+  DailyBriefingPayload,
+  MonthlyReportPayload,
+  EmailDigestPayload,
+} from '../job.types';
 import { registerProcessor } from '../queue.service';
 import {
   generateBriefing,
@@ -33,7 +40,9 @@ function timed<T>(fn: () => Promise<T>): Promise<{ result: T; durationMs: number
 async function processDailyBriefing(job: Job<DailyBriefingPayload>): Promise<JobResult> {
   const { result, durationMs } = await timed(async () => {
     const { userId, date } = job.data;
-    logger.info(`[Processor:daily-briefing] Processing for user ${userId}, date ${date || 'today'}`);
+    logger.info(
+      `[Processor:daily-briefing] Processing for user ${userId}, date ${date || 'today'}`,
+    );
 
     if (!userId) {
       throw new Error('Missing userId in daily briefing payload');
@@ -124,8 +133,17 @@ async function processEmailDigest(job: Job<EmailDigestPayload>): Promise<JobResu
  * Call this during app startup.
  */
 export function registerAllProcessors(): void {
-  registerProcessor(JobType.DAILY_BRIEFING, processDailyBriefing as (job: Job<JobPayload>) => Promise<JobResult>);
-  registerProcessor(JobType.MONTHLY_REPORT, processMonthlyReport as (job: Job<JobPayload>) => Promise<JobResult>);
-  registerProcessor(JobType.EMAIL_DIGEST, processEmailDigest as (job: Job<JobPayload>) => Promise<JobResult>);
+  registerProcessor(
+    JobType.DAILY_BRIEFING,
+    processDailyBriefing as (job: Job<JobPayload>) => Promise<JobResult>,
+  );
+  registerProcessor(
+    JobType.MONTHLY_REPORT,
+    processMonthlyReport as (job: Job<JobPayload>) => Promise<JobResult>,
+  );
+  registerProcessor(
+    JobType.EMAIL_DIGEST,
+    processEmailDigest as (job: Job<JobPayload>) => Promise<JobResult>,
+  );
   logger.info('[Processors] All job processors registered');
 }

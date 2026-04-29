@@ -120,7 +120,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       const data = (await response.json()) as { results: Location[] };
 
       setLocations(data.results);
-    } catch (err) {
+    } catch {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');
     } finally {
@@ -185,7 +185,9 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       {/* Info Banner */}
       <div className="bg-emerald-50 border border-emerald-200 rounded-lg py-4 px-5 flex gap-3 items-start mb-8">
-        <span className="material-symbols-outlined text-[20px] text-emerald-700 shrink-0 mt-0.5">info</span>
+        <span className="material-symbols-outlined text-[20px] text-emerald-700 shrink-0 mt-0.5">
+          info
+        </span>
         <p className="text-emerald-700 text-[0.925rem] leading-relaxed m-0">
           Relocating for your solar return can shift the house placements and themes for your
           birthday year. Choose a location to see how your solar return changes.
@@ -199,7 +201,9 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         </h3>
 
         <div className="flex gap-3 items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm">
-          <span className="material-symbols-outlined text-[20px] text-gray-400 shrink-0">search</span>
+          <span className="material-symbols-outlined text-[20px] text-gray-400 shrink-0">
+            search
+          </span>
           <input
             type="text"
             placeholder="Search for a city..."
@@ -248,7 +252,9 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               }}
               disabled={loading}
             >
-              <span className="material-symbols-outlined text-[20px] text-indigo-500 shrink-0">location_on</span>
+              <span className="material-symbols-outlined text-[20px] text-indigo-500 shrink-0">
+                location_on
+              </span>
               <span className="text-sm text-gray-800 dark:text-gray-200">{location.name}</span>
             </button>
           ))}

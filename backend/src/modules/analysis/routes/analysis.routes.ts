@@ -38,9 +38,12 @@ router.use(authenticate);
  * @desc    Get personality analysis for a chart
  * @access  Private
  */
-router.get('/:chartId', asyncHandler(async (req, res) => {
-  await AnalysisController.getPersonalityAnalysis(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:chartId',
+  asyncHandler(async (req, res) => {
+    await AnalysisController.getPersonalityAnalysis(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -68,9 +71,12 @@ router.get('/:chartId', asyncHandler(async (req, res) => {
  * @desc    Get aspect analysis for a chart
  * @access  Private
  */
-router.get('/:chartId/aspects', asyncHandler(async (req, res) => {
-  await AnalysisController.getAspectAnalysis(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:chartId/aspects',
+  asyncHandler(async (req, res) => {
+    await AnalysisController.getAspectAnalysis(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -98,9 +104,12 @@ router.get('/:chartId/aspects', asyncHandler(async (req, res) => {
  * @desc    Get aspect patterns for a chart
  * @access  Private
  */
-router.get('/:chartId/patterns', asyncHandler(async (req, res) => {
-  await AnalysisController.getAspectPatterns(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:chartId/patterns',
+  asyncHandler(async (req, res) => {
+    await AnalysisController.getAspectPatterns(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -128,9 +137,12 @@ router.get('/:chartId/patterns', asyncHandler(async (req, res) => {
  * @desc    Get planetary positions analysis
  * @access  Private
  */
-router.get('/:chartId/planets', asyncHandler(async (req, res) => {
-  await AnalysisController.getPlanetsInSigns(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:chartId/planets',
+  asyncHandler(async (req, res) => {
+    await AnalysisController.getPlanetsInSigns(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -158,8 +170,11 @@ router.get('/:chartId/planets', asyncHandler(async (req, res) => {
  * @desc    Get houses analysis
  * @access  Private
  */
-router.get('/:chartId/houses', asyncHandler(async (req, res) => {
-  await AnalysisController.getHousesAnalysis(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:chartId/houses',
+  asyncHandler(async (req, res) => {
+    await AnalysisController.getHousesAnalysis(req as AuthenticatedRequest, res);
+  }),
+);
 
 export { router };

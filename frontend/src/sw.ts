@@ -115,7 +115,7 @@ registerRoute(navigationRoute);
 
 // Skip waiting on message
 (self as any).addEventListener('message', (event: any) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+  if (event.data?.type === 'SKIP_WAITING') {
     (self as any).skipWaiting();
   }
 });
@@ -128,11 +128,11 @@ registerRoute(navigationRoute);
 
   const data = event.data.json();
   const options: any = {
-    body: data.body || '',
+    body: data.body ?? '',
     icon: '/pwa-192x192.png',
     badge: '/pwa-192x192.png',
     data: {
-      url: data.url || '/',
+      url: data.url ?? '/',
     },
     actions: [
       {
@@ -147,7 +147,7 @@ registerRoute(navigationRoute);
   };
 
   event.waitUntil(
-    (self as any).registration.showNotification(data.title || 'Notification', options),
+    (self as any).registration.showNotification(data.title ?? 'Notification', options),
   );
 });
 
@@ -156,7 +156,7 @@ registerRoute(navigationRoute);
   event.notification.close();
 
   if (event.action === 'view') {
-    event.waitUntil((self as any).clients.openWindow(event.notification.data?.url || '/'));
+    event.waitUntil((self as any).clients.openWindow(event.notification.data?.url ?? '/'));
   }
 });
 
@@ -173,7 +173,7 @@ registerRoute(navigationRoute);
           return Promise.resolve();
         } catch (error) {
           console.error('Sync failed:', error);
-          return Promise.reject(error);
+          return Promise.reject(error instanceof Error ? error : new Error(String(error)));
         }
       })(),
     );

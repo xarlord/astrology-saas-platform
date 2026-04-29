@@ -10,7 +10,12 @@ import request from 'supertest';
 import bcrypt from 'bcryptjs';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 // Import app
 import app from '../../server';
@@ -57,9 +62,7 @@ describe('User Routes Integration Tests', () => {
 
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
-      const response = await request(app)
-        .get('/api/users/profile')
-        .expect(401);
+      const response = await request(app).get('/api/users/profile').expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });
@@ -126,9 +129,7 @@ describe('User Routes Integration Tests', () => {
 
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
-      const response = await request(app)
-        .delete('/api/users/account')
-        .expect(401);
+      const response = await request(app).delete('/api/users/account').expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });

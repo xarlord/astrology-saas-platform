@@ -4,7 +4,11 @@
  */
 
 import knex from '../../config/database';
-import ChartModel, { Chart, CreateChartData, UpdateChartData } from '../../modules/charts/models/chart.model';
+import ChartModel, {
+  Chart,
+  CreateChartData,
+  UpdateChartData,
+} from '../../modules/charts/models/chart.model';
 
 // Mock database
 jest.mock('../../config/database');
@@ -28,7 +32,7 @@ describe('Chart Model', () => {
         birth_time_unknown: false,
         birth_place_name: 'New York, NY',
         birth_latitude: 40.7128,
-        birth_longitude: -74.0060,
+        birth_longitude: -74.006,
         birth_timezone: 'America/New_York',
         house_system: 'placidus',
         zodiac: 'tropical',
@@ -78,7 +82,7 @@ describe('Chart Model', () => {
         birth_time_unknown: false,
         birth_place_name: 'New York, NY',
         birth_latitude: 40.7128,
-        birth_longitude: -74.0060,
+        birth_longitude: -74.006,
         birth_timezone: 'America/New_York',
         house_system: 'placidus',
         zodiac: 'tropical',
@@ -200,7 +204,7 @@ describe('Chart Model', () => {
         birth_time: '14:30:00',
         birth_place_name: 'New York, NY',
         birth_latitude: 40.7128,
-        birth_longitude: -74.0060,
+        birth_longitude: -74.006,
         birth_timezone: 'America/New_York',
       };
 
@@ -230,7 +234,7 @@ describe('Chart Model', () => {
           house_system: 'placidus',
           zodiac: 'tropical',
           birth_time_unknown: false,
-        })
+        }),
       );
       expect(result).toEqual(createdChart);
     });
@@ -270,7 +274,7 @@ describe('Chart Model', () => {
       expect(mockQueryBuilder.insert).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'synastry',
-        })
+        }),
       );
     });
   });
@@ -316,7 +320,7 @@ describe('Chart Model', () => {
           name: 'Updated Chart Name',
           house_system: 'whole_sign',
           updated_at: expect.any(Date),
-        })
+        }),
       );
       expect(result).toEqual(updatedChart);
     });

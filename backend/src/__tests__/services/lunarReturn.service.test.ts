@@ -226,14 +226,20 @@ describe('Lunar Return Service', () => {
 
     test('should give higher intensity for new and full moon phases', () => {
       // Use known new moon date: 2026-02-17T12:00:00Z
-      const newMoonChart = calculateLunarReturnChart(mockNatalChart, new Date('2026-02-17T12:00:00Z'));
+      const newMoonChart = calculateLunarReturnChart(
+        mockNatalChart,
+        new Date('2026-02-17T12:00:00Z'),
+      );
 
       // New moon should have higher intensity (base + 1)
       expect(newMoonChart.intensity).toBeGreaterThanOrEqual(1);
       expect(newMoonChart.intensity).toBeLessThanOrEqual(10);
 
       // Use known full moon date: 2026-03-03T12:00:00Z
-      const fullMoonChart = calculateLunarReturnChart(mockNatalChart, new Date('2026-03-03T12:00:00Z'));
+      const fullMoonChart = calculateLunarReturnChart(
+        mockNatalChart,
+        new Date('2026-03-03T12:00:00Z'),
+      );
 
       // Full moon should have higher intensity (base + 1)
       expect(fullMoonChart.intensity).toBeGreaterThanOrEqual(1);
@@ -252,8 +258,8 @@ describe('Lunar Return Service', () => {
       expect(chart.intensity).toBeLessThanOrEqual(10);
 
       // If there are opposition or square aspects, intensity should be affected
-      const hasOpposition = chart.aspects.some(a => a.type === 'opposition');
-      const hasSquare = chart.aspects.some(a => a.type === 'square');
+      const hasOpposition = chart.aspects.some((a) => a.type === 'opposition');
+      const hasSquare = chart.aspects.some((a) => a.type === 'square');
 
       if (hasOpposition || hasSquare) {
         // Intensity should be at least base score
@@ -425,20 +431,28 @@ describe('Lunar Return Service', () => {
 
     test('should include moon phase specific journal prompts', () => {
       // Test with new moon date
-      const newMoonForecast = generateLunarMonthForecast('user_1', mockNatalChart, new Date('2026-02-17T12:00:00Z'));
+      const newMoonForecast = generateLunarMonthForecast(
+        'user_1',
+        mockNatalChart,
+        new Date('2026-02-17T12:00:00Z'),
+      );
       expect(newMoonForecast.journalPrompts.length).toBeGreaterThan(0);
 
       // Test with full moon date
-      const fullMoonForecast = generateLunarMonthForecast('user_1', mockNatalChart, new Date('2026-03-03T12:00:00Z'));
+      const fullMoonForecast = generateLunarMonthForecast(
+        'user_1',
+        mockNatalChart,
+        new Date('2026-03-03T12:00:00Z'),
+      );
       expect(fullMoonForecast.journalPrompts.length).toBeGreaterThan(0);
 
       // All prompts should be non-empty strings
-      newMoonForecast.journalPrompts.forEach(p => {
+      newMoonForecast.journalPrompts.forEach((p) => {
         expect(typeof p).toBe('string');
         expect(p.length).toBeGreaterThan(0);
       });
 
-      fullMoonForecast.journalPrompts.forEach(p => {
+      fullMoonForecast.journalPrompts.forEach((p) => {
         expect(typeof p).toBe('string');
         expect(p.length).toBeGreaterThan(0);
       });
@@ -446,20 +460,28 @@ describe('Lunar Return Service', () => {
 
     test('should include moon phase specific action advice', () => {
       // Test with new moon date
-      const newMoonForecast = generateLunarMonthForecast('user_1', mockNatalChart, new Date('2026-02-17T12:00:00Z'));
+      const newMoonForecast = generateLunarMonthForecast(
+        'user_1',
+        mockNatalChart,
+        new Date('2026-02-17T12:00:00Z'),
+      );
       expect(newMoonForecast.actionAdvice.length).toBeGreaterThan(0);
 
       // Test with full moon date
-      const fullMoonForecast = generateLunarMonthForecast('user_1', mockNatalChart, new Date('2026-03-03T12:00:00Z'));
+      const fullMoonForecast = generateLunarMonthForecast(
+        'user_1',
+        mockNatalChart,
+        new Date('2026-03-03T12:00:00Z'),
+      );
       expect(fullMoonForecast.actionAdvice.length).toBeGreaterThan(0);
 
       // All advice should be non-empty strings
-      newMoonForecast.actionAdvice.forEach(a => {
+      newMoonForecast.actionAdvice.forEach((a) => {
         expect(typeof a).toBe('string');
         expect(a.length).toBeGreaterThan(0);
       });
 
-      fullMoonForecast.actionAdvice.forEach(a => {
+      fullMoonForecast.actionAdvice.forEach((a) => {
         expect(typeof a).toBe('string');
         expect(a.length).toBeGreaterThan(0);
       });
@@ -467,10 +489,14 @@ describe('Lunar Return Service', () => {
 
     test('should add spirituality prediction for full moon phase', () => {
       // Use known full moon date
-      const fullMoonForecast = generateLunarMonthForecast('user_1', mockNatalChart, new Date('2026-03-03T12:00:00Z'));
+      const fullMoonForecast = generateLunarMonthForecast(
+        'user_1',
+        mockNatalChart,
+        new Date('2026-03-03T12:00:00Z'),
+      );
 
       // Should include spirituality prediction for full moon
-      expect(fullMoonForecast.predictions.some(p => p.category === 'spirituality')).toBe(true);
+      expect(fullMoonForecast.predictions.some((p) => p.category === 'spirituality')).toBe(true);
     });
   });
 
@@ -489,7 +515,7 @@ describe('Lunar Return Service', () => {
       mockKnex.mockImplementation((table: string) => {
         if (table === 'charts') {
           return {
-            where: jest.fn(() => ({ first: mockFirst }))
+            where: jest.fn(() => ({ first: mockFirst })),
           };
         }
         return { where: jest.fn().mockReturnThis() };

@@ -5,7 +5,14 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { swissEphemeris } from '../../modules/shared/services/swissEphemeris.service';
-import { toJulianDay, normalizeDegree, angularDistance, assertPlanetPosition, assertAspect, assertHouseCusp } from './utils';
+import {
+  toJulianDay,
+  normalizeDegree,
+  angularDistance,
+  assertPlanetPosition,
+  assertAspect,
+  assertHouseCusp,
+} from './utils';
 
 describe('Swiss Ephemeris Service', () => {
   describe('Julian Day Conversion', () => {
@@ -73,7 +80,7 @@ describe('Swiss Ephemeris Service', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'placidus',
       };
 
@@ -91,7 +98,7 @@ describe('Swiss Ephemeris Service', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'whole-sign',
       };
 
@@ -106,7 +113,7 @@ describe('Swiss Ephemeris Service', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'placidus',
         zodiacType: 'sidereal',
       };
@@ -124,7 +131,7 @@ describe('Swiss Ephemeris Service', () => {
       const transits = swissEphemeris.calculateTransits({
         transitDate,
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       });
 
       expect(transits).toBeDefined();
@@ -137,7 +144,7 @@ describe('Swiss Ephemeris Service', () => {
       const transits = swissEphemeris.calculateTransits({
         transitDate,
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       });
 
       expect(transits.transitPlanets).toBeDefined();
@@ -151,7 +158,7 @@ describe('Swiss Ephemeris Service', () => {
       const transits = swissEphemeris.calculateTransits({
         transitDate,
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       });
 
       expect(transits.aspects).toBeDefined();
@@ -164,7 +171,7 @@ describe('Swiss Ephemeris Service', () => {
       const chart1 = {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
       };
 
       const chart2 = {
@@ -188,7 +195,7 @@ describe('Swiss Ephemeris Service', () => {
         birthDate: new Date(Date.UTC(1990, 5, 15, 12, 0, 0)),
         birthTime: '12:00',
         birthLatitude: 40.7128,
-        birthLongitude: -74.0060,
+        birthLongitude: -74.006,
         targetMonth: new Date(Date.UTC(2024, 0, 15, 10, 30, 0)),
       });
 

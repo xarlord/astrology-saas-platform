@@ -308,9 +308,7 @@ export const NatalChartDetailPage: React.FC = () => {
 
     // Additional placements (Venus, Mars, Jupiter, Saturn)
     const additionalPlacements = calculatedData.planets
-      ?.filter((p: APIPlanetPosition) =>
-        ['Venus', 'Mars', 'Jupiter', 'Saturn'].includes(p.planet),
-      )
+      ?.filter((p: APIPlanetPosition) => ['Venus', 'Mars', 'Jupiter', 'Saturn'].includes(p.planet))
       .map((p: APIPlanetPosition) => ({
         planet: p.planet,
         sign: p.sign,
@@ -345,10 +343,10 @@ export const NatalChartDetailPage: React.FC = () => {
     const insightQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
     return {
-      name: currentChart?.name || 'Birth Chart',
-      sunSign: sun?.sign || 'Unknown',
-      moonSign: moon?.sign || 'Unknown',
-      risingSign: rising?.sign || 'Unknown',
+      name: currentChart?.name ?? 'Birth Chart',
+      sunSign: sun?.sign ?? 'Unknown',
+      moonSign: moon?.sign ?? 'Unknown',
+      risingSign: rising?.sign ?? 'Unknown',
       sunDegree: sun?.degree,
       moonDegree: moon?.degree,
       risingDegree,
@@ -380,7 +378,7 @@ export const NatalChartDetailPage: React.FC = () => {
     setShareCardModalOpen(true);
   }, []);
 
-  const handleShareUrl = useCallback(async () => {
+  const _handleShareUrl = useCallback(async () => {
     if (navigator.share && currentChart) {
       try {
         await navigator.share({

@@ -6,17 +6,23 @@ import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
 import db from '../../../db';
 import UserModel from '../../users/models/user.model';
-import { generateToken, generateRefreshToken, AuthenticatedRequest } from '../../../middleware/auth';
+import {
+  generateToken,
+  generateRefreshToken,
+  AuthenticatedRequest,
+} from '../../../middleware/auth';
 import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
 import * as RefreshTokenModel from '../models/refreshToken.model';
 import * as PasswordResetService from '../services/passwordReset.service';
 import { sendWelcomeEmail } from '../../../services/email.service';
+import { logAuthFailure } from '../../../utils/securityLogger';
 
 /**
  * Register new user
  */
 export async function register(req: Request, res: Response): Promise<void> {
-  const { name, email, password } = req.body;
+  // Use validated data if available (from validation middleware), otherwise fall back to body
+  const { name, email, password } = (req as any).validated || req.body;
 
   // Check if user already exists
   const existingUser = await UserModel.findByEmail(email);
@@ -60,7 +66,7 @@ export async function register(req: Request, res: Response): Promise<void> {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-    path: '/api/v1/auth/refresh' // Restrict to refresh endpoint
+    path: '/api/v1/auth/refresh', // Restrict to refresh endpoint
   });
 
   res.status(201).json({
@@ -76,17 +82,20 @@ export async function register(req: Request, res: Response): Promise<void> {
  * Login user
  */
 export async function login(req: Request, res: Response): Promise<void> {
-  const { email, password } = req.body;
+  // Use validated data if available (from validation middleware), otherwise fall back to body
+  const { email, password } = (req as any).validated || req.body;
 
   // Find user by email
   const user = await UserModel.findByEmail(email);
   if (!user) {
+    logAuthFailure('User not found', req as Request, { email });
     throw new AppError('Invalid email or password', 401);
   }
 
   // Check password
   const isPasswordValid = await comparePassword(password, user.password_hash);
   if (!isPasswordValid) {
+    logAuthFailure('Invalid password', req as Request, { email, userId: user.id });
     throw new AppError('Invalid email or password', 401);
   }
 
@@ -113,7 +122,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-    path: '/api/v1/auth/refresh' // Restrict to refresh endpoint
+    path: '/api/v1/auth/refresh', // Restrict to refresh endpoint
   });
 
   res.status(200).json({
@@ -149,7 +158,7 @@ export async function getProfile(req: AuthenticatedRequest, res: Response): Prom
 export async function updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const { name, avatar_url, timezone } = req.body;
+  const { name, avatar_url, timezone } = (req as any).validated || req.body;
 
   const user = await UserModel.update(userId, {
     name,
@@ -173,7 +182,7 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
 export async function updatePreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const preferences = req.body;
+  const preferences = (req as any).validated || req.body;
 
   const user = await UserModel.updatePreferences(userId, preferences);
 
@@ -202,7 +211,7 @@ export async function logout(req: Request, res: Response): Promise<void> {
 
   // Clear the httpOnly cookie
   res.clearCookie('refreshToken', {
-    path: '/api/v1/auth/refresh'
+    path: '/api/v1/auth/refresh',
   });
 
   res.status(200).json({
@@ -283,7 +292,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-    path: '/api/v1/auth/refresh' // Restrict to refresh endpoint
+    path: '/api/v1/auth/refresh', // Restrict to refresh endpoint
   });
 
   res.status(200).json({
@@ -299,7 +308,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
  * Always returns success to prevent email enumeration
  */
 export async function forgotPassword(req: Request, res: Response): Promise<void> {
-  const { email } = req.body;
+  const { email } = (req as any).validated || req.body;
 
   await PasswordResetService.requestPasswordReset(email);
 
@@ -313,7 +322,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
  * Reset password using a valid token
  */
 export async function resetPassword(req: Request, res: Response): Promise<void> {
-  const { token, password } = req.body;
+  const { token, password } = (req as any).validated || req.body;
 
   await PasswordResetService.resetPassword(token, password);
 

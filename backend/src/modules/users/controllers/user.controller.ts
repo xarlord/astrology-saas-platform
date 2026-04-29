@@ -31,7 +31,15 @@ export async function getCurrentUser(req: AuthenticatedRequest, res: Response): 
  */
 export async function updateCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
-  const { name, avatar_url, timezone } = req.body;
+
+  // Use validated data from request middleware
+  const validatedData = req.validated as {
+    name?: string;
+    avatar_url?: string;
+    timezone?: string;
+  };
+
+  const { name, avatar_url, timezone } = validatedData;
 
   const user = await UserModel.update(userId, {
     name,
@@ -86,9 +94,14 @@ export async function getUserPreferences(req: AuthenticatedRequest, res: Respons
 /**
  * Update user preferences
  */
-export async function updateUserPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+export async function updateUserPreferences(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
   const userId = req.user.id;
-  const preferences = req.body;
+
+  // Use validated data from request middleware
+  const preferences = req.validated as Record<string, unknown>;
 
   const user = await UserModel.updatePreferences(userId, preferences);
 
@@ -128,8 +141,8 @@ export async function getEmailPreferences(req: AuthenticatedRequest, res: Respon
     throw new AppError('User not found', 404);
   }
 
-  const emailPrefs: EmailPreferences =
-    (user.preferences?.emailNotifications as EmailPreferences) ?? { ...DEFAULT_EMAIL_PREFS };
+  const emailPrefs: EmailPreferences = (user.preferences
+    ?.emailNotifications as EmailPreferences) ?? { ...DEFAULT_EMAIL_PREFS };
 
   res.status(200).json({
     success: true,
@@ -140,13 +153,24 @@ export async function getEmailPreferences(req: AuthenticatedRequest, res: Respon
 /**
  * Update email notification preferences
  */
-export async function updateEmailPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+export async function updateEmailPreferences(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
   const userId = req.user.id;
-  const { marketing, transactional } = req.body;
+
+  // Use validated data from request middleware
+  const validatedData = req.validated as {
+    marketing?: boolean;
+    transactional?: boolean;
+  };
+
+  const { marketing, transactional } = validatedData;
 
   const emailPrefs: EmailPreferences = {
     marketing: typeof marketing === 'boolean' ? marketing : DEFAULT_EMAIL_PREFS.marketing,
-    transactional: typeof transactional === 'boolean' ? transactional : DEFAULT_EMAIL_PREFS.transactional,
+    transactional:
+      typeof transactional === 'boolean' ? transactional : DEFAULT_EMAIL_PREFS.transactional,
   };
 
   const user = await UserModel.updatePreferences(userId, {

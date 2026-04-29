@@ -30,7 +30,9 @@ import {
 // `var` is required because jest.mock factory functions are hoisted above
 // `let`/`const` declarations, causing TDZ errors.  `var` is hoisted and
 // initialised to undefined, so the factory can safely assign to it.
+// eslint-disable-next-line no-var
 var mockKnexChain: any;
+// eslint-disable-next-line no-var
 var mockKnex: jest.Mock;
 
 jest.mock('../../config/database', () => {
@@ -230,11 +232,7 @@ describe('Synastry Controller', () => {
       // When req.user is undefined this throws a TypeError caught by next().
       mockRequest.user = undefined;
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(TypeError));
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -243,11 +241,7 @@ describe('Synastry Controller', () => {
     it('should return 401 when user exists but id is missing', async () => {
       mockRequest.user = { id: undefined as any, email: 'test@example.com' };
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -259,11 +253,7 @@ describe('Synastry Controller', () => {
     it('should return 400 when chart1Id is missing', async () => {
       mockRequest.body = { chart2Id: 'chart-2' };
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -275,11 +265,7 @@ describe('Synastry Controller', () => {
     it('should return 400 when chart2Id is missing', async () => {
       mockRequest.body = { chart1Id: 'chart-1' };
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -291,11 +277,7 @@ describe('Synastry Controller', () => {
     it('should return 400 when chart1Id equals chart2Id', async () => {
       mockRequest.body = { chart1Id: 'chart-1', chart2Id: 'chart-1' };
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -312,11 +294,7 @@ describe('Synastry Controller', () => {
       mockKnexChain.first.mockResolvedValueOnce(null);
       mockKnexChain.first.mockResolvedValueOnce(makeChartRow({ id: 'chart-2' }));
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -351,11 +329,7 @@ describe('Synastry Controller', () => {
 
       (calculateSynastryChart as jest.Mock).mockReturnValue(sampleSynastryResult);
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(calculateSynastryChart).toHaveBeenCalled();
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -381,11 +355,7 @@ describe('Synastry Controller', () => {
 
       (calculateSynastryChart as jest.Mock).mockReturnValue(sampleSynastryResult);
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       // insert should NOT have been called for synastry_charts
       expect(mockKnexChain.insert).not.toHaveBeenCalled();
@@ -403,11 +373,7 @@ describe('Synastry Controller', () => {
       const error = new Error('DB connection lost');
       mockKnexChain.first.mockRejectedValueOnce(error);
 
-      await compareCharts(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(error);
     });
@@ -420,11 +386,7 @@ describe('Synastry Controller', () => {
     it('should call next with TypeError when user is undefined', async () => {
       mockRequest.user = undefined;
 
-      await getCompatibility(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(TypeError));
     });
@@ -432,11 +394,7 @@ describe('Synastry Controller', () => {
     it('should return 401 when user exists but id is missing', async () => {
       mockRequest.user = { id: undefined as any, email: 'test@example.com' };
 
-      await getCompatibility(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -448,11 +406,7 @@ describe('Synastry Controller', () => {
     it('should return 400 when chart IDs are missing', async () => {
       mockRequest.body = {};
 
-      await getCompatibility(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -467,11 +421,7 @@ describe('Synastry Controller', () => {
       // First chart fetch returns null
       mockKnexChain.first.mockResolvedValueOnce(null);
 
-      await getCompatibility(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -489,19 +439,13 @@ describe('Synastry Controller', () => {
 
       const chartRow1 = makeChartRow({ id: 'chart-1' });
       const chartRow2 = makeChartRow({ id: 'chart-2' });
-      mockKnexChain.first
-        .mockResolvedValueOnce(chartRow1)
-        .mockResolvedValueOnce(chartRow2);
+      mockKnexChain.first.mockResolvedValueOnce(chartRow1).mockResolvedValueOnce(chartRow2);
 
       (calculateCategoryScores as jest.Mock).mockReturnValue(sampleScores);
       (calculateElementalBalance as jest.Mock).mockReturnValue(sampleElementalBalance);
       (calculateCompositeChart as jest.Mock).mockReturnValue(sampleCompositeChart);
 
-      await getCompatibility(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(calculateCompositeChart).toHaveBeenCalled();
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -524,18 +468,12 @@ describe('Synastry Controller', () => {
 
       const chartRow1 = makeChartRow({ id: 'chart-1' });
       const chartRow2 = makeChartRow({ id: 'chart-2' });
-      mockKnexChain.first
-        .mockResolvedValueOnce(chartRow1)
-        .mockResolvedValueOnce(chartRow2);
+      mockKnexChain.first.mockResolvedValueOnce(chartRow1).mockResolvedValueOnce(chartRow2);
 
       (calculateCategoryScores as jest.Mock).mockReturnValue(sampleScores);
       (calculateElementalBalance as jest.Mock).mockReturnValue(sampleElementalBalance);
 
-      await getCompatibility(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(calculateCompositeChart).not.toHaveBeenCalled();
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -560,11 +498,7 @@ describe('Synastry Controller', () => {
     it('should return 401 when no user is authenticated', async () => {
       mockRequest.user = undefined;
 
-      await getSynastryReports(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getSynastryReports(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -603,11 +537,7 @@ describe('Synastry Controller', () => {
       // Terminal method .first() returns a promise
       mockKnexChain.first.mockResolvedValueOnce({ count: 1 });
 
-      await getSynastryReports(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getSynastryReports(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
@@ -644,11 +574,7 @@ describe('Synastry Controller', () => {
       mockKnexChain._setResolveValue([]);
       mockKnexChain.first.mockResolvedValueOnce({ count: 0 });
 
-      await getSynastryReports(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getSynastryReports(mockRequest as any, mockResponse as Response, mockNext);
 
       const callArgs = (mockResponse.json as jest.Mock).mock.calls[0][0];
       expect(callArgs.data.pagination.page).toBe(1);
@@ -665,11 +591,7 @@ describe('Synastry Controller', () => {
       mockRequest.user = undefined;
       mockRequest.params = { id: '1' };
 
-      await getSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -684,11 +606,7 @@ describe('Synastry Controller', () => {
       // knex('synastry_charts').where({id, user_id}).first() => undefined
       mockKnexChain.first.mockResolvedValueOnce(undefined);
 
-      await getSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -733,11 +651,7 @@ describe('Synastry Controller', () => {
       // No terminal method, resolves via thenable
       mockKnexChain._setResolveValue(dbAspects);
 
-      await getSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await getSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockKnex).toHaveBeenCalledWith('synastry_charts');
       expect(mockKnex).toHaveBeenCalledWith('synastry_aspects');
@@ -760,11 +674,7 @@ describe('Synastry Controller', () => {
       mockRequest.user = undefined;
       mockRequest.params = { id: '1' };
 
-      await deleteSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await deleteSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -779,11 +689,7 @@ describe('Synastry Controller', () => {
       // knex('synastry_charts').where({id, user_id}).first() => undefined
       mockKnexChain.first.mockResolvedValueOnce(undefined);
 
-      await deleteSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await deleteSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -800,11 +706,7 @@ describe('Synastry Controller', () => {
       // del() resolves
       mockKnexChain.del.mockResolvedValueOnce(1);
 
-      await deleteSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await deleteSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockKnexChain.del).toHaveBeenCalled();
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -822,11 +724,7 @@ describe('Synastry Controller', () => {
       mockRequest.user = undefined;
       mockRequest.params = { id: '1' };
 
-      await updateSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -842,11 +740,7 @@ describe('Synastry Controller', () => {
       // knex('synastry_charts').where({id, user_id}).first() => undefined
       mockKnexChain.first.mockResolvedValueOnce(undefined);
 
-      await updateSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -864,11 +758,7 @@ describe('Synastry Controller', () => {
       // update resolves
       mockKnexChain.update.mockResolvedValueOnce(1);
 
-      await updateSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockKnexChain.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -889,11 +779,7 @@ describe('Synastry Controller', () => {
       mockKnexChain.first.mockResolvedValueOnce({ id: 42, user_id: 'user-1' });
       mockKnexChain.update.mockResolvedValueOnce(1);
 
-      await updateSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockKnexChain.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -910,11 +796,7 @@ describe('Synastry Controller', () => {
       mockKnexChain.first.mockResolvedValueOnce({ id: 42, user_id: 'user-1' });
       mockKnexChain.update.mockResolvedValueOnce(1);
 
-      await updateSynastryReport(
-        mockRequest as any,
-        mockResponse as Response,
-        mockNext,
-      );
+      await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
       expect(mockKnexChain.update).toHaveBeenCalledWith(
         expect.objectContaining({

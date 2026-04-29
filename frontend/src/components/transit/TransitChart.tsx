@@ -72,7 +72,7 @@ const CustomDot = (
 ) => {
   const { cx, cy, dataPoint, onClick } = props;
 
-  if (!dataPoint || !dataPoint.isMajorEvent) {
+  if (!dataPoint?.isMajorEvent) {
     return <circle cx={cx} cy={cy} r={3} fill="#6b3de1" opacity={0.6} />;
   }
 

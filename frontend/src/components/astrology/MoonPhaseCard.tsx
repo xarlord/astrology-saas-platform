@@ -26,15 +26,41 @@ export interface MoonPhaseCardProps {
   'aria-label'?: string;
 }
 
-const MOON_PHASE_CONFIG: Record<MoonPhaseType, { icon: string; label: string; color: string }> = {
-  new: { icon: '🌑', label: 'New Moon', color: '#1e293b' },
-  'waxing-crescent': { icon: '🌒', label: 'Waxing Crescent', color: '#3b82f6' },
-  'first-quarter': { icon: '🌓', label: 'First Quarter', color: '#60a5fa' },
-  'waxing-gibbous': { icon: '🌔', label: 'Waxing Gibbous', color: '#93c5fd' },
-  full: { icon: '🌕', label: 'Full Moon', color: '#fbbf24' },
-  'waning-gibbous': { icon: '🌖', label: 'Waning Gibbous', color: '#93c5fd' },
-  'last-quarter': { icon: '🌗', label: 'Last Quarter', color: '#60a5fa' },
-  'waning-crescent': { icon: '🌘', label: 'Waning Crescent', color: '#3b82f6' },
+// SVG moon phase icons (replacing emoji for consistent rendering and theming)
+const MoonIcon: React.FC<{ phase: MoonPhaseType; className?: string; color?: string }> = ({
+  phase,
+  className = '',
+  color,
+}) => {
+  const iconColor = color ?? '#fbbf24';
+
+  const svgPaths: Record<MoonPhaseType, JSX.Element> = {
+    new: <circle cx="24" cy="24" r="20" fill="none" stroke={iconColor} strokeWidth="2" />,
+    'waxing-crescent': <path d="M24 4 A20 20 0 0 1 24 44 A14 14 0 0 0 24 4" fill={iconColor} />,
+    'first-quarter': <path d="M24 4 L24 44 A20 20 0 0 1 24 4" fill={iconColor} />,
+    'waxing-gibbous': <path d="M24 4 A20 20 0 0 1 24 44 A6 6 0 0 1 24 4" fill={iconColor} />,
+    full: <circle cx="24" cy="24" r="20" fill={iconColor} />,
+    'waning-gibbous': <path d="M24 4 A20 20 0 0 0 24 44 A6 6 0 0 0 24 4" fill={iconColor} />,
+    'last-quarter': <path d="M24 4 L24 44 A20 20 0 0 0 24 4" fill={iconColor} />,
+    'waning-crescent': <path d="M24 4 A20 20 0 0 0 24 44 A14 14 0 0 1 24 4" fill={iconColor} />,
+  };
+
+  return (
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      {svgPaths[phase]}
+    </svg>
+  );
+};
+
+const MOON_PHASE_CONFIG: Record<MoonPhaseType, { label: string; color: string }> = {
+  new: { label: 'New Moon', color: '#64748b' },
+  'waxing-crescent': { label: 'Waxing Crescent', color: '#60a5fa' },
+  'first-quarter': { label: 'First Quarter', color: '#93c5fd' },
+  'waxing-gibbous': { label: 'Waxing Gibbous', color: '#bfdbfe' },
+  full: { label: 'Full Moon', color: '#fbbf24' },
+  'waning-gibbous': { label: 'Waning Gibbous', color: '#bfdbfe' },
+  'last-quarter': { label: 'Last Quarter', color: '#93c5fd' },
+  'waning-crescent': { label: 'Waning Crescent', color: '#60a5fa' },
 };
 
 const getElementColor = (sign: string): string => {
@@ -78,14 +104,14 @@ const MoonPhaseCard: React.FC<MoonPhaseCardProps> = ({
       role="article"
       aria-label={ariaLabel ?? `${config.label} in ${sign}`}
     >
-      {/* Moon Icon */}
+      {/* Moon Icon - SVG instead of emoji for consistent rendering */}
       <motion.div
         className="relative"
         animate={showAnimation ? { scale: [1, 1.05, 1] } : {}}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="text-6xl md:text-7xl filter drop-shadow-lg" style={{ color: config.color }}>
-          {config.icon}
+        <div className="w-24 h-24 md:w-28 md:h-28 filter drop-shadow-lg">
+          <MoonIcon phase={phase} color={config.color} className="w-full h-full" />
         </div>
 
         {/* Glow effect for full moon */}

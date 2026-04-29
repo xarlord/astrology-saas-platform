@@ -15,7 +15,7 @@ router.get('/', (_req: Request, res: Response) => {
     name: 'MoonCalender API',
     versions: ['v1', 'v2'],
     current: 'v1',
-    documentation: '/api/docs'
+    documentation: '/api/docs',
   });
 });
 

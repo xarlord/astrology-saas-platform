@@ -150,9 +150,7 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({ chartData, insightQuot
         {/* Right Side: Quote/Insight */}
         <div className="flex-1 text-center">
           {/* Quote/Insight */}
-          <p className="mt-4 text-[16px] italic text-slate-400 max-w-[600px]">
-            {insightQuote}
-          </p>
+          <p className="mt-4 text-[16px] italic text-slate-400 max-w-[600px]">{insightQuote}</p>
 
           {/* Footer */}
           <div className="mt-auto flex justify-between items-center pt-6">

@@ -145,7 +145,7 @@ class AIInterpretationService {
             generatedAt: new Date().toISOString(),
           };
         },
-        { ttl: this.CACHE_TTL.NATAL }
+        { ttl: this.CACHE_TTL.NATAL },
       );
 
       return result as InterpretationResult;
@@ -186,7 +186,7 @@ class AIInterpretationService {
             generatedAt: new Date().toISOString(),
           };
         },
-        { ttl: this.CACHE_TTL.TRANSIT }
+        { ttl: this.CACHE_TTL.TRANSIT },
       );
 
       return result as InterpretationResult;
@@ -225,7 +225,7 @@ class AIInterpretationService {
             generatedAt: new Date().toISOString(),
           };
         },
-        { ttl: this.CACHE_TTL.COMPATIBILITY }
+        { ttl: this.CACHE_TTL.COMPATIBILITY },
       );
 
       return result as InterpretationResult;
@@ -268,7 +268,7 @@ class AIInterpretationService {
             generatedAt: new Date().toISOString(),
           };
         },
-        { ttl: this.CACHE_TTL.LUNAR_RETURN }
+        { ttl: this.CACHE_TTL.LUNAR_RETURN },
       );
 
       return result as InterpretationResult;
@@ -315,7 +315,7 @@ class AIInterpretationService {
             generatedAt: new Date().toISOString(),
           };
         },
-        { ttl: this.CACHE_TTL.SOLAR_RETURN }
+        { ttl: this.CACHE_TTL.SOLAR_RETURN },
       );
 
       return result as InterpretationResult;
@@ -343,9 +343,7 @@ class AIInterpretationService {
   > {
     logger.info(`Batch generating ${charts.length} natal interpretations`);
 
-    const results = await Promise.allSettled(
-      charts.map((chart) => this.generateNatal(chart))
-    );
+    const results = await Promise.allSettled(charts.map((chart) => this.generateNatal(chart)));
 
     return results.map((result, index) => ({
       chartIndex: index,
@@ -369,7 +367,7 @@ class AIInterpretationService {
     logger.info(`Batch generating ${transits.length} transit forecasts`);
 
     const results = await Promise.allSettled(
-      transits.map((transit) => this.generateTransit(transit))
+      transits.map((transit) => this.generateTransit(transit)),
     );
 
     return results.map((result, index) => ({

@@ -23,6 +23,12 @@ import {
   getPricing,
   checkUsageLimit,
 } from '../controllers/aiUsage.controller';
+import {
+  checkImageGenStatus,
+  generateImage,
+  generateUncensoredImage,
+  generateVariations,
+} from '../controllers/fluxImageGeneration.controller';
 import { authenticate } from '../../../middleware/auth';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
@@ -60,6 +66,24 @@ const aiRateLimiter = chartCreationRateLimiter;
  */
 router.get('/status', checkStatus);
 
+// Image generation endpoints
+/**
+ * @route   GET /api/v1/ai/images/status
+ * @desc    Get FLUX image generation service status
+ * @access  Public
+ *
+ * @openapi
+ * /api/v1/ai/images/status:
+ *   get:
+ *     tags: [AI - Images]
+ *     summary: Check FLUX image generation status
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: Image generation service status
+ */
+router.get('/images/status', checkImageGenStatus);
+
 // Protected endpoints (authentication required)
 router.use(authenticate);
 
@@ -86,7 +110,12 @@ router.use(authenticate);
  *       429:
  *         description: AI usage limit exceeded
  */
-router.post('/natal', aiRateLimiter, enforceAILimit as RequestHandler, generateNatal as RequestHandler);
+router.post(
+  '/natal',
+  aiRateLimiter,
+  enforceAILimit as RequestHandler,
+  generateNatal as RequestHandler,
+);
 
 /**
  * @route   POST /api/v1/ai/transit
@@ -105,7 +134,12 @@ router.post('/natal', aiRateLimiter, enforceAILimit as RequestHandler, generateN
  *       429:
  *         description: AI usage limit exceeded
  */
-router.post('/transit', aiRateLimiter, enforceAILimit as RequestHandler, generateTransit as RequestHandler);
+router.post(
+  '/transit',
+  aiRateLimiter,
+  enforceAILimit as RequestHandler,
+  generateTransit as RequestHandler,
+);
 
 /**
  * @route   POST /api/v1/ai/compatibility
@@ -124,7 +158,12 @@ router.post('/transit', aiRateLimiter, enforceAILimit as RequestHandler, generat
  *       429:
  *         description: AI usage limit exceeded
  */
-router.post('/compatibility', aiRateLimiter, enforceAILimit as RequestHandler, generateCompatibility as RequestHandler);
+router.post(
+  '/compatibility',
+  aiRateLimiter,
+  enforceAILimit as RequestHandler,
+  generateCompatibility as RequestHandler,
+);
 
 /**
  * @route   POST /api/v1/ai/lunar-return
@@ -143,7 +182,12 @@ router.post('/compatibility', aiRateLimiter, enforceAILimit as RequestHandler, g
  *       429:
  *         description: AI usage limit exceeded
  */
-router.post('/lunar-return', aiRateLimiter, enforceAILimit as RequestHandler, generateLunarReturn as RequestHandler);
+router.post(
+  '/lunar-return',
+  aiRateLimiter,
+  enforceAILimit as RequestHandler,
+  generateLunarReturn as RequestHandler,
+);
 
 /**
  * @route   POST /api/v1/ai/solar-return
@@ -162,7 +206,12 @@ router.post('/lunar-return', aiRateLimiter, enforceAILimit as RequestHandler, ge
  *       429:
  *         description: AI usage limit exceeded
  */
-router.post('/solar-return', aiRateLimiter, enforceAILimit as RequestHandler, generateSolarReturn as RequestHandler);
+router.post(
+  '/solar-return',
+  aiRateLimiter,
+  enforceAILimit as RequestHandler,
+  generateSolarReturn as RequestHandler,
+);
 
 // Usage tracking endpoints
 
@@ -321,5 +370,148 @@ router.get('/usage', getUsageStats);
  *         description: Cache cleared
  */
 router.post('/cache/clear', clearCache);
+
+// Image generation endpoints (authentication required)
+
+/**
+ * @route   POST /api/v1/ai/images/generate
+ * @desc    Generate image with FLUX
+ * @access  Private
+ *
+ * @openapi
+ * /api/v1/ai/images/generate:
+ *   post:
+ *     tags: [AI - Images]
+ *     summary: Generate image with FLUX
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [prompt]
+ *             properties:
+ *               prompt:
+ *                 type: string
+ *                 description: Text prompt for image generation
+ *               negativePrompt:
+ *                 type: string
+ *                 description: Negative prompt
+ *               aspectRatio:
+ *                 type: string
+ *                 enum: ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
+ *                 default: "1:1"
+ *               numOutputs:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 4
+ *                 default: 1
+ *               model:
+ *                 type: string
+ *                 enum: ["dev", "pro", "schnell"]
+ *                 default: "dev"
+ *     responses:
+ *       200:
+ *         description: Image generated successfully
+ *       400:
+ *         description: Invalid request
+ *       429:
+ *         description: Usage limit exceeded
+ */
+router.post('/images/generate', aiRateLimiter, generateImage as RequestHandler);
+
+/**
+ * @route   POST /api/v1/ai/images/uncensored
+ * @desc    Generate uncensored image with FLUX Uncensored LoRA v2
+ * @access  Private
+ *
+ * @openapi
+ * /api/v1/ai/images/uncensored:
+ *   post:
+ *     tags: [AI - Images]
+ *     summary: Generate uncensored image with FLUX Uncensored LoRA v2
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [prompt]
+ *             properties:
+ *               prompt:
+ *                 type: string
+ *                 description: Text prompt for image generation
+ *               negativePrompt:
+ *                 type: string
+ *                 description: Negative prompt
+ *               aspectRatio:
+ *                 type: string
+ *                 enum: ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
+ *                 default: "1:1"
+ *               numOutputs:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 4
+ *                 default: 1
+ *               loraScale:
+ *                 type: number
+ *                 minimum: 0
+ *                 maximum: 1
+ *                 default: 1
+ *     responses:
+ *       200:
+ *         description: Image generated successfully
+ *       400:
+ *         description: Invalid request
+ *       429:
+ *         description: Usage limit exceeded
+ */
+router.post('/images/uncensored', aiRateLimiter, generateUncensoredImage as RequestHandler);
+
+/**
+ * @route   POST /api/v1/ai/images/variations
+ * @desc    Generate multiple image variations
+ * @access  Private
+ *
+ * @openapi
+ * /api/v1/ai/images/variations:
+ *   post:
+ *     tags: [AI - Images]
+ *     summary: Generate multiple image variations
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [prompt, count]
+ *             properties:
+ *               prompt:
+ *                 type: string
+ *                 description: Text prompt for image generation
+ *               negativePrompt:
+ *                 type: string
+ *                 description: Negative prompt
+ *               aspectRatio:
+ *                 type: string
+ *                 enum: ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
+ *                 default: "1:1"
+ *               count:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 4
+ *                 default: 4
+ *     responses:
+ *       200:
+ *         description: Variations generated successfully
+ *       400:
+ *         description: Invalid request
+ *       429:
+ *         description: Usage limit exceeded
+ */
+router.post('/images/variations', aiRateLimiter, generateVariations as RequestHandler);
 
 export { router as aiRoutes };

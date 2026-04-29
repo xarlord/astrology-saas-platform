@@ -205,17 +205,15 @@ describe('Calendar Controller', () => {
       mockRegistry.findByMonth!.mockResolvedValue(personalEvents);
 
       // Return a new moon in April 2026 and a full moon in April 2026
-      mockRegistry.calculateMoonPhases!.mockImplementation(
-        async (_year: number, phase: string) => {
-          if (phase === 'new') {
-            return [makeNewMoon('2026-04-17', 'aries')];
-          }
-          if (phase === 'full') {
-            return [makeFullMoon('2026-04-02', 'libra')];
-          }
-          return [];
-        },
-      );
+      mockRegistry.calculateMoonPhases!.mockImplementation(async (_year: number, phase: string) => {
+        if (phase === 'new') {
+          return [makeNewMoon('2026-04-17', 'aries')];
+        }
+        if (phase === 'full') {
+          return [makeFullMoon('2026-04-02', 'libra')];
+        }
+        return [];
+      });
 
       await getMonthEvents(mockRequest as any, mockResponse as Response, mockNext);
 
@@ -233,9 +231,7 @@ describe('Calendar Controller', () => {
       expect(jsonCall.meta.month).toBe(4);
 
       // Verify global event structure
-      const globalNewMoon = jsonCall.data.find(
-        (e: any) => e.event_type === 'new_moon',
-      );
+      const globalNewMoon = jsonCall.data.find((e: any) => e.event_type === 'new_moon');
       expect(globalNewMoon).toBeDefined();
       expect(globalNewMoon.event_type).toBe('new_moon');
       expect(globalNewMoon.interpretation).toContain('New Moon in Aries');
@@ -246,9 +242,7 @@ describe('Calendar Controller', () => {
         illumination: 0,
       });
 
-      const globalFullMoon = jsonCall.data.find(
-        (e: any) => e.event_type === 'full_moon',
-      );
+      const globalFullMoon = jsonCall.data.find((e: any) => e.event_type === 'full_moon');
       expect(globalFullMoon).toBeDefined();
       expect(globalFullMoon.interpretation).toContain('Full Moon in Libra');
     });
@@ -268,26 +262,22 @@ describe('Calendar Controller', () => {
       mockRequest.params = { year: '2026', month: '4' };
       mockRequest.query = { includeGlobal: 'true' };
 
-      mockRegistry.calculateMoonPhases!.mockImplementation(
-        async (_year: number, phase: string) => {
-          if (phase === 'new') {
-            return [
-              makeNewMoon('2026-03-29', 'aries'), // March - should be excluded
-              makeNewMoon('2026-04-17', 'aries'), // April - should be included
-              makeNewMoon('2026-05-15', 'taurus'), // May - should be excluded
-            ];
-          }
-          return [];
-        },
-      );
+      mockRegistry.calculateMoonPhases!.mockImplementation(async (_year: number, phase: string) => {
+        if (phase === 'new') {
+          return [
+            makeNewMoon('2026-03-29', 'aries'), // March - should be excluded
+            makeNewMoon('2026-04-17', 'aries'), // April - should be included
+            makeNewMoon('2026-05-15', 'taurus'), // May - should be excluded
+          ];
+        }
+        return [];
+      });
 
       await getMonthEvents(mockRequest as any, mockResponse as Response, mockNext);
 
       const jsonCall = (mockResponse.json as jest.Mock).mock.calls[0][0];
       // Only the April new moon should appear
-      const globalEvents = jsonCall.data.filter(
-        (e: any) => e.event_type === 'new_moon',
-      );
+      const globalEvents = jsonCall.data.filter((e: any) => e.event_type === 'new_moon');
       expect(globalEvents.length).toBe(1);
       expect(globalEvents[0].event_data.sign).toBe('aries');
     });

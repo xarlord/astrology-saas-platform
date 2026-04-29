@@ -86,7 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       // Error state
       error
         ? 'border-red-300 dark:border-red-700 focus:border-red-500 focus:ring-red-500 pr-10'
-        : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500',
+        : 'border-gray-300 dark:border-gray-600 focus:border-purple-500 focus:ring-purple-500',
       // Icon padding
       leftIcon && 'pl-10',
       rightIcon && 'pr-10',
@@ -111,7 +111,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       error
         ? 'text-red-600 dark:text-red-400'
         : isFocused
-          ? 'text-indigo-600 dark:text-indigo-400'
+          ? 'text-purple-600 dark:text-purple-400'
           : 'text-gray-500 dark:text-gray-400',
     );
 

@@ -131,7 +131,11 @@ const DropdownTrigger: React.FC<DropdownTriggerProps> = ({
 
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(
-      children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void; 'aria-expanded'?: boolean; 'aria-haspopup'?: boolean }>,
+      children as React.ReactElement<{
+        onClick?: (e: React.MouseEvent) => void;
+        'aria-expanded'?: boolean;
+        'aria-haspopup'?: boolean;
+      }>,
       {
         onClick: handleClick,
         'aria-expanded': isOpen,

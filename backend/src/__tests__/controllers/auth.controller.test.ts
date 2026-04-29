@@ -7,7 +7,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Request, Response } from 'express';
-import { register, login, getProfile, updateProfile, updatePreferences, logout, refreshToken } from '../../modules/auth/controllers/auth.controller';
+import {
+  register,
+  login,
+  getProfile,
+  updateProfile,
+  updatePreferences,
+  logout,
+  refreshToken,
+} from '../../modules/auth/controllers/auth.controller';
 import { AppError } from '../../utils/appError';
 import UserModel from '../../modules/users/models/user.model';
 import { generateToken, generateRefreshToken } from '../../middleware/auth';
@@ -78,10 +86,12 @@ jest.mock('../../db', () => {
   });
 
   // Reset call count per transaction
-  const transactionFn = jest.fn().mockImplementation(async (callback: (trx: any) => Promise<any>) => {
-    callCount = 0;
-    return callback(mockTrx);
-  });
+  const transactionFn = jest
+    .fn()
+    .mockImplementation(async (callback: (trx: any) => Promise<any>) => {
+      callCount = 0;
+      return callback(mockTrx);
+    });
 
   return {
     __esModule: true,
@@ -158,15 +168,12 @@ describe('Authentication Controller', () => {
           secure: false,
           sameSite: 'strict',
           maxAge: 7 * 24 * 60 * 60 * 1000,
-          path: '/api/v1/auth/refresh'
-        })
+          path: '/api/v1/auth/refresh',
+        }),
       );
 
       // Verify welcome email was sent
-      expect(EmailService.sendWelcomeEmail).toHaveBeenCalledWith(
-        userData.email,
-        userData.name,
-      );
+      expect(EmailService.sendWelcomeEmail).toHaveBeenCalledWith(userData.email, userData.name);
     });
 
     it('should throw 409 if user already exists', async () => {
@@ -183,7 +190,9 @@ describe('Authentication Controller', () => {
         email: userData.email,
       });
 
-      await expect(register(mockRequest as Request, mockResponse as Response)).rejects.toThrow(AppError);
+      await expect(register(mockRequest as Request, mockResponse as Response)).rejects.toThrow(
+        AppError,
+      );
     });
 
     it('should hash password before storing', async () => {
@@ -213,7 +222,7 @@ describe('Authentication Controller', () => {
       expect(UserModel.create).toHaveBeenCalledWith(
         expect.objectContaining({
           password_hash: 'hashedpassword',
-        })
+        }),
       );
     });
 
@@ -279,7 +288,10 @@ describe('Authentication Controller', () => {
       await login(mockRequest as Request, mockResponse as Response);
 
       expect(UserModel.findByEmail).toHaveBeenCalledWith(loginData.email);
-      expect(helpers.comparePassword).toHaveBeenCalledWith(loginData.password, mockUser.password_hash);
+      expect(helpers.comparePassword).toHaveBeenCalledWith(
+        loginData.password,
+        mockUser.password_hash,
+      );
       expect(generateToken).toHaveBeenCalled();
       expect(generateRefreshToken).toHaveBeenCalled();
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -291,8 +303,8 @@ describe('Authentication Controller', () => {
           secure: false,
           sameSite: 'strict',
           maxAge: 7 * 24 * 60 * 60 * 1000,
-          path: '/api/v1/auth/refresh'
-        })
+          path: '/api/v1/auth/refresh',
+        }),
       );
     });
 
@@ -338,8 +350,8 @@ describe('Authentication Controller', () => {
       expect(mockResponse.clearCookie).toHaveBeenCalledWith(
         'refreshToken',
         expect.objectContaining({
-          path: '/api/v1/auth/refresh'
-        })
+          path: '/api/v1/auth/refresh',
+        }),
       );
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
@@ -383,8 +395,8 @@ describe('Authentication Controller', () => {
           secure: false,
           sameSite: 'strict',
           maxAge: 7 * 24 * 60 * 60 * 1000,
-          path: '/api/v1/auth/refresh'
-        })
+          path: '/api/v1/auth/refresh',
+        }),
       );
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });

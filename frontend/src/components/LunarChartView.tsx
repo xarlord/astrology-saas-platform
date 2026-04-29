@@ -77,7 +77,8 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
             const startY = 100 + 85 * Math.sin((startAngle * Math.PI) / 180);
             const endX = 100 + 85 * Math.cos((endAngle * Math.PI) / 180);
             const endY = 100 + 85 * Math.sin((endAngle * Math.PI) / 180);
-            (void endX, endY); // Mark as used
+            // endX, endY computed for potential future use in arc paths
+            void { endX, endY };
 
             const isCurrentHouse = house === currentHouse;
 

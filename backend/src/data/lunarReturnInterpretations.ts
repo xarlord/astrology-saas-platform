@@ -36,11 +36,12 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 1,
       moonPhase: 'new',
       theme: 'New Beginnings and Self-Discovery',
-      description: 'This lunar return marks a powerful time for personal reinvention. Your emotional focus turns inward, inviting deep self-reflection and authentic self-expression.',
+      description:
+        'This lunar return marks a powerful time for personal reinvention. Your emotional focus turns inward, inviting deep self-reflection and authentic self-expression.',
       emotionalFocus: 'Self-identity, personal appearance, how you present yourself to the world',
       keyChallenges: [
         'Self-doubt may creep in when initiating new projects',
-        'Tendency to worry about others\' opinions',
+        "Tendency to worry about others' opinions",
         'Difficulty balancing personal needs with external expectations',
       ],
       keyOpportunities: [
@@ -61,7 +62,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 1,
       moonPhase: 'full',
       theme: 'Culmination and Personal Authenticity',
-      description: 'The full moon in your first house illuminates your authentic self. Emotional clarity prevails, making it easier to understand who you are and what you want.',
+      description:
+        'The full moon in your first house illuminates your authentic self. Emotional clarity prevails, making it easier to understand who you are and what you want.',
       emotionalFocus: 'Self-realization, emotional authenticity, personal identity',
       keyChallenges: [
         'Heightened sensitivity to criticism',
@@ -88,7 +90,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 2,
       moonPhase: 'new',
       theme: 'Values and Financial Intentions',
-      description: 'This lunar return focuses your emotional energy on material security, personal values, and self-worth. An ideal time to review finances and align spending with what matters most.',
+      description:
+        'This lunar return focuses your emotional energy on material security, personal values, and self-worth. An ideal time to review finances and align spending with what matters most.',
       emotionalFocus: 'Money, possessions, personal values, self-worth',
       keyChallenges: [
         'Emotional spending patterns may surface',
@@ -113,7 +116,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 2,
       moonPhase: 'full',
       theme: 'Financial Clarity and Value Realization',
-      description: 'The full moon illuminates your financial situation and value system. Emotional truths about money and possessions come to light, offering clarity for decision-making.',
+      description:
+        'The full moon illuminates your financial situation and value system. Emotional truths about money and possessions come to light, offering clarity for decision-making.',
       emotionalFocus: 'Financial clarity, material culmination, worth issues',
       keyChallenges: [
         'Financial stress or anxiety may peak',
@@ -140,7 +144,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 3,
       moonPhase: 'new',
       theme: 'Communication and Learning Intentions',
-      description: 'This lunar return highlights communication, learning, and your immediate environment. An excellent time to start new courses, improve communication skills, or connect with siblings and neighbors.',
+      description:
+        'This lunar return highlights communication, learning, and your immediate environment. An excellent time to start new courses, improve communication skills, or connect with siblings and neighbors.',
       emotionalFocus: 'Communication, learning, local community, siblings',
       keyChallenges: [
         'Misunderstandings in communication',
@@ -165,7 +170,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 3,
       moonPhase: 'full',
       theme: 'Communication Culmination and Clarity',
-      description: 'The full moon in your third house brings important conversations, learning achievements, or clarity in communication. Emotional truths are spoken and understood.',
+      description:
+        'The full moon in your third house brings important conversations, learning achievements, or clarity in communication. Emotional truths are spoken and understood.',
       emotionalFocus: 'Expression, understanding, learning completion',
       keyChallenges: [
         'Difficult conversations may arise',
@@ -192,7 +198,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 4,
       moonPhase: 'new',
       theme: 'Home, Family, and Emotional Foundations',
-      description: 'This lunar return turns your emotional focus homeward. Ideal for setting intentions around family relationships, home improvement, and emotional security. Deep healing work is supported.',
+      description:
+        'This lunar return turns your emotional focus homeward. Ideal for setting intentions around family relationships, home improvement, and emotional security. Deep healing work is supported.',
       emotionalFocus: 'Home, family, roots, emotional foundation, private life',
       keyChallenges: [
         'Family dynamics may trigger old emotions',
@@ -218,7 +225,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 4,
       moonPhase: 'full',
       theme: 'Emotional Culmination and Family Revelations',
-      description: 'The full moon in your fourth house illuminates your deepest emotional needs and family dynamics. Powerful emotions surface, offering opportunities for profound healing and transformation.',
+      description:
+        'The full moon in your fourth house illuminates your deepest emotional needs and family dynamics. Powerful emotions surface, offering opportunities for profound healing and transformation.',
       emotionalFocus: 'Emotional climax, family matters, home life, private self',
       keyChallenges: [
         'Intense family emotions or conflicts',
@@ -246,7 +254,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 5,
       moonPhase: 'new',
       theme: 'Creativity, Romance, and Self-Expression',
-      description: 'This lunar return ignites your creative and romantic energy. Perfect for starting artistic projects, new romantic connections, or simply bringing more playfulness into your life.',
+      description:
+        'This lunar return ignites your creative and romantic energy. Perfect for starting artistic projects, new romantic connections, or simply bringing more playfulness into your life.',
       emotionalFocus: 'Creativity, romance, pleasure, children, self-expression',
       keyChallenges: [
         'Need for validation through romance',
@@ -272,7 +281,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 5,
       moonPhase: 'full',
       theme: 'Creative and Romantic Culmination',
-      description: 'The full moon in your fifth house brings creative projects to fruition and illuminates romantic connections. Emotional fulfillment through self-expression and joy is highlighted.',
+      description:
+        'The full moon in your fifth house brings creative projects to fruition and illuminates romantic connections. Emotional fulfillment through self-expression and joy is highlighted.',
       emotionalFocus: 'Creative completion, romantic clarity, joy, celebration',
       keyChallenges: [
         'Romantic relationships reach decision points',
@@ -300,7 +310,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 6,
       moonPhase: 'new',
       theme: 'Work, Health, and Daily Routines',
-      description: 'This lunar return focuses on service, health, and daily habits. An ideal time to start new wellness routines, organize your work life, and implement healthier daily practices.',
+      description:
+        'This lunar return focuses on service, health, and daily habits. An ideal time to start new wellness routines, organize your work life, and implement healthier daily practices.',
       emotionalFocus: 'Work, health, service, daily routines, self-care',
       keyChallenges: [
         'Work stress or overwhelm',
@@ -317,7 +328,7 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       advice: [
         'Prioritize self-care without guilt',
         'Create realistic daily routines',
-        'Listen to your body\'s needs',
+        "Listen to your body's needs",
         'Find meaning in service',
         'Balance work and rest',
       ],
@@ -326,7 +337,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 6,
       moonPhase: 'full',
       theme: 'Work and Health Culmination',
-      description: 'The full moon in your sixth house brings work projects to completion and highlights health matters. Emotional clarity around work-life balance and wellness routines emerges.',
+      description:
+        'The full moon in your sixth house brings work projects to completion and highlights health matters. Emotional clarity around work-life balance and wellness routines emerges.',
       emotionalFocus: 'Work completion, health clarity, service, routines',
       keyChallenges: [
         'Work stress reaches peak',
@@ -354,7 +366,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 7,
       moonPhase: 'new',
       theme: 'Partnerships and Relationship Intentions',
-      description: 'This lunar return focuses on one-on-one relationships of all kinds. Ideal for setting intentions around partnerships, marriage, business collaborations, and finding balance between self and other.',
+      description:
+        'This lunar return focuses on one-on-one relationships of all kinds. Ideal for setting intentions around partnerships, marriage, business collaborations, and finding balance between self and other.',
       emotionalFocus: 'Partnerships, marriage, relationships, balance, compromise',
       keyChallenges: [
         'Relationship conflicts may arise',
@@ -371,7 +384,7 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       advice: [
         'Communicate needs clearly and kindly',
         'Practice active compromise',
-        'Honor your partner\'s perspective',
+        "Honor your partner's perspective",
         'Maintain your identity in relationships',
         'Choose relationships that reflect self-worth',
       ],
@@ -380,7 +393,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 7,
       moonPhase: 'full',
       theme: 'Relationship Culmination and Clarity',
-      description: 'The full moon in your seventh house illuminates your partnerships. Relationship dynamics come to light, decisions about commitments may be made, and emotional clarity in connections is achieved.',
+      description:
+        'The full moon in your seventh house illuminates your partnerships. Relationship dynamics come to light, decisions about commitments may be made, and emotional clarity in connections is achieved.',
       emotionalFocus: 'Relationship climax, partnership clarity, commitments',
       keyChallenges: [
         'Relationship conflicts reach breaking point',
@@ -408,7 +422,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 8,
       moonPhase: 'new',
       theme: 'Transformation and Shared Resources',
-      description: 'This lunar return delves into deep emotional territory—intimacy, shared resources, transformation, and the mysteries of life. A powerful time for setting intentions around emotional healing and financial partnerships.',
+      description:
+        'This lunar return delves into deep emotional territory—intimacy, shared resources, transformation, and the mysteries of life. A powerful time for setting intentions around emotional healing and financial partnerships.',
       emotionalFocus: 'Intimacy, shared resources, transformation, death/rebirth, occult',
       keyChallenges: [
         'Deep emotional intensity',
@@ -435,7 +450,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 8,
       moonPhase: 'full',
       theme: 'Transformation and Emotional Alchemy',
-      description: 'The full moon in your eighth house brings powerful emotional transformations to completion. Deep psychological insights, intimate revelations, or financial matters reach a climax.',
+      description:
+        'The full moon in your eighth house brings powerful emotional transformations to completion. Deep psychological insights, intimate revelations, or financial matters reach a climax.',
       emotionalFocus: 'Deep transformation, emotional alchemy, shared resources',
       keyChallenges: [
         'Intense emotional experiences',
@@ -464,7 +480,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 9,
       moonPhase: 'new',
       theme: 'Philosophy, Travel, and Higher Learning',
-      description: 'This lunar return expands your horizons through philosophy, travel, education, and spiritual exploration. An excellent time to set intentions around belief systems, higher learning, or foreign connections.',
+      description:
+        'This lunar return expands your horizons through philosophy, travel, education, and spiritual exploration. An excellent time to set intentions around belief systems, higher learning, or foreign connections.',
       emotionalFocus: 'Philosophy, travel, higher education, spirituality, foreign lands',
       keyChallenges: [
         'Questioning belief systems',
@@ -491,7 +508,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 9,
       moonPhase: 'full',
       theme: 'Expansion and Philosophical Clarity',
-      description: 'The full moon in your ninth house brings educational or travel endeavors to fruition and illuminates your belief system. Philosophical clarity and spiritual insights emerge.',
+      description:
+        'The full moon in your ninth house brings educational or travel endeavors to fruition and illuminates your belief system. Philosophical clarity and spiritual insights emerge.',
       emotionalFocus: 'Expansion completion, clarity, wisdom, adventure',
       keyChallenges: [
         'Confronting limiting beliefs',
@@ -520,7 +538,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 10,
       moonPhase: 'new',
       theme: 'Career and Public Life Intentions',
-      description: 'This lunar return focuses your emotional energy on career, reputation, and public image. Ideal for setting professional goals, launching business ventures, or working on your public presence.',
+      description:
+        'This lunar return focuses your emotional energy on career, reputation, and public image. Ideal for setting professional goals, launching business ventures, or working on your public presence.',
       emotionalFocus: 'Career, reputation, public image, achievements, authority',
       keyChallenges: [
         'Work-life balance struggles',
@@ -547,7 +566,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 10,
       moonPhase: 'full',
       theme: 'Career Culmination and Public Recognition',
-      description: 'The full moon in your tenth house brings career matters to a head. Professional achievements, public recognition, or career changes are highlighted. Your public image is illuminated.',
+      description:
+        'The full moon in your tenth house brings career matters to a head. Professional achievements, public recognition, or career changes are highlighted. Your public image is illuminated.',
       emotionalFocus: 'Career climax, public recognition, achievements',
       keyChallenges: [
         'Career decisions must be made',
@@ -576,7 +596,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 11,
       moonPhase: 'new',
       theme: 'Friendships and Community Intentions',
-      description: 'This lunar return focuses on friendships, groups, and community. An excellent time to set intentions around social connections, join groups or organizations, and work toward collective goals.',
+      description:
+        'This lunar return focuses on friendships, groups, and community. An excellent time to set intentions around social connections, join groups or organizations, and work toward collective goals.',
       emotionalFocus: 'Friendships, groups, community, hopes, wishes, networks',
       keyChallenges: [
         'Group conflicts or politics',
@@ -603,7 +624,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 11,
       moonPhase: 'full',
       theme: 'Social Culmination and Community Realizations',
-      description: 'The full moon in your eleventh house illuminates your social world and community connections. Friendships are highlighted, group endeavors reach completion, and your hopes and dreams gain clarity.',
+      description:
+        'The full moon in your eleventh house illuminates your social world and community connections. Friendships are highlighted, group endeavors reach completion, and your hopes and dreams gain clarity.',
       emotionalFocus: 'Social completion, friendship clarity, group achievements',
       keyChallenges: [
         'Friendship conflicts come to light',
@@ -620,7 +642,7 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       ],
       advice: [
         'Honor true friendships',
-        'Release social connections that don\'t serve',
+        "Release social connections that don't serve",
         'Celebrate group achievements',
         'Dream boldly for the future',
         'Build community intentionally',
@@ -632,7 +654,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 12,
       moonPhase: 'new',
       theme: 'Spirituality, Endings, and the Unconscious',
-      description: 'This lunar return turns your emotional focus inward to the spiritual realm, the unconscious, and endings. A powerful time for spiritual practices, healing, and releasing what must complete.',
+      description:
+        'This lunar return turns your emotional focus inward to the spiritual realm, the unconscious, and endings. A powerful time for spiritual practices, healing, and releasing what must complete.',
       emotionalFocus: 'Spirituality, unconscious, endings, solitude, hidden matters',
       keyChallenges: [
         'Confronting shadow self',
@@ -659,7 +682,8 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
       house: 12,
       moonPhase: 'full',
       theme: 'Spiritual Culmination and Completion',
-      description: 'The full moon in your twelfth house brings spiritual insights, emotional completion, and confrontation with the unconscious. Hidden matters come to light for healing and release.',
+      description:
+        'The full moon in your twelfth house brings spiritual insights, emotional completion, and confrontation with the unconscious. Hidden matters come to light for healing and release.',
       emotionalFocus: 'Spiritual climax, unconscious revelations, endings',
       keyChallenges: [
         'Intense emotional processing',
@@ -687,7 +711,7 @@ export const houseInterpretations: Record<number, LunarReturnInterpretation[]> =
 
 // Moon phase interpretations for lunar returns
 export const moonPhaseLunarReturn: Record<string, MoonPhaseLunarReturn> = {
-  'new': {
+  new: {
     phase: 'new',
     meaning: 'New beginnings, fresh energy, intention setting',
     energy: 'Inward, receptive, planting seeds, initiating',
@@ -716,11 +740,7 @@ export const moonPhaseLunarReturn: Record<string, MoonPhaseLunarReturn> = {
       'Refine plans',
       'Increase commitment to goals',
     ],
-    challenges: [
-      'Impatience with slow progress',
-      'Self-doubt may surface',
-      'Obstacles may appear',
-    ],
+    challenges: ['Impatience with slow progress', 'Self-doubt may surface', 'Obstacles may appear'],
   },
   'first-quarter': {
     phase: 'first-quarter',
@@ -750,13 +770,9 @@ export const moonPhaseLunarReturn: Record<string, MoonPhaseLunarReturn> = {
       'Build anticipation',
       'Analyze progress',
     ],
-    challenges: [
-      'Perfectionism',
-      'Impatience for completion',
-      'Need for flexibility',
-    ],
+    challenges: ['Perfectionism', 'Impatience for completion', 'Need for flexibility'],
   },
-  'full': {
+  full: {
     phase: 'full',
     meaning: 'Culmination, completion, illumination, realization',
     energy: 'Outward, expressive, fulfilling, releasing',
@@ -780,16 +796,12 @@ export const moonPhaseLunarReturn: Record<string, MoonPhaseLunarReturn> = {
     energy: 'Sharing, grateful, integrating, teaching',
     bestActivities: [
       'Share wisdom with others',
-      'Teach what you\'ve learned',
+      "Teach what you've learned",
       'Practice gratitude',
       'Integrate lessons',
       'Distribute results',
     ],
-    challenges: [
-      'Letting go of achievements',
-      'Moving to new cycles',
-      'Arrogance or pride',
-    ],
+    challenges: ['Letting go of achievements', 'Moving to new cycles', 'Arrogance or pride'],
   },
   'last-quarter': {
     phase: 'last-quarter',
@@ -802,11 +814,7 @@ export const moonPhaseLunarReturn: Record<string, MoonPhaseLunarReturn> = {
       'Forgive yourself and others',
       'Make space for new',
     ],
-    challenges: [
-      'Resistance to letting go',
-      'Crisis of consciousness',
-      'Emotional clearing',
-    ],
+    challenges: ['Resistance to letting go', 'Crisis of consciousness', 'Emotional clearing'],
   },
   'waning-crescent': {
     phase: 'waning-crescent',
@@ -820,11 +828,7 @@ export const moonPhaseLunarReturn: Record<string, MoonPhaseLunarReturn> = {
       'Practice self-care',
       'Meditate and reflect',
     ],
-    challenges: [
-      'Low energy',
-      'Confusion or disorientation',
-      'Impatience for new beginning',
-    ],
+    challenges: ['Low energy', 'Confusion or disorientation', 'Impatience for new beginning'],
   },
 };
 
@@ -833,128 +837,166 @@ export const lunarAspectInterpretations: LunarAspectInterpretation[] = [
   {
     aspect: 'conjunction',
     planet: 'Sun',
-    interpretation: 'Your conscious and emotional nature are powerfully aligned. Your feelings and actions work in harmony, creating a sense of inner wholeness and authentic self-expression.',
-    advice: 'Trust your inner alignment, express yourself authentically, honor both your feelings and your logic.',
+    interpretation:
+      'Your conscious and emotional nature are powerfully aligned. Your feelings and actions work in harmony, creating a sense of inner wholeness and authentic self-expression.',
+    advice:
+      'Trust your inner alignment, express yourself authentically, honor both your feelings and your logic.',
   },
   {
     aspect: 'opposition',
     planet: 'Sun',
-    interpretation: 'Tension between your emotional needs and conscious desires creates an opportunity for growth. Relationship dynamics may reflect this inner polarity.',
-    advice: 'Find balance between head and heart, communicate needs clearly, honor both sides of your nature.',
+    interpretation:
+      'Tension between your emotional needs and conscious desires creates an opportunity for growth. Relationship dynamics may reflect this inner polarity.',
+    advice:
+      'Find balance between head and heart, communicate needs clearly, honor both sides of your nature.',
   },
   {
     aspect: 'trine',
     planet: 'Sun',
-    interpretation: 'Harmonious flow between your feelings and actions creates ease in self-expression. You feel emotionally supported in pursuing your goals.',
-    advice: 'Express gratitude for this harmony, use it to pursue goals, share your good energy with others.',
+    interpretation:
+      'Harmonious flow between your feelings and actions creates ease in self-expression. You feel emotionally supported in pursuing your goals.',
+    advice:
+      'Express gratitude for this harmony, use it to pursue goals, share your good energy with others.',
   },
   {
     aspect: 'square',
     planet: 'Sun',
-    interpretation: 'Challenges between your emotional needs and conscious expression require attention. Growth comes through integrating these different parts of yourself.',
-    advice: 'Work to integrate feelings and actions, be patient with yourself, find creative solutions to inner conflicts.',
+    interpretation:
+      'Challenges between your emotional needs and conscious expression require attention. Growth comes through integrating these different parts of yourself.',
+    advice:
+      'Work to integrate feelings and actions, be patient with yourself, find creative solutions to inner conflicts.',
   },
   {
     aspect: 'sextile',
     planet: 'Sun',
-    interpretation: 'Opportunities for harmonizing your feelings and actions present themselves. Pleasant connections between inner and outer self support your goals.',
+    interpretation:
+      'Opportunities for harmonizing your feelings and actions present themselves. Pleasant connections between inner and outer self support your goals.',
     advice: 'Take advantage of supportive energy, express yourself creatively, enjoy the flow.',
   },
   {
     aspect: 'conjunction',
     planet: 'Mercury',
-    interpretation: 'Your emotions and mind are closely linked, giving you strong emotional intelligence and communication skills. Feelings may color your thinking.',
-    advice: 'Honor your emotional intelligence, communicate feelings clearly, be aware of emotional biases in thinking.',
+    interpretation:
+      'Your emotions and mind are closely linked, giving you strong emotional intelligence and communication skills. Feelings may color your thinking.',
+    advice:
+      'Honor your emotional intelligence, communicate feelings clearly, be aware of emotional biases in thinking.',
   },
   {
     aspect: 'opposition',
     planet: 'Mercury',
-    interpretation: 'Tension between your emotions and intellect may create challenges in communication. You may struggle to express feelings clearly or understand others\' emotional communications.',
-    advice: 'Practice patience in communication, listen deeply, separate thoughts from feelings when needed.',
+    interpretation:
+      "Tension between your emotions and intellect may create challenges in communication. You may struggle to express feelings clearly or understand others' emotional communications.",
+    advice:
+      'Practice patience in communication, listen deeply, separate thoughts from feelings when needed.',
   },
   {
     aspect: 'trine',
     planet: 'Mercury',
-    interpretation: 'Your emotions and mind work together harmoniously. Emotional intelligence supports clear thinking and effective communication.',
-    advice: 'Express your feelings articulately, use this time for important conversations, enjoy mental clarity.',
+    interpretation:
+      'Your emotions and mind work together harmoniously. Emotional intelligence supports clear thinking and effective communication.',
+    advice:
+      'Express your feelings articulately, use this time for important conversations, enjoy mental clarity.',
   },
   {
     aspect: 'square',
     planet: 'Mercury',
-    interpretation: 'Challenges in communicating your feelings or understanding others\' emotions. Emotional reasoning may conflict with logical thinking.',
-    advice: 'Practice clarity and patience, learn to separate thoughts from feelings, choose words carefully.',
+    interpretation:
+      "Challenges in communicating your feelings or understanding others' emotions. Emotional reasoning may conflict with logical thinking.",
+    advice:
+      'Practice clarity and patience, learn to separate thoughts from feelings, choose words carefully.',
   },
   {
     aspect: 'conjunction',
     planet: 'Venus',
-    interpretation: 'Your emotional nature and capacity for love are harmoniously aligned. This is a favorable time for relationships, pleasure, and artistic expression.',
-    advice: 'Express love generously, enjoy beauty and pleasure, strengthen relationships, create art.',
+    interpretation:
+      'Your emotional nature and capacity for love are harmoniously aligned. This is a favorable time for relationships, pleasure, and artistic expression.',
+    advice:
+      'Express love generously, enjoy beauty and pleasure, strengthen relationships, create art.',
   },
   {
     aspect: 'opposition',
     planet: 'Venus',
-    interpretation: 'Relationship tensions may reflect inner conflicts between your emotional needs and your capacity for giving and receiving love.',
-    advice: 'Find balance in relationships, address love and values conflicts, practice compromise.',
+    interpretation:
+      'Relationship tensions may reflect inner conflicts between your emotional needs and your capacity for giving and receiving love.',
+    advice:
+      'Find balance in relationships, address love and values conflicts, practice compromise.',
   },
   {
     aspect: 'trine',
     planet: 'Venus',
-    interpretation: 'Harmonious energy supports love, pleasure, and artistic expression. Your emotional nature is in flow with your capacity for joy.',
-    advice: 'Enjoy loving connections, express yourself creatively, appreciate beauty, celebrate love.',
+    interpretation:
+      'Harmonious energy supports love, pleasure, and artistic expression. Your emotional nature is in flow with your capacity for joy.',
+    advice:
+      'Enjoy loving connections, express yourself creatively, appreciate beauty, celebrate love.',
   },
   {
     aspect: 'square',
     planet: 'Venus',
-    interpretation: 'Challenges in relationships or self-worth may surface. Conflicts between what you value emotionally and how you express love or experience pleasure.',
-    advice: 'Work on self-worth, address relationship issues honestly, find healthy ways to experience pleasure.',
+    interpretation:
+      'Challenges in relationships or self-worth may surface. Conflicts between what you value emotionally and how you express love or experience pleasure.',
+    advice:
+      'Work on self-worth, address relationship issues honestly, find healthy ways to experience pleasure.',
   },
   {
     aspect: 'conjunction',
     planet: 'Mars',
-    interpretation: 'Your emotional energy and drive are powerfully connected. You may feel emotionally motivated to take action, or emotions may fuel your ambitions.',
-    advice: 'Channel emotional energy constructively, take action on feelings, be aware of emotional reactivity.',
+    interpretation:
+      'Your emotional energy and drive are powerfully connected. You may feel emotionally motivated to take action, or emotions may fuel your ambitions.',
+    advice:
+      'Channel emotional energy constructively, take action on feelings, be aware of emotional reactivity.',
   },
   {
     aspect: 'opposition',
     planet: 'Mars',
-    interpretation: 'Tension between your emotional needs and your drive for action. You may feel conflicted between what you feel and what you want to do.',
-    advice: 'Find balance between feeling and acting, avoid impulsive decisions, channel energy wisely.',
+    interpretation:
+      'Tension between your emotional needs and your drive for action. You may feel conflicted between what you feel and what you want to do.',
+    advice:
+      'Find balance between feeling and acting, avoid impulsive decisions, channel energy wisely.',
   },
   {
     aspect: 'trine',
     planet: 'Mars',
-    interpretation: 'Your emotional energy and physical drive work together harmoniously. Good time for taking action on emotional matters.',
+    interpretation:
+      'Your emotional energy and physical drive work together harmoniously. Good time for taking action on emotional matters.',
     advice: 'Use emotional energy productively, take initiative, pursue goals with passion.',
   },
   {
     aspect: 'square',
     planet: 'Mars',
-    interpretation: 'Frustration between emotional needs and desires for action. May feel emotionally irritable or have difficulty directing energy effectively.',
-    advice: 'Find constructive outlets for frustration, avoid impulsive actions, practice emotional management.',
+    interpretation:
+      'Frustration between emotional needs and desires for action. May feel emotionally irritable or have difficulty directing energy effectively.',
+    advice:
+      'Find constructive outlets for frustration, avoid impulsive actions, practice emotional management.',
   },
   {
     aspect: 'conjunction',
     planet: 'Jupiter',
-    interpretation: 'Your emotions are expanded and optimistic. This is a favorable time for emotional growth, philosophical exploration, and experiencing abundance.',
-    advice: 'Embrace emotional expansion, practice gratitude, share your good fortune, explore spiritual growth.',
+    interpretation:
+      'Your emotions are expanded and optimistic. This is a favorable time for emotional growth, philosophical exploration, and experiencing abundance.',
+    advice:
+      'Embrace emotional expansion, practice gratitude, share your good fortune, explore spiritual growth.',
   },
   {
     aspect: 'opposition',
     planet: 'Jupiter',
-    interpretation: 'Tension between emotional needs and desires for expansion. May feel emotionally excessive or struggle with boundaries.',
+    interpretation:
+      'Tension between emotional needs and desires for expansion. May feel emotionally excessive or struggle with boundaries.',
     advice: 'Practice emotional moderation, find healthy balance, avoid overextending emotionally.',
   },
   {
     aspect: 'trine',
     planet: 'Jupiter',
-    interpretation: 'Flowing emotional energy supports growth, optimism, and abundance. Feelings of generosity and emotional expansion.',
+    interpretation:
+      'Flowing emotional energy supports growth, optimism, and abundance. Feelings of generosity and emotional expansion.',
     advice: 'Share your emotional abundance, embrace opportunities for growth, practice gratitude.',
   },
   {
     aspect: 'square',
     planet: 'Jupiter',
-    interpretation: 'Challenges around emotional excess, over-optimism, or unrealistic expectations. May need to temper emotional expansion with realism.',
-    advice: 'Balance optimism with realism, practice emotional moderation, ground your expectations.',
+    interpretation:
+      'Challenges around emotional excess, over-optimism, or unrealistic expectations. May need to temper emotional expansion with realism.',
+    advice:
+      'Balance optimism with realism, practice emotional moderation, ground your expectations.',
   },
 ];
 

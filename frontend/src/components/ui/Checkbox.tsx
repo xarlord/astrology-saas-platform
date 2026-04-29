@@ -100,8 +100,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       sizeStyles[size],
       error
         ? 'border-red-300 dark:border-red-700 text-red-600 focus:ring-red-500 checked:bg-red-600'
-        : 'border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 checked:bg-indigo-600',
-      'dark:checked:bg-indigo-500',
+        : 'border-gray-300 dark:border-gray-600 text-purple-600 focus:ring-purple-500 checked:bg-purple-600',
+      'dark:checked:bg-purple-500',
     );
 
     const labelClass = clsx(

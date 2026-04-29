@@ -12,12 +12,15 @@ import { RedisCache } from './redis.service';
 
 export interface TransitData {
   date: string;
-  planetaryPositions: Record<string, {
-    longitude: number;
-    sign: string;
-    degree: number;
-    isRetrograde: boolean;
-  }>;
+  planetaryPositions: Record<
+    string,
+    {
+      longitude: number;
+      sign: string;
+      degree: number;
+      isRetrograde: boolean;
+    }
+  >;
   moonPhase: {
     phase: string;
     illumination: number;

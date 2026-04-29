@@ -115,7 +115,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     return (
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
         <div className="flex items-center gap-3 mb-3">
-          <span className="material-symbols-outlined text-[24px] text-purple-600">card_giftcard</span>
+          <span className="material-symbols-outlined text-[24px] text-purple-600">
+            card_giftcard
+          </span>
           <div>
             <h3 className="font-semibold text-gray-800 text-lg">Solar Return Reading for {year}</h3>
             <p className="text-sm text-gray-500">
@@ -189,7 +191,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
           aria-live="polite"
           className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4"
         >
-          <span className="material-symbols-outlined text-[20px] text-green-600 flex-shrink-0">check</span>
+          <span className="material-symbols-outlined text-[20px] text-green-600 flex-shrink-0">
+            check
+          </span>
           <div>
             <strong className="text-green-800">Success!</strong>
             <p className="text-sm text-green-700">
@@ -349,17 +353,23 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                       className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                     />
                     <button onClick={() => void handleCopyLink()} className="copy-btn">
-                      {copied ? <span className="material-symbols-outlined text-[18px]">check</span> : <span className="material-symbols-outlined text-[18px]">content_copy</span>}
+                      {copied ? (
+                        <span className="material-symbols-outlined text-[18px]">check</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[18px]">content_copy</span>
+                      )}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
 
                   <div className="space-y-1 text-xs text-gray-500">
                     <p className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">calendar_month</span> Expires: {linkSettings.expiresIn} days
+                      <span className="material-symbols-outlined text-[14px]">calendar_month</span>{' '}
+                      Expires: {linkSettings.expiresIn} days
                     </p>
                     <p className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">lock</span> Max accesses:{' '}
+                      <span className="material-symbols-outlined text-[14px]">lock</span> Max
+                      accesses:{' '}
                       {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}
                     </p>
                   </div>

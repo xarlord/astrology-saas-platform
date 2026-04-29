@@ -419,7 +419,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
             </div>
             <span
               className={`material-symbols-outlined text-[20px] text-slate-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`}
-            >expand_more</span>
+            >
+              expand_more
+            </span>
           </button>
 
           <AnimatePresence>
@@ -429,7 +431,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 className="absolute z-10 mt-2 w-full bg-surface-dark border border-white/10 rounded-lg shadow-lg overflow-hidden"
-              data-testid="pdf-type-dropdown-menu"
+                data-testid="pdf-type-dropdown-menu"
               >
                 {getAvailableReportTypes().map((option) => (
                   <button
@@ -484,8 +486,13 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3" data-testid="pdf-error-message">
-          <span className="material-symbols-outlined text-[20px] text-red-400 flex-shrink-0 mt-0.5">error_outline</span>
+        <div
+          className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3"
+          data-testid="pdf-error-message"
+        >
+          <span className="material-symbols-outlined text-[20px] text-red-400 flex-shrink-0 mt-0.5">
+            error_outline
+          </span>
           <div className="flex-1">
             <p className="text-sm text-red-400">{error}</p>
             <button
@@ -501,7 +508,10 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       {/* Success Message */}
       {lastGeneratedBlob && !isGenerating && !error && (
-        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3" data-testid="pdf-success-message">
+        <div
+          className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3"
+          data-testid="pdf-success-message"
+        >
           <span className="material-symbols-outlined text-[20px] text-green-400">check_circle</span>
           <p className="text-sm text-green-400">Report generated successfully!</p>
         </div>
@@ -520,7 +530,9 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
           data-testid="pdf-generate-button"
           leftIcon={
             isGenerating ? (
-              <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+              <span className="material-symbols-outlined text-[16px] animate-spin">
+                progress_activity
+              </span>
             ) : (
               <span className="material-symbols-outlined text-[16px]">download</span>
             )
@@ -587,7 +599,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-surface-dark rounded-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col"
-            data-testid="pdf-preview-modal"
+              data-testid="pdf-preview-modal"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-4 border-b border-white/10">

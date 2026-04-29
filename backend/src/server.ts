@@ -16,7 +16,11 @@ import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { csrfMiddleware } from './middleware/csrf';
-import { connectRedis, disconnectRedis, isRedisConnected } from './modules/shared/services/redis.service';
+import {
+  connectRedis,
+  disconnectRedis,
+  isRedisConnected,
+} from './modules/shared/services/redis.service';
 import { registerAllProcessors, shutdownQueues } from './modules/jobs';
 import { swaggerSpec } from './config/swagger';
 
@@ -33,7 +37,11 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 function getAllowedOrigins(): (string | RegExp)[] {
   const origins: (string | RegExp)[] = [];
   if (process.env.ALLOWED_ORIGINS) {
-    origins.push(...process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean));
+    origins.push(
+      ...process.env.ALLOWED_ORIGINS.split(',')
+        .map((o) => o.trim())
+        .filter(Boolean),
+    );
   }
   if (FRONTEND_URL && !origins.includes(FRONTEND_URL)) {
     origins.push(FRONTEND_URL);
@@ -48,30 +56,34 @@ function getAllowedOrigins(): (string | RegExp)[] {
 // ============================================
 
 // Helmet - Security headers
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'none'"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
     },
-  },
-  crossOriginEmbedderPolicy: false,
-}));
+    crossOriginEmbedderPolicy: false,
+  }),
+);
 
 // CORS - Cross-Origin Resource Sharing
-app.use(cors({
-  origin: getAllowedOrigins(),
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
-}));
+app.use(
+  cors({
+    origin: getAllowedOrigins(),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
+  }),
+);
 
 // ============================================
 // Body Parser Middleware
@@ -91,10 +103,25 @@ app.use(compression());
 // Static File Serving (uploads)
 // ============================================
 
-app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads'), {
-  maxAge: '7d',
-  immutable: true,
-}));
+import { authenticate } from './middleware/auth';
+
+app.use(
+  '/uploads',
+  authenticate, // Require authentication
+  (_req, res, next) => {
+    // Set Content-Disposition to prevent file execution in browser
+    const originalSend = res.send;
+    res.send = function (body) {
+      res.setHeader('Content-Disposition', 'attachment');
+      return originalSend.call(this, body);
+    };
+    next();
+  },
+  express.static(path.resolve(process.cwd(), 'uploads'), {
+    maxAge: '7d',
+    immutable: true,
+  }),
+);
 
 // Trust proxy for correct IP resolution behind load balancers/reverse proxies
 app.set('trust proxy', 1);
@@ -154,8 +181,8 @@ app.get('/health', (_req: Request, res: Response) => {
     api: {
       versions: ['v1', 'v2'],
       current: 'v1',
-      base: '/api'
-    }
+      base: '/api',
+    },
   });
 });
 
@@ -168,7 +195,8 @@ app.get('/', (_req: Request, res: Response) => {
     success: true,
     data: {
       name: 'AstroVerse API',
-      description: 'Astrology SaaS Platform - Natal chart generation, personality analysis, and forecasting',
+      description:
+        'Astrology SaaS Platform - Natal chart generation, personality analysis, and forecasting',
       version: '1.0.0',
       documentation: '/api/docs',
       health: '/health',
@@ -181,9 +209,9 @@ app.get('/', (_req: Request, res: Response) => {
         calendar: '/api/v1/calendar',
         lunarReturn: '/api/v1/lunar-return',
         synastry: '/api/v1/synastry',
-        solarReturns: '/api/v1/solar-returns'
-      }
-    }
+        solarReturns: '/api/v1/solar-returns',
+      },
+    },
   });
 });
 

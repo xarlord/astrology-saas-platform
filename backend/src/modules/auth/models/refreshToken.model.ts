@@ -28,7 +28,10 @@ export interface CreateRefreshTokenInput {
 /**
  * Create a new refresh token (stores hashed token)
  */
-export async function createRefreshToken(input: CreateRefreshTokenInput, trx?: Knex.Transaction): Promise<RefreshToken> {
+export async function createRefreshToken(
+  input: CreateRefreshTokenInput,
+  trx?: Knex.Transaction,
+): Promise<RefreshToken> {
   const query = trx || db;
   const hashedToken = await bcrypt.hash(input.token, 10);
   const [refreshToken] = await query<RefreshToken>('refresh_tokens')
@@ -83,12 +86,10 @@ export async function revokeRefreshToken(token: string, trx?: Knex.Transaction):
   if (!record) return false;
 
   const query = trx || db;
-  const updated = await query<RefreshToken>('refresh_tokens')
-    .where({ id: record.id })
-    .update({
-      revoked: true,
-      revoked_at: new Date(),
-    });
+  const updated = await query<RefreshToken>('refresh_tokens').where({ id: record.id }).update({
+    revoked: true,
+    revoked_at: new Date(),
+  });
 
   return updated > 0;
 }
@@ -96,7 +97,10 @@ export async function revokeRefreshToken(token: string, trx?: Knex.Transaction):
 /**
  * Revoke all refresh tokens for a user (except current token)
  */
-export async function revokeAllUserRefreshTokens(userId: string, exceptToken?: string): Promise<number> {
+export async function revokeAllUserRefreshTokens(
+  userId: string,
+  exceptToken?: string,
+): Promise<number> {
   // Find the current token record to exclude it
   let exceptId: string | undefined;
   if (exceptToken) {
@@ -127,9 +131,7 @@ export async function revokeAllUserRefreshTokens(userId: string, exceptToken?: s
  * Delete expired refresh tokens (cleanup job)
  */
 export async function deleteExpiredRefreshTokens(): Promise<number> {
-  return db<RefreshToken>('refresh_tokens')
-    .where('expires_at', '<', new Date())
-    .delete();
+  return db<RefreshToken>('refresh_tokens').where('expires_at', '<', new Date()).delete();
 }
 
 /**

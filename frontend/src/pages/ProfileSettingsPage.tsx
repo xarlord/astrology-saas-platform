@@ -133,7 +133,7 @@ export const ProfileSettingsPage: React.FC = () => {
       });
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus('idle'), TIMEOUTS.SAVE_STATUS_DURATION_MS);
-    } catch (error) {
+    } catch {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), TIMEOUTS.SAVE_ERROR_DURATION_MS);
     }
@@ -244,7 +244,11 @@ export const ProfileSettingsPage: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="border-b border-white/10 overflow-x-auto" role="tablist" aria-label="Settings sections">
+        <div
+          className="border-b border-white/10 overflow-x-auto"
+          role="tablist"
+          aria-label="Settings sections"
+        >
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -407,7 +411,10 @@ export const ProfileSettingsPage: React.FC = () => {
                       <h3 className="text-sm font-medium text-slate-300">Change Password</h3>
                       <div className="space-y-3">
                         <div className="space-y-2">
-                          <label htmlFor="current-password" className="text-sm font-medium text-slate-300">
+                          <label
+                            htmlFor="current-password"
+                            className="text-sm font-medium text-slate-300"
+                          >
                             Current password
                           </label>
                           <input
@@ -418,7 +425,10 @@ export const ProfileSettingsPage: React.FC = () => {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label htmlFor="new-password" className="text-sm font-medium text-slate-300">
+                          <label
+                            htmlFor="new-password"
+                            className="text-sm font-medium text-slate-300"
+                          >
                             New password
                           </label>
                           <input
@@ -429,7 +439,10 @@ export const ProfileSettingsPage: React.FC = () => {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label htmlFor="confirm-password" className="text-sm font-medium text-slate-300">
+                          <label
+                            htmlFor="confirm-password"
+                            className="text-sm font-medium text-slate-300"
+                          >
                             Confirm new password
                           </label>
                           <input
@@ -755,7 +768,9 @@ export const ProfileSettingsPage: React.FC = () => {
               <div className="space-y-5">
                 <Toggle
                   checked={premiumFeatures.autoDeliveryMonthlyReport}
-                  onChange={(checked) => handlePremiumFeatureChange('autoDeliveryMonthlyReport', checked)}
+                  onChange={(checked) =>
+                    handlePremiumFeatureChange('autoDeliveryMonthlyReport', checked)
+                  }
                   label="Auto-deliver Monthly Report"
                   helperText="Automatically generate and email your transit report each month"
                 />

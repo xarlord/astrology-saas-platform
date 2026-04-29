@@ -35,12 +35,13 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'sun',
     planet2: 'moon',
     aspect: 'conjunction',
-    interpretation: 'A powerful emotional and conscious connection. You instinctively understand each other\'s core needs and emotional nature.',
+    interpretation:
+      "A powerful emotional and conscious connection. You instinctively understand each other's core needs and emotional nature.",
     strength: 'harmonious',
     relationshipArea: 'Emotional bonding and mutual understanding',
     advice: [
       'Honor this deep connection',
-      'Support each other\'s emotional needs',
+      "Support each other's emotional needs",
       'Use this understanding to navigate challenges together',
     ],
   },
@@ -48,7 +49,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'sun',
     planet2: 'moon',
     aspect: 'opposition',
-    interpretation: 'Tension between conscious desires and emotional needs creates opportunities for growth and integration.',
+    interpretation:
+      'Tension between conscious desires and emotional needs creates opportunities for growth and integration.',
     strength: 'challenging',
     relationshipArea: 'Balancing self-expression with emotional needs',
     advice: [
@@ -61,7 +63,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'sun',
     planet2: 'moon',
     aspect: 'trine',
-    interpretation: 'Natural harmony and flow between your conscious and emotional natures. You instinctively "get" each other.',
+    interpretation:
+      'Natural harmony and flow between your conscious and emotional natures. You instinctively "get" each other.',
     strength: 'harmonious',
     relationshipArea: 'Emotional compatibility and mutual support',
     advice: [
@@ -76,12 +79,13 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'sun',
     planet2: 'sun',
     aspect: 'conjunction',
-    interpretation: 'Strong identification with each other. You see yourselves reflected in one another, for better or worse.',
+    interpretation:
+      'Strong identification with each other. You see yourselves reflected in one another, for better or worse.',
     strength: 'neutral',
     relationshipArea: 'Core identity and life direction',
     advice: [
       'Maintain your individuality within the relationship',
-      'Support each other\'s goals without merging completely',
+      "Support each other's goals without merging completely",
       'Use this connection to grow together',
     ],
   },
@@ -89,7 +93,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'sun',
     planet2: 'sun',
     aspect: 'trine',
-    interpretation: 'Easy compatibility in life goals and basic approaches. You naturally understand each other\'s way of being.',
+    interpretation:
+      "Easy compatibility in life goals and basic approaches. You naturally understand each other's way of being.",
     strength: 'harmonious',
     relationshipArea: 'Life direction and self-expression',
     advice: [
@@ -104,24 +109,26 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'moon',
     planet2: 'moon',
     aspect: 'conjunction',
-    interpretation: 'Deep emotional resonance. You feel each other\'s feelings and react similarly to emotional situations.',
+    interpretation:
+      "Deep emotional resonance. You feel each other's feelings and react similarly to emotional situations.",
     strength: 'harmonious',
     relationshipArea: 'Emotional bonding and domestic harmony',
     advice: [
       'Create a nurturing home together',
       'Honor this emotional connection',
-      'Be aware of amplifying each other\'s moods',
+      "Be aware of amplifying each other's moods",
     ],
   },
   {
     planet1: 'moon',
     planet2: 'moon',
     aspect: 'opposition',
-    interpretation: 'Emotional differences that can be complementary or conflicting. Learning to understand different emotional needs.',
+    interpretation:
+      'Emotional differences that can be complementary or conflicting. Learning to understand different emotional needs.',
     strength: 'challenging',
     relationshipArea: 'Emotional understanding and family dynamics',
     advice: [
-      'Learn from each other\'s emotional approaches',
+      "Learn from each other's emotional approaches",
       'Give space for different emotional expressions',
       'Find common ground in emotional needs',
     ],
@@ -132,7 +139,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'venus',
     planet2: 'mars',
     aspect: 'conjunction',
-    interpretation: 'Powerful romantic and sexual attraction. Your love nature and desire nature are aligned.',
+    interpretation:
+      'Powerful romantic and sexual attraction. Your love nature and desire nature are aligned.',
     strength: 'harmonious',
     relationshipArea: 'Romance, passion, and sexual chemistry',
     advice: [
@@ -145,7 +153,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'venus',
     planet2: 'mars',
     aspect: 'opposition',
-    interpretation: 'Strong attraction but potential conflict between how you give love and how you want to receive it.',
+    interpretation:
+      'Strong attraction but potential conflict between how you give love and how you want to receive it.',
     strength: 'challenging',
     relationshipArea: 'Romantic dynamics and sexual expression',
     advice: [
@@ -158,7 +167,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'venus',
     planet2: 'mars',
     aspect: 'trine',
-    interpretation: 'Easy flow of romantic and sexual energy. Natural affinity in expressing love and desire.',
+    interpretation:
+      'Easy flow of romantic and sexual energy. Natural affinity in expressing love and desire.',
     strength: 'harmonious',
     relationshipArea: 'Romance, creativity, and shared pleasures',
     advice: [
@@ -173,7 +183,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'venus',
     planet2: 'venus',
     aspect: 'conjunction',
-    interpretation: 'Shared values and aesthetic preferences. You appreciate similar things in life and love.',
+    interpretation:
+      'Shared values and aesthetic preferences. You appreciate similar things in life and love.',
     strength: 'harmonious',
     relationshipArea: 'Shared values, aesthetics, and pleasures',
     advice: [
@@ -186,7 +197,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'venus',
     planet2: 'venus',
     aspect: 'trine',
-    interpretation: 'Harmonious expression of love and affection. Similar ways of showing and receiving love.',
+    interpretation:
+      'Harmonious expression of love and affection. Similar ways of showing and receiving love.',
     strength: 'harmonious',
     relationshipArea: 'Affection, social activities, and enjoyment',
     advice: [
@@ -201,7 +213,8 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'mercury',
     planet2: 'mercury',
     aspect: 'conjunction',
-    interpretation: 'Similar thought processes and communication styles. You "speak the same language" mentally.',
+    interpretation:
+      'Similar thought processes and communication styles. You "speak the same language" mentally.',
     strength: 'harmonious',
     relationshipArea: 'Communication and intellectual connection',
     advice: [
@@ -220,7 +233,7 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     advice: [
       'Explore shared interests together',
       'Engage in stimulating conversations',
-      'Learn from each other\'s perspectives',
+      "Learn from each other's perspectives",
     ],
   },
 
@@ -229,20 +242,22 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'mars',
     planet2: 'mars',
     aspect: 'conjunction',
-    interpretation: 'Similar energy levels and drive. You understand each other\'s actions and motivations.',
+    interpretation:
+      "Similar energy levels and drive. You understand each other's actions and motivations.",
     strength: 'neutral',
     relationshipArea: 'Shared activities, goals, and energy',
     advice: [
       'Channel combined energy constructively',
       'Avoid competitive dynamics',
-      'Support each other\'s initiatives',
+      "Support each other's initiatives",
     ],
   },
   {
     planet1: 'mars',
     planet2: 'mars',
     aspect: 'square',
-    interpretation: 'Different ways of taking action can cause friction. Learning to work with different energies.',
+    interpretation:
+      'Different ways of taking action can cause friction. Learning to work with different energies.',
     strength: 'challenging',
     relationshipArea: 'Action, initiative, and conflict resolution',
     advice: [
@@ -257,7 +272,7 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'jupiter',
     planet2: 'jupiter',
     aspect: 'trine',
-    interpretation: 'Shared philosophy and optimism. You expand each other\'s horizons and beliefs.',
+    interpretation: "Shared philosophy and optimism. You expand each other's horizons and beliefs.",
     strength: 'harmonious',
     relationshipArea: 'Growth, exploration, and shared wisdom',
     advice: [
@@ -272,12 +287,13 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     planet1: 'saturn',
     planet2: 'saturn',
     aspect: 'conjunction',
-    interpretation: 'Shared sense of responsibility and commitment. Serious and potentially long-lasting bond.',
+    interpretation:
+      'Shared sense of responsibility and commitment. Serious and potentially long-lasting bond.',
     strength: 'neutral',
     relationshipArea: 'Commitment, responsibility, and structure',
     advice: [
       'Build solid foundations together',
-      'Support each other\'s ambitions',
+      "Support each other's ambitions",
       'Avoid being too rigid or serious',
     ],
   },
@@ -290,7 +306,7 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
     relationshipArea: 'Commitment, boundaries, and life lessons',
     advice: [
       'Find middle ground on structure',
-      'Learn from each other\'s lessons',
+      "Learn from each other's lessons",
       'Build trust through shared experiences',
     ],
   },
@@ -300,22 +316,25 @@ export const planetPairSynastry: PlanetPairInterpretation[] = [
 export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = {
   1: {
     house: 1,
-    meaning: 'When your planets fall in their 1st house, you strongly influence their self-image and identity.',
-    influence: 'You help them see themselves in new ways. Your presence is significant to their self-expression.',
+    meaning:
+      'When your planets fall in their 1st house, you strongly influence their self-image and identity.',
+    influence:
+      'You help them see themselves in new ways. Your presence is significant to their self-expression.',
     challenges: [
-      'Potential for one person to dominate the other\'s identity',
+      "Potential for one person to dominate the other's identity",
       'Risk of merging too much',
       'Difficulty maintaining individuality',
     ],
     opportunities: [
       'Help each other grow and evolve',
-      'Strengthen each other\'s self-confidence',
+      "Strengthen each other's self-confidence",
       'Discover new aspects of yourselves together',
     ],
   },
   2: {
     house: 2,
-    meaning: 'When your planets fall in their 2nd house, you influence their values, finances, and sense of self-worth.',
+    meaning:
+      'When your planets fall in their 2nd house, you influence their values, finances, and sense of self-worth.',
     influence: 'You affect how they approach material security and what they value in life.',
     challenges: [
       'Different attitudes toward money can cause friction',
@@ -330,7 +349,8 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
   },
   3: {
     house: 3,
-    meaning: 'When your planets fall in their 3rd house, you influence their communication style and mental processes.',
+    meaning:
+      'When your planets fall in their 3rd house, you influence their communication style and mental processes.',
     influence: 'You affect how they think, learn, and express themselves.',
     challenges: [
       'Communication style differences',
@@ -339,13 +359,14 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
     ],
     opportunities: [
       'Learn from each other constantly',
-      'Stimulate each other\'s minds',
+      "Stimulate each other's minds",
       'Improve communication together',
     ],
   },
   4: {
     house: 4,
-    meaning: 'When your planets fall in their 4th house, you deeply influence their emotional nature and home life.',
+    meaning:
+      'When your planets fall in their 4th house, you deeply influence their emotional nature and home life.',
     influence: 'You affect their sense of security, family dynamics, and private self.',
     challenges: [
       'Emotional triggers in home/family areas',
@@ -360,7 +381,8 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
   },
   5: {
     house: 5,
-    meaning: 'When your planets fall in their 5th house, you influence their creativity, romance, and self-expression.',
+    meaning:
+      'When your planets fall in their 5th house, you influence their creativity, romance, and self-expression.',
     influence: 'You bring out their playful, creative side and affect their romantic expression.',
     challenges: [
       'Creative differences or competition',
@@ -368,14 +390,15 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
       'Different approaches to fun and leisure',
     ],
     opportunities: [
-      'Inspire each other\'s creativity',
+      "Inspire each other's creativity",
       'Enjoy romantic and playful connection',
       'Express yourselves authentically together',
     ],
   },
   6: {
     house: 6,
-    meaning: 'When your planets fall in their 6th house, you influence their work, health, and daily routines.',
+    meaning:
+      'When your planets fall in their 6th house, you influence their work, health, and daily routines.',
     influence: 'You affect how they approach service, health, and daily habits.',
     challenges: [
       'Different work ethics or habits',
@@ -384,13 +407,14 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
     ],
     opportunities: [
       'Improve daily routines together',
-      'Support each other\'s health goals',
+      "Support each other's health goals",
       'Serve others as a team',
     ],
   },
   7: {
     house: 7,
-    meaning: 'When your planets fall in their 7th house, you significantly influence their relationships and partnerships.',
+    meaning:
+      'When your planets fall in their 7th house, you significantly influence their relationships and partnerships.',
     influence: 'You are important to how they relate to others and approach commitment.',
     challenges: [
       'Dependency issues',
@@ -405,7 +429,8 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
   },
   8: {
     house: 8,
-    meaning: 'When your planets fall in their 8th house, you have a deep, transformative influence on them.',
+    meaning:
+      'When your planets fall in their 8th house, you have a deep, transformative influence on them.',
     influence: 'You affect their relationship with intimacy, shared resources, and transformation.',
     challenges: [
       'Power dynamics and control issues',
@@ -420,7 +445,8 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
   },
   9: {
     house: 9,
-    meaning: 'When your planets fall in their 9th house, you influence their beliefs, philosophy, and life direction.',
+    meaning:
+      'When your planets fall in their 9th house, you influence their beliefs, philosophy, and life direction.',
     influence: 'You affect their worldview, spiritual path, and approach to expansion.',
     challenges: [
       'Different beliefs or philosophies',
@@ -428,44 +454,43 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
       'Conflicting travel or educational goals',
     ],
     opportunities: [
-      'Expand each other\'s horizons',
+      "Expand each other's horizons",
       'Explore beliefs together',
       'Grow philosophically',
     ],
   },
   10: {
     house: 10,
-    meaning: 'When your planets fall in their 10th house, you influence their career, public image, and ambitions.',
-    influence: 'You affect their professional life and how they\'re seen in the world.',
+    meaning:
+      'When your planets fall in their 10th house, you influence their career, public image, and ambitions.',
+    influence: "You affect their professional life and how they're seen in the world.",
     challenges: [
       'Career competition or conflict',
       'Different ambitions or priorities',
       'Public image concerns',
     ],
     opportunities: [
-      'Support each other\'s career goals',
+      "Support each other's career goals",
       'Build professional success together',
       'Achieve recognition as a couple',
     ],
   },
   11: {
     house: 11,
-    meaning: 'When your planets fall in their 11th house, you influence their friendships, goals, and community connections.',
+    meaning:
+      'When your planets fall in their 11th house, you influence their friendships, goals, and community connections.',
     influence: 'You affect their social circle and hopes for the future.',
-    challenges: [
-      'Friendship dynamics',
-      'Different social needs',
-      'Conflicting goals or dreams',
-    ],
+    challenges: ['Friendship dynamics', 'Different social needs', 'Conflicting goals or dreams'],
     opportunities: [
       'Build a shared social network',
-      'Support each other\'s dreams',
+      "Support each other's dreams",
       'Create community together',
     ],
   },
   12: {
     house: 12,
-    meaning: 'When your planets fall in their 12th house, you have a spiritual, unconscious influence on them.',
+    meaning:
+      'When your planets fall in their 12th house, you have a spiritual, unconscious influence on them.',
     influence: 'You affect their inner world, spirituality, and relationship with the unconscious.',
     challenges: [
       'Unconscious triggers',
@@ -475,7 +500,7 @@ export const houseOverlaySynastry: Record<number, HouseOverlayInterpretation> = 
     opportunities: [
       'Deep spiritual growth together',
       'Explore the unconscious',
-      'Support each other\'s inner development',
+      "Support each other's inner development",
     ],
   },
 };
@@ -486,12 +511,14 @@ export const synastryAspectThemes: Record<string, SynastryAspectTheme> = {
     aspect: 'conjunction',
     generalMeaning: 'Merging and fusion of energies',
     inRelationship: 'The two planets function as a unit, blending their energies completely.',
-    growthPotential: 'Learn to use this combined energy constructively while maintaining individuality.',
+    growthPotential:
+      'Learn to use this combined energy constructively while maintaining individuality.',
   },
   opposition: {
     aspect: 'opposition',
     generalMeaning: 'Polarity and tension between complementary forces',
-    inRelationship: 'The planets pull in opposite directions, creating awareness and potential conflict.',
+    inRelationship:
+      'The planets pull in opposite directions, creating awareness and potential conflict.',
     growthPotential: 'Integrate opposing qualities to find balance and wholeness.',
   },
   trine: {
@@ -535,7 +562,7 @@ export const elementalCompatibilityAdvice: Record<string, string[]> = {
   ],
   'earth-earth': [
     'Shared practical approach and values',
-    'Support each other\'s material goals',
+    "Support each other's material goals",
     'Avoid becoming too stuck in routines',
   ],
   'air-air': [
@@ -550,7 +577,7 @@ export const elementalCompatibilityAdvice: Record<string, string[]> = {
   ],
   'fire-earth': [
     'Fire inspires, Earth grounds - complementary',
-    'Learn from each other\'s different approaches',
+    "Learn from each other's different approaches",
     'Balance spontaneity with planning',
   ],
   'fire-air': [

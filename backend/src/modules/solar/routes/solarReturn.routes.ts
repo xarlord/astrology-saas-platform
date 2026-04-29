@@ -108,11 +108,7 @@ router.use(authenticate);
  *       401:
  *         description: Unauthorized
  */
-router.post(
-  '/calculate',
-  validateBody(calculateSchema),
-  calculateSolarReturn
-);
+router.post('/calculate', validateBody(calculateSchema), calculateSolarReturn);
 
 /**
  * @route   GET /api/v1/solar-returns/year/:year
@@ -142,10 +138,7 @@ router.post(
  *       404:
  *         description: Solar return not found for the given year
  */
-router.get(
-  '/year/:year',
-  getSolarReturnByYear
-);
+router.get('/year/:year', getSolarReturnByYear);
 
 /**
  * @route   GET /api/v1/solar-returns/:id
@@ -174,10 +167,7 @@ router.get(
  *       404:
  *         description: Solar return not found
  */
-router.get(
-  '/:id',
-  getSolarReturnById
-);
+router.get('/:id', getSolarReturnById);
 
 /**
  * @route   GET /api/v1/solar-returns/history
@@ -197,10 +187,7 @@ router.get(
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  '/history',
-  getSolarReturnHistory
-);
+router.get('/history', getSolarReturnHistory);
 
 /**
  * @route   POST /api/v1/solar-returns/:id/recalculate
@@ -261,11 +248,7 @@ router.get(
  *       404:
  *         description: Solar return not found
  */
-router.post(
-  '/:id/recalculate',
-  validateBody(recalculateSchema),
-  recalculateSolarReturn
-);
+router.post('/:id/recalculate', validateBody(recalculateSchema), recalculateSolarReturn);
 
 /**
  * @route   GET /api/v1/solar-returns/stats
@@ -285,10 +268,7 @@ router.post(
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  '/stats',
-  getSolarReturnStats
-);
+router.get('/stats', getSolarReturnStats);
 
 /**
  * @route   GET /api/v1/solar-returns/years/available
@@ -308,10 +288,7 @@ router.get(
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  '/years/available',
-  getAvailableYears
-);
+router.get('/years/available', getAvailableYears);
 
 /**
  * @route   DELETE /api/v1/solar-returns/:id
@@ -340,9 +317,6 @@ router.get(
  *       404:
  *         description: Solar return not found
  */
-router.delete(
-  '/:id',
-  deleteSolarReturn
-);
+router.delete('/:id', deleteSolarReturn);
 
 export { router as SolarReturnRoutes };

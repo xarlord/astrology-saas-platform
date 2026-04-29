@@ -37,7 +37,7 @@ export const SECOND_CHART = {
   zodiac: 'tropical',
 };
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Parse a cookie string into a Map (name -> value).
@@ -98,7 +98,7 @@ export async function api(
   path: string,
   body?: Record<string, unknown>,
   headers?: Record<string, string>,
-  retries = 2
+  retries = 2,
 ) {
   const opts: RequestInit = {
     method,
@@ -156,7 +156,7 @@ export async function authed(
   token: string,
   cookies: string,
   csrf: string,
-  body?: Record<string, unknown>
+  body?: Record<string, unknown>,
 ) {
   const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
@@ -215,21 +215,37 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
       const auth = await registerTestUser();
 
       const chartData = { ...SAMPLE_CHART, ...chartOverrides };
-      const chartRes = await authed('POST', '/charts', auth.accessToken, auth.cookies, '', chartData);
+      const chartRes = await authed(
+        'POST',
+        '/charts',
+        auth.accessToken,
+        auth.cookies,
+        '',
+        chartData,
+      );
 
       if (chartRes.status !== 201) {
         if (chartRes.status === 429) {
           await sleep(3000 * (attempt + 1));
           continue;
         }
-        throw new Error(`Chart creation failed: ${chartRes.status} ${JSON.stringify(chartRes.data)}`);
+        throw new Error(
+          `Chart creation failed: ${chartRes.status} ${JSON.stringify(chartRes.data)}`,
+        );
       }
 
-        const createdChart = (chartRes.data as any).data.chart;
+      const createdChart = (chartRes.data as any).data.chart;
 
       // Calculate the chart so analysis and other endpoints have data
       const { csrf: calcCsrf, cookies: calcCookies } = await getCsrf(auth.cookies);
-      const calcRes = await authed('POST', `/charts/${createdChart.id}/calculate`, auth.accessToken, calcCookies, calcCsrf, {});
+      const calcRes = await authed(
+        'POST',
+        `/charts/${createdChart.id}/calculate`,
+        auth.accessToken,
+        calcCookies,
+        calcCsrf,
+        {},
+      );
 
       if (calcRes.status === 200 && (calcRes.data as any)?.data?.chart) {
         // Use the fully-calculated chart object
@@ -242,7 +258,7 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
         chart: createdChart,
       };
     } catch (err) {
-      if (attempt < 2 && (err instanceof Error && err.message.includes('429'))) {
+      if (attempt < 2 && err instanceof Error && err.message.includes('429')) {
         await sleep(3000 * (attempt + 1));
         continue;
       }

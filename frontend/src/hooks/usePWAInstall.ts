@@ -27,8 +27,10 @@ export function usePWAInstall(): PWAInstallState {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return window.matchMedia('(display-mode: standalone)').matches
-      || (navigator as unknown as { standalone?: boolean }).standalone === true;
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as unknown as { standalone?: boolean }).standalone === true
+    );
   });
 
   useEffect(() => {

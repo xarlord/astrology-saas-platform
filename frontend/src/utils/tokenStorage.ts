@@ -29,4 +29,3 @@ function readPersistedState(): PersistedAuthState | null {
 export function getAccessToken(): string | null {
   return readPersistedState()?.accessToken ?? null;
 }
-

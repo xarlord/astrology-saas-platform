@@ -21,7 +21,7 @@ export const errorHandler = (
   err: ErrorWithStatusCode,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   // Check if error is an AppError
   const isAppError = err instanceof AppError;
@@ -63,8 +63,8 @@ export const errorHandler = (
       statusCode,
       ...(isAppError && {
         errorCode: (err as AppError).errorCode,
-        timestamp: (err as AppError).timestamp.toISOString()
-      })
+        timestamp: (err as AppError).timestamp.toISOString(),
+      }),
     },
   };
 
@@ -74,14 +74,19 @@ export const errorHandler = (
       stack: err.stack,
       ...(err.details && typeof err.details === 'object' ? { originalDetails: err.details } : {}),
       isOperational,
-      errorType
+      errorType,
     };
   }
 
   // Include details for operational errors only in development
-  if (process.env.NODE_ENV === 'development' && isOperational && err.details && typeof err.details === 'object') {
+  if (
+    process.env.NODE_ENV === 'development' &&
+    isOperational &&
+    err.details &&
+    typeof err.details === 'object'
+  ) {
     errorResponse.error.details = {
-      ...err.details as object
+      ...(err.details as object),
     };
   }
 
@@ -94,7 +99,7 @@ export const errorHandler = (
  * Wraps async route handlers to catch errors
  */
 export const asyncHandler = <R extends Request = Request>(
-  fn: (req: R, res: Response, next: NextFunction) => Promise<unknown>
+  fn: (req: R, res: Response, next: NextFunction) => Promise<unknown>,
 ) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -146,7 +151,7 @@ export const createNotFoundError = (resource?: string): AppError => {
     resource ? `${resource} not found` : 'Resource not found',
     404,
     true,
-    'NOT_FOUND'
+    'NOT_FOUND',
   );
 };
 

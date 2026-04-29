@@ -36,7 +36,7 @@ describe('Button', () => {
     it('should render primary variant by default', () => {
       render(<Button>Primary</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-indigo-600');
+      expect(button).toHaveClass('bg-purple-600');
     });
 
     it('should render secondary variant', () => {
@@ -242,7 +242,7 @@ describe('Button', () => {
       render(<Button className="custom-class">Custom</Button>);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('custom-class');
-      expect(button).toHaveClass('bg-indigo-600'); // Still has variant class
+      expect(button).toHaveClass('bg-purple-600'); // Still has variant class
     });
   });
 

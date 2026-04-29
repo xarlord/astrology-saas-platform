@@ -40,10 +40,11 @@ jest.mock('../../config/database', () => {
 });
 
 // Auto-mock AstronomyEngineService. jest.mock (not jest.doMock!) hoists the
- module,
-// creating a mock class. The controller creates a module-level singleton at import time.
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+(module,
+  // creating a mock class. The controller creates a module-level singleton at import time.
   // We then find that singleton instance via mock.instances[0].
-jest.mock('../../modules/shared/services/astronomyEngine.service');
+  jest.mock('../../modules/shared/services/astronomyEngine.service'));
 
 import { AstronomyEngineService } from '../../modules/shared/services/astronomyEngine.service';
 import knex from '../../config/database';
@@ -92,13 +93,11 @@ function makeMockPositions(): Map<string, any> {
 
 /**
  * Get the mock instance that the AstronomyEngineService that the controller uses.
-  * The controller creates a module-level singleton at import time, so the auto-mock creates it once.
-  */
+ * The controller creates a module-level singleton at import time, so the auto-mock creates it once.
+ */
 function getEngineMockInstance() {
   return (AstronomyEngineService as jest.Mock).mock.instances[0];
 }
-
-
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -179,7 +178,7 @@ describe('Transit Controller', () => {
             startDate: '2024-01-01',
             endDate: '2024-01-07',
           }),
-        })
+        }),
       );
     });
 
@@ -192,8 +191,12 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart not found');
+      await expect(
+        calculateTransits(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        calculateTransits(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow('Chart not found');
     });
 
     it('should throw 400 if chart not calculated', async () => {
@@ -209,8 +212,12 @@ describe('Transit Controller', () => {
       };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
-      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(calculateTransits(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
+      await expect(
+        calculateTransits(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        calculateTransits(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow('Chart must be calculated first');
     });
   });
 
@@ -293,7 +300,9 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
 
-      await expect(getTransitCalendar(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getTransitCalendar(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 
@@ -337,10 +346,12 @@ describe('Transit Controller', () => {
       const { first } = getKnexMocks();
       first.mockResolvedValue(null);
 
-      await expect(getTransitDetails(mockRequest, mockResponse as Response, mockNext))
-        .rejects.toThrow(AppError);
-      await expect(getTransitDetails(mockRequest, mockResponse as Response, mockNext))
-        .rejects.toThrow('Transit reading not found');
+      await expect(
+        getTransitDetails(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        getTransitDetails(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow('Transit reading not found');
     });
 
     it('should parse string transit_data and moon_phases', async () => {
@@ -396,7 +407,7 @@ describe('Transit Controller', () => {
           data: expect.objectContaining({
             duration: 'week',
           }),
-        })
+        }),
       );
     });
 
@@ -405,7 +416,9 @@ describe('Transit Controller', () => {
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
 
-      await expect(getTransitForecast(mockRequest, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getTransitForecast(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 

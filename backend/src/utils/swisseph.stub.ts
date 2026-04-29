@@ -7,8 +7,18 @@
 // Zodiac signs
 // Exported for potential future use
 export const ZODIAC_SIGNS = [
-  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+  'aries',
+  'taurus',
+  'gemini',
+  'cancer',
+  'leo',
+  'virgo',
+  'libra',
+  'scorpio',
+  'sagittarius',
+  'capricorn',
+  'aquarius',
+  'pisces',
 ];
 
 // Swiss Ephemeris constants (mock)
@@ -56,15 +66,15 @@ export function swe_set_ephe_path(_path: string): void {
 export function swe_calc_ut(
   tjdut: number,
   ipl: number,
-  _iflag: number
+  _iflag: number,
 ): [number, number, number, number] {
   // Mock: Return realistic planetary positions
-  const baseLongitude = (tjdut % 360);
+  const baseLongitude = tjdut % 360;
   const offset = ipl * 30; // Each planet offset by 30 degrees
 
   const longitude = (baseLongitude + offset) % 360;
-  const latitude = (ipl % 3 - 1) * 2; // -2, 0, or 2 degrees
-  const distance = 1 + (ipl * 0.1); // Slightly increasing distances
+  const latitude = ((ipl % 3) - 1) * 2; // -2, 0, or 2 degrees
+  const distance = 1 + ipl * 0.1; // Slightly increasing distances
 
   return [longitude, latitude, distance, 0];
 }
@@ -76,11 +86,11 @@ export function swe_houses(
   _tjdut: number,
   _geolat: number,
   geolon: number,
-  _hsys: string
+  _hsys: string,
 ): [number[], number, number] {
   // Mock: Generate 12 house cusps
   const cusps: number[] = [];
-  const ascendant = (geolon % 360);
+  const ascendant = geolon % 360;
   const mc = (ascendant + 90) % 360;
 
   for (let i = 0; i < 12; i++) {
@@ -96,12 +106,7 @@ export function swe_houses(
 /**
  * Calculate julian day (mock)
  */
-export function swe_julday(
-  year: number,
-  month: number,
-  day: number,
-  hour: number
-): number {
+export function swe_julday(year: number, month: number, day: number, hour: number): number {
   // Simplified Julian day calculation
   return year * 365 + month * 30 + day + hour / 24;
 }

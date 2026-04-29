@@ -29,34 +29,35 @@ import type {
 } from '../../types/api.types';
 
 // Mock jspdf
-vi.mock('jspdf', () => ({
-  jsPDF: vi.fn().mockImplementation(() => ({
-    setProperties: vi.fn(),
-    setFillColor: vi.fn(),
-    rect: vi.fn(),
-    circle: vi.fn(),
-    setFontSize: vi.fn(),
-    setTextColor: vi.fn(),
-    setFont: vi.fn(),
-    text: vi.fn(),
-    getTextWidth: vi.fn().mockReturnValue(50),
-    setDrawColor: vi.fn(),
-    setLineWidth: vi.fn(),
-    line: vi.fn(),
-    splitTextToSize: vi.fn().mockReturnValue(['test line']),
-    addImage: vi.fn(),
-    addPage: vi.fn(),
-    getNumberOfPages: vi.fn().mockReturnValue(1),
-    setPage: vi.fn(),
-    output: vi.fn().mockReturnValue(new Blob(['pdf content'], { type: 'application/pdf' })),
-    get currentPage(): number {
-      return 1;
-    },
-    internal: {
+vi.mock('jspdf', () => {
+  const MockJsPDF = class {
+    setProperties = vi.fn();
+    setFillColor = vi.fn();
+    rect = vi.fn();
+    circle = vi.fn();
+    setFontSize = vi.fn();
+    setTextColor = vi.fn();
+    setFont = vi.fn();
+    text = vi.fn();
+    getTextWidth = vi.fn().mockReturnValue(50);
+    setDrawColor = vi.fn();
+    setLineWidth = vi.fn();
+    line = vi.fn();
+    splitTextToSize = vi.fn().mockReturnValue(['test line']);
+    addImage = vi.fn();
+    addPage = vi.fn();
+    getNumberOfPages = vi.fn().mockReturnValue(1);
+    setPage = vi.fn();
+    output = vi.fn().mockReturnValue(new Blob(['pdf content'], { type: 'application/pdf' }));
+    currentPage = 1;
+    internal = {
       pageSize: { width: 210, height: 297 },
-    },
-  })),
-}));
+    };
+  };
+  return {
+    jsPDF: MockJsPDF,
+  };
+});
 
 // Mock html2canvas
 vi.mock('html2canvas', () => ({

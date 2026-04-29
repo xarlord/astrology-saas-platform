@@ -5,6 +5,12 @@
 import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { validateRequest } from '../../../middleware/validateRequest';
+import {
+  UpdateUserProfileSchema,
+  UpdateUserPreferencesSchema,
+  UpdateEmailPreferencesSchema,
+} from '../../../shared/schemas/user.validation';
 import * as UserController from '../controllers/user.controller';
 
 const router = Router();
@@ -30,9 +36,12 @@ router.use(authenticate);
  * @desc    Get current user profile
  * @access  Private
  */
-router.get('/me', asyncHandler(async (req, res) => {
-  await UserController.getCurrentUser(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/me',
+  asyncHandler(async (req, res) => {
+    await UserController.getCurrentUser(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -52,9 +61,13 @@ router.get('/me', asyncHandler(async (req, res) => {
  * @desc    Update current user profile
  * @access  Private
  */
-router.put('/me', asyncHandler(async (req, res) => {
-  await UserController.updateCurrentUser(req as AuthenticatedRequest, res);
-}));
+router.put(
+  '/me',
+  validateRequest(UpdateUserProfileSchema),
+  asyncHandler(async (req, res) => {
+    await UserController.updateCurrentUser(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -74,9 +87,12 @@ router.put('/me', asyncHandler(async (req, res) => {
  * @desc    Get all charts for current user
  * @access  Private
  */
-router.get('/me/charts', asyncHandler(async (req, res) => {
-  await UserController.getUserCharts(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/me/charts',
+  asyncHandler(async (req, res) => {
+    await UserController.getUserCharts(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -96,9 +112,12 @@ router.get('/me/charts', asyncHandler(async (req, res) => {
  * @desc    Get user preferences
  * @access  Private
  */
-router.get('/me/preferences', asyncHandler(async (req, res) => {
-  await UserController.getUserPreferences(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/me/preferences',
+  asyncHandler(async (req, res) => {
+    await UserController.getUserPreferences(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -118,9 +137,13 @@ router.get('/me/preferences', asyncHandler(async (req, res) => {
  * @desc    Update user preferences
  * @access  Private
  */
-router.put('/me/preferences', asyncHandler(async (req, res) => {
-  await UserController.updateUserPreferences(req as AuthenticatedRequest, res);
-}));
+router.put(
+  '/me/preferences',
+  validateRequest(UpdateUserPreferencesSchema),
+  asyncHandler(async (req, res) => {
+    await UserController.updateUserPreferences(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -140,9 +163,12 @@ router.put('/me/preferences', asyncHandler(async (req, res) => {
  * @desc    Get email notification preferences
  * @access  Private
  */
-router.get('/me/email-preferences', asyncHandler(async (req, res) => {
-  await UserController.getEmailPreferences(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/me/email-preferences',
+  asyncHandler(async (req, res) => {
+    await UserController.getEmailPreferences(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -162,9 +188,13 @@ router.get('/me/email-preferences', asyncHandler(async (req, res) => {
  * @desc    Update email notification preferences
  * @access  Private
  */
-router.put('/me/email-preferences', asyncHandler(async (req, res) => {
-  await UserController.updateEmailPreferences(req as AuthenticatedRequest, res);
-}));
+router.put(
+  '/me/email-preferences',
+  validateRequest(UpdateEmailPreferencesSchema),
+  asyncHandler(async (req, res) => {
+    await UserController.updateEmailPreferences(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -186,8 +216,11 @@ router.put('/me/email-preferences', asyncHandler(async (req, res) => {
  * @desc    Delete user account
  * @access  Private
  */
-router.delete('/me', asyncHandler(async (req, res) => {
-  await UserController.deleteAccount(req as AuthenticatedRequest, res);
-}));
+router.delete(
+  '/me',
+  asyncHandler(async (req, res) => {
+    await UserController.deleteAccount(req as AuthenticatedRequest, res);
+  }),
+);
 
 export { router };

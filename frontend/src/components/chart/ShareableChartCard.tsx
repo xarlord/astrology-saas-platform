@@ -73,9 +73,9 @@ export interface ShareableChartCardProps {
 
 const CARD_SIZES = {
   'instagram-story': { width: 1080, height: 1920, aspectRatio: '9/16' },
-  'twitter': { width: 1200, height: 675, aspectRatio: '16/9' },
-  'pinterest': { width: 1000, height: 1500, aspectRatio: '2/3' },
-  'square': { width: 1080, height: 1080, aspectRatio: '1/1' },
+  twitter: { width: 1200, height: 675, aspectRatio: '16/9' },
+  pinterest: { width: 1000, height: 1500, aspectRatio: '2/3' },
+  square: { width: 1080, height: 1080, aspectRatio: '1/1' },
   'daily-insight': { width: 800, height: 418, aspectRatio: '1.91/1' },
 } as const;
 
@@ -116,7 +116,7 @@ function getZodiacSymbol(sign: string): string {
   return ZODIAC_SYMBOLS[sign.toLowerCase()] ?? '⚪';
 }
 
-function formatDegree(degree?: number): string {
+function _formatDegree(degree?: number): string {
   if (degree === undefined) return '';
   return `${degree}°`;
 }
@@ -193,7 +193,7 @@ function ElementBalance({
   const total = elements.fire + elements.earth + elements.air + elements.water;
   const maxVal = Math.max(elements.fire, elements.earth, elements.air, elements.water);
 
-  const elementEntries: Array<{ key: keyof ElementBalance; label: string }> = [
+  const elementEntries: { key: keyof ElementBalance; label: string }[] = [
     { key: 'fire', label: 'Fire' },
     { key: 'earth', label: 'Earth' },
     { key: 'air', label: 'Air' },
@@ -271,9 +271,7 @@ function AdditionalPlacements({
           key={placement.planet}
           className={clsx(
             'flex items-center gap-2 px-3 py-2 rounded-lg',
-            isDark
-              ? 'bg-white/5 border border-white/10'
-              : 'bg-violet-50 border border-violet-200',
+            isDark ? 'bg-white/5 border border-white/10' : 'bg-violet-50 border border-violet-200',
           )}
         >
           <span className="text-lg" role="img" aria-hidden="true">
@@ -305,13 +303,7 @@ function AdditionalPlacements({
 }
 
 /** Insight quote with gold accent */
-function InsightQuote({
-  quote,
-  variant = 'dark',
-}: {
-  quote: string;
-  variant?: 'dark' | 'light';
-}) {
+function InsightQuote({ quote, variant = 'dark' }: { quote: string; variant?: 'dark' | 'light' }) {
   const isDark = variant === 'dark';
 
   return (
@@ -465,7 +457,10 @@ function InstagramStoryLayout({
 
       {/* Footer */}
       <div
-        className={clsx('absolute bottom-4 text-[10px]', isDark ? 'text-gray-600' : 'text-gray-400')}
+        className={clsx(
+          'absolute bottom-4 text-[10px]',
+          isDark ? 'text-gray-600' : 'text-gray-400',
+        )}
       >
         astroverse.app
       </div>
@@ -499,9 +494,7 @@ function TwitterLayout({
     >
       {/* Left: Big Three */}
       <div className="flex-1">
-        <h2
-          className={clsx('text-4xl font-bold mb-8', isDark ? 'text-white' : 'text-purple-900')}
-        >
+        <h2 className={clsx('text-4xl font-bold mb-8', isDark ? 'text-white' : 'text-purple-900')}>
           {name}
         </h2>
         <div className="flex gap-3 mb-6">
@@ -591,7 +584,9 @@ function PinterestLayout({
       {/* Logo */}
       <div className="w-full flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-[20px] text-purple-400">auto_awesome</span>
+          <span className="material-symbols-outlined text-[20px] text-purple-400">
+            auto_awesome
+          </span>
           <span className={clsx('text-sm font-bold', isDark ? 'text-white' : 'text-purple-900')}>
             ASTROVERSE
           </span>
@@ -617,9 +612,7 @@ function PinterestLayout({
       </div>
 
       {/* Name */}
-      <h2
-        className={clsx('text-2xl font-bold mb-4', isDark ? 'text-white' : 'text-purple-900')}
-      >
+      <h2 className={clsx('text-2xl font-bold mb-4', isDark ? 'text-white' : 'text-purple-900')}>
         {name}
       </h2>
 
@@ -675,9 +668,7 @@ function PinterestLayout({
       )}
 
       {/* Footer */}
-      <div
-        className={clsx('mt-auto pt-4 text-[10px]', isDark ? 'text-gray-600' : 'text-gray-400')}
-      >
+      <div className={clsx('mt-auto pt-4 text-[10px]', isDark ? 'text-gray-600' : 'text-gray-400')}>
         astroverse.app &bull; birth chart
       </div>
     </div>
@@ -696,7 +687,10 @@ function SquareLayout({
   chartWheelSvg,
   elements,
   variant = 'dark',
-}: Omit<ShareableChartCardProps, 'template' | 'className' | 'insightQuote' | 'additionalPlacements'>) {
+}: Omit<
+  ShareableChartCardProps,
+  'template' | 'className' | 'insightQuote' | 'additionalPlacements'
+>) {
   const isDark = variant === 'dark';
 
   return (
@@ -729,7 +723,10 @@ function SquareLayout({
         <div className="text-center">
           <div className="text-5xl mb-2">{getZodiacSymbol(sunSign)}</div>
           <div
-            className={clsx('text-lg font-bold uppercase', isDark ? 'text-white' : 'text-purple-900')}
+            className={clsx(
+              'text-lg font-bold uppercase',
+              isDark ? 'text-white' : 'text-purple-900',
+            )}
           >
             {sunSign}
           </div>
@@ -743,7 +740,9 @@ function SquareLayout({
       <div className="flex-1 flex flex-col justify-center pl-4">
         {/* Logo */}
         <div className="flex items-center gap-1.5 mb-4">
-          <span className="material-symbols-outlined text-[16px] text-purple-400">auto_awesome</span>
+          <span className="material-symbols-outlined text-[16px] text-purple-400">
+            auto_awesome
+          </span>
           <span className={clsx('text-xs font-bold', isDark ? 'text-white/80' : 'text-purple-900')}>
             ASTROVERSE
           </span>
@@ -763,7 +762,9 @@ function SquareLayout({
             )}
           >
             <div className="text-xl">{getZodiacSymbol(moonSign)}</div>
-            <div className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}>
+            <div
+              className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}
+            >
               {moonSign}
             </div>
             {moonDegree !== undefined && (
@@ -777,7 +778,9 @@ function SquareLayout({
             )}
           >
             <div className="text-xl">{getZodiacSymbol(risingSign)}</div>
-            <div className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}>
+            <div
+              className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}
+            >
               {risingSign}
             </div>
             {risingDegree !== undefined && (
@@ -810,7 +813,10 @@ function DailyInsightLayout({
   chartWheelSvg,
   insightQuote,
   variant = 'dark',
-}: Omit<ShareableChartCardProps, 'template' | 'className' | 'elements' | 'additionalPlacements' | 'moonDegree' | 'risingDegree'>) {
+}: Omit<
+  ShareableChartCardProps,
+  'template' | 'className' | 'elements' | 'additionalPlacements' | 'moonDegree' | 'risingDegree'
+>) {
   const isDark = variant === 'dark';
 
   return (
@@ -827,7 +833,10 @@ function DailyInsightLayout({
         <div className="text-center">
           <div className="text-5xl mb-1">{getZodiacSymbol(sunSign)}</div>
           <div
-            className={clsx('text-lg font-bold uppercase', isDark ? 'text-white' : 'text-purple-900')}
+            className={clsx(
+              'text-lg font-bold uppercase',
+              isDark ? 'text-white' : 'text-purple-900',
+            )}
           >
             {sunSign}
           </div>
@@ -841,7 +850,9 @@ function DailyInsightLayout({
       <div className="flex-1 px-6">
         {/* Logo + Name */}
         <div className="flex items-center gap-2 mb-2">
-          <span className="material-symbols-outlined text-[14px] text-purple-400">auto_awesome</span>
+          <span className="material-symbols-outlined text-[14px] text-purple-400">
+            auto_awesome
+          </span>
           <span className={clsx('text-xs font-medium', isDark ? 'text-gray-400' : 'text-gray-500')}>
             {name}
           </span>
@@ -851,19 +862,25 @@ function DailyInsightLayout({
         <div className="flex gap-3 mb-2">
           <div className="flex items-center gap-1">
             <span className="text-lg">{getZodiacSymbol(sunSign)}</span>
-            <span className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}>
+            <span
+              className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}
+            >
               Sun
             </span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-lg">{getZodiacSymbol(moonSign)}</span>
-            <span className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}>
+            <span
+              className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}
+            >
               Moon
             </span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-lg">{getZodiacSymbol(risingSign)}</span>
-            <span className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}>
+            <span
+              className={clsx('text-xs font-medium', isDark ? 'text-gray-300' : 'text-gray-600')}
+            >
               Rising
             </span>
           </div>
@@ -906,7 +923,10 @@ function DailyInsightLayout({
 
       {/* Footer */}
       <div
-        className={clsx('absolute bottom-2 right-4 text-[9px]', isDark ? 'text-gray-600' : 'text-gray-400')}
+        className={clsx(
+          'absolute bottom-2 right-4 text-[9px]',
+          isDark ? 'text-gray-600' : 'text-gray-400',
+        )}
       >
         astroverse.app
       </div>
@@ -929,11 +949,7 @@ const ShareableChartCard: React.FC<ShareableChartCardProps> = ({
   };
 
   return (
-    <div
-      className={className}
-      style={containerStyle}
-      data-testid={`shareable-chart-${template}`}
-    >
+    <div className={className} style={containerStyle} data-testid={`shareable-chart-${template}`}>
       {template === 'instagram-story' && <InstagramStoryLayout {...props} variant={variant} />}
       {template === 'twitter' && <TwitterLayout {...props} variant={variant} />}
       {template === 'pinterest' && <PinterestLayout {...props} variant={variant} />}

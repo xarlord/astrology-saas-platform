@@ -26,32 +26,34 @@ export const saveSubscription = asyncHandler(async (req: Request, res: Response)
   });
 });
 
-export const deleteSubscription = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  if (!req.user) throw new AppError('Unauthorized', 401);
-  const { subscriptionId } = req.params;
-  const userId = (req as AuthenticatedRequest).user.id;
+export const deleteSubscription = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    if (!req.user) throw new AppError('Unauthorized', 401);
+    const { subscriptionId } = req.params;
+    const userId = (req as AuthenticatedRequest).user.id;
 
-  // Verify subscription belongs to user
-  const subscriptions = await pushNotificationService.getUserSubscriptions(userId);
-  const subscription = subscriptions.find((s) => s.id === subscriptionId);
+    // Verify subscription belongs to user
+    const subscriptions = await pushNotificationService.getUserSubscriptions(userId);
+    const subscription = subscriptions.find((s) => s.id === subscriptionId);
 
-  if (!subscription) {
-    res.status(404).json({
-      success: false,
-      error: {
-        message: 'Subscription not found',
-      },
+    if (!subscription) {
+      res.status(404).json({
+        success: false,
+        error: {
+          message: 'Subscription not found',
+        },
+      });
+      return;
+    }
+
+    await pushNotificationService.deleteSubscription(subscriptionId);
+
+    res.json({
+      success: true,
+      message: 'Subscription deleted successfully',
     });
-    return;
-  }
-
-  await pushNotificationService.deleteSubscription(subscriptionId);
-
-  res.json({
-    success: true,
-    message: 'Subscription deleted successfully',
-  });
-});
+  },
+);
 
 export const getSubscriptions = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) throw new AppError('Unauthorized', 401);
@@ -82,21 +84,23 @@ export const sendTestNotification = asyncHandler(async (req: Request, res: Respo
   });
 });
 
-export const getVapidPublicKey = asyncHandler(async (_req: Request, res: Response): Promise<void> => {
-  const publicKey = process.env.VAPID_PUBLIC_KEY;
+export const getVapidPublicKey = asyncHandler(
+  async (_req: Request, res: Response): Promise<void> => {
+    const publicKey = process.env.VAPID_PUBLIC_KEY;
 
-  if (!publicKey) {
-    res.status(500).json({
-      success: false,
-      error: {
-        message: 'VAPID public key not configured',
-      },
+    if (!publicKey) {
+      res.status(500).json({
+        success: false,
+        error: {
+          message: 'VAPID public key not configured',
+        },
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: { publicKey },
     });
-    return;
-  }
-
-  res.json({
-    success: true,
-    data: { publicKey },
-  });
-});
+  },
+);

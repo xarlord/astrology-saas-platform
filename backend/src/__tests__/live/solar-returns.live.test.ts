@@ -7,12 +7,7 @@
  * Run: npx jest --testPathPattern="solar-returns.live" --forceExit --verbose
  */
 
-import {
-  authed,
-  getCsrf,
-  setupUserWithChart,
-  checkServerRunning,
-} from './helpers';
+import { authed, getCsrf, setupUserWithChart, checkServerRunning } from './helpers';
 
 describe('Solar Return Controller - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -158,8 +153,22 @@ describe('Solar Return Controller - LIVE SYSTEM', () => {
         year: 2025,
       };
 
-      const res1 = await authed('POST', '/solar-returns/calculate', accessToken, cookies, csrf, body);
-      const res2 = await authed('POST', '/solar-returns/calculate', accessToken, cookies, csrf, body);
+      const res1 = await authed(
+        'POST',
+        '/solar-returns/calculate',
+        accessToken,
+        cookies,
+        csrf,
+        body,
+      );
+      const res2 = await authed(
+        'POST',
+        '/solar-returns/calculate',
+        accessToken,
+        cookies,
+        csrf,
+        body,
+      );
 
       if (res1.status === 200 || res1.status === 201) {
         // First call created the record, second should get 409 conflict

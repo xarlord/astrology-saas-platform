@@ -21,7 +21,7 @@ import UserModel from '../../users/models/user.model';
  */
 export async function getMonthlyTransitReport(
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ): Promise<void> {
   const userId = req.user?.id;
 
@@ -40,7 +40,8 @@ export async function getMonthlyTransitReport(
   if (user.plan !== 'premium') {
     res.status(403).json({
       success: false,
-      error: 'Monthly transit reports require a Premium subscription. Upgrade to access this feature.',
+      error:
+        'Monthly transit reports require a Premium subscription. Upgrade to access this feature.',
     });
     return;
   }
@@ -71,7 +72,8 @@ export async function getMonthlyTransitReport(
     if (message.includes('No natal chart found')) {
       res.status(404).json({
         success: false,
-        error: 'No natal chart found. Please create a natal chart first to generate monthly transit reports.',
+        error:
+          'No natal chart found. Please create a natal chart first to generate monthly transit reports.',
       });
       return;
     }
@@ -88,7 +90,8 @@ export async function getMonthlyTransitReport(
     console.error('Error generating monthly transit report:', err);
     res.status(500).json({
       success: false,
-      error: 'An error occurred while generating the monthly transit report. Please try again later.',
+      error:
+        'An error occurred while generating the monthly transit report. Please try again later.',
     });
   }
 }
@@ -99,7 +102,7 @@ export async function getMonthlyTransitReport(
  */
 export async function getCurrentMonthlyReport(
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
 ): Promise<void> {
   const userId = req.user?.id;
 
@@ -118,7 +121,8 @@ export async function getCurrentMonthlyReport(
   if (user.plan !== 'premium') {
     res.status(403).json({
       success: false,
-      error: 'Monthly transit reports require a Premium subscription. Upgrade to access this feature.',
+      error:
+        'Monthly transit reports require a Premium subscription. Upgrade to access this feature.',
     });
     return;
   }
@@ -137,7 +141,8 @@ export async function getCurrentMonthlyReport(
     if (message.includes('No natal chart found')) {
       res.status(404).json({
         success: false,
-        error: 'No natal chart found. Please create a natal chart first to generate monthly transit reports.',
+        error:
+          'No natal chart found. Please create a natal chart first to generate monthly transit reports.',
       });
       return;
     }
@@ -145,7 +150,8 @@ export async function getCurrentMonthlyReport(
     console.error('Error generating monthly transit report:', err);
     res.status(500).json({
       success: false,
-      error: 'An error occurred while generating the monthly transit report. Please try again later.',
+      error:
+        'An error occurred while generating the monthly transit report. Please try again later.',
     });
   }
 }

@@ -33,7 +33,7 @@ export const useTransits = () => {
         await loadTransits(chartId, startDate, endDate);
         setDateRange(startDate, endDate);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },
@@ -45,7 +45,7 @@ export const useTransits = () => {
     try {
       await loadTodayTransits();
       return true;
-    } catch (error: unknown) {
+    } catch {
       return false;
     }
   }, [loadTodayTransits]);
@@ -56,7 +56,7 @@ export const useTransits = () => {
       try {
         await loadTransitCalendar(month, year);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },
@@ -69,7 +69,7 @@ export const useTransits = () => {
       try {
         await loadTransitForecast(duration);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },

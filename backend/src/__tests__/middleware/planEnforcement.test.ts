@@ -35,7 +35,7 @@ import aiUsageModel from '../../modules/ai/models/aiUsage.model';
 const mockRequest = (userId?: string) =>
   ({
     user: userId ? { id: userId, email: 'test@example.com' } : undefined,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 
 const mockResponse = () =>

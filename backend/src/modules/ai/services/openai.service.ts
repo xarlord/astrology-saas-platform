@@ -100,7 +100,10 @@ class OpenAIService {
   /**
    * Generate AI-powered natal chart interpretation
    */
-  async generateNatalInterpretation(chartData: NatalChartInput, userId?: string): Promise<InterpretationResult> {
+  async generateNatalInterpretation(
+    chartData: NatalChartInput,
+    userId?: string,
+  ): Promise<InterpretationResult> {
     try {
       // Check cache first
       const cacheKey = this.getCacheKey('natal', chartData);
@@ -178,7 +181,10 @@ class OpenAIService {
   /**
    * Generate AI-powered transit forecast
    */
-  async generateTransitForecast(transitData: TransitInput, userId?: string): Promise<InterpretationResult> {
+  async generateTransitForecast(
+    transitData: TransitInput,
+    userId?: string,
+  ): Promise<InterpretationResult> {
     try {
       // Check cache first
       const cacheKey = this.getCacheKey('transit', transitData);
@@ -256,7 +262,10 @@ class OpenAIService {
   /**
    * Generate AI-powered compatibility analysis
    */
-  async generateCompatibilityAnalysis(synastryData: SynastryInput, userId?: string): Promise<InterpretationResult> {
+  async generateCompatibilityAnalysis(
+    synastryData: SynastryInput,
+    userId?: string,
+  ): Promise<InterpretationResult> {
     try {
       // Check cache first
       const cacheKey = this.getCacheKey('compatibility', synastryData);
@@ -335,7 +344,10 @@ class OpenAIService {
   /**
    * Generate AI-powered lunar return interpretation
    */
-  async generateLunarReturnInterpretation(chartData: NatalChartInput, userId?: string): Promise<InterpretationResult> {
+  async generateLunarReturnInterpretation(
+    chartData: NatalChartInput,
+    userId?: string,
+  ): Promise<InterpretationResult> {
     try {
       const cacheKey = this.getCacheKey('lunar-return', chartData);
       const cached = await this.getCachedResult(cacheKey);
@@ -457,7 +469,10 @@ class OpenAIService {
   /**
    * Generate AI-powered solar return interpretation
    */
-  async generateSolarReturnInterpretation(chartData: NatalChartInput, userId?: string): Promise<InterpretationResult> {
+  async generateSolarReturnInterpretation(
+    chartData: NatalChartInput,
+    userId?: string,
+  ): Promise<InterpretationResult> {
     try {
       const cacheKey = this.getCacheKey('solar-return', chartData);
       const cached = await this.getCachedResult(cacheKey);
@@ -541,6 +556,7 @@ class OpenAIService {
   private sanitizePromptInput(value: string): string {
     if (typeof value !== 'string') return '';
     // Remove control characters (except newline/tab)
+    // eslint-disable-next-line no-control-regex
     const cleaned = value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
     // Truncate to prevent excessively long injections
     return cleaned.length > OpenAIService.MAX_PROMPT_FIELD_LENGTH
@@ -570,7 +586,9 @@ class OpenAIService {
       sections.push('Planetary Positions:');
       data.planets.forEach((planet) => {
         const retro = planet.retrograde ? ' (Retrograde)' : '';
-        sections.push(`  ${planet.planet}: ${planet.sign} at ${planet.degree}° in House ${planet.house}${retro}`);
+        sections.push(
+          `  ${planet.planet}: ${planet.sign} at ${planet.degree}° in House ${planet.house}${retro}`,
+        );
       });
     }
 
@@ -588,7 +606,7 @@ class OpenAIService {
       data.aspects.forEach((aspect) => {
         const applying = aspect.applying ? ' (Applying)' : '';
         sections.push(
-          `  ${aspect.planet1} ${aspect.type} ${aspect.planet2} (${aspect.orb}°)${applying}`
+          `  ${aspect.planet1} ${aspect.type} ${aspect.planet2} (${aspect.orb}°)${applying}`,
         );
       });
     }
@@ -618,7 +636,7 @@ class OpenAIService {
     data.currentTransits.forEach((transit, index) => {
       const strength = transit.strength ? ` [${transit.strength}]` : '';
       sections.push(
-        `${index + 1}. ${transit.planet} ${transit.type} ${transit.natalPlanet} (${transit.orb}°)${strength}`
+        `${index + 1}. ${transit.planet} ${transit.type} ${transit.natalPlanet} (${transit.orb}°)${strength}`,
       );
       sections.push(`   Active: ${transit.startDate} to ${transit.endDate}`);
     });
@@ -653,7 +671,12 @@ class OpenAIService {
 
     // Validate planet structure
     for (const planet of data.planets) {
-      if (!planet.planet || !planet.sign || typeof planet.degree !== 'number' || typeof planet.house !== 'number') {
+      if (
+        !planet.planet ||
+        !planet.sign ||
+        typeof planet.degree !== 'number' ||
+        typeof planet.house !== 'number'
+      ) {
         throw new Error('Invalid planet data structure');
       }
     }
@@ -778,7 +801,10 @@ class OpenAIService {
   /**
    * Get usage statistics (placeholder for future implementation)
    */
-  async getUsageStats(): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
+  async getUsageStats(): Promise<{
+    available: boolean;
+    usage: { totalRequests: number; totalTokens: number; totalCost: number };
+  }> {
     // This would call OpenAI API to get usage/billing info
     return {
       available: true,

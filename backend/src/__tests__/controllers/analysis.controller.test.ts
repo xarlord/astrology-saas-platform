@@ -74,8 +74,22 @@ describe('Analysis Controller', () => {
     calculated_data: {
       jd: 2451545.0,
       planets: {
-        sun: { sign: 'capricorn', position: 295.5, longitude: 295.5, retrograde: false, speed: 1, latitude: 0 },
-        moon: { sign: 'pisces', position: 350.2, longitude: 350.2, retrograde: false, speed: 1, latitude: 0 },
+        sun: {
+          sign: 'capricorn',
+          position: 295.5,
+          longitude: 295.5,
+          retrograde: false,
+          speed: 1,
+          latitude: 0,
+        },
+        moon: {
+          sign: 'pisces',
+          position: 350.2,
+          longitude: 350.2,
+          retrograde: false,
+          speed: 1,
+          latitude: 0,
+        },
       },
       houses: {
         houses: [
@@ -128,8 +142,12 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('Chart not found');
+      await expect(
+        getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow('Chart not found');
     });
 
     it('should throw 400 if chart not calculated', async () => {
@@ -142,8 +160,12 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
 
-      await expect(getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('Chart must be calculated first');
+      await expect(
+        getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        getPersonalityAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow('Chart must be calculated first');
     });
   });
 
@@ -169,7 +191,7 @@ describe('Analysis Controller', () => {
               challengingAspects: expect.any(Array),
             }),
           }),
-        })
+        }),
       );
     });
 
@@ -178,7 +200,9 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(getAspectAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getAspectAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
 
     it('should filter major aspects by orb', async () => {
@@ -248,7 +272,9 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(getAspectPatterns(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getAspectPatterns(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
 
     it('should throw 400 if chart not calculated', async () => {
@@ -261,7 +287,9 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
 
-      await expect(getAspectPatterns(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getAspectPatterns(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 
@@ -285,7 +313,7 @@ describe('Analysis Controller', () => {
           data: expect.objectContaining({
             planetsInSigns: expect.any(Array),
           }),
-        })
+        }),
       );
     });
 
@@ -319,7 +347,9 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(getPlanetsInSigns(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getPlanetsInSigns(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 
@@ -344,7 +374,7 @@ describe('Analysis Controller', () => {
               stelliums: expect.any(Array),
             }),
           }),
-        })
+        }),
       );
     });
 
@@ -365,7 +395,9 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(null);
 
-      await expect(getHousesAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getHousesAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
 
     it('should throw 400 if chart not calculated', async () => {
@@ -378,7 +410,9 @@ describe('Analysis Controller', () => {
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChart);
 
-      await expect(getHousesAnalysis(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
+      await expect(
+        getHousesAnalysis(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 
@@ -390,19 +424,77 @@ describe('Analysis Controller', () => {
         id: '456',
         calculated_data: {
           planets: {
-            sun: { sign: 'capricorn', position: 295, longitude: 295, retrograde: false, speed: 1, latitude: 0 },
-            moon: { sign: 'pisces', position: 350, longitude: 350, retrograde: false, speed: 1, latitude: 0 },
-            mercury: { sign: 'aquarius', position: 310, longitude: 310, retrograde: false, speed: 1, latitude: 0 },
-            venus: { sign: 'pisces', position: 345, longitude: 345, retrograde: false, speed: 1, latitude: 0 },
-            mars: { sign: 'aries', position: 5, longitude: 5, retrograde: false, speed: 1, latitude: 0 },
-            jupiter: { sign: 'leo', position: 135, longitude: 135, retrograde: false, speed: 1, latitude: 0 },
-            saturn: { sign: 'sagittarius', position: 255, longitude: 255, retrograde: false, speed: 1, latitude: 0 },
+            sun: {
+              sign: 'capricorn',
+              position: 295,
+              longitude: 295,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            moon: {
+              sign: 'pisces',
+              position: 350,
+              longitude: 350,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            mercury: {
+              sign: 'aquarius',
+              position: 310,
+              longitude: 310,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            venus: {
+              sign: 'pisces',
+              position: 345,
+              longitude: 345,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            mars: {
+              sign: 'aries',
+              position: 5,
+              longitude: 5,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            jupiter: {
+              sign: 'leo',
+              position: 135,
+              longitude: 135,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            saturn: {
+              sign: 'sagittarius',
+              position: 255,
+              longitude: 255,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
           },
           houses: {
             houses: [
-              { cusp: 300 }, { cusp: 330 }, { cusp: 0 }, { cusp: 30 },
-              { cusp: 60 }, { cusp: 90 }, { cusp: 120 }, { cusp: 150 },
-              { cusp: 180 }, { cusp: 210 }, { cusp: 240 }, { cusp: 270 },
+              { cusp: 300 },
+              { cusp: 330 },
+              { cusp: 0 },
+              { cusp: 30 },
+              { cusp: 60 },
+              { cusp: 90 },
+              { cusp: 120 },
+              { cusp: 150 },
+              { cusp: 180 },
+              { cusp: 210 },
+              { cusp: 240 },
+              { cusp: 270 },
             ],
           },
           aspects: [],
@@ -449,16 +541,53 @@ describe('Analysis Controller', () => {
         id: '456',
         calculated_data: {
           planets: {
-            sun: { sign: 'pisces', position: 350, longitude: 350, retrograde: false, speed: 1, latitude: 0 },
-            moon: { sign: 'pisces', position: 345, longitude: 345, retrograde: false, speed: 1, latitude: 0 },
-            mercury: { sign: 'pisces', position: 340, longitude: 340, retrograde: false, speed: 1, latitude: 0 },
-            venus: { sign: 'pisces', position: 355, longitude: 355, retrograde: false, speed: 1, latitude: 0 },
+            sun: {
+              sign: 'pisces',
+              position: 350,
+              longitude: 350,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            moon: {
+              sign: 'pisces',
+              position: 345,
+              longitude: 345,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            mercury: {
+              sign: 'pisces',
+              position: 340,
+              longitude: 340,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
+            venus: {
+              sign: 'pisces',
+              position: 355,
+              longitude: 355,
+              retrograde: false,
+              speed: 1,
+              latitude: 0,
+            },
           },
           houses: {
             houses: [
-              { cusp: 300 }, { cusp: 330 }, { cusp: 0 }, { cusp: 30 },
-              { cusp: 60 }, { cusp: 90 }, { cusp: 120 }, { cusp: 150 },
-              { cusp: 180 }, { cusp: 210 }, { cusp: 240 }, { cusp: 270 },
+              { cusp: 300 },
+              { cusp: 330 },
+              { cusp: 0 },
+              { cusp: 30 },
+              { cusp: 60 },
+              { cusp: 90 },
+              { cusp: 120 },
+              { cusp: 150 },
+              { cusp: 180 },
+              { cusp: 210 },
+              { cusp: 240 },
+              { cusp: 270 },
             ],
           },
           aspects: [],

@@ -43,8 +43,8 @@ router.get('/', (_req, res) => {
       'solar-returns': '/api/v1/solar-returns',
       briefing: '/api/v1/briefing',
       reports: '/api/v1/reports',
-      health: '/health'
-    }
+      health: '/health',
+    },
   });
 });
 

@@ -25,7 +25,9 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, retry }) => {
         {/* Error Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-[40px] text-red-400">error_outline</span>
+            <span className="material-symbols-outlined text-[40px] text-red-400">
+              error_outline
+            </span>
           </div>
         </div>
 

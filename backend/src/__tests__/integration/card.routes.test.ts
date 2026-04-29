@@ -9,7 +9,12 @@
 import request from 'supertest';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 import app from '../../server';
 
 describe('Card Routes Integration Tests', () => {
@@ -39,7 +44,7 @@ describe('Card Routes Integration Tests', () => {
         birth_time: '14:30:00',
         birth_place_name: 'New York, NY',
         birth_latitude: 40.7128,
-        birth_longitude: -74.0060,
+        birth_longitude: -74.006,
         birth_timezone: 'America/New_York',
         house_system: 'placidus',
         zodiac: 'tropical',
@@ -74,7 +79,7 @@ describe('Card Routes Integration Tests', () => {
         birth_time: '14:30:00',
         birth_place_name: 'New York, NY',
         birth_latitude: 40.7128,
-        birth_longitude: -74.0060,
+        birth_longitude: -74.006,
         birth_timezone: 'America/New_York',
         house_system: 'placidus',
         zodiac: 'tropical',
@@ -277,9 +282,7 @@ describe('Card Routes Integration Tests', () => {
 
       const cardId = createResponse.body.data.id;
 
-      await request(app)
-        .get(`/api/v1/cards/${cardId}`)
-        .expect(401);
+      await request(app).get(`/api/v1/cards/${cardId}`).expect(401);
     });
 
     it('should return 404 for deleted card', async () => {
@@ -325,9 +328,7 @@ describe('Card Routes Integration Tests', () => {
       const shareToken = createResponse.body.data.share_token;
 
       // Get public card
-      const response = await request(app)
-        .get(`/api/v1/cards/public/${shareToken}`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/cards/public/${shareToken}`).expect(200);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body.data).toHaveProperty('template');
@@ -339,9 +340,7 @@ describe('Card Routes Integration Tests', () => {
     it('should return 404 for invalid share token', async () => {
       if (!isDatabaseAvailable()) return;
 
-      await request(app)
-        .get('/api/v1/cards/public/invalid-token')
-        .expect(404);
+      await request(app).get('/api/v1/cards/public/invalid-token').expect(404);
     });
 
     it('should return 404 for deleted card via share token', async () => {
@@ -365,9 +364,7 @@ describe('Card Routes Integration Tests', () => {
         .expect(200);
 
       // Try to access via public share token - should be 404
-      await request(app)
-        .get(`/api/v1/cards/public/${shareToken}`)
-        .expect(404);
+      await request(app).get(`/api/v1/cards/public/${shareToken}`).expect(404);
     });
   });
 
@@ -455,9 +452,7 @@ describe('Card Routes Integration Tests', () => {
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
 
-      await request(app)
-        .get('/api/v1/cards/history')
-        .expect(401);
+      await request(app).get('/api/v1/cards/history').expect(401);
     });
   });
 
@@ -513,9 +508,7 @@ describe('Card Routes Integration Tests', () => {
 
       const cardId = createResponse.body.data.id;
 
-      await request(app)
-        .delete(`/api/v1/cards/${cardId}`)
-        .expect(401);
+      await request(app).delete(`/api/v1/cards/${cardId}`).expect(401);
     });
 
     it('should only allow owner to delete their card', async () => {
@@ -560,9 +553,7 @@ describe('Card Routes Integration Tests', () => {
       const shareToken = createResponse.body.data.share_token;
 
       // Get OG data
-      const response = await request(app)
-        .get(`/api/v1/cards/public/${shareToken}/og`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/cards/public/${shareToken}/og`).expect(200);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body.data).toHaveProperty('og_title');
@@ -573,9 +564,7 @@ describe('Card Routes Integration Tests', () => {
     it('should return 404 for invalid share token', async () => {
       if (!isDatabaseAvailable()) return;
 
-      await request(app)
-        .get('/api/v1/cards/public/invalid-token/og')
-        .expect(404);
+      await request(app).get('/api/v1/cards/public/invalid-token/og').expect(404);
     });
 
     it('should return 404 for deleted card via OG endpoint', async () => {
@@ -598,9 +587,7 @@ describe('Card Routes Integration Tests', () => {
         .set('Authorization', `Bearer ${authToken}`);
 
       // Try to get OG data - should be 404
-      await request(app)
-        .get(`/api/v1/cards/public/${shareToken}/og`)
-        .expect(404);
+      await request(app).get(`/api/v1/cards/public/${shareToken}/og`).expect(404);
     });
 
     it('should not require authentication', async () => {
@@ -617,20 +604,12 @@ describe('Card Routes Integration Tests', () => {
       const shareToken = createResponse.body.data.share_token;
 
       // Access OG endpoint without auth - should succeed
-      await request(app)
-        .get(`/api/v1/cards/public/${shareToken}/og`)
-        .expect(200);
+      await request(app).get(`/api/v1/cards/public/${shareToken}/og`).expect(200);
     });
   });
 
   describe('Template Validation', () => {
-    const validTemplates = [
-      'instagram_story',
-      'twitter_x',
-      'pinterest',
-      'square',
-      'linkedin',
-    ];
+    const validTemplates = ['instagram_story', 'twitter_x', 'pinterest', 'square', 'linkedin'];
 
     validTemplates.forEach((template) => {
       it(`should accept valid template: ${template}`, async () => {

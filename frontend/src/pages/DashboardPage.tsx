@@ -301,13 +301,13 @@ const DashboardPage: React.FC = () => {
                     day: 'numeric',
                     year: 'numeric',
                   })}
-              </span>
-              <span className="text-sm font-bold text-white">
-                {moonPhase.phase.replace('-', ' ')} in {moonSign}
-              </span>
+                </span>
+                <span className="text-sm font-bold text-white">
+                  {moonPhase.phase.replace('-', ' ')} in {moonSign}
+                </span>
+              </div>
             </div>
-          </div>
-          <InstallButton variant="compact" />
+            <InstallButton variant="compact" />
           </div>
         </motion.header>
 
@@ -486,9 +486,13 @@ const DashboardPage: React.FC = () => {
 
               <div className="space-y-4" aria-live="polite" aria-busy={transitsLoading}>
                 {transitsLoading ? (
-                  <div className="text-center py-8 text-slate-400" role="status">Loading transits...</div>
+                  <div className="text-center py-8 text-slate-400" role="status">
+                    Loading transits...
+                  </div>
                 ) : upcomingTransits.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400" role="status">No upcoming transits</div>
+                  <div className="text-center py-8 text-slate-400" role="status">
+                    No upcoming transits
+                  </div>
                 ) : (
                   upcomingTransits.map((transit, index) => (
                     <TransitTimelineCard
@@ -532,7 +536,10 @@ const DashboardPage: React.FC = () => {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Your Charts</h3>
-                <button aria-label="Search charts" className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                <button
+                  aria-label="Search charts"
+                  className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                >
                   <span className="material-symbols-outlined text-[18px]">search</span>
                 </button>
               </div>

@@ -61,7 +61,7 @@ describe('CardService', () => {
       (cardModel.create as jest.Mock).mockImplementation((cardData: any) => {
         const card = {
           ...mockCard,
-          ...cardData,  // Use the actual data passed to create
+          ...cardData, // Use the actual data passed to create
           og_title: `My ${(cardData.template || 'instagram_story').replace('_', ' ')} Chart Card - AstroVerse`,
           og_description: `Explore the cosmic placements: ${(cardData.planet_placements || ['sun', 'moon', 'ascendant']).join(', ')}. Generate your own astrology card at AstroVerse!`,
         };
@@ -80,7 +80,9 @@ describe('CardService', () => {
     let checkRateLimitSpy: jest.SpyInstance;
 
     beforeEach(() => {
-      checkRateLimitSpy = jest.spyOn(CardService.prototype as any, 'checkRateLimit').mockReturnValue(1);
+      checkRateLimitSpy = jest
+        .spyOn(CardService.prototype as any, 'checkRateLimit')
+        .mockReturnValue(1);
       setupMocks();
     });
 
@@ -98,7 +100,7 @@ describe('CardService', () => {
           chart_id: mockChartId,
           template: 'instagram_story',
           planet_placements: ['sun', 'moon', 'ascendant'],
-        })
+        }),
       );
     });
 
@@ -110,7 +112,7 @@ describe('CardService', () => {
           template: 'instagram_story',
           planet_placements: ['sun', 'moon', 'ascendant'],
           show_insight: true,
-        })
+        }),
       );
     });
 
@@ -122,7 +124,7 @@ describe('CardService', () => {
       expect(cardModel.create).toHaveBeenCalledWith(
         expect.objectContaining({
           template: 'pinterest',
-        })
+        }),
       );
     });
 
@@ -136,16 +138,14 @@ describe('CardService', () => {
       expect(cardModel.create).toHaveBeenCalledWith(
         expect.objectContaining({
           planet_placements: customPlacements,
-        })
+        }),
       );
     });
 
     it('should throw AppError with 429 when daily limit exceeded', async () => {
       (cardModel.countByUserToday as jest.Mock).mockResolvedValue(10);
 
-      await expect(
-        cardService.generateCard(mockUserId, mockChartId)
-      ).rejects.toThrow(AppError);
+      await expect(cardService.generateCard(mockUserId, mockChartId)).rejects.toThrow(AppError);
 
       try {
         await cardService.generateCard(mockUserId, mockChartId);
@@ -161,7 +161,7 @@ describe('CardService', () => {
       (cardModel.getValidTemplates as jest.Mock).mockReturnValue(['instagram_story', 'pinterest']);
 
       await expect(
-        cardService.generateCard(mockUserId, mockChartId, { template: 'invalid' })
+        cardService.generateCard(mockUserId, mockChartId, { template: 'invalid' }),
       ).rejects.toThrow(AppError);
 
       try {
@@ -175,30 +175,38 @@ describe('CardService', () => {
 
     it('should throw AppError with 400 for less than 3 placements', async () => {
       await expect(
-        cardService.generateCard(mockUserId, mockChartId, { planet_placements: ['sun', 'moon'] })
+        cardService.generateCard(mockUserId, mockChartId, { planet_placements: ['sun', 'moon'] }),
       ).rejects.toThrow(AppError);
 
       try {
-        await cardService.generateCard(mockUserId, mockChartId, { planet_placements: ['sun', 'moon'] });
+        await cardService.generateCard(mockUserId, mockChartId, {
+          planet_placements: ['sun', 'moon'],
+        });
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
         expect((error as AppError).statusCode).toBe(400);
-        expect((error as AppError).message).toContain('Must select between 3 and 5 planet placements');
+        expect((error as AppError).message).toContain(
+          'Must select between 3 and 5 planet placements',
+        );
       }
     });
 
     it('should throw AppError with 400 for more than 5 placements', async () => {
       const tooManyPlacements = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter'];
       await expect(
-        cardService.generateCard(mockUserId, mockChartId, { planet_placements: tooManyPlacements })
+        cardService.generateCard(mockUserId, mockChartId, { planet_placements: tooManyPlacements }),
       ).rejects.toThrow(AppError);
 
       try {
-        await cardService.generateCard(mockUserId, mockChartId, { planet_placements: tooManyPlacements });
+        await cardService.generateCard(mockUserId, mockChartId, {
+          planet_placements: tooManyPlacements,
+        });
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
         expect((error as AppError).statusCode).toBe(400);
-        expect((error as AppError).message).toContain('Must select between 3 and 5 planet placements');
+        expect((error as AppError).message).toContain(
+          'Must select between 3 and 5 planet placements',
+        );
       }
     });
 
@@ -209,7 +217,7 @@ describe('CardService', () => {
 
       expect(openaiService.generateCardInsight).toHaveBeenCalledWith(
         ['sun', 'moon', 'ascendant'],
-        mockUserId
+        mockUserId,
       );
     });
 
@@ -247,14 +255,14 @@ describe('CardService', () => {
       await cardService.generateCard(mockUserId, mockChartId);
 
       // Wait a tick for async call
-      await new Promise(resolve => setImmediate(resolve));
+      await new Promise((resolve) => setImmediate(resolve));
 
       expect(cardImageService.generateImage).toHaveBeenCalledWith(
         expect.objectContaining({
           template: 'instagram_story',
           cardId: mockCardId,
           userId: mockUserId,
-        })
+        }),
       );
     });
   });

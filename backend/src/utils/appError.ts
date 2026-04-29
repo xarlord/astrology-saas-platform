@@ -18,7 +18,7 @@ export class AppError extends Error {
     statusCode: number = 500,
     isOperational: boolean = true,
     errorCode?: string,
-    details?: unknown
+    details?: unknown,
   ) {
     super(message);
     this.statusCode = statusCode;
@@ -177,7 +177,7 @@ export class ErrorFactory {
       SERVICE_UNAVAILABLE: ServiceUnavailableError,
       DATABASE_ERROR: DatabaseError,
       AUTH_ERROR: AuthenticationError,
-      TOKEN_ERROR: TokenError
+      TOKEN_ERROR: TokenError,
     };
 
     const ErrorClass = errors[errorCode];

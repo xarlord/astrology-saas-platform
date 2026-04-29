@@ -18,7 +18,7 @@ export function mockAuthHeader(userId: number): string {
     },
     secret,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { expiresIn: '1h' as any }
+    { expiresIn: '1h' as any },
   );
 
   return `Bearer ${token}`;

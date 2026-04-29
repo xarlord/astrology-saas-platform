@@ -230,7 +230,7 @@ describe('Calendar Service', () => {
       phases.forEach((phase) => {
         expect(phase.date).toBeInstanceOf(Date);
         expect(phase.phase).toMatch(
-          /^(new|waxing-crescent|first-quarter|waxing-gibbous|full|waning-gibbous|last-quarter|waning-crescent)$/
+          /^(new|waxing-crescent|first-quarter|waxing-gibbous|full|waning-gibbous|last-quarter|waning-crescent)$/,
         );
         expect(phase.sign).toBeTruthy();
         expect(phase.degree).toBeGreaterThanOrEqual(0);

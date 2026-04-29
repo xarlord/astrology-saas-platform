@@ -69,7 +69,7 @@ export default function RegisterPageNew() {
     try {
       await register({ name, email, password });
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       // Error is handled by the hook
     }
   };

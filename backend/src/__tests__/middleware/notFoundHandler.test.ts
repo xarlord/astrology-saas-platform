@@ -35,7 +35,7 @@ describe('Not Found Handler', () => {
     expect(mockResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
         success: false,
-      })
+      }),
     );
   });
 
@@ -45,7 +45,7 @@ describe('Not Found Handler', () => {
     expect(mockResponse.json).toHaveBeenCalledWith(
       expect.objectContaining({
         error: expect.any(Object),
-      })
+      }),
     );
   });
 
@@ -57,7 +57,7 @@ describe('Not Found Handler', () => {
         error: expect.objectContaining({
           message: 'Route not found',
         }),
-      })
+      }),
     );
   });
 
@@ -69,7 +69,7 @@ describe('Not Found Handler', () => {
         error: expect.objectContaining({
           statusCode: 404,
         }),
-      })
+      }),
     );
   });
 
@@ -83,7 +83,7 @@ describe('Not Found Handler', () => {
         error: expect.objectContaining({
           path: '/api/test/path',
         }),
-      })
+      }),
     );
   });
 
@@ -97,7 +97,7 @@ describe('Not Found Handler', () => {
         error: expect.objectContaining({
           method: 'POST',
         }),
-      })
+      }),
     );
   });
 
@@ -113,18 +113,13 @@ describe('Not Found Handler', () => {
           error: expect.objectContaining({
             method,
           }),
-        })
+        }),
       );
     });
   });
 
   it('should handle different paths', () => {
-    const paths = [
-      '/api/users',
-      '/api/charts/123',
-      '/invalid/route',
-      '/health/check',
-    ];
+    const paths = ['/api/users', '/api/charts/123', '/invalid/route', '/health/check'];
 
     paths.forEach((path) => {
       mockRequest.originalUrl = path;
@@ -135,7 +130,7 @@ describe('Not Found Handler', () => {
           error: expect.objectContaining({
             path,
           }),
-        })
+        }),
       );
     });
   });

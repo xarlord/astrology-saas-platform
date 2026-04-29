@@ -30,9 +30,13 @@ const router = Router();
  *       500:
  *         description: Server error
  */
-router.get('/today', optionalAuthenticate, asyncHandler(async (req, res) => {
-  await TransitController.getTodayTransits(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/today',
+  optionalAuthenticate,
+  asyncHandler(async (req, res) => {
+    await TransitController.getTodayTransits(req as AuthenticatedRequest, res);
+  }),
+);
 
 // All other transit routes require authentication
 router.use(authenticate);
@@ -74,9 +78,13 @@ router.use(authenticate);
  *       500:
  *         description: Server error
  */
-router.post('/calculate', validateBody(calculateTransitsSchema), asyncHandler(async (req, res) => {
-  await TransitController.calculateTransits(req as AuthenticatedRequest, res);
-}));
+router.post(
+  '/calculate',
+  validateBody(calculateTransitsSchema),
+  asyncHandler(async (req, res) => {
+    await TransitController.calculateTransits(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   GET /api/transits/calendar
@@ -99,9 +107,12 @@ router.post('/calculate', validateBody(calculateTransitsSchema), asyncHandler(as
  *       500:
  *         description: Server error
  */
-router.get('/calendar', asyncHandler(async (req, res) => {
-  await TransitController.getTransitCalendar(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/calendar',
+  asyncHandler(async (req, res) => {
+    await TransitController.getTransitCalendar(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   GET /api/transits/forecast
@@ -131,9 +142,12 @@ router.get('/calendar', asyncHandler(async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.get('/forecast', asyncHandler(async (req, res) => {
-  await TransitController.getTransitForecast(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/forecast',
+  asyncHandler(async (req, res) => {
+    await TransitController.getTransitForecast(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   GET /api/transits/:id
@@ -165,8 +179,11 @@ router.get('/forecast', asyncHandler(async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.get('/:id', asyncHandler(async (req, res) => {
-  await TransitController.getTransitDetails(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    await TransitController.getTransitDetails(req as AuthenticatedRequest, res);
+  }),
+);
 
 export { router };

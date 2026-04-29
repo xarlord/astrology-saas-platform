@@ -6,11 +6,10 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: 'AstroVerse API',
       version: '1.0.0',
-      description: 'Astrology SaaS Platform — natal charts, personality analysis, forecasting, synastry',
+      description:
+        'Astrology SaaS Platform — natal charts, personality analysis, forecasting, synastry',
     },
-    servers: [
-      { url: 'http://localhost:3001', description: 'Local development' },
-    ],
+    servers: [{ url: 'http://localhost:3001', description: 'Local development' }],
     components: {
       securitySchemes: {
         bearerAuth: {

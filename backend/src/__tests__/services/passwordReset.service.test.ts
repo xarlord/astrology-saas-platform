@@ -51,7 +51,7 @@ describe('Password Reset Service', () => {
       expect(PasswordResetModel.createResetToken).toHaveBeenCalledWith(
         'user-1',
         expect.any(String),
-        expect.any(Date)
+        expect.any(Date),
       );
     });
 
@@ -59,7 +59,7 @@ describe('Password Reset Service', () => {
       (UserModel.findByEmail as jest.Mock).mockResolvedValue(null);
 
       await expect(
-        PasswordResetService.requestPasswordReset('nobody@example.com')
+        PasswordResetService.requestPasswordReset('nobody@example.com'),
       ).resolves.toBeUndefined();
 
       expect(PasswordResetModel.createResetToken).not.toHaveBeenCalled();
@@ -103,9 +103,9 @@ describe('Password Reset Service', () => {
     it('should throw 400 for invalid token', async () => {
       (PasswordResetModel.findResetToken as jest.Mock).mockResolvedValue(null);
 
-      await expect(
-        PasswordResetService.resetPassword('bad-token', 'NewPass123!')
-      ).rejects.toThrow(AppError);
+      await expect(PasswordResetService.resetPassword('bad-token', 'NewPass123!')).rejects.toThrow(
+        AppError,
+      );
 
       try {
         await PasswordResetService.resetPassword('bad-token', 'NewPass123!');
@@ -125,9 +125,9 @@ describe('Password Reset Service', () => {
 
       (PasswordResetModel.findResetToken as jest.Mock).mockResolvedValue(mockToken);
 
-      await expect(
-        PasswordResetService.resetPassword('used-token', 'NewPass123!')
-      ).rejects.toThrow('This reset token has already been used');
+      await expect(PasswordResetService.resetPassword('used-token', 'NewPass123!')).rejects.toThrow(
+        'This reset token has already been used',
+      );
     });
 
     it('should throw 400 for expired token', async () => {
@@ -142,7 +142,7 @@ describe('Password Reset Service', () => {
       (PasswordResetModel.findResetToken as jest.Mock).mockResolvedValue(mockToken);
 
       await expect(
-        PasswordResetService.resetPassword('expired-token', 'NewPass123!')
+        PasswordResetService.resetPassword('expired-token', 'NewPass123!'),
       ).rejects.toThrow('expired');
     });
   });

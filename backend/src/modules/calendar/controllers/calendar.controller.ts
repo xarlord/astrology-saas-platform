@@ -102,11 +102,7 @@ export const getMonthEvents = asyncHandler(
     }
 
     // Get user's personalized events for the month
-    const personalEvents = await calendarEventModel.findByMonth(
-      userId,
-      yearNum,
-      monthNum
-    );
+    const personalEvents = await calendarEventModel.findByMonth(userId, yearNum, monthNum);
 
     let events: Array<CalendarEvent | GlobalEventRow> = [...personalEvents];
 
@@ -125,7 +121,7 @@ export const getMonthEvents = asyncHandler(
         total: events.length,
       },
     });
-  }
+  },
 );
 
 /**
@@ -154,7 +150,7 @@ export const createCustomEvent = asyncHandler(
       success: true,
       data: event,
     });
-  }
+  },
 );
 
 /**
@@ -177,5 +173,5 @@ export const deleteEvent = asyncHandler(
       success: true,
       message: 'Event deleted successfully',
     });
-  }
+  },
 );

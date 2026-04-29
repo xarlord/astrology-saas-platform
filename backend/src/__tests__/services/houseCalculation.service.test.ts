@@ -159,7 +159,20 @@ describe('HouseCalculationService', () => {
       const lst = 185.5;
       const latitude = 40.7128;
       const houses = service.calculateHouses(lst, latitude);
-      const validSigns = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+      const validSigns = [
+        'Aries',
+        'Taurus',
+        'Gemini',
+        'Cancer',
+        'Leo',
+        'Virgo',
+        'Libra',
+        'Scorpio',
+        'Sagittarius',
+        'Capricorn',
+        'Aquarius',
+        'Pisces',
+      ];
 
       for (const cusp of houses.cusps) {
         expect(validSigns).toContain(cusp.sign);
@@ -248,7 +261,7 @@ describe('HouseCalculationService', () => {
   describe('LST Calculation', () => {
     test('should calculate LST from Julian Day', () => {
       const jd = 2451545.0; // J2000.0
-      const longitude = -74.0060; // New York
+      const longitude = -74.006; // New York
       const lst = service.calculateLST(jd, longitude);
       expect(lst).toBeGreaterThanOrEqual(0);
       expect(lst).toBeLessThan(360);

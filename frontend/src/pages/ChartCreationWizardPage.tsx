@@ -134,7 +134,8 @@ export const ChartCreationWizardPage: React.FC = () => {
         birth_longitude: birthData.longitude,
         birth_timezone: 'UTC',
         type: chartSettings.chartType,
-        house_system: chartSettings.houseSystem === 'whole-sign' ? 'whole' : chartSettings.houseSystem,
+        house_system:
+          chartSettings.houseSystem === 'whole-sign' ? 'whole' : chartSettings.houseSystem,
         zodiac: chartSettings.zodiacType,
       } as Parameters<typeof createChart>[0]);
 

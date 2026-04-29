@@ -273,7 +273,9 @@ function ProfileHeader({
             aria-label="Change avatar"
             title="Change avatar"
           >
-            <span className="material-symbols-outlined text-[16px] text-indigo-600">photo_camera</span>
+            <span className="material-symbols-outlined text-[16px] text-indigo-600">
+              photo_camera
+            </span>
           </button>
         </div>
 
@@ -482,7 +484,9 @@ function ChartsTab({
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
-        <span className="material-symbols-outlined text-[64px] text-gray-400 mx-auto mb-4">star</span>
+        <span className="material-symbols-outlined text-[64px] text-gray-400 mx-auto mb-4">
+          star
+        </span>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No charts yet</h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Create your first natal chart to get started
@@ -841,7 +845,9 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
               </p>
             )}
           </div>
-          <span className="material-symbols-outlined text-[32px] text-indigo-500">auto_awesome</span>
+          <span className="material-symbols-outlined text-[32px] text-indigo-500">
+            auto_awesome
+          </span>
         </div>
       </div>
 
@@ -909,7 +915,9 @@ function PlanCard({
             key={index}
             className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
           >
-            <span className="material-symbols-outlined text-[20px] text-green-500 flex-shrink-0 mt-0.5">check</span>
+            <span className="material-symbols-outlined text-[20px] text-green-500 flex-shrink-0 mt-0.5">
+              check
+            </span>
             {feature}
           </li>
         ))}

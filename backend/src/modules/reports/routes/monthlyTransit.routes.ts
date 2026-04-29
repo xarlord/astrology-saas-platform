@@ -8,7 +8,10 @@
 import { Router, RequestHandler } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
-import { getMonthlyTransitReport, getCurrentMonthlyReport } from '../controllers/monthlyTransit.controller';
+import {
+  getMonthlyTransitReport,
+  getCurrentMonthlyReport,
+} from '../controllers/monthlyTransit.controller';
 
 const router = Router();
 
@@ -21,10 +24,11 @@ router.use(authenticate);
  * @access  Private (Premium only)
  * @body    { month?: string } - Optional month in YYYY-MM format
  */
-router.post('/',
+router.post(
+  '/',
   asyncHandler(async (req, res) => {
     await getMonthlyTransitReport(req as AuthenticatedRequest, res);
-  }) as RequestHandler
+  }) as RequestHandler,
 );
 
 /**
@@ -32,10 +36,11 @@ router.post('/',
  * @desc    Get the current month's transit report
  * @access  Private (Premium only)
  */
-router.get('/current',
+router.get(
+  '/current',
   asyncHandler(async (req, res) => {
     await getCurrentMonthlyReport(req as AuthenticatedRequest, res);
-  }) as RequestHandler
+  }) as RequestHandler,
 );
 
 export { router as monthlyTransitRoutes };

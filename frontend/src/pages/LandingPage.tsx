@@ -78,7 +78,11 @@ export default function LandingPage() {
                 className="text-slate-300 hover:text-white p-2"
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <span className="material-symbols-outlined text-[24px]">close</span> : <span className="material-symbols-outlined text-[24px]">menu</span>}
+                {mobileMenuOpen ? (
+                  <span className="material-symbols-outlined text-[24px]">close</span>
+                ) : (
+                  <span className="material-symbols-outlined text-[24px]">menu</span>
+                )}
               </button>
             </div>
           </div>
@@ -446,7 +450,9 @@ export default function LandingPage() {
                 <div className="flex items-center gap-2">
                   <div className="flex text-accent-gold">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i} className="material-symbols-outlined text-[20px]">star</span>
+                      <span key={i} className="material-symbols-outlined text-[20px]">
+                        star
+                      </span>
                     ))}
                   </div>
                   <span className="text-white font-bold text-lg">4.9/5</span>

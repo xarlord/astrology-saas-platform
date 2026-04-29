@@ -38,7 +38,10 @@ export interface JobResult {
   durationMs?: number;
 }
 
-export const JOB_CONFIG: Record<JobType, { concurrency: number; attempts: number; backoffMs: number }> = {
+export const JOB_CONFIG: Record<
+  JobType,
+  { concurrency: number; attempts: number; backoffMs: number }
+> = {
   [JobType.DAILY_BRIEFING]: { concurrency: 5, attempts: 3, backoffMs: 5000 },
   [JobType.MONTHLY_REPORT]: { concurrency: 2, attempts: 3, backoffMs: 10000 },
   [JobType.EMAIL_DIGEST]: { concurrency: 5, attempts: 3, backoffMs: 5000 },

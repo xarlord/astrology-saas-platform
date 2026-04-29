@@ -7,11 +7,7 @@
  * Run: npx jest --testPathPattern="analysis.live" --forceExit --verbose
  */
 
-import {
-  authed,
-  setupUserWithChart,
-  checkServerRunning,
-} from './helpers';
+import { authed, setupUserWithChart, checkServerRunning } from './helpers';
 
 describe('Analysis Controller - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -30,7 +26,9 @@ describe('Analysis Controller - LIVE SYSTEM', () => {
     // Calculate chart data — analysis endpoints require calculated_data to be populated
     const calcRes = await authed('POST', `/charts/${chartId}/calculate`, accessToken, cookies, '');
     if (calcRes.status !== 200) {
-      throw new Error(`Chart calculation failed: ${calcRes.status} ${JSON.stringify(calcRes.data)}`);
+      throw new Error(
+        `Chart calculation failed: ${calcRes.status} ${JSON.stringify(calcRes.data)}`,
+      );
     }
   }, 30000);
 
@@ -55,7 +53,7 @@ describe('Analysis Controller - LIVE SYSTEM', () => {
         '/analysis/00000000-0000-0000-0000-000000000000',
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect(res.status).toBe(404);

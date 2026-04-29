@@ -361,7 +361,9 @@ export function useKeyboardNavigation<T = HTMLElement>(
 
   // Container props
   const getContainerProps = useCallback(
-    (props?: React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> }): React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> } => ({
+    (
+      props?: React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> },
+    ): React.HTMLAttributes<HTMLElement> & { ref?: React.RefCallback<HTMLElement> } => ({
       ...props,
       ref: containerRef as unknown as React.RefCallback<HTMLElement>,
       onKeyDown: (e) => {

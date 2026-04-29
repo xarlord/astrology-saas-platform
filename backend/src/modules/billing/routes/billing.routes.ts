@@ -25,9 +25,12 @@ const router = Router();
  *       200:
  *         description: List of available subscription plans
  */
-router.get('/plans', asyncHandler(async (req, res) => {
-  await BillingController.getPlanList(req, res);
-}));
+router.get(
+  '/plans',
+  asyncHandler(async (req, res) => {
+    await BillingController.getPlanList(req, res);
+  }),
+);
 
 /**
  * @route   POST /api/v1/billing/webhook
@@ -48,9 +51,12 @@ router.get('/plans', asyncHandler(async (req, res) => {
  *       400:
  *         description: Invalid webhook signature or payload
  */
-router.post('/webhook', asyncHandler(async (req, res) => {
-  await BillingController.handleWebhook(req, res);
-}));
+router.post(
+  '/webhook',
+  asyncHandler(async (req, res) => {
+    await BillingController.handleWebhook(req, res);
+  }),
+);
 
 /**
  * @route   POST /api/v1/billing/checkout
@@ -70,9 +76,13 @@ router.post('/webhook', asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post('/checkout', authenticate, asyncHandler(async (req, res) => {
-  await BillingController.createCheckout(req as AuthenticatedRequest, res);
-}));
+router.post(
+  '/checkout',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    await BillingController.createCheckout(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   POST /api/v1/billing/portal
@@ -92,9 +102,13 @@ router.post('/checkout', authenticate, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post('/portal', authenticate, asyncHandler(async (req, res) => {
-  await BillingController.createPortal(req as AuthenticatedRequest, res);
-}));
+router.post(
+  '/portal',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    await BillingController.createPortal(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   GET /api/v1/billing/subscription
@@ -114,8 +128,12 @@ router.post('/portal', authenticate, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.get('/subscription', authenticate, asyncHandler(async (req, res) => {
-  await BillingController.getSubscription(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/subscription',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    await BillingController.getSubscription(req as AuthenticatedRequest, res);
+  }),
+);
 
 export { router as BillingRoutes };

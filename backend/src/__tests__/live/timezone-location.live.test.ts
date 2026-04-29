@@ -121,7 +121,11 @@ describe('Timezone & Location Services - LIVE SYSTEM', () => {
 
     it('should reject with invalid timezone', async () => {
       const res = await api('POST', '/timezone/convert', {
-        year: 1990, month: 6, day: 15, hour: 14, minute: 30,
+        year: 1990,
+        month: 6,
+        day: 15,
+        hour: 14,
+        minute: 30,
         timezone: 'Invalid/Timezone',
       });
       expect(res.status).toBe(400);
