@@ -4,7 +4,6 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from '../../../middleware/auth';
 import {
   calculateSynastryChart,
   calculateCompositeChart,
@@ -18,9 +17,9 @@ import knex from '../../../config/database';
  * Compare two charts and calculate synastry
  * POST /synastry/compare
  */
-export async function compareCharts(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+export async function compareCharts(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -280,9 +279,9 @@ export async function compareCharts(req: AuthenticatedRequest, res: Response, ne
  * Calculate compatibility score
  * POST /synastry/compatibility
  */
-export async function getCompatibility(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+export async function getCompatibility(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -311,6 +310,7 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
         success: false,
         error: 'One or both charts not found',
       });
+      return;
     }
 
     // Build simplified chart objects for calculation
@@ -340,7 +340,7 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
           degree: (chart1Data[degreeField] as number) || 0,
           minute: (chart1Data[minuteField] as number) || 0,
           second: (chart1Data[secondField] as number) || 0,
-          sign: chart1Data[signField] as string,
+          sign: chart1Data[signField] as import('../models/synastry.model').ZodiacSign,
         };
       }
 
@@ -350,7 +350,7 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
           degree: (chart2Data[degreeField] as number) || 0,
           minute: (chart2Data[minuteField] as number) || 0,
           second: (chart2Data[secondField] as number) || 0,
-          sign: chart2Data[signField] as string,
+          sign: chart2Data[signField] as import('../models/synastry.model').ZodiacSign,
         };
       }
     });
@@ -386,7 +386,7 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
  */
 export async function getSynastryReports(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
 
     if (!userId) {
       res.status(401).json({
@@ -410,14 +410,16 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
       .count('* as count')
       .first();
 
+    const totalCount = Number(total?.count ?? 0);
+
     res.json({
       success: true,
       data: {
-        reports: reports.map((r: any) => ({
+        reports: reports.map((r: Record<string, unknown>) => ({
           id: r.id,
           chart1Id: r.chart1_id,
           chart2Id: r.chart2_id,
-          synastryAspects: JSON.parse(r.synastry_aspects || '[]'),
+          synastryAspects: JSON.parse((r.synastry_aspects as string) || '[]'),
           overallCompatibility: r.compatibility_score,
           relationshipTheme: r.relationship_theme,
           strengths: r.strengths || [],
@@ -430,8 +432,8 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
         pagination: {
           page,
           limit,
-          total: (total as any).count,
-          totalPages: Math.ceil((total as any).count / limit),
+          total: totalCount,
+          totalPages: Math.ceil(totalCount / limit),
         },
       },
     });
@@ -446,7 +448,7 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
  */
 export async function getSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     const { id } = req.params;
 
     if (!userId) {
@@ -458,7 +460,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
 
     const report = await knex('synastry_charts')
       .where({ id, user_id: userId })
-      .first();
+      .first() as Record<string, unknown> | undefined;
 
     if (!report) {
       res.status(404).json({
@@ -475,7 +477,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
       success: true,
       data: {
         ...report,
-        synastryAspects: JSON.parse(report.synastry_aspects || '[]'),
+        synastryAspects: JSON.parse((report?.synastry_aspects as string) || '[]'),
         aspects,
       },
     });
@@ -490,7 +492,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
  */
 export async function deleteSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     const { id } = req.params;
 
     if (!userId) {
@@ -531,7 +533,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
  */
 export async function updateSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     const { id } = req.params;
     const { isFavorite, notes } = req.body;
 
@@ -555,7 +557,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
     }
 
     // Update
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
 

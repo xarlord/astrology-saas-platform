@@ -5,7 +5,7 @@
 import axios from 'axios';
 import { getAccessToken, getRefreshToken } from '../utils/tokenStorage';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 // Create axios instance
 const api = axios.create({
@@ -78,6 +78,13 @@ api.interceptors.response.use(
 
     // If 401 and not already retrying
     if (error.response?.status === 401 && originalRequest && !(originalRequest as unknown as Record<string, unknown>)._retry) {
+      // Prevent infinite loop: if the refresh endpoint itself fails, don't retry
+      const isRefreshRequest = originalRequest.url?.includes('/auth/refresh');
+      if (isRefreshRequest) {
+        window.dispatchEvent(new CustomEvent('auth:session-expired'));
+        return Promise.reject(error);
+      }
+
       (originalRequest as unknown as Record<string, unknown>)._retry = true;
 
       try {
@@ -86,7 +93,7 @@ api.interceptors.response.use(
           throw new Error('No refresh token');
         }
 
-        const { data } = await api.post<{ data: { accessToken: string } }>('/auth/refresh', {
+        const { data } = await api.post<{ data: { accessToken: string } }>('/v1/auth/refresh', {
           refreshToken,
         });
 

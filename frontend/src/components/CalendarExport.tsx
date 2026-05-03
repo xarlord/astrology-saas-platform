@@ -113,40 +113,40 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
   };
 
   return (
-    <div className="max-w-[600px] mx-auto p-6 sm:p-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+    <div className="max-w-[600px] mx-auto p-6 sm:p-4 glass-panel rounded-2xl">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-amber-100 text-amber-500 rounded-xl shrink-0">
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>file_download</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '24px' }}>file_download</span>
         </div>
         <div>
-          <h2 className="m-0 mb-1 text-2xl font-semibold text-gray-900">Export Calendar</h2>
-          <p className="m-0 text-sm text-gray-500">Download your astrological calendar as an iCal file</p>
+          <h2 className="m-0 mb-1 text-2xl font-semibold text-white">Export Calendar</h2>
+          <p className="m-0 text-sm text-slate-200">Download your astrological calendar as an iCal file</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-6">
         {/* Quick Select */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-gray-700">Quick Select</label>
+          <label className="text-sm font-semibold text-slate-200">Quick Select</label>
           <div className="flex gap-2 flex-wrap sm:flex-col">
             <button
               type="button"
               onClick={() => handleQuickSelect('this-month')}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-md text-[13px] font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-blue-50 hover:text-indigo-500 sm:w-full"
+              className="px-4 py-2 bg-white/15 border border-white/15 rounded-md text-[13px] font-medium text-slate-200 cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/10 hover:text-primary sm:w-full"
             >
               This Month
             </button>
             <button
               type="button"
               onClick={() => handleQuickSelect('this-quarter')}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-md text-[13px] font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-blue-50 hover:text-indigo-500 sm:w-full"
+              className="px-4 py-2 bg-white/15 border border-white/15 rounded-md text-[13px] font-medium text-slate-200 cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/10 hover:text-primary sm:w-full"
             >
               This Quarter
             </button>
             <button
               type="button"
               onClick={() => handleQuickSelect('this-year')}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-md text-[13px] font-medium text-gray-700 cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:bg-blue-50 hover:text-indigo-500 sm:w-full"
+              className="px-4 py-2 bg-white/15 border border-white/15 rounded-md text-[13px] font-medium text-slate-200 cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/10 hover:text-primary sm:w-full"
             >
               This Year
             </button>
@@ -155,28 +155,28 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
 
         {/* Custom Date Range */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-gray-700">Custom Date Range</label>
+          <label className="text-sm font-semibold text-slate-200">Custom Date Range</label>
           <div className="flex gap-4 sm:flex-col sm:gap-3">
             <div className="flex-1 flex flex-col gap-1">
-              <label htmlFor="startDate" className="text-xs font-medium text-gray-500">From</label>
+              <label htmlFor="startDate" className="text-xs font-medium text-slate-200">From</label>
               <input
                 id="startDate"
                 type="date"
                 value={params.startDate}
                 onChange={(e) => setParams({ ...params, startDate: e.target.value })}
-                className="px-3 py-2.5 border border-gray-200 rounded-md text-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-indigo-500 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                className="px-3 py-2.5 border border-white/15 rounded-md text-sm text-slate-200 bg-white/15 transition-all duration-200 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(107,61,225,0.1)]"
               />
             </div>
 
             <div className="flex-1 flex flex-col gap-1">
-              <label htmlFor="endDate" className="text-xs font-medium text-gray-500">To</label>
+              <label htmlFor="endDate" className="text-xs font-medium text-slate-200">To</label>
               <input
                 id="endDate"
                 type="date"
                 value={params.endDate}
                 min={params.startDate}
                 onChange={(e) => setParams({ ...params, endDate: e.target.value })}
-                className="px-3 py-2.5 border border-gray-200 rounded-md text-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-indigo-500 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                className="px-3 py-2.5 border border-white/15 rounded-md text-sm text-slate-200 bg-white/15 transition-all duration-200 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(107,61,225,0.1)]"
               />
             </div>
           </div>
@@ -190,35 +190,35 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
               checked={params.includePersonal}
               onChange={(e) => setParams({ ...params, includePersonal: e.target.checked })}
               id="includePersonal"
-              className="w-[18px] h-[18px] accent-indigo-500 cursor-pointer"
+              className="w-[18px] h-[18px] accent-primary cursor-pointer"
             />
-            <span className="text-sm text-gray-700">Include my personal transits</span>
+            <span className="text-sm text-slate-200">Include my personal transits</span>
           </label>
-          <div className="flex items-start gap-1.5 px-3 py-2 bg-green-50 border-l-[3px] border-emerald-500 rounded bg-[#f0fdf4] text-[13px] text-green-800 leading-snug">
-            <span className="material-symbols-outlined shrink-0 mt-0.5" style={{ fontSize: '14px' }}>error</span>
+          <div className="flex items-start gap-1.5 px-3 py-2 bg-emerald-500/10 border-l-[3px] border-emerald-500 rounded text-[13px] text-emerald-300 leading-snug">
+            <span className="material-symbols-outlined shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>error</span>
             <span>Uncheck to export only global astrological events (retrogrades, eclipses, moon phases)</span>
           </div>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-300 rounded-lg text-green-800 text-sm">
-            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>check_circle</span>
+          <div className="flex items-center gap-2 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-sm">
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>check_circle</span>
             <span>Calendar exported successfully!</span>
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-300 rounded-lg text-red-800 text-sm">
-            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>error</span>
+          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>error</span>
             <span>{error}</span>
           </div>
         )}
 
         {/* Export Button */}
-        <div className="pt-2 border-t border-gray-200">
-          <button onClick={handleExport} className="flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-indigo-500 text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed" disabled={loading}>
+        <div className="pt-2 border-t border-white/15">
+          <button onClick={handleExport} className="flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-primary text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed" disabled={loading}>
             {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -226,7 +226,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>download</span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>download</span>
                 Export as iCal
               </>
             )}
@@ -234,9 +234,9 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         </div>
 
         {/* Info */}
-        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="flex items-center gap-2 text-[13px] text-blue-800">
-            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>
+        <div className="p-4 bg-primary/5 rounded-xl border border-primary/20">
+          <div className="flex items-center gap-2 text-[13px] text-primary">
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
             <span>Compatible with Google Calendar, Outlook, Apple Calendar, and more</span>
           </div>
         </div>

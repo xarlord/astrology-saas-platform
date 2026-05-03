@@ -116,10 +116,10 @@ function DateSelector({
   onDateChange: (date: string) => void;
 }) {
   const viewModes = [
-    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>light_mode</span> },
-    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span> },
-    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span> },
-    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>dark_mode</span> },
+    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>light_mode</span> },
+    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>dark_mode</span> },
   ];
 
   return (
@@ -133,11 +133,11 @@ function DateSelector({
               key={mode.id}
               onClick={() => onViewChange(mode.id)}
               className={`
-                flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap
+                flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors whitespace-nowrap
                 ${
                   viewMode === mode.id
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+                    ? 'bg-primary text-white shadow-[0_0_10px_rgba(107,61,225,0.4)]'
+                    : 'bg-cosmic-card-solid text-slate-200 hover:bg-white/15 hover:border-white/15 border border-white/15'
                 }
               `}
             >
@@ -156,17 +156,17 @@ function DateSelector({
             date.setDate(date.getDate() - 1);
             onDateChange(date.toISOString().split('T')[0]);
           }}
-          className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="p-2 rounded-lg bg-cosmic-card-solid border border-white/15 hover:bg-white/15"
           aria-label="Previous day"
         >
-          <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_left</span>
+          <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
         </button>
         <input
           type="date"
           value={selectedDate}
           onChange={(e) => onDateChange(e.target.value)}
           aria-label="Select date"
-          className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
+          className="px-4 py-2 bg-cosmic-card-solid border border-white/15 rounded-lg text-sm text-white"
         />
         <button
           onClick={() => {
@@ -174,10 +174,10 @@ function DateSelector({
             date.setDate(date.getDate() + 1);
             onDateChange(date.toISOString().split('T')[0]);
           }}
-          className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="p-2 rounded-lg bg-cosmic-card-solid border border-white/15 hover:bg-white/15"
           aria-label="Next day"
         >
-          <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_right</span>
+          <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_right</span>
         </button>
       </div>
     </div>
@@ -191,7 +191,7 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="text-lg font-semibold text-white">
         Today&apos;s Transits
       </h3>
 
@@ -229,13 +229,13 @@ function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onT
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="text-lg font-semibold text-white">
         This Week&apos;s Transits
       </h3>
 
       {sortedDates.map((date) => (
         <div key={date}>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className="text-sm font-medium text-slate-200 mb-3">
             {new Date(date).toLocaleDateString('en-US', {
               weekday: 'long',
               month: 'short',
@@ -278,7 +278,7 @@ function TransitCalendar({
 
   // Empty cells for days before month starts
   for (let i = 0; i < firstDayOfMonth; i++) {
-    week.push(<div key={`empty-${i}`} className="h-24 bg-gray-50 dark:bg-gray-800/50 rounded-lg" />);
+    week.push(<div key={`empty-${i}`} className="h-24 bg-white/15 rounded-lg" />);
   }
 
   // Days of the month
@@ -307,21 +307,21 @@ function TransitCalendar({
   // Remaining days in last week
   if (week.length > 0) {
     while (week.length < 7) {
-      week.push(<div key={`empty-end-${week.length}`} className="h-24 bg-gray-50 dark:bg-gray-800/50 rounded-lg" />);
+      week.push(<div key={`empty-end-${week.length}`} className="h-24 bg-white/15 rounded-lg" />);
     }
     weeks.push(<div key={`week-${weeks.length}`} className="grid grid-cols-7 gap-2">{week}</div>);
   }
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="text-lg font-semibold text-white">
         Transit Calendar - {today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
       </h3>
 
       {/* Day headers */}
       <div className="grid grid-cols-7 gap-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="text-center text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div key={day} className="text-center text-sm font-medium text-slate-200">
             {day}
           </div>
         ))}
@@ -334,15 +334,15 @@ function TransitCalendar({
       <div className="flex items-center gap-4 text-sm">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-orange-500" />
-          <span className="text-gray-600 dark:text-gray-400">Major Transit</span>
+          <span className="text-slate-200">Major Transit</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-full bg-gray-400" />
-          <span className="text-gray-600 dark:text-gray-400">Moon Phase</span>
+          <div className="w-3 h-3 rounded-full bg-slate-500" />
+          <span className="text-slate-200">Moon Phase</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-red-500" />
-          <span className="text-gray-600 dark:text-gray-400">Eclipse</span>
+          <span className="text-slate-200">Eclipse</span>
         </div>
       </div>
     </div>
@@ -368,10 +368,10 @@ function CalendarDay({
       onClick={onClick}
       className={`
         h-24 rounded-lg p-2 text-left transition-all hover:shadow-md
-        ${isSelected ? 'ring-2 ring-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'}
+        ${isSelected ? 'ring-2 ring-primary bg-primary/10' : 'bg-cosmic-card-solid/70 border border-white/15'}
       `}
     >
-      <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">{day}</div>
+      <div className="text-sm font-medium text-white mb-1">{day}</div>
 
       {/* Transit indicators */}
       <div className="space-y-0.5">
@@ -401,7 +401,7 @@ function UpcomingHighlights({
 }) {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="text-lg font-semibold text-white">
         Upcoming Highlights
       </h3>
 
@@ -443,7 +443,7 @@ function TransitCard({
     <div
       onClick={onClick}
       className={`
-        bg-white dark:bg-gray-800 rounded-lg border p-4 cursor-pointer transition-all
+        glass-panel rounded-2xl border p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
       `}
       style={{
@@ -470,7 +470,7 @@ function TransitCard({
       {!compact && (
         <>
           {/* Date Range */}
-          <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+          <div className="mt-3 text-sm text-slate-200">
             {formatDate(transit.startDate)} - {formatDate(transit.endDate)}
           </div>
 
@@ -480,7 +480,7 @@ function TransitCard({
               {transit.interpretation.themes.slice(0, 3).map((theme, index) => (
                 <span
                   key={index}
-                  className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-700 dark:text-gray-300"
+                  className="px-2 py-0.5 bg-white/15 rounded text-xs text-slate-200"
                 >
                   {theme}
                 </span>
@@ -489,7 +489,7 @@ function TransitCard({
           )}
 
           {/* Interpretation */}
-          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+          <p className="mt-3 text-sm text-slate-200 line-clamp-2">
             {transit.interpretation.general}
           </p>
         </>
@@ -510,7 +510,7 @@ function HighlightCard({
     <div
       onClick={onClick}
       className={`
-        bg-white dark:bg-gray-800 rounded-lg border-2 p-4 cursor-pointer transition-all
+        glass-panel rounded-2xl border-2 p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
       `}
       style={{ borderColor: highlight.color ?? '#6366F1' }}
@@ -519,26 +519,26 @@ function HighlightCard({
       <div className="text-3xl mb-2">{highlight.icon ?? '✨'}</div>
 
       {/* Title */}
-      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{highlight.title}</h4>
+      <h4 className="font-semibold text-white mb-1">{highlight.title}</h4>
 
       {/* Date */}
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+      <p className="text-sm text-slate-200 mb-2">
         {formatDate(highlight.date)}
       </p>
 
       {/* Description */}
-      <p className="text-sm text-gray-500 dark:text-gray-500 line-clamp-3">
+      <p className="text-sm text-slate-200 line-clamp-3">
         {highlight.description}
       </p>
 
       {/* Intensity indicator (if applicable) */}
       {highlight.intensity && (
         <div className="mt-3">
-          <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+          <div className="flex items-center justify-between text-xs text-slate-200 mb-1">
             <span>Intensity</span>
             <span>{highlight.intensity}/10</span>
           </div>
-          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="h-2 bg-white/15 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full"
               style={{
@@ -573,7 +573,7 @@ function formatDate(dateStr: string): string {
 export function TransitDetailModal({ transit, onClose }: { transit: Transit; onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="glass-panel rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
@@ -584,7 +584,7 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              className="p-2 hover:bg-white/15 rounded-lg"
             >
               ✕
             </button>
@@ -592,36 +592,36 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
 
           {/* Date Range */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-sm font-medium text-slate-200 mb-2">
               Duration
             </h4>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-slate-200">
               {formatDate(transit.startDate)} - {formatDate(transit.endDate)}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            <p className="text-xs text-slate-200 mt-1">
               Peak: {formatDate(transit.peakDate)}
             </p>
           </div>
 
           {/* Interpretation */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-sm font-medium text-slate-200 mb-2">
               Interpretation
             </h4>
-            <p className="text-gray-600 dark:text-gray-400">{transit.interpretation.general}</p>
+            <p className="text-slate-200">{transit.interpretation.general}</p>
           </div>
 
           {/* Themes */}
           {transit.interpretation.themes && transit.interpretation.themes.length > 0 && (
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <h4 className="text-sm font-medium text-slate-200 mb-2">
                 Key Themes
               </h4>
               <div className="flex flex-wrap gap-2">
                 {transit.interpretation.themes.map((theme, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full text-sm"
+                    className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
                   >
                     {theme}
                   </span>
@@ -633,12 +633,12 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
           {/* Advice */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h4 className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">
+              <h4 className="text-sm font-medium text-green-400 mb-2">
                 Best Practices
               </h4>
               <ul className="space-y-1">
                 {transit.interpretation.advice.positive.map((item, index) => (
-                  <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                  <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-green-500 mt-0.5">✓</span>
                     {item}
                   </li>
@@ -646,12 +646,12 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-orange-700 dark:text-orange-400 mb-2">
+              <h4 className="text-sm font-medium text-orange-400 mb-2">
                 Challenges to Navigate
               </h4>
               <ul className="space-y-1">
                 {transit.interpretation.advice.challenges.map((item, index) => (
-                  <li key={index} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                  <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-orange-500 mt-0.5">!</span>
                     {item}
                   </li>
@@ -663,17 +663,17 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
           {/* Suggestions */}
           {transit.interpretation.advice.suggestions &&
             transit.interpretation.advice.suggestions.length > 0 && (
-              <div className="mt-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                <h4 className="text-sm font-medium text-indigo-700 dark:text-indigo-400 mb-2">
+              <div className="mt-4 p-4 bg-primary/5 rounded-lg">
+                <h4 className="text-sm font-medium text-primary mb-2">
                   Suggestions
                 </h4>
                 <ul className="space-y-1">
                   {transit.interpretation.advice.suggestions.map((item, index) => (
                     <li
                       key={index}
-                      className="text-xs text-gray-700 dark:text-gray-300 flex items-start gap-2"
+                      className="text-xs text-slate-200 flex items-start gap-2"
                     >
-                      <span className="text-indigo-500">💡</span>
+                      <span className="text-primary">💡</span>
                       {item}
                     </li>
                   ))}

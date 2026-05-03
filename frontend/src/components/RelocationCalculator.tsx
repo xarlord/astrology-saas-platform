@@ -160,18 +160,18 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
     <div className="p-8 max-w-[1000px] mx-auto md:p-4" role="region" aria-label="Relocation Calculator">
       <div className="flex items-center gap-6 mb-8 md:flex-col md:text-center">
         <div className="w-16 h-16 bg-gradient-to-br from-[#667eea] to-[#764ba2] rounded-2xl flex items-center justify-center text-white">
-          <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>public</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '32px' }}>public</span>
         </div>
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-1">Solar Return Relocation</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-base">Calculate your solar return for different locations</p>
+          <h2 className="text-2xl font-semibold text-white mb-1">Solar Return Relocation</h2>
+          <p className="text-slate-200 text-base">Calculate your solar return for different locations</p>
         </div>
       </div>
 
       {/* Info Banner */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-lg py-4 px-5 flex gap-3 items-start mb-8">
-        <span className="material-symbols-outlined text-emerald-700 shrink-0 mt-0.5" style={{ fontSize: '20px' }}>info</span>
-        <p className="text-emerald-700 text-[0.925rem] leading-relaxed m-0">
+      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg py-4 px-5 flex gap-3 items-start mb-8">
+        <span className="material-symbols-outlined text-emerald-400 shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '20px' }}>info</span>
+        <p className="text-emerald-300 text-[0.925rem] leading-relaxed m-0">
           Relocating for your solar return can shift the house placements and themes for your birthday year.
           Choose a location to see how your solar return changes.
         </p>
@@ -179,10 +179,10 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       {/* Search Section */}
       <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Choose a Location</h3>
+        <h3 className="text-xl font-semibold text-slate-200 mb-4">Choose a Location</h3>
 
-        <div className="flex gap-3 items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm">
-          <span className="material-symbols-outlined text-gray-400 shrink-0" style={{ fontSize: '20px' }}>search</span>
+        <div className="flex gap-3 items-center glass-panel rounded-xl p-3">
+          <span className="material-symbols-outlined text-slate-200 shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>search</span>
           <input
             type="text"
             placeholder="Search for a city..."
@@ -195,14 +195,14 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
           <button
             onClick={() => void handleSearch()}
             disabled={loading || !searchQuery}
-            className="bg-indigo-500 text-white border-none py-2.5 px-5 rounded-md cursor-pointer font-medium transition-colors duration-200 hover:not-disabled:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary text-white border-none py-2.5 px-5 rounded-md cursor-pointer font-medium transition-colors duration-200 hover:not-disabled:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Search
           </button>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md py-3 px-4 mt-4 flex justify-between items-center text-red-700 text-sm" role="alert">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-md py-3 px-4 mt-4 flex justify-between items-center text-red-400 text-sm" role="alert">
             {error}
             <button onClick={() => setError(null)} className="bg-transparent border-none text-xl cursor-pointer p-0 ml-2">✕</button>
           </div>
@@ -211,18 +211,18 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       {/* Popular Locations */}
       <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Popular Locations</h3>
+        <h3 className="text-xl font-semibold text-slate-200 mb-4">Popular Locations</h3>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 md:grid-cols-1" aria-label="Popular locations">
           {popularLocations.map((location, index) => (
             <button
               key={index}
               aria-label={`Select ${location.name}`}
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3.5 cursor-pointer flex items-center gap-3 transition-all duration-200 hover:border-indigo-500 hover:shadow-[0_2px_8px_rgba(99,102,241,0.2)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
+              className="glass-panel rounded-xl p-3.5 cursor-pointer flex items-center gap-3 transition-all duration-200 hover:border-primary hover:shadow-[0_2px_8px_rgba(99,102,241,0.2)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => void handleLocationSelect(location)}
               disabled={loading}
             >
-              <span className="material-symbols-outlined text-indigo-500 shrink-0" style={{ fontSize: '20px' }}>location_on</span>
-              <span className="text-sm text-gray-800 dark:text-gray-200">{location.name}</span>
+              <span className="material-symbols-outlined text-primary shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>location_on</span>
+              <span className="text-sm text-slate-200">{location.name}</span>
             </button>
           ))}
         </div>
@@ -230,24 +230,24 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
       {/* Comparison View */}
       {showComparison && relocatedReturn && (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-8 mt-8" aria-live="polite">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Relocation Comparison</h3>
+        <div className="glass-panel rounded-2xl p-8 mt-8" aria-live="polite">
+          <h3 className="text-xl font-semibold text-white mb-6">Relocation Comparison</h3>
 
           <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center mb-8 md:grid-cols-1">
             {/* Original */}
-            <div className="border-2 border-gray-300 dark:border-gray-600 rounded-lg p-5">
-              <h4 className="text-lg font-semibold mb-4 text-gray-500 dark:text-gray-400">Original Location</h4>
+            <div className="border-2 border-white/15 rounded-lg p-5">
+              <h4 className="text-lg font-semibold mb-4 text-slate-200">Original Location</h4>
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Year:</strong> {year}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Return Date:</strong> {new Date(originalReturn?.returnDate ?? '').toLocaleDateString()}</p>
+                <p className="text-sm text-slate-200 mb-2"><strong>Year:</strong> {year}</p>
+                <p className="text-sm text-slate-200 mb-2"><strong>Return Date:</strong> {new Date(originalReturn?.returnDate ?? '').toLocaleDateString()}</p>
               </div>
 
               {originalReturn?.interpretation && (
                 <div className="mt-4">
-                  <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Themes:</h5>
+                  <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes:</h5>
                   <div className="flex flex-wrap gap-1.5">
                     {originalReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{theme}</span>
+                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-white/15 text-slate-200">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -255,24 +255,24 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             </div>
 
             {/* Arrow */}
-            <div className="flex justify-center text-indigo-500 md:rotate-90 md:my-2 md:mx-auto">
-              <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>arrow_forward</span>
+            <div className="flex justify-center text-primary md:rotate-90 md:my-2 md:mx-auto">
+              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '32px' }}>arrow_forward</span>
             </div>
 
             {/* Relocated */}
-            <div className="border-2 border-indigo-500 rounded-lg p-5">
-              <h4 className="text-lg font-semibold mb-4 text-indigo-500">Relocated Chart</h4>
+            <div className="border-2 border-primary rounded-lg p-5">
+              <h4 className="text-lg font-semibold mb-4 text-primary">Relocated Chart</h4>
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Location:</strong> {selectedLocation?.name}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Return Date:</strong> {new Date(relocatedReturn.returnDate).toLocaleDateString()}</p>
+                <p className="text-sm text-slate-200 mb-2"><strong>Location:</strong> {selectedLocation?.name}</p>
+                <p className="text-sm text-slate-200 mb-2"><strong>Return Date:</strong> {new Date(relocatedReturn.returnDate).toLocaleDateString()}</p>
               </div>
 
               {relocatedReturn.interpretation && (
                 <div className="mt-4">
-                  <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Themes:</h5>
+                  <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes:</h5>
                   <div className="flex flex-wrap gap-1.5">
                     {relocatedReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-gray-600 dark:text-gray-300">{theme}</span>
+                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-primary/10 text-slate-200">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -282,14 +282,14 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
           {/* House Changes */}
           <div className="mb-6">
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">House Placement Changes</h4>
+            <h4 className="text-lg font-semibold text-slate-200 mb-4">House Placement Changes</h4>
             <div className="flex flex-col gap-3">
               {getHouseChanges().map((change, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
-                  <span className="font-semibold text-gray-800 dark:text-gray-200 min-w-[80px]">{change.planet}</span>
-                  <span className="text-gray-500 dark:text-gray-400">House {change.originalHouse}</span>
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
-                  <span className="text-indigo-500 font-semibold">House {change.relocatedHouse}</span>
+                <div key={index} className="flex items-center gap-3 p-3 bg-white/15 rounded-md">
+                  <span className="font-semibold text-slate-200 min-w-[80px]">{change.planet}</span>
+                  <span className="text-slate-200">House {change.originalHouse}</span>
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>arrow_forward</span>
+                  <span className="text-primary font-semibold">House {change.relocatedHouse}</span>
                 </div>
               ))}
             </div>
@@ -297,14 +297,14 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
           {/* Theme Changes */}
           <div className="mb-6">
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Theme Changes</h4>
+            <h4 className="text-lg font-semibold text-slate-200 mb-4">Theme Changes</h4>
 
             {themesAdded.length > 0 && (
               <div className="mb-4">
-                <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">New Themes:</h5>
+                <h5 className="text-sm font-semibold text-slate-200 mb-2">New Themes:</h5>
                 <div className="flex flex-wrap gap-1.5">
                   {themesAdded.map((theme: string, i: number) => (
-                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300">{theme}</span>
+                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-300">{theme}</span>
                   ))}
                 </div>
               </div>
@@ -312,10 +312,10 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
             {themesRemoved.length > 0 && (
               <div>
-                <h5 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Themes No Longer Active:</h5>
+                <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes No Longer Active:</h5>
                 <div className="flex flex-wrap gap-1.5">
                   {themesRemoved.map((theme: string, i: number) => (
-                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300">{theme}</span>
+                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-300">{theme}</span>
                   ))}
                 </div>
               </div>
@@ -323,16 +323,16 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-center gap-4 pt-6 border-t border-gray-200 dark:border-gray-600 md:flex-col">
+          <div className="flex justify-center gap-4 pt-6 border-t border-white/15 md:flex-col">
             <button
               onClick={() => setShowComparison(false)}
-              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 border border-gray-200 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 md:w-full"
+              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-white/15 text-slate-200 border border-white/15 hover:bg-white/15 md:w-full"
             >
               Close Comparison
             </button>
             <button
               onClick={() => window.print()}
-              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-indigo-500 text-white border-none hover:bg-indigo-600 md:w-full"
+              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-primary text-white border-none hover:bg-primary/90 md:w-full"
             >
               Save Relocated Chart
             </button>
@@ -341,8 +341,8 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       )}
 
       {/* Manual Entry */}
-      <details className="bg-gray-50 dark:bg-gray-800/50 rounded-lg mt-8">
-        <summary className="cursor-pointer p-4 font-semibold text-gray-600 dark:text-gray-300 select-none hover:text-gray-800 dark:hover:text-gray-100">
+      <details className="bg-white/15 rounded-lg mt-8">
+        <summary className="cursor-pointer p-4 font-semibold text-slate-200 select-none hover:text-white">
           Enter coordinates manually
         </summary>
         <form
@@ -360,29 +360,29 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
           }}
         >
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Location Name</label>
-            <input name="name" type="text" required aria-required="true" placeholder="e.g., Paris, France" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
+            <label className="text-sm font-semibold text-slate-200">Location Name</label>
+            <input name="name" type="text" required aria-required="true" placeholder="e.g., Paris, France" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Latitude</label>
-            <input name="latitude" type="number" step="0.0001" required aria-required="true" placeholder="e.g., 48.8566" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
+            <label className="text-sm font-semibold text-slate-200">Latitude</label>
+            <input name="latitude" type="number" step="0.0001" required aria-required="true" placeholder="e.g., 48.8566" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Longitude</label>
-            <input name="longitude" type="number" step="0.0001" required aria-required="true" placeholder="e.g., 2.3522" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
+            <label className="text-sm font-semibold text-slate-200">Longitude</label>
+            <input name="longitude" type="number" step="0.0001" required aria-required="true" placeholder="e.g., 2.3522" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-600 dark:text-gray-300">Timezone</label>
-            <input name="timezone" type="text" required aria-required="true" placeholder="e.g., Europe/Paris" className="py-2.5 px-2.5 border border-gray-200 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/10 dark:bg-gray-700" />
+            <label className="text-sm font-semibold text-slate-200">Timezone</label>
+            <input name="timezone" type="text" required aria-required="true" placeholder="e.g., Europe/Paris" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="bg-indigo-500 text-white border-none py-3 px-6 rounded-lg font-semibold cursor-pointer justify-self-start transition-colors duration-200 hover:not-disabled:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-primary text-white border-none py-3 px-6 rounded-lg font-semibold cursor-pointer justify-self-start transition-colors duration-200 hover:not-disabled:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Calculating...' : 'Calculate Chart'}
           </button>

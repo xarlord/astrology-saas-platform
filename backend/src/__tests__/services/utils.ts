@@ -53,11 +53,11 @@ export function angularDistance(deg1: number, deg2: number): number {
 /**
  * Assert planet position is valid
  */
-export function assertPlanetPosition(position: any, _planetName: string) {
+export function assertPlanetPosition(position: Record<string, unknown>, _planetName: string) {
   expect(position).toBeDefined();
   expect(position).toHaveProperty('longitude');
-  expect(position.longitude).toBeGreaterThanOrEqual(0);
-  expect(position.longitude).toBeLessThan(360);
+  expect(position.longitude as number).toBeGreaterThanOrEqual(0);
+  expect(position.longitude as number).toBeLessThan(360);
   expect(position).toHaveProperty('latitude');
   expect(position).toHaveProperty('speed');
   expect(position).toHaveProperty('sign');
@@ -66,21 +66,21 @@ export function assertPlanetPosition(position: any, _planetName: string) {
 /**
  * Assert aspect is valid
  */
-export function assertAspect(aspect: any) {
+export function assertAspect(aspect: Record<string, unknown>) {
   expect(aspect).toBeDefined();
   expect(aspect).toHaveProperty('planet1');
   expect(aspect).toHaveProperty('planet2');
   expect(aspect).toHaveProperty('aspect');
   expect(aspect).toHaveProperty('orb');
-  expect(aspect.orb).toBeGreaterThanOrEqual(0);
+  expect(aspect.orb as number).toBeGreaterThanOrEqual(0);
 }
 
 /**
  * Assert house cusp is valid
  */
-export function assertHouseCusp(house: any, _houseNumber: number) {
+export function assertHouseCusp(house: Record<string, unknown>, _houseNumber: number) {
   expect(house).toBeDefined();
   expect(house).toHaveProperty('cusp');
-  expect(house.cusp).toBeGreaterThanOrEqual(0);
-  expect(house.cusp).toBeLessThan(360);
+  expect(house.cusp as number).toBeGreaterThanOrEqual(0);
+  expect(house.cusp as number).toBeLessThan(360);
 }

@@ -312,7 +312,7 @@ describe('ReminderSettings Component', () => {
 
       const allEventsRadio = screen.getByDisplayValue('all');
       const allEventsLabel = allEventsRadio.closest('label');
-      expect(allEventsLabel?.className).toContain('border-indigo-500');
+      expect(allEventsLabel?.className).toContain('!border-primary');
     });
 
     it('should highlight selected reminder type', () => {
@@ -320,7 +320,7 @@ describe('ReminderSettings Component', () => {
 
       const emailRadio = screen.getByDisplayValue('email');
       const emailLabel = emailRadio.closest('label');
-      expect(emailLabel?.className).toContain('border-indigo-500');
+      expect(emailLabel?.className).toContain('!border-primary');
     });
 
     it('should show checkmark on selected timing options', () => {
@@ -416,22 +416,24 @@ describe('ReminderSettings Component', () => {
     it('should render bell icon in header', () => {
       const { container } = render(<ReminderSettings />);
 
-      // Bell icon container has bg-blue-50 text-blue-500 class
-      const bellContainer = container.querySelector('.bg-blue-50');
+      // Bell icon container has bg-primary/15 text-primary class
+      const bellContainer = container.querySelector('[class*="bg-primary"]');
       expect(bellContainer).toBeInTheDocument();
     });
 
     it('should render mail icon for email option', () => {
       render(<ReminderSettings />);
 
-      const emailLabel = screen.getByLabelText('Email').closest('label');
+      const emailSpan = screen.getByText('Email');
+      const emailLabel = emailSpan.closest('label');
       expect(emailLabel?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
       render(<ReminderSettings />);
 
-      const pushLabel = screen.getByLabelText('Push Notification').closest('label');
+      const pushSpan = screen.getByText('Push Notification');
+      const pushLabel = pushSpan.closest('label');
       expect(pushLabel?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
   });
@@ -515,8 +517,10 @@ describe('ReminderSettings Component', () => {
       const user = userEvent.setup();
       render(<ReminderSettings />);
 
-      // Deselect default option
-      await user.click(screen.getByLabelText('1 day before'));
+      // Deselect default option — find checkbox by parent label text
+      const checkboxes = screen.getAllByRole('checkbox');
+      const oneDayCheckbox = checkboxes.find(cb => cb.closest('label')?.textContent?.includes('1 day before'));
+      await user.click(oneDayCheckbox!);
 
       const submitButton = screen.getByRole('button', { name: /save settings/i });
       await user.click(submitButton);

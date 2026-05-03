@@ -2,7 +2,24 @@
 // import { PlanetSymbol, AspectSymbol } from './';
 
 import type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
+import { PLANET_COLORS, ASPECT_COLORS as ASPECT_COLORS_TOKEN, ZODIAC_COLORS } from '../utils/design-tokens';
 export type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
+
+function normalizePlanets(planets: ChartData['planets']): PlanetPosition[] {
+  if (Array.isArray(planets)) return planets;
+  return Object.entries(planets).map(([name, p]) => ({
+    planet: name,
+    sign: p.sign,
+    degree: p.degree,
+    minute: p.minute,
+    second: p.second ?? 0,
+    house: p.house,
+    retrograde: p.isRetrograde ?? false,
+    latitude: p.latitude,
+    longitude: p.longitude,
+    speed: p.speed,
+  }));
+}
 
 interface ChartWheelProps {
   data: ChartData;
@@ -12,46 +29,43 @@ interface ChartWheelProps {
   onAspectClick?: (aspect: Aspect) => void;
 }
 
-// Planet symbols and colors from findings.md
-const PLANET_INFO: Record<string, { symbol: string; color: string; name: string }> = {
-  sun: { symbol: '☉', color: '#FFD700', name: 'Sun' },
-  moon: { symbol: '☽', color: '#C0C0C0', name: 'Moon' },
-  mercury: { symbol: '☿', color: '#8B4513', name: 'Mercury' },
-  venus: { symbol: '♀', color: '#FF69B4', name: 'Venus' },
-  mars: { symbol: '♂', color: '#FF0000', name: 'Mars' },
-  jupiter: { symbol: '♃', color: '#FFA500', name: 'Jupiter' },
-  saturn: { symbol: '♄', color: '#696969', name: 'Saturn' },
-  uranus: { symbol: '♅', color: '#40E0D0', name: 'Uranus' },
-  neptune: { symbol: '♆', color: '#4169E1', name: 'Neptune' },
-  pluto: { symbol: '♇', color: '#8B0000', name: 'Pluto' },
+const PLANET_SYMBOLS: Record<string, string> = {
+  sun: '☉', moon: '☽', mercury: '☿', venus: '♀', mars: '♂',
+  jupiter: '♃', saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇',
 };
 
-// Aspect colors from findings.md
+const PLANET_NAMES: Record<string, string> = {
+  sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
+  jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune', pluto: 'Pluto',
+};
+
+const PLANET_INFO: Record<string, { symbol: string; color: string; name: string }> = {};
+for (const key of Object.keys(PLANET_SYMBOLS)) {
+  const k = key.charAt(0).toUpperCase() + key.slice(1);
+  PLANET_INFO[key] = {
+    symbol: PLANET_SYMBOLS[key],
+    color: PLANET_COLORS[k as keyof typeof PLANET_COLORS] ?? '#888888',
+    name: PLANET_NAMES[key],
+  };
+}
+
 const ASPECT_COLORS: Record<string, string> = {
-  conjunction: '#FF0000',
-  opposition: '#FF0000',
-  trine: '#00FF00',
+  ...ASPECT_COLORS_TOKEN,
+  'semi-sextile': '#888888',
   square: '#FF6600',
   sextile: '#00BFFF',
   quincunx: '#9932CC',
-  'semi-sextile': '#888888',
 };
 
 // Zodiac signs and colors
-const ZODIAC_SIGNS = [
-  { name: 'aries', symbol: '♈', color: '#EF4444' },
-  { name: 'taurus', symbol: '♉', color: '#10B981' },
-  { name: 'gemini', symbol: '♊', color: '#3B82F6' },
-  { name: 'cancer', symbol: '♋', color: '#6366F1' },
-  { name: 'leo', symbol: '♌', color: '#EF4444' },
-  { name: 'virgo', symbol: '♍', color: '#10B981' },
-  { name: 'libra', symbol: '♎', color: '#3B82F6' },
-  { name: 'scorpio', symbol: '♏', color: '#6366F1' },
-  { name: 'sagittarius', symbol: '♐', color: '#EF4444' },
-  { name: 'capricorn', symbol: '♑', color: '#10B981' },
-  { name: 'aquarius', symbol: '♒', color: '#3B82F6' },
-  { name: 'pisces', symbol: '♓', color: '#6366F1' },
-];
+const ZODIAC_SYMBOLS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const ZODIAC_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+
+const ZODIAC_SIGNS = ZODIAC_NAMES.map((name, i) => ({
+  name: name.toLowerCase(),
+  symbol: ZODIAC_SYMBOLS[i],
+  color: ZODIAC_COLORS[name as keyof typeof ZODIAC_COLORS] ?? '#6366F1',
+}));
 
 // Convert degrees to radians
 const degToRad = (degrees: number) => (degrees * Math.PI) / 180;
@@ -72,6 +86,7 @@ export function ChartWheel({
   onPlanetClick,
   onAspectClick,
 }: ChartWheelProps) {
+  const planets = normalizePlanets(data.planets);
   const cx = size / 2;
   const cy = size / 2;
   const outerRadius = size * 0.45;
@@ -92,7 +107,7 @@ export function ChartWheel({
 
   // Generate accessible description
   const generateChartDescription = () => {
-    const planetDescriptions = data.planets
+    const planetDescriptions = planets
       .map((p) => {
         const info = PLANET_INFO[p.planet];
         if (!info) return null;
@@ -120,7 +135,7 @@ export function ChartWheel({
         <h2>Astrological Chart - Text Description</h2>
         <h3>Planetary Positions</h3>
         <ul>
-          {data.planets.map((planet) => {
+          {planets.map((planet) => {
             const info = PLANET_INFO[planet.planet];
             if (!info) return null;
             return (
@@ -177,7 +192,7 @@ export function ChartWheel({
           fill="none"
           stroke="#E5E7EB"
           strokeWidth="2"
-          className="dark:stroke-gray-700"
+          className="stroke-[#2f2645]"
         />
 
         {/* Zodiac wheel - 12 segments */}
@@ -210,7 +225,7 @@ export function ChartWheel({
                 fill={index % 2 === 0 ? '#F9FAFB' : '#FFFFFF'}
                 stroke="#D1D5DB"
                 strokeWidth="1"
-                className="dark:fill-gray-800 dark:stroke-gray-600"
+                className="fill-[#141627]/70 stroke-[#2f2645]"
               />
               {/* Zodiac symbol */}
               <text
@@ -245,7 +260,7 @@ export function ChartWheel({
               y2={inner.y}
               stroke="#9CA3AF"
               strokeWidth={house.house === 1 ? 2 : 1}
-              className="dark:stroke-gray-500"
+              className="stroke-slate-500"
               aria-label={`House cusp ${house.house} in ${house.sign}`}
             />
           );
@@ -269,7 +284,7 @@ export function ChartWheel({
               dominantBaseline="middle"
               fontSize={size * 0.025}
               fill="#6B7280"
-              className="dark:fill-gray-400"
+              className="fill-slate-400"
             >
               {house.house}
             </text>
@@ -278,8 +293,8 @@ export function ChartWheel({
 
         {/* Aspect lines (inside the wheel) */}
         {data.aspects.map((aspect, index) => {
-          const planet1 = data.planets.find((p) => p.planet === aspect.planet1);
-          const planet2 = data.planets.find((p) => p.planet === aspect.planet2);
+          const planet1 = planets.find((p) => p.planet === aspect.planet1);
+          const planet2 = planets.find((p) => p.planet === aspect.planet2);
 
           if (!planet1 || !planet2) return null;
 
@@ -328,7 +343,7 @@ export function ChartWheel({
         })}
 
         {/* Planets */}
-        {data.planets.map((planet) => {
+        {planets.map((planet) => {
           const angle = getPlanetAngle(planet);
           const pos = getCircleCoords(cx, cy, (outerRadius + innerRadius) / 2, angle);
           const info = PLANET_INFO[planet.planet];
@@ -366,7 +381,7 @@ export function ChartWheel({
                 fill={info.color}
                 stroke="#FFFFFF"
                 strokeWidth="2"
-                className="dark:stroke-gray-900"
+                className="stroke-gray-900"
                 opacity={0.9}
                 aria-label={planetLabel}
               />
@@ -407,7 +422,7 @@ export function ChartWheel({
           cy={cy}
           r={size * 0.02}
           fill="#6366F1"
-          className="dark:fill-indigo-400"
+          className="fill-primary"
         />
       </svg>
     </div>
@@ -419,39 +434,39 @@ export function ChartWheelLegend() {
   return (
     <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm" role="region" aria-label="Chart legend">
       <div>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Aspects</h4>
+        <h4 className="font-semibold text-white mb-2">Aspects</h4>
         <ul className="space-y-1" role="list">
           <li className="flex items-center gap-2">
             <span className="text-lg" style={{ color: ASPECT_COLORS.conjunction }} aria-hidden="true">☌</span>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-slate-200">
               <span className="sr-only">Conjunction symbol</span>
               Conjunction (10°)
             </span>
           </li>
           <li className="flex items-center gap-2">
             <span className="text-lg" style={{ color: ASPECT_COLORS.opposition }} aria-hidden="true">☍</span>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-slate-200">
               <span className="sr-only">Opposition symbol</span>
               Opposition (8°)
             </span>
           </li>
           <li className="flex items-center gap-2">
             <span className="text-lg" style={{ color: ASPECT_COLORS.trine }} aria-hidden="true">△</span>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-slate-200">
               <span className="sr-only">Trine symbol</span>
               Trine (8°)
             </span>
           </li>
           <li className="flex items-center gap-2">
             <span className="text-lg" style={{ color: ASPECT_COLORS.square }} aria-hidden="true">□</span>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-slate-200">
               <span className="sr-only">Square symbol</span>
               Square (8°)
             </span>
           </li>
           <li className="flex items-center gap-2">
             <span className="text-lg" style={{ color: ASPECT_COLORS.sextile }} aria-hidden="true">⚹</span>
-            <span className="text-gray-600 dark:text-gray-400">
+            <span className="text-slate-200">
               <span className="sr-only">Sextile symbol</span>
               Sextile (6°)
             </span>
@@ -459,12 +474,12 @@ export function ChartWheelLegend() {
         </ul>
       </div>
       <div>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Planets</h4>
+        <h4 className="font-semibold text-white mb-2">Planets</h4>
         <ul className="space-y-1">
           {Object.entries(PLANET_INFO).slice(0, 5).map(([key, info]) => (
             <li key={key} className="flex items-center gap-2">
               <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
-              <span className="text-gray-600 dark:text-gray-400">
+              <span className="text-slate-200">
                 <span className="sr-only">{info.name} symbol</span>
                 {info.name}
               </span>
@@ -473,12 +488,12 @@ export function ChartWheelLegend() {
         </ul>
       </div>
       <div>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">&nbsp;</h4>
+        <h4 className="font-semibold text-white mb-2">&nbsp;</h4>
         <ul className="space-y-1" role="list">
           {Object.entries(PLANET_INFO).slice(5).map(([key, info]) => (
             <li key={key} className="flex items-center gap-2">
               <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
-              <span className="text-gray-600 dark:text-gray-400">
+              <span className="text-slate-200">
                 <span className="sr-only">{info.name} symbol</span>
                 {info.name}
               </span>
@@ -487,7 +502,7 @@ export function ChartWheelLegend() {
         </ul>
       </div>
       <div>
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Zodiac Signs</h4>
+        <h4 className="font-semibold text-white mb-2">Zodiac Signs</h4>
         <div className="grid grid-cols-4 gap-1" role="list" aria-label="Zodiac signs">
           {ZODIAC_SIGNS.map((sign) => (
             <div key={sign.name} role="listitem" style={{ color: sign.color }} className="text-lg text-center" aria-label={`${sign.name} ${sign.symbol}`}>

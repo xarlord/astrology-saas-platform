@@ -84,23 +84,23 @@ describe('Mobile Bottom Navigation Active States', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
       // Check for the active indicator bar (rounded bar at top)
-      const activeBars = container.querySelectorAll('.bg-indigo-600.h-0\\.5');
+      const activeBars = container.querySelectorAll('.bg-primary.h-0\\.5');
       expect(activeBars.length).toBeGreaterThan(0);
     });
 
     it('should apply active styling to icon container', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
-      // Active icon container should have indigo background
-      const activeContainer = container.querySelector('.bg-indigo-100');
+      // Active icon container should have primary background tint
+      const activeContainer = container.querySelector('[class*="bg-primary"]');
       expect(activeContainer).toBeInTheDocument();
     });
 
     it('should apply active styling to label text', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
-      // Active label should have indigo color
-      const activeLabel = container.querySelector('.text-indigo-600');
+      // Active label should have primary color
+      const activeLabel = container.querySelector('.text-primary');
       expect(activeLabel).toBeInTheDocument();
     });
   });
@@ -197,21 +197,21 @@ describe('Mobile Bottom Navigation Active States', () => {
     });
   });
 
-  describe('Dark Mode Support', () => {
-    it('should have dark mode active state styling', () => {
+  describe('Cosmic Theme Support', () => {
+    it('should have cosmic theme active state styling', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Should have dark mode classes
-      const darkModeClasses = container.querySelectorAll('.dark\\:bg-indigo-900\\/30');
-      expect(darkModeClasses.length).toBeGreaterThan(0);
+      // Should have cosmic theme classes (bg-primary/15 for active state)
+      const activeContainers = container.querySelectorAll('[class*="bg-primary"]');
+      expect(activeContainers.length).toBeGreaterThan(0);
     });
 
-    it('should have dark mode active indicator', () => {
+    it('should have cosmic theme active indicator', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Active bar should have dark mode color
-      const darkModeBar = container.querySelectorAll('.dark\\:bg-indigo-400');
-      expect(darkModeBar.length).toBeGreaterThan(0);
+      // Active bar should have primary color in cosmic theme
+      const activeBar = container.querySelectorAll('.bg-primary');
+      expect(activeBar.length).toBeGreaterThan(0);
     });
   });
 });

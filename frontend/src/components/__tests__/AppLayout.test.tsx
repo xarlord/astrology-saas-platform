@@ -99,7 +99,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const logo = screen.getAllByText('AstroSaaS');
+      const logo = screen.getAllByText('AstroVerse');
       expect(logo.length).toBeGreaterThan(0);
     });
 
@@ -111,7 +111,8 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('New Chart')).toBeInTheDocument();
+      // "New Chart" appears in both sidebar and top nav
+      expect(screen.getAllByText('New Chart').length).toBeGreaterThan(0);
       expect(screen.getByText('Today\'s Transits')).toBeInTheDocument();
     });
 
@@ -142,7 +143,7 @@ describe('AppLayout Component', () => {
       expect(tElements.length).toBeGreaterThan(0);
     });
 
-    it('should display user name', () => {
+    it('should display user avatar initial', () => {
       render(
         <AppLayout>
           <div>Content</div>
@@ -150,19 +151,21 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('Test User')).toBeInTheDocument();
+      // Stitch UI: user name is no longer visible; avatar shows initial letter
+      const avatarInitials = screen.getAllByText('T');
+      expect(avatarInitials.length).toBeGreaterThan(0);
     });
 
     it('should have notification bell', () => {
-      const { container } = render(
+      render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
 
-      const notificationBtn = container.querySelector('button span[class*="sr-only"]');
-      expect(notificationBtn?.parentElement).toBeInTheDocument();
+      // Stitch UI: notification bell uses Material Symbol icon with aria-label
+      expect(screen.getByLabelText('Notifications')).toBeInTheDocument();
     });
 
     it('should show notification badge', () => {
@@ -188,7 +191,8 @@ describe('AppLayout Component', () => {
       );
 
       expect(screen.getByText('Quick Actions')).toBeInTheDocument();
-      expect(screen.getByText('New Chart')).toBeInTheDocument();
+      // "New Chart" appears in sidebar and top nav
+      expect(screen.getAllByText('New Chart').length).toBeGreaterThan(0);
       expect(screen.getByText('Today\'s Transits')).toBeInTheDocument();
     });
 
@@ -242,8 +246,10 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const userMenuBtn = screen.getByText('Test User').closest('button');
+      // Stitch UI: user menu button is identified by aria-label, no name text visible
+      const userMenuBtn = screen.getByLabelText('User menu');
       expect(userMenuBtn).toBeInTheDocument();
+      expect(userMenuBtn.tagName).toBe('BUTTON');
     });
 
     it('should show profile link in dropdown', () => {
@@ -259,24 +265,34 @@ describe('AppLayout Component', () => {
       expect(profileElements.length).toBeGreaterThan(0);
     });
 
-    it('should show settings link in dropdown', () => {
+    it('should show settings link in dropdown', async () => {
+      const user = userEvent.setup();
       render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
+
+      // Open the dropdown first (it is hidden behind React state)
+      const userMenuBtn = screen.getByLabelText('User menu');
+      await user.click(userMenuBtn);
 
       expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
-    it('should show logout button', () => {
+    it('should show logout button', async () => {
+      const user = userEvent.setup();
       render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
+
+      // Open the dropdown first (it is hidden behind React state)
+      const userMenuBtn = screen.getByLabelText('User menu');
+      await user.click(userMenuBtn);
 
       expect(screen.getByText('Logout')).toBeInTheDocument();
     });
@@ -289,6 +305,10 @@ describe('AppLayout Component', () => {
         </AppLayout>,
         { wrapper: createWrapper() }
       );
+
+      // Open the dropdown first (it is hidden behind React state)
+      const userMenuBtn = screen.getByLabelText('User menu');
+      await user.click(userMenuBtn);
 
       const logoutBtn = screen.getByText('Logout');
       await user.click(logoutBtn);
@@ -400,19 +420,20 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText(/© 2026 AstroSaaS/i)).toBeInTheDocument();
+      expect(screen.getByText(/© 2026 AstroVerse/i)).toBeInTheDocument();
     });
 
     it('should render social media links', () => {
-      const { container } = render(
+      render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
         { wrapper: createWrapper() }
       );
 
-      const socialLinks = container.querySelectorAll('a[href="#"]');
-      expect(socialLinks.length).toBeGreaterThan(0);
+      // Social icons changed from <a href="#"> to <span> with sr-only labels
+      expect(screen.getByText('Twitter')).toBeInTheDocument();
+      expect(screen.getByText('GitHub')).toBeInTheDocument();
     });
   });
 
@@ -425,8 +446,10 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const newChartLink = screen.getByText('New Chart').closest('a');
-      expect(newChartLink).toHaveAttribute('href', '/charts/new');
+      // "New Chart" appears in sidebar and top nav — use getAllByText and check first
+      const newChartLinks = screen.getAllByText('New Chart').map(el => el.closest('a')).filter(Boolean);
+      expect(newChartLinks.length).toBeGreaterThan(0);
+      expect(newChartLinks[0]).toHaveAttribute('href', '/charts/new');
 
       const natalChartLink = screen.getByText('Natal Chart').closest('a');
       expect(natalChartLink).toHaveAttribute('href', '/charts/natal');
@@ -500,9 +523,13 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      // Check for sr-only elements (ARIA labels)
-      const srOnlyElements = container.querySelectorAll('button span[class*="sr-only"]');
-      expect(srOnlyElements.length).toBeGreaterThan(0);
+      // Stitch UI: ARIA labels are on buttons directly via aria-label attribute
+      const labelledButtons = container.querySelectorAll('button[aria-label]');
+      expect(labelledButtons.length).toBeGreaterThan(0);
+
+      // Verify specific aria-labels exist
+      expect(screen.getByLabelText('User menu')).toBeInTheDocument();
+      expect(screen.getByLabelText('Notifications')).toBeInTheDocument();
     });
 
     it('should have semantic HTML structure', () => {
@@ -567,7 +594,7 @@ describe('AppLayout Component', () => {
   });
 
   describe('Theme Support', () => {
-    it('should support dark mode classes', () => {
+    it('should support cosmic theme classes', () => {
       const { container } = render(
         <AppLayout>
           <div>Content</div>
@@ -575,11 +602,12 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const darkElements = container.querySelectorAll('.dark\\:bg-gray-800');
-      expect(darkElements.length).toBeGreaterThan(0);
+      // Stitch design uses glass-nav with backdrop-blur
+      const glassElements = container.querySelectorAll('[class*="glass-nav"], [class*="bg-surface-dark"]');
+      expect(glassElements.length).toBeGreaterThan(0);
     });
 
-    it('should have dark mode sidebar', () => {
+    it('should have cosmic theme sidebar', () => {
       const { container } = render(
         <AppLayout>
           <div>Content</div>
@@ -588,7 +616,7 @@ describe('AppLayout Component', () => {
       );
 
       const sidebar = container.querySelector('aside');
-      expect(sidebar).toHaveClass('dark:bg-gray-800');
+      expect(sidebar?.className).toContain('bg-surface-dark');
     });
   });
 
@@ -642,7 +670,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const logos = screen.getAllByText('AstroSaaS');
+      const logos = screen.getAllByText('AstroVerse');
       expect(logos.length).toBeGreaterThan(0);
     });
   });
@@ -656,8 +684,8 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      // Should still render layout - get all AstroSaaS instances
-      const logos = screen.getAllByText('AstroSaaS');
+      // Should still render layout - get all AstroVerse instances
+      const logos = screen.getAllByText('AstroVerse');
       expect(logos.length).toBeGreaterThan(0);
     });
 
@@ -669,7 +697,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      // Check that the user avatar div with gradient background exists
+      // Check that the user avatar div with primary background exists
       const { container } = render(
         <AppLayout>
           <div>Content</div>
@@ -677,7 +705,7 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      const avatar = container.querySelectorAll('.bg-gradient-to-br.from-indigo-500.to-purple-600.rounded-full');
+      const avatar = container.querySelectorAll('.bg-primary.rounded-full');
       expect(avatar.length).toBeGreaterThan(0);
     });
   });

@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   calculateTransits,
   getTodayTransits,
@@ -41,8 +41,22 @@ import { AstronomyEngineService } from '../../modules/shared/services/astronomyE
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makeMockPositions(): Map<string, any> {
-  const positions = new Map<string, any>();
+interface MockPosition {
+  name: string;
+  longitude: number;
+  latitude: number;
+  speed: number;
+  isRetrograde: boolean;
+  distance: number;
+  sign: string;
+  signIndex: number;
+  degree: number;
+  minute: number;
+  second: number;
+}
+
+function makeMockPositions(): Map<string, MockPosition> {
+  const positions = new Map<string, MockPosition>();
   const planetData = [
     { name: 'Sun', longitude: 280, latitude: 0, speed: 1, isRetrograde: false },
     { name: 'Moon', longitude: 100, latitude: 5, speed: 13, isRetrograde: false },
@@ -85,7 +99,7 @@ function getEngineMockInstance() {
 // ---------------------------------------------------------------------------
 
 describe('Transit Controller', () => {
-  let mockRequest: Partial<any>;
+  let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let mockNext: jest.Mock;
 
@@ -212,7 +226,7 @@ describe('Transit Controller', () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
 
       await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
-      expect(ChartModel.findByUserId).toHaveBeenCalledWith('123', 1, 0);
+      expect(ChartModel.findByUserId).toHaveBeenCalledWith('123');
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
@@ -252,7 +266,7 @@ describe('Transit Controller', () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
 
       await getTransitCalendar(mockRequest, mockResponse as Response, mockNext);
-      expect(ChartModel.findByUserId).toHaveBeenCalledWith('123', 1, 0);
+      expect(ChartModel.findByUserId).toHaveBeenCalledWith('123');
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 

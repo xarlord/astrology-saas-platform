@@ -17,7 +17,7 @@ export function mockAuthHeader(userId: number): string {
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn: '1h' as any }
+    { expiresIn: '1h' as jwt.SignOptions['expiresIn'] }
   );
 
   return `Bearer ${token}`;

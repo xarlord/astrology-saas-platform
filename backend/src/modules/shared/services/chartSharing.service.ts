@@ -121,7 +121,7 @@ export class ChartSharingService {
   async accessSharedChart(
     shareToken: string,
     password?: string,
-    chartDataProvider?: (chartId: string) => Promise<Record<string, unknown>>
+    chartDataProvider?: (chartId: string) => Promise<Record<string, unknown> | null>
   ): Promise<ShareAccessResult> {
     // Find share by token
     let sharedChart: SharedChart | null = null;
@@ -196,7 +196,7 @@ export class ChartSharingService {
     }
 
     // Get chart data if provider is available
-    let chartData;
+    let chartData: Record<string, unknown> | null | undefined;
     if (chartDataProvider) {
       try {
         chartData = await chartDataProvider(sharedChart.chartId);
@@ -205,11 +205,15 @@ export class ChartSharingService {
       }
     }
 
+    if (chartData === null) {
+      return { success: false, error: 'Chart data not found' };
+    }
+
     return {
       success: true,
       chart: {
         id: sharedChart.chartId,
-        ...chartData,
+        ...(chartData ?? {}),
       },
     };
   }

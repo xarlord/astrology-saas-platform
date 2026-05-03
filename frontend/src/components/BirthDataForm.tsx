@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useCreateChart, useCalculateChart, useCharts } from '../hooks';
+import { useCreateChart, useCalculateChart } from '../hooks';
+import { useChartsStore } from '../store/chartsStore';
 
 // Error Message Component with Icon
 interface ErrorMessageProps {
@@ -89,7 +90,6 @@ export function BirthDataForm({
 
   const createChartMutation = useCreateChart();
   const calculateChartMutation = useCalculateChart();
-  const { currentChart } = useCharts();
 
   // Handle geocoding (place to coordinates)
   const searchPlace = async (query: string) => {
@@ -203,10 +203,11 @@ export function BirthDataForm({
 
       await createChartMutation.mutateAsync(chartData);
 
-      // Calculate the chart using the currentChart from the store
-      if (currentChart?.id) {
-        await calculateChartMutation.mutateAsync(currentChart.id);
-        onSuccess?.(currentChart.id);
+      // Read currentChart directly from the store to avoid stale closure
+      const chart = useChartsStore.getState().currentChart;
+      if (chart?.id) {
+        await calculateChartMutation.mutateAsync(chart.id);
+        onSuccess?.(chart.id);
       }
     } catch (error: unknown) {
       console.error('Form submission error:', error);
@@ -241,14 +242,14 @@ export function BirthDataForm({
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit} className="space-y-8">
       {/* Date & Time Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-cosmic-card backdrop-blur-md rounded-xl border border-cosmic-border p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">
           Date & Time
         </h3>
         <div className="space-y-4">
           {/* Birth Date */}
           <div>
-            <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="birthDate" className="block text-sm font-medium text-slate-200">
               Birth Date <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -262,11 +263,11 @@ export function BirthDataForm({
                 aria-required="true"
                 aria-invalid={errors.birthDate ? 'true' : undefined}
                 aria-describedby={errors.birthDate ? birthDateErrorId : undefined}
-                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                className={`mt-1 block w-full rounded-md pr-10 ${
                   errors.birthDate
-                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-                } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
+                    : 'border-cosmic-border focus:border-primary focus:ring-primary'
+                } bg-white/15 px-3 py-2 text-white transition-colors`}
               />
               {errors.birthDate && (
                 <div className="error-icon-wrapper">
@@ -279,7 +280,7 @@ export function BirthDataForm({
 
           {/* Birth Time */}
           <div>
-            <label htmlFor="birthTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="birthTime" className="block text-sm font-medium text-slate-200">
               Birth Time <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -293,11 +294,11 @@ export function BirthDataForm({
                 aria-required={!formData.timeUnknown ? 'true' : 'false'}
                 aria-invalid={errors.birthTime ? 'true' : undefined}
                 aria-describedby={errors.birthTime ? birthTimeErrorId : birthTimeDescId}
-                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                className={`mt-1 block w-full rounded-md pr-10 ${
                   errors.birthTime
-                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-                } disabled:bg-gray-100 dark:disabled:bg-gray-800 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
+                    : 'border-cosmic-border focus:border-primary focus:ring-primary'
+                } disabled:bg-white/[0.02] bg-white/15 px-3 py-2 text-white transition-colors`}
               />
               {errors.birthTime && (
                 <div className="error-icon-wrapper">
@@ -305,7 +306,7 @@ export function BirthDataForm({
                 </div>
               )}
             </div>
-            <p id={birthTimeDescId} className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p id={birthTimeDescId} className="mt-1 text-xs text-slate-200">
               Exact time is needed for accurate house calculations
             </p>
 
@@ -317,9 +318,9 @@ export function BirthDataForm({
                 name="timeUnknown"
                 checked={formData.timeUnknown}
                 onChange={handleChange}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                className="h-4 w-4 rounded border-cosmic-border text-primary focus:ring-primary"
               />
-              <label htmlFor="timeUnknown" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+              <label htmlFor="timeUnknown" className="ml-2 text-sm text-slate-200">
                 I don't know my exact birth time
               </label>
             </div>
@@ -329,13 +330,13 @@ export function BirthDataForm({
       </div>
 
       {/* Location Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-cosmic-card backdrop-blur-md rounded-xl border border-cosmic-border p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">
           Location
         </h3>
         <div className="space-y-4">
           <div className="relative">
-            <label htmlFor="birthPlace" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="birthPlace" className="block text-sm font-medium text-slate-200">
               Birth Place <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -350,11 +351,11 @@ export function BirthDataForm({
                 aria-required="true"
                 aria-invalid={errors.birthPlace ? 'true' : undefined}
                 aria-describedby={errors.birthPlace ? birthPlaceErrorId : undefined}
-                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                className={`mt-1 block w-full rounded-md pr-10 ${
                   errors.birthPlace
-                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-                } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
+                    : 'border-cosmic-border focus:border-primary focus:ring-primary'
+                } bg-white/15 px-3 py-2 text-white transition-colors`}
               />
               {errors.birthPlace && (
                 <div className="error-icon-wrapper">
@@ -366,13 +367,13 @@ export function BirthDataForm({
 
             {/* Place Suggestions Dropdown */}
             {showPlaceSearch && placeSuggestions.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-cosmic-card/90 backdrop-blur-md rounded-md border border-cosmic-border max-h-60 overflow-auto">
                 {placeSuggestions.map((place, index) => (
                   <button
                     key={index}
                     type="button"
                     onClick={() => void getPlaceCoordinates(place)}
-                    className="w-full text-left px-3 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/15"
                   >
                     {place}
                   </button>
@@ -382,7 +383,7 @@ export function BirthDataForm({
 
             {/* Display Coordinates if Available */}
             {formData.latitude !== undefined && formData.longitude !== undefined && (
-              <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+              <div className="mt-2 flex items-center gap-2 text-xs text-slate-200">
                 <span>Lat: {formData.latitude.toFixed(4)}</span>
                 <span>•</span>
                 <span>Lon: {formData.longitude.toFixed(4)}</span>
@@ -393,14 +394,14 @@ export function BirthDataForm({
       </div>
 
       {/* Chart Details Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-cosmic-card backdrop-blur-md rounded-xl border border-cosmic-border p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">
           Chart Details
         </h3>
         <div className="space-y-4">
           {/* Chart Name */}
           <div>
-            <label htmlFor="chartName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="chartName" className="block text-sm font-medium text-slate-200">
               Chart Name <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -414,11 +415,11 @@ export function BirthDataForm({
                 aria-required="true"
                 aria-invalid={errors.chartName ? 'true' : undefined}
                 aria-describedby={errors.chartName ? chartNameErrorId : undefined}
-                className={`mt-1 block w-full rounded-md shadow-sm pr-10 ${
+                className={`mt-1 block w-full rounded-md pr-10 ${
                   errors.chartName
-                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
-                    : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400'
-                } bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white transition-colors`}
+                    ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
+                    : 'border-cosmic-border focus:border-primary focus:ring-primary'
+                } bg-white/15 px-3 py-2 text-white transition-colors`}
               />
               {errors.chartName && (
                 <div className="error-icon-wrapper">
@@ -431,7 +432,7 @@ export function BirthDataForm({
 
           {/* House System Selector */}
           <div>
-            <label htmlFor="houseSystem" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="houseSystem" className="block text-sm font-medium text-slate-200">
               House System
             </label>
             <select
@@ -439,7 +440,7 @@ export function BirthDataForm({
               name="houseSystem"
               value={formData.houseSystem}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+              className="mt-1 block w-full rounded-md border-cosmic-border bg-white/15 px-3 py-2 text-white focus:border-primary focus:ring-primary"
             >
               {HOUSE_SYSTEMS.map((system) => (
                 <option key={system.value} value={system.value}>
@@ -451,7 +452,7 @@ export function BirthDataForm({
 
           {/* Zodiac Type Selector */}
           <div>
-            <label htmlFor="zodiac" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="zodiac" className="block text-sm font-medium text-slate-200">
               Zodiac Type
             </label>
             <select
@@ -459,7 +460,7 @@ export function BirthDataForm({
               name="zodiac"
               value={formData.zodiac}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+              className="mt-1 block w-full rounded-md border-cosmic-border bg-white/15 px-3 py-2 text-white focus:border-primary focus:ring-primary"
             >
               {ZODIAC_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -471,7 +472,7 @@ export function BirthDataForm({
             {/* Sidereal Mode (shown only when Sidereal is selected) */}
             {formData.zodiac === 'sidereal' && (
               <div className="mt-3">
-                <label htmlFor="siderealMode" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="siderealMode" className="block text-sm font-medium text-slate-200">
                   Ayanamsha (Sidereal Calculation Method)
                 </label>
                 <select
@@ -479,7 +480,7 @@ export function BirthDataForm({
                   name="siderealMode"
                   value={formData.siderealMode}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                  className="mt-1 block w-full rounded-md border-cosmic-border bg-white/15 px-3 py-2 text-white focus:border-primary focus:ring-primary"
                 >
                   {SIDEREAL_MODES.map((mode) => (
                     <option key={mode.value} value={mode.value}>
@@ -498,7 +499,7 @@ export function BirthDataForm({
         <button
           type="submit"
           disabled={createChartMutation.isPending || calculateChartMutation.isPending}
-          className="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-primary hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {createChartMutation.isPending || calculateChartMutation.isPending
             ? 'Creating Chart...'

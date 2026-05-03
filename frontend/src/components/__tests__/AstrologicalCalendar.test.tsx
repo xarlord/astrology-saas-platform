@@ -52,7 +52,7 @@ describe('AstrologicalCalendar Component', () => {
   describe('Month Navigation', () => {
     it('should have navigation buttons available', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -64,7 +64,7 @@ describe('AstrologicalCalendar Component', () => {
 
     it('should render component for different months', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -80,7 +80,7 @@ describe('AstrologicalCalendar Component', () => {
   describe('Event Display', () => {
     it('should render component with event data', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -91,7 +91,7 @@ describe('AstrologicalCalendar Component', () => {
 
     it('should display calendar structure', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [] },
+        data: [],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -111,7 +111,7 @@ describe('AstrologicalCalendar Component', () => {
   describe('Edge Cases', () => {
     it('should handle leap years', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2024-02-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2024-02-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -122,7 +122,7 @@ describe('AstrologicalCalendar Component', () => {
 
     it('should handle different months', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2026-08-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2026-08-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -135,7 +135,7 @@ describe('AstrologicalCalendar Component', () => {
   describe('Accessibility', () => {
     it('should have accessible structure', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -151,7 +151,7 @@ describe('AstrologicalCalendar Component', () => {
   describe('Integration', () => {
     it('should work with different props', () => {
       (useCalendarEvents as any).mockReturnValue({
-        data: { data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }] },
+        data: [{ id: '1', event_type: 'new_moon', event_date: '2026-01-10', interpretation: 'Test', event_data: {} }],
         isLoading: false,
         error: null,
         refetch: vi.fn(),

@@ -17,10 +17,10 @@ function ExpandableCard({ title, subtitle, accentColor, children }: ExpandableCa
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-[#141627]/70 backdrop-blur-md rounded-xl border border-[#2f2645] overflow-hidden">
+    <div className="glass-panel rounded-2xl border border-white/15 overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 text-left hover:bg-white/5 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-white/15 transition-colors cursor-pointer"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">
@@ -31,14 +31,14 @@ function ExpandableCard({ title, subtitle, accentColor, children }: ExpandableCa
           <div>
             <h4 className="font-semibold text-white">{title}</h4>
             {subtitle && (
-              <p className="text-sm text-slate-400 mt-0.5">{subtitle}</p>
+              <p className="text-sm text-slate-200 mt-0.5">{subtitle}</p>
             )}
           </div>
         </div>
         {isOpen ? (
-          <span className="material-symbols-outlined text-slate-400 flex-shrink-0" style={{ fontSize: '20px' }}>expand_less</span>
+          <span className="material-symbols-outlined text-slate-200 flex-shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>expand_less</span>
         ) : (
-          <span className="material-symbols-outlined text-slate-400 flex-shrink-0" style={{ fontSize: '20px' }}>expand_more</span>
+          <span className="material-symbols-outlined text-slate-200 flex-shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>expand_more</span>
         )}
       </button>
       {isOpen && (
@@ -117,11 +117,11 @@ export default function LearnPage() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2.5 bg-primary/10 rounded-xl">
-            <span className="material-symbols-outlined text-primary" style={{ fontSize: '22px' }}>menu_book</span>
+            <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '22px' }}>menu_book</span>
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-white">Learn Astrology</h2>
-            <p className="text-slate-400 mt-1">
+            <h1 className="text-3xl font-bold text-white">Learn Astrology</h1>
+            <p className="text-slate-200 mt-1">
               Explore the fundamental building blocks of astrological interpretation
             </p>
           </div>
@@ -131,9 +131,9 @@ export default function LearnPage() {
       {/* Section 1: The Planets */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" style={{ fontSize: '20px', color: '#f59e0b' }}>auto_awesome</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#f59e0b' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Planets</h3>
-          <span className="text-sm text-slate-400 ml-2">
+          <span className="text-sm text-slate-200 ml-2">
             The celestial bodies that shape your chart
           </span>
         </div>
@@ -144,7 +144,7 @@ export default function LearnPage() {
               title={`${planet.symbol} ${planet.name}`}
               accentColor="#f59e0b"
             >
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-200 leading-relaxed">
                 {planet.description}
               </p>
             </ExpandableCard>
@@ -155,9 +155,9 @@ export default function LearnPage() {
       {/* Section 2: The Signs */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" style={{ fontSize: '20px', color: '#f43f5e' }}>auto_awesome</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#f43f5e' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Zodiac Signs</h3>
-          <span className="text-sm text-slate-400 ml-2">
+          <span className="text-sm text-slate-200 ml-2">
             Twelve archetypes of expression
           </span>
         </div>
@@ -180,7 +180,7 @@ export default function LearnPage() {
                   {sign.element}
                 </span>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-200 leading-relaxed">
                 {sign.trait}
               </p>
             </ExpandableCard>
@@ -191,9 +191,9 @@ export default function LearnPage() {
       {/* Section 3: The Houses */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" style={{ fontSize: '20px', color: '#10b981' }}>auto_awesome</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#10b981' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Houses</h3>
-          <span className="text-sm text-slate-400 ml-2">
+          <span className="text-sm text-slate-200 ml-2">
             Twelve domains of life experience
           </span>
         </div>
@@ -204,7 +204,7 @@ export default function LearnPage() {
               title={`House ${house.number} - ${house.name}`}
               accentColor="#10b981"
             >
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-200 leading-relaxed">
                 {house.description}
               </p>
             </ExpandableCard>
@@ -215,9 +215,9 @@ export default function LearnPage() {
       {/* Section 4: The Aspects */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" style={{ fontSize: '20px', color: '#3b82f6' }}>auto_awesome</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#3b82f6' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Aspects</h3>
-          <span className="text-sm text-slate-400 ml-2">
+          <span className="text-sm text-slate-200 ml-2">
             Angular relationships between planets
           </span>
         </div>
@@ -242,7 +242,7 @@ export default function LearnPage() {
                   {aspect.nature}
                 </span>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-200 leading-relaxed">
                 {aspect.description}
               </p>
             </ExpandableCard>

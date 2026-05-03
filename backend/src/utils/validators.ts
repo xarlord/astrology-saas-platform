@@ -62,7 +62,7 @@ export const paginationSchema = Joi.object({
  * Validate request body against schema
  */
 export function validateBody(schema: Joi.ObjectSchema) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     const { error, value } = schema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
@@ -70,7 +70,7 @@ export function validateBody(schema: Joi.ObjectSchema) {
 
     if (error) {
       const errors = error.details.map((detail) => detail.message);
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: {
           message: 'Validation failed',
@@ -78,6 +78,7 @@ export function validateBody(schema: Joi.ObjectSchema) {
           details: errors,
         },
       });
+      return;
     }
 
     req.body = value;
@@ -89,7 +90,7 @@ export function validateBody(schema: Joi.ObjectSchema) {
  * Validate request query against schema
  */
 export function validateQuery(schema: Joi.ObjectSchema) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     const { error, value } = schema.validate(req.query, {
       abortEarly: false,
       stripUnknown: true,
@@ -97,7 +98,7 @@ export function validateQuery(schema: Joi.ObjectSchema) {
 
     if (error) {
       const errors = error.details.map((detail) => detail.message);
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: {
           message: 'Validation failed',
@@ -105,6 +106,7 @@ export function validateQuery(schema: Joi.ObjectSchema) {
           details: errors,
         },
       });
+      return;
     }
 
     req.query = value;

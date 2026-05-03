@@ -53,7 +53,7 @@ router.get('/:token', asyncHandler(async (req, res) => {
           latitude: chart.birth_latitude,
           longitude: chart.birth_longitude,
           houseSystem: (chart.house_system || 'Placidus') as HouseSystem,
-        });
+        }) as unknown as Record<string, unknown>;
       }
 
       return chart.calculated_data;
@@ -69,16 +69,21 @@ router.get('/:token', asyncHandler(async (req, res) => {
   }
 
   // Return chart data (without sensitive info)
+  const chart = result.chart;
+  if (!chart) {
+    res.status(404).json({ success: false, error: 'Chart data not available' });
+    return;
+  }
   res.status(200).json({
     success: true,
     data: {
       chart: {
-        name: result.chart.name,
-        type: result.chart.type,
-        birth_date: result.chart.birth_date,
-        birth_time: result.chart.birth_time,
-        birth_place_name: result.chart.birth_place_name,
-        calculated_data: result.chart.calculated_data,
+        name: chart.name,
+        type: chart.type,
+        birth_date: chart.birth_date,
+        birth_time: chart.birth_time,
+        birth_place_name: chart.birth_place_name,
+        calculated_data: chart.calculated_data,
       },
     },
   });

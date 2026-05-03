@@ -138,7 +138,8 @@ export async function getCsrf(cookies?: string): Promise<{ csrf: string; cookies
   try {
     const res = await api('GET', '/csrf-token', undefined, headers, 1);
     const merged = mergeCookies(cookies || '', res.cookies);
-    const csrf = res.data?.data?.token || '';
+    const payload = (res.data?.data ?? {}) as Record<string, unknown>;
+    const csrf = (payload.token as string) || '';
     return { csrf, cookies: merged };
   } catch {
     return { csrf: '', cookies: cookies || '' };
@@ -187,12 +188,13 @@ export async function registerTestUser(): Promise<{
   }
 
   const authCookies = mergeCookies('', res.cookies);
+  const authPayload = (res.data?.data ?? {}) as Record<string, unknown>;
 
   return {
-    accessToken: res.data.data.accessToken,
-    refreshToken: res.data.data.refreshToken,
+    accessToken: authPayload.accessToken as string,
+    refreshToken: authPayload.refreshToken as string,
     cookies: authCookies,
-    user: res.data.data.user,
+    user: (authPayload.user ?? {}) as Record<string, unknown>,
   };
 }
 
@@ -222,15 +224,17 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
         throw new Error(`Chart creation failed: ${chartRes.status} ${JSON.stringify(chartRes.data)}`);
       }
 
-      const createdChart = chartRes.data.data.chart;
+      const chartPayload = (chartRes.data?.data ?? {}) as Record<string, unknown>;
+      const createdChart = (chartPayload.chart ?? {}) as Record<string, unknown>;
 
       // Calculate the chart so analysis and other endpoints have data
       const { csrf: calcCsrf, cookies: calcCookies } = await getCsrf(auth.cookies);
       const calcRes = await authed('POST', `/charts/${createdChart.id}/calculate`, auth.accessToken, calcCookies, calcCsrf, {});
+      const calcPayload = (calcRes.data?.data ?? {}) as Record<string, unknown>;
 
-      if (calcRes.status === 200 && calcRes.data?.data?.chart) {
+      if (calcRes.status === 200 && calcPayload.chart) {
         // Use the fully-calculated chart object
-        return { ...auth, cookies: calcCookies, chart: calcRes.data.data.chart };
+        return { ...auth, cookies: calcCookies, chart: (calcPayload.chart ?? {}) as Record<string, unknown> };
       }
 
       return {
@@ -256,8 +260,9 @@ export async function cleanupTestData(accessToken: string, cookies: string): Pro
   try {
     // Get user's charts and delete them
     const chartsRes = await authed('GET', '/charts', accessToken, cookies, '');
-    if (chartsRes.status === 200 && Array.isArray(chartsRes.data?.data?.charts)) {
-      for (const chart of chartsRes.data.data.charts) {
+    const chartsPayload = (chartsRes.data?.data ?? {}) as Record<string, unknown>;
+    if (chartsRes.status === 200 && Array.isArray(chartsPayload.charts)) {
+      for (const chart of chartsPayload.charts as Array<Record<string, unknown>>) {
         if (chart.id) {
           await authed('DELETE', `/charts/${chart.id}`, accessToken, cookies, '');
         }

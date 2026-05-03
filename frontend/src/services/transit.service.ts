@@ -6,13 +6,33 @@ import api from './api';
 
 export interface TransitReading {
   date: string;
-  transits: {
+  transits?: {
     transitPlanet: string;
     natalPlanet: string;
     aspect: string;
     orb: number;
   }[];
-  housePositions: Record<string, number>;
+  majorAspects?: {
+    planet1: string;
+    planet2: string;
+    type: string;
+    orb: number;
+    applying?: boolean;
+  }[];
+  housePositions?: Record<string, number>;
+  moonPhase?: {
+    phase: string;
+    degrees: number;
+    illumination: number;
+  };
+  transitPlanets?: Record<string, {
+    longitude: number;
+    latitude?: number;
+    speed: number;
+    retrograde: boolean;
+    sign: string;
+    degree: number;
+  }>;
 }
 
 interface TransitsResponse {
@@ -24,15 +44,60 @@ interface TodayTransitsResponse {
 }
 
 interface TransitCalendarResponse {
-  data: TransitReading[];
+  data: {
+    month: number;
+    year: number;
+    calendarData: Array<{
+      date: string;
+      day: number;
+      aspects: Array<{ planet1: string; planet2: string; type: string; orb: number; applying?: boolean }>;
+      moonPhase?: { phase: string; degrees: number; illumination: number };
+      retrogrades?: string[];
+    }>;
+  };
 }
 
 interface TransitForecastResponse {
-  data: TransitReading[];
+  data: {
+    chart: { id: string; name: string };
+    duration: string;
+    startDate: string;
+    endDate: string;
+    groupedByType: Record<string, Array<{ type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }>>;
+    forecast: Array<{ type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }>;
+  };
 }
 
 interface TransitDetailsResponse {
   data: TransitReading;
+}
+
+export interface NormalizedTransit {
+  transitPlanet: string;
+  natalPlanet: string;
+  aspect: string;
+  orb: number;
+}
+
+export function normalizeTransits(reading: TransitReading | null | undefined): NormalizedTransit[] {
+  if (!reading) return [];
+  if (reading.transits && Array.isArray(reading.transits)) return reading.transits;
+  if (reading.majorAspects && Array.isArray(reading.majorAspects)) {
+    return reading.majorAspects.map((a) => ({
+      transitPlanet: a.planet1,
+      natalPlanet: a.planet2,
+      aspect: a.type,
+      orb: a.orb,
+    }));
+  }
+  return [];
+}
+
+function normalizeReading(reading: TransitReading): TransitReading {
+  return {
+    ...reading,
+    transits: normalizeTransits(reading),
+  };
 }
 
 export const transitService = {
@@ -45,7 +110,7 @@ export const transitService = {
       startDate,
       endDate,
     });
-    return data.data;
+    return normalizeReading(data.data);
   },
 
   /**
@@ -53,7 +118,7 @@ export const transitService = {
    */
   async getTodayTransits(): Promise<TransitReading> {
     const { data } = await api.get<TodayTransitsResponse>('/transits/today');
-    return data.data;
+    return normalizeReading(data.data);
   },
 
   /**
@@ -63,7 +128,13 @@ export const transitService = {
     const { data } = await api.get<TransitCalendarResponse>('/transits/calendar', {
       params: { month, year },
     });
-    return data.data;
+    return data.data.calendarData.map((day) =>
+      normalizeReading({
+        date: day.date,
+        majorAspects: day.aspects,
+        moonPhase: day.moonPhase,
+      })
+    );
   },
 
   /**
@@ -73,7 +144,15 @@ export const transitService = {
     const { data } = await api.get<TransitForecastResponse>('/transits/forecast', {
       params: { duration },
     });
-    return data.data;
+    return data.data.forecast.map((aspect) => ({
+      date: aspect.date,
+      transits: [{
+        transitPlanet: aspect.planet1,
+        natalPlanet: aspect.planet2,
+        aspect: aspect.type,
+        orb: aspect.orb,
+      }],
+    }));
   },
 
   /**
@@ -81,6 +160,6 @@ export const transitService = {
    */
   async getTransitDetails(id: string): Promise<TransitReading> {
     const { data } = await api.get<TransitDetailsResponse>(`/transits/${id}`);
-    return data.data;
+    return normalizeReading(data.data);
   },
 };

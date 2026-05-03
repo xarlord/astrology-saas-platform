@@ -107,7 +107,7 @@ describe('Lunar Return Service', () => {
   });
 
   describe('calculateLunarReturnChart', () => {
-    const mockNatalChart: any = {
+    const mockNatalChart: { id: string; userId: string; moon: { sign: string; degree: number; minute: number; second: number } } = {
       id: 'chart_1',
       userId: 'user_1',
       moon: {
@@ -248,7 +248,7 @@ describe('Lunar Return Service', () => {
   });
 
   describe('generateLunarMonthForecast', () => {
-    const mockNatalChart: any = {
+    const mockNatalChart: { id: string; userId: string; moon: { sign: string; degree: number; minute: number; second: number } } = {
       id: 'chart_1',
       userId: 'user_1',
       moon: {

@@ -21,7 +21,7 @@ function ToggleSwitch({ enabled, onChange, label, description }: ToggleSwitchPro
       <div className="flex-1 min-w-0 mr-4">
         <p className="text-sm font-medium text-white">{label}</p>
         {description && (
-          <p className="text-sm text-slate-400 mt-0.5">{description}</p>
+          <p className="text-sm text-slate-200 mt-0.5">{description}</p>
         )}
       </div>
       <button
@@ -29,14 +29,14 @@ function ToggleSwitch({ enabled, onChange, label, description }: ToggleSwitchPro
         aria-checked={enabled}
         aria-label={label}
         onClick={() => onChange(!enabled)}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 flex-shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 flex-shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
           enabled
-            ? 'bg-green-500'
-            : 'bg-gray-300 dark:bg-gray-600'
+            ? 'bg-primary'
+            : 'bg-cosmic-card-solid'
         }`}
       >
         <span
-          className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm transform transition-transform duration-200 ${
+          className={`inline-block h-4 w-4 rounded-full bg-white/90 transform transition-transform duration-200 ${
             enabled ? 'translate-x-6' : 'translate-x-1'
           }`}
         />
@@ -53,14 +53,14 @@ interface SettingsSectionProps {
 
 function SettingsSection({ icon, title, children }: SettingsSectionProps) {
   return (
-    <div className="bg-[#141627]/70 backdrop-blur-md rounded-xl border border-[#2f2645]">
-      <div className="px-6 py-4 border-b border-white/[0.08] flex items-center gap-3">
-        <div className="p-1.5 bg-white/10 rounded-lg">
+    <div className="glass-panel rounded-2xl">
+      <div className="px-6 py-4 border-b border-white/15 flex items-center gap-3">
+        <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
           {icon}
         </div>
         <h3 className="text-lg font-semibold text-white">{title}</h3>
       </div>
-      <div className="px-6 py-2 divide-y divide-white/[0.06]">
+      <div className="px-6 py-2 divide-y divide-white/5">
         {children}
       </div>
     </div>
@@ -122,8 +122,8 @@ export default function SettingsPage() {
     <AppLayout>
       {/* Page Header */}
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">Settings</h2>
-        <p className="text-slate-400">
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Settings</h1>
+        <p className="text-slate-200">
           Manage your preferences and account settings
         </p>
       </div>
@@ -131,20 +131,20 @@ export default function SettingsPage() {
       <div className="max-w-2xl space-y-6">
         {/* Profile Section */}
         <SettingsSection
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>person</span>}
           title="Profile"
         >
           <div className="py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">Display Name</p>
+                <p className="text-sm text-slate-200">Display Name</p>
                 <p className="text-sm font-medium text-white mt-0.5">
                   {user?.name ?? 'Not signed in'}
                 </p>
               </div>
             </div>
             <div className="mt-4">
-              <p className="text-sm text-slate-400">Email</p>
+              <p className="text-sm text-slate-200">Email</p>
               <p className="text-sm font-medium text-white mt-0.5">
                 {user?.email ?? 'Not available'}
               </p>
@@ -154,16 +154,16 @@ export default function SettingsPage() {
             <p className="text-sm font-medium text-white">
               Edit profile
             </p>
-            <button onClick={() => navigate('/profile')} className="flex items-center gap-1 text-sm text-violet-300 hover:text-violet-200 cursor-pointer">
+            <button onClick={() => navigate('/profile')} className="flex items-center gap-1 text-sm text-primary hover:text-lavender cursor-pointer">
               Go to Profile
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>arrow_forward</span>
+              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>arrow_forward</span>
             </button>
           </div>
         </SettingsSection>
 
         {/* Display Section */}
         <SettingsSection
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>light_mode</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>light_mode</span>}
           title="Display"
         >
           <ToggleSwitch
@@ -176,7 +176,7 @@ export default function SettingsPage() {
 
         {/* Notifications Section */}
         <SettingsSection
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>notifications</span>}
           title="Notifications"
         >
           <ToggleSwitch
@@ -197,7 +197,7 @@ export default function SettingsPage() {
         <div className="flex items-center gap-4 pt-2">
           <button
             onClick={() => void handleSave()}
-            className="px-6 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="px-6 py-2.5 bg-cosmic-gradient text-white text-sm font-medium rounded-xl shadow-lg shadow-primary/25 hover:opacity-90 transition-opacity cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Save Settings
           </button>
@@ -205,8 +205,8 @@ export default function SettingsPage() {
             <span
               className={`text-sm font-medium ${
                 saveMessage.includes('success')
-                  ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'text-emerald-400'
+                  : 'text-red-400'
               }`}
               role="status"
               aria-live="polite"

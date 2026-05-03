@@ -216,7 +216,8 @@ export class PDFGenerationService {
     });
 
     this.browser = await this.browserPromise;
-    return this.browser!;
+    if (!this.browser) throw new Error('Failed to launch browser');
+    return this.browser;
   }
 
   /**
@@ -329,9 +330,9 @@ export class PDFGenerationService {
             <tr>
               <td><span class="symbol">${PLANET_SYMBOLS[name] || ''}</span> ${name}</td>
               <td><span class="symbol">${ZODIAC_SYMBOLS[pos.sign] || ''}</span> ${this.capitalize(pos.sign)}</td>
-              <td>${pos.degree}° ${pos.minute || 0}'</td>
+              <td>${pos.degree}° ${0}'</td>
               <td>${pos.house || '-'}</td>
-              <td>${pos.isRetrograde ? 'R' : ''}</td>
+              <td>${pos.retrograde ? 'R' : ''}</td>
             </tr>
           `).join('')}
         </tbody>
@@ -377,7 +378,7 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${chart.aspects.slice(0, 15).map((aspect: AspectData) => `
+          ${chart.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => `
             <tr>
               <td>${this.capitalize(aspect.planet1)}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
@@ -386,8 +387,7 @@ export class PDFGenerationService {
               <td>${this.capitalize(aspect.planet2)}</td>
               <td>${aspect.orb.toFixed(1)}°</td>
             </tr>
-          `).join('')}
-        </tbody>
+          `).join('')}        </tbody>
       </table>
     </section>
     ` : ''}
@@ -490,13 +490,13 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean; planet1: string | { planet: string }; planet2: string | { planet: string } }) => `
+          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => `
             <tr>
-              <td>${this.capitalize(aspect.planet1?.planet || aspect.planet1)}</td>
+              <td>${this.capitalize((typeof aspect.planet1 === 'string' ? aspect.planet1 : String(aspect.planet1)))}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
                 ${ASPECT_SYMBOLS[aspect.type] || aspect.type} ${this.capitalize(aspect.type)}
               </td>
-              <td>${this.capitalize(aspect.planet2?.planet || aspect.planet2)}</td>
+              <td>${this.capitalize((typeof aspect.planet2 === 'string' ? aspect.planet2 : String(aspect.planet2)))}</td>
               <td>${aspect.harmonious ? '✓' : ''}</td>
             </tr>
           `).join('')}

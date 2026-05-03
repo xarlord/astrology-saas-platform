@@ -3,7 +3,7 @@
  * API endpoints for synastry and compatibility calculations
  */
 
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import * as synastryController from '../controllers/synastry.controller';
 import { authenticate } from '../../../middleware/auth';
 
@@ -18,7 +18,7 @@ router.use(authenticate);
  * @access  Private
  * @body    { chart1Id: string, chart2Id: string }
  */
-router.post('/compare', synastryController.compareCharts);
+router.post('/compare', synastryController.compareCharts as RequestHandler);
 
 /**
  * @route   POST /api/synastry/compatibility
@@ -26,7 +26,7 @@ router.post('/compare', synastryController.compareCharts);
  * @access  Private
  * @body    { chart1Id: string, chart2Id: string, includeComposite?: boolean }
  */
-router.post('/compatibility', synastryController.getCompatibility);
+router.post('/compatibility', synastryController.getCompatibility as RequestHandler);
 
 /**
  * @route   GET /api/synastry/reports

@@ -183,7 +183,7 @@ describe('ChartWheel Component', () => {
       render(<ChartWheel data={mockChartData as any} />);
 
       // Sun and Moon should not have Rx
-      const planetsWithoutRetrograde = mockChartData.planets.filter(p => !p.retrograde);
+      const planetsWithoutRetrograde = (mockChartData.planets as any[]).filter(p => !p.retrograde);
       expect(planetsWithoutRetrograde.length).toBe(2);
     });
 

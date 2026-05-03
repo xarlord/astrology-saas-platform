@@ -185,7 +185,7 @@ describe('DailyWeatherModal Component', () => {
 
     it('should display event cards for each global event', () => {
       const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
-      const eventCards = container.querySelectorAll('.border.border-gray-200.rounded-lg');
+      const eventCards = container.querySelectorAll('.border.border-white\\/5.rounded-lg');
       expect(eventCards.length).toBe(3);
     });
 
@@ -359,7 +359,7 @@ describe('DailyWeatherModal Component', () => {
         ],
       };
       const { container } = render(<DailyWeatherModal date="2026-01-15" weather={noDescWeather} onClose={mockOnClose} />);
-      expect(container.querySelector('.border.border-gray-200.rounded-lg')).toBeInTheDocument();
+      expect(container.querySelector('.border.border-white\\/5.rounded-lg')).toBeInTheDocument();
     });
 
     it('should handle empty advice array', () => {
@@ -373,7 +373,7 @@ describe('DailyWeatherModal Component', () => {
         ],
       };
       const { container } = render(<DailyWeatherModal date="2026-01-15" weather={noAdviceWeather} onClose={mockOnClose} />);
-      expect(container.querySelector('.border.border-gray-200.rounded-lg')).toBeInTheDocument();
+      expect(container.querySelector('.border.border-white\\/5.rounded-lg')).toBeInTheDocument();
     });
   });
 

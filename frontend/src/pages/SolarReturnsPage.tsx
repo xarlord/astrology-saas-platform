@@ -42,6 +42,7 @@ export const SolarReturnsPage: React.FC = () => {
   const [selectedReturn, setSelectedReturn] = useState<SolarReturn | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shareSuccess, setShareSuccess] = useState(false);
 
   const fetchSolarReturn = useCallback(async (year: number) => {
     try {
@@ -106,16 +107,16 @@ export const SolarReturnsPage: React.FC = () => {
       <div className="flex items-center gap-2 mb-4 text-sm">
         <button
           onClick={() => navigate('/solar-returns')}
-          className="flex items-center gap-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+          className="flex items-center gap-1 text-primary/80 hover:text-primary"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>arrow_back</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>arrow_back</span>
           Back to Dashboard
         </button>
 
         {selectedYear && (
           <>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-700 dark:text-gray-300">Solar Return {selectedYear}</span>
+            <span className="text-slate-200">/</span>
+            <span className="text-slate-200">Solar Return {selectedYear}</span>
           </>
         )}
       </div>
@@ -126,21 +127,36 @@ export const SolarReturnsPage: React.FC = () => {
     if (!selectedReturn) return null;
 
     const tabs: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
-      { mode: 'chart', label: 'Chart', icon: <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>calendar_today</span> },
-      { mode: 'interpretation', label: 'Interpretation', icon: <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>calendar_today</span> },
-      { mode: 'relocate', label: 'Relocate', icon: <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>settings</span> },
-      { mode: 'share', label: 'Share', icon: <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span> },
+      { mode: 'chart', label: 'Chart', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>calendar_today</span> },
+      { mode: 'interpretation', label: 'Interpretation', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>calendar_today</span> },
+      { mode: 'relocate', label: 'Relocate', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>settings</span> },
+      { mode: 'share', label: 'Share', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>share</span> },
     ];
 
     return (
-      <div className="flex gap-2.5 mb-5 border-b-2 border-gray-200 dark:border-gray-700 pb-2.5">
+      <div
+        role="tablist"
+        aria-label="Solar return view mode"
+        className="flex gap-2.5 mb-5 border-b-2 border-white/15 pb-2.5"
+        onKeyDown={(e) => {
+          const idx = tabs.findIndex((t) => t.mode === viewMode);
+          if (e.key === 'ArrowRight' && idx < tabs.length - 1) { e.preventDefault(); handleViewModeChange(tabs[idx + 1].mode); }
+          if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); handleViewModeChange(tabs[idx - 1].mode); }
+        }}
+      >
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.mode}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            role="tab"
+            id={`solar-tab-${tab.mode}`}
+            aria-selected={viewMode === tab.mode}
+            aria-controls="solar-tabpanel"
+            tabIndex={viewMode === tab.mode ? 0 : -1}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
               viewMode === tab.mode
-                ? 'bg-indigo-600 text-white'
-                : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                ? 'bg-primary text-white'
+                : 'bg-transparent text-slate-200 hover:bg-white/15 hover:text-white'
             }`}
             onClick={() => handleViewModeChange(tab.mode)}
           >
@@ -155,16 +171,22 @@ export const SolarReturnsPage: React.FC = () => {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Solar Returns</h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Solar Returns</h1>
+        <p className="text-slate-200">
           Your birthday year forecasts and themes
         </p>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-sm flex items-center justify-between">
+        <div className="mb-4 p-3 bg-red-900/30 text-red-400 rounded-xl text-sm flex items-center justify-between">
           {error}
           <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">✕</button>
+        </div>
+      )}
+
+      {shareSuccess && (
+        <div role="status" aria-live="polite" className="mb-4 p-3 bg-green-900/30 text-green-400 rounded-xl text-sm">
+          Solar return shared successfully!
         </div>
       )}
 
@@ -190,13 +212,13 @@ export const SolarReturnsPage: React.FC = () => {
 
           {loading && (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-              <p className="text-gray-500">Loading...</p>
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-slate-200">Loading...</p>
             </div>
           )}
 
           {!loading && selectedReturn && (
-            <div className="min-h-[400px]">
+            <div role="tabpanel" id="solar-tabpanel" aria-labelledby={`solar-tab-${viewMode}`} className="min-h-[400px]">
               {viewMode === 'chart' && selectedReturn.calculatedData && (
                 <SolarReturnChart
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
@@ -242,7 +264,8 @@ export const SolarReturnsPage: React.FC = () => {
                 <BirthdaySharing
                   solarReturn={selectedReturn}
                   onShare={() => {
-                    alert('Solar return shared successfully!');
+                    setShareSuccess(true);
+                    setTimeout(() => setShareSuccess(false), 3000);
                   }}
                 />
               )}

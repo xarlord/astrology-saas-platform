@@ -19,15 +19,15 @@ export class SolarReturnModel {
         chart_id: data.chartId,
         year: data.year,
         return_date: data.returnDate,
-        return_location: data.returnLocation as any,
-        calculated_data: data.calculatedData as any,
-        interpretation: data.interpretation as any,
+        return_location: JSON.parse(JSON.stringify(data.returnLocation)),
+        calculated_data: JSON.parse(JSON.stringify(data.calculatedData)),
+        interpretation: JSON.parse(JSON.stringify(data.interpretation)),
         is_relocated: data.isRelocated || false,
         notes: data.notes,
       })
       .returning('*');
 
-    return this.mapToSolarReturn(solarReturn);
+    return this.mapToSolarReturn(solarReturn) as SolarReturn;
   }
 
   /**
@@ -60,7 +60,7 @@ export class SolarReturnModel {
       .where({ user_id: userId })
       .orderBy('year', 'desc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -72,7 +72,7 @@ export class SolarReturnModel {
       .whereBetween('return_date', [startDate, endDate])
       .orderBy('return_date', 'asc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -84,7 +84,7 @@ export class SolarReturnModel {
       .orderBy('year', 'desc')
       .limit(limit);
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -95,7 +95,7 @@ export class SolarReturnModel {
       .where({ user_id: userId, is_relocated: true })
       .orderBy('year', 'desc');
 
-    return solarReturns.map(sr => this.mapToSolarReturn(sr));
+    return solarReturns.map(sr => this.mapToSolarReturn(sr)).filter((sr): sr is SolarReturn => sr !== null);
   }
 
   /**
@@ -106,9 +106,9 @@ export class SolarReturnModel {
       .where({ id })
       .update({
         ...(data.returnDate && { return_date: data.returnDate }),
-        ...(data.returnLocation && { return_location: data.returnLocation as any }),
-        ...(data.calculatedData && { calculated_data: data.calculatedData as any }),
-        ...(data.interpretation && { interpretation: data.interpretation as any }),
+        ...(data.returnLocation && { return_location: JSON.parse(JSON.stringify(data.returnLocation)) }),
+        ...(data.calculatedData && { calculated_data: JSON.parse(JSON.stringify(data.calculatedData)) }),
+        ...(data.interpretation && { interpretation: JSON.parse(JSON.stringify(data.interpretation)) }),
         ...(data.notes !== undefined && { notes: data.notes }),
         updated_at: new Date().toISOString(),
       })
@@ -162,20 +162,20 @@ export class SolarReturnModel {
   /**
    * Map database row to SolarReturn interface
    */
-  private mapToSolarReturn(row: any): SolarReturn | null {
+  private mapToSolarReturn(row: Record<string, unknown>): SolarReturn | null {
     return {
-      id: row.id,
-      userId: row.user_id,
-      chartId: row.chart_id,
-      year: row.year,
-      returnDate: new Date(row.return_date),
+      id: row.id as string,
+      userId: row.user_id as string,
+      chartId: row.chart_id as string,
+      year: row.year as number,
+      returnDate: new Date(row.return_date as string | Date),
       returnLocation: row.return_location as SolarReturnLocation,
       calculatedData: row.calculated_data as SolarReturnChartData,
-      interpretation: row.interpretation,
-      isRelocated: row.is_relocated,
-      notes: row.notes,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      interpretation: row.interpretation as SolarReturn['interpretation'],
+      isRelocated: row.is_relocated as boolean,
+      notes: (row.notes as string | null) ?? undefined,
+      createdAt: new Date(row.created_at as string | Date),
+      updatedAt: new Date(row.updated_at as string | Date),
     };
   }
 }

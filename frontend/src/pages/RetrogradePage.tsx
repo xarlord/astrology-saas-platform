@@ -36,7 +36,7 @@ const RETROGRADE_PLANETS = new Set([
 function mapToCalendarTransits(readings: TransitReading[]): CalendarTransit[] {
   const transits: CalendarTransit[] = [];
   for (const reading of readings) {
-    for (const t of reading.transits) {
+    for (const t of (reading.transits ?? [])) {
       transits.push({
         date: reading.date,
         planet: t.transitPlanet,
@@ -91,8 +91,8 @@ export default function RetrogradePage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Retrograde Tracker</h2>
-        <p className="text-slate-400">
+        <h1 className="text-3xl font-bold mb-2">Retrograde Tracker</h1>
+        <p className="text-slate-200">
           Monitor planetary retrogrades and their influence
         </p>
       </div>
@@ -101,7 +101,7 @@ export default function RetrogradePage() {
         <SkeletonLoader variant="list" count={5} />
       ) : errorMessage ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
           title="Unable to load retrograde data"
           description={errorMessage}
           actionText="Retry"
@@ -109,7 +109,7 @@ export default function RetrogradePage() {
         />
       ) : !hasCharts ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#8b5cf6' }}>dark_mode</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#8b5cf6' }}>dark_mode</span>}
           title="No retrograde data available"
           description="Retrograde tracking requires a natal chart. Please create a chart first to view retrograde information."
           actionText="Create Chart"

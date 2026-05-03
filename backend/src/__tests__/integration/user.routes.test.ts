@@ -15,7 +15,7 @@ import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvai
 import app from '../../server';
 
 describe('User Routes Integration Tests', () => {
-  let testUser: any;
+  let testUser: { id: string; [key: string]: unknown };
   let authToken: string;
 
   beforeAll(async () => {

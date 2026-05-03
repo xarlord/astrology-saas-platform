@@ -136,8 +136,8 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
   if (loading) {
     return (
       <div role="region" aria-label="Solar Return Dashboard" aria-busy="true" className="flex flex-col items-center justify-center py-16 px-8">
-        <div className="w-[50px] h-[50px] border-4 border-gray-200 dark:border-gray-700 border-t-indigo-500 dark:border-t-indigo-400 rounded-full animate-spin mb-4" />
-        <p aria-live="polite" className="text-gray-500 dark:text-gray-400">Loading your solar returns...</p>
+        <div className="w-[50px] h-[50px] border-4 border-white/15 border-t-primary rounded-full animate-spin mb-4" />
+        <p aria-live="polite" className="text-slate-200">Loading your solar returns...</p>
       </div>
     );
   }
@@ -145,14 +145,14 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
   return (
     <div role="region" aria-label="Solar Return Dashboard" className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white m-0">Your Solar Returns</h2>
-        <p className="mt-1 text-gray-500 dark:text-gray-400">Birthday year forecasts and themes</p>
+        <h2 className="text-2xl font-bold text-white m-0">Your Solar Returns</h2>
+        <p className="mt-1 text-slate-200">Birthday year forecasts and themes</p>
       </div>
 
       {error && (
-        <div role="alert" className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+        <div role="alert" className="flex items-center justify-between p-4 bg-red-500/20 text-red-400 rounded-lg">
           {error}
-          <button type="button" onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-800 dark:hover:text-red-300">&#10005;</button>
+          <button type="button" onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-300">&#10005;</button>
         </div>
       )}
 
@@ -162,8 +162,8 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
             type="button"
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               filter === 'all'
-                ? 'bg-indigo-500 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-primary text-white'
+                : 'bg-white/15 text-slate-200 hover:bg-white/15'
             }`}
             onClick={() => setFilter('all')}
           >
@@ -173,8 +173,8 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
             type="button"
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               filter === 'relocated'
-                ? 'bg-indigo-500 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-primary text-white'
+                : 'bg-white/15 text-slate-200 hover:bg-white/15'
             }`}
             onClick={() => setFilter('relocated')}
           >
@@ -183,12 +183,12 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-500 dark:text-gray-400">Sort by:</label>
+          <label className="text-sm text-slate-200">Sort by:</label>
           <select
             title="Sort solar returns"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'year' | 'date')}
-            className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400"
+            className="px-3 py-1.5 rounded-lg border border-white/15 bg-white/15 text-sm text-slate-200 focus:outline-none focus:border-primary"
           >
             <option value="year">Year</option>
             <option value="date">Return Date</option>
@@ -197,10 +197,10 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
         <button
           type="button"
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg font-medium hover:bg-indigo-600 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
           onClick={() => { void handleCalculateNew(new Date().getFullYear()); }}
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>calendar_today</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>calendar_today</span>
           Calculate Current Year
         </button>
       </div>
@@ -211,25 +211,25 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
           .map((solarReturn) => (
           <div
             key={solarReturn.id}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow border-l-4"
+            className="glass-panel rounded-2xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow border-l-4"
             onClick={() => onSelectSolarReturn?.(solarReturn.id)}
             style={{
               borderLeftColor: getThemeColor(solarReturn.interpretation?.themes ?? []),
             }}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white m-0">{solarReturn.year}</h3>
+            <div className="flex items-center justify-between p-4 border-b border-white/15">
+              <h3 className="text-xl font-bold text-white m-0">{solarReturn.year}</h3>
               {solarReturn.isRelocated && (
-                <span className="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-xs font-medium">
-                  <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>location_on</span>
+                <span className="flex items-center gap-1 px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-medium">
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>location_on</span>
                   Relocated
                 </span>
               )}
             </div>
 
             <div className="p-4 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>
+              <div className="flex items-center gap-2 text-sm text-slate-200">
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
                 {new Date(solarReturn.returnDate).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
@@ -238,8 +238,8 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
               </div>
 
               {solarReturn.returnLocation && (
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>location_on</span>
+                <div className="flex items-center gap-2 text-sm text-slate-200">
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>location_on</span>
                   {solarReturn.returnLocation.name}
                 </div>
               )}
@@ -247,12 +247,12 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
               {solarReturn.interpretation?.themes && (
                 <div className="flex flex-wrap gap-1.5">
                   {solarReturn.interpretation.themes.slice(0, 3).map((theme, index) => (
-                    <span key={index} className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs">
+                    <span key={index} className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full text-xs">
                       {theme}
                     </span>
                   ))}
                   {solarReturn.interpretation.themes.length > 3 && (
-                    <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full text-xs">
+                    <span className="px-2 py-0.5 bg-white/15 text-slate-200 rounded-full text-xs">
                       +{solarReturn.interpretation.themes.length - 3} more
                     </span>
                   )}
@@ -262,7 +262,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
               {solarReturn.interpretation?.keywords && (
                 <div className="flex flex-wrap gap-1.5">
                   {solarReturn.interpretation.keywords.slice(0, 4).map((keyword, index) => (
-                    <span key={index} className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded text-xs">
+                    <span key={index} className="px-2 py-0.5 bg-white/15 text-slate-200 rounded text-xs">
                       {keyword}
                     </span>
                   ))}
@@ -270,13 +270,13 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
               )}
             </div>
 
-            <div className="flex items-center justify-between p-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-              <button type="button" className="flex items-center gap-1 text-sm text-indigo-500 hover:text-indigo-600 font-medium">
+            <div className="flex items-center justify-between p-4 border-t border-white/15 bg-white/15">
+              <button type="button" className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium">
                 View Details
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>trending_up</span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>trending_up</span>
               </button>
-              <button type="button" className="p-2 text-gray-400 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-lg transition-colors" title="Share as gift">
-                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>card_giftcard</span>
+              <button type="button" className="p-2 text-slate-200 hover:text-pink-500 hover:bg-pink-500/20 rounded-lg transition-colors" title="Share as gift">
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>card_giftcard</span>
               </button>
             </div>
           </div>
@@ -285,12 +285,12 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
       {solarReturns.length === 0 && !loading && (
         <div className="text-center py-16">
-          <span className="material-symbols-outlined mx-auto text-gray-300 dark:text-gray-600 mb-4" style={{ fontSize: '48px' }}>calendar_today</span>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Solar Returns Yet</h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">Calculate your first solar return to see your birthday year forecast</p>
+          <span className="material-symbols-outlined mx-auto text-slate-200 mb-4" aria-hidden="true" style={{ fontSize: '48px' }}>calendar_today</span>
+          <h3 className="text-xl font-semibold text-white mb-2">No Solar Returns Yet</h3>
+          <p className="text-slate-200 mb-6">Calculate your first solar return to see your birthday year forecast</p>
           <button
             type="button"
-            className="px-6 py-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
+            className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
             onClick={() => { void handleCalculateNew(new Date().getFullYear()); }}
           >
             Calculate Solar Return for {new Date().getFullYear()}
@@ -301,7 +301,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       <div className="text-center pt-4">
         <button
           type="button"
-          className="text-indigo-500 hover:text-indigo-600 font-medium transition-colors"
+          className="text-primary hover:text-primary/80 font-medium transition-colors"
           onClick={() => { void handleCalculateNew(new Date().getFullYear() + 1); }}
         >
           Calculate Next Year &rarr;

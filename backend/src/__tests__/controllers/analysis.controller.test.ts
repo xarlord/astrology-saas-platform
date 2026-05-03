@@ -269,7 +269,7 @@ describe('Analysis Controller', () => {
       mockRequest.params = { chartId: '456' };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChartWithCalculatedData);
-      (swissEphemeris.PLANET_SYMBOLS as any) = {
+      (swissEphemeris.PLANET_SYMBOLS as Record<string, string>) = {
         sun: '☉',
         moon: '☽',
         mercury: '☿',

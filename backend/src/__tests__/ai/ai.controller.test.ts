@@ -26,7 +26,7 @@ import openaiService from '../../modules/ai/services/openai.service';
 describe('AI Controller', () => {
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
-  let responseObject: any;
+  let responseObject: Record<string, unknown>;
 
   beforeEach(() => {
     // Reset mocks

@@ -69,9 +69,23 @@ export interface Aspect {
   separating: boolean;
 }
 
+// Planet data returned by backend as a Record (keyed by lowercase name)
+export interface PlanetData {
+  longitude: number;
+  latitude: number;
+  speed: number;
+  sign: string;
+  degree: number;
+  minute: number;
+  second: number;
+  isRetrograde: boolean;
+  house: number;
+  distance?: number;
+}
+
 // Complete chart wheel data
 export interface ChartData {
-  planets: PlanetPosition[];
+  planets: PlanetPosition[] | Record<string, PlanetData>;
   houses: HouseCusp[];
   aspects: Aspect[];
 }

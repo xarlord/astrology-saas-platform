@@ -3,6 +3,7 @@
  */
 
 import { Request, Response } from 'express';
+import type { Socket } from 'net';
 import { getCsrfToken, csrfMiddleware } from '../../middleware/csrf';
 
 // Mock the logger
@@ -33,7 +34,7 @@ describe('CSRF Middleware', () => {
       path: '/api/v1/test',
       ip: '127.0.0.1',
       headers: {},
-      socket: { remoteAddress: '127.0.0.1' } as any,
+      socket: { remoteAddress: '127.0.0.1' } as Partial<Socket>,
     };
     mockRes = {
       status: jest.fn().mockReturnThis(),

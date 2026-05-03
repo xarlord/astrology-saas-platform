@@ -67,14 +67,29 @@ const LunarReturnsPage: React.FC = () => {
     ];
 
     return (
-      <div className="flex gap-2.5 mb-5 border-b-2 border-gray-200 dark:border-gray-700 pb-2.5 sm:flex-wrap">
+      <div
+        role="tablist"
+        aria-label="Lunar return view mode"
+        className="flex gap-2.5 mb-5 border-b-2 border-white/15 pb-2.5 sm:flex-wrap"
+        onKeyDown={(e) => {
+          const idx = tabs.findIndex((t) => t.mode === viewMode);
+          if (e.key === 'ArrowRight' && idx < tabs.length - 1) { e.preventDefault(); setViewMode(tabs[idx + 1].mode); }
+          if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); setViewMode(tabs[idx - 1].mode); }
+        }}
+      >
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.mode}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+            role="tab"
+            id={`lunar-tab-${tab.mode}`}
+            aria-selected={viewMode === tab.mode}
+            aria-controls="lunar-tabpanel"
+            tabIndex={viewMode === tab.mode ? 0 : -1}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               viewMode === tab.mode
-                ? 'bg-indigo-600 text-white'
-                : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                ? 'bg-primary text-white'
+                : 'bg-transparent text-slate-200 hover:bg-white/15 hover:text-white'
             }`}
             onClick={() => setViewMode(tab.mode)}
           >
@@ -89,15 +104,15 @@ const LunarReturnsPage: React.FC = () => {
     <AppLayout>
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Lunar Returns</h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h1 className="text-3xl font-bold mb-2 gradient-text">Lunar Returns</h1>
+          <p className="text-slate-200">
             Your monthly emotional cycles and forecasts
           </p>
         </div>
         {viewMode !== 'dashboard' && (
           <button
             onClick={handleBackToDashboard}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary/90 transition-colors"
           >
             ← Back to Dashboard
           </button>
@@ -106,7 +121,7 @@ const LunarReturnsPage: React.FC = () => {
 
       {renderViewModeTabs()}
 
-      <div className="min-h-[400px]">
+      <div role="tabpanel" id="lunar-tabpanel" aria-labelledby={`lunar-tab-${viewMode}`} className="min-h-[400px]">
         {viewMode === 'dashboard' && (
           <LunarReturnDashboard
             onChartClick={handleChartClick}

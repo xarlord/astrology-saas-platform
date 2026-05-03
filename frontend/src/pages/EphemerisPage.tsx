@@ -5,6 +5,7 @@
 
 import { useMemo } from 'react';
 import { AppLayout, SkeletonLoader, EmptyState } from '../components';
+import { MeteorEffect } from '../components/effects';
 import { useTodayTransits } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 import type { TransitReading } from '../services/transit.service';
@@ -27,11 +28,11 @@ function groupByPlanet(transits: TransitEntry[]): Map<string, TransitEntry[]> {
 }
 
 const ASPECT_COLORS: Record<string, string> = {
-  conjunction: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-  opposition: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  trine: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  square: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-  sextile: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  conjunction: 'bg-amber-900/30 text-amber-400',
+  opposition: 'bg-red-900/30 text-red-400',
+  trine: 'bg-green-900/30 text-green-400',
+  square: 'bg-orange-900/30 text-orange-400',
+  sextile: 'bg-blue-900/30 text-blue-400',
 };
 
 function getAspectColorClass(aspect: string): string {
@@ -39,7 +40,7 @@ function getAspectColorClass(aspect: string): string {
   for (const [key, cls] of Object.entries(ASPECT_COLORS)) {
     if (normalized.includes(key)) return cls;
   }
-  return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+  return 'bg-white/15 text-slate-200';
 }
 
 const PLANET_SYMBOLS: Record<string, string> = {
@@ -53,7 +54,7 @@ function formatAspectLabel(aspect: string): string {
 }
 
 function TransitTable({ data }: { data: TransitReading }) {
-  const transits = data.transits;
+  const transits = Array.isArray(data.transits) ? data.transits : [];
   const grouped = useMemo(() => groupByPlanet(transits), [transits]);
 
   if (transits.length === 0) {
@@ -72,17 +73,17 @@ function TransitTable({ data }: { data: TransitReading }) {
       {Array.from(grouped.entries()).map(([planet, entries]) => (
         <div
           key={planet}
-          className="bg-[#141627]/70 backdrop-blur-md rounded-xl border border-[#2f2645] overflow-hidden"
+          className="glass-panel rounded-2xl border border-white/15 overflow-hidden"
         >
           {/* Planet header */}
-          <div className="px-5 py-4 bg-white/5 border-b border-[#2f2645]">
+          <div className="px-5 py-4 bg-white/15 border-b border-white/15">
             <div className="flex items-center gap-3">
               <span className="text-2xl" aria-hidden="true">
                 {PLANET_SYMBOLS[planet] ?? '◆'}
               </span>
               <div>
                 <h4 className="font-semibold text-white">{planet}</h4>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-200">
                   {entries.length} active {entries.length === 1 ? 'transit' : 'transits'}
                 </p>
               </div>
@@ -94,13 +95,13 @@ function TransitTable({ data }: { data: TransitReading }) {
             {entries.map((entry, index) => (
               <div
                 key={`${entry.transitPlanet}-${entry.natalPlanet}-${entry.aspect}-${index}`}
-                className="px-5 py-3 flex items-center justify-between gap-4 hover:bg-white/5 transition-colors"
+                className="px-5 py-3 flex items-center justify-between gap-4 hover:bg-white/15 transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-sm text-white font-medium truncate">
                     {PLANET_SYMBOLS[entry.natalPlanet] ?? ''} {entry.natalPlanet}
                   </span>
-                  <span className="text-slate-500 text-xs" aria-hidden="true">
+                  <span className="text-slate-200 text-xs" aria-hidden="true">
                     &#8594;
                   </span>
                   <span
@@ -110,7 +111,7 @@ function TransitTable({ data }: { data: TransitReading }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-200">
                     Orb: {entry.orb.toFixed(1)}°
                   </span>
                 </div>
@@ -138,25 +139,26 @@ export default function EphemerisPage() {
 
   return (
     <AppLayout>
+      <MeteorEffect count={15} />
       {/* Page Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2.5 bg-primary/10 rounded-xl">
-            <span className="material-symbols-outlined text-primary" style={{ fontSize: '22px' }}>public</span>
+            <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '22px' }}>public</span>
           </div>
           <div className="flex-1">
-            <h2 className="text-3xl font-bold text-white">Ephemeris</h2>
-            <p className="text-slate-400 mt-1">
+            <h1 className="text-3xl font-bold text-white">Ephemeris</h1>
+            <p className="text-slate-200 mt-1">
               Current planetary positions and active transits
             </p>
           </div>
           {data && (
             <button
               onClick={() => void refetch()}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-white/5 border border-[#2f2645] rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-white/15 border border-white/15 rounded-xl hover:bg-white/15 transition-colors cursor-pointer"
               aria-label="Refresh transit data"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>refresh</span>
+              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>refresh</span>
               Refresh
             </button>
           )}
@@ -164,7 +166,7 @@ export default function EphemerisPage() {
 
         {/* Last updated timestamp */}
         {lastUpdated && (
-          <p className="text-sm text-slate-400 flex items-center gap-1.5">
+          <p className="text-sm text-slate-200 flex items-center gap-1.5">
             Last updated: {lastUpdated}
           </p>
         )}
@@ -177,7 +179,7 @@ export default function EphemerisPage() {
         </div>
       ) : error ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
           title="Unable to load transit data"
           description={getErrorMessage(error, 'Failed to fetch today\'s transits')}
           actionText="Retry"
@@ -187,7 +189,7 @@ export default function EphemerisPage() {
         <TransitTable data={data} />
       ) : (
         <EmptyState
-          icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#8b5cf6' }}>nights_stay</span>}
+          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#8b5cf6' }}>nights_stay</span>}
           title="No transit data available"
           description="Create a natal chart first to see how current planetary positions affect your birth chart."
         />

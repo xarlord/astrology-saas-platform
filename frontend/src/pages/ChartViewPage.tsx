@@ -7,10 +7,28 @@ import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } f
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useChartsStore } from '../store/chartsStore';
-import type { ChartData } from '../types/chart.types';
+import type { ChartData, HouseCusp, Aspect, PlanetData, PlanetPosition } from '../types/chart.types';
+
+const ZODIAC_SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+
+function signFromDegree(deg: number): string {
+  return ZODIAC_SIGNS[Math.floor(((deg % 360) + 360) % 360 / 30)];
+}
+
+function degreeToDms(totalDeg: number): { degree: number; minute: number; second: number } {
+  const abs = ((totalDeg % 360) + 360) % 360;
+  const degree = Math.floor(abs);
+  const minFloat = (abs - degree) * 60;
+  const minute = Math.floor(minFloat);
+  const second = Math.round((minFloat - minute) * 60);
+  return { degree, minute, second };
+}
+
+interface BackendHouse { cusp: number; size: number }
+interface BackendAspect { orb: number; type: string; planet1: string; planet2: string; applying?: boolean; exact?: boolean; harmonious?: boolean }
 
 export default function ChartViewPage() {
-  const { chartId } = useParams<{ chartId: string }>();
+  const { id: chartId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { currentChart, isLoading, error, fetchChart } = useChartsStore();
   const [localError, setLocalError] = useState<string | null>(null);
@@ -24,19 +42,63 @@ export default function ChartViewPage() {
     void fetchChart(chartId);
   }, [chartId, fetchChart]);
 
-  // Extract ChartData from the chart's calculated_data, or fall back to null
-  const chartData: ChartData | null = (() => {
-    if (!currentChart?.calculated_data) return null;
-    const calc = currentChart.calculated_data;
-    // Validate that calculated_data has the expected shape
-    if (
-      Array.isArray(calc.planets) &&
-      Array.isArray(calc.houses) &&
-      Array.isArray(calc.aspects)
-    ) {
-      return calc as unknown as ChartData;
-    }
-    return null;
+  // Extract and convert ChartData from the chart's calculated_data
+  const { chartData, planetList } = (() => {
+    if (!currentChart?.calculated_data) return { chartData: null as ChartData | null, planetList: [] as PlanetPosition[] };
+    const calc = currentChart.calculated_data as Record<string, unknown>;
+    const hasPlanets = calc.planets !== undefined && calc.planets !== null;
+    const hasHouses = Array.isArray(calc.houses);
+    const hasAspects = Array.isArray(calc.aspects);
+    if (!hasPlanets || !hasHouses || !hasAspects) return { chartData: null as ChartData | null, planetList: [] as PlanetPosition[] };
+
+    // Convert planets
+    const rawPlanets = calc.planets as Record<string, PlanetData> | PlanetPosition[];
+    const pList: PlanetPosition[] = Array.isArray(rawPlanets)
+      ? rawPlanets
+      : Object.entries(rawPlanets).map(([name, p]) => ({
+          planet: name,
+          sign: p.sign,
+          degree: p.degree,
+          minute: p.minute,
+          second: p.second ?? 0,
+          house: p.house ?? 0,
+          retrograde: p.isRetrograde ?? false,
+          latitude: p.latitude ?? 0,
+          longitude: p.longitude ?? 0,
+          speed: p.speed ?? 0,
+        }));
+
+    // Convert houses: backend [{cusp, size}] → frontend [{house, sign, degree, minute, second}]
+    const rawHouses = calc.houses as BackendHouse[];
+    const houses: HouseCusp[] = rawHouses.map((h, i) => {
+      const dms = degreeToDms(h.cusp);
+      return {
+        house: i + 1,
+        sign: signFromDegree(h.cusp),
+        ...dms,
+      };
+    });
+
+    // Convert aspects: backend [{orb, type, planet1, planet2}] → frontend [{degree, minute, orb, ...}]
+    const rawAspects = calc.aspects as BackendAspect[];
+    const aspects: Aspect[] = rawAspects.map((a) => {
+      const orbDms = degreeToDms(a.orb);
+      return {
+        planet1: a.planet1,
+        planet2: a.planet2,
+        type: a.type as Aspect['type'],
+        degree: orbDms.degree,
+        minute: orbDms.minute,
+        orb: Math.round(a.orb * 100) / 100,
+        applying: a.applying ?? false,
+        separating: !a.applying,
+      };
+    });
+
+    return {
+      chartData: { planets: pList, houses, aspects } as ChartData,
+      planetList: pList,
+    };
   })();
 
   const displayError = localError ?? error;
@@ -60,11 +122,11 @@ export default function ChartViewPage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">
+        <h1 className="text-3xl font-bold mb-2 gradient-text">
           {currentChart ? currentChart.name : 'Natal Chart'}
-        </h2>
+        </h1>
         {currentChart && (
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-slate-200">
             {currentChart.birth_date} &middot; {currentChart.birth_time} &middot;{' '}
             {currentChart.birth_place_name}
           </p>
@@ -105,7 +167,10 @@ export default function ChartViewPage() {
             onAction={() => navigate('/dashboard')}
           />
           <div className="text-center">
-            <Link to={`/analysis/${chartId}`} className="btn-primary">
+            <Link
+              to={`/analysis/${chartId}`}
+              className="inline-block bg-cosmic-gradient text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            >
               View Analysis
             </Link>
           </div>
@@ -114,23 +179,23 @@ export default function ChartViewPage() {
         <>
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Chart Wheel */}
-            <div className="card">
+            <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
               <h3 className="text-xl font-bold mb-4">Chart Wheel</h3>
               <ChartWheel data={chartData} interactive={true} />
               <ChartWheelLegend />
             </div>
 
             {/* Planetary Positions */}
-            <div className="card">
+            <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
               <h3 className="text-xl font-bold mb-4">Planetary Positions</h3>
               <div className="space-y-2">
-                {chartData.planets.map((planet) => (
+                {planetList.map((planet) => (
                   <div
                     key={planet.planet}
-                    className="flex justify-between py-2 border-b dark:border-gray-700"
+                    className="flex justify-between py-2 border-b border-white/15"
                   >
                     <span className="font-medium capitalize">{planet.planet}</span>
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-slate-200">
                       {planet.sign} {planet.degree}&deg;{planet.minute}&apos;{' '}
                       {planet.retrograde && '(R)'}
                     </span>
@@ -144,10 +209,10 @@ export default function ChartViewPage() {
                 {chartData.houses.map((house) => (
                   <div
                     key={house.house}
-                    className="flex justify-between py-2 border-b dark:border-gray-700"
+                    className="flex justify-between py-2 border-b border-white/15"
                   >
                     <span className="font-medium">House {house.house}</span>
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-slate-200 capitalize">
                       {house.sign} {house.degree}&deg;{house.minute}&apos;
                     </span>
                   </div>
@@ -157,7 +222,10 @@ export default function ChartViewPage() {
           </div>
 
           <div className="mt-8">
-            <Link to={`/analysis/${chartId}`} className="btn-primary">
+            <Link
+              to={`/analysis/${chartId}`}
+              className="inline-block bg-cosmic-gradient text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            >
               View Analysis
             </Link>
           </div>

@@ -93,8 +93,9 @@ describe('NatalChartService', () => {
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.lunarNodes).toBeDefined();
-      expect(chart.lunarNodes!.northNode).toBeDefined();
-      expect(chart.lunarNodes!.southNode).toBeDefined();
+      if (!chart.lunarNodes) return;
+      expect(chart.lunarNodes.northNode).toBeDefined();
+      expect(chart.lunarNodes.southNode).toBeDefined();
     });
   });
 
@@ -171,8 +172,9 @@ describe('NatalChartService', () => {
       };
       const chart = service.calculateNatalChart(input);
       expect(chart.chiron).toBeDefined();
-      expect(chart.chiron!.longitude).toBeGreaterThanOrEqual(0);
-      expect(chart.chiron!.sign).toBeDefined();
+      if (!chart.chiron) return;
+      expect(chart.chiron.longitude).toBeGreaterThanOrEqual(0);
+      expect(chart.chiron.sign).toBeDefined();
     });
 
     test('should exclude Chiron when requested', () => {

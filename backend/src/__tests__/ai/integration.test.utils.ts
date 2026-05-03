@@ -4,11 +4,13 @@
  */
 
 import bcrypt from 'bcryptjs';
+import type { Knex } from 'knex';
+import type { SuperTest } from 'supertest';
 
 /**
  * Clean database tables
  */
-export async function cleanDatabase(database: any) {
+export async function cleanDatabase(database: Knex) {
   const tables = [
     'refresh_tokens',
     'ai_cache',
@@ -24,7 +26,7 @@ export async function cleanDatabase(database: any) {
 /**
  * Create test user in database
  */
-export async function createTestUser(database: any) {
+export async function createTestUser(database: Knex) {
   const hashedPassword = await bcrypt.hash('Password123!', 10);
 
   const [user] = await database('users')
@@ -42,7 +44,7 @@ export async function createTestUser(database: any) {
 /**
  * Create authenticated test user with token
  */
-export async function createAuthenticatedUser(database: any, request: any) {
+export async function createAuthenticatedUser(database: Knex, request: SuperTest) {
   await createTestUser(database);
 
   const loginResponse = await request

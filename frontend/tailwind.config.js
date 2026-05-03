@@ -8,6 +8,16 @@ export default {
   theme: {
     extend: {
       colors: {
+        cosmic: {
+          page: 'var(--color-bg-page)',
+          card: 'var(--color-bg-card)',
+          'card-solid': 'var(--color-bg-card-solid)',
+          hover: 'var(--color-bg-hover)',
+          active: 'var(--color-bg-active)',
+          border: 'var(--color-border)',
+          'border-subtle': 'var(--color-border-subtle)',
+          surface: '#151725',
+        },
         primary: {
           50: '#eef2ff',
           100: '#e0e7ff',
@@ -19,6 +29,7 @@ export default {
           700: '#4338ca',
           800: '#3730a3',
           900: '#312e81',
+          DEFAULT: '#6b3de1',
         },
         secondary: {
           50: '#f5f3ff',
@@ -44,6 +55,11 @@ export default {
           800: '#92400e',
           900: '#78350f',
         },
+        lavender: '#A78BFA',
+        'cosmic-blue': '#2563EB',
+        gold: '#F5A623',
+        'surface-dark': '#151725',
+        'surface-light': '#1e2136',
         // Zodiac colors
         zodiac: {
           fire: '#EF4444',
@@ -82,16 +98,31 @@ export default {
           from: { transform: 'translateY(100%)', opacity: '0' },
           to: { transform: 'translateY(0)', opacity: '1' },
         },
+        float: {
+          '0%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+          '100%': { transform: 'translateY(0px)' },
+        },
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        progress: {
+          from: { strokeDasharray: '0 100' },
+        },
       },
       animation: {
         'slide-in': 'slideIn 0.3s ease-out',
         'fade-in': 'fadeIn 0.2s ease-in',
         'slide-up': 'slideUp 0.3s ease-out',
         'slide-up-mobile': 'slideUpMobile 0.3s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+        'progress': 'progress 1s ease-out forwards',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Playfair Display', 'serif'],
+        sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        display: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
     },
   },

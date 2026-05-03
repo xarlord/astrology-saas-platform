@@ -27,82 +27,12 @@ import {
   useTransitForecast,
   useTransitCalendar,
 } from '../hooks';
-import type { TransitReading } from '../services/transit.service';
 import { getErrorMessage } from '../utils/errorHandling';
-
-/**
- * Map a raw TransitReading transit to a Transit object expected by
- * TransitDashboard.
- */
-function mapReadingToTransit(
-  r: TransitReading['transits'][number],
-  reading: TransitReading,
-): Transit {
-  return {
-    transitingPlanet: r.transitPlanet,
-    natalPlanet: r.natalPlanet,
-    type: r.aspect,
-    orb: r.orb,
-    applying: r.orb > 0,
-    startDate: reading.date,
-    endDate: reading.date,
-    peakDate: reading.date,
-    intensity: Math.max(1, Math.min(10, Math.round(10 - Math.abs(r.orb)))),
-    interpretation: {
-      general: `${r.transitPlanet} ${r.aspect} ${r.natalPlanet}`,
-      themes: [],
-      advice: { positive: [], challenges: [], suggestions: [] },
-    },
-  };
-}
-
-/**
- * Derive highlights from today's reading -- the most intense transits
- * are treated as highlights.
- */
-function deriveHighlights(reading: TransitReading | undefined): TransitHighlight[] {
-  if (!reading) return [];
-
-  return reading.transits
-    .filter((t) => Math.abs(t.orb) <= 2)
-    .map((t) => ({
-      type: 'major-transit' as const,
-      title: `${t.transitPlanet} ${t.aspect} ${t.natalPlanet}`,
-      date: reading.date,
-      description: `${t.transitPlanet} forms a ${t.aspect} with your natal ${t.natalPlanet}`,
-      intensity: Math.max(1, Math.min(10, Math.round(10 - Math.abs(t.orb)))),
-    }));
-}
-
-/**
- * Build TransitCalendarDay[] from a TransitReading[] for a given month/year.
- */
-function buildCalendarDays(
-  readings: TransitReading[],
-  year: number,
-  month: number,
-): TransitCalendarDay[] {
-  const daysInMonth = new Date(year, month, 0).getDate();
-  const readingByDate = new Map<string, TransitReading>();
-  for (const r of readings) {
-    const key = r.date.split('T')[0];
-    if (key) readingByDate.set(key, r);
-  }
-
-  const days: TransitCalendarDay[] = [];
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const reading = readingByDate.get(dateStr);
-    days.push({
-      date: dateStr,
-      hasMajorTransit: reading ? reading.transits.some((t) => Math.abs(t.orb) <= 2) : false,
-      hasMoonPhase: false,
-      hasEclipse: false,
-      transits: reading ? reading.transits.map((t) => mapReadingToTransit(t, reading)) : undefined,
-    });
-  }
-  return days;
-}
+import {
+  mapReadingToTransit,
+  deriveHighlights,
+  buildCalendarDays,
+} from '../utils/transitHelpers';
 
 export default function TransitPage() {
   const navigate = useNavigate();
@@ -115,6 +45,7 @@ export default function TransitPage() {
   }, [fetchCharts]);
 
   const hasCharts = charts.length > 0;
+  const hasCalculatedChart = charts.some((c) => c.calculated_data != null);
 
   // Current month/year for calendar queries
   const now = new Date();
@@ -126,19 +57,19 @@ export default function TransitPage() {
     data: todayReading,
     isLoading: todayLoading,
     error: todayError,
-  } = useTodayTransits(hasCharts);
+  } = useTodayTransits(hasCalculatedChart);
 
   const {
     data: weekReadings,
     isLoading: weekLoading,
     error: weekError,
-  } = useTransitForecast('week', hasCharts);
+  } = useTransitForecast('week', hasCalculatedChart);
 
   const {
     data: calendarReadings,
     isLoading: calendarLoading,
     error: calendarError,
-  } = useTransitCalendar(currentMonth, currentYear, hasCharts);
+  } = useTransitCalendar(currentMonth, currentYear, hasCalculatedChart);
 
   // Aggregate error from any query
   const queryError =
@@ -148,11 +79,11 @@ export default function TransitPage() {
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      ? todayReading.transits.map((t) => mapReadingToTransit(t, todayReading))
+      ? (todayReading.transits ?? []).map((t) => mapReadingToTransit(t, todayReading))
       : [];
 
     const weekTransits: Transit[] = weekReadings
-      ? weekReadings.flatMap((r) => r.transits.map((t) => mapReadingToTransit(t, r)))
+      ? weekReadings.flatMap((r) => (r.transits ?? []).map((t) => mapReadingToTransit(t, r)))
       : [];
 
     const monthDays: TransitCalendarDay[] = calendarReadings
@@ -175,7 +106,10 @@ export default function TransitPage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Transit Forecast</h2>
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Current Transits</h1>
+        <p className="text-slate-200">
+          Real-time planetary transits affecting your natal chart
+        </p>
       </div>
 
       {isLoading ? (

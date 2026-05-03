@@ -273,14 +273,23 @@ interface SolarReturnAspect {
 }
 
 /**
+ * Solar return house cusp data
+ */
+interface SolarReturnHouseCusp {
+  house: number;
+  sign: string;
+  degree: number;
+}
+
+/**
  * Solar return chart data
  */
 interface SolarReturnChartData {
   planets: SolarReturnPlanet[];
   houses: SolarReturnHouseCusp[];
   aspects: SolarReturnAspect[];
-  ascendant: SolarReturnAscendant;
-  mc: SolarReturnMc;
+  ascendant: { sign: string; degree: number };
+  mc: { sign: string; degree: number };
   moonPhase: { phase: string };
 }
 
@@ -348,7 +357,7 @@ function generatePlanetaryThemes(planets: SolarReturnPlanet[]): string[] {
 /**
  * Generate challenges
  */
-function generateChallenges(chartData: any): Array<{
+function generateChallenges(chartData: { planets?: SolarReturnPlanet[] }): Array<{
   area: string;
   description: string;
   advice: string;
@@ -360,7 +369,7 @@ function generateChallenges(chartData: any): Array<{
   }> = [];
 
   // Saturn challenges
-  const saturn = chartData.planets?.find((p: SolarReturnPlanet) => p.planet === 'saturn');
+  const saturn = chartData.planets?.find((p) => p.planet === 'saturn');
   if (saturn) {
     const saturnChallenges: Record<number, { area: string; description: string; advice: string }> = {
       1: {
@@ -399,7 +408,8 @@ function generateOpportunities(chartData: { planets?: SolarReturnPlanet[] }): Ar
   }> = [];
 
   // Jupiter opportunities
-  const jupiter = chartData.planets?.find((p: SolarReturnPlanet) => p.planet === 'jupiter');  if (jupiter) {
+  const jupiter = chartData.planets?.find((p) => p.planet === 'jupiter');
+  if (jupiter) {
     const jupiterOpportunities: Record<number, { area: string; description: string; timing: string }> = {
       2: {
         area: "Finances",

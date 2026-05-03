@@ -170,48 +170,48 @@ export function TransitCalendar({
 
   return (
     <div
-      className="w-full max-w-full overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden motion-safe:transition-all motion-safe:duration-200"
+      className="w-full max-w-full overflow-x-auto glass-panel rounded-2xl overflow-hidden motion-safe:transition-all motion-safe:duration-200"
       role="region"
       aria-label="Transit Calendar"
     >
       {/* Calendar Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border-b border-white/15">
         <div className="flex items-center justify-between sm:justify-start gap-2">
           <button
             onClick={goToPreviousMonth}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
+            className="p-2 rounded-lg hover:bg-white/15 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
           >
-            <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_left</span>
+            <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
           </button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white min-w-[180px] text-center">
+          <h2 className="text-lg font-semibold text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
           <button
             onClick={goToNextMonth}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
+            className="p-2 rounded-lg hover:bg-white/15 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
           >
-            <span className="material-symbols-outlined text-gray-600 dark:text-gray-400" style={{ fontSize: '20px' }}>chevron_right</span>
+            <span className="material-symbols-outlined text-slate-200" style={{ fontSize: '20px' }}>chevron_right</span>
           </button>
         </div>
 
         <div className="flex items-center justify-between sm:justify-start gap-2">
           <button
             onClick={goToToday}
-            className="px-3 py-1.5 text-sm font-medium text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
+            className="px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
           >
             Today
           </button>
 
           {/* View Mode Toggle */}
-          <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="flex rounded-lg border border-white/15 overflow-hidden">
             <button
               onClick={() => setViewMode('month')}
               className={`px-3 py-1.5 text-sm font-medium transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current ${
                 viewMode === 'month'
                   ? 'bg-primary-600 text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  : 'glass-panel text-slate-200 hover:bg-white/15'
               }`}
               aria-pressed={viewMode === 'month' ? 'true' : 'false'}
             >
@@ -222,7 +222,7 @@ export function TransitCalendar({
               className={`px-3 py-1.5 text-sm font-medium transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current ${
                 viewMode === 'week'
                   ? 'bg-primary-600 text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  : 'glass-panel text-slate-200 hover:bg-white/15'
               }`}
               aria-pressed={viewMode === 'week' ? 'true' : 'false'}
             >
@@ -233,11 +233,11 @@ export function TransitCalendar({
       </div>
 
       {/* Weekday Headers */}
-      <div className="grid grid-cols-7 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+      <div className="grid grid-cols-7 bg-white/15 border-b border-white/15">
         {WEEKDAYS.map((day) => (
           <div
             key={day}
-            className="p-2 text-center text-sm font-medium text-gray-600 dark:text-gray-400"
+            className="p-2 text-center text-sm font-medium text-slate-200"
           >
             <span className="hidden sm:inline">{day}</span>
             <span className="sm:hidden">{day.slice(0, 1)}</span>
@@ -259,12 +259,12 @@ export function TransitCalendar({
             <div
               key={index}
               className={`
-                relative min-h-[60px] sm:min-h-[100px] md:min-h-[80px] p-1 sm:p-2 border-b border-r border-gray-200 dark:border-gray-700
-                ${!day.isCurrentMonth ? 'bg-gray-50 dark:bg-gray-900/30' : ''}
-                ${isToday(day.date) ? 'bg-primary-50 dark:bg-primary-900/20' : ''}
+                relative min-h-[60px] sm:min-h-[100px] md:min-h-[80px] p-1 sm:p-2 border-b border-r border-white/15
+                ${!day.isCurrentMonth ? 'bg-white/[0.03]' : ''}
+                ${isToday(day.date) ? 'bg-primary/10' : ''}
                 ${isSelected ? 'ring-2 ring-primary-500 ring-inset' : ''}
-                ${isHighlighted(day.date) ? 'bg-yellow-50 dark:bg-yellow-900/20' : ''}
-                hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-all duration-200 ease-in-out
+                ${isHighlighted(day.date) ? 'bg-yellow-500/10' : ''}
+                hover:bg-white/15 cursor-pointer transition-all duration-200 ease-in-out
                 pointer-coarse:min-h-[70px]
                 high-contrast:border-2
                 print:border print:border-gray-300 print:min-h-[60px]
@@ -286,7 +286,7 @@ export function TransitCalendar({
                   className={`
                     text-sm font-medium
                     ${isToday(day.date) ? 'w-7 h-7 flex items-center justify-center bg-primary-600 text-white rounded-full' : ''}
-                    ${!day.isCurrentMonth ? 'text-gray-400 dark:text-gray-600' : 'text-gray-900 dark:text-white'}
+                    ${!day.isCurrentMonth ? 'text-slate-200' : 'text-white'}
                   `}
                 >
                   {day.date.getDate()}
@@ -315,7 +315,7 @@ export function TransitCalendar({
                   return (
                     <div
                       key={i}
-                      className="flex items-center gap-1 p-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
+                      className="flex items-center gap-1 p-0.5 rounded hover:bg-white/15 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
                       onClick={(e) => {
                         e.stopPropagation();
                         onTransitClick?.(transit);
@@ -323,7 +323,7 @@ export function TransitCalendar({
                       title={`${config.name} in ${transit.sign} ${transit.degree}°${transit.retrograde ? ' (R)' : ''}`}
                     >
                       {IconComponent()}
-                      <span className="truncate text-gray-700 dark:text-gray-300">
+                      <span className="truncate text-slate-200">
                         {getZodiacSymbol(transit.sign)}
                       </span>
                       {transit.retrograde && (
@@ -334,7 +334,7 @@ export function TransitCalendar({
                 })}
 
                 {day.transits.length > 3 && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                  <div className="text-xs text-slate-200 text-center">
                     +{day.transits.length - 3} more
                   </div>
                 )}
@@ -347,10 +347,10 @@ export function TransitCalendar({
       </div>
 
       {/* Legend */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 print:hidden">
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+      <div className="p-4 border-t border-white/15 bg-white/15 print:hidden">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-200">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded" />
+            <div className="w-4 h-4 bg-primary/10 border border-primary/20 rounded" />
             <span>Today</span>
           </div>
           {showRetrogrades && (
@@ -360,7 +360,7 @@ export function TransitCalendar({
             </div>
           )}
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded" />
+            <div className="w-4 h-4 bg-yellow-500/10 border border-yellow-500/20 rounded" />
             <span>Highlighted</span>
           </div>
         </div>
@@ -369,11 +369,11 @@ export function TransitCalendar({
       {/* Selected Date Details Panel */}
       {selectedDate && (
         <div
-          className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 motion-safe:animate-[slideUp_0.3s_ease-out]"
+          className="p-3 sm:p-4 border-t border-white/15 bg-white/15 motion-safe:animate-[slideUp_0.3s_ease-out]"
           role="region"
           aria-label={`Transits for ${selectedDate.toDateString()}`}
         >
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+          <h3 className="font-semibold text-white mb-3">
             {selectedDate.toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
@@ -383,7 +383,7 @@ export function TransitCalendar({
           </h3>
 
           {getTransitsForDate(selectedDate).length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <p className="text-slate-200 text-sm">
               No transits recorded for this date.
             </p>
           ) : (
@@ -397,7 +397,7 @@ export function TransitCalendar({
                 return (
                   <div
                     key={i}
-                    className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                    className="flex items-center gap-3 p-3 glass-panel rounded-2xl transition-shadow cursor-pointer"
                     onClick={() => onTransitClick?.(transit)}
                     role="button"
                     tabIndex={0}
@@ -416,7 +416,7 @@ export function TransitCalendar({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900 dark:text-white">
+                        <span className="font-medium text-white">
                           {config.name}
                         </span>
                         {transit.retrograde && (
@@ -425,11 +425,11 @@ export function TransitCalendar({
                           </span>
                         )}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-slate-200">
                         {getZodiacSymbol(transit.sign)} {transit.sign} {transit.degree}°
                       </div>
                     </div>
-                    <span className="material-symbols-outlined text-gray-400" style={{ fontSize: '16px' }}>info</span>
+                    <span className="material-symbols-outlined text-slate-200" style={{ fontSize: '16px' }}>info</span>
                   </div>
                 );
               })}

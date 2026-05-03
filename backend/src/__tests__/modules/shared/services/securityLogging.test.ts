@@ -12,17 +12,34 @@ jest.mock('../../../../config/database', () => ({
   default: jest.fn(),
 }));
 
-const mockDb = db as jest.MockedFunction<any>;
+const mockDb = db as jest.MockedFunction<(...args: unknown[]) => Record<string, jest.Mock>>;
+
+interface ChainableMock {
+  insert: jest.Mock;
+  where: jest.Mock;
+  whereIn: jest.Mock;
+  whereNot: jest.Mock;
+  select: jest.Mock;
+  orderBy: jest.Mock;
+  limit: jest.Mock;
+  offset: jest.Mock;
+  first: jest.Mock;
+  count: jest.Mock;
+  groupBy: jest.Mock;
+  delete: jest.Mock;
+  returning: jest.Mock;
+  [key: string]: jest.Mock;
+}
 
 describe('SecurityLoggingService', () => {
-  let mockQueryBuilder: any;
+  let mockQueryBuilder: ChainableMock;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     // Create a self-referencing chainable mock
-    const createChainableMock = (): any => {
-      const chainable: any = {
+    const createChainableMock = (): ChainableMock => {
+      const chainable: ChainableMock = {
         insert: jest.fn(() => chainable),
         where: jest.fn(() => chainable),
         whereIn: jest.fn(() => chainable),

@@ -605,14 +605,14 @@ describe('BirthdaySharing', () => {
     const linkTab = screen.getByRole('button', { name: /share link/i });
     const emailTab = screen.getByRole('button', { name: /send email/i });
 
-    // Active tab uses bg-purple-600 text-white Tailwind classes
-    expect(linkTab).toHaveClass('bg-purple-600');
-    expect(emailTab).not.toHaveClass('bg-purple-600');
+    // Active tab uses bg-primary text-white Tailwind classes
+    expect(linkTab).toHaveClass('bg-primary');
+    expect(emailTab).not.toHaveClass('bg-primary');
 
     fireEvent.click(emailTab);
 
-    expect(emailTab).toHaveClass('bg-purple-600');
-    expect(linkTab).not.toHaveClass('bg-purple-600');
+    expect(emailTab).toHaveClass('bg-primary');
+    expect(linkTab).not.toHaveClass('bg-primary');
   });
 
   it('generates share link', async () => {

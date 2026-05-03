@@ -39,12 +39,12 @@ function PricingTierCard({
 
   return (
     <div
-      className={`relative bg-[#141627]/70 backdrop-blur-md rounded-xl border-2 flex flex-col ${
+      className={`relative glass-panel rounded-2xl border-2 flex flex-col ${
         isPopular
           ? 'border-primary shadow-primary/25'
           : isCurrent
             ? 'border-green-500/50'
-            : 'border-[#2f2645]'
+            : 'border-white/15'
       }`}
     >
       {/* Popular badge */}
@@ -76,15 +76,15 @@ function PricingTierCard({
         {/* Price */}
         <div className="mb-6">
           <span className="text-4xl font-bold text-white">{price}</span>
-          <span className="text-slate-400 text-sm ml-1">{period}</span>
+          <span className="text-slate-200 text-sm ml-1">{period}</span>
         </div>
 
         {/* Features */}
         <ul className="space-y-3 mb-8 flex-1">
           {features.map((feature) => (
             <li key={feature} className="flex items-start gap-2.5">
-              <span className="material-symbols-outlined text-green-500 flex-shrink-0 mt-0.5" style={{ fontSize: '20px' }} aria-hidden="true">check</span>
-              <span className="text-sm text-slate-300">{feature}</span>
+              <span className="material-symbols-outlined text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '20px' }}>check</span>
+              <span className="text-sm text-slate-200">{feature}</span>
             </li>
           ))}
         </ul>
@@ -100,7 +100,7 @@ function PricingTierCard({
             className={`w-full py-2.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
               isPopular
                 ? 'bg-primary text-white hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-                : 'bg-white/5 text-white border border-[#2f2645] hover:bg-white/10'
+                : 'bg-white/15 text-white border border-white/15 hover:bg-white/15'
             }`}
           >
             {currentTier === 'free' && tier !== 'free'
@@ -128,7 +128,7 @@ const TIERS = [
       'Limited AI interpretations',
       'Standard house systems',
     ],
-    icon: <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>star</span>,
+    icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>star</span>,
     accentColor: '#6b7280',
   },
   {
@@ -145,7 +145,7 @@ const TIERS = [
       'All house systems',
       'Unlimited AI interpretations',
     ],
-    icon: <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>workspace_premium</span>,
+    icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>workspace_premium</span>,
     accentColor: '#8b5cf6',
   },
   {
@@ -163,7 +163,7 @@ const TIERS = [
       'Early access to new features',
       'API access',
     ],
-    icon: <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>bolt</span>,
+    icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>bolt</span>,
     accentColor: '#f59e0b',
   },
 ];
@@ -190,8 +190,8 @@ export default function SubscriptionPage() {
     <AppLayout>
       {/* Page Header */}
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">Subscription</h2>
-        <p className="text-slate-400">
+        <h1 className="text-3xl font-bold text-white mb-2">Subscription</h1>
+        <p className="text-slate-200">
           Manage your plan and usage
         </p>
       </div>
@@ -241,21 +241,21 @@ export default function SubscriptionPage() {
         <h3 className="text-lg font-semibold text-white mb-6">
           Feature Comparison
         </h3>
-        <div className="bg-[#141627]/70 backdrop-blur-md rounded-xl border border-[#2f2645] overflow-hidden">
+        <div className="glass-panel rounded-2xl border border-white/15 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/[0.08] bg-white/5">
+                <tr className="border-b border-white/[0.08] bg-white/15">
                   <th className="px-6 py-4 text-left font-semibold text-white">
                     Feature
                   </th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-400">
+                  <th className="px-6 py-4 text-center font-semibold text-slate-200">
                     Free
                   </th>
                   <th className="px-6 py-4 text-center font-semibold text-primary">
                     Pro
                   </th>
-                  <th className="px-6 py-4 text-center font-semibold text-amber-600 dark:text-amber-400">
+                  <th className="px-6 py-4 text-center font-semibold text-amber-400">
                     Premium
                   </th>
                 </tr>
@@ -273,8 +273,8 @@ export default function SubscriptionPage() {
                   { feature: 'Priority Support', free: false, pro: false, premium: true },
                   { feature: 'API Access', free: false, pro: false, premium: true },
                 ].map((row) => (
-                  <tr key={row.feature} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-3.5 text-slate-300 font-medium">
+                  <tr key={row.feature} className="hover:bg-white/15 transition-colors">
+                    <td className="px-6 py-3.5 text-slate-200 font-medium">
                       {row.feature}
                     </td>
                     {(['free', 'pro', 'premium'] as const).map((tier) => {
@@ -283,12 +283,12 @@ export default function SubscriptionPage() {
                         <td key={tier} className="px-6 py-3.5 text-center">
                           {typeof val === 'boolean' ? (
                             val ? (
-                              <span className="material-symbols-outlined text-green-500" style={{ fontSize: '20px' }} aria-label="Included">check</span>
+                              <span className="material-symbols-outlined text-green-500" aria-hidden="true" style={{ fontSize: '20px' }} aria-label="Included">check</span>
                             ) : (
-                              <span className="text-white/20" aria-label="Not included">--</span>
+                              <span className="text-slate-400" aria-label="Not included">--</span>
                             )
                           ) : (
-                            <span className="text-slate-400">{val}</span>
+                            <span className="text-slate-200">{val}</span>
                           )}
                         </td>
                       );

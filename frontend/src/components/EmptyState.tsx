@@ -91,7 +91,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-center text-center bg-[#141627]/70 backdrop-blur-md rounded-lg border border-[#2f2645] ${containerSizeClasses[size]} ${className}`}
+      className={`flex items-center justify-center text-center glass-panel rounded-2xl ${containerSizeClasses[size]} ${className}`}
       role="status"
       aria-live="polite"
     >
@@ -112,7 +112,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
         {/* Description */}
         {description && (
-          <p className={`${descriptionSizeClasses[size]} text-slate-400 leading-relaxed`}>
+          <p className={`${descriptionSizeClasses[size]} text-slate-200 leading-relaxed`}>
             {description}
           </p>
         )}
@@ -123,7 +123,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             {actionText && onAction && (
               <button
                 onClick={onAction}
-                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-primary text-white hover:bg-primary/90 hover:-translate-y-px hover:shadow-[0_4px_6px_-1px_rgba(107,61,225,0.2)] active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-primary text-white hover:bg-primary/90 hover:-translate-y-px hover:shadow-primary/10 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 {actionText}
               </button>
@@ -131,7 +131,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             {secondaryActionText && onSecondaryAction && (
               <button
                 onClick={onSecondaryAction}
-                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 whitespace-nowrap bg-white/5 text-white border border-[#2f2645] hover:bg-white/10 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 whitespace-nowrap bg-white/15 text-white border border-white/15 hover:bg-white/15 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 {secondaryActionText}
               </button>

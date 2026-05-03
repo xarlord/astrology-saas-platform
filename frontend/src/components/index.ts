@@ -44,6 +44,8 @@ export type { UserProfile as UserProfileType, Chart, HouseSystem } from './UserP
 
 // Layout
 export { AppLayout } from './AppLayout';
+export { PageTransition } from './PageTransition';
+export { PublicPageLayout } from './PublicPageLayout';
 
 // Calendar
 export {
@@ -82,4 +84,15 @@ export { AIInterpretationDisplay } from './AIInterpretationDisplay';
 export { SkeletonLoader, SkeletonGrid } from './SkeletonLoader';
 export { EmptyState, EmptyStates } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
+
+// Effects
+export { MeteorEffect, TextGenerateEffect, ShimmerButton, Sparkles } from './effects';
+
+// Calendar
+export { default as AstrologicalCalendar } from './AstrologicalCalendar';
+export { TransitCalendar } from './TransitCalendar';
+
+// Utility
+export { ErrorBoundary } from './ErrorBoundary';
+export { UsageMeter } from './UsageMeter';
 

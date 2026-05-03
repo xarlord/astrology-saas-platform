@@ -46,20 +46,22 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
 };
 
 // Card Skeleton - matches chart card layout
+const shimmerBar = 'bg-gradient-to-r from-white/5 via-white/10 to-white/5 bg-[length:200%_100%] animate-[shimmer_2s_ease-in-out_infinite] rounded';
+
 const SkeletonCard = () => (
-  <div className="bg-[#141627]/70 backdrop-blur-md rounded-lg p-6 border border-[#2f2645]" aria-hidden="true">
+  <div className="glass-panel rounded-2xl p-6" aria-hidden="true">
     <div className="flex justify-between items-center mb-4">
-      <div className="bg-white/10 animate-pulse rounded w-3/5 h-6" />
-      <div className="bg-white/10 animate-pulse rounded w-12 h-6" />
+      <div className={`${shimmerBar} w-3/5 h-6`} />
+      <div className={`${shimmerBar} w-12 h-6`} />
     </div>
     <div className="mb-4">
-      <div className="bg-white/10 animate-pulse rounded w-full h-4 mb-2" />
-      <div className="bg-white/10 animate-pulse rounded w-full h-4 mb-2" />
+      <div className={`${shimmerBar} w-full h-4 mb-2`} />
+      <div className={`${shimmerBar} w-full h-4 mb-2`} />
     </div>
     <div className="flex gap-2 pt-4 border-t border-white/[0.08]">
-      <div className="bg-white/10 animate-pulse rounded-full w-8 h-8" />
-      <div className="bg-white/10 animate-pulse rounded-full w-8 h-8" />
-      <div className="bg-white/10 animate-pulse rounded-full w-8 h-8" />
+      <div className={`${shimmerBar} rounded-full w-8 h-8`} />
+      <div className={`${shimmerBar} rounded-full w-8 h-8`} />
+      <div className={`${shimmerBar} rounded-full w-8 h-8`} />
     </div>
   </div>
 );
@@ -67,15 +69,15 @@ const SkeletonCard = () => (
 // List Skeleton - matches transit list layout
 const SkeletonList = () => (
   <div aria-hidden="true">
-    <div className="bg-[#141627]/70 backdrop-blur-md rounded-lg p-4 mb-3 border border-[#2f2645]">
+    <div className="glass-panel rounded-2xl p-4 mb-3">
       <div className="flex items-center gap-3 mb-3">
-        <div className="bg-white/10 animate-pulse rounded-full w-10 h-10" />
-        <div className="bg-white/10 animate-pulse rounded-full w-10 h-10" />
-        <div className="bg-white/10 animate-pulse rounded-full w-10 h-10" />
-        <div className="bg-white/10 animate-pulse rounded w-12 h-6" />
+        <div className={`${shimmerBar} rounded-full w-10 h-10`} />
+        <div className={`${shimmerBar} rounded-full w-10 h-10`} />
+        <div className={`${shimmerBar} rounded-full w-10 h-10`} />
+        <div className={`${shimmerBar} w-12 h-6`} />
       </div>
-      <div className="bg-white/10 animate-pulse rounded w-full h-4 mb-2" />
-      <div className="bg-white/10 animate-pulse rounded w-[70%] h-3" />
+      <div className={`${shimmerBar} w-full h-4 mb-2`} />
+      <div className={`${shimmerBar} w-[70%] h-3`} />
     </div>
   </div>
 );
@@ -83,28 +85,28 @@ const SkeletonList = () => (
 // Text Skeleton - generic text placeholder
 const SkeletonText = () => (
   <div aria-hidden="true">
-    <div className="bg-white/10 animate-pulse rounded w-full h-4 mb-2" />
-    <div className="bg-white/10 animate-pulse rounded w-full h-4 mb-2" />
-    <div className="bg-white/10 animate-pulse rounded w-[70%] h-3" />
+    <div className={`${shimmerBar} w-full h-4 mb-2`} />
+    <div className={`${shimmerBar} w-full h-4 mb-2`} />
+    <div className={`${shimmerBar} w-[70%] h-3`} />
   </div>
 );
 
 // Calendar Skeleton - matches calendar grid layout
 const SkeletonCalendar = () => (
-  <div className="bg-[#141627]/70 backdrop-blur-md rounded-lg p-6 border border-[#2f2645]" aria-hidden="true">
+  <div className="glass-panel rounded-2xl p-6" aria-hidden="true">
     <div className="flex justify-between items-center mb-6">
-      <div className="bg-white/10 animate-pulse rounded-md w-24 h-10" />
-      <div className="bg-white/10 animate-pulse rounded w-48 h-8" />
-      <div className="bg-white/10 animate-pulse rounded-md w-24 h-10" />
+      <div className={`${shimmerBar} rounded-md w-24 h-10`} />
+      <div className={`${shimmerBar} w-48 h-8`} />
+      <div className={`${shimmerBar} rounded-md w-24 h-10`} />
     </div>
     <div className="grid grid-cols-7 gap-2 mb-2">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-        <div key={day} className="bg-white/10 animate-pulse rounded text-center p-2 text-sm font-medium text-slate-400">{day}</div>
+        <div key={day} className="bg-white/15 rounded text-center p-2 text-sm font-medium text-slate-200">{day}</div>
       ))}
     </div>
     <div className="grid grid-cols-7 gap-2">
       {Array.from({ length: 35 }).map((_, index) => (
-        <div key={index} className="bg-white/10 animate-pulse rounded-md aspect-square" />
+        <div key={index} className={`${shimmerBar} aspect-square`} />
       ))}
     </div>
   </div>
@@ -113,15 +115,15 @@ const SkeletonCalendar = () => (
 // Chart Skeleton - matches chart wheel layout
 const SkeletonChart = () => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" aria-hidden="true">
-    <div className="aspect-square bg-white/5 rounded-lg flex items-center justify-center relative">
-      <div className="bg-white/10 animate-pulse rounded-full absolute w-4/5 h-4/5" />
-      <div className="bg-white/10 animate-pulse rounded-full absolute w-3/5 h-3/5" />
+    <div className="aspect-square bg-white/15 rounded-lg flex items-center justify-center relative">
+      <div className={`${shimmerBar} rounded-full absolute w-4/5 h-4/5`} />
+      <div className={`${shimmerBar} rounded-full absolute w-3/5 h-3/5`} />
     </div>
     <div className="flex flex-col gap-3">
       {Array.from({ length: 5 }).map((_, index) => (
         <div key={index} className="flex justify-between items-center py-3 border-b border-white/[0.06]">
-          <div className="bg-white/10 animate-pulse rounded w-24 h-4" />
-          <div className="bg-white/10 animate-pulse rounded w-32 h-4" />
+          <div className={`${shimmerBar} w-24 h-4`} />
+          <div className={`${shimmerBar} w-32 h-4`} />
         </div>
       ))}
     </div>

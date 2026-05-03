@@ -678,7 +678,7 @@ class OpenAIService {
   /**
    * Cache result with timestamp
    */
-  private setCachedResult(key: string, data: any): void {
+  private setCachedResult(key: string, data: ParsedInterpretation): void {
     interpretationCache.set(key, { data, timestamp: Date.now() });
   }
 
@@ -716,7 +716,7 @@ class OpenAIService {
   /**
    * Get usage statistics (placeholder for future implementation)
    */
-  async getUsageStats(): Promise<any> {
+  async getUsageStats(): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
     // This would call OpenAI API to get usage/billing info
     return {
       available: true,

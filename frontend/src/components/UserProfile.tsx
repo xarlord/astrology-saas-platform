@@ -144,6 +144,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
 
   const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');
   const [isEditing, setIsEditing] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [editData, setEditData] = useState({
     name: user?.name ?? '',
     timezone: user?.timezone ?? 'UTC',
@@ -168,9 +169,14 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
   };
 
   const handleDeleteChart = (chartId: string): void => {
-    if (window.confirm('Are you sure you want to delete this chart?')) {
-      void deleteChart(chartId);
-      onDeleteChart?.(chartId);
+    setDeleteTarget(chartId);
+  };
+
+  const confirmDelete = (): void => {
+    if (deleteTarget) {
+      void deleteChart(deleteTarget);
+      onDeleteChart?.(deleteTarget);
+      setDeleteTarget(null);
     }
   };
 
@@ -187,22 +193,36 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
       />
 
       {/* Tabbed Content */}
-      <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+      <div className="mt-6 glass-panel rounded-2xl">
         {/* Tab Navigation */}
-        <div className="border-b border-gray-200 dark:border-gray-700">
-          <nav className="flex overflow-x-auto">
+        <div className="border-b border-white/15">
+          <nav
+            role="tablist"
+            aria-label="Profile sections"
+            className="flex overflow-x-auto"
+            onKeyDown={(e) => {
+              const idx = tabs.findIndex((t) => t.id === activeTab);
+              if (e.key === 'ArrowRight' && idx < tabs.length - 1) { e.preventDefault(); setActiveTab(tabs[idx + 1].id); }
+              if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); setActiveTab(tabs[idx - 1].id); }
+            }}
+          >
             {tabs.map((tab) => (
               <button
                 type="button"
                 key={tab.id}
+                role="tab"
+                id={`profile-tab-${tab.id}`}
+                aria-selected={activeTab === tab.id}
+                aria-controls="profile-tabpanel"
+                tabIndex={activeTab === tab.id ? 0 : -1}
                 data-testid={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
                   flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors
                   ${
                     activeTab === tab.id
-                      ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-slate-200 hover:text-white hover:border-white/15'
                   }
                 `}
               >
@@ -214,7 +234,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
         </div>
 
         {/* Tab Content */}
-        <div className="p-6">
+        <div role="tabpanel" id="profile-tabpanel" aria-labelledby={`profile-tab-${activeTab}`} className="p-6">
           {activeTab === 'account' && !isEditing && <AccountTab user={userProfile} />}
           {activeTab === 'charts' && (
             <ChartsTab
@@ -228,6 +248,41 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
           {activeTab === 'subscription' && <SubscriptionTab user={userProfile} />}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {deleteTarget && (
+        <div
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="delete-confirm-title"
+          aria-describedby="delete-confirm-desc"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+        >
+          <div className="bg-cosmic-card border border-cosmic-border rounded-lg p-6 max-w-sm mx-4">
+            <h3 id="delete-confirm-title" className="text-lg font-semibold text-white mb-2">Delete Chart</h3>
+            <p id="delete-confirm-desc" className="text-slate-200 text-sm mb-6">
+              Are you sure you want to delete this chart? This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 bg-white/15 text-slate-200 border border-cosmic-border rounded-lg hover:bg-white/15 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                autoFocus
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -251,12 +306,19 @@ function ProfileHeader({
   if (!user) return null;
 
   return (
-    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
+    <div className="glass-panel rounded-2xl relative overflow-hidden p-6 text-white">
+      {/* Background Decoration */}
+      <div className="absolute -top-16 -right-16 w-48 h-48 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-cosmic-blue/10 rounded-full blur-[80px] pointer-events-none" />
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Avatar */}
         <div className="relative group">
-          <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center text-4xl font-bold">
-            {user.name.charAt(0).toUpperCase()}
+          <div className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-tr from-primary via-cosmic-blue to-primary/30 relative">
+            <div className="w-full h-full rounded-full bg-cosmic-page p-1">
+              <div className="w-full h-full rounded-full bg-cosmic-card-solid flex items-center justify-center text-3xl font-bold text-white">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+            </div>
           </div>
           <button
             type="button"
@@ -264,7 +326,7 @@ function ProfileHeader({
             aria-label="Change avatar"
             title="Change avatar"
           >
-            <span className="material-symbols-outlined text-indigo-600" style={{ fontSize: '16px' }}>photo_camera</span>
+            <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '16px' }}>photo_camera</span>
           </button>
         </div>
 
@@ -283,7 +345,7 @@ function ProfileHeader({
                   value={editData.name}
                   onChange={(e) => onDataChange({ ...editData, name: e.target.value })}
                   aria-required="true"
-                  className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="px-4 py-2 rounded-xl bg-cosmic-card-solid border border-white/15 text-white placeholder:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   placeholder="Your name"
                 />
               </div>
@@ -296,7 +358,7 @@ function ProfileHeader({
                   value={editData.timezone}
                   onChange={(e) => onDataChange({ ...editData, timezone: e.target.value })}
                   aria-required="true"
-                  className="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="px-4 py-2 rounded-xl bg-cosmic-card-solid border border-white/15 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   <option value="UTC">UTC</option>
                   <option value="America/New_York">Eastern Time</option>
@@ -312,9 +374,9 @@ function ProfileHeader({
             </div>
           ) : (
             <div>
-              <h1 className="text-2xl font-bold">{user.name}</h1>
-              <p className="text-white/80">{user.email}</p>
-              <p className="text-sm text-white/60 mt-1">
+              <h1 className="text-2xl font-bold gradient-text">{user.name}</h1>
+              <p className="text-slate-200">{user.email}</p>
+              <p className="text-sm text-slate-200 mt-1">
                 Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </p>
             </div>
@@ -328,7 +390,7 @@ function ProfileHeader({
               <button
                 type="button"
                 onClick={() => { void onSave(); }}
-                className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-white/90 transition-colors"
+                className="px-4 py-2 bg-cosmic-gradient text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:opacity-90 transition-opacity"
                 aria-label="Save"
               >
                 Save
@@ -336,21 +398,21 @@ function ProfileHeader({
               <button
                 type="button"
                 onClick={onEditToggle}
-                className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+                className="p-2 bg-white/15 border border-white/15 rounded-xl hover:bg-white/15 transition-colors"
                 aria-label="Cancel"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>close</span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>close</span>
               </button>
             </>
           ) : (
             <button
               type="button"
               onClick={onEditToggle}
-              className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
+              className="p-2 bg-white/15 border border-white/15 rounded-xl hover:bg-white/15 transition-colors"
               title="Edit profile"
               aria-label="Edit profile"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>edit</span>
+              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>edit</span>
             </button>
           )}
         </div>
@@ -365,50 +427,53 @@ function AccountTab({ user }: { user?: UserProfile }) {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Account Details</h3>
+      <h3 className="text-lg font-semibold text-white">Account Details</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="account-name" className="block text-sm font-medium text-slate-200 mb-2">
             Display Name
           </label>
           <input
+            id="account-name"
             type="text"
             value={user.name}
             disabled
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
+            className="w-full px-4 py-2 rounded-xl border border-white/15 bg-cosmic-card-solid text-white disabled:opacity-60"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="account-email" className="block text-sm font-medium text-slate-200 mb-2">
             Email Address
           </label>
           <input
+            id="account-email"
             type="email"
             value={user.email}
             disabled
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
+            className="w-full px-4 py-2 rounded-xl border border-white/15 bg-cosmic-card-solid text-white disabled:opacity-60"
           />
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-xs text-slate-200">
             Email cannot be changed. Contact support for assistance.
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="account-timezone" className="block text-sm font-medium text-slate-200 mb-2">
             Timezone
           </label>
           <input
+            id="account-timezone"
             type="text"
             value={user.timezone}
             disabled
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
+            className="w-full px-4 py-2 rounded-xl border border-white/15 bg-cosmic-card-solid text-white disabled:opacity-60"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-slate-200 mb-2">
             Member Since
           </label>
           <input
@@ -419,26 +484,26 @@ function AccountTab({ user }: { user?: UserProfile }) {
               year: 'numeric',
             })}
             disabled
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
+            className="w-full px-4 py-2 rounded-xl border border-white/15 bg-cosmic-card-solid text-white disabled:opacity-60"
           />
         </div>
       </div>
 
       {/* Change Password Section */}
-      <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Security</h4>
-        <button type="button" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+      <div className="pt-6 border-t border-white/15">
+        <h4 className="text-md font-medium text-white mb-4">Security</h4>
+        <button type="button" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
           Change Password
         </button>
       </div>
 
       {/* Danger Zone */}
-      <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-md font-medium text-red-600 dark:text-red-400 mb-4">Danger Zone</h4>
-        <button type="button" className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">
+      <div className="pt-6 border-t border-white/15">
+        <h4 className="text-md font-medium text-red-400 mb-4">Danger Zone</h4>
+        <button type="button" className="px-4 py-2 border border-red-800 text-red-400 rounded-lg hover:bg-red-900/20 transition-colors">
           Delete My Account
         </button>
-        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-xs text-slate-200">
           This action cannot be undone. All your data will be permanently deleted.
         </p>
       </div>
@@ -461,13 +526,13 @@ function ChartsTab({
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
-        <span className="material-symbols-outlined text-gray-400 mx-auto mb-4" style={{ fontSize: '64px' }}>star</span>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No charts yet</h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <span className="material-symbols-outlined text-slate-200 mx-auto mb-4" aria-hidden="true" style={{ fontSize: '64px' }}>star</span>
+        <h3 className="text-lg font-medium text-white mb-2">No charts yet</h3>
+        <p className="text-slate-200 mb-6">
           Create your first natal chart to get started
         </p>
-        <button type="button" className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          <span className="material-symbols-outlined inline mr-2" style={{ fontSize: '20px' }}>add</span>
+        <button type="button" className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+          <span className="material-symbols-outlined inline mr-2" aria-hidden="true" style={{ fontSize: '20px' }}>add</span>
           Create Your First Chart
         </button>
       </div>
@@ -477,11 +542,11 @@ function ChartsTab({
   return (
     <div className="space-y-6" data-testid="charts-tab-content">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <h3 className="text-lg font-semibold text-white">
           My Charts ({charts.length})
         </h3>
-        <button type="button" className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>add</span>
+        <button type="button" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>add</span>
           Add New Chart
         </button>
       </div>
@@ -514,18 +579,18 @@ function ChartCard({
   onDelete?: () => void;
 }) {
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden hover:shadow-lg transition-shadow">
+    <div className="bg-white/15 rounded-lg border border-white/15 overflow-hidden hover:shadow-lg transition-shadow">
       {/* Chart Thumbnail */}
-      <div className="aspect-square bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-750 flex items-center justify-center p-4">
-        <div className="w-full h-full flex items-center justify-center text-gray-400">
+      <div className="aspect-square bg-gradient-to-br from-white/5 to-white/[0.02] flex items-center justify-center p-4">
+        <div className="w-full h-full flex items-center justify-center text-slate-200">
           <span className="text-sm">Chart Preview</span>
         </div>
       </div>
 
       {/* Chart Info */}
       <div className="p-4">
-        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{chart.name}</h4>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        <h4 className="font-semibold text-white mb-1">{chart.name}</h4>
+        <p className="text-sm text-slate-200 mb-2">
           {new Date(chart.birthData.date).toLocaleDateString('en-US', {
             month: 'long',
             day: 'numeric',
@@ -533,7 +598,7 @@ function ChartCard({
           })}{' '}
           • {chart.birthData.place.name}
         </p>
-        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
+        <div className="flex items-center gap-2 text-xs text-slate-200">
           <span className="capitalize">{chart.settings.houseSystem}</span>
           <span>•</span>
           <span className="capitalize">{chart.settings.zodiac}</span>
@@ -545,25 +610,25 @@ function ChartCard({
         <button
           type="button"
           onClick={onView}
-          className="flex-1 px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          className="flex-1 px-3 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
         >
           View
         </button>
         <button
           type="button"
           onClick={onEdit}
-          className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+          className="px-3 py-2 border border-white/15 text-slate-200 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
           aria-label="Edit chart"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>edit</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>edit</span>
         </button>
         <button
           type="button"
           onClick={onDelete}
-          className="px-3 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+          className="px-3 py-2 border border-red-800 text-red-400 text-sm font-medium rounded-lg hover:bg-red-900/20 transition-colors"
           aria-label="Delete chart"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>delete</span>
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>delete</span>
         </button>
       </div>
     </div>
@@ -576,18 +641,18 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Chart Preferences</h3>
+      <h3 className="text-lg font-semibold text-white">Chart Preferences</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Default House System */}
         <div>
-          <label htmlFor="house-system" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="house-system" className="block text-sm font-medium text-slate-200 mb-2">
             Default House System
           </label>
           <select
             id="house-system"
             defaultValue={user.preferences.defaultHouseSystem}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500"
+            className="w-full px-4 py-2 rounded-lg border border-white/15 bg-white/15 text-white focus:border-primary focus:ring-primary"
           >
             <option value="placidus">Placidus</option>
             <option value="koch">Koch</option>
@@ -600,13 +665,13 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
         {/* Default Zodiac Type */}
         <div>
-          <label htmlFor="zodiac-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="zodiac-type" className="block text-sm font-medium text-slate-200 mb-2">
             Default Zodiac Type
           </label>
           <select
             id="zodiac-type"
             defaultValue={user.preferences.defaultZodiac}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-indigo-500 focus:ring-indigo-500"
+            className="w-full px-4 py-2 rounded-lg border border-white/15 bg-white/15 text-white focus:border-primary focus:ring-primary"
           >
             <option value="tropical">Tropical</option>
             <option value="sidereal">Sidereal</option>
@@ -615,15 +680,15 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
       </div>
 
       {/* Aspect Orbs */}
-      <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Aspect Orb Sensitivity</h4>
+      <div className="pt-6 border-t border-white/15">
+        <h4 className="text-md font-medium text-white mb-4">Aspect Orb Sensitivity</h4>
         <div className="space-y-4">
           <div>
             <div className="flex justify-between mb-2">
-              <label htmlFor="conjunction-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="conjunction-orb" className="text-sm font-medium text-slate-200">
                 Conjunction/ Opposition
               </label>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-slate-200">
                 {user.preferences.aspectOrbs.conjunction}°
               </span>
             </div>
@@ -638,8 +703,8 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label htmlFor="trine-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">Trine/ Square</label>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <label htmlFor="trine-orb" className="text-sm font-medium text-slate-200">Trine/ Square</label>
+              <span className="text-sm text-slate-200">
                 {user.preferences.aspectOrbs.trine}°
               </span>
             </div>
@@ -654,8 +719,8 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label htmlFor="sextile-orb" className="text-sm font-medium text-gray-700 dark:text-gray-300">Sextile</label>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <label htmlFor="sextile-orb" className="text-sm font-medium text-slate-200">Sextile</label>
+              <span className="text-sm text-slate-200">
                 {user.preferences.aspectOrbs.sextile}°
               </span>
             </div>
@@ -672,13 +737,23 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
       </div>
 
       {/* Theme */}
-      <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Appearance</h4>
+      <div className="pt-6 border-t border-white/15">
+        <h4 className="text-md font-medium text-white mb-4">Appearance</h4>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-slate-200 mb-2">
             Theme
           </label>
-          <div className="grid grid-cols-3 gap-4">
+          <div
+            role="radiogroup"
+            aria-label="Theme"
+            className="grid grid-cols-3 gap-4"
+            onKeyDown={(e) => {
+              const themes = ['light', 'dark', 'auto'];
+              const idx = themes.indexOf(user.preferences.theme);
+              if (e.key === 'ArrowRight' && idx < themes.length - 1) { e.preventDefault(); user.preferences.theme = themes[idx + 1] as 'auto' | 'light' | 'dark'; }
+              if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); user.preferences.theme = themes[idx - 1] as 'auto' | 'light' | 'dark'; }
+            }}
+          >
             {[
               { value: 'light', label: 'Light', icon: '☀️' },
               { value: 'dark', label: 'Dark', icon: '🌙' },
@@ -687,17 +762,19 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
               <button
                 type="button"
                 key={theme.value}
+                role="radio"
+                aria-checked={user.preferences.theme === theme.value}
                 className={`
                   p-4 rounded-lg border-2 text-center transition-all
                   ${
                     user.preferences.theme === theme.value
-                      ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+                      ? 'border-primary bg-primary/10'
+                      : 'border-white/15 hover:border-cosmic-border'
                   }
                 `}
               >
                 <div className="text-2xl mb-2">{theme.icon}</div>
-                <div className="text-sm font-medium text-gray-900 dark:text-white">{theme.label}</div>
+                <div className="text-sm font-medium text-white">{theme.label}</div>
               </button>
             ))}
           </div>
@@ -706,7 +783,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
 
       {/* Save Button */}
       <div className="pt-6">
-        <button type="button" className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button type="button" className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
           Save Preferences
         </button>
       </div>
@@ -761,17 +838,17 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
   return (
     <div className="space-y-6">
       {/* Current Plan */}
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg p-6 border border-indigo-200 dark:border-indigo-800">
+      <div className="bg-gradient-to-r from-primary/10 to-violet-500/10 rounded-lg p-6 border border-primary/20">
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">
+            <h3 className="text-lg font-semibold text-slate-200 mb-2">
               Current Plan: {user.subscription.plan.charAt(0).toUpperCase() + user.subscription.plan.slice(1)}
             </h3>
-            <p className="text-sm text-indigo-700 dark:text-indigo-300">
+            <p className="text-sm text-primary">
               Status: {user.subscription.status.charAt(0).toUpperCase() + user.subscription.status.slice(1)}
             </p>
             {user.subscription.renewalDate && (
-              <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
+              <p className="text-xs text-primary mt-1">
                 Renews on {new Date(user.subscription.renewalDate).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
@@ -780,13 +857,13 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
               </p>
             )}
           </div>
-          <span className="material-symbols-outlined text-indigo-500" style={{ fontSize: '32px' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '32px' }}>auto_awesome</span>
         </div>
       </div>
 
       {/* Available Plans */}
       <div>
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Available Plans</h4>
+        <h4 className="text-lg font-semibold text-white mb-4">Available Plans</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <PlanCard key={plan.name} plan={plan} />
@@ -795,10 +872,10 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
       </div>
 
       {/* Billing History */}
-      <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Billing History</h4>
-        <div className="bg-gray-50 dark:bg-gray-750 rounded-lg p-6 text-center">
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
+      <div className="pt-6 border-t border-white/15">
+        <h4 className="text-lg font-semibold text-white mb-4">Billing History</h4>
+        <div className="bg-white/15 rounded-lg p-6 text-center">
+          <p className="text-slate-200 text-sm">
             No billing history available for your account.
           </p>
         </div>
@@ -823,25 +900,25 @@ function PlanCard({
   return (
     <div
       className={`
-        bg-white dark:bg-gray-700 rounded-lg border-2 p-6
-        ${plan.highlight ? 'border-indigo-500 shadow-lg' : 'border-gray-200 dark:border-gray-600'}
+        bg-white/15 rounded-lg border-2 p-6
+        ${plan.highlight ? 'border-primary shadow-lg' : 'border-white/15'}
       `}
     >
       {plan.highlight && (
         <div className="text-center mb-4">
-          <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 text-xs font-medium rounded-full">
+          <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
             Most Popular
           </span>
         </div>
       )}
       <div className="text-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
-        <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{plan.price}</p>
+        <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+        <p className="text-3xl font-bold text-primary">{plan.price}</p>
       </div>
       <ul className="space-y-3 mb-6">
         {plan.features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <span className="material-symbols-outlined text-green-500 flex-shrink-0 mt-0.5" style={{ fontSize: '20px' }}>check</span>
+          <li key={index} className="flex items-start gap-2 text-sm text-slate-200">
+            <span className="material-symbols-outlined text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '20px' }}>check</span>
             {feature}
           </li>
         ))}
@@ -853,10 +930,10 @@ function PlanCard({
           w-full py-3 rounded-lg font-medium transition-colors
           ${
             plan.disabled
-              ? 'bg-gray-100 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+              ? 'bg-white/15 text-slate-200 cursor-not-allowed'
               : plan.highlight
-              ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-              : 'bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-500'
+              ? 'bg-primary text-white hover:bg-primary/90'
+              : 'bg-white/15 border border-white/15 text-slate-200 hover:bg-white/15'
           }
         `}
       >

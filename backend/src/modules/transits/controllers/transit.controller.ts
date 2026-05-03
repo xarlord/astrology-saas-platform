@@ -16,6 +16,28 @@ import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
 // Module-level singleton of the real calculation engine
 const astronomyEngine = new AstronomyEngineService();
 
+/**
+ * Find the user's first chart that has calculated data.
+ * Accepts optional chartId query param to target a specific chart.
+ */
+async function findCalculatedChart(userId: string, chartId?: string) {
+  if (chartId) {
+    const chart = await ChartModel.findByIdAndUserId(chartId, userId);
+    if (!chart) throw new AppError('Chart not found', 404);
+    if (!chart.calculated_data) throw new AppError('Chart must be calculated first', 400);
+    return chart;
+  }
+
+  // Find first chart with calculated_data
+  const charts = await ChartModel.findByUserId(userId);
+  const calculated = charts.find((c: any) => c.calculated_data != null);
+  if (!calculated) {
+    if (charts.length === 0) throw new AppError('No charts found. Please create a natal chart first.', 404);
+    throw new AppError('Chart must be calculated first', 400);
+  }
+  return calculated;
+}
+
 // ---------------------------------------------------------------------------
 // Aspect calculation constants (shared with NatalChartService pattern)
 // ---------------------------------------------------------------------------
@@ -55,6 +77,21 @@ interface TransitResult {
   }>;
 }
 
+interface TransitReading {
+  date: string;
+  transits: TransitResult['aspects'];
+}
+
+interface TransitForecastItem {
+  date: string;
+  planet1: string;
+  planet2: string;
+  type: string;
+  orb: number;
+  applying?: boolean;
+  intensity: number;
+}
+
 /**
  * Calculate transits by comparing natal planet positions (from stored chart
  * data) against current/transit planet positions (from AstronomyEngineService).
@@ -63,7 +100,7 @@ interface TransitResult {
  * returned, preserving the frontend contract.
  */
 function calculateTransitsWithEngine(params: {
-  natalPlanets: Record<string, any>;
+  natalPlanets: Record<string, { longitude: number; latitude?: number; speed?: number; retrograde?: boolean; sign?: string; degree?: number }>;
   transitDate: Date;
   latitude: number;
   longitude: number;
@@ -189,10 +226,10 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
   }
 
   // Get natal planets from stored chart data
-  const natalPlanets = (chart.calculated_data as any).planets ?? {};
+  const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
 
   // Calculate transits for each day in range
-  const transitReadings: any[] = [];
+  const transitReadings: TransitReading[] = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
   const daysDiff = differenceInDays(end, start);
@@ -206,8 +243,8 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
     const transitData = calculateTransitsWithEngine({
       natalPlanets,
       transitDate,
-      latitude: chart.birth_latitude,
-      longitude: chart.birth_longitude,
+      latitude: Number(chart.birth_latitude),
+      longitude: Number(chart.birth_longitude),
     });
 
     // Filter for significant aspects only
@@ -240,27 +277,16 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
  */
 export async function getTodayTransits(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
+  const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
-  // Get user's primary chart (first natal chart)
-  const charts = await ChartModel.findByUserId(userId, 1, 0);
-  if (charts.length === 0) {
-    throw new AppError('No charts found. Please create a natal chart first.', 404);
-  }
-
-  const chart = charts[0];
-
-  if (!chart.calculated_data) {
-    throw new AppError('Chart must be calculated first', 400);
-  }
-
-  const natalPlanets = (chart.calculated_data as any).planets ?? {};
+  const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
   const today = new Date();
 
   const transitData = calculateTransitsWithEngine({
     natalPlanets,
     transitDate: today,
-    latitude: chart.birth_latitude,
-    longitude: chart.birth_longitude,
+    latitude: Number(chart.birth_latitude),
+    longitude: Number(chart.birth_longitude),
   });
 
   // Get significant aspects
@@ -294,21 +320,18 @@ export async function getTransitCalendar(req: AuthenticatedRequest, res: Respons
   const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
   const year = parseInt(req.query.year as string) || new Date().getFullYear();
 
-  // Get user's primary chart
-  const charts = await ChartModel.findByUserId(userId, 1, 0);
-  if (charts.length === 0) {
-    throw new AppError('No charts found', 404);
-  }
+  const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
-  const chart = charts[0];
-  if (!chart.calculated_data) {
-    throw new AppError('Chart must be calculated first', 400);
-  }
-
-  const natalPlanets = (chart.calculated_data as any).planets ?? {};
+  const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
 
   // Calculate transits for the month
-  const calendarData: any[] = [];
+  const calendarData: Array<{
+    date: string;
+    day: number;
+    aspects: TransitResult['aspects'];
+    moonPhase: ReturnType<typeof calculateMoonPhase>;
+    retrogrades: string[];
+  }> = [];
   const daysInMonth = new Date(year, month, 0).getDate();
 
   for (let day = 1; day <= daysInMonth; day++) {
@@ -317,8 +340,8 @@ export async function getTransitCalendar(req: AuthenticatedRequest, res: Respons
     const transitData = calculateTransitsWithEngine({
       natalPlanets,
       transitDate: date,
-      latitude: chart.birth_latitude,
-      longitude: chart.birth_longitude,
+      latitude: Number(chart.birth_latitude),
+      longitude: Number(chart.birth_longitude),
     });
 
     // Get major aspects
@@ -380,18 +403,9 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
   const userId = req.user.id;
   const { duration = 'month' } = req.query; // 'week', 'month', 'quarter', 'year'
 
-  // Get user's primary chart
-  const charts = await ChartModel.findByUserId(userId, 1, 0);
-  if (charts.length === 0) {
-    throw new AppError('No charts found', 404);
-  }
+  const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
-  const chart = charts[0];
-  if (!chart.calculated_data) {
-    throw new AppError('Chart must be calculated first', 400);
-  }
-
-  const natalPlanets = (chart.calculated_data as any).planets ?? {};
+  const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
 
   const now = new Date();
   let endDate = now;
@@ -414,7 +428,7 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
 
   // Calculate significant transits (outer planets only for longer periods)
   const outerPlanets = ['jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
-  const transitForecast: any[] = [];
+  const transitForecast: TransitForecastItem[] = [];
 
   const daysDiff = differenceInDays(endDate, now);
   const maxDays = Math.min(daysDiff, 365);
@@ -425,8 +439,8 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
     const transitData = calculateTransitsWithEngine({
       natalPlanets,
       transitDate: date,
-      latitude: chart.birth_latitude,
-      longitude: chart.birth_longitude,
+      latitude: Number(chart.birth_latitude),
+      longitude: Number(chart.birth_longitude),
     });
 
     // Filter for outer planet aspects
@@ -454,7 +468,7 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
     if (!acc[key]) acc[key] = [];
     acc[key].push(item);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, TransitForecastItem[]>);
 
   res.status(200).json({
     success: true,
@@ -513,13 +527,13 @@ function calculateMoonPhase(moonLong: number, sunLong: number): {
   }
 
   return {
-    phase: phase as any,
+    phase: phase as ReturnType<typeof calculateMoonPhase>['phase'],
     degrees: Math.round(degrees * 100) / 100,
     illumination: Math.round(illumination * 100) / 100,
   };
 }
 
-function calculateTransitIntensity(aspect: TransitForecastItem): number {
+function calculateTransitIntensity(aspect: { type: string; orb: number; planet1: string }): number {
   // Base intensity on aspect type and orb
   const baseIntensity: Record<string, number> = {
     conjunction: 10,

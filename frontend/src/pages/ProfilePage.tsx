@@ -14,7 +14,7 @@ export default function ProfilePage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">My Profile</h2>
+        <h1 className="text-3xl font-bold mb-2 gradient-text">My Profile</h1>
       </div>
 
       {isLoading ? (

@@ -13,6 +13,7 @@
  */
 
 import openaiService from './openai.service';
+import type { ParsedInterpretation } from './openai.service';
 import aiCacheService from './aiCache.service';
 import { generateCompletePersonalityAnalysis } from '../../analysis/services/interpretation.service';
 import logger from '../../../utils/logger';
@@ -59,16 +60,16 @@ export interface InterpretationResult {
   generatedAt?: string;
 
   // Natal chart fields
-  overview?: any;
-  planetsInSigns?: any[];
-  houses?: any[];
-  aspects?: any[];
-  patterns?: any[];
+  overview?: Record<string, unknown> | null;
+  planetsInSigns?: unknown[];
+  houses?: unknown[];
+  aspects?: unknown[];
+  patterns?: unknown[];
 
   // Enhancement fields
-  enhanced?: any;
-  interpretation?: any;
-  forecast?: any;
+  enhanced?: ParsedInterpretation | Record<string, unknown> | null;
+  interpretation?: ParsedInterpretation | Record<string, unknown> | string | null;
+  forecast?: ParsedInterpretation | Record<string, unknown> | string | null;
   compatibility?: number;
   analysis?: string;
   insights?: string[];
@@ -137,15 +138,15 @@ class AIInterpretationService {
             ...ruleBased,
             enhanced: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
         { ttl: this.CACHE_TTL.NATAL }
       );
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI interpretation failed, falling back to rule-based:', error);
 
       // Fallback to rule-based
@@ -178,15 +179,15 @@ class AIInterpretationService {
           return {
             forecast: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
         { ttl: this.CACHE_TTL.TRANSIT }
       );
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI transit forecast failed:', error);
       return this.getRuleBasedTransit();
     }
@@ -217,15 +218,15 @@ class AIInterpretationService {
           return {
             ...aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
         { ttl: this.CACHE_TTL.COMPATIBILITY }
       );
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI compatibility analysis failed:', error);
       return this.getRuleBasedCompatibility();
     }
@@ -260,15 +261,15 @@ class AIInterpretationService {
           return {
             interpretation: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
         { ttl: this.CACHE_TTL.LUNAR_RETURN }
       );
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI lunar return interpretation failed:', error);
       return {
         interpretation: 'Lunar return interpretation unavailable',
@@ -307,15 +308,15 @@ class AIInterpretationService {
           return {
             interpretation: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
         { ttl: this.CACHE_TTL.SOLAR_RETURN }
       );
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('AI solar return interpretation failed:', error);
       return {
         interpretation: 'Solar return interpretation unavailable',
@@ -396,13 +397,13 @@ class AIInterpretationService {
         ai: false,
         source: 'rule-based',
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Rule-based natal interpretation failed:', error);
 
       return {
         ai: false,
         source: 'rule-based',
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         overview: null,
         planetsInSigns: [],
         houses: [],

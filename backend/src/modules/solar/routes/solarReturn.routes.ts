@@ -65,16 +65,6 @@ router.get(
 );
 
 /**
- * @route   GET /api/v1/solar-returns/:id
- * @desc    Get solar return by ID
- * @access  Private
- */
-router.get(
-  '/:id',
-  solarReturnController.getSolarReturnById
-);
-
-/**
  * @route   GET /api/v1/solar-returns/history
  * @desc    Get user's solar return history
  * @access  Private
@@ -82,17 +72,6 @@ router.get(
 router.get(
   '/history',
   solarReturnController.getSolarReturnHistory
-);
-
-/**
- * @route   POST /api/v1/solar-returns/:id/recalculate
- * @desc    Recalculate solar return with new location
- * @access  Private
- */
-router.post(
-  '/:id/recalculate',
-  validateBody(recalculateSchema),
-  solarReturnController.recalculateSolarReturn
 );
 
 /**
@@ -113,6 +92,27 @@ router.get(
 router.get(
   '/years/available',
   solarReturnController.getAvailableYears
+);
+
+/**
+ * @route   GET /api/v1/solar-returns/:id
+ * @desc    Get solar return by ID
+ * @access  Private
+ */
+router.get(
+  '/:id',
+  solarReturnController.getSolarReturnById
+);
+
+/**
+ * @route   POST /api/v1/solar-returns/:id/recalculate
+ * @desc    Recalculate solar return with new location
+ * @access  Private
+ */
+router.post(
+  '/:id/recalculate',
+  validateBody(recalculateSchema),
+  solarReturnController.recalculateSolarReturn
 );
 
 /**

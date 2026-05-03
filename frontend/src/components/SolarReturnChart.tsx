@@ -371,30 +371,30 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   return (
     <div role="region" aria-label="Solar Return Chart" className="space-y-4" ref={containerRef}>
       <div className="text-center">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white m-0">Solar Return Chart for {year}</h3>
-        {location && <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">{location}</p>}
+        <h3 className="text-xl font-semibold text-white m-0">Solar Return Chart for {year}</h3>
+        {location && <p className="mt-1 text-slate-200 text-sm">{location}</p>}
       </div>
 
       <div className="flex items-center justify-center gap-2">
-        <button type="button" title="Zoom out" onClick={handleZoomOut} disabled={zoom <= 0.5} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>zoom_out</span>
+        <button type="button" title="Zoom out" onClick={handleZoomOut} disabled={zoom <= 0.5} className="p-2 rounded-lg bg-white/15 hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>zoom_out</span>
         </button>
-        <span className="text-sm text-gray-500 dark:text-gray-400 min-w-[3rem] text-center">{Math.round(zoom * 100)}%</span>
-        <button type="button" title="Zoom in" onClick={handleZoomIn} disabled={zoom >= 2} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>zoom_in</span>
+        <span className="text-sm text-slate-200 min-w-[3rem] text-center">{Math.round(zoom * 100)}%</span>
+        <button type="button" title="Zoom in" onClick={handleZoomIn} disabled={zoom >= 2} className="p-2 rounded-lg bg-white/15 hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>zoom_in</span>
         </button>
 
-        <button type="button" onClick={handleDownload} title="Download as PNG" className="flex items-center gap-1 ml-4 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm text-gray-700 dark:text-gray-300 transition-colors">
-          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>download</span>
+        <button type="button" onClick={handleDownload} title="Download as PNG" className="flex items-center gap-1 ml-4 px-3 py-2 rounded-lg bg-white/15 hover:bg-white/15 text-sm text-slate-200 transition-colors">
+          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>download</span>
           Download
         </button>
       </div>
 
       <div className="relative flex justify-center">
         {loading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
-            <span className="material-symbols-outlined animate-spin text-indigo-500" style={{ fontSize: '32px' }}>progress_activity</span>
-            <p aria-live="polite" className="mt-2 text-gray-500 dark:text-gray-400">Calculating chart...</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-cosmic-page/80 z-10">
+            <span className="material-symbols-outlined animate-spin text-primary" aria-hidden="true" style={{ fontSize: '32px' }}>progress_activity</span>
+            <p aria-live="polite" className="mt-2 text-slate-200">Calculating chart...</p>
           </div>
         )}
 
@@ -408,8 +408,8 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
         />
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Planets</h4>
+      <div className="glass-panel rounded-2xl p-6">
+        <h4 className="text-sm font-semibold text-white mb-3">Planets</h4>
         <div className="flex flex-wrap gap-3">
           {Object.entries(PLANET_SYMBOLS).map(([name, symbol]) => (
             <div key={name} className="flex items-center gap-1.5 text-sm">
@@ -417,15 +417,15 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
                 className="w-3 h-3 rounded-full shrink-0"
                 style={{ backgroundColor: PLANET_COLORS[name] }}
               />
-              <span className="text-gray-900 dark:text-white">{symbol}</span>
-              <span className="text-gray-500 dark:text-gray-400 capitalize">{name}</span>
+              <span className="text-white">{symbol}</span>
+              <span className="text-slate-200 capitalize">{name}</span>
             </div>
           ))}
         </div>
 
         {showAspects && (
           <>
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mt-4 mb-3">Aspects</h4>
+            <h4 className="text-sm font-semibold text-white mt-4 mb-3">Aspects</h4>
             <div className="flex flex-wrap gap-3">
               {Object.entries(ASPECT_COLORS).map(([name, color]) => (
                 <div key={name} className="flex items-center gap-1.5 text-sm">
@@ -433,7 +433,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
                     className="w-4 h-0.5 shrink-0"
                     style={{ backgroundColor: color }}
                   />
-                  <span className="text-gray-500 dark:text-gray-400 capitalize">{name}</span>
+                  <span className="text-slate-200 capitalize">{name}</span>
                 </div>
               ))}
             </div>
@@ -442,12 +442,12 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       </div>
 
       {selectedPlanet && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{selectedPlanet}</h4>
+        <div className="glass-panel rounded-2xl p-6">
+          <h4 className="text-lg font-semibold text-white mb-2">{selectedPlanet}</h4>
           {chartData.planets
             .filter((p) => p.planet === selectedPlanet)
             .map((planet) => (
-              <div key={planet.planet} className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+              <div key={planet.planet} className="space-y-1 text-sm text-slate-200">
                 <p className="m-0"><strong>Sign:</strong> {planet.sign} {planet.degree}&deg;{planet.minute}&apos;</p>
                 <p className="m-0"><strong>House:</strong> {planet.house}</p>
                 {planet.retrograde && <p className="m-0"><strong>Retrograde</strong></p>}

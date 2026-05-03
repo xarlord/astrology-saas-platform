@@ -136,7 +136,11 @@ export async function getAspectAnalysis(req: AuthenticatedRequest, res: Response
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { aspects } = chart.calculated_data;
+  const { aspects } = chart.calculated_data as {
+    planets: Record<string, PlanetCalcData>;
+    houses: { houses: HouseCalcData[] } | HouseCalcData[];
+    aspects: AspectData[];
+  };
 
   const aspectAnalysis = {
     chartId: chart.id,

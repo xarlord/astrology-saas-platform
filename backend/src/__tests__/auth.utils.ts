@@ -23,7 +23,7 @@ export function generateMockToken(
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn: expiresIn as any }
+    { expiresIn: expiresIn as jwt.SignOptions['expiresIn'] }
   );
 }
 
@@ -51,7 +51,7 @@ export function generateExpiredToken(userId: number): string {
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn: '-1h' as any } // Expired 1 hour ago
+    { expiresIn: '-1h' as jwt.SignOptions['expiresIn'] } // Expired 1 hour ago
   );
 }
 
@@ -72,7 +72,7 @@ export function extractUserIdFromToken(token: string): number {
   const secret = process.env.JWT_SECRET || 'test-secret-key';
 
   try {
-    const decoded = jwt.verify(token, secret) as any;
+    const decoded = jwt.verify(token, secret) as { userId: number; email: string };
     return decoded.userId;
   } catch (error) {
     throw new Error('Invalid token');

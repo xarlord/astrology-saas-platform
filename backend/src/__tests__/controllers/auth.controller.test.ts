@@ -69,7 +69,7 @@ jest.mock('../../db', () => {
   });
 
   // Reset call count per transaction
-  const transactionFn = jest.fn().mockImplementation(async (callback: (trx: any) => Promise<any>) => {
+  const transactionFn = jest.fn().mockImplementation(async (callback: (trx: Record<string, (...args: unknown[]) => unknown>) => Promise<unknown>) => {
     callCount = 0;
     return callback(mockTrx);
   });

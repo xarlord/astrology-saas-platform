@@ -5,7 +5,7 @@
  * @requirement REQ-API-001
  */
 
-import { HouseCalculationService } from '../../modules/shared/services/houseCalculation.service';
+import { HouseCalculationService, HouseSystem } from '../../modules/shared/services/houseCalculation.service';
 import { normalizeDegree } from './utils';
 
 describe('HouseCalculationService', () => {
@@ -58,7 +58,7 @@ describe('HouseCalculationService', () => {
       const lst = 185.5;
       const latitude = 40.7128;
 
-      const houses = service.calculateHouses(lst, latitude, 'Unknown' as any);
+      const houses = service.calculateHouses(lst, latitude, 'Unknown' as HouseSystem);
       expect(houses.system).toBe('Placidus');
     });
   });

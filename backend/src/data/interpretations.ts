@@ -1953,12 +1953,12 @@ export function generatePersonalityAnalysis(chartData: {
           acc[p.house] = {
             house: p.house,
             planetsInHouse: [],
-            interpretation: getHouseInterpretation(p.house),
+            interpretation: getHouseInterpretation(p.house)?.description ?? '',
           };
         }
         acc[p.house].planetsInHouse.push(p.planet);
         return acc;
-      }, {} as Record<number, any>),
+      }, {} as Record<number, { house: number; planetsInHouse: string[]; interpretation: string }>),
     aspects: chartData.aspects.map(a => ({
       ...a,
       interpretation: getAspectInterpretation(a.type),

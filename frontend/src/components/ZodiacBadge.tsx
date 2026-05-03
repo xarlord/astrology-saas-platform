@@ -12,18 +12,18 @@ interface ZodiacBadgeProps {
 
 export function ZodiacBadge({ sign, size = 'md', showDegree = false, degree, className = '' }: ZodiacBadgeProps) {
   const colors: Record<string, string> = {
-    aries: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-    taurus: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    gemini: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    cancer: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300',
-    leo: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-    virgo: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
-    libra: 'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300',
-    scorpio: 'bg-red-900 text-red-100 dark:bg-red-950 dark:text-red-300',
-    sagittarius: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300',
-    capricorn: 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-    aquarius: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300',
-    pisces: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
+    aries: 'bg-red-500/20 text-red-400',
+    taurus: 'bg-green-500/20 text-green-400',
+    gemini: 'bg-blue-500/20 text-blue-400',
+    cancer: 'bg-indigo-500/20 text-indigo-300',
+    leo: 'bg-amber-500/20 text-amber-400',
+    virgo: 'bg-emerald-500/20 text-emerald-400',
+    libra: 'bg-pink-500/20 text-pink-400',
+    scorpio: 'bg-red-500/20 text-red-400',
+    sagittarius: 'bg-orange-500/20 text-orange-400',
+    capricorn: 'bg-white/15 text-slate-200',
+    aquarius: 'bg-cyan-500/20 text-cyan-400',
+    pisces: 'bg-purple-500/20 text-purple-400',
   };
 
   const symbols: Record<string, string> = {
@@ -50,7 +50,7 @@ export function ZodiacBadge({ sign, size = 'md', showDegree = false, degree, cla
   const signName = sign.charAt(0).toUpperCase() + sign.slice(1);
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full ${colors[sign] || 'bg-gray-100'} ${sizeClasses[size]} ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full ${colors[sign] || 'bg-white/15 text-slate-200'} ${sizeClasses[size]} ${className}`}>
       <span>{symbols[sign]}</span>
       <span className="capitalize font-medium">{signName}</span>
       {showDegree && degree !== undefined && (

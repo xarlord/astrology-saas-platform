@@ -13,16 +13,18 @@ import {
   type PlanetInSignInterpretation,
   type TransitInterpretation,
 } from '../../../data/interpretations';
-import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
+import { PlanetPosition, HouseCusp } from '../../../types/chart';
 
 // ============================================================================
 // PERSONALITY ANALYSIS
 // ============================================================================
 
+type FlexibleAspect = { planet1: string; planet2: string; type?: string; orb: number; aspect?: string };
+
 export interface PersonalityAnalysisRequest {
   planets: PlanetPosition[];
-  houses: HouseCusp[];
-  aspects: Aspect[];
+  houses: Array<{ house: number; sign: string; degree?: number; minute?: number; second?: number; cusp?: number }>;
+  aspects: FlexibleAspect[];
 }
 
 export interface PersonalityAnalysisResponse {
@@ -35,7 +37,7 @@ export interface PersonalityAnalysisResponse {
     planet: string;
     sign: string;
     house: number;
-    interpretation: PlanetInSignInterpretation;
+    interpretation: PlanetInSignInterpretation | null;
   }>;
   houses: Array<{
     house: number;
@@ -114,12 +116,13 @@ export function generateCompletePersonalityAnalysis(
 
   // Generate aspects analysis
   const aspectsAnalysis = aspects.map((aspect) => {
-    const aspectInterp = getAspectInterpretation(aspect.type);
+    const aspectType = aspect.type || aspect.aspect || '';
+    const aspectInterp = getAspectInterpretation(aspectType);
 
     return {
       planet1: aspect.planet1,
       planet2: aspect.planet2,
-      aspect: aspect.type,
+      aspect: aspectType,
       orb: aspect.orb,
       harmonious: aspectInterp?.harmonious ?? null,
       keywords: aspectInterp?.keywords || [],
@@ -159,7 +162,7 @@ export function generateCompletePersonalityAnalysis(
  * Detect aspect patterns (Grand Trine, T-Square, Grand Cross, Yod, etc.)
  */
 function detectAspectPatterns(
-  aspects: Aspect[],
+  aspects: FlexibleAspect[],
   planets: PlanetPosition[]
 ): AspectPattern[] {
   const patterns: AspectPattern[] = [];
@@ -233,7 +236,7 @@ function detectAspectPatterns(
  * Find polygon patterns (e.g., Grand Trine)
  */
 function findPolygonPatterns(
-  aspects: Aspect[],
+  aspects: FlexibleAspect[],
   planets: PlanetPosition[],
   sides: number
 ): string[][] {
@@ -291,8 +294,8 @@ function findPolygonPatterns(
  * Find T-Square patterns
  */
 function findTSquares(
-  oppositions: Aspect[],
-  squares: Aspect[],
+  oppositions: FlexibleAspect[],
+  squares: FlexibleAspect[],
   _planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];
@@ -329,8 +332,8 @@ function findTSquares(
  * Find Grand Cross patterns
  */
 function findGrandCross(
-  oppositions: Aspect[],
-  squares: Aspect[],
+  oppositions: FlexibleAspect[],
+  squares: FlexibleAspect[],
   _planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];
@@ -384,8 +387,8 @@ function findGrandCross(
  * Find Yod patterns
  */
 function findYods(
-  sextiles: Aspect[],
-  quincunxes: Aspect[],
+  sextiles: FlexibleAspect[],
+  quincunxes: FlexibleAspect[],
   _planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];
@@ -425,8 +428,8 @@ function findYods(
  * Find Kite patterns
  */
 function findKites(
-  trines: Aspect[],
-  sextiles: Aspect[],
+  trines: FlexibleAspect[],
+  sextiles: FlexibleAspect[],
   planets: PlanetPosition[]
 ): string[][] {
   const patterns: string[][] = [];

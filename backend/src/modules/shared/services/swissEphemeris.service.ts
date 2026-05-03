@@ -232,7 +232,11 @@ export function calculateLunarReturn(params: {
  * Calculate composite chart (mock)
  */
 export function calculateCompositeChart(chart1: Record<string, unknown>, chart2: Record<string, unknown>) {
-  const baseLongitude = ((chart1?.planets?.sun?.longitude || 0) + (chart2?.planets?.sun?.longitude || 0)) / 2;
+  const getSunLongitude = (chart: Record<string, unknown>): number => {
+    const planets = chart.planets as Record<string, { longitude: number }> | undefined;
+    return planets?.sun?.longitude ?? 0;
+  };
+  const baseLongitude = (getSunLongitude(chart1) + getSunLongitude(chart2)) / 2;
 
   return {
     planets: {

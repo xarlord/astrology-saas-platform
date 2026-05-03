@@ -371,7 +371,7 @@ describe('Interpretation Service', () => {
 });
 
 // Helper function to calculate intensity score for sorting verification
-function calculateIntensityScore(transit: any): number {
+function calculateIntensityScore(transit: { aspect: string; orb: number }): number {
   const aspectIntensity: Record<string, number> = {
     conjunction: 10,
     opposition: 9,

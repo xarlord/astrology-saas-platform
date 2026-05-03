@@ -256,11 +256,15 @@ export async function calculateChart(req: AuthenticatedRequest, res: Response): 
   }
 
   // Calculate natal chart using real astronomy engine
+  // Coerce latitude/longitude to numbers (DB may return strings)
+  const latitude = Number(chart.birth_latitude);
+  const longitude = Number(chart.birth_longitude);
+
   const natalChart = natalChartService.calculateNatalChart({
     birthDate: new Date(chart.birth_date),
     birthTime: chart.birth_time,
-    latitude: chart.birth_latitude,
-    longitude: chart.birth_longitude,
+    latitude,
+    longitude,
     location: chart.birth_place_name,
     timezone: chart.birth_timezone,
     houseSystem: toHouseSystemEnum(chart.house_system),

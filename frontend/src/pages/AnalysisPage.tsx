@@ -82,7 +82,7 @@ export function AnalysisPage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Personality Analysis</h2>
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Personality Analysis</h1>
       </div>
 
       {isLoading ? (
@@ -125,7 +125,7 @@ export function AnalysisPage() {
           )}
 
           {/* Traditional Analysis */}
-          <div className="card">
+          <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
             <PersonalityAnalysis data={componentData} />
           </div>
         </>

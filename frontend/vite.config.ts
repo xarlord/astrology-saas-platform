@@ -56,7 +56,9 @@ export default defineConfig({
           },
         ],
       },
-      // Use custom service worker with injectManifest strategy
+      // Disable in dev — prevents __DEFINES__ error from injectManifest
+      // and avoids stale SW caching during development
+      disable: process.env.NODE_ENV !== 'production',
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.ts',
@@ -74,6 +76,11 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    allowedHosts: ['host.docker.internal', 'localhost'],
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3001',

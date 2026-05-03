@@ -168,15 +168,13 @@ describe('UserProfile Component', () => {
       render(<UserProfile />);
 
       const accountTab = screen.getByTestId('tab-account');
-      expect(accountTab).toHaveClass('border-indigo-500');
+      expect(accountTab).toHaveClass('border-primary');
     });
 
     it('should have accessible tab navigation', () => {
       render(<UserProfile />);
 
-      const tabs = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.match(/account|charts|preferences|subscription/i)
-      );
+      const tabs = screen.getAllByRole('tab');
 
       tabs.forEach(tab => {
         expect(tab).toHaveAttribute('type', 'button');
@@ -189,7 +187,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
       expect(screen.getByText('My Charts (2)')).toBeInTheDocument();
@@ -199,7 +197,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const preferencesTab = screen.getByRole('button', { name: /preferences/i });
+      const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
 
       expect(screen.getByText('Chart Preferences')).toBeInTheDocument();
@@ -222,13 +220,13 @@ describe('UserProfile Component', () => {
       const accountTab = screen.getByTestId('tab-account');
       const chartsTab = screen.getByTestId('tab-charts');
 
-      expect(accountTab).toHaveClass('border-indigo-500');
-      expect(chartsTab).not.toHaveClass('border-indigo-500');
+      expect(accountTab).toHaveClass('border-primary');
+      expect(chartsTab).not.toHaveClass('border-primary');
 
       await user.click(chartsTab);
 
-      expect(chartsTab).toHaveClass('border-indigo-500');
-      expect(accountTab).not.toHaveClass('border-indigo-500');
+      expect(chartsTab).toHaveClass('border-primary');
+      expect(accountTab).not.toHaveClass('border-primary');
     });
   });
 
@@ -357,7 +355,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
       expect(screen.getByText('Natal Chart')).toBeInTheDocument();
@@ -383,7 +381,7 @@ describe('UserProfile Component', () => {
 
       render(<UserProfile />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
       expect(screen.getByText('No charts yet')).toBeInTheDocument();
@@ -393,7 +391,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
       expect(screen.getByText('My Charts (2)')).toBeInTheDocument();
@@ -404,7 +402,7 @@ describe('UserProfile Component', () => {
       const onViewChart = vi.fn();
       render(<UserProfile onViewChart={onViewChart} />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
       const viewButtons = screen.getAllByRole('button', { name: /view/i });
@@ -418,7 +416,7 @@ describe('UserProfile Component', () => {
       const onEditChart = vi.fn();
       render(<UserProfile onEditChart={onEditChart} />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
       const editButtons = screen.getAllByRole('button', { name: /edit chart/i });
@@ -431,29 +429,29 @@ describe('UserProfile Component', () => {
 
     it('should confirm and call deleteChart when delete button is clicked', async () => {
       const user = userEvent.setup();
-      window.confirm = vi.fn(() => true);
       const onDeleteChart = vi.fn();
       mockDeleteChart.mockResolvedValue({ success: true });
 
       render(<UserProfile onDeleteChart={onDeleteChart} />);
 
-      const chartsTab = screen.getByRole('button', { name: /my charts/i });
+      const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
 
-      const deleteButtons = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.includes('Delete') || btn.querySelector('svg')
-      );
+      // Click the delete button on the first chart card
+      const deleteButtons = screen.getAllByRole('button', { name: /delete chart/i });
+      await user.click(deleteButtons[0]);
 
-      if (deleteButtons.length > 0) {
-        await user.click(deleteButtons[deleteButtons.length - 1]);
+      // Confirm deletion in the custom dialog
+      const dialog = screen.getByRole('alertdialog');
+      expect(dialog).toBeInTheDocument();
 
-        await waitFor(() => {
-          expect(window.confirm).toHaveBeenCalledWith(
-            'Are you sure you want to delete this chart?'
-          );
-          expect(mockDeleteChart).toHaveBeenCalled();
-        });
-      }
+      const confirmDeleteButton = screen.getByRole('button', { name: /^delete$/i });
+      await user.click(confirmDeleteButton);
+
+      await waitFor(() => {
+        expect(mockDeleteChart).toHaveBeenCalledWith('chart-1');
+        expect(onDeleteChart).toHaveBeenCalledWith('chart-1');
+      });
     });
 
     it('should show chart details', async () => {
@@ -479,7 +477,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const preferencesTab = screen.getByRole('button', { name: /preferences/i });
+      const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
 
       expect(screen.getByLabelText(/default house system/i)).toBeInTheDocument();
@@ -490,7 +488,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const preferencesTab = screen.getByRole('button', { name: /preferences/i });
+      const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
 
       expect(screen.getByLabelText(/conjunction/i)).toBeInTheDocument();
@@ -502,7 +500,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const preferencesTab = screen.getByRole('button', { name: /preferences/i });
+      const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
 
       expect(screen.getByText('Light')).toBeInTheDocument();
@@ -514,7 +512,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const preferencesTab = screen.getByRole('button', { name: /preferences/i });
+      const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
 
       expect(screen.getByRole('button', { name: /save preferences/i })).toBeInTheDocument();
@@ -526,7 +524,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const subscriptionTab = screen.getByRole('button', { name: /subscription/i });
+      const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
 
       expect(screen.getByText(/current plan: free/i)).toBeInTheDocument();
@@ -537,7 +535,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const subscriptionTab = screen.getByRole('button', { name: /subscription/i });
+      const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
 
       expect(screen.getByText('Free')).toBeInTheDocument();
@@ -549,7 +547,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const subscriptionTab = screen.getByRole('button', { name: /subscription/i });
+      const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
 
       expect(screen.getByText('Most Popular')).toBeInTheDocument();
@@ -559,7 +557,7 @@ describe('UserProfile Component', () => {
       const user = userEvent.setup();
       render(<UserProfile />);
 
-      const subscriptionTab = screen.getByRole('button', { name: /subscription/i });
+      const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
 
       expect(screen.getByText('Billing History')).toBeInTheDocument();
@@ -570,9 +568,7 @@ describe('UserProfile Component', () => {
     it('should have proper ARIA labels on tabs', () => {
       render(<UserProfile />);
 
-      const tabs = screen.getAllByRole('button').filter(btn =>
-        btn.textContent?.match(/account|charts|preferences|subscription/i)
-      );
+      const tabs = screen.getAllByRole('tab');
 
       tabs.forEach(tab => {
         expect(tab).toHaveAttribute('type', 'button');
@@ -636,7 +632,7 @@ describe('UserProfile Component', () => {
     it('should scroll tabs horizontally on mobile', () => {
       render(<UserProfile />);
 
-      const tabNav = screen.getByRole('navigation').closest('.overflow-x-auto');
+      const tabNav = screen.getByRole('tablist').closest('.overflow-x-auto');
       expect(tabNav).toBeInTheDocument();
     });
   });

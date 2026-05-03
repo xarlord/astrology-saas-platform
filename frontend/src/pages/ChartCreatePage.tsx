@@ -18,13 +18,13 @@ export default function ChartCreatePage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Create Natal Chart</h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Create Natal Chart</h1>
+        <p className="text-slate-200">
           Enter your birth information to generate a detailed natal chart.
         </p>
       </div>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto glass-panel rounded-2xl p-6">
         <BirthDataForm onSuccess={handleSuccess} />
       </div>
     </AppLayout>
