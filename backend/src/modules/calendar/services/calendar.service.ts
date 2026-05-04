@@ -41,7 +41,7 @@ export const ASPECT_ORBS = {
   opposition: 8,
   trine: 8,
   square: 8,
-  sextile:6,
+  sextile: 6,
   quincunx: 3,
 };
 
@@ -90,8 +90,7 @@ export function calculateJulianDay(date: Date): number {
   const A = Math.floor(y / 100);
   const B = 2 - A + Math.floor(A / 4);
 
-  const JD_day =
-    Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5;
+  const JD_day = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5;
 
   const JD_fraction = (hour + minute / 60 + second / 3600) / 24;
 
@@ -208,19 +207,17 @@ export function getRetrogradePeriod(planet: Planet, year: number): RetrogradePer
     const jd = calculateJulianDay(startDate);
 
     // First Mercury retrograde of year (approximate)
-    const offsetDays = ((jd - 2459946) % mercuryCycle); // Align with known retrograde
+    const offsetDays = (jd - 2459946) % mercuryCycle; // Align with known retrograde
     const firstRetroStart = new Date(startDate.getTime() - offsetDays * 24 * 60 * 60 * 1000);
 
     for (let i = 0; i < 4; i++) {
       const retroStart = new Date(
-        firstRetroStart.getTime() + i * mercuryCycle * 24 * 60 * 60 * 1000
+        firstRetroStart.getTime() + i * mercuryCycle * 24 * 60 * 60 * 1000,
       );
 
       if (retroStart.getFullYear() === year) {
         const retroEnd = new Date(retroStart.getTime() + retroDuration * 24 * 60 * 60 * 1000);
-        const shadowStart = new Date(
-          retroStart.getTime() - shadowDuration * 24 * 60 * 60 * 1000
-        );
+        const shadowStart = new Date(retroStart.getTime() - shadowDuration * 24 * 60 * 60 * 1000);
         const shadowEnd = new Date(retroEnd.getTime() + shadowDuration * 24 * 60 * 60 * 1000);
 
         retros.push({
@@ -337,7 +334,9 @@ export function getEclipses(year: number): Eclipse[] {
   ];
 
   eclipseData.forEach((eclipse, index) => {
-    const date = new Date(`${year}-${String(eclipse.month).padStart(2, '0')}-${String(eclipse.day).padStart(2, '0')}T12:00:00Z`);
+    const date = new Date(
+      `${year}-${String(eclipse.month).padStart(2, '0')}-${String(eclipse.day).padStart(2, '0')}T12:00:00Z`,
+    );
     const phase = calculateMoonPhase(date);
 
     eclipses.push({
@@ -445,7 +444,9 @@ export function getSeasonalIngresses(year: number): Array<{
   ];
 
   return ingresses.map((ingress) => ({
-    date: new Date(`${year}-${String(ingress.month).padStart(2, '0')}-${String(ingress.day).padStart(2, '0')}T${String(ingress.hour).padStart(2, '0')}:00:00Z`),
+    date: new Date(
+      `${year}-${String(ingress.month).padStart(2, '0')}-${String(ingress.day).padStart(2, '0')}T${String(ingress.hour).padStart(2, '0')}:00:00Z`,
+    ),
     season: ingress.season,
     type: ingress.type,
     sign: ingress.sign,
@@ -509,7 +510,9 @@ export function generateICalFormat(events: AstrologicalEvent[]): string {
 
     const summary = escapeICalText(event.eventName);
     const description = event.description
-      ? escapeICalText(event.description + (event.advice ? '\n\nAdvice:\n' + event.advice.join('\n') : ''))
+      ? escapeICalText(
+          event.description + (event.advice ? '\n\nAdvice:\n' + event.advice.join('\n') : ''),
+        )
       : '';
 
     iCal.push(
@@ -520,7 +523,7 @@ export function generateICalFormat(events: AstrologicalEvent[]): string {
       `DTEND:${dtend}`,
       `SUMMARY:${summary}`,
       description ? `DESCRIPTION:${description}` : '',
-      'END:VEVENT'
+      'END:VEVENT',
     );
   });
 

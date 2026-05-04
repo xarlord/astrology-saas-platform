@@ -6,7 +6,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { authenticate, optionalAuthenticate, generateToken, generateRefreshToken } from '../../middleware/auth';
+import {
+  authenticate,
+  optionalAuthenticate,
+  generateToken,
+  generateRefreshToken,
+} from '../../middleware/auth';
 import { AppError } from '../../utils/appError';
 import config from '../../config';
 
@@ -15,14 +20,16 @@ jest.mock('../../config');
 jest.mock('jsonwebtoken');
 
 // Mock request/response/next
-const mockRequest = () => ({
-  headers: {},
-} as Request);
+const mockRequest = () =>
+  ({
+    headers: {},
+  }) as Request;
 
-const mockResponse = () => ({
-  status: jest.fn().mockReturnThis(),
-  json: jest.fn().mockReturnThis(),
-} as unknown as Response);
+const mockResponse = () =>
+  ({
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis(),
+  }) as unknown as Response;
 
 const mockNext = jest.fn() as NextFunction;
 
@@ -65,10 +72,12 @@ describe('Authentication Middleware', () => {
       authenticate(req, res, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(AppError));
-      expect(next).toHaveBeenCalledWith(expect.objectContaining({
-        message: 'No token provided',
-        statusCode: 401,
-      }));
+      expect(next).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'No token provided',
+          statusCode: 401,
+        }),
+      );
     });
 
     it('should throw 401 when authorization header does not start with Bearer', () => {
@@ -81,10 +90,12 @@ describe('Authentication Middleware', () => {
       authenticate(req, res, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(AppError));
-      expect(next).toHaveBeenCalledWith(expect.objectContaining({
-        message: 'No token provided',
-        statusCode: 401,
-      }));
+      expect(next).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'No token provided',
+          statusCode: 401,
+        }),
+      );
     });
 
     it('should throw 401 when token is invalid (JsonWebTokenError)', () => {
@@ -173,10 +184,12 @@ describe('Authentication Middleware', () => {
       authenticate(req, res, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(AppError));
-      expect(next).toHaveBeenCalledWith(expect.objectContaining({
-        message: 'No token provided',
-        statusCode: 401,
-      }));
+      expect(next).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'No token provided',
+          statusCode: 401,
+        }),
+      );
     });
   });
 
@@ -298,7 +311,7 @@ describe('Authentication Middleware', () => {
           exp: expect.any(Number),
         }),
         config.jwt.secret,
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -315,7 +328,7 @@ describe('Authentication Middleware', () => {
       expect(jwt.sign).toHaveBeenCalledWith(
         expect.any(Object),
         config.jwt.secret,
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -329,11 +342,9 @@ describe('Authentication Middleware', () => {
 
       generateToken(payload);
 
-      expect(jwt.sign).toHaveBeenCalledWith(
-        expect.any(Object),
-        expect.any(String),
-        { expiresIn: config.jwt.expiresIn }
-      );
+      expect(jwt.sign).toHaveBeenCalledWith(expect.any(Object), expect.any(String), {
+        expiresIn: config.jwt.expiresIn,
+      });
     });
   });
 

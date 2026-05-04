@@ -22,8 +22,24 @@ vi.mock('../../services/synastry.api');
 
 describe('SynastryPage', () => {
   const mockCharts: Chart[] = [
-    { id: 'chart1', name: 'John\'s Chart', type: 'natal', birth_date: '1990-01-01', birth_time: '12:00', birth_place_name: 'New York', created_at: '2024-01-01' },
-    { id: 'chart2', name: 'Jane\'s Chart', type: 'natal', birth_date: '1992-05-15', birth_time: '14:30', birth_place_name: 'Los Angeles', created_at: '2024-01-02' },
+    {
+      id: 'chart1',
+      name: "John's Chart",
+      type: 'natal',
+      birth_date: '1990-01-01',
+      birth_time: '12:00',
+      birth_place_name: 'New York',
+      created_at: '2024-01-01',
+    },
+    {
+      id: 'chart2',
+      name: "Jane's Chart",
+      type: 'natal',
+      birth_date: '1992-05-15',
+      birth_time: '14:30',
+      birth_place_name: 'Los Angeles',
+      created_at: '2024-01-02',
+    },
   ];
 
   const mockReports = [
@@ -90,7 +106,10 @@ describe('SynastryPage', () => {
 
   test('displays loading state when loading reports', async () => {
     (synastryApi.getSynastryReports as any).mockImplementation(
-      () => new Promise(() => { /* intentional empty - never resolves */ }) // Never resolves
+      () =>
+        new Promise(() => {
+          /* intentional empty - never resolves */
+        }), // Never resolves
     );
 
     render(<SynastryPage charts={mockCharts} />);
@@ -130,7 +149,9 @@ describe('SynastryPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('No saved reports yet')).toBeInTheDocument();
-      expect(screen.getByText('Compare two charts to save your first compatibility report')).toBeInTheDocument();
+      expect(
+        screen.getByText('Compare two charts to save your first compatibility report'),
+      ).toBeInTheDocument();
       expect(screen.getByText('Go to Calculator')).toBeInTheDocument();
     });
   });
@@ -314,7 +335,9 @@ describe('SynastryPage', () => {
       const nextButtons = screen.getAllByText('Next');
       expect(nextButtons.length).toBeGreaterThan(0);
       // Check if any Next button is disabled
-      const hasDisabledNext = nextButtons.some(btn => btn instanceof HTMLButtonElement && btn.disabled);
+      const hasDisabledNext = nextButtons.some(
+        (btn) => btn instanceof HTMLButtonElement && btn.disabled,
+      );
       expect(hasDisabledNext || nextButtons[0]).toBeDefined();
     });
   });

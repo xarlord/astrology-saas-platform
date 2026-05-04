@@ -6,10 +6,15 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
+  testMatch: /.*\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+  timeout: 30000,
+  expect: {
+    timeout: 10000,
+  },
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'test-results.json' }],
@@ -92,28 +97,50 @@ export default defineConfig({
     /* Test against mobile viewports */
     {
       name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      use: {
+        ...devices['Pixel 5'],
+        // Mobile-specific timeouts for slower execution
+        actionTimeout: 20000,
+        navigationTimeout: 40000,
+      },
     },
     {
       name: 'Mobile Safari',
-      use: { ...devices['iPhone 13'] },
+      use: {
+        ...devices['iPhone 13'],
+        // Mobile-specific timeouts for slower execution
+        actionTimeout: 20000,
+        navigationTimeout: 40000,
+      },
     },
 
     /* Test against tablet viewports */
     {
       name: 'Tablet',
-      use: { ...devices['iPad Pro'] },
+      use: {
+        ...devices['iPad Pro'],
+        actionTimeout: 15000,
+        navigationTimeout: 35000,
+      },
     },
   ],
 
   // Timeout for setup tests (bcrypt hashing can be slow)
   timeout: 30000,
 
-  // Run your local dev server before starting the tests
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: true,
-    timeout: 120000,
-  },
+  // Run local dev servers before starting the tests
+  webServer: [
+    {
+      command: 'cd ../backend && npm run start:e2e',
+      url: 'http://localhost:3001/health',
+      reuseExistingServer: true,
+      timeout: 120000,
+    },
+    {
+      command: 'npm run dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: true,
+      timeout: 120000,
+    },
+  ],
 });

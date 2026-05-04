@@ -44,9 +44,7 @@ class PushSubscriptionModel {
   }
 
   async findByUserId(userId: string): Promise<PushSubscription[]> {
-    return db<PushSubscription>('push_subscriptions')
-      .where({ user_id: userId })
-      .select('*');
+    return db<PushSubscription>('push_subscriptions').where({ user_id: userId }).select('*');
   }
 
   async findByEndpoint(endpoint: string): Promise<PushSubscription | null> {
@@ -58,25 +56,19 @@ class PushSubscriptionModel {
   }
 
   async delete(id: string): Promise<boolean> {
-    const count = await db<PushSubscription>('push_subscriptions')
-      .where({ id })
-      .delete();
+    const count = await db<PushSubscription>('push_subscriptions').where({ id }).delete();
 
     return count > 0;
   }
 
   async deleteByEndpoint(endpoint: string): Promise<boolean> {
-    const count = await db<PushSubscription>('push_subscriptions')
-      .where({ endpoint })
-      .delete();
+    const count = await db<PushSubscription>('push_subscriptions').where({ endpoint }).delete();
 
     return count > 0;
   }
 
   async deleteByUserId(userId: string): Promise<number> {
-    return db<PushSubscription>('push_subscriptions')
-      .where({ user_id: userId })
-      .delete();
+    return db<PushSubscription>('push_subscriptions').where({ user_id: userId }).delete();
   }
 }
 

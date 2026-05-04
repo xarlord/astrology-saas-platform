@@ -9,12 +9,7 @@ import { EmptyState, EmptyStates } from '../EmptyState';
 describe('EmptyState', () => {
   describe('Rendering', () => {
     it('renders with default props', () => {
-      render(
-        <EmptyState
-          title="No data"
-          description="There is no data to display"
-        />
-      );
+      render(<EmptyState title="No data" description="There is no data to display" />);
 
       expect(screen.getByText('No data')).toBeInTheDocument();
       expect(screen.getByText('There is no data to display')).toBeInTheDocument();
@@ -35,13 +30,7 @@ describe('EmptyState', () => {
 
     it('renders primary action button', () => {
       const handleClick = vi.fn();
-      render(
-        <EmptyState
-          title="Test"
-          actionText="Click me"
-          onAction={handleClick}
-        />
-      );
+      render(<EmptyState title="Test" actionText="Click me" onAction={handleClick} />);
 
       const button = screen.getByRole('button', { name: 'Click me' });
       expect(button).toBeInTheDocument();
@@ -50,11 +39,7 @@ describe('EmptyState', () => {
     it('renders secondary action button', () => {
       const handleClick = vi.fn();
       render(
-        <EmptyState
-          title="Test"
-          secondaryActionText="Secondary"
-          onSecondaryAction={handleClick}
-        />
+        <EmptyState title="Test" secondaryActionText="Secondary" onSecondaryAction={handleClick} />,
       );
 
       const button = screen.getByRole('button', { name: 'Secondary' });
@@ -71,7 +56,7 @@ describe('EmptyState', () => {
           onAction={primaryClick}
           secondaryActionText="Secondary"
           onSecondaryAction={secondaryClick}
-        />
+        />,
       );
 
       expect(screen.getByRole('button', { name: 'Primary' })).toBeInTheDocument();
@@ -81,25 +66,19 @@ describe('EmptyState', () => {
 
   describe('Size Variants', () => {
     it('renders small size', () => {
-      const { container } = render(
-        <EmptyState title="Test" size="small" />
-      );
+      const { container } = render(<EmptyState title="Test" size="small" />);
 
       expect(container.querySelector('[role="status"]')?.className).toContain('p-8');
     });
 
     it('renders medium size (default)', () => {
-      const { container } = render(
-        <EmptyState title="Test" size="medium" />
-      );
+      const { container } = render(<EmptyState title="Test" size="medium" />);
 
       expect(container.querySelector('[role="status"]')?.className).toContain('p-12');
     });
 
     it('renders large size', () => {
-      const { container } = render(
-        <EmptyState title="Test" size="large" />
-      );
+      const { container } = render(<EmptyState title="Test" size="large" />);
 
       expect(container.querySelector('[role="status"]')?.className).toContain('p-16');
     });
@@ -108,13 +87,7 @@ describe('EmptyState', () => {
   describe('Interactions', () => {
     it('calls onAction when primary button is clicked', () => {
       const handleClick = vi.fn();
-      render(
-        <EmptyState
-          title="Test"
-          actionText="Primary"
-          onAction={handleClick}
-        />
-      );
+      render(<EmptyState title="Test" actionText="Primary" onAction={handleClick} />);
 
       fireEvent.click(screen.getByRole('button', { name: 'Primary' }));
       expect(handleClick).toHaveBeenCalledTimes(1);
@@ -123,11 +96,7 @@ describe('EmptyState', () => {
     it('calls onSecondaryAction when secondary button is clicked', () => {
       const handleClick = vi.fn();
       render(
-        <EmptyState
-          title="Test"
-          secondaryActionText="Secondary"
-          onSecondaryAction={handleClick}
-        />
+        <EmptyState title="Test" secondaryActionText="Secondary" onSecondaryAction={handleClick} />,
       );
 
       fireEvent.click(screen.getByRole('button', { name: 'Secondary' }));
@@ -156,9 +125,7 @@ describe('EmptyState', () => {
 
   describe('Styling', () => {
     it('applies custom className', () => {
-      const { container } = render(
-        <EmptyState title="Test" className="custom-class" />
-      );
+      const { container } = render(<EmptyState title="Test" className="custom-class" />);
 
       expect(container.querySelector('.custom-class')).toBeInTheDocument();
     });
@@ -171,9 +138,7 @@ describe('EmptyState', () => {
     });
 
     it('renders description with correct styling', () => {
-      const { container } = render(
-        <EmptyState title="Test" description="Test description" />
-      );
+      const { container } = render(<EmptyState title="Test" description="Test description" />);
 
       const description = container.querySelector('p');
       expect(description).toBeInTheDocument();

@@ -7,12 +7,7 @@
  * Run: npx jest --testPathPattern="users.live" --forceExit --verbose
  */
 
-import {
-  authed,
-  getCsrf,
-  registerTestUser,
-  checkServerRunning,
-} from './helpers';
+import { authed, getCsrf, registerTestUser, checkServerRunning } from './helpers';
 
 describe('User Controller - LIVE SYSTEM', () => {
   let accessToken = '';

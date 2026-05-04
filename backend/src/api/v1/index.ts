@@ -14,23 +14,38 @@ import { lunarReturnRoutes } from '../../modules/lunar';
 import { synastryRoutes } from '../../modules/synastry';
 import { solarReturnRoutes } from '../../modules/solar';
 import { pushNotificationRoutes } from '../../modules/notifications';
-import healthRoutes from '../../routes/health.routes';
+import { healthRoutes } from '../../routes/health.routes';
 import { router as timezoneRoutes } from '../../modules/shared/routes/timezone.routes';
-import { default as locationRoutes } from '../../modules/shared/routes/location.routes';
+import { locationRoutes } from '../../modules/shared/routes/location.routes';
 import { router as shareRoutes } from '../../modules/charts/routes/share.routes';
-import aiRoutes from '../../modules/ai/routes/ai.routes';
-import { getCsrfToken } from '../../middleware/csrf';
+import { aiRoutes } from '../../modules/ai/routes/ai.routes';
+import { billingRoutes } from '../../modules/billing';
+import { briefingRoutes } from '../../modules/jobs';
+import { cardRoutes } from '../../modules/cards';
+import { monthlyTransitRoutes } from '../../modules/reports';
 
 const router = Router();
 
-// CSRF token endpoint - generates token for frontend
-router.get('/csrf-token', (req, res) => {
-  try {
-    getCsrfToken(req, res);
-  } catch (error) {
-    // Fallback for development - CSRF not enforced
-    res.json({ success: true, data: { token: 'dev-csrf-token' } });
-  }
+// v1 API root endpoint
+router.get('/', (_req, res) => {
+  res.json({
+    version: 'v1',
+    status: 'active',
+    endpoints: {
+      auth: '/api/v1/auth',
+      users: '/api/v1/users',
+      charts: '/api/v1/charts',
+      analysis: '/api/v1/analysis',
+      transits: '/api/v1/transits',
+      calendar: '/api/v1/calendar',
+      'lunar-return': '/api/v1/lunar-return',
+      synastry: '/api/v1/synastry',
+      'solar-returns': '/api/v1/solar-returns',
+      briefing: '/api/v1/briefing',
+      reports: '/api/v1/reports',
+      health: '/health',
+    },
+  });
 });
 
 // Health check (no versioning)
@@ -77,5 +92,17 @@ router.use('/ai', aiRoutes);
 
 // Push notification endpoints
 router.use('/notifications', pushNotificationRoutes);
+
+// Billing endpoints
+router.use('/billing', billingRoutes);
+
+// Daily briefing endpoints
+router.use('/briefing', briefingRoutes);
+
+// Shareable card endpoints
+router.use('/cards', cardRoutes);
+
+// Monthly transit report endpoints (premium only)
+router.use('/reports', monthlyTransitRoutes);
 
 export default router;

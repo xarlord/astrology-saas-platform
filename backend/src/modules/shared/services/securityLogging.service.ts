@@ -106,7 +106,7 @@ export async function logLoginAttempt(
     userAgent?: string;
     userId?: string;
     failureReason?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: success ? SecurityEventType.LOGIN_SUCCESS : SecurityEventType.LOGIN_FAILED,
@@ -127,7 +127,7 @@ export async function logLogout(
   metadata: {
     ipAddress?: string;
     userAgent?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: SecurityEventType.LOGOUT,
@@ -140,7 +140,10 @@ export async function logLogout(
 /**
  * Log logout event (alias for logLogout for compatibility)
  */
-export async function logLogoutEvent(userId: string, metadata: { ipAddress?: string; userAgent?: string } = {}): Promise<SecurityEvent> {
+export async function logLogoutEvent(
+  userId: string,
+  metadata: { ipAddress?: string; userAgent?: string } = {},
+): Promise<SecurityEvent> {
   return logLogout(userId, metadata);
 }
 
@@ -154,7 +157,7 @@ export async function logTokenRefresh(
     ipAddress?: string;
     userAgent?: string;
     failureReason?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: success ? SecurityEventType.TOKEN_REFRESH : SecurityEventType.TOKEN_REFRESH_FAILED,
@@ -174,7 +177,7 @@ export async function logTokenRevocation(
   metadata: {
     ipAddress?: string;
     reason?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: SecurityEventType.TOKEN_REVOKED,
@@ -192,7 +195,7 @@ export async function logPasswordChange(
   metadata: {
     ipAddress?: string;
     userAgent?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: SecurityEventType.PASSWORD_CHANGED,
@@ -210,7 +213,7 @@ export async function logCSRFValidationFailed(
   metadata: {
     userAgent?: string;
     endpoint?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: SecurityEventType.CSRF_VALIDATION_FAILED,
@@ -231,7 +234,7 @@ export async function logRateLimitExceeded(
   metadata: {
     userAgent?: string;
     userId?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: SecurityEventType.RATE_LIMIT_EXCEEDED,
@@ -254,7 +257,7 @@ export async function logSuspiciousActivity(
     userId?: string;
     ipAddress?: string;
     userAgent?: string;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent> {
   return logSecurityEvent({
     action: type,
@@ -271,7 +274,7 @@ export async function logSuspiciousActivity(
  */
 export async function getFailedLoginCount(
   email: string,
-  since: Date = new Date(Date.now() - 15 * 60 * 1000) // Default: 15 minutes
+  since: Date = new Date(Date.now() - 15 * 60 * 1000), // Default: 15 minutes
 ): Promise<number> {
   const result = await db('audit_log')
     .where('email', email)
@@ -288,7 +291,7 @@ export async function getFailedLoginCount(
  */
 export async function getFailedLoginCountByIP(
   ipAddress: string,
-  since: Date = new Date(Date.now() - 15 * 60 * 1000)
+  since: Date = new Date(Date.now() - 15 * 60 * 1000),
 ): Promise<number> {
   const result = await db('audit_log')
     .where('ip_address', ipAddress)
@@ -310,7 +313,7 @@ export async function getEventsByUser(
     limit?: number;
     offset?: number;
     actionTypes?: string[];
-  } = {}
+  } = {},
 ): Promise<SecurityEvent[]> {
   const { limit = 50, offset = 0, actionTypes } = options;
 
@@ -340,18 +343,9 @@ export async function getRecentEvents(
     email?: string;
     from?: Date;
     to?: Date;
-  } = {}
+  } = {},
 ): Promise<SecurityEvent[]> {
-  const {
-    limit = 50,
-    offset = 0,
-    actionTypes,
-    userId,
-    ipAddress,
-    email,
-    from,
-    to,
-  } = options;
+  const { limit = 50, offset = 0, actionTypes, userId, ipAddress, email, from, to } = options;
 
   let query = db<SecurityEvent>('audit_log')
     .orderBy('created_at', 'desc')
@@ -388,10 +382,10 @@ export async function getRecentEvents(
 /**
  * Get security statistics
  */
-export async function getSecurityStats(since: Date = new Date(Date.now() - 24 * 60 * 60 * 1000)): Promise<SecurityStats> {
-  const events = await db('audit_log')
-    .where('created_at', '>=', since)
-    .select('action', 'success');
+export async function getSecurityStats(
+  since: Date = new Date(Date.now() - 24 * 60 * 60 * 1000),
+): Promise<SecurityStats> {
+  const events = await db('audit_log').where('created_at', '>=', since).select('action', 'success');
 
   const stats: SecurityStats = {
     totalEvents: events.length,
@@ -430,7 +424,7 @@ export async function getSecurityStats(since: Date = new Date(Date.now() - 24 * 
  * Get event counts by type
  */
 export async function getEventCountsByType(
-  since: Date = new Date(Date.now() - 24 * 60 * 60 * 1000)
+  since: Date = new Date(Date.now() - 24 * 60 * 60 * 1000),
 ): Promise<Record<string, number>> {
   const results = await db('audit_log')
     .where('created_at', '>=', since)
@@ -453,9 +447,7 @@ export async function cleanupOldEvents(daysOld: number = 90): Promise<number> {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
-  return db('audit_log')
-    .where('created_at', '<', cutoffDate)
-    .delete();
+  return db('audit_log').where('created_at', '<', cutoffDate).delete();
 }
 
 // Export service object for convenience

@@ -10,17 +10,17 @@ import * as astronomy from 'astronomy-engine';
 
 export interface PlanetaryPosition {
   name: string;
-  longitude: number;      // 0-360° ecliptic longitude
-  latitude: number;       // -90 to 90° ecliptic latitude
-  distance: number;       // AU (astronomical units)
-  speed: number;          // °/day (negative = retrograde)
-  sign: string;           // Zodiac sign name
-  signIndex: number;      // 0-11 (Aries = 0)
-  degree: number;         // Degree within sign (0-29)
-  minute: number;         // Minutes within degree (0-59)
-  second: number;         // Seconds within minute (0-59)
+  longitude: number; // 0-360° ecliptic longitude
+  latitude: number; // -90 to 90° ecliptic latitude
+  distance: number; // AU (astronomical units)
+  speed: number; // °/day (negative = retrograde)
+  sign: string; // Zodiac sign name
+  signIndex: number; // 0-11 (Aries = 0)
+  degree: number; // Degree within sign (0-29)
+  minute: number; // Minutes within degree (0-59)
+  second: number; // Seconds within minute (0-59)
   isRetrograde: boolean;
-  house?: number;         // House placement (1-12), calculated later
+  house?: number; // House placement (1-12), calculated later
 }
 
 export interface LunarNodePosition {
@@ -44,11 +44,21 @@ export interface ChironPosition {
 }
 
 export const ZODIAC_SIGNS = [
-  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+  'Aries',
+  'Taurus',
+  'Gemini',
+  'Cancer',
+  'Leo',
+  'Virgo',
+  'Libra',
+  'Scorpio',
+  'Sagittarius',
+  'Capricorn',
+  'Aquarius',
+  'Pisces',
 ] as const;
 
-export type ZodiacSign = typeof ZODIAC_SIGNS[number];
+export type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
 
 // Planet symbols for display
 export const PLANET_SYMBOLS: Record<string, string> = {
@@ -87,7 +97,7 @@ export class AstronomyEngineService {
   calculatePlanetaryPositions(
     date: Date,
     latitude: number,
-    longitude: number
+    longitude: number,
   ): Map<string, PlanetaryPosition> {
     const positions = new Map<string, PlanetaryPosition>();
     const observer = new astronomy.Observer(latitude, longitude, 0);
@@ -108,7 +118,7 @@ export class AstronomyEngineService {
     name: string,
     body: astronomy.Body,
     time: astronomy.AstroTime,
-    _observer: astronomy.Observer
+    _observer: astronomy.Observer,
   ): PlanetaryPosition {
     // Get geocentric vector
     const geoVector = astronomy.GeoVector(body, time, true);
@@ -155,7 +165,7 @@ export class AstronomyEngineService {
     const T = jd / 36525.0; // Julian centuries from J2000.0
 
     // Mean longitude of ascending node (Meeus formula)
-    let omega = 125.04452 - 1934.136261 * T + 0.0020708 * T * T + T * T * T / 450000.0;
+    let omega = 125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000.0;
     omega = this.normalizeAngle(omega);
     const northSignPos = this.longitudeToSignPosition(omega);
     const southLongitude = this.normalizeAngle(omega + 180);
@@ -183,7 +193,7 @@ export class AstronomyEngineService {
     const T = jd / 36525.0;
 
     // Mean anomaly
-    const M = this.normalizeAngle(224.0347 + 11.046329090 * T);
+    const M = this.normalizeAngle(224.0347 + 11.04632909 * T);
 
     // Eccentricity
     const e = 0.3815;
@@ -191,13 +201,12 @@ export class AstronomyEngineService {
     // Solve Kepler's equation (simplified)
     let E = M;
     for (let i = 0; i < 10; i++) {
-      E = M + e * (180 / Math.PI) * Math.sin(E * Math.PI / 180);
+      E = M + e * (180 / Math.PI) * Math.sin((E * Math.PI) / 180);
     }
 
     // True anomaly
-    const v = 2 * Math.atan(
-      Math.sqrt((1 + e) / (1 - e)) * Math.tan(E * Math.PI / 360)
-    ) * 180 / Math.PI;
+    const v =
+      (2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan((E * Math.PI) / 360)) * 180) / Math.PI;
 
     // Heliocentric longitude (approximate)
     const longitude = this.normalizeAngle(v + 33.6342);
@@ -206,14 +215,14 @@ export class AstronomyEngineService {
     const prevTime = new astronomy.AstroTime(time.ut - 1);
     const prevJd = prevTime.ut + 2451545.0;
     const prevT = prevJd / 36525.0;
-    const prevM = this.normalizeAngle(224.0347 + 11.046329090 * prevT);
+    const prevM = this.normalizeAngle(224.0347 + 11.04632909 * prevT);
     let prevE = prevM;
     for (let i = 0; i < 10; i++) {
-      prevE = prevM + e * (180 / Math.PI) * Math.sin(prevE * Math.PI / 180);
+      prevE = prevM + e * (180 / Math.PI) * Math.sin((prevE * Math.PI) / 180);
     }
-    const prevV = 2 * Math.atan(
-      Math.sqrt((1 + e) / (1 - e)) * Math.tan(prevE * Math.PI / 360)
-    ) * 180 / Math.PI;
+    const prevV =
+      (2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan((prevE * Math.PI) / 360)) * 180) /
+      Math.PI;
     const prevLongitude = this.normalizeAngle(prevV + 33.6342);
 
     let speed = longitude - prevLongitude;
@@ -229,6 +238,79 @@ export class AstronomyEngineService {
       isRetrograde: speed < 0,
     };
   }
+  /**
+   * Get all planetary positions for a given date (daily transits).
+   * Returns a plain object keyed by lowercase planet names for compatibility
+   * with the legacy swissEphemeris.getDailyTransits() shape.
+   */
+  getDailyTransits(date: Date): Record<
+    string,
+    {
+      longitude: number;
+      latitude: number;
+      speed: number;
+      retrograde: boolean;
+      sign: string;
+      degree: number;
+    }
+  > {
+    const positions = this.calculatePlanetaryPositions(date, 0, 0);
+    const chiron = this.calculateChiron(date);
+    const nodes = this.calculateLunarNodes(date);
+
+    const result: Record<
+      string,
+      {
+        longitude: number;
+        latitude: number;
+        speed: number;
+        retrograde: boolean;
+        sign: string;
+        degree: number;
+      }
+    > = {};
+
+    for (const [name, pos] of positions) {
+      result[name.toLowerCase()] = {
+        longitude: pos.longitude,
+        latitude: pos.latitude,
+        speed: pos.speed,
+        retrograde: pos.isRetrograde,
+        sign: pos.sign.toLowerCase(),
+        degree: pos.degree,
+      };
+    }
+
+    result['chiron'] = {
+      longitude: chiron.longitude,
+      latitude: 0,
+      speed: 0,
+      retrograde: chiron.isRetrograde,
+      sign: chiron.sign.toLowerCase(),
+      degree: chiron.degree,
+    };
+
+    result['northnode'] = {
+      longitude: nodes.northNode.longitude,
+      latitude: 0,
+      speed: 0,
+      retrograde: false,
+      sign: nodes.northNode.sign.toLowerCase(),
+      degree: nodes.northNode.degree,
+    };
+
+    result['southnode'] = {
+      longitude: nodes.southNode.longitude,
+      latitude: 0,
+      speed: 0,
+      retrograde: false,
+      sign: nodes.southNode.sign.toLowerCase(),
+      degree: nodes.southNode.degree,
+    };
+
+    return result;
+  }
+
   /**
    * Calculate Julian Day from Date
    */

@@ -1,0 +1,1085 @@
+
+> @astrology-saas/frontend@1.0.0 lint
+> eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0
+
+
+C:\Users\plner\MVP_Projects\frontend\src\components\AIInterpretationToggle.tsx
+  32:13  error  Unsafe assignment of an `any` value                                                      @typescript-eslint/no-unsafe-assignment
+  35:35  error  Unsafe argument of type `any` assigned to a parameter of type `Record<string, unknown>`  @typescript-eslint/no-unsafe-argument
+
+C:\Users\plner\MVP_Projects\frontend\src\components\AppLayout.tsx
+  151:25  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\AstrologicalCalendar.tsx
+  6:1  error  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unsafe-member-access')
+
+C:\Users\plner\MVP_Projects\frontend\src\components\BirthdaySharing.tsx
+   41:24  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   65:24  error  Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`              @typescript-eslint/no-unsafe-argument
+   65:38  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+   69:53  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   90:53  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  278:25  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+  296:37  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+  358:25  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\CalendarExport.tsx
+   76:46  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  218:27  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\CalendarView.tsx
+  151:25  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ChartWheel.accessibility.test.tsx
+  0:0  error  Parsing error: ESLint was configured to run on `<tsconfigRootDir>/src\components\ChartWheel.accessibility.test.tsx` using `parserOptions.project`: 
+- <tsconfigRootDir>/tsconfig.json
+- <tsconfigRootDir>/tsconfig.node.json
+However, none of those TSConfigs include this file. Either:
+- Change ESLint's list of included files to not include this file
+- Change one of those TSConfigs to include this file
+- Create a new TSConfig that includes this file and include it in your parserOptions.project
+See the typescript-eslint docs for more info: https://typescript-eslint.io/linting/troubleshooting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file
+
+C:\Users\plner\MVP_Projects\frontend\src\components\EmptyState.tsx
+  122:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\plner\MVP_Projects\frontend\src\components\LunarForecastView.tsx
+   28:6   warning  React Hook useEffect has a missing dependency: 'loadForecast'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   39:44  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator        @typescript-eslint/prefer-nullish-coalescing
+  136:27  error    Promise-returning function provided to attribute where a void return was expected                                @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\LunarHistoryView.tsx
+   24:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   25:6   warning  React Hook useEffect has a missing dependency: 'loadHistory'. Either include it or remove the dependency array                                                      react-hooks/exhaustive-deps
+   34:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   36:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   36:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   52:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   54:17  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   98:19  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  130:29  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\LunarReturnDashboard.tsx
+  33:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  48:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  50:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+  50:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+  56:9   error    'getIntensityColor' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                        @typescript-eslint/no-unused-vars
+  63:9   error    'getMoonPhaseIcon' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                         @typescript-eslint/no-unused-vars
+  90:27  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\PushNotificationPermission.tsx
+  71:25  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+  90:62  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\RelocationCalculator.tsx
+   24:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   25:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   35:3   error    'natalChartId' is defined but never used. Allowed unused args must match /^_/u                                                                                      @typescript-eslint/no-unused-vars
+   39:10  error    'locations' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                @typescript-eslint/no-unused-vars
+   67:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   68:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   68:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   86:20  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<Location[]>`                                                                          @typescript-eslint/no-unsafe-argument
+   86:34  error    Unsafe member access .results on an `any` value                                                                                                                     @typescript-eslint/no-unsafe-member-access
+   98:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+   98:25  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+   98:55  error    Unsafe member access .planets on an `any` value                                                                                                                     @typescript-eslint/no-unsafe-member-access
+   98:72  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   98:82  error    Unsafe member access .planet on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+   99:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+   99:26  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+   99:57  error    Unsafe member access .planets on an `any` value                                                                                                                     @typescript-eslint/no-unsafe-member-access
+   99:74  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   99:84  error    Unsafe member access .planet on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  105:7   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  105:34  error    Unsafe member access .house on an `any` value                                                                                                                       @typescript-eslint/no-unsafe-member-access
+  106:7   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  106:36  error    Unsafe member access .house on an `any` value                                                                                                                       @typescript-eslint/no-unsafe-member-access
+  107:28  error    Unsafe member access .house on an `any` value                                                                                                                       @typescript-eslint/no-unsafe-member-access
+  107:48  error    Unsafe member access .house on an `any` value                                                                                                                       @typescript-eslint/no-unsafe-member-access
+  116:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  116:58  error    Unsafe member access .themes on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  117:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  117:60  error    Unsafe member access .themes on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  120:7   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  120:14  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  120:30  error    Unsafe member access .filter on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  120:53  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  120:68  error    Unsafe member access .includes on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+  121:7   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  121:16  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  121:31  error    Unsafe member access .filter on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  121:54  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  121:70  error    Unsafe member access .includes on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+  157:24  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  159:27  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  180:23  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  201:87  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  208:22  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  208:22  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  208:52  error    Unsafe member access .themes on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  208:71  error    Unsafe member access .map on an `any` value                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  233:22  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  233:22  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  233:53  error    Unsafe member access .themes on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  233:72  error    Unsafe member access .map on an `any` value                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  261:38  error    Unsafe member access .length on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  265:20  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  265:44  error    Unsafe member access .map on an `any` value                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  272:40  error    Unsafe member access .length on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  276:20  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  276:46  error    Unsafe member access .map on an `any` value                                                                                                                         @typescript-eslint/no-unsafe-member-access
+  308:11  error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ReminderSettings.tsx
+   17:36  error    'onSave' is defined but never used. Allowed unused args must match /^_/u                                   @typescript-eslint/no-unused-vars
+   19:44  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   20:50  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   21:66  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   37:13  error    'response' is assigned a value but never used. Allowed unused vars must match /^_/u                        @typescript-eslint/no-unused-vars
+   42:19  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   43:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`              @typescript-eslint/no-unsafe-argument
+   43:20  error    Unsafe member access .response on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+  110:22  error    Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\SolarReturnChart.tsx
+  121:19  error    'setLoading' is assigned a value but never used. Allowed unused vars must match /^_/u                         @typescript-eslint/no-unused-vars
+  122:26  error    'setSelectedPlanet' is assigned a value but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  123:25  error    'setHoveredAspect' is assigned a value but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+  132:6   warning  React Hook useEffect has a missing dependency: 'drawChart'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\plner\MVP_Projects\frontend\src\components\SolarReturnDashboard.tsx
+   44:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   45:6   warning  React Hook useEffect has a missing dependency: 'fetchSolarReturns'. Either include it or remove the dependency array                                                react-hooks/exhaustive-deps
+   58:23  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<SolarReturn[]>`                                                                       @typescript-eslint/no-unsafe-argument
+   58:37  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+   59:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   60:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   60:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   70:13  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+   70:48  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+   79:9   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+   79:36  error    Unsafe member access .id on an `any` value                                                                                                                          @typescript-eslint/no-unsafe-member-access
+   90:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   91:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   91:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+  186:19  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  202:81  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  278:21  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  288:19  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\SynastryCalculator.tsx
+    6:27  error    'useEffect' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+   30:74  error    'onReportSave' is defined but never used. Allowed unused args must match /^_/u                 @typescript-eslint/no-unused-vars
+   65:19  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+   67:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`  @typescript-eslint/no-unsafe-argument
+   67:20  error    Unsafe member access .response on an `any` value                                               @typescript-eslint/no-unsafe-member-access
+  143:19  error    Promise-returning function provided to attribute where a void return was expected              @typescript-eslint/no-misused-promises
+  274:71  error    Unsafe argument of type `any` assigned to a parameter of type `number`                         @typescript-eslint/no-unsafe-argument
+  280:66  error    Unsafe argument of type `any` assigned to a parameter of type `number`                         @typescript-eslint/no-unsafe-argument
+  304:51  error    Unsafe assignment of an `any` value                                                            @typescript-eslint/no-unsafe-assignment
+  304:69  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+  306:51  error    Unsafe assignment of an `any` value                                                            @typescript-eslint/no-unsafe-assignment
+  306:69  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+  339:45  error    Unsafe assignment of an `any` value                                                            @typescript-eslint/no-unsafe-assignment
+  339:53  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+  340:42  error    Unsafe assignment of an `any` value                                                            @typescript-eslint/no-unsafe-assignment
+  340:57  warning  Unexpected any. Specify a different type                                                       @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\components\SynastryPage.tsx
+   31:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   33:6   warning  React Hook useEffect has a missing dependency: 'loadReports'. Either include it or remove the dependency array                                                      react-hooks/exhaustive-deps
+   42:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   44:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   44:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   58:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   70:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   85:24  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  202:33  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  202:90  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  210:33  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\TransitDashboard.tsx
+    2:38  error    'SkeletonLoader' is defined but never used. Allowed unused vars must match /^_/u                           @typescript-eslint/no-unused-vars
+  102:30  error    'highlight' is defined but never used. Allowed unused args must match /^_/u                                @typescript-eslint/no-unused-vars
+  121:24  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  359:3   error    'date' is defined but never used. Allowed unused args must match /^_/u                                     @typescript-eslint/no-unused-vars
+  520:45  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  523:54  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  550:50  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\components\UserProfile.tsx
+   13:10  error    'ChartWheel' is defined but never used. Allowed unused vars must match /^_/u                               @typescript-eslint/no-unused-vars
+   65:20  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   85:5   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   85:29  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   86:5   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   93:7   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   94:7   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   95:7   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   96:7   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  113:22  error    Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                     @typescript-eslint/no-unsafe-argument
+  114:7   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  116:9   error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  135:22  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  136:30  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  171:16  error    Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+  209:29  error    Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\astrology\EnergyMeter.tsx
+  38:10  error  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unused-vars')
+
+C:\Users\plner\MVP_Projects\frontend\src\components\chart\ChartCard.tsx
+   63:52  error  Async arrow function 'handleDelete' has no 'await' expression                                              @typescript-eslint/require-await
+   86:9   error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   86:41  error  Unsafe member access .sign on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+   87:9   error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   87:43  error  Unsafe member access .sign on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+   88:9   error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   88:50  error  Unsafe member access .sign on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+   90:36  error  Computed name [sunSign.toLowerCase()] resolves to an any value                                             @typescript-eslint/no-unsafe-member-access
+   90:36  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+   90:44  error  Unsafe member access .toLowerCase on an `any` value                                                        @typescript-eslint/no-unsafe-member-access
+   91:37  error  Computed name [moonSign.toLowerCase()] resolves to an any value                                            @typescript-eslint/no-unsafe-member-access
+   91:37  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+   91:46  error  Unsafe member access .toLowerCase on an `any` value                                                        @typescript-eslint/no-unsafe-member-access
+   92:39  error  Computed name [risingSign.toLowerCase()] resolves to an any value                                          @typescript-eslint/no-unsafe-member-access
+   92:39  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+   92:50  error  Unsafe member access .toLowerCase on an `any` value                                                        @typescript-eslint/no-unsafe-member-access
+   96:16  error  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                     @typescript-eslint/no-unsafe-argument
+  103:9   error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  115:65  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  116:9   error  'tagColor' is assigned a value but never used. Allowed unused vars must match /^_/u                        @typescript-eslint/no-unused-vars
+  142:57  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  170:21  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+  204:26  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+  204:34  error  Unsafe member access .slice on an `any` value                                                              @typescript-eslint/no-unsafe-member-access
+  212:27  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+  212:36  error  Unsafe member access .slice on an `any` value                                                              @typescript-eslint/no-unsafe-member-access
+  220:29  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+  220:40  error  Unsafe member access .slice on an `any` value                                                              @typescript-eslint/no-unsafe-member-access
+  259:25  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\form\CustomDatePicker.tsx
+  31:58  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\components\learning\CourseCard.tsx
+  28:3  error  'thumbnail' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\plner\MVP_Projects\frontend\src\components\media\VideoPlayer.tsx
+  135:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  242:25  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+  267:38  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                           @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\components\report\ReportActions.tsx
+  36:7   error  Unexpected `await` of a non-Promise (non-"Thenable") value                                                                                                          @typescript-eslint/await-thenable
+  39:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  99:19  error  Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ui\ComponentShowcase.tsx
+  16:3  error  'DotBadge' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ui\ErrorBoundary.tsx
+   16:15  error    Array type using 'Array<T>' is forbidden. Use 'T[]' instead                                                                     @typescript-eslint/array-type
+   68:41  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+  109:35  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+  151:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  161:77  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                       @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ui\Modal.tsx
+  198:17  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ui\SkeletonScreen.tsx
+  40:20  error  Unsafe assignment of an `any` value  @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\components\ui\Toast.tsx
+  90:6  warning  React Hook useEffect has a missing dependency: 'handleClose'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\index.ts
+    6:10  error  'authService' is defined but never used. Allowed unused vars must match /^_/u                                                                                       @typescript-eslint/no-unused-vars
+  135:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  149:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  150:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  151:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useAIInterpretation.ts
+  11:30  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  11:46  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  12:34  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  12:50  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  13:41  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  13:57  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  30:29  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  38:31  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  46:32  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  46:72  error    Unsafe argument of type `any` assigned to a parameter of type `{ chartA: any; chartB: any; }`              @typescript-eslint/no-unsafe-argument
+  59:36  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useAuth.ts
+  35:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  48:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  66:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  79:23  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  98:54  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useCalendar.ts
+  35:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  36:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  70:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  83:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  96:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useCalendarEvents.ts
+  24:18  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  34:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  49:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useCharts.ts
+  33:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  43:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  56:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  69:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  82:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useDebounce.ts
+  10:42  error    Type number trivially inferred from a number literal, remove type annotation                                @typescript-eslint/no-inferrable-types
+  34:58  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+  34:68  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+  36:3   error    Type number trivially inferred from a number literal, remove type annotation                                @typescript-eslint/no-inferrable-types
+  38:10  warning  React Hook useCallback received a function whose dependencies are unknown. Pass an inline function instead  react-hooks/exhaustive-deps
+  45:39  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+  45:49  warning  Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useFocusTrap.ts
+  94:45  warning  The ref value 'returnFocusRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'returnFocusRef.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+  94:53  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator                                                                                                                                                                    @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useLearning.ts
+   35:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   36:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   46:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   59:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   72:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   85:23  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  100:5   error    Unsafe return of an `any` typed value                                                                                                                               @typescript-eslint/no-unsafe-return
+  106:5   error    Unsafe return of an `any` typed value                                                                                                                               @typescript-eslint/no-unsafe-return
+  112:9   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+  112:54  error    Unsafe member access .length on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  116:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  116:26  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  116:41  error    Unsafe member access .findIndex on an `any` value                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  116:60  error    Unsafe member access .id on an `any` value                                                                                                                          @typescript-eslint/no-unsafe-member-access
+  117:39  error    Unsafe member access .length on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  118:7   error    Unsafe return of an `any` typed value                                                                                                                               @typescript-eslint/no-unsafe-return
+  118:29  error    Unsafe member access [currentIndex + 1] on an `any` value                                                                                                           @typescript-eslint/no-unsafe-member-access
+  118:29  error    Computed name [currentIndex + 1] resolves to an any value                                                                                                           @typescript-eslint/no-unsafe-member-access
+  122:6   warning  React Hook useCallback has an unnecessary dependency: 'progress'. Either exclude it or remove the dependency array                                                  react-hooks/exhaustive-deps
+  127:9   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+  127:54  error    Unsafe member access .length on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  131:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  131:26  error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  131:41  error    Unsafe member access .findIndex on an `any` value                                                                                                                   @typescript-eslint/no-unsafe-member-access
+  131:60  error    Unsafe member access .id on an `any` value                                                                                                                          @typescript-eslint/no-unsafe-member-access
+  133:7   error    Unsafe return of an `any` typed value                                                                                                                               @typescript-eslint/no-unsafe-return
+  133:29  error    Unsafe member access [currentIndex - 1] on an `any` value                                                                                                           @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useLocalStorage.ts
+   22:7   error    Unsafe return of an `any` typed value                                                   @typescript-eslint/no-unsafe-return
+   60:26  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<T>`       @typescript-eslint/no-unsafe-argument
+   77:64  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  101:27  error    'removeValue' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\usePushNotifications.ts
+  27:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  96:21  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useReports.ts
+  17:5   error    'setReport' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  37:23  warning  Unexpected any. Specify a different type                                              @typescript-eslint/no-explicit-any
+  38:28  error    Unsafe argument of type `any` assigned to a parameter of type `string`                @typescript-eslint/no-unsafe-argument
+  38:34  error    Unsafe member access .message on an `any` value                                       @typescript-eslint/no-unsafe-member-access
+  51:23  warning  Unexpected any. Specify a different type                                              @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useServiceWorkerUpdate.ts
+  24:5  error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useSynastry.ts
+   41:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   54:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   67:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  104:26  error    Unsafe assignment of an `any` value       @typescript-eslint/no-unsafe-assignment
+  123:26  error    Unsafe assignment of an `any` value       @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\hooks\useTransits.ts
+  36:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  48:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  59:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  72:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\main.tsx
+  13:3  error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\AnalysisPage.tsx
+   36:10  error    Unsafe array destructuring of a tuple element with an `any` value                                          @typescript-eslint/no-unsafe-assignment
+   36:60  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   42:19  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   58:51  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  129:54  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  141:81  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  150:82  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\CalendarPage.tsx
+  464:11  error  Unsafe assignment of an `any` value                                                     @typescript-eslint/no-unsafe-assignment
+  464:23  error  Unsafe call of an `any` typed value                                                     @typescript-eslint/no-unsafe-call
+  474:41  error  Unsafe member access .length on an `any` value                                          @typescript-eslint/no-unsafe-member-access
+  505:9   error  Unsafe assignment of an `any` value                                                     @typescript-eslint/no-unsafe-assignment
+  507:5   error  Unsafe return of an `any` typed value                                                   @typescript-eslint/no-unsafe-return
+  507:12  error  Unsafe call of an `any` typed value                                                     @typescript-eslint/no-unsafe-call
+  693:17  error  Unsafe call of an `any` typed value                                                     @typescript-eslint/no-unsafe-call
+  693:17  error  Unsafe call of an `any` typed value                                                     @typescript-eslint/no-unsafe-call
+  693:41  error  Unsafe member access .map on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+  695:26  error  Unsafe assignment of an `any` value                                                     @typescript-eslint/no-unsafe-assignment
+  695:32  error  Unsafe member access .id on an `any` value                                              @typescript-eslint/no-unsafe-member-access
+  701:48  error  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`  @typescript-eslint/no-unsafe-argument
+  701:54  error  Unsafe member access .start_date on an `any` value                                      @typescript-eslint/no-unsafe-member-access
+  708:35  error  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`  @typescript-eslint/no-unsafe-argument
+  708:41  error  Unsafe member access .start_date on an `any` value                                      @typescript-eslint/no-unsafe-member-access
+  715:30  error  Unsafe member access .title on an `any` value                                           @typescript-eslint/no-unsafe-member-access
+  718:30  error  Unsafe member access .description on an `any` value                                     @typescript-eslint/no-unsafe-member-access
+  735:17  error  Unsafe assignment of an `any` value                                                     @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\ChartCreationWizardPage.tsx
+  160:11  error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  169:6   warning  React Hook useEffect has a missing dependency: 'handleNext'. Either include it or remove the dependency array                                                       react-hooks/exhaustive-deps
+  511:29  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\ChartViewPage.tsx
+   12:10   error    Unsafe array destructuring of a tuple element with an `any` value                                                                                                   @typescript-eslint/no-unsafe-assignment
+   12:46   warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   25:21   warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   26:18   error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   26:22   error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   33:5    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  114:88   error    Unsafe member access .name on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  116:30   error    Unsafe member access .birth_date on an `any` value                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  116:57   error    Unsafe member access .birth_time on an `any` value                                                                                                                  @typescript-eslint/no-unsafe-member-access
+  116:84   error    Unsafe member access .birth_place_name on an `any` value                                                                                                            @typescript-eslint/no-unsafe-member-access
+  122:21   error    Unsafe member access .calculated_data on an `any` value                                                                                                             @typescript-eslint/no-unsafe-member-access
+  129:30   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  129:40   error    Unsafe member access .calculated_data on an `any` value                                                                                                             @typescript-eslint/no-unsafe-member-access
+  138:18   error    Prefer using an optional chain expression instead, as it's more concise and easier to read                                                                          @typescript-eslint/prefer-optional-chain
+  138:28   error    Unsafe member access .calculated_data on an `any` value                                                                                                             @typescript-eslint/no-unsafe-member-access
+  138:55   error    Unsafe call of an `any` typed value                                                                                                                                 @typescript-eslint/no-unsafe-call
+  138:65   error    Unsafe member access .calculated_data on an `any` value                                                                                                             @typescript-eslint/no-unsafe-member-access
+  138:102  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  139:29   error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  139:36   error    Unsafe member access .name on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  140:59   error    Unsafe member access .name on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  142:31   error    Unsafe member access .sign on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  142:45   error    Unsafe member access .degree on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  142:61   error    Unsafe member access .minute on an `any` value                                                                                                                      @typescript-eslint/no-unsafe-member-access
+  155:22   error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\CourseDetailPage.tsx
+  177:55  error  Async arrow function 'handleMarkComplete' has no 'await' expression                                                                                                 @typescript-eslint/require-await
+  207:20  error  Array type using 'Array<T>' is forbidden. Use 'T[]' instead                                                                                                         @typescript-eslint/array-type
+  301:23  error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  325:31  error  Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+  431:48  error  'moduleIndex' is defined but never used. Allowed unused args must match /^_/u                                                                                       @typescript-eslint/no-unused-vars
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\DashboardPage.tsx
+   92:5   error  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  187:29  error  Promise-returning function provided to attribute where a void return was expected               @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\DetailedNatalReportPage.tsx
+   27:12  error  Array type using 'Array<T>' is forbidden. Use 'T[]' instead                                                @typescript-eslint/array-type
+   35:12  error  Array type using 'Array<T>' is forbidden. Use 'T[]' instead                                                @typescript-eslint/array-type
+   80:38  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  447:25  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+  467:25  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\ForgotPasswordPage.tsx
+   11:9   error  'navigate' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   16:51  error  Async arrow function 'handleSubmit' has no 'await' expression                        @typescript-eslint/require-await
+  105:26  error  Promise-returning function provided to attribute where a void return was expected    @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\LandingPage.tsx
+  425:21  error  Unsafe spread of an `any` value in an array  @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\LoginPage.tsx
+  46:46  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\LoginPageNew.tsx
+   29:13  error    Unsafe assignment of an `any` value                                                @typescript-eslint/no-unsafe-assignment
+   29:21  error    This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+   29:39  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   29:45  error    Unsafe member access .from on an `any` value                                       @typescript-eslint/no-unsafe-member-access
+   30:16  error    Unsafe argument of type `any` assigned to a parameter of type `To`                 @typescript-eslint/no-unsafe-argument
+  145:52  error    Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\LunarReturnsPage.tsx
+  87:11  error  'charts' is assigned a value but never used. Allowed unused vars must match /^_/u              @typescript-eslint/no-unused-vars
+  89:10  error  'selectedChartId' is assigned a value but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  89:27  error  'setSelectedChartId' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  90:25  error  'setSelectedMonth' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\NatalChartDetailPage.tsx
+   97:10  error  'hoveredPlanet' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                            @typescript-eslint/no-unused-vars
+  101:7   error  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  105:9   error  'handleDelete' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                             @typescript-eslint/no-unused-vars
+  105:45  error  Async arrow function has no 'await' expression                                                                                                                      @typescript-eslint/require-await
+  133:16  error  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                                                                              @typescript-eslint/no-unsafe-argument
+  139:9   error  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  140:9   error  Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\ProfilePage.tsx
+   9:10  error    Unsafe array destructuring of a tuple element with an `any` value                                                                                                   @typescript-eslint/no-unsafe-assignment
+   9:50  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  29:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\ProfileSettingsPage.tsx
+   17:15  error  'User' is defined but never used. Allowed unused vars must match /^_/u                                     @typescript-eslint/no-unused-vars
+   46:32  error  'changePassword' is assigned a value but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+   46:48  error  'isLoading' is assigned a value but never used. Allowed unused vars must match /^_/u                       @typescript-eslint/no-unused-vars
+   53:26  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   54:29  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   55:20  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   56:30  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   57:26  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  101:9   error  'ZODIAC_SYMBOLS' is assigned a value but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+  151:33  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  192:33  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  196:34  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  315:46  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  348:33  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\RegisterPage.tsx
+  59:46  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\RegisterPageNew.tsx
+  241:24  error  Promise-returning function provided to attribute where a void return was expected  @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\SavedChartsGalleryPage.tsx
+   16:10  error  'Input' is defined but never used. Allowed unused vars must match /^_/u                                    @typescript-eslint/no-unused-vars
+   18:15  error  'Chart' is defined but never used. Allowed unused vars must match /^_/u                                    @typescript-eslint/no-unused-vars
+   40:33  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   62:11  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+   62:11  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+   62:38  error  Unsafe member access .toLowerCase on an `any` value                                                        @typescript-eslint/no-unsafe-member-access
+   62:52  error  Unsafe member access .includes on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+   73:11  error  Unexpected lexical declaration in case block                                                               no-case-declarations
+   73:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   73:43  error  Unsafe member access .sign on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+   74:11  error  Unexpected lexical declaration in case block                                                               no-case-declarations
+   74:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   74:43  error  Unsafe member access .sign on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+   75:11  error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+   75:18  error  Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+   75:24  error  Unsafe member access .localeCompare on an `any` value                                                      @typescript-eslint/no-unsafe-member-access
+   78:39  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   78:78  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  326:28  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\SolarReturnAnnualReportPage.tsx
+   96:34  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  183:23  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\SolarReturnsPage.tsx
+   20:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   21:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   40:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+   42:6   warning  React Hook useEffect has a missing dependency: 'fetchSolarReturn'. Either include it or remove the dependency array                                                 react-hooks/exhaustive-deps
+   50:25  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<SolarReturn | null>`                                                                  @typescript-eslint/no-unsafe-argument
+   50:39  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+   52:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   53:15  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   57:18  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   57:22  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   64:46  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   73:11  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+   76:25  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<SolarReturn | null>`                                                                  @typescript-eslint/no-unsafe-argument
+   76:39  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+   77:7   error    Unsafe return of an `any` typed value                                                                                                                               @typescript-eslint/no-unsafe-return
+   77:28  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+   78:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+   79:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+   79:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+   88:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  160:19  error    'solarReturn' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                              @typescript-eslint/no-unused-vars
+  164:35  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<SolarReturn | null>`                                                                  @typescript-eslint/no-unsafe-argument
+  164:44  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  165:33  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<number | null>`                                                                       @typescript-eslint/no-unsafe-argument
+  165:42  error    Unsafe member access .data on an `any` value                                                                                                                        @typescript-eslint/no-unsafe-member-access
+  168:26  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+  168:30  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+  189:30  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+  199:35  error    Unsafe assignment of an `any` value                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\SynastryPage.tsx
+   7:10  error    'useParams' is defined but never used. Allowed unused vars must match /^_/u                                                                                         @typescript-eslint/no-unused-vars
+  20:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  29:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  31:16  error    Unsafe argument of type `any` assigned to a parameter of type `SetStateAction<string | null>`                                                                       @typescript-eslint/no-unsafe-argument
+  31:20  error    Unsafe member access .response on an `any` value                                                                                                                    @typescript-eslint/no-unsafe-member-access
+  53:20  error    Promise-returning function provided to attribute where a void return was expected                                                                                   @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\SynastryPageNew.tsx
+   41:5   error  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  117:77  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  247:23  error  Promise-returning function provided to attribute where a void return was expected                          @typescript-eslint/no-misused-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\pages\TransitPage.tsx
+  10:11  error    'charts' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                   @typescript-eslint/no-unused-vars
+  10:19  error    'fetchCharts' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                              @typescript-eslint/no-unused-vars
+  10:43  error    'chartsLoading' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                            @typescript-eslint/no-unused-vars
+  11:10  error    Unsafe array destructuring of a tuple element with an `any` value                                                                                                   @typescript-eslint/no-unsafe-assignment
+  11:50  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  32:5   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+C:\Users\plner\MVP_Projects\frontend\src\services\ai.service.ts
+   9:19  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  20:34  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  22:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  22:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  28:38  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  30:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  30:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  37:13  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  38:13  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  41:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  41:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  49:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  49:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  55:34  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  57:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  57:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\analysis.service.ts
+  11:14  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  12:15  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  13:16  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  15:19  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  17:17  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  24:17  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  32:13  error    Unsafe array destructuring of a tuple element with an `any` value  @typescript-eslint/no-unsafe-assignment
+  33:5   error    Unsafe return of an `any` typed value                              @typescript-eslint/no-unsafe-return
+  33:17  error    Unsafe member access .data on an `any` value                       @typescript-eslint/no-unsafe-member-access
+  39:71  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  40:13  error    Unsafe array destructuring of a tuple element with an `any` value  @typescript-eslint/no-unsafe-assignment
+  41:5   error    Unsafe return of an `any` typed value                              @typescript-eslint/no-unsafe-return
+  41:17  error    Unsafe member access .data on an `any` value                       @typescript-eslint/no-unsafe-member-access
+  47:65  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  48:13  error    Unsafe array destructuring of a tuple element with an `any` value  @typescript-eslint/no-unsafe-assignment
+  49:5   error    Unsafe return of an `any` typed value                              @typescript-eslint/no-unsafe-return
+  49:17  error    Unsafe member access .data on an `any` value                       @typescript-eslint/no-unsafe-member-access
+  55:71  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  56:13  error    Unsafe array destructuring of a tuple element with an `any` value  @typescript-eslint/no-unsafe-assignment
+  57:5   error    Unsafe return of an `any` typed value                              @typescript-eslint/no-unsafe-return
+  57:17  error    Unsafe member access .data on an `any` value                       @typescript-eslint/no-unsafe-member-access
+  63:71  warning  Unexpected any. Specify a different type                           @typescript-eslint/no-explicit-any
+  64:13  error    Unsafe array destructuring of a tuple element with an `any` value  @typescript-eslint/no-unsafe-assignment
+  65:5   error    Unsafe return of an `any` typed value                              @typescript-eslint/no-unsafe-return
+  65:17  error    Unsafe member access .data on an `any` value                       @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\api.ts
+   15:46  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  100:69  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  127:17  error    Unsafe array destructuring of a tuple element with an `any` value                                          @typescript-eslint/no-unsafe-assignment
+  135:15  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  135:38  error    Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  136:45  error    Unsafe argument of type `any` assigned to a parameter of type `string`                                     @typescript-eslint/no-unsafe-argument
+  177:58  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  190:19  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  195:11  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  195:33  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  213:11  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  213:33  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  231:33  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  234:32  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  237:34  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  247:39  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  248:13  error    Unsafe member access .response on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+  249:5   error    Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  249:18  error    Unsafe member access .response on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+  251:13  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  252:5   error    Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  252:18  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  260:39  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  261:17  error    Unsafe member access .response on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+  261:37  error    Unsafe member access .request on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  267:36  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  268:16  error    Unsafe member access .response on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+  268:50  error    Unsafe member access .response on an `any` value                                                           @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\api.types.ts
+   43:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  193:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  436:13  error    Use an `interface` instead of a `type`    @typescript-eslint/consistent-type-definitions
+  443:13  error    Use an `interface` instead of a `type`    @typescript-eslint/consistent-type-definitions
+
+C:\Users\plner\MVP_Projects\frontend\src\services\auth.service.ts
+  46:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  46:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  58:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  58:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  64:55  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  66:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  66:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  76:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  76:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\calendar.service.ts
+  114:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\plner\MVP_Projects\frontend\src\services\chart.service.ts
+  17:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  17:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  23:81  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  25:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  25:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  33:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  33:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  41:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  41:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  56:5   error    Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  56:26  error    Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\learning.service.ts
+   40:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   62:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   84:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  106:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  129:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  151:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  173:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  195:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  217:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  239:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  265:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  288:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\services\location.service.ts
+   37:13  error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   39:17  error    Unsafe member access .results on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+   44:13  error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   44:37  error    Unsafe call of an `any` typed value                                                         @typescript-eslint/no-unsafe-call
+   44:42  error    Unsafe member access .results on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+   44:63  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+   45:25  error    Unsafe member access .name on an `any` value                                                @typescript-eslint/no-unsafe-member-access
+   45:41  error    Unsafe member access .country on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+   46:9   error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   46:25  error    Unsafe member access .country on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+   47:9   error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   47:26  error    Unsafe member access .latitude on an `any` value                                            @typescript-eslint/no-unsafe-member-access
+   48:9   error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   48:27  error    Unsafe member access .longitude on an `any` value                                           @typescript-eslint/no-unsafe-member-access
+   49:9   error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   49:26  error    Unsafe member access .timezone on an `any` value                                            @typescript-eslint/no-unsafe-member-access
+   53:21  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+   72:13  error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+   73:7   error    Unsafe return of an `any` typed value                                                       @typescript-eslint/no-unsafe-return
+   73:19  error    Unsafe member access .timezone on an `any` value                                            @typescript-eslint/no-unsafe-member-access
+   74:21  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  104:21  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  115:7   error    Prefer using an optional chain expression instead, as it's more concise and easier to read  @typescript-eslint/prefer-optional-chain
+  143:21  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  160:21  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  161:57  error    Unsafe member access .message on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+  173:21  warning  Unexpected any. Specify a different type                                                    @typescript-eslint/no-explicit-any
+  174:59  error    Unsafe member access .message on an `any` value                                             @typescript-eslint/no-unsafe-member-access
+  186:13  error    Unsafe assignment of an `any` value                                                         @typescript-eslint/no-unsafe-assignment
+
+C:\Users\plner\MVP_Projects\frontend\src\services\lunarReturn.api.ts
+   97:3   error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+   97:24  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  108:3   error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  108:24  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  116:3   error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  116:24  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  124:28  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  126:3   error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  126:24  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  147:3   error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  147:24  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  172:3   error  Unsafe return of an `any` typed value                                                                      @typescript-eslint/no-unsafe-return
+  172:24  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\pushNotification.service.ts
+  34:5   error  Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  34:26  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  42:5   error  Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  42:26  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  50:5   error  Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  50:26  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\report.service.ts
+   29:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   51:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+   95:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  115:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  137:45  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\services\synastry.api.ts
+  285:3   error  Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  285:24  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  293:3   error  Unsafe return of an `any` typed value         @typescript-eslint/no-unsafe-return
+  293:24  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\services\transit.service.ts
+   45:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   47:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   60:7   error    Unsafe return of an `any` typed value     @typescript-eslint/no-unsafe-return
+   76:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   78:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   90:7   error    Unsafe return of an `any` typed value     @typescript-eslint/no-unsafe-return
+  106:66  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  123:7   error    Unsafe return of an `any` typed value     @typescript-eslint/no-unsafe-return
+  141:14  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  143:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  158:7   error    Unsafe return of an `any` typed value     @typescript-eslint/no-unsafe-return
+  174:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  176:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  188:7   error    Unsafe return of an `any` typed value     @typescript-eslint/no-unsafe-return
+
+C:\Users\plner\MVP_Projects\frontend\src\services\user.service.ts
+   25:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   26:57  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+   43:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   44:58  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+   59:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   60:62  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+   75:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   76:59  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+   88:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   89:58  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  113:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  114:57  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  126:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  127:57  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  141:50  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  144:7   error    Unsafe return of an `any` typed value            @typescript-eslint/no-unsafe-return
+  145:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  146:62  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  158:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  159:63  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  171:21  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  172:67  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\store\authStore.ts
+   16:31  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   32:51  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   60:25  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   62:13  error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   62:26  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+   81:25  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   83:13  error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   83:26  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+  114:25  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  116:13  error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+  116:26  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+  127:25  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  129:13  error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+  129:26  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\store\chartsStore.ts
+   43:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   46:21  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   48:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   48:22  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+   62:21  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   64:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   64:22  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+   79:21  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   81:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   81:22  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+   97:21  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+   99:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   99:22  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+  114:21  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  116:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+  116:22  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+  131:21  warning  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  133:9   error    Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+  133:22  error    Unsafe member access .response on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\authStore.ts
+   36:13  error    'get' is defined but never used. Allowed unused args must match /^_/u              @typescript-eslint/no-unused-vars
+   63:27  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   65:15  error    Unsafe assignment of an `any` value                                                @typescript-eslint/no-unsafe-assignment
+   65:28  error    Unsafe member access .message on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+   91:27  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   93:15  error    Unsafe assignment of an `any` value                                                @typescript-eslint/no-unsafe-assignment
+   93:28  error    Unsafe member access .message on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+  136:21  error    This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  141:27  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  161:21  error    This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  164:27  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  166:15  error    Unsafe assignment of an `any` value                                                @typescript-eslint/no-unsafe-assignment
+  166:28  error    Unsafe member access .message on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+  179:21  error    This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  182:27  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  184:15  error    Unsafe assignment of an `any` value                                                @typescript-eslint/no-unsafe-assignment
+  184:28  error    Unsafe member access .message on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\calendarStore.ts
+   87:27  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+   89:15  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+   89:28  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  105:17  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  105:23  error    Unsafe call of an `any` typed value                                                                        @typescript-eslint/no-unsafe-call
+  106:17  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  107:17  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  108:17  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  109:17  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  110:49  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  117:27  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  119:15  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  119:28  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  130:44  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  131:44  error    Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  141:27  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  143:15  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  143:28  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  160:27  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  162:15  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  162:28  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  179:27  warning  Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+  181:15  error    Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  181:28  error    Unsafe member access .message on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\chartStore.ts
+   39:11  error    'get' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+   54:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+   57:25  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+   59:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+   59:26  error    Unsafe member access .message on an `any` value                        @typescript-eslint/no-unsafe-member-access
+   74:25  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+   76:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+   76:26  error    Unsafe member access .message on an `any` value                        @typescript-eslint/no-unsafe-member-access
+   97:25  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+   99:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+   99:26  error    Unsafe member access .message on an `any` value                        @typescript-eslint/no-unsafe-member-access
+  119:25  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  121:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+  121:26  error    Unsafe member access .message on an `any` value                        @typescript-eslint/no-unsafe-member-access
+  140:25  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  142:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+  142:26  error    Unsafe member access .message on an `any` value                        @typescript-eslint/no-unsafe-member-access
+  162:25  warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  164:13  error    Unsafe assignment of an `any` value                                    @typescript-eslint/no-unsafe-assignment
+  164:26  error    Unsafe member access .message on an `any` value                        @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\learningStore.ts
+   57:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   59:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+   59:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+   74:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   76:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+   76:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+   98:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  100:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  100:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  119:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  121:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  121:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  143:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  145:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  145:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  165:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  167:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  167:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  193:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  195:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  195:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\locationStore.ts
+  107:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  108:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  108:49  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  145:59  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+  164:69  error  Invalid type "URLSearchParams" of template literal expression                                              @typescript-eslint/restrict-template-expressions
+  174:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  175:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  175:51  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+  197:9   error  Unnecessary try/catch wrapper                                                                              no-useless-catch
+  211:17  error  Unsafe assignment of an `any` value                                                                        @typescript-eslint/no-unsafe-assignment
+  212:23  error  Unsafe member access .data on an `any` value                                                               @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\reportStore.ts
+  146:17  error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  152:13  error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  152:31  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+  153:13  error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  153:29  error  Unsafe member access .data on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\synastryStore.ts
+   90:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+   92:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+   92:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  110:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  112:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  112:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+  138:23  warning  Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  140:11  error    Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  140:24  error    Unsafe member access .message on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\stores\transitStore.ts
+   55:19  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   58:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   58:34  error    Unsafe member access .transits on an `any` value     @typescript-eslint/no-unsafe-member-access
+   60:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   60:37  error    Unsafe member access .energyLevel on an `any` value  @typescript-eslint/no-unsafe-member-access
+   61:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   64:27  warning  Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+   66:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   66:28  error    Unsafe member access .message on an `any` value      @typescript-eslint/no-unsafe-member-access
+   77:19  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   80:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   80:34  error    Unsafe member access .transits on an `any` value     @typescript-eslint/no-unsafe-member-access
+   81:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   81:37  error    Unsafe member access .energyLevel on an `any` value  @typescript-eslint/no-unsafe-member-access
+   84:27  warning  Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+   86:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+   86:28  error    Unsafe member access .message on an `any` value      @typescript-eslint/no-unsafe-member-access
+   97:19  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  100:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  100:34  error    Unsafe member access .transits on an `any` value     @typescript-eslint/no-unsafe-member-access
+  103:27  warning  Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+  105:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  105:28  error    Unsafe member access .message on an `any` value      @typescript-eslint/no-unsafe-member-access
+  116:19  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  119:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  119:34  error    Unsafe member access .transits on an `any` value     @typescript-eslint/no-unsafe-member-access
+  120:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  120:37  error    Unsafe member access .energyLevel on an `any` value  @typescript-eslint/no-unsafe-member-access
+  123:27  warning  Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+  125:15  error    Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  125:28  error    Unsafe member access .message on an `any` value      @typescript-eslint/no-unsafe-member-access
+
+C:\Users\plner\MVP_Projects\frontend\src\sw.ts
+  169:17  error  Async arrow function has no 'await' expression  @typescript-eslint/require-await
+  183:35  error  Async arrow function has no 'await' expression  @typescript-eslint/require-await
+
+C:\Users\plner\MVP_Projects\frontend\src\types\api.types.ts
+  831:13  error  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+C:\Users\plner\MVP_Projects\frontend\src\utils\constants.ts
+  479:41  error  Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator  @typescript-eslint/prefer-nullish-coalescing
+
+C:\Users\plner\MVP_Projects\frontend\src\utils\lazyLoad.ts
+  12:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 865 problems (676 errors, 189 warnings)
+  21 errors and 0 warnings potentially fixable with the `--fix` option.
+
+npm error Lifecycle script `lint` failed with error:
+npm error code 1
+npm error path C:\Users\plner\MVP_Projects\frontend
+npm error workspace @astrology-saas/frontend@1.0.0
+npm error location C:\Users\plner\MVP_Projects\frontend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0

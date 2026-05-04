@@ -8,6 +8,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { doubleCsrf } from 'csrf-csrf';
 import { logger } from '../utils/logger';
+import { logCSRFViolation } from '../utils/securityLogger';
 
 // Generate a session identifier from the request
 const getSessionIdentifier = (req: Request): string => {
@@ -24,12 +25,15 @@ const getSessionIdentifier = (req: Request): string => {
 };
 
 // CSRF Configuration using csrf-csrf
-const {
-  generateCsrfToken,
-  validateRequest,
-  doubleCsrfProtection,
-} = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || 'csrf-secret-change-in-production-min-32-chars',
+const { generateCsrfToken, validateRequest, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => {
+    if (!process.env.CSRF_SECRET) {
+      throw new Error(
+        'CSRF_SECRET environment variable is required. Set it before starting the server.',
+      );
+    }
+    return process.env.CSRF_SECRET;
+  },
   getSessionIdentifier,
   cookieName: 'x-csrf-token',
   cookieOptions: {
@@ -99,6 +103,9 @@ export const csrfMiddleware = (req: Request, res: Response, next: NextFunction):
         ip: req.ip,
       });
 
+      // Log CSRF violation for security monitoring
+      logCSRFViolation(req);
+
       res.status(403).json({
         success: false,
         error: 'Invalid CSRF token',
@@ -109,6 +116,10 @@ export const csrfMiddleware = (req: Request, res: Response, next: NextFunction):
     next();
   } catch (error) {
     logger.error('CSRF validation error:', error);
+
+    // Log CSRF validation error
+    logCSRFViolation(req);
+
     res.status(403).json({
       success: false,
       error: 'CSRF validation failed',

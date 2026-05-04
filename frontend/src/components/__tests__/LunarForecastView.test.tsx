@@ -73,7 +73,12 @@ describe('LunarForecastView', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner initially', () => {
-      mockGetLunarMonthForecast.mockImplementation(() => new Promise(() => { /* intentional empty - never resolves */ }));
+      mockGetLunarMonthForecast.mockImplementation(
+        () =>
+          new Promise(() => {
+            /* intentional empty - never resolves */
+          }),
+      );
 
       render(<LunarForecastView onBack={mockOnBack} />);
 
@@ -85,7 +90,7 @@ describe('LunarForecastView', () => {
     it('should display error message when API fails', async () => {
       const errorMessage = 'Failed to load forecast';
       mockGetLunarMonthForecast.mockRejectedValue({
-        response: { data: { error: errorMessage } }
+        response: { data: { error: errorMessage } },
       });
 
       render(<LunarForecastView onBack={mockOnBack} />);
@@ -258,14 +263,23 @@ describe('LunarForecastView', () => {
 
     describe('Back Button', () => {
       it('should call onBack when back button is clicked', async () => {
+        // Ensure the mock is resolved
+        mockGetLunarMonthForecast.mockResolvedValue(mockForecast);
+
         render(<LunarForecastView onBack={mockOnBack} />);
 
-        await waitFor(() => {
-          expect(screen.getByText('Lunar Month Forecast')).toBeInTheDocument();
-        });
+        // Wait for component to finish loading and render
+        let backButton;
+        await waitFor(
+          () => {
+            backButton = screen.getByText('← Back');
+            expect(backButton).toBeInTheDocument();
+          },
+          { timeout: 3000 },
+        );
 
-        const backButton = screen.getByText('← Back');
-        await userEvent.click(backButton);
+        // Now click it
+        await userEvent.click(backButton!);
         expect(mockOnBack).toHaveBeenCalledTimes(1);
       });
     });

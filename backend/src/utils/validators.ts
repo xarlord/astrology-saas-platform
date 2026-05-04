@@ -9,8 +9,18 @@ import { Request, Response, NextFunction } from 'express';
 export const registerSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
-  password: Joi.string().min(8).pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:\'"\\\\|,.<>\\/?])')).required()
-    .messages({ 'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' }),
+  password: Joi.string()
+    .min(8)
+    .pattern(
+      new RegExp(
+        '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:\'"\\\\|,.<>\\/?])',
+      ),
+    )
+    .required()
+    .messages({
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+    }),
 });
 
 export const loginSchema = Joi.object({
@@ -22,25 +32,55 @@ export const refreshTokenSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
 
+export const forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+export const resetPasswordSchema = Joi.object({
+  token: Joi.string().required(),
+  password: Joi.string()
+    .min(8)
+    .pattern(
+      new RegExp(
+        '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:\'"\\\\|,.<>\\/?])',
+      ),
+    )
+    .required()
+    .messages({
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+    }),
+});
+
 // Chart validators
 export const createChartSchema = Joi.object({
   name: Joi.string().min(1).max(200).required(),
   type: Joi.string().valid('natal', 'synastry', 'composite', 'transit', 'progressed').optional(),
   birth_date: Joi.date().required(),
-  birth_time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/).required(),
+  birth_time: Joi.string()
+    .pattern(/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/)
+    .required(),
   birth_time_unknown: Joi.boolean().default(false),
   birth_place_name: Joi.string().min(1).max(200).required(),
   birth_latitude: Joi.number().min(-90).max(90).required(),
   birth_longitude: Joi.number().min(-180).max(180).required(),
   birth_timezone: Joi.string().required(),
-  house_system: Joi.string().valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric').optional(),
+  house_system: Joi.string()
+    .valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric')
+    .optional(),
   zodiac: Joi.string().valid('tropical', 'sidereal').optional(),
-  sidereal_mode: Joi.string().when('zodiac', { is: 'sidereal', then: Joi.optional(), otherwise: Joi.forbidden() }),
+  sidereal_mode: Joi.string().when('zodiac', {
+    is: 'sidereal',
+    then: Joi.optional(),
+    otherwise: Joi.forbidden(),
+  }),
 });
 
 export const updateChartSchema = Joi.object({
   name: Joi.string().min(1).max(200).optional(),
-  house_system: Joi.string().valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric').optional(),
+  house_system: Joi.string()
+    .valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric')
+    .optional(),
   zodiac: Joi.string().valid('tropical', 'sidereal').optional(),
   sidereal_mode: Joi.string().optional(),
 });
@@ -56,6 +96,14 @@ export const calculateTransitsSchema = Joi.object({
 export const paginationSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).max(100).default(20),
+});
+
+// Calendar event validators
+export const createCalendarEventSchema = Joi.object({
+  event_type: Joi.string().min(1).max(100).required(),
+  event_date: Joi.date().required(),
+  event_data: Joi.object().unknown(true).max(50).optional(),
+  interpretation: Joi.string().max(5000).optional(),
 });
 
 /**

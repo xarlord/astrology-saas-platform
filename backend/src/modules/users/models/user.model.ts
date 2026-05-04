@@ -11,7 +11,7 @@ export interface User {
   password_hash: string;
   avatar_url?: string;
   timezone: string;
-  plan: 'free' | 'premium' | 'professional';
+  plan: 'free' | 'pro' | 'premium';
   subscription_status: 'active' | 'canceled' | 'expired';
   subscription_renews_at?: Date;
   preferences: Record<string, unknown>;
@@ -41,10 +41,7 @@ class UserModel {
    * Find user by ID
    */
   async findById(id: string): Promise<User | null> {
-    const user = await knex(this.tableName)
-      .where({ id })
-      .whereNull('deleted_at')
-      .first();
+    const user = await knex(this.tableName).where({ id }).whereNull('deleted_at').first();
 
     return user || null;
   }
@@ -53,10 +50,7 @@ class UserModel {
    * Find user by email
    */
   async findByEmail(email: string): Promise<User | null> {
-    const user = await knex(this.tableName)
-      .where({ email })
-      .whereNull('deleted_at')
-      .first();
+    const user = await knex(this.tableName).where({ email }).whereNull('deleted_at').first();
 
     return user || null;
   }
@@ -98,12 +92,10 @@ class UserModel {
    * Soft delete user
    */
   async softDelete(id: string): Promise<boolean> {
-    const count = await knex(this.tableName)
-      .where({ id })
-      .update({
-        deleted_at: new Date(),
-        updated_at: new Date(),
-      });
+    const count = await knex(this.tableName).where({ id }).update({
+      deleted_at: new Date(),
+      updated_at: new Date(),
+    });
 
     return count > 0;
   }
@@ -113,9 +105,9 @@ class UserModel {
    */
   async updatePlan(
     id: string,
-    plan: 'free' | 'premium' | 'professional',
+    plan: 'free' | 'pro' | 'premium',
     status: 'active' | 'canceled' | 'expired' = 'active',
-    renewsAt?: Date
+    renewsAt?: Date,
   ): Promise<User | null> {
     const [user] = await knex(this.tableName)
       .where({ id })
@@ -161,6 +153,18 @@ class UserModel {
       .returning('*');
 
     return updatedUser || null;
+  }
+
+  /**
+   * Update user password directly
+   */
+  async updatePassword(id: string, passwordHash: string): Promise<boolean> {
+    const count = await knex(this.tableName).where({ id }).whereNull('deleted_at').update({
+      password_hash: passwordHash,
+      updated_at: new Date(),
+    });
+
+    return count > 0;
   }
 }
 

@@ -7,12 +7,7 @@
  * Run: npx jest --testPathPattern="calendar.live" --forceExit --verbose
  */
 
-import {
-  authed,
-  getCsrf,
-  setupUserWithChart,
-  checkServerRunning,
-} from './helpers';
+import { authed, getCsrf, setupUserWithChart, checkServerRunning } from './helpers';
 
 describe('Calendar Controller - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -40,7 +35,7 @@ describe('Calendar Controller - LIVE SYSTEM', () => {
         `/calendar/month/2026/3?chartId=${chartId}`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect([200, 400, 404]).toContain(res.status);
@@ -59,7 +54,7 @@ describe('Calendar Controller - LIVE SYSTEM', () => {
         `/calendar/month/2026/6?chartId=${chartId}`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect([200, 400, 404]).toContain(res.status);
@@ -115,13 +110,7 @@ describe('Calendar Controller - LIVE SYSTEM', () => {
       const { csrf, cookies: c } = await getCsrf(cookies);
       cookies = c;
 
-      const res = await authed(
-        'DELETE',
-        `/calendar/events/${eventId}`,
-        accessToken,
-        cookies,
-        csrf
-      );
+      const res = await authed('DELETE', `/calendar/events/${eventId}`, accessToken, cookies, csrf);
 
       expect([200, 404]).toContain(res.status);
     }, 10000);
@@ -132,13 +121,7 @@ describe('Calendar Controller - LIVE SYSTEM', () => {
       const { csrf, cookies: c } = await getCsrf(cookies);
       cookies = c;
 
-      const res = await authed(
-        'DELETE',
-        `/calendar/events/${eventId}`,
-        accessToken,
-        cookies,
-        csrf
-      );
+      const res = await authed('DELETE', `/calendar/events/${eventId}`, accessToken, cookies, csrf);
 
       expect([404, 200]).toContain(res.status);
     }, 10000);

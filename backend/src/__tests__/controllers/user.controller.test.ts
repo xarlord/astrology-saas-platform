@@ -13,6 +13,8 @@ import {
   updateUserPreferences,
   deleteAccount,
   getUserCharts,
+  getEmailPreferences,
+  updateEmailPreferences,
 } from '../../modules/users/controllers/user.controller';
 import { AppError } from '../../utils/appError';
 import UserModel from '../../modules/users/models/user.model';
@@ -45,6 +47,7 @@ describe('User Controller', () => {
     mockRequest = {
       user: { id: '123', email: 'test@example.com' },
       body: {},
+      validated: {}, // Add validated property for validation middleware
       params: {},
       query: {},
       get: jest.fn().mockReturnValue('test-agent'),
@@ -90,14 +93,18 @@ describe('User Controller', () => {
     it('should throw 404 if user not found', async () => {
       (UserModel.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(getCurrentUser(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getCurrentUser(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('User not found');
+      await expect(
+        getCurrentUser(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        getCurrentUser(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow('User not found');
     });
   });
 
   describe('updateCurrentUser', () => {
     it('should update user name', async () => {
-      mockRequest.body = { name: 'Updated Name' };
+      mockRequest.validated = { name: 'Updated Name' };
 
       const updatedUser = {
         id: '123',
@@ -116,7 +123,7 @@ describe('User Controller', () => {
     });
 
     it('should update avatar_url', async () => {
-      mockRequest.body = {
+      mockRequest.validated = {
         avatar_url: 'https://example.com/avatar.jpg',
       };
 
@@ -136,7 +143,7 @@ describe('User Controller', () => {
     });
 
     it('should update timezone', async () => {
-      mockRequest.body = { timezone: 'America/Los_Angeles' };
+      mockRequest.validated = { timezone: 'America/Los_Angeles' };
 
       const updatedUser = {
         id: '123',
@@ -154,7 +161,7 @@ describe('User Controller', () => {
     });
 
     it('should update multiple fields', async () => {
-      mockRequest.body = {
+      mockRequest.validated = {
         name: 'New Name',
         avatar_url: 'https://example.com/new.jpg',
         timezone: 'Europe/Paris',
@@ -180,12 +187,16 @@ describe('User Controller', () => {
     });
 
     it('should throw 404 if user not found', async () => {
-      mockRequest.body = { name: 'Updated' };
+      mockRequest.validated = { name: 'Updated' };
 
       (UserModel.update as jest.Mock).mockResolvedValue(null);
 
-      await expect(updateCurrentUser(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(updateCurrentUser(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('User not found');
+      await expect(
+        updateCurrentUser(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        updateCurrentUser(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow('User not found');
     });
   });
 
@@ -257,8 +268,12 @@ describe('User Controller', () => {
     it('should throw 404 if user not found', async () => {
       (UserModel.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(getUserPreferences(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(getUserPreferences(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('User not found');
+      await expect(
+        getUserPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        getUserPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow('User not found');
     });
   });
 
@@ -270,7 +285,7 @@ describe('User Controller', () => {
         defaultZodiac: 'sidereal',
       };
 
-      mockRequest.body = preferences;
+      mockRequest.validated = preferences;
 
       const updatedUser = {
         id: '123',
@@ -294,7 +309,7 @@ describe('User Controller', () => {
         theme: 'dark',
       };
 
-      mockRequest.body = preferences;
+      mockRequest.validated = preferences;
 
       const updatedUser = {
         id: '123',
@@ -312,12 +327,16 @@ describe('User Controller', () => {
     });
 
     it('should throw 404 if user not found', async () => {
-      mockRequest.body = { theme: 'dark' };
+      mockRequest.validated = { theme: 'dark' };
 
       (UserModel.updatePreferences as jest.Mock).mockResolvedValue(null);
 
-      await expect(updateUserPreferences(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow(AppError);
-      await expect(updateUserPreferences(mockRequest as Request, mockResponse as Response, mockNext)).rejects.toThrow('User not found');
+      await expect(
+        updateUserPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+      await expect(
+        updateUserPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow('User not found');
     });
   });
 
@@ -359,6 +378,107 @@ describe('User Controller', () => {
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       expect(response.data).toBeDefined();
       expect(response.data.user).toBeDefined();
+    });
+  });
+
+  describe('getEmailPreferences', () => {
+    it('should return default preferences when none set', async () => {
+      (UserModel.findById as jest.Mock).mockResolvedValue({
+        id: '123',
+        preferences: {},
+      });
+
+      await getEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: {
+            emailNotifications: { marketing: true, transactional: true },
+          },
+        }),
+      );
+    });
+
+    it('should return stored email preferences', async () => {
+      (UserModel.findById as jest.Mock).mockResolvedValue({
+        id: '123',
+        preferences: {
+          emailNotifications: { marketing: false, transactional: true },
+        },
+      });
+
+      await getEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: {
+            emailNotifications: { marketing: false, transactional: true },
+          },
+        }),
+      );
+    });
+
+    it('should throw 404 when user not found', async () => {
+      (UserModel.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(
+        getEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
+    });
+  });
+
+  describe('updateEmailPreferences', () => {
+    it('should update email preferences via updatePreferences', async () => {
+      const updatedUser = {
+        id: '123',
+        preferences: {
+          emailNotifications: { marketing: false, transactional: true },
+        },
+      };
+      (UserModel.updatePreferences as jest.Mock).mockResolvedValue(updatedUser);
+
+      mockRequest.validated = { marketing: false, transactional: true };
+
+      await updateEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(UserModel.updatePreferences).toHaveBeenCalledWith('123', {
+        emailNotifications: { marketing: false, transactional: true },
+      });
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: {
+            emailNotifications: { marketing: false, transactional: true },
+          },
+        }),
+      );
+    });
+
+    it('should use defaults for missing boolean fields', async () => {
+      (UserModel.updatePreferences as jest.Mock).mockResolvedValue({
+        id: '123',
+        preferences: {},
+      });
+
+      mockRequest.validated = {};
+
+      await updateEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(UserModel.updatePreferences).toHaveBeenCalledWith('123', {
+        emailNotifications: { marketing: true, transactional: true },
+      });
+    });
+
+    it('should throw 404 when user not found after update', async () => {
+      (UserModel.updatePreferences as jest.Mock).mockResolvedValue(null);
+
+      mockRequest.validated = { marketing: true };
+
+      await expect(
+        updateEmailPreferences(mockRequest as Request, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 });

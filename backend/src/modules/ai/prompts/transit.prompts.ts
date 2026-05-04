@@ -8,7 +8,8 @@ import { PromptTemplate } from './index';
 export const TRANSIT_PROMPTS: Record<string, PromptTemplate> = {
   daily: {
     name: 'daily-transit',
-    systemMessage: 'You are an expert astrologer providing practical daily transit interpretations.',
+    systemMessage:
+      'You are an expert astrologer providing practical daily transit interpretations.',
     userPrompt: `Provide a daily transit forecast interpretation:
 
 NATAL CHART:
@@ -50,7 +51,8 @@ Keep it practical, actionable, and concise (200-300 words).`,
 
   weekly: {
     name: 'weekly-transit',
-    systemMessage: 'You are an astrologer providing comprehensive weekly forecasts with strategic insights.',
+    systemMessage:
+      'You are an astrologer providing comprehensive weekly forecasts with strategic insights.',
     userPrompt: `Provide a weekly transit forecast:
 
 NATAL CHART:

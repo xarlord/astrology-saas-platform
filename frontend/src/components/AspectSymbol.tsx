@@ -9,7 +9,12 @@ interface AspectSymbolProps {
   className?: string;
 }
 
-export function AspectSymbol({ aspect, size = 'md', showName = false, className = '' }: AspectSymbolProps) {
+export function AspectSymbol({
+  aspect,
+  size = 'md',
+  showName = false,
+  className = '',
+}: AspectSymbolProps) {
   const symbols: Record<string, string> = {
     conjunction: '☌',
     opposition: '☍',

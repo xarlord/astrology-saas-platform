@@ -1,8 +1,11 @@
 # Astronomy Engine Implementation Guide
 
-**Status:** Technical Specification
+**Status:** Historical Spec (implemented — see divergences table below)
 **Created:** 2026-03-19
+**Updated:** 2026-04-05
 **Decision:** FREE alternative to Swiss Ephemeris (MIT License)
+
+> **Note:** This spec was used to guide implementation. The as-built service lives at `src/modules/shared/services/astronomyEngine.service.ts`. Key divergences are tracked in the table below. `swisseph.stub.ts` still exists as a fallback but is no longer the primary calculation path.
 
 ---
 
@@ -21,6 +24,23 @@ This document provides the complete implementation guide for replacing the mock 
 | Maintenance | Paid support | Active open source |
 
 **Verdict:** 1 arcminute accuracy is sufficient for astrology applications. The 60x cost savings and simpler deployment make Astronomy Engine the clear choice.
+
+---
+
+## Implementation Divergences
+
+> **For the canonical implementation, see `backend/src/modules/shared/services/astronomyEngine.service.ts`.**
+> The code samples below reflect the original planning spec; the items in this table document what diverged during implementation.
+
+| Area | Spec (below) | As-Built | Notes |
+|------|-------------|----------|-------|
+| **Chiron** | Not included in PLANETS array | `ChironPosition` interface + `calculateChiron()` method + Chiron in `PLANET_SYMBOLS` | Centaur body calculated via Kepler's equation with orbital elements |
+| **Lunar Nodes** | `{ northNode: number; southNode: number }` | `LunarNodePosition` interface with structured `{ longitude, sign, degree }` per node | Full Meeus formula with T^2 and T^3 terms; sign/degree breakdown included |
+| **Planet Symbols** | Not present | `PLANET_SYMBOLS` constant mapping 13 bodies to Unicode glyphs | Includes Chiron ⚷, NorthNode ☊, SouthNode ☋ |
+| **ZodiacSign type** | Inline `string` | Exported `ZodiacSign` union type + `ZODIAC_SIGNS` const assertion | Enables type-safe sign references |
+| **PlanetaryPosition** | 9 fields | 12 fields — added `signIndex`, `second`, `house?` | `signIndex` (0-11), `second` (arc-seconds), `house` (1-12, optional, set later) |
+| **API surface** | Two methods on class | Four methods: `calculatePlanetaryPositions`, `calculateLunarNodes`, `calculateChiron`, `getDailyTransits` | `getDailyTransits` returns plain-object shape compatible with legacy `swissEphemeris.getDailyTransits()` |
+| **Internal helpers** | Inline calculations | `longitudeToSignPosition()` helper, `calculateJulianDay()`, `calculateLocalSiderealTime()` | Uses `astronomy.MakeTime` / `astronomy.GeoVector` / `astronomy.Ecliptic` instead of `EclipticGeoCoordinates` |
 
 ---
 
@@ -689,4 +709,4 @@ describe('NatalChartService', () => {
 
 ---
 
-**Last Updated:** 2026-03-19
+**Last Updated:** 2026-04-05

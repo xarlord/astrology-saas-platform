@@ -7,6 +7,7 @@ import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import { UserModel } from '../models';
 import { sanitizeUser } from '../../../utils/helpers';
+import { DEFAULT_EMAIL_PREFS, EmailPreferences } from '../../../services/email.service';
 
 /**
  * Get current user
@@ -21,7 +22,7 @@ export async function getCurrentUser(req: AuthenticatedRequest, res: Response): 
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 
@@ -30,7 +31,15 @@ export async function getCurrentUser(req: AuthenticatedRequest, res: Response): 
  */
 export async function updateCurrentUser(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
-  const { name, avatar_url, timezone } = req.body;
+
+  // Use validated data from request middleware
+  const validatedData = req.validated as {
+    name?: string;
+    avatar_url?: string;
+    timezone?: string;
+  };
+
+  const { name, avatar_url, timezone } = validatedData;
 
   const user = await UserModel.update(userId, {
     name,
@@ -44,7 +53,7 @@ export async function updateCurrentUser(req: AuthenticatedRequest, res: Response
 
   res.status(200).json({
     success: true,
-    data: { user: sanitizeUser(user) },
+    data: { user: sanitizeUser(user as unknown as Record<string, unknown>) },
   });
 }
 
@@ -85,9 +94,14 @@ export async function getUserPreferences(req: AuthenticatedRequest, res: Respons
 /**
  * Update user preferences
  */
-export async function updateUserPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+export async function updateUserPreferences(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
   const userId = req.user.id;
-  const preferences = req.body;
+
+  // Use validated data from request middleware
+  const preferences = req.validated as Record<string, unknown>;
 
   const user = await UserModel.updatePreferences(userId, preferences);
 
@@ -113,5 +127,62 @@ export async function deleteAccount(req: AuthenticatedRequest, res: Response): P
   res.status(200).json({
     success: true,
     message: 'Account deleted successfully',
+  });
+}
+
+/**
+ * Get email notification preferences
+ */
+export async function getEmailPreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const userId = req.user.id;
+
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  const emailPrefs: EmailPreferences = (user.preferences
+    ?.emailNotifications as EmailPreferences) ?? { ...DEFAULT_EMAIL_PREFS };
+
+  res.status(200).json({
+    success: true,
+    data: { emailNotifications: emailPrefs },
+  });
+}
+
+/**
+ * Update email notification preferences
+ */
+export async function updateEmailPreferences(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const userId = req.user.id;
+
+  // Use validated data from request middleware
+  const validatedData = req.validated as {
+    marketing?: boolean;
+    transactional?: boolean;
+  };
+
+  const { marketing, transactional } = validatedData;
+
+  const emailPrefs: EmailPreferences = {
+    marketing: typeof marketing === 'boolean' ? marketing : DEFAULT_EMAIL_PREFS.marketing,
+    transactional:
+      typeof transactional === 'boolean' ? transactional : DEFAULT_EMAIL_PREFS.transactional,
+  };
+
+  const user = await UserModel.updatePreferences(userId, {
+    emailNotifications: emailPrefs,
+  });
+
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: { emailNotifications: emailPrefs },
   });
 }

@@ -2,6 +2,8 @@
  * Push Notification Service Tests
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Set test environment before importing anything
 process.env.NODE_ENV = 'test';
 
@@ -83,7 +85,9 @@ describe('Push Notification Service', () => {
     expect(subscription.endpoint).toBe(subscriptionData.endpoint);
     expect(subscription.user_id).toBe(subscriptionData.userId);
     expect(subscription.keys).toEqual(subscriptionData.keys);
-    expect(mockPushSubscriptionModel.findByEndpoint).toHaveBeenCalledWith(subscriptionData.endpoint);
+    expect(mockPushSubscriptionModel.findByEndpoint).toHaveBeenCalledWith(
+      subscriptionData.endpoint,
+    );
     expect(mockPushSubscriptionModel.create).toHaveBeenCalledWith(subscriptionData);
   });
 
@@ -123,7 +127,9 @@ describe('Push Notification Service', () => {
 
     expect(result).toHaveProperty('id');
     expect(result.user_id).toBe(subscriptionData.userId);
-    expect(mockPushSubscriptionModel.deleteByEndpoint).toHaveBeenCalledWith(subscriptionData.endpoint);
+    expect(mockPushSubscriptionModel.deleteByEndpoint).toHaveBeenCalledWith(
+      subscriptionData.endpoint,
+    );
     expect(mockPushSubscriptionModel.create).toHaveBeenCalledWith(subscriptionData);
   });
 

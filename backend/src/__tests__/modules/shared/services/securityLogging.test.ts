@@ -3,6 +3,8 @@
  * Comprehensive unit tests for security event logging
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as SecurityLoggingService from '../../../../modules/shared/services/securityLogging.service';
 import db from '../../../../config/database';
 
@@ -132,11 +134,10 @@ describe('SecurityLoggingService', () => {
 
       mockQueryBuilder.returning.mockResolvedValueOnce([mockEvent]);
 
-      const result = await SecurityLoggingService.logLoginAttempt(
-        'test@example.com',
-        true,
-        { userId: 'user-123', ipAddress: '192.168.1.1' }
-      );
+      const result = await SecurityLoggingService.logLoginAttempt('test@example.com', true, {
+        userId: 'user-123',
+        ipAddress: '192.168.1.1',
+      });
 
       expect(result.action).toBe('login_success');
       expect(result.success).toBe(true);
@@ -154,11 +155,10 @@ describe('SecurityLoggingService', () => {
 
       mockQueryBuilder.returning.mockResolvedValueOnce([mockEvent]);
 
-      const result = await SecurityLoggingService.logLoginAttempt(
-        'test@example.com',
-        false,
-        { failureReason: 'User not found', ipAddress: '192.168.1.1' }
-      );
+      const result = await SecurityLoggingService.logLoginAttempt('test@example.com', false, {
+        failureReason: 'User not found',
+        ipAddress: '192.168.1.1',
+      });
 
       expect(result.action).toBe('login_failed');
       expect(result.success).toBe(false);
@@ -198,11 +198,9 @@ describe('SecurityLoggingService', () => {
 
       mockQueryBuilder.returning.mockResolvedValueOnce([mockEvent]);
 
-      const result = await SecurityLoggingService.logTokenRefresh(
-        'user-123',
-        true,
-        { ipAddress: '192.168.1.1' }
-      );
+      const result = await SecurityLoggingService.logTokenRefresh('user-123', true, {
+        ipAddress: '192.168.1.1',
+      });
 
       expect(result.action).toBe('token_refresh');
       expect(result.success).toBe(true);
@@ -220,11 +218,10 @@ describe('SecurityLoggingService', () => {
 
       mockQueryBuilder.returning.mockResolvedValueOnce([mockEvent]);
 
-      const result = await SecurityLoggingService.logTokenRefresh(
-        'user-123',
-        false,
-        { failureReason: 'Token expired', ipAddress: '192.168.1.1' }
-      );
+      const result = await SecurityLoggingService.logTokenRefresh('user-123', false, {
+        failureReason: 'Token expired',
+        ipAddress: '192.168.1.1',
+      });
 
       expect(result.action).toBe('token_refresh_failed');
       expect(result.success).toBe(false);
@@ -412,7 +409,7 @@ describe('SecurityLoggingService', () => {
 
       const result = await SecurityLoggingService.logRateLimitExceeded(
         '192.168.1.1',
-        '/api/auth/login'
+        '/api/auth/login',
       );
 
       expect(result.action).toBe('rate_limit_exceeded');
@@ -435,7 +432,7 @@ describe('SecurityLoggingService', () => {
       const result = await SecurityLoggingService.logSuspiciousActivity(
         'brute_force_detected',
         { attempts: 10, window: '5 minutes' },
-        { ipAddress: '192.168.1.1' }
+        { ipAddress: '192.168.1.1' },
       );
 
       expect(result.action).toBe('brute_force_detected');

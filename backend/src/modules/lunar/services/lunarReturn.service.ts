@@ -8,10 +8,9 @@ import {
   AstronomyEngineService,
   ZODIAC_SIGNS as REAL_ZODIAC_SIGNS,
 } from '../../shared/services/astronomyEngine.service';
-import {
-  calculateMoonPhase,
-} from '../../calendar/services/calendar.service';
+import { calculateMoonPhase } from '../../calendar/services/calendar.service';
 import { MoonPhase } from '../../calendar/models/calendar.model';
+import knex from '../../../config/database';
 
 // Module-level singleton for the real calculation engine
 const astronomyEngine = new AstronomyEngineService();
@@ -96,10 +95,13 @@ function normalizeAngle(angle: number): number {
 /**
  * Convert natal moon position to absolute ecliptic longitude (0-360)
  */
-function moonPositionToLongitude(moon: { sign: string; degree: number; minute: number; second: number }): number {
-  const signIndex = REAL_ZODIAC_SIGNS.findIndex(
-    s => s.toLowerCase() === moon.sign.toLowerCase()
-  );
+function moonPositionToLongitude(moon: {
+  sign: string;
+  degree: number;
+  minute: number;
+  second: number;
+}): number {
+  const signIndex = REAL_ZODIAC_SIGNS.findIndex((s) => s.toLowerCase() === moon.sign.toLowerCase());
   const signBase = signIndex >= 0 ? signIndex * 30 : 0;
   return signBase + moon.degree + moon.minute / 60 + moon.second / 3600;
 }
@@ -191,7 +193,7 @@ function calculateJulianDaySimple(date: Date): number {
  */
 export function calculateLunarReturnChart(
   natalChart: NatalChart,
-  returnDate: Date
+  returnDate: Date,
 ): LunarReturnChart {
   // Get Moon phase from calendar service (reference-based, accurate)
   const moonPhaseResult = calculateMoonPhase(returnDate);
@@ -200,7 +202,7 @@ export function calculateLunarReturnChart(
   const positions = astronomyEngine.calculatePlanetaryPositions(
     returnDate,
     0, // latitude not needed for ecliptic positions
-    0  // longitude not needed for ecliptic positions
+    0, // longitude not needed for ecliptic positions
   );
 
   const moonPos = positions.get('Moon');
@@ -229,14 +231,16 @@ export function calculateLunarReturnChart(
   }
 
   // Calculate house placement using natal moon longitude
-  const moonLongitude = moonPos ? moonPos.longitude : moonPositionToLongitude({ sign, degree, minute, second });
+  const moonLongitude = moonPos
+    ? moonPos.longitude
+    : moonPositionToLongitude({ sign, degree, minute, second });
   const housePlacement = Math.floor(normalizeAngle(moonLongitude) / 30) + 1;
 
   // Generate aspects using real planetary positions if available
   const aspects: LunarAspect[] = generateMoonAspects(
     moonPos ? moonPos.longitude : moonPositionToLongitude({ sign, degree, minute, second }),
     natalChart.moon,
-    positions
+    positions,
   );
 
   // Determine theme and intensity
@@ -266,7 +270,7 @@ export function calculateLunarReturnChart(
 function generateMoonAspects(
   transitingMoonDegree: number,
   _natalMoon: { degree: number; minute: number },
-  realPositions?: Map<string, { name: string; longitude: number; sign: string }>
+  realPositions?: Map<string, { name: string; longitude: number; sign: string }>,
 ): LunarAspect[] {
   const aspects: LunarAspect[] = [];
 
@@ -355,11 +359,11 @@ function getLunarReturnTheme(house: number, moonPhase: MoonPhase): string {
   };
 
   const phaseModifiers: Record<MoonPhase, string> = {
-    'new': 'with Fresh Intentions',
+    new: 'with Fresh Intentions',
     'waxing-crescent': 'with Growing Energy',
     'first-quarter': 'with Decisive Action',
     'waxing-gibbous': 'with Building Momentum',
-    'full': 'with Culmination and Clarity',
+    full: 'with Culmination and Clarity',
     'waning-gibbous': 'with Gratitude and Sharing',
     'last-quarter': 'with Reflection and Release',
     'waning-crescent': 'with Rest and Renewal',
@@ -374,7 +378,7 @@ function getLunarReturnTheme(house: number, moonPhase: MoonPhase): string {
 function calculateLunarIntensity(
   house: number,
   moonPhase: MoonPhase,
-  aspects: LunarAspect[]
+  aspects: LunarAspect[],
 ): number {
   let intensity = 5; // Base score
 
@@ -404,11 +408,16 @@ function calculateLunarIntensity(
  */
 function getMoonAspectInterpretation(aspect: string, planet: string): string {
   const interpretations: Record<string, string> = {
-    'Moon-conjunction-Sun': 'Your conscious and emotional nature are aligned, creating harmony between your inner and outer self.',
-    'Moon-opposition-Sun': 'Tension between your emotional needs and your conscious desires creates an opportunity for growth and integration.',
-    'Moon-trine-Sun': 'Harmonious flow between your feelings and actions creates ease in self-expression.',
-    'Moon-square-Mercury': 'Emotional communications may be challenging; practice clarity and patience.',
-    'Moon-trine-Venus': 'Your emotional nature is in harmony with your capacity for love and connection.',
+    'Moon-conjunction-Sun':
+      'Your conscious and emotional nature are aligned, creating harmony between your inner and outer self.',
+    'Moon-opposition-Sun':
+      'Tension between your emotional needs and your conscious desires creates an opportunity for growth and integration.',
+    'Moon-trine-Sun':
+      'Harmonious flow between your feelings and actions creates ease in self-expression.',
+    'Moon-square-Mercury':
+      'Emotional communications may be challenging; practice clarity and patience.',
+    'Moon-trine-Venus':
+      'Your emotional nature is in harmony with your capacity for love and connection.',
   };
 
   const key = `Moon-${aspect}-${planet}`;
@@ -421,7 +430,7 @@ function getMoonAspectInterpretation(aspect: string, planet: string): string {
 export function generateLunarMonthForecast(
   userId: string,
   natalChart: NatalChart,
-  returnDate: Date
+  returnDate: Date,
 ): LunarMonthForecast {
   const chart = calculateLunarReturnChart(natalChart, returnDate);
 
@@ -499,7 +508,11 @@ function generatePredictions(chart: LunarReturnChart): MonthlyPrediction[] {
       category: 'creativity',
       prediction: 'New creative projects and self-expression are favored this month',
       likelihood: 7,
-      advice: ['Start a creative project', 'Express yourself authentically', 'Take calculated risks'],
+      advice: [
+        'Start a creative project',
+        'Express yourself authentically',
+        'Take calculated risks',
+      ],
     },
     2: {
       category: 'finances',
@@ -614,63 +627,63 @@ function generateJournalPrompts(chart: LunarReturnChart): string[] {
   // House-based prompts
   const housePrompts: Record<number, string[]> = {
     1: [
-    'How can I express my authentic self more fully this month?',
-    'What new beginnings am I ready to embrace?',
-    'How is my relationship with myself evolving?',
-  ],
+      'How can I express my authentic self more fully this month?',
+      'What new beginnings am I ready to embrace?',
+      'How is my relationship with myself evolving?',
+    ],
     2: [
-    'What do I truly value and cherish?',
-    'How can I better align my spending with my values?',
-    'What material or emotional resources do I need to feel secure?',
-  ],
+      'What do I truly value and cherish?',
+      'How can I better align my spending with my values?',
+      'What material or emotional resources do I need to feel secure?',
+    ],
     4: [
-    'What emotional patterns am I noticing in myself?',
-    'How can I nurture myself more deeply?',
-    'What does "home" mean to me?',
-  ],
+      'What emotional patterns am I noticing in myself?',
+      'How can I nurture myself more deeply?',
+      'What does "home" mean to me?',
+    ],
     5: [
-    'What creative expressions are calling to me?',
-    'How can I bring more playfulness into my life?',
-    'What romantic connection do I desire?',
-  ],
+      'What creative expressions are calling to me?',
+      'How can I bring more playfulness into my life?',
+      'What romantic connection do I desire?',
+    ],
     6: [
-    'How can I improve my daily routines?',
-    'What work habits no longer serve me?',
-    'How can I be of service while maintaining my boundaries?',
-  ],
+      'How can I improve my daily routines?',
+      'What work habits no longer serve me?',
+      'How can I be of service while maintaining my boundaries?',
+    ],
     7: [
-    'What relationships need my attention?',
-    'How can I create more balance in my partnerships?',
-    'What am I ready to receive from others?',
-    'What am I ready to let go of?',
-  ],
+      'What relationships need my attention?',
+      'How can I create more balance in my partnerships?',
+      'What am I ready to receive from others?',
+      'What am I ready to let go of?',
+    ],
     8: [
-    'What deep transformations am I ready for?',
-    'What shared resources need attention?',
-    'How can I embrace change rather than fear it?',
-    'What fears am I ready to release?',
-  ],
+      'What deep transformations am I ready for?',
+      'What shared resources need attention?',
+      'How can I embrace change rather than fear it?',
+      'What fears am I ready to release?',
+    ],
     9: [
-    'What philosophical questions are arising?',
-    'How can I expand my horizons this month?',
-    'What new learning opportunities am I drawn to?',
-  ],
+      'What philosophical questions are arising?',
+      'How can I expand my horizons this month?',
+      'What new learning opportunities am I drawn to?',
+    ],
     10: [
-    'What career goals are calling to me?',
-    'How can I step into my power more fully?',
-    'What impression am I making on others?',
-  ],
+      'What career goals are calling to me?',
+      'How can I step into my power more fully?',
+      'What impression am I making on others?',
+    ],
     11: [
-    'How can I better connect with my community?',
-    'What friendships need attention?',
-    'What groups or organizations align with my values?',
-  ],
+      'How can I better connect with my community?',
+      'What friendships need attention?',
+      'What groups or organizations align with my values?',
+    ],
     12: [
-    'What spiritual insights am I receiving?',
-    'What old patterns am I ready to release?',
-    'How can I deepen my connection to the unconscious?',
-    'What dreams or intuition should I pay attention to?',
-  ],
+      'What spiritual insights am I receiving?',
+      'What old patterns am I ready to release?',
+      'How can I deepen my connection to the unconscious?',
+      'What dreams or intuition should I pay attention to?',
+    ],
   };
 
   const promptsForHouse = housePrompts[chart.housePlacement as keyof typeof housePrompts];
@@ -680,14 +693,17 @@ function generateJournalPrompts(chart: LunarReturnChart): string[] {
 
   // Add moon phase prompts
   if (chart.moonPhase === 'new') {
-    prompts.push('What seeds do I want to plant this lunar month?', 'What new beginnings am I ready for?');
+    prompts.push(
+      'What seeds do I want to plant this lunar month?',
+      'What new beginnings am I ready for?',
+    );
   }
 
   if (chart.moonPhase === 'full') {
     prompts.push(
       'What have I accomplished since the last new moon?',
       'What am I ready to celebrate?',
-      'What must I release to move forward?'
+      'What must I release to move forward?',
     );
   }
 
@@ -718,13 +734,22 @@ function getActionAdvice(chart: LunarReturnChart): string[] {
 
   // House-based advice
   const houseAdvice: Record<number, string[]> = {
-    1: ['Be bold and initiate new projects', 'Express yourself authentically', 'Practice self-assertion'],
+    1: [
+      'Be bold and initiate new projects',
+      'Express yourself authentically',
+      'Practice self-assertion',
+    ],
     2: ['Review your budget', 'Align spending with values', 'Secure your resources'],
     3: ['Communicate clearly', 'Learn something new', 'Connect with neighbors'],
     4: ['Nurture yourself', 'Create a peaceful home', 'Honor your feelings'],
     5: ['Express creativity', 'Enjoy leisure activities', 'Be romantic', 'Take risks'],
     6: ['Organize your workflow', 'Focus on efficiency', 'Help colleagues', 'Improve routines'],
-    7: ['Communicate in partnerships', 'Find balance', 'Compromise when needed', 'Show appreciation'],
+    7: [
+      'Communicate in partnerships',
+      'Find balance',
+      'Compromise when needed',
+      'Show appreciation',
+    ],
     8: ['Face your shadows', 'Embrace transformation', 'Share resources', 'Deepen intimacy'],
     9: ['Study philosophy', 'Plan travel', 'Expand your horizons', 'Seek wisdom'],
     10: ['Take initiative at work', 'Show your skills', 'Network strategically', 'Be visible'],
@@ -751,20 +776,36 @@ function getActionAdvice(chart: LunarReturnChart): string[] {
 
 /**
  * Get current lunar return for a user
+ * Fetches the user's natal chart from database and calculates next lunar return
  */
-export async function getCurrentLunarReturn(_userId: string): Promise<{
+export async function getCurrentLunarReturn(userId: string): Promise<{
   returnDate: Date;
   daysUntil: number;
+  natalMoon: {
+    sign: string;
+    degree: number;
+    minute: number;
+    second: number;
+  };
 }> {
-  // In production, fetch from database
-  // For now, return a calculated value
+  // Get user's primary birth chart from database
+  const userChart = await knex('charts').where({ userId, isBirthChart: true }).first();
 
-  // Get user's natal chart (mock)
+  if (!userChart) {
+    // Return default values if no birth chart exists
+    const today = new Date();
+    return {
+      returnDate: new Date(today.getTime() + 28 * 24 * 60 * 60 * 1000), // ~28 days from now
+      daysUntil: 28,
+      natalMoon: { sign: 'aries', degree: 0, minute: 0, second: 0 },
+    };
+  }
+
   const natalMoon = {
-    sign: 'leo',
-    degree: 15,
-    minute: 30,
-    second: 0,
+    sign: userChart.moonSign || 'aries',
+    degree: userChart.moonDegree || 0,
+    minute: userChart.moonMinute || 0,
+    second: userChart.moonSecond || 0,
   };
 
   const nextReturn = calculateNextLunarReturn(natalMoon);
@@ -774,6 +815,7 @@ export async function getCurrentLunarReturn(_userId: string): Promise<{
   return {
     returnDate: nextReturn,
     daysUntil,
+    natalMoon,
   };
 }
 

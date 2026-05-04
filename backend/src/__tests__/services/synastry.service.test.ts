@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   calculateSynastryAspects,
   calculateCompatibilityScore,
@@ -128,8 +129,9 @@ describe('Synastry Service', () => {
       const aspects = calculateSynastryAspects(chart1, chart2);
 
       const sunMoonAspects = aspects.filter(
-        a => (a.planet1 === 'sun' && a.planet2 === 'moon') ||
-               (a.planet1 === 'moon' && a.planet2 === 'sun')
+        (a) =>
+          (a.planet1 === 'sun' && a.planet2 === 'moon') ||
+          (a.planet1 === 'moon' && a.planet2 === 'sun'),
       );
 
       expect(sunMoonAspects.length).toBeGreaterThan(0);
@@ -629,7 +631,7 @@ describe('Synastry Service', () => {
       };
 
       const aspects = calculateSynastryAspects(chart1, chart2);
-      const oppositionAspects = aspects.filter(a => a.aspect === 'opposition');
+      const oppositionAspects = aspects.filter((a) => a.aspect === 'opposition');
 
       expect(oppositionAspects.length).toBeGreaterThan(0);
     });
@@ -664,7 +666,7 @@ describe('Synastry Service', () => {
       };
 
       const aspects = calculateSynastryAspects(chart1, chart2);
-      const trineAspects = aspects.filter(a => a.aspect === 'trine');
+      const trineAspects = aspects.filter((a) => a.aspect === 'trine');
 
       expect(trineAspects.length).toBeGreaterThan(0);
     });

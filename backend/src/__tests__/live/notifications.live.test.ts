@@ -13,13 +13,9 @@
  * Run: npx jest --testPathPattern="live/notifications.live" --forceExit --verbose
  */
 
-import {
-  api,
-  authed,
-  getCsrf,
-  registerTestUser,
-  checkServerRunning,
-} from './helpers';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { api, authed, getCsrf, registerTestUser, checkServerRunning } from './helpers';
 
 describe('Push Notifications - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -79,7 +75,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
         accessToken,
         cookies,
         csrf,
-        subscriptionPayload
+        subscriptionPayload,
       );
 
       // Accept 201 (created), 200 (updated), or 404 (route not mounted)
@@ -113,20 +109,13 @@ describe('Push Notifications - LIVE SYSTEM', () => {
     }, 10000);
 
     it('should reject subscription without endpoint', async () => {
-      const res = await authed(
-        'POST',
-        '/notifications/subscribe',
-        accessToken,
-        cookies,
-        csrf,
-        {
-          // Missing endpoint
-          keys: {
-            p256dh: 'BEl62iUYgUivxIkvdfKVFB-a0t6PqZJxH2-v7Qx1d0O3uXK',
-            auth: 'BH6JM9PCgsRfZCL1oMQTP9',
-          },
-        }
-      );
+      const res = await authed('POST', '/notifications/subscribe', accessToken, cookies, csrf, {
+        // Missing endpoint
+        keys: {
+          p256dh: 'BEl62iUYgUivxIkvdfKVFB-a0t6PqZJxH2-v7Qx1d0O3uXK',
+          auth: 'BH6JM9PCgsRfZCL1oMQTP9',
+        },
+      });
 
       // Accept 400 (validation error) or 404 (route not mounted)
       expect([400, 404, 500]).toContain(res.status);
@@ -137,17 +126,10 @@ describe('Push Notifications - LIVE SYSTEM', () => {
     }, 10000);
 
     it('should reject subscription without keys', async () => {
-      const res = await authed(
-        'POST',
-        '/notifications/subscribe',
-        accessToken,
-        cookies,
-        csrf,
-        {
-          endpoint: 'https://fcm.googleapis.com/fcm/send/no-keys-test',
-          // Missing keys
-        }
-      );
+      const res = await authed('POST', '/notifications/subscribe', accessToken, cookies, csrf, {
+        endpoint: 'https://fcm.googleapis.com/fcm/send/no-keys-test',
+        // Missing keys
+      });
 
       // Accept 400 (validation error) or 404 (route not mounted)
       expect([400, 404, 500]).toContain(res.status);
@@ -159,13 +141,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
   // ============================================================
   describe('GET /notifications/subscriptions', () => {
     it('should list user subscriptions', async () => {
-      const res = await authed(
-        'GET',
-        '/notifications/subscriptions',
-        accessToken,
-        cookies,
-        ''
-      );
+      const res = await authed('GET', '/notifications/subscriptions', accessToken, cookies, '');
 
       // Accept 200 or 404 (route not mounted)
       expect([200, 404]).toContain(res.status);
@@ -212,7 +188,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
             p256dh: 'BEl62iUYgUivxIkvdfKVFB-a0t6PqZJxH2-v7Qx1d0O3uXK',
             auth: 'BH6JM9PCgsRfZCL1oMQTP9',
           },
-        }
+        },
       );
 
       let targetId = subscriptionId;
@@ -234,7 +210,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
         `/notifications/subscribe/${targetId}`,
         accessToken,
         cookies,
-        csrf
+        csrf,
       );
 
       // Accept 200, 204 (deleted), or 404 (route/sub not found)
@@ -251,7 +227,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
           '/notifications/subscriptions',
           accessToken,
           cookies,
-          ''
+          '',
         );
 
         if (listRes.status === 200) {
@@ -272,7 +248,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
         `/notifications/subscribe/${fakeId}`,
         accessToken,
         cookies,
-        csrf
+        csrf,
       );
 
       // Accept 404 (not found) or 200 (generic success)
@@ -284,10 +260,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
     }, 10000);
 
     it('should reject deletion without auth', async () => {
-      const res = await api(
-        'DELETE',
-        `/notifications/subscribe/${subscriptionId || 'fake-id'}`
-      );
+      const res = await api('DELETE', `/notifications/subscribe/${subscriptionId || 'fake-id'}`);
 
       // 401 (unauthorized) or 404 (route not mounted, no auth middleware)
       expect([401, 404]).toContain(res.status);
@@ -299,13 +272,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
   // ============================================================
   describe('POST /notifications/test', () => {
     it('should send test notification', async () => {
-      const res = await authed(
-        'POST',
-        '/notifications/test',
-        accessToken,
-        cookies,
-        csrf
-      );
+      const res = await authed('POST', '/notifications/test', accessToken, cookies, csrf);
 
       // Accept 200 (sent), 404 (route not mounted), or 200 with no subscriptions
       expect([200, 404]).toContain(res.status);

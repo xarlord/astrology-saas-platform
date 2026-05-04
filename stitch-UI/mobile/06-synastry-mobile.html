@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse Synastry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c37e6",
+                        "primary-light": "#8b5cf6",
+                        "accent-pink": "#EC4899",
+                        "accent-teal": "#2dd4bf",
+                        "accent-green": "#4ade80",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0B0D17", // Deep Navy
+                        "surface-glass": "rgba(30, 41, 59, 0.4)", // Slate 800 with opacity
+                        "surface-glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'cosmic-gradient': 'linear-gradient(135deg, #0B0D17 0%, #1e1b4b 100%)',
+                        'beam-gradient': 'linear-gradient(to bottom, transparent, #6c37e6, #EC4899, transparent)',
+                        'score-gradient': 'conic-gradient(#6c37e6 0%, #EC4899 78%, rgba(255,255,255,0.1) 78%, rgba(255,255,255,0.1) 100%)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(22, 28, 45, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Subtle sparkle animation simulation */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased overflow-x-hidden">
+<div class="mx-auto max-w-[390px] min-h-screen relative flex flex-col bg-cosmic-gradient shadow-2xl overflow-hidden">
+<!-- Decorative Background Elements -->
+<div class="absolute top-0 left-0 w-full h-[500px] bg-primary/20 blur-[100px] rounded-full pointer-events-none -translate-y-1/2"></div>
+<div class="absolute bottom-0 right-0 w-[300px] h-[300px] bg-accent-pink/10 blur-[80px] rounded-full pointer-events-none translate-y-1/4"></div>
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-4 glass-card border-b-0 rounded-b-xl">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors text-white">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-wide text-white">Synastry</h1>
+<div class="w-10"></div> <!-- Spacer for center alignment -->
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 overflow-y-auto no-scrollbar pb-24 px-4 pt-4 flex flex-col gap-6">
+<!-- Chart Selection Section -->
+<section class="relative flex flex-col gap-4">
+<!-- Connecting Cosmic Beam -->
+<div class="absolute left-8 top-12 bottom-12 w-0.5 bg-beam-gradient opacity-80 z-0"></div>
+<div class="absolute left-[29px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white shadow-[0_0_10px_#EC4899] animate-pulse-slow z-0"></div>
+<!-- Person 1 Card -->
+<div class="glass-card rounded-2xl p-4 flex items-center gap-4 relative z-10 hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="relative w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-primary to-accent-pink shrink-0">
+<img alt="Portrait of a woman" class="w-full h-full rounded-full object-cover" data-alt="Portrait of a young woman with dark hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxSis93gIhX-tew8F1ZoQ6m7JAvQUaRV4-4L5-OFBtluyBggzGfj_80iC5Cj5XZQqLe0jZVKnMjsFjAsOnMug8reI8ZvlbH9FZ7JzMcM1QcN1g3Wh3r7-YSZRwZg5GIdiURPWeagB5wHNnUpGoYzZYk7vbEbmw3nxD3VTJdoBCX3ytcB6qFIpOj-2EECcMW9vpG76_k0E9nV10OkxVpBmukgKqj8FgV-_QiBawlA7-Vd-7JQYA9lKijCtJXYXg8fkLRFnqRmiRaUMR"/>
+<div class="absolute -bottom-1 -right-1 bg-background-dark border border-white/20 rounded-full w-6 h-6 flex items-center justify-center text-xs">☀️</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-lg leading-tight truncate text-white">Alex</h3>
+<span class="material-symbols-outlined text-white/40 text-sm group-hover:text-white transition-colors">edit</span>
+</div>
+<div class="flex gap-2 mt-2 text-xs font-medium text-white/70">
+<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">☀️ Ari</span>
+<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">🌙 Tau</span>
+<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">⬆️ Gem</span>
+</div>
+</div>
+</div>
+<!-- Person 2 Card -->
+<div class="glass-card rounded-2xl p-4 flex items-center gap-4 relative z-10 hover:border-accent-pink/50 transition-colors cursor-pointer group">
+<div class="relative w-14 h-14 rounded-full p-0.5 bg-gradient-to-br from-accent-pink to-primary shrink-0">
+<img alt="Portrait of a man" class="w-full h-full rounded-full object-cover" data-alt="Portrait of a young man looking sideways" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1H55vd1PedTe01jRw1YM6_l63GvG40URfGxOwe0f8zmi2gdCPT723JUz8XrrOF8UOmq8KGOo409YCRySpLvwct_pYvVf_45hWwgpHrZCXFJ8gHsgoXw-x6MLzXapWrm5jfovYfqWXL41HV8b2itDBdTA_ST1iyvufeofSBqpAmbVxVYIF9cNa9BlHISJcwe3pUiLvylMzvG8KiU4WkfIy3KbGr7vYtp1DZ1-aQmM0SCezjIaEe-srFrnW27LxVF-3F1GfhIXLpzKm"/>
+<div class="absolute -bottom-1 -right-1 bg-background-dark border border-white/20 rounded-full w-6 h-6 flex items-center justify-center text-xs">🌙</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-lg leading-tight truncate text-white">Jamie</h3>
+<span class="material-symbols-outlined text-white/40 text-sm group-hover:text-white transition-colors">edit</span>
+</div>
+<div class="flex gap-2 mt-2 text-xs font-medium text-white/70">
+<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">☀️ Lib</span>
+<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">🌙 Can</span>
+<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/10 flex items-center gap-1">⬆️ Leo</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Compare Button -->
+<button class="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary via-primary-light to-accent-pink text-white font-bold tracking-wide shadow-lg shadow-primary/30 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+                Compare Charts
+            </button>
+<!-- Overall Score Section -->
+<section class="flex flex-col items-center justify-center py-4">
+<div class="relative w-40 h-40 flex items-center justify-center">
+<!-- Gauge Background -->
+<div class="absolute inset-0 rounded-full border-[6px] border-white/5"></div>
+<!-- Gauge Fill (Using conic gradient for progress) -->
+<div class="absolute inset-0 rounded-full bg-score-gradient mask-image-circle" style="-webkit-mask: radial-gradient(transparent 62%, black 63%); mask: radial-gradient(transparent 62%, black 63%);"></div>
+<!-- Inner Content -->
+<div class="flex flex-col items-center z-10">
+<span class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">78</span>
+<span class="text-xs uppercase tracking-widest text-white/50 mt-1">/ 100</span>
+</div>
+<!-- Decorative Sparkles -->
+<div class="absolute top-2 right-6 text-accent-pink animate-pulse-slow">✦</div>
+<div class="absolute bottom-4 left-6 text-primary animate-pulse-slow" style="animation-delay: 1s;">✦</div>
+</div>
+<h2 class="text-center text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-light to-accent-pink mt-4">Strong Cosmic Connection</h2>
+<p class="text-center text-sm text-white/60 px-6 mt-1">Your energies align powerfully in emotional and creative realms.</p>
+</section>
+<!-- Category Scores -->
+<section class="flex flex-col gap-3">
+<h3 class="text-sm font-semibold text-white/80 uppercase tracking-wider ml-1">Compatibility Breakdown</h3>
+<!-- Category Item: Romance -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-accent-pink/20 flex items-center justify-center text-accent-pink">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-sm mb-1.5">
+<span class="font-medium text-white">Romance</span>
+<span class="font-bold text-accent-pink">82%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-accent-pink rounded-full w-[82%]"></div>
+</div>
+</div>
+</div>
+<!-- Category Item: Communication -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-sm mb-1.5">
+<span class="font-medium text-white">Communication</span>
+<span class="font-bold text-blue-400">75%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-blue-500 rounded-full w-[75%]"></div>
+</div>
+</div>
+</div>
+<!-- Category Item: Values -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-accent-teal/20 flex items-center justify-center text-accent-teal">
+<span class="material-symbols-outlined">diamond</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-sm mb-1.5">
+<span class="font-medium text-white">Values</span>
+<span class="font-bold text-accent-teal">70%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-accent-teal rounded-full w-[70%]"></div>
+</div>
+</div>
+</div>
+<!-- Category Item: Emotional -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-light">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-sm mb-1.5">
+<span class="font-medium text-white">Emotional</span>
+<span class="font-bold text-primary-light">85%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[85%]"></div>
+</div>
+</div>
+</div>
+<!-- Category Item: Growth -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-accent-green/20 flex items-center justify-center text-accent-green">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-sm mb-1.5">
+<span class="font-medium text-white">Growth</span>
+<span class="font-bold text-accent-green">78%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-accent-green rounded-full w-[78%]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Planetary Aspects -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-semibold text-white/80 uppercase tracking-wider ml-1">Key Aspects</h3>
+<button class="text-xs text-primary-light font-medium hover:text-white transition-colors">View All</button>
+</div>
+<div class="glass-card rounded-xl overflow-hidden divide-y divide-white/5">
+<!-- Aspect Row 1 -->
+<div class="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-1">
+<span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm border border-white/10">♀</span>
+<span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm border border-white/10">♂</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Venus Conjunct Mars</span>
+<span class="text-xs text-white/50">Orb 1°23' • Strong</span>
+</div>
+</div>
+<div class="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+</div>
+<!-- Aspect Row 2 -->
+<div class="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-1">
+<span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm border border-white/10">☉</span>
+<span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm border border-white/10">☾</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Sun Square Moon</span>
+<span class="text-xs text-white/50">Orb 4°12' • Challenge</span>
+</div>
+</div>
+<div class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+</div>
+<!-- Aspect Row 3 -->
+<div class="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-1">
+<span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm border border-white/10">☿</span>
+<span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm border border-white/10">♃</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Mercury Trine Jupiter</span>
+<span class="text-xs text-white/50">Orb 2°05' • Flowing</span>
+</div>
+</div>
+<div class="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_rgba(74,222,128,0.6)]"></div>
+</div>
+</div>
+</section>
+<!-- Bottom Actions -->
+<section class="flex flex-col gap-3 pb-6 pt-2">
+<button class="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary via-primary-light to-primary text-white font-bold text-sm tracking-wide shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">
+                    Generate Full Report
+                </button>
+<button class="w-full py-3.5 rounded-xl glass-card text-white font-semibold text-sm tracking-wide hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span>
+                    Share Results
+                </button>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="sticky bottom-0 z-50 glass-card backdrop-blur-xl border-t border-white/10 pt-2 pb-5 px-6">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors">home</span>
+<span class="text-[10px] font-medium text-white/50 group-hover:text-primary transition-colors">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-primary transition-colors" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="text-[10px] font-medium text-white group-hover:text-primary transition-colors">Charts</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors">calendar_month</span>
+<span class="text-[10px] font-medium text-white/50 group-hover:text-primary transition-colors">Calendar</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors">auto_fix_high</span>
+<span class="text-[10px] font-medium text-white/50 group-hover:text-primary transition-colors">Transits</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-primary transition-colors">person</span>
+<span class="text-[10px] font-medium text-white/50 group-hover:text-primary transition-colors">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

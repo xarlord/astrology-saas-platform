@@ -3,6 +3,8 @@
  * Tests query performance, connection pooling, and indexing effectiveness
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { performance } from 'perf_hooks';
 import { db } from '../db';
 import { cleanDatabase, createTestUser, createTestChart } from '../utils';
@@ -37,9 +39,7 @@ describe('Database Performance Tests', () => {
       await db('users').insert(users);
 
       const startTime = performance.now();
-      const user = await db('users')
-        .where({ email: 'user500@example.com' })
-        .first();
+      const user = await db('users').where({ email: 'user500@example.com' }).first();
       const endTime = performance.now();
 
       const queryTime = endTime - startTime;
@@ -65,14 +65,10 @@ describe('Database Performance Tests', () => {
       await db('users').insert(users);
 
       // Get a specific user ID
-      const targetUser = await db('users')
-        .where({ email: 'user500@example.com' })
-        .first();
+      const targetUser = await db('users').where({ email: 'user500@example.com' }).first();
 
       const startTime = performance.now();
-      const user = await db('users')
-        .where({ id: targetUser.id })
-        .first();
+      const user = await db('users').where({ id: targetUser.id }).first();
       const endTime = performance.now();
 
       const queryTime = endTime - startTime;
@@ -103,7 +99,7 @@ describe('Database Performance Tests', () => {
           birth_time: '12:00',
           birth_place: 'New York, NY',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
           house_system: 'placidus',
           zodiac_type: 'tropical',
@@ -112,9 +108,7 @@ describe('Database Performance Tests', () => {
       await db('charts').insert(charts);
 
       const startTime = performance.now();
-      const userCharts = await db('charts')
-        .where({ user_id: testUser.id })
-        .select('*');
+      const userCharts = await db('charts').where({ user_id: testUser.id }).select('*');
       const endTime = performance.now();
 
       const queryTime = endTime - startTime;
@@ -138,7 +132,7 @@ describe('Database Performance Tests', () => {
           birth_time: '12:00',
           birth_place: 'New York, NY',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
           house_system: 'placidus',
           zodiac_type: 'tropical',
@@ -175,7 +169,7 @@ describe('Database Performance Tests', () => {
           birth_time: '12:00',
           birth_place: 'New York, NY',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
           house_system: 'placidus',
           zodiac_type: 'tropical',
@@ -222,9 +216,7 @@ describe('Database Performance Tests', () => {
       await db('refresh_tokens').insert(tokens);
 
       const startTime = performance.now();
-      const token = await db('refresh_tokens')
-        .where({ token: 'refresh_token_50' })
-        .first();
+      const token = await db('refresh_tokens').where({ token: 'refresh_token_50' }).first();
       const endTime = performance.now();
 
       const queryTime = endTime - startTime;
@@ -251,9 +243,7 @@ describe('Database Performance Tests', () => {
       await db('refresh_tokens').insert(tokens);
 
       const startTime = performance.now();
-      const deleted = await db('refresh_tokens')
-        .where('expires_at', '<', new Date())
-        .del();
+      const deleted = await db('refresh_tokens').where('expires_at', '<', new Date()).del();
       const endTime = performance.now();
 
       const queryTime = endTime - startTime;
@@ -344,14 +334,16 @@ describe('Database Performance Tests', () => {
       const startTime = performance.now();
 
       // Run 100 concurrent cache reads
-      const promises = Array(100).fill(null).map(() => {
-        return db('chart_analysis_cache')
-          .where({
-            chart_id: testChart.id,
-            analysis_type: 'personality',
-          })
-          .first();
-      });
+      const promises = Array(100)
+        .fill(null)
+        .map(() => {
+          return db('chart_analysis_cache')
+            .where({
+              chart_id: testChart.id,
+              analysis_type: 'personality',
+            })
+            .first();
+        });
 
       const results = await Promise.all(promises);
 
@@ -382,7 +374,7 @@ describe('Database Performance Tests', () => {
           birth_time: '12:00',
           birth_place: 'New York, NY',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
           house_system: 'placidus',
           zodiac_type: 'tropical',
@@ -393,11 +385,11 @@ describe('Database Performance Tests', () => {
       const startTime = performance.now();
 
       // Run 100 concurrent queries
-      const promises = Array(100).fill(null).map(() => {
-        return db('charts')
-          .where({ user_id: testUser.id })
-          .select('*');
-      });
+      const promises = Array(100)
+        .fill(null)
+        .map(() => {
+          return db('charts').where({ user_id: testUser.id }).select('*');
+        });
 
       const results = await Promise.all(promises);
 
@@ -408,7 +400,7 @@ describe('Database Performance Tests', () => {
       console.log(`\nConcurrent queries (100):`);
       console.log(`  Total time: ${totalTime.toFixed(2)}ms`);
       console.log(`  Average per query: ${avgTime.toFixed(2)}ms`);
-      console.log(`  Throughput: ${(100 / totalTime * 1000).toFixed(0)} queries/sec`);
+      console.log(`  Throughput: ${((100 / totalTime) * 1000).toFixed(0)} queries/sec`);
 
       expect(results).toHaveLength(100);
       expect(avgTime).toBeLessThan(50); // Average query under 50ms
@@ -435,7 +427,7 @@ describe('Database Performance Tests', () => {
           birth_time: '12:00',
           birth_place: 'New York, NY',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
           house_system: 'placidus',
           zodiac_type: 'tropical',
@@ -469,13 +461,13 @@ describe('Database Performance Tests', () => {
             birth_date: '1990-01-15',
             birth_time: '12:00',
             latitude: 40.7128,
-            longitude: -74.0060,
+            longitude: -74.006,
             timezone: 'America/New_York',
             house_system: 'placidus',
             zodiac_type: 'tropical',
           });
         });
-      } catch (error) {
+      } catch {
         // Expected to fail
       }
 
@@ -504,7 +496,7 @@ describe('Database Performance Tests', () => {
           birth_time: '12:00',
           birth_place: 'New York, NY',
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           timezone: 'America/New_York',
           house_system: 'placidus',
           zodiac_type: 'tropical',
@@ -520,10 +512,7 @@ describe('Database Performance Tests', () => {
 
       // Query with index
       const queryStart = performance.now();
-      const userCharts = await db('charts')
-        .where({ user_id: testUser.id })
-        .limit(20)
-        .select('*');
+      const userCharts = await db('charts').where({ user_id: testUser.id }).limit(20).select('*');
       const queryEnd = performance.now();
 
       const queryTime = queryEnd - queryStart;

@@ -13,10 +13,11 @@ import logger from '../../utils/logger';
 jest.mock('../../utils/logger');
 
 // Mock request/response/next
-const mockRequest = (path: string = '/test', method: string = 'GET') => ({
-  path,
-  method,
-} as Request);
+const mockRequest = (path: string = '/test', method: string = 'GET') =>
+  ({
+    path,
+    method,
+  }) as Request;
 
 const mockResponse = () => {
   const res = {
@@ -31,7 +32,7 @@ const mockNext = jest.fn() as NextFunction;
 describe('Error Handler Middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    });
+  });
 
   afterEach(() => {
     process.env.NODE_ENV = 'test';
@@ -136,14 +137,17 @@ describe('Error Handler Middleware', () => {
       const appError = new AppError('Chart creation failed', 500);
       errorHandler(appError, req, res, next);
 
-      expect(logger.error).toHaveBeenCalledWith('Error occurred:', expect.objectContaining({
-        message: 'Chart creation failed',
-        statusCode: 500,
-        path: '/api/charts',
-        method: 'POST',
-        isOperational: true,
-        stack: expect.any(String),
-      }));
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error occurred:',
+        expect.objectContaining({
+          message: 'Chart creation failed',
+          statusCode: 500,
+          path: '/api/charts',
+          method: 'POST',
+          isOperational: true,
+          stack: expect.any(String),
+        }),
+      );
     });
 
     it('should log isOperational flag from AppError', () => {
@@ -158,7 +162,7 @@ describe('Error Handler Middleware', () => {
         'Error occurred:',
         expect.objectContaining({
           isOperational: true,
-        })
+        }),
       );
     });
 

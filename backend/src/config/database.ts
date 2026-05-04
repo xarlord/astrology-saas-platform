@@ -14,7 +14,7 @@ const knexConfig: Knex.Config = {
     user: config.database.user,
     password: config.database.password,
     database: config.database.name,
-    ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+    ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: true } : false,
   },
   pool: {
     min: 2,

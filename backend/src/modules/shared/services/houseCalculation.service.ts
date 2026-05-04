@@ -11,10 +11,10 @@ import { ZODIAC_SIGNS, ZodiacSign } from './astronomyEngine.service';
 export type HouseSystem = 'Placidus' | 'Koch' | 'Equal' | 'WholeSign';
 
 export interface HouseCusp {
-  number: number;       // 1-12
-  longitude: number;    // 0-360°
+  number: number; // 1-12
+  longitude: number; // 0-360°
   sign: ZodiacSign;
-  degree: number;       // 0-29°
+  degree: number; // 0-29°
 }
 
 export interface HouseCusps {
@@ -42,10 +42,10 @@ export class HouseCalculationService {
    * Calculate houses using specified system
    */
   calculateHouses(
-    lst: number,           // Local Sidereal Time in degrees
-    latitude: number,      // Geographic latitude
+    lst: number, // Local Sidereal Time in degrees
+    latitude: number, // Geographic latitude
     system: HouseSystem = 'Placidus',
-    ascendant?: number     // Required for WholeSign
+    ascendant?: number, // Required for WholeSign
   ): HouseCusps {
     switch (system) {
       case 'Placidus':
@@ -68,8 +68,11 @@ export class HouseCalculationService {
     const T = (julianDay - 2451545.0) / 36525.0; // Julian centuries from J2000.0
 
     // Greenwich Mean Sidereal Time (degrees)
-    let GMST = 280.46061837 + 360.98564736629 * (julianDay - 2451545.0)
-               + 0.000387933 * T * T - T * T * T / 38710000.0;
+    let GMST =
+      280.46061837 +
+      360.98564736629 * (julianDay - 2451545.0) +
+      0.000387933 * T * T -
+      (T * T * T) / 38710000.0;
 
     GMST = this.normalizeAngle(GMST);
 
@@ -106,20 +109,20 @@ export class HouseCalculationService {
 
     // Calculate intermediate house cusps using Placidus semi-arc method
     // Houses 11, 12: above horizon (MC side)
-    cusps[10] = this.placidusInterpolate(ramc, latitude, 30, true);  // 11th house
-    cusps[11] = this.placidusInterpolate(ramc, latitude, 60, true);  // 12th house
+    cusps[10] = this.placidusInterpolate(ramc, latitude, 30, true); // 11th house
+    cusps[11] = this.placidusInterpolate(ramc, latitude, 60, true); // 12th house
 
     // Houses 2, 3: above horizon (ASC side)
-    cusps[1] = this.placidusInterpolate(ramc + 180, latitude, 30, false);  // 2nd house
-    cusps[2] = this.placidusInterpolate(ramc + 180, latitude, 60, false);  // 3rd house
+    cusps[1] = this.placidusInterpolate(ramc + 180, latitude, 30, false); // 2nd house
+    cusps[2] = this.placidusInterpolate(ramc + 180, latitude, 60, false); // 3rd house
 
     // Houses 8, 9: below horizon (DESC side)
-    cusps[7] = this.normalizeAngle(cusps[1] + 180);  // 8th house (opposite of 2nd)
-    cusps[8] = this.normalizeAngle(cusps[2] + 180);  // 9th house (opposite of 3rd)
+    cusps[7] = this.normalizeAngle(cusps[1] + 180); // 8th house (opposite of 2nd)
+    cusps[8] = this.normalizeAngle(cusps[2] + 180); // 9th house (opposite of 3rd)
 
     // Houses 5, 6: below horizon (IC side)
-    cusps[4] = this.normalizeAngle(cusps[10] + 180);  // 5th house (opposite of 11th)
-    cusps[5] = this.normalizeAngle(cusps[11] + 180);  // 6th house (opposite of 12th)
+    cusps[4] = this.normalizeAngle(cusps[10] + 180); // 5th house (opposite of 11th)
+    cusps[5] = this.normalizeAngle(cusps[11] + 180); // 6th house (opposite of 12th)
 
     return this.buildHouseCusps('Placidus', cusps, asc, mc);
   }
@@ -127,7 +130,12 @@ export class HouseCalculationService {
   /**
    * Placidus interpolation for intermediate houses
    */
-  private placidusInterpolate(ramc: number, latitude: number, offsetDegrees: number, mcSide: boolean): number {
+  private placidusInterpolate(
+    ramc: number,
+    latitude: number,
+    offsetDegrees: number,
+    mcSide: boolean,
+  ): number {
     // Convert to radians
 
     // Calculate the RAMC for the house cusp
@@ -186,12 +194,12 @@ export class HouseCalculationService {
     const quadrant2Size = this.angularDistance(asc, cusps[3]);
 
     // Houses 11, 12
-    cusps[10] = this.normalizeAngle(mc + quadrant1Size * (1/3));
-    cusps[11] = this.normalizeAngle(mc + quadrant1Size * (2/3));
+    cusps[10] = this.normalizeAngle(mc + quadrant1Size * (1 / 3));
+    cusps[11] = this.normalizeAngle(mc + quadrant1Size * (2 / 3));
 
     // Houses 2, 3
-    cusps[1] = this.normalizeAngle(asc + quadrant2Size * (1/3));
-    cusps[2] = this.normalizeAngle(asc + quadrant2Size * (2/3));
+    cusps[1] = this.normalizeAngle(asc + quadrant2Size * (1 / 3));
+    cusps[2] = this.normalizeAngle(asc + quadrant2Size * (2 / 3));
 
     // Opposite houses
     cusps[7] = this.normalizeAngle(cusps[1] + 180);
@@ -249,8 +257,9 @@ export class HouseCalculationService {
     const latRad = this.toRadians(latitude);
 
     // Ascendant formula using spherical trigonometry
-    const tanAsc = Math.cos(ramcRad) /
-      (-(Math.sin(oblRad) * Math.tan(latRad) + Math.cos(oblRad) * Math.sin(ramcRad)));
+    const tanAsc =
+      Math.cos(ramcRad) /
+      -(Math.sin(oblRad) * Math.tan(latRad) + Math.cos(oblRad) * Math.sin(ramcRad));
 
     let asc = this.toDegrees(Math.atan(tanAsc));
 
@@ -290,7 +299,7 @@ export class HouseCalculationService {
     system: HouseSystem,
     cusps: number[],
     ascendant: number,
-    midheaven: number
+    midheaven: number,
   ): HouseCusps {
     const houseCusps: HouseCusp[] = cusps.map((longitude, index) => {
       const signIndex = Math.floor(longitude / 30);
@@ -351,11 +360,11 @@ export class HouseCalculationService {
 
   // Utility functions
   private toRadians(degrees: number): number {
-    return degrees * Math.PI / 180;
+    return (degrees * Math.PI) / 180;
   }
 
   private toDegrees(radians: number): number {
-    return radians * 180 / Math.PI;
+    return (radians * 180) / Math.PI;
   }
 
   private normalizeAngle(angle: number): number {

@@ -3,6 +3,8 @@
  * Tests hybrid AI/rule-based interpretation service
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 process.env.NODE_ENV = 'test';
 
 const mockLogger = {
@@ -52,9 +54,7 @@ describe('AI Interpretation Service - Basic Functionality', () => {
       openaiService.isConfigured = jest.fn().mockReturnValue(false);
 
       const chartData = {
-        planets: [
-          { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-        ],
+        planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }],
       };
 
       const mockRuleBased = {
@@ -103,9 +103,7 @@ describe('AI Interpretation Service - Basic Functionality', () => {
       openaiService.isConfigured = jest.fn().mockReturnValue(false);
 
       const transitData = {
-        currentTransits: [
-          { planet: 'jupiter', type: 'trine', natalPlanet: 'sun' },
-        ],
+        currentTransits: [{ planet: 'jupiter', type: 'trine', natalPlanet: 'sun' }],
       };
 
       const result = await aiInterpretationService.generateTransit(transitData);

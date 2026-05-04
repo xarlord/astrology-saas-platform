@@ -22,7 +22,7 @@ afterEach(() => {
 // Mock window.matchMedia for responsive components
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -37,22 +37,38 @@ Object.defineProperty(window, 'matchMedia', {
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   // intentional empty - test mock
-  constructor() { /* intentional empty */ }
-  disconnect() { /* intentional empty */ }
-  observe() { /* intentional empty */ }
+  constructor() {
+    /* intentional empty */
+  }
+  disconnect() {
+    /* intentional empty */
+  }
+  observe() {
+    /* intentional empty */
+  }
   takeRecords() {
     return [];
   }
-  unobserve() { /* intentional empty */ }
+  unobserve() {
+    /* intentional empty */
+  }
 } as any;
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
   // intentional empty - test mock
-  constructor() { /* intentional empty */ }
-  disconnect() { /* intentional empty */ }
-  observe() { /* intentional empty */ }
-  unobserve() { /* intentional empty */ }
+  constructor() {
+    /* intentional empty */
+  }
+  disconnect() {
+    /* intentional empty */
+  }
+  observe() {
+    /* intentional empty */
+  }
+  unobserve() {
+    /* intentional empty */
+  }
 } as any;
 
 // Mock window.scrollTo
@@ -66,10 +82,7 @@ global.URL.revokeObjectURL = vi.fn();
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render')
-    ) {
+    if (typeof args[0] === 'string' && args[0].includes('Warning: ReactDOM.render')) {
       return;
     }
     originalError.call(console, ...args);
@@ -214,8 +227,7 @@ export const createMockChart = (overrides = {}) => ({
   ...overrides,
 });
 
-export const waitForLoadingToFinish = () =>
-  new Promise(resolve => setTimeout(resolve, 0));
+export const waitForLoadingToFinish = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 export const createMockEvent = (type: string, date: string) => ({
   id: Math.random().toString(36),
@@ -238,10 +250,7 @@ export function renderWithRouter(ui: React.ReactElement) {
 const originalAct = console.error;
 beforeAll(() => {
   console.error = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render')
-    ) {
+    if (typeof args[0] === 'string' && args[0].includes('Warning: ReactDOM.render')) {
       return;
     }
     originalAct.call(console, ...args);

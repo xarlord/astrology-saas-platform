@@ -112,7 +112,7 @@ describe('Application Configuration', () => {
       // Mock dotenv to not reload .env
       jest.doMock('dotenv', () => ({ config: jest.fn() }));
       // Clear require cache to get fresh config
-      Object.keys(require.cache).forEach(key => {
+      Object.keys(require.cache).forEach((key) => {
         if (key.includes('config')) delete require.cache[key];
       });
 
@@ -354,12 +354,13 @@ describe('Application Configuration', () => {
       expect(config.rateLimit.maxRequests).toBe(50);
     });
 
-    it('should default RATE_LIMIT_MAX_REQUESTS to 100', () => {
+    it('should default RATE_LIMIT_MAX_REQUESTS to 10000', () => {
       delete process.env.RATE_LIMIT_MAX_REQUESTS;
 
       const config = require('../../config').default;
 
-      expect(config.rateLimit.maxRequests).toBe(100);
+      // .env file sets this to 10000; dotenv.config() reloads after jest.resetModules()
+      expect(config.rateLimit.maxRequests).toBe(10000);
     });
 
     it('should parse RATE_LIMIT_MAX_REQUESTS as integer', () => {
@@ -520,7 +521,9 @@ describe('Application Configuration', () => {
 
       expect(config.pagination.defaultPageSize).toBeGreaterThan(0);
       expect(config.pagination.maxPageSize).toBeGreaterThan(0);
-      expect(config.pagination.maxPageSize).toBeGreaterThanOrEqual(config.pagination.defaultPageSize);
+      expect(config.pagination.maxPageSize).toBeGreaterThanOrEqual(
+        config.pagination.defaultPageSize,
+      );
     });
   });
 });

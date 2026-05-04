@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse - Solar Returns</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f5a524",
+                        "primary-hover": "#d98e18",
+                        "secondary": "#6C3CE1",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#0B0D17", // Deep Navy
+                        "surface-dark": "#161822",
+                        "surface-glass": "rgba(22, 24, 34, 0.6)",
+                        "text-main": "#FFFFFF",
+                        "text-muted": "#9CA3AF",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    backgroundImage: {
+                        'cosmic-gradient': 'radial-gradient(circle at top right, #1a1d2d 0%, #0B0D17 100%)',
+                        'solar-glow': 'radial-gradient(circle, rgba(245, 165, 36, 0.15) 0%, rgba(11, 13, 23, 0) 70%)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(22, 24, 34, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .solar-shadow {
+            box-shadow: 0 0 40px -10px rgba(245, 165, 36, 0.3);
+        }
+        .purple-glow {
+             box-shadow: 0 0 20px -5px rgba(108, 60, 225, 0.4);
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D17; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2D3748; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4A5568; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen selection:bg-primary selection:text-white">
+<div class="relative flex min-h-screen flex-col overflow-x-hidden bg-cosmic-gradient">
+<!-- Navigation -->
+<header class="sticky top-0 z-50 glass-panel border-b-0 border-b-white/5">
+<div class="layout-container px-6 py-4 flex items-center justify-between max-w-[1400px] mx-auto w-full">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined text-3xl">sunny</span>
+</div>
+<div class="flex flex-col">
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">AstroVerse</h2>
+<span class="text-xs text-text-muted font-body uppercase tracking-wider">Premium Solar Returns</span>
+</div>
+</div>
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-text-muted hover:text-primary transition-colors text-sm font-medium" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium border-b-2 border-primary pb-0.5" href="#">Solar Returns</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm font-medium" href="#">Transits</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm font-medium" href="#">Synastry</a>
+</nav>
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center rounded-lg size-10 bg-white/5 hover:bg-white/10 text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg size-10 bg-gradient-to-br from-primary to-[#f59e0b] text-background-dark font-bold shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 w-full max-w-[1400px] mx-auto p-6 md:p-8 lg:p-10 flex flex-col gap-8">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-2xl">flare</span>
+<span class="text-sm font-bold tracking-widest uppercase">Annual Forecast</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight">Solar Returns</h1>
+<p class="text-text-muted text-lg max-w-2xl font-body">Your annual cosmic blueprint. Understand the themes, challenges, and opportunities for your personal new year.</p>
+</div>
+<div class="flex gap-3">
+<button class="glass-panel hover:bg-white/5 px-4 py-2.5 rounded-lg flex items-center gap-2 text-sm font-medium transition-all">
+<span class="material-symbols-outlined text-lg">history</span>
+                        Compare Years
+                    </button>
+<button class="bg-gradient-to-r from-primary to-[#f59e0b] hover:from-primary-hover hover:to-yellow-600 text-background-dark px-5 py-2.5 rounded-lg flex items-center gap-2 text-sm font-bold shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Download Report
+                    </button>
+</div>
+</div>
+<!-- Hero Forecast Card -->
+<section class="relative glass-panel rounded-2xl overflow-hidden p-6 md:p-10 border border-primary/20 solar-shadow">
+<!-- Background Glow -->
+<div class="absolute top-0 right-0 w-1/2 h-full bg-solar-glow pointer-events-none"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 relative z-10">
+<div class="lg:col-span-7 flex flex-col justify-center gap-6">
+<div class="flex items-center gap-3">
+<div class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+                                Active Cycle
+                             </div>
+<span class="text-text-muted text-sm font-body">March 15, 2026 — March 15, 2027</span>
+</div>
+<div>
+<h2 class="text-4xl md:text-6xl font-black text-white mb-2 leading-tight">
+                                Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">2026</span> Solar Return
+                            </h2>
+<p class="text-xl text-white/80 font-light">
+<span class="text-primary font-bold">23 Days Away</span> until your solar reset. The Sun returns to its exact natal position.
+                            </p>
+</div>
+<div class="flex flex-wrap gap-4 mt-2">
+<div class="flex items-center gap-4 bg-surface-dark/50 rounded-xl p-2 pr-4 border border-white/5">
+<div class="flex gap-1">
+<button class="px-3 py-1.5 rounded-lg text-sm text-text-muted hover:bg-white/5 transition-colors">2024</button>
+<button class="px-3 py-1.5 rounded-lg text-sm text-text-muted hover:bg-white/5 transition-colors">2025</button>
+<button class="px-4 py-1.5 rounded-lg text-sm font-bold bg-primary text-background-dark shadow-md">2026</button>
+<button class="px-3 py-1.5 rounded-lg text-sm text-text-muted hover:bg-white/5 transition-colors">2027</button>
+</div>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 hover:border-primary/50 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-primary text-lg">notifications_active</span>
+                                Set Reminder
+                             </button>
+</div>
+</div>
+<div class="lg:col-span-5 flex items-center justify-center relative min-h-[300px]">
+<!-- Abstract Sun Illustration -->
+<div class="relative size-64 md:size-80">
+<div class="absolute inset-0 bg-gradient-to-br from-primary to-orange-600 rounded-full blur-[60px] opacity-40 animate-pulse"></div>
+<img alt="Solar Return Sun" class="relative w-full h-full object-cover rounded-full border-4 border-primary/20 shadow-2xl shadow-primary/30 opacity-90 mix-blend-screen" data-alt="Abstract glowing golden sun sphere in space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAK8HiO67zzapLcu_GPBauNngfqI1ArAnlb-PsoW8ShTHiciKA8OkJoZkST6K-WH69z52_-osCkLfcvEIZidV8kQpZCPWhEPckYENU5rU-kINoXKw5-4CzsR6nef2nrIL_dvbpKMhCqzKavvEJISq6GLwEd9TgqQlVop9szpREUsqb4xDPWvcZ2uVeHieroq1n1676ZZkkD6Zf_JuOJUxmHnMbHcM7Q87qWE34ufIYPzIIMUohEP_GTg53rOqbJ0vZETXv-NmOTxxl7"/>
+<!-- Orbit Rings -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[120%] rounded-full border border-white/10"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[150%] rounded-full border border-dashed border-white/5"></div>
+<!-- Floating Badge -->
+<div class="absolute -bottom-4 -right-4 glass-panel px-4 py-2 rounded-lg border-l-4 border-l-primary flex flex-col">
+<span class="text-[10px] text-text-muted uppercase tracking-wider">Sun Position</span>
+<span class="text-lg font-bold text-white">24° Pisces</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Chart & Themes -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<!-- Chart & Annual Themes Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Chart Area -->
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-4 min-h-[400px]">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-white font-bold text-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">pie_chart</span>
+                                    Chart Wheel
+                                </h3>
+<button class="text-xs text-primary hover:text-white transition-colors">View Details</button>
+</div>
+<div class="flex-1 relative flex items-center justify-center">
+<!-- Placeholder for complex chart -->
+<div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+<svg class="w-full h-full animate-[spin_60s_linear_infinite]" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="48" stroke="currentColor" stroke-dasharray="4 2" stroke-width="0.5"></circle>
+<path d="M50 2 L50 98 M2 50 L98 50" stroke="currentColor" stroke-width="0.5"></path>
+</svg>
+</div>
+<div class="relative size-64 md:size-72 rounded-full border-2 border-white/10 bg-surface-dark/40 flex items-center justify-center">
+<!-- Inner Circle -->
+<div class="size-40 rounded-full border border-white/5 flex items-center justify-center">
+<div class="text-center">
+<div class="text-3xl font-display font-bold text-primary">10th</div>
+<div class="text-[10px] uppercase text-text-muted tracking-widest">House Focus</div>
+</div>
+</div>
+<!-- Planets (Simulated) -->
+<div class="absolute top-4 left-1/2 -translate-x-1/2 -mt-3 bg-primary text-background-dark size-8 rounded-full flex items-center justify-center font-bold shadow-lg shadow-primary/50 z-10" title="Sun">☉</div>
+<div class="absolute bottom-10 right-10 bg-surface-dark border border-white/20 text-white size-6 rounded-full flex items-center justify-center text-xs" title="Moon">☾</div>
+<div class="absolute top-1/2 left-4 bg-secondary text-white size-6 rounded-full flex items-center justify-center text-xs shadow-lg shadow-secondary/50" title="Jupiter">♃</div>
+<!-- Aspects Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" style="transform: rotate(0deg);">
+<line stroke="#6C3CE1" stroke-opacity="0.6" stroke-width="1.5" x1="50%" x2="20%" y1="10%" y2="50%"></line>
+<line stroke="#f5a524" stroke-opacity="0.6" stroke-width="1.5" x1="50%" x2="80%" y1="10%" y2="80%"></line>
+</svg>
+</div>
+</div>
+<div class="flex justify-between text-xs text-text-muted mt-2 px-2">
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-primary"></span> Sun (Vitality)</span>
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-secondary"></span> Jupiter (Growth)</span>
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-red-500"></span> Mars (Action)</span>
+</div>
+</div>
+<!-- Annual Themes -->
+<div class="flex flex-col gap-4">
+<h3 class="text-white font-bold text-lg uppercase tracking-wide opacity-80 mb-2">Dominant Themes</h3>
+<!-- Theme Card 1 -->
+<div class="glass-panel p-4 rounded-xl border-l-4 border-l-primary flex flex-col gap-3 group hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">work</span>
+<h4 class="text-white font-bold">Career Peak</h4>
+</div>
+<span class="text-primary font-bold text-sm">85%</span>
+</div>
+<div class="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-xs text-text-muted font-body leading-relaxed">
+                                    With the Sun in the 10th House, professional visibility is at an all-time high. Expect recognition.
+                                </p>
+</div>
+<!-- Theme Card 2 -->
+<div class="glass-panel p-4 rounded-xl border-l-4 border-l-secondary flex flex-col gap-3 group hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">psychology</span>
+<h4 class="text-white font-bold">Inner Growth</h4>
+</div>
+<span class="text-secondary font-bold text-sm">62%</span>
+</div>
+<div class="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 62%"></div>
+</div>
+<p class="text-xs text-text-muted font-body leading-relaxed">
+                                    Neptune aspects suggest a period of deep spiritual reflection and intuition building.
+                                </p>
+</div>
+<!-- Theme Card 3 -->
+<div class="glass-panel p-4 rounded-xl border-l-4 border-l-rose-500 flex flex-col gap-3 group hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-rose-500">favorite</span>
+<h4 class="text-white font-bold">Relationship Focus</h4>
+</div>
+<span class="text-rose-500 font-bold text-sm">45%</span>
+</div>
+<div class="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+<div class="bg-rose-500 h-full rounded-full" style="width: 45%"></div>
+</div>
+<p class="text-xs text-text-muted font-body leading-relaxed">
+                                    Stability is favored over new connections. Maintain existing bonds.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Quarterly Breakdown -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-white font-bold text-lg uppercase tracking-wide opacity-80">Quarterly Energy Forecast</h3>
+<div class="flex gap-2 text-xs">
+<span class="px-2 py-1 rounded bg-secondary/20 text-secondary border border-secondary/30">High Energy</span>
+<span class="px-2 py-1 rounded bg-white/5 text-text-muted border border-white/10">Neutral</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Q1 -->
+<div class="glass-panel p-5 rounded-xl border border-secondary purple-glow relative overflow-hidden group">
+<div class="absolute top-0 right-0 bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">FOCUS</div>
+<h4 class="text-secondary font-bold text-xl mb-1">Q1</h4>
+<p class="text-xs text-text-muted uppercase tracking-wider mb-3">Mar - Jun</p>
+<div class="flex items-center gap-2 mb-3">
+<div class="h-1.5 flex-1 bg-secondary/30 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[90%]"></div>
+</div>
+<span class="text-xs text-secondary font-bold">High</span>
+</div>
+<p class="text-sm text-white font-body">Initiation phase. Launch new projects now while Mars supports drive.</p>
+</div>
+<!-- Q2 -->
+<div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-primary/30 transition-colors group">
+<h4 class="text-white font-bold text-xl mb-1">Q2</h4>
+<p class="text-xs text-text-muted uppercase tracking-wider mb-3">Jun - Sep</p>
+<div class="flex items-center gap-2 mb-3">
+<div class="h-1.5 flex-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[60%]"></div>
+</div>
+<span class="text-xs text-primary font-bold">Med</span>
+</div>
+<p class="text-sm text-text-muted font-body group-hover:text-white transition-colors">Consolidation. Review progress and adjust strategies.</p>
+</div>
+<!-- Q3 -->
+<div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-primary/30 transition-colors group">
+<h4 class="text-white font-bold text-xl mb-1">Q3</h4>
+<p class="text-xs text-text-muted uppercase tracking-wider mb-3">Sep - Dec</p>
+<div class="flex items-center gap-2 mb-3">
+<div class="h-1.5 flex-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-slate-500 w-[30%]"></div>
+</div>
+<span class="text-xs text-slate-400 font-bold">Low</span>
+</div>
+<p class="text-sm text-text-muted font-body group-hover:text-white transition-colors">Reflection. A time for rest and internal processing.</p>
+</div>
+<!-- Q4 -->
+<div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-primary/30 transition-colors group">
+<h4 class="text-white font-bold text-xl mb-1">Q4</h4>
+<p class="text-xs text-text-muted uppercase tracking-wider mb-3">Dec - Mar</p>
+<div class="flex items-center gap-2 mb-3">
+<div class="h-1.5 flex-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[80%]"></div>
+</div>
+<span class="text-xs text-primary font-bold">High</span>
+</div>
+<p class="text-sm text-text-muted font-body group-hover:text-white transition-colors">Harvest. Results come in. Recognition for Q1 efforts.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: House & Dates -->
+<div class="lg:col-span-4 flex flex-col gap-8">
+<!-- House Activation Ring -->
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-6">
+<h3 class="text-white font-bold text-lg uppercase tracking-wide opacity-80 border-b border-white/10 pb-4">
+                            House Activation
+                        </h3>
+<!-- Visualization -->
+<div class="flex justify-center py-4">
+<div class="relative size-48">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<!-- Background Ring -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="12"></circle>
+<!-- Segments -->
+<!-- 10th House (30%) -->
+<circle class="drop-shadow-[0_0_8px_rgba(245,165,36,0.6)]" cx="50" cy="50" fill="transparent" r="40" stroke="#f5a524" stroke-dasharray="75 176" stroke-dashoffset="0" stroke-width="12"></circle>
+<!-- 7th House (20%) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#6C3CE1" stroke-dasharray="50 201" stroke-dashoffset="-80" stroke-width="12"></circle>
+<!-- 2nd House (15%) -->
+<circle cx="50" cy="50" fill="transparent" r="40" stroke="#10b981" stroke-dasharray="38 213" stroke-dashoffset="-135" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="text-3xl font-bold text-white">10<span class="text-sm align-top">th</span></span>
+<span class="text-[10px] text-text-muted uppercase">House</span>
+</div>
+</div>
+</div>
+<!-- Legend/List -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
+<div class="size-2 rounded-full bg-primary shadow-[0_0_8px_rgba(245,165,36,0.8)]"></div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="text-white font-bold text-sm">10th House</span>
+<span class="text-primary text-xs font-bold">Dominant</span>
+</div>
+<span class="text-xs text-text-muted block">Career &amp; Public Reputation</span>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+<div class="size-2 rounded-full bg-secondary"></div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="text-white font-bold text-sm">7th House</span>
+<span class="text-text-muted text-xs">Active</span>
+</div>
+<span class="text-xs text-text-muted block">Partnerships &amp; Contracts</span>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+<div class="size-2 rounded-full bg-emerald-500"></div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="text-white font-bold text-sm">2nd House</span>
+<span class="text-text-muted text-xs">Moderate</span>
+</div>
+<span class="text-xs text-text-muted block">Values &amp; Resources</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Key Dates Table -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col flex-1">
+<div class="p-6 border-b border-white/10 flex justify-between items-center">
+<h3 class="text-white font-bold text-lg uppercase tracking-wide opacity-80">Key Dates</h3>
+<button class="text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-xs text-text-muted uppercase tracking-wider border-b border-white/5">
+<th class="p-4 font-medium">Date</th>
+<th class="p-4 font-medium">Event</th>
+<th class="p-4 font-medium text-right">Impact</th>
+</tr>
+</thead>
+<tbody class="text-sm font-body">
+<tr class="group hover:bg-white/5 transition-colors border-b border-white/5">
+<td class="p-4 text-white font-medium whitespace-nowrap">Mar 22</td>
+<td class="p-4 text-text-muted group-hover:text-white">Mars Conjunct Sun</td>
+<td class="p-4 text-right">
+<span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">HIGH</span>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors border-b border-white/5">
+<td class="p-4 text-white font-medium whitespace-nowrap">Apr 15</td>
+<td class="p-4 text-text-muted group-hover:text-white">Venus Trine Jupiter</td>
+<td class="p-4 text-right">
+<span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-500 border border-emerald-500/30">POS</span>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors border-b border-white/5">
+<td class="p-4 text-white font-medium whitespace-nowrap">Jun 02</td>
+<td class="p-4 text-text-muted group-hover:text-white">Saturn Retrograde</td>
+<td class="p-4 text-right">
+<span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-500 border border-blue-500/30">MED</span>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="p-4 text-white font-medium whitespace-nowrap">Aug 10</td>
+<td class="p-4 text-text-muted group-hover:text-white">Sun Square Moon</td>
+<td class="p-4 text-right">
+<span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">HIGH</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-3 bg-white/5 text-center">
+<a class="text-xs text-primary hover:text-white transition-colors font-bold uppercase tracking-wide" href="#">View All 12 Dates</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-12 border-t border-white/5 py-8">
+<div class="max-w-[1400px] mx-auto px-6 text-center text-text-muted text-sm">
+<p>© 2024 AstroVerse. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</body></html>

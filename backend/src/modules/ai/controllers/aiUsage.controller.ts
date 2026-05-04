@@ -75,7 +75,7 @@ export const getUsageByDateRange = asyncHandler(async (req: Request, res: Respon
   const usage = await aiUsageService.getUsageByDateRange(
     userId,
     new Date(startDate as string),
-    new Date(endDate as string)
+    new Date(endDate as string),
   );
 
   res.json({

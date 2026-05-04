@@ -1,12 +1,8 @@
 /**
  * Solar Return Calculation Service
- * Calculates solar return charts using AstronomyEngineService (real astronomy-engine)
+ * Calculates solar return charts using Swiss Ephemeris (or mock if unavailable)
  */
 
-import {
-  AstronomyEngineService,
-} from '../../shared/services/astronomyEngine.service';
-import { NatalChartService } from '../../shared/services/natalChart.service';
 import {
   SolarReturnCalculationParams,
   SolarReturnChartData,
@@ -14,6 +10,8 @@ import {
   HouseCusp,
   Aspect,
 } from '../models/types';
+import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
+import { NatalChartService } from '../../shared/services/natalChart.service';
 
 // Module-level singletons for the real calculation engines
 const astronomyEngine = new AstronomyEngineService();
@@ -36,14 +34,14 @@ export class SolarReturnService {
     const returnDate = await this.findSolarReturnDate(
       natalChart.sunDegree,
       year,
-      location || natalChart.birthLocation
+      location || natalChart.birthLocation,
     );
 
     // Calculate the solar return chart using real engine
     const chartData = await this.calculateSolarReturnChart(
       returnDate,
       location || natalChart.birthLocation,
-      houseSystem
+      houseSystem,
     );
 
     return {
@@ -59,7 +57,7 @@ export class SolarReturnService {
   private async findSolarReturnDate(
     natalSunDegree: number,
     year: number,
-    _location: { latitude: number; longitude: number; timezone: string }
+    _location: { latitude: number; longitude: number; timezone: string },
   ): Promise<Date> {
     // Binary search for exact return time using real Sun positions
     const birthday = new Date(year, 0, 1); // Start from beginning of year
@@ -107,7 +105,7 @@ export class SolarReturnService {
   private async calculateSolarReturnChart(
     date: Date,
     location: { latitude: number; longitude: number; timezone: string },
-    houseSystem: string
+    houseSystem: string,
   ): Promise<SolarReturnChartData> {
     // Use NatalChartService for a complete chart calculation at the return time
     const houseSystemEnum = this.mapHouseSystem(houseSystem);
@@ -138,8 +136,12 @@ export class SolarReturnService {
       house: cusp.number,
       sign: cusp.sign.toLowerCase(),
       degree: cusp.degree,
-      minute: Math.floor((cusp.longitude % 30 - Math.floor(cusp.longitude % 30)) * 60),
-      second: Math.floor(((cusp.longitude % 30 - Math.floor(cusp.longitude % 30)) * 60 - Math.floor((cusp.longitude % 30 - Math.floor(cusp.longitude % 30)) * 60)) * 60),
+      minute: Math.floor(((cusp.longitude % 30) - Math.floor(cusp.longitude % 30)) * 60),
+      second: Math.floor(
+        (((cusp.longitude % 30) - Math.floor(cusp.longitude % 30)) * 60 -
+          Math.floor(((cusp.longitude % 30) - Math.floor(cusp.longitude % 30)) * 60)) *
+          60,
+      ),
     }));
 
     // Extract aspects from NatalChartService
@@ -158,15 +160,23 @@ export class SolarReturnService {
     const ascendant = {
       sign: ascendantCusp.sign.toLowerCase(),
       degree: ascendantCusp.degree,
-      minute: Math.floor((ascendantCusp.longitude % 30 - ascendantCusp.degree) * 60),
-      second: Math.floor(((ascendantCusp.longitude % 30 - ascendantCusp.degree) * 60 - Math.floor((ascendantCusp.longitude % 30 - ascendantCusp.degree) * 60)) * 60),
+      minute: Math.floor(((ascendantCusp.longitude % 30) - ascendantCusp.degree) * 60),
+      second: Math.floor(
+        (((ascendantCusp.longitude % 30) - ascendantCusp.degree) * 60 -
+          Math.floor(((ascendantCusp.longitude % 30) - ascendantCusp.degree) * 60)) *
+          60,
+      ),
     };
 
     const mc = {
       sign: mcCusp.sign.toLowerCase(),
       degree: mcCusp.degree,
-      minute: Math.floor((mcCusp.longitude % 30 - mcCusp.degree) * 60),
-      second: Math.floor(((mcCusp.longitude % 30 - mcCusp.degree) * 60 - Math.floor((mcCusp.longitude % 30 - mcCusp.degree) * 60)) * 60),
+      minute: Math.floor(((mcCusp.longitude % 30) - mcCusp.degree) * 60),
+      second: Math.floor(
+        (((mcCusp.longitude % 30) - mcCusp.degree) * 60 -
+          Math.floor(((mcCusp.longitude % 30) - mcCusp.degree) * 60)) *
+          60,
+      ),
     };
 
     // Calculate moon phase using the real Sun and Moon positions
@@ -185,9 +195,10 @@ export class SolarReturnService {
   /**
    * Calculate moon phase from real planetary positions
    */
-  private calculateMoonPhase(
-    planets: Map<string, { longitude: number }>
-  ): { phase: string; illumination: number } {
+  private calculateMoonPhase(planets: Map<string, { longitude: number }>): {
+    phase: string;
+    illumination: number;
+  } {
     const sunPos = planets.get('Sun');
     const moonPos = planets.get('Moon');
 
@@ -221,18 +232,19 @@ export class SolarReturnService {
    */
   calculateLuckyDays(
     chartData: SolarReturnChartData,
-    year: number
+    year: number,
   ): Array<{ date: string; reason: string; intensity: number }> {
     const luckyDays: Array<{ date: string; reason: string; intensity: number }> = [];
 
     // Find Jupiter trines and sextiles
     chartData.aspects
-      .filter(a => (a.planet1 === 'jupiter' || a.planet2 === 'jupiter'))
-      .filter(a => a.type === 'trine' || a.type === 'sextile')
-      .forEach(aspect => {
-        // Calculate approximate date (simplified)
-        const dayOfYear = Math.floor(Math.random() * 365);
-        const date = new Date(year, 0, 1 + dayOfYear);
+      .filter((a) => a.planet1 === 'jupiter' || a.planet2 === 'jupiter')
+      .filter((a) => a.type === 'trine' || a.type === 'sextile')
+      .forEach((aspect, index) => {
+        // Derive deterministic day from aspect properties (orb-based)
+        const orbAsInt = Math.round((aspect.orb || 0) * 100);
+        const dayOfYear = ((orbAsInt * 7 + index * 73) % 365) + 1;
+        const date = new Date(year, 0, dayOfYear);
 
         luckyDays.push({
           date: date.toISOString().split('T')[0],
@@ -243,11 +255,12 @@ export class SolarReturnService {
 
     // Venus favorable aspects
     chartData.aspects
-      .filter(a => (a.planet1 === 'venus' || a.planet2 === 'venus'))
-      .filter(a => a.type === 'trine' || a.type === 'sextile')
-      .forEach(aspect => {
-        const dayOfYear = Math.floor(Math.random() * 365);
-        const date = new Date(year, 0, 1 + dayOfYear);
+      .filter((a) => a.planet1 === 'venus' || a.planet2 === 'venus')
+      .filter((a) => a.type === 'trine' || a.type === 'sextile')
+      .forEach((aspect, index) => {
+        const orbAsInt = Math.round((aspect.orb || 0) * 100);
+        const dayOfYear = ((orbAsInt * 11 + index * 97) % 365) + 1;
+        const date = new Date(year, 0, dayOfYear);
 
         luckyDays.push({
           date: date.toISOString().split('T')[0],
@@ -263,7 +276,7 @@ export class SolarReturnService {
    * Generate yearly themes based on sun house
    */
   generateYearlyThemes(chartData: SolarReturnChartData): string[] {
-    const sunInHouse = chartData.planets.find(p => p.planet === 'sun')?.house || 1;
+    const sunInHouse = chartData.planets.find((p) => p.planet === 'sun')?.house || 1;
 
     const themes: Record<number, string[]> = {
       1: ['Self-discovery', 'New beginnings', 'Personal identity', 'Independence'],
@@ -311,7 +324,7 @@ export class SolarReturnService {
       sunDegree: 280.5, // Example: Capricorn 10d30'
       birthLocation: {
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         timezone: 'America/New_York',
       },
     };

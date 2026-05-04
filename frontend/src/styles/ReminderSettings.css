@@ -1,0 +1,6 @@
+/* ReminderSettings styles - Tailwind handles most styling */
+.reminder-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

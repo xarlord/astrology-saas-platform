@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse Mobile Solar Returns Forecast</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f5a524",
+                        "primary-content": "#231c10",
+                        "background-dark": "#0B0D17", // Deep Navy
+                        "surface-dark": "#15192b", // Slightly lighter navy for cards
+                        "gold-accent": "#F59E0B",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Space Grotesk", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'glass-gradient': 'linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+                        'solar-gradient': 'linear-gradient(135deg, #F5A524 0%, #F59E0B 100%)',
+                        'purple-gold-gradient': 'linear-gradient(90deg, #6b21a8 0%, #F5A524 100%)',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(245, 165, 36, 0.3)',
+                        'glow-sm': '0 0 8px rgba(245, 165, 36, 0.2)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for horizontal scrolling */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-slate-100 font-display min-h-screen overflow-x-hidden antialiased selection:bg-primary selection:text-primary-content">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between bg-background-dark/80 backdrop-blur-md px-4 py-3 border-b border-white/5">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 text-slate-300">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary animate-pulse" style="font-variation-settings: 'FILL' 1, 'wght' 600;">light_mode</span>
+<h1 class="text-lg font-bold tracking-tight text-white">Solar Returns</h1>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 text-slate-300">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</header>
+<main class="pb-24 px-4 space-y-6">
+<!-- Hero Section -->
+<section class="mt-4 relative">
+<div class="relative overflow-hidden rounded-2xl bg-glass-gradient border border-white/10 p-6 flex flex-col items-center text-center shadow-lg">
+<!-- Abstract Glow Background -->
+<div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(245,165,36,0.15)_0%,transparent_60%)] pointer-events-none"></div>
+<!-- Sun Icon/Illustration -->
+<div class="mb-4 relative">
+<div class="absolute inset-0 bg-primary blur-2xl opacity-30 rounded-full"></div>
+<span class="material-symbols-outlined text-6xl text-primary relative z-10 drop-shadow-[0_0_10px_rgba(245,165,36,0.8)]" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+</div>
+<h2 class="text-3xl font-bold text-white mb-2">2026 Solar Return</h2>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-semibold uppercase tracking-wider mb-6">
+<span class="material-symbols-outlined text-[14px]">hourglass_top</span>
+                    23 Days Away
+                </div>
+<!-- Year Selector -->
+<div class="w-full flex items-center justify-between border-t border-white/10 pt-4">
+<button class="text-slate-500 text-sm font-medium hover:text-slate-300 transition-colors">2024</button>
+<button class="text-slate-400 text-sm font-medium hover:text-slate-300 transition-colors">2025</button>
+<div class="relative px-4 py-1.5">
+<span class="absolute inset-0 bg-primary/10 rounded-full border border-primary/40"></span>
+<span class="relative text-primary font-bold text-sm">2026</span>
+</div>
+<button class="text-slate-500 text-sm font-medium hover:text-slate-300 transition-colors">2027</button>
+</div>
+</div>
+</section>
+<!-- Solar Chart Visualization -->
+<section class="flex flex-col items-center">
+<div class="relative w-64 h-64 flex items-center justify-center">
+<!-- Outer Rings -->
+<div class="absolute inset-0 rounded-full border border-white/10 opacity-60"></div>
+<div class="absolute inset-4 rounded-full border border-dashed border-white/20 opacity-40 animate-[spin_60s_linear_infinite]"></div>
+<div class="absolute inset-12 rounded-full border border-white/5 bg-white/5 backdrop-blur-sm"></div>
+<!-- Zodiac Glyphs (Simplified placement) -->
+<span class="absolute top-2 text-slate-500 text-xs">♈</span>
+<span class="absolute bottom-2 text-slate-500 text-xs">♎</span>
+<span class="absolute left-2 text-slate-500 text-xs">♋</span>
+<span class="absolute right-2 text-slate-500 text-xs">♑</span>
+<!-- Sun Position Highlight -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rotate-[45deg]">
+<div class="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center">
+<span class="material-symbols-outlined text-primary text-xl drop-shadow-[0_0_8px_rgba(245,165,36,1)]" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+<div class="h-8 w-0.5 bg-gradient-to-b from-primary to-transparent opacity-50 mt-1"></div>
+</div>
+</div>
+<!-- Center Info -->
+<div class="relative z-10 text-center">
+<p class="text-xs text-slate-400 font-medium tracking-widest uppercase">Sun In</p>
+<p class="text-xl font-bold text-white">Leo</p>
+<p class="text-xs text-primary font-mono">15° 23'</p>
+</div>
+</div>
+</section>
+<!-- Annual Themes -->
+<section>
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-lg font-bold text-white">Annual Themes</h3>
+<button class="text-primary text-xs font-semibold">View All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2 -mx-4 px-4 snap-x">
+<!-- Theme Card 1 -->
+<div class="snap-center shrink-0 w-40 p-4 rounded-xl bg-surface-dark border border-white/5 flex flex-col gap-3">
+<div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+<span class="material-symbols-outlined">work</span>
+</div>
+<div>
+<p class="text-slate-400 text-xs mb-1">Dominant</p>
+<p class="text-white text-sm font-bold leading-tight">Career Growth</p>
+</div>
+<div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[85%] shadow-glow-sm"></div>
+</div>
+</div>
+<!-- Theme Card 2 -->
+<div class="snap-center shrink-0 w-40 p-4 rounded-xl bg-surface-dark border border-white/5 flex flex-col gap-3">
+<div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div>
+<p class="text-slate-400 text-xs mb-1">Focus</p>
+<p class="text-white text-sm font-bold leading-tight">Relationship</p>
+</div>
+<div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[60%] shadow-glow-sm"></div>
+</div>
+</div>
+<!-- Theme Card 3 -->
+<div class="snap-center shrink-0 w-40 p-4 rounded-xl bg-surface-dark border border-white/5 flex flex-col gap-3">
+<div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+<span class="material-symbols-outlined">self_improvement</span>
+</div>
+<div>
+<p class="text-slate-400 text-xs mb-1">Rising</p>
+<p class="text-white text-sm font-bold leading-tight">Spirituality</p>
+</div>
+<div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[40%] shadow-glow-sm"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quarterly Breakdown -->
+<section>
+<h3 class="text-lg font-bold text-white mb-3 px-1">Energy Forecast</h3>
+<div class="space-y-3">
+<!-- Q1 -->
+<div class="p-4 rounded-xl bg-glass-gradient border border-white/5 flex items-start gap-4">
+<div class="flex flex-col items-center gap-1 min-w-[3rem]">
+<span class="text-lg font-bold text-white">Q1</span>
+<span class="text-[10px] text-slate-500 uppercase tracking-wide">Jan-Mar</span>
+</div>
+<div class="h-10 w-[1px] bg-white/10"></div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-medium text-primary uppercase tracking-wider">High Energy</span>
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed">A powerful time for initiating bold new projects and taking lead.</p>
+</div>
+</div>
+<!-- Q2 -->
+<div class="p-4 rounded-xl bg-glass-gradient border border-white/5 flex items-start gap-4">
+<div class="flex flex-col items-center gap-1 min-w-[3rem]">
+<span class="text-lg font-bold text-slate-400">Q2</span>
+<span class="text-[10px] text-slate-500 uppercase tracking-wide">Apr-Jun</span>
+</div>
+<div class="h-10 w-[1px] bg-white/10"></div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Low Energy</span>
+<span class="material-symbols-outlined text-slate-500 text-sm">trending_down</span>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed">Focus on consolidation and internal reflection rather than outward action.</p>
+</div>
+</div>
+<!-- Q3 -->
+<div class="p-4 rounded-xl bg-glass-gradient border border-white/5 flex items-start gap-4">
+<div class="flex flex-col items-center gap-1 min-w-[3rem]">
+<span class="text-lg font-bold text-slate-300">Q3</span>
+<span class="text-[10px] text-slate-500 uppercase tracking-wide">Jul-Sep</span>
+</div>
+<div class="h-10 w-[1px] bg-white/10"></div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-medium text-yellow-500 uppercase tracking-wider">Med Energy</span>
+<span class="material-symbols-outlined text-yellow-500 text-sm">trending_flat</span>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed">Social opportunities expand. Networking brings unexpected luck.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Key Dates -->
+<section>
+<h3 class="text-lg font-bold text-white mb-3 px-1">Key Transits</h3>
+<div class="bg-surface-dark rounded-xl border border-white/5 overflow-hidden">
+<div class="flex items-center p-4 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="w-16 flex flex-col">
+<span class="text-sm font-bold text-white">Mar 21</span>
+<span class="text-[10px] text-slate-500 uppercase">Mon</span>
+</div>
+<div class="flex-1 px-2">
+<p class="text-sm text-slate-200">Sun enters Aries</p>
+</div>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-red-500"></div>
+<div class="w-2 h-2 rounded-full bg-red-500"></div>
+<div class="w-2 h-2 rounded-full bg-red-500"></div>
+</div>
+</div>
+<div class="flex items-center p-4 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="w-16 flex flex-col">
+<span class="text-sm font-bold text-white">Apr 15</span>
+<span class="text-[10px] text-slate-500 uppercase">Fri</span>
+</div>
+<div class="flex-1 px-2">
+<p class="text-sm text-slate-200">Full Moon in Libra</p>
+</div>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+<div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+</div>
+</div>
+<div class="flex items-center p-4 hover:bg-white/5 transition-colors">
+<div class="w-16 flex flex-col">
+<span class="text-sm font-bold text-white">May 02</span>
+<span class="text-[10px] text-slate-500 uppercase">Mon</span>
+</div>
+<div class="flex-1 px-2">
+<p class="text-sm text-slate-200">Venus Trine Jupiter</p>
+</div>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<section class="space-y-3 pt-4">
+<button class="w-full py-4 rounded-xl bg-purple-gold-gradient text-white font-bold text-base shadow-lg hover:shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">download</span>
+                Download Full Report
+            </button>
+<button class="w-full py-3 rounded-xl border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">compare_arrows</span>
+                Compare with Previous Year
+            </button>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-[#1e1912] dark border-t border-[#493a22] z-50">
+<div class="flex justify-around items-end w-full py-2 pb-5">
+<a class="flex flex-col items-center gap-1 w-1/5 text-[#ccb48f] hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-1/5 text-[#ccb48f] hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">pie_chart</span>
+<span class="text-[10px] font-medium">Charts</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-1/5 text-primary" href="#">
+<div class="w-10 h-10 -mt-5 bg-primary rounded-full flex items-center justify-center shadow-glow border-4 border-background-dark">
+<span class="material-symbols-outlined text-primary-content text-xl font-bold">calendar_month</span>
+</div>
+<span class="text-[10px] font-medium mt-1">Calendar</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-1/5 text-[#ccb48f] hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">auto_awesome</span>
+<span class="text-[10px] font-medium">Transits</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-1/5 text-[#ccb48f] hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

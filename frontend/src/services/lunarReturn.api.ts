@@ -5,19 +5,27 @@
 
 import api from './api';
 
-import type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn } from '../types/lunar-return.types';
+import type {
+  NatalMoon,
+  MoonPosition,
+  LunarAspect,
+  LunarReturnChart,
+  KeyDate,
+  MonthlyPrediction,
+  MonthlyRitual,
+  LunarMonthForecast,
+} from '../types/lunar-return.types';
 
-export type { NatalMoon, MoonPosition, LunarAspect, LunarReturnChart, KeyDate, MonthlyPrediction, MonthlyRitual, LunarMonthForecast, SavedLunarReturn };
-
-interface NextLunarReturnResponse {
-  nextReturn: Date;
-  natalMoon: NatalMoon;
-}
-
-interface CurrentLunarReturnResponse {
-  returnDate: Date;
-  daysUntil: number;
-}
+export type {
+  NatalMoon,
+  MoonPosition,
+  LunarAspect,
+  LunarReturnChart,
+  KeyDate,
+  MonthlyPrediction,
+  MonthlyRitual,
+  LunarMonthForecast,
+};
 
 interface LunarReturnHistoryResponse {
   returns: SavedLunarReturn[];
@@ -32,41 +40,75 @@ interface LunarReturnHistoryResponse {
 interface CustomLunarReturnResponse {
   chart: LunarReturnChart;
   returnDate: Date;
-  forecast?: LunarMonthForecast;
+  theme: string;
+  intensity: number;
+  emotionalTheme: string;
+  actionAdvice: string[];
+  keyDates: KeyDate[];
+  predictions: MonthlyPrediction[];
+  rituals: MonthlyRitual[];
+  journalPrompts: string[];
+}
+
+export interface SavedLunarReturn {
+  id: string;
+  returnDate: Date;
+  theme: string;
+  intensity: number;
+  emotionalTheme: string;
+  actionAdvice: string[];
+  keyDates: KeyDate[];
+  predictions: MonthlyPrediction[];
+  rituals: MonthlyRitual[];
+  journalPrompts: string[];
+  createdAt: Date;
+  // UI helper properties for timeline display
+  status?: 'past' | 'current' | 'future';
+  sign?: string;
+  date?: Date;
 }
 
 /**
  * Get next lunar return date
  */
-export async function getNextLunarReturn(): Promise<NextLunarReturnResponse> {
-  const response = await api.get('/lunar-return/next');
-  const responseData = response.data as { data: NextLunarReturnResponse };
-  return responseData.data;
+export async function getNextLunarReturn(): Promise<{
+  nextReturn: Date;
+  natalMoon: NatalMoon;
+}> {
+  const response = await api.get<{ data: { nextReturn: Date; natalMoon: NatalMoon } }>(
+    '/lunar-return/next',
+  );
+  return response.data.data;
 }
 
 /**
  * Get current lunar return info
  */
-export async function getCurrentLunarReturn(): Promise<CurrentLunarReturnResponse> {
-  const response = await api.get('/lunar-return/current');
-  const responseData = response.data as { data: CurrentLunarReturnResponse };
-  return responseData.data;
+export async function getCurrentLunarReturn(): Promise<{
+  returnDate: Date;
+  daysUntil: number;
+}> {
+  const response = await api.get<{ data: { returnDate: Date; daysUntil: number } }>(
+    '/lunar-return/current',
+  );
+  return response.data.data;
 }
 
 /**
  * Calculate lunar return chart for specific date
  */
 export async function calculateLunarReturnChart(returnDate: Date): Promise<LunarReturnChart> {
-  const response = await api.post('/lunar-return/chart', { returnDate });
-  const responseData = response.data as { data: LunarReturnChart };
-  return responseData.data;
+  const response = await api.post<{ data: LunarReturnChart }>('/lunar-return/chart', {
+    returnDate,
+  });
+  return response.data.data;
 }
 
 /**
  * Get monthly lunar forecast
  */
 export async function getLunarMonthForecast(returnDate?: Date): Promise<LunarMonthForecast> {
-  const response = await api.post('/lunar-return/forecast', {
+  const response = await api.post<{ data: LunarMonthForecast }>('/lunar-return/forecast', {
     returnDate: returnDate ?? null,
   });
   const responseData = response.data as { data: LunarMonthForecast };
@@ -78,9 +120,22 @@ export async function getLunarMonthForecast(returnDate?: Date): Promise<LunarMon
  */
 export async function getLunarReturnHistory(
   page = 1,
-  limit = 10
-): Promise<LunarReturnHistoryResponse> {
-  const response = await api.get('/lunar-return/history', {
+  limit = 10,
+): Promise<{
+  returns: SavedLunarReturn[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}> {
+  const response = await api.get<{
+    data: {
+      returns: SavedLunarReturn[];
+      pagination: { page: number; limit: number; total: number; totalPages: number };
+    };
+  }>('/lunar-return/history', {
     params: { page, limit },
   });
   const responseData = response.data as { data: LunarReturnHistoryResponse };
@@ -99,9 +154,15 @@ export async function deleteLunarReturn(id: string): Promise<void> {
  */
 export async function calculateCustomLunarReturn(
   returnDate: Date,
-  includeForecast = true
-): Promise<CustomLunarReturnResponse> {
-  const response = await api.post('/lunar-return/calculate', {
+  includeForecast = true,
+): Promise<{
+  chart: LunarReturnChart;
+  returnDate: Date;
+  forecast?: LunarMonthForecast;
+}> {
+  const response = await api.post<{
+    data: { chart: LunarReturnChart; returnDate: Date; forecast?: LunarMonthForecast };
+  }>('/lunar-return/calculate', {
     returnDate,
     includeForecast,
   });

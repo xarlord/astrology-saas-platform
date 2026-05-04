@@ -4,122 +4,132 @@
 
 import api from './api';
 
-interface SignInfo {
-  sign: string;
-  degree: number;
-}
-
-interface AspectInfo {
-  planet1: string;
-  planet2: string;
-  aspect: string;
-  orb: number;
-}
-
-interface PlanetInSign {
+/** Matches backend PlanetInSignInterpretation from data/interpretations.ts */
+interface PlanetInSignInterpretation {
   planet: string;
   sign: string;
-  degree: number;
-  house: number;
+  keywords: string[];
+  general: string;
+  strengths: string[];
+  challenges: string[];
+  advice: string[];
 }
 
-interface ChartPatternInfo {
-  name: string;
-  description: string;
-}
-
-interface AspectAnalysisData {
-  aspects: AspectInfo[];
-  summary: string;
-}
-
-interface AspectPatternsData {
-  patterns: ChartPatternInfo[];
-}
-
-interface HousesAnalysisData {
-  houses: Record<string, { sign: string; planets: string[] }>;
-  summary: string;
-}
-
-export interface PersonalityAnalysis {
-  chartId: string;
-  chartName: string;
-  overview: {
-    sunSign: SignInfo;
-    moonSign: SignInfo;
-    ascendant: SignInfo;
-  };
-  planetsInSigns: PlanetInSign[];
-  planetsInHouses: Record<string, number>;
-  majorAspects: AspectInfo[];
-  dominantElements: {
-    fire: number;
-    earth: number;
-    air: number;
-    water: number;
-  };
-  chartPattern: ChartPatternInfo;
-}
-
+/** Matches backend PersonalityAnalysisResponse from interpretation.service.ts */
 interface PersonalityAnalysisResponse {
-  data: { analysis: PersonalityAnalysis };
+  overview: {
+    sunSign: PlanetInSignInterpretation | null;
+    moonSign: PlanetInSignInterpretation | null;
+    ascendantSign?: PlanetInSignInterpretation;
+  };
+  planetsInSigns: {
+    planet: string;
+    sign: string;
+    house: number;
+    interpretation: PlanetInSignInterpretation;
+  }[];
+  houses: {
+    house: number;
+    signOnCusp: string;
+    planetsInHouse: string[];
+    themes: string[];
+    interpretation: string;
+    advice: string[];
+  }[];
+  aspects: {
+    planet1: string;
+    planet2: string;
+    aspect: string;
+    orb: number;
+    harmonious: boolean | null;
+    keywords: string[];
+    interpretation: string;
+    expression: string;
+    advice: string[];
+  }[];
+  patterns: {
+    type: string;
+    description: string;
+    planets: string[];
+    intensity: number;
+  }[];
 }
 
-interface AspectAnalysisResponse {
-  data: { aspectAnalysis: AspectAnalysisData };
+interface AspectAnalysis {
+  chartId: string;
+  aspectsByType: Record<string, unknown[]>;
+  aspectGrid: Record<string, unknown>;
+  majorAspects: unknown[];
+  harmonicAspects: unknown[];
+  challengingAspects: unknown[];
 }
 
-interface AspectPatternsResponse {
-  data: { patterns: AspectPatternsData };
+interface HousesAnalysis {
+  houses: { cusp: number }[];
+  planetsInHouses: Record<string, number>;
+  houseRulers: Record<string, unknown>;
+  emptyHouses: number[];
+  stelliums: unknown[];
 }
 
-interface PlanetsInSignsResponse {
-  data: { planetsInSigns: PlanetInSign[] };
+interface ChartPattern {
+  type: string;
+  planets: string[];
+  strength: number;
 }
 
-interface HousesAnalysisResponse {
-  data: { housesAnalysis: HousesAnalysisData };
-}
+export type { PersonalityAnalysisResponse, PlanetInSignInterpretation };
 
 export const analysisService = {
   /**
    * Get personality analysis
    */
-  async getPersonalityAnalysis(chartId: string): Promise<{ analysis: PersonalityAnalysis }> {
-    const { data } = await api.get<PersonalityAnalysisResponse>(`/analysis/${chartId}`);
+  async getPersonalityAnalysis(
+    chartId: string,
+  ): Promise<{ analysis: PersonalityAnalysisResponse }> {
+    const { data } = await api.get<{ data: { analysis: PersonalityAnalysisResponse } }>(
+      `/analysis/${chartId}`,
+    );
     return data.data;
   },
 
   /**
    * Get aspect analysis
    */
-  async getAspectAnalysis(chartId: string): Promise<{ aspectAnalysis: AspectAnalysisData }> {
-    const { data } = await api.get<AspectAnalysisResponse>(`/analysis/${chartId}/aspects`);
+  async getAspectAnalysis(chartId: string): Promise<{ aspectAnalysis: AspectAnalysis }> {
+    const { data } = await api.get<{ data: { aspectAnalysis: AspectAnalysis } }>(
+      `/analysis/${chartId}/aspects`,
+    );
     return data.data;
   },
 
   /**
    * Get aspect patterns
    */
-  async getAspectPatterns(chartId: string): Promise<{ patterns: AspectPatternsData }> {
-    const { data } = await api.get<AspectPatternsResponse>(`/analysis/${chartId}/patterns`);
+  async getAspectPatterns(chartId: string): Promise<{ patterns: ChartPattern[] }> {
+    const { data } = await api.get<{ data: { patterns: ChartPattern[] } }>(
+      `/analysis/${chartId}/patterns`,
+    );
     return data.data;
   },
 
   /**
    * Get planets in signs
    */
-  async getPlanetsInSigns(chartId: string): Promise<{ planetsInSigns: PlanetInSign[] }> {
-    const { data } = await api.get<PlanetsInSignsResponse>(`/analysis/${chartId}/planets`);
+  async getPlanetsInSigns(chartId: string): Promise<{ planetsInSigns: unknown[] }> {
+    const { data } = await api.get<{ data: { planetsInSigns: unknown[] } }>(
+      `/analysis/${chartId}/planets`,
+    );
     return data.data;
   },
 
   /**
    * Get houses analysis
    */
-  async getHousesAnalysis(chartId: string): Promise<{ housesAnalysis: HousesAnalysisData }> {
-    const { data } = await api.get<HousesAnalysisResponse>(`/analysis/${chartId}/houses`);
+  async getHousesAnalysis(chartId: string): Promise<{ housesAnalysis: HousesAnalysis }> {
+    const { data } = await api.get<{ data: { housesAnalysis: HousesAnalysis } }>(
+      `/analysis/${chartId}/houses`,
+    );
     return data.data;
   },
 };

@@ -5,18 +5,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { authService } from '../services';
-import type { UserPreferences } from '../services/auth.service';
-import { getErrorMessage } from '../utils/errorHandling';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar_url?: string;
-  timezone: string;
-  plan: string;
-  preferences: Record<string, unknown>;
-}
+import type { User, UserPreferences } from '../services/api.types';
+import type { AxiosError } from 'axios';
 
 interface AuthState {
   user: User | null;
@@ -31,11 +21,24 @@ interface AuthState {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
-  updatePreferences: (preferences: Record<string, unknown>) => Promise<void>;
+  updatePreferences: (preferences: Partial<UserPreferences>) => Promise<void>;
   clearError: () => void;
 }
 
+interface ApiErrorResponse {
+  error?: { message?: string };
+  message?: string;
+}
 
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  const axiosError = error as AxiosError<ApiErrorResponse>;
+  return (
+    axiosError.response?.data?.error?.message ?? axiosError.response?.data?.message ?? fallback
+  );
+}
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -58,6 +61,9 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
+          // Tokens managed by Zustand persist — no manual localStorage writes
+          // Zustand persist handles storage;
+          // Zustand persist handles storage;
         } catch (error: unknown) {
           set({
             error: getErrorMessage(error, 'Login failed'),
@@ -77,6 +83,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
+          // Zustand persist handles storage;
+          // Zustand persist handles storage;
         } catch (error: unknown) {
           set({
             error: getErrorMessage(error, 'Registration failed'),
@@ -139,8 +147,8 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Listen for token refresh events from API interceptor

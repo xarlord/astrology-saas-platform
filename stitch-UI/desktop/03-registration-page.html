@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse - Premium Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b23de1",
+                        "primary-dark": "#8a2be2",
+                        "accent": "#F5A623",
+                        "cosmic-blue": "#2563EB",
+                        "deep-navy": "#0B0D17",
+                        "glass-bg": "rgba(255, 255, 255, 0.03)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Space Grotesk", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'cosmic-gradient': 'linear-gradient(135deg, #0B0D17 0%, #1a103c 50%, #2e1065 100%)',
+                        'btn-gradient': 'linear-gradient(90deg, #b23de1 0%, #2563EB 100%)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D17; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2e1065; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b23de1; 
+        }
+        
+        .glass-panel {
+            background: rgba(19, 21, 36, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .animated-gradient-text {
+            background: linear-gradient(to right, #b23de1, #F5A623, #2563EB);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+    </style>
+</head>
+<body class="font-display bg-deep-navy text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
+<div class="flex flex-col lg:flex-row min-h-screen w-full">
+<!-- Left Panel: Brand & Features -->
+<div class="relative w-full lg:w-5/12 xl:w-1/2 flex flex-col p-8 lg:p-12 overflow-hidden bg-cosmic-gradient">
+<!-- Decorative Background Elements -->
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=2342&amp;q=80')] bg-cover bg-center opacity-30 mix-blend-screen pointer-events-none" data-alt="Deep space nebula with stars"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-deep-navy/80 via-transparent to-deep-navy/90 pointer-events-none"></div>
+<!-- Logo -->
+<div class="relative z-10 flex items-center gap-3 mb-12 lg:mb-20">
+<div class="size-10 bg-gradient-to-br from-primary to-cosmic-blue rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(178,61,225,0.5)]">
+<span class="material-symbols-outlined text-white text-2xl">all_inclusive</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tight text-white">AstroVerse</h2>
+</div>
+<!-- Main Content -->
+<div class="relative z-10 flex-1 flex flex-col justify-center max-w-lg">
+<h1 class="text-4xl lg:text-5xl font-bold leading-tight mb-6">
+                    Unlock the <span class="animated-gradient-text">secrets</span> of the stars
+                </h1>
+<p class="text-slate-300 text-lg mb-10 leading-relaxed">
+                    Join thousands of users discovering their cosmic path with our premium astrological tools.
+                </p>
+<!-- Feature List -->
+<div class="space-y-6 mb-12">
+<div class="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+<div class="p-2 bg-primary/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg">Accurate natal chart calculations</h3>
+<p class="text-slate-400 text-sm mt-1">Precise astronomical data for your unique birth chart.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+<div class="p-2 bg-primary/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">planet</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg">Daily planetary transits</h3>
+<p class="text-slate-400 text-sm mt-1">Real-time updates on how planetary movements affect you.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+<div class="p-2 bg-primary/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">group</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg">Relationship synastry reports</h3>
+<p class="text-slate-400 text-sm mt-1">Deep compatibility analysis for you and your partner.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quote Footer -->
+<div class="relative z-10 mt-auto pt-8 border-t border-white/10">
+<blockquote class="text-slate-400 italic text-sm">
+                    "The universe is not outside of you. Look inside yourself; everything that you want, you already are." 
+                    <span class="block text-primary not-italic font-bold mt-2">– Rumi</span>
+</blockquote>
+</div>
+</div>
+<!-- Right Panel: Registration Form -->
+<div class="w-full lg:w-7/12 xl:w-1/2 bg-deep-navy flex items-center justify-center p-6 lg:p-12 relative">
+<!-- Background glows -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cosmic-blue/10 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="w-full max-w-md z-10">
+<!-- Step Indicator -->
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm font-bold shadow-[0_0_10px_rgba(178,61,225,0.4)]">1</span>
+<span class="text-sm text-slate-400 font-medium">Step 1 of 2</span>
+</div>
+<a class="text-sm text-slate-400 hover:text-white transition-colors" href="#">Help?</a>
+</div>
+<!-- Form Header -->
+<div class="mb-8">
+<h2 class="text-3xl font-bold text-white mb-2">Create Your Account</h2>
+<p class="text-slate-400">Start your cosmic journey for free. No credit card required.</p>
+</div>
+<!-- Form -->
+<form class="glass-panel p-8 rounded-2xl space-y-5">
+<!-- Full Name -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-300 ml-1" for="fullname">Full Name</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-[20px]">person</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3 bg-deep-navy/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="fullname" placeholder="Enter your full name" type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-300 ml-1" for="email">Email Address</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-[20px]">mail</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3 bg-deep-navy/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="email" placeholder="name@example.com" type="email"/>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-300 ml-1" for="password">Password</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-[20px]">lock</span>
+</div>
+<input class="block w-full pl-11 pr-12 py-3 bg-deep-navy/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="password" placeholder="Create a password" type="password"/>
+<div class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
+<span class="material-symbols-outlined text-slate-500 text-[20px] hover:text-slate-300">visibility_off</span>
+</div>
+</div>
+<!-- Strength Meter -->
+<div class="flex gap-2 mt-2 px-1">
+<div class="h-1 flex-1 rounded-full bg-red-500"></div>
+<div class="h-1 flex-1 rounded-full bg-red-500/30"></div>
+<div class="h-1 flex-1 rounded-full bg-slate-700"></div>
+<div class="h-1 flex-1 rounded-full bg-slate-700"></div>
+</div>
+<p class="text-xs text-slate-500 px-1">Must contain at least 8 characters</p>
+</div>
+<!-- Confirm Password -->
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-300 ml-1" for="confirm-password">Confirm Password</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-[20px]">lock_reset</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3 bg-deep-navy/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="confirm-password" placeholder="Confirm your password" type="password"/>
+</div>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-3 mt-2 px-1">
+<div class="flex items-center h-5">
+<input class="w-4 h-4 rounded border-slate-600 bg-deep-navy/50 text-primary focus:ring-primary focus:ring-offset-deep-navy" id="terms" type="checkbox"/>
+</div>
+<label class="text-sm text-slate-400" for="terms">
+                            I agree to the <a class="text-primary hover:text-primary-dark underline underline-offset-2" href="#">Terms of Service</a> and <a class="text-primary hover:text-primary-dark underline underline-offset-2" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-3.5 px-4 bg-btn-gradient text-white font-bold rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mt-4 flex items-center justify-center gap-2" type="button">
+<span>Create Account</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<!-- Divider -->
+<div class="relative py-2">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-slate-700/50"></div>
+</div>
+<div class="relative flex justify-center text-sm">
+<span class="bg-[#151725] px-4 text-slate-400">or sign up with</span>
+</div>
+</div>
+<!-- Social Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white transition-colors duration-200" type="button">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+<span class="text-sm font-medium">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white transition-colors duration-200" type="button">
+<svg class="h-5 w-5 fill-current" viewbox="0 0 24 24">
+<path d="M17.05 20.28c-.98.95-2.05.88-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.78 1.18-.19 2.31-.89 3.51-.84 1.54.06 2.77.79 3.49 1.84-3.16 1.76-2.56 5.8 .46 6.96-.54 1.58-1.27 3.12-2.54 4.23zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"></path>
+</svg>
+<span class="text-sm font-medium">Apple</span>
+</button>
+</div>
+<!-- Footer Link -->
+<div class="text-center mt-6">
+<p class="text-slate-400 text-sm">
+                            Already have an account? 
+                            <a class="text-primary font-semibold hover:text-white transition-colors" href="#">Sign in</a>
+</p>
+</div>
+</form>
+</div>
+</div>
+</div>
+</body></html>

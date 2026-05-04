@@ -3,11 +3,6 @@
  * Testing CalendarView, DailyWeatherModal, ReminderSettings, and CalendarExport components
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/require-await */
-
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -113,12 +108,7 @@ describe('CalendarView Component', () => {
     mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     const today = new Date();
-    render(
-      <CalendarView
-        initialMonth={today.getMonth() + 2}
-        initialYear={today.getFullYear()}
-      />
-    );
+    render(<CalendarView initialMonth={today.getMonth() + 2} initialYear={today.getFullYear()} />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /today/i })).toBeInTheDocument();
@@ -243,7 +233,7 @@ describe('DailyWeatherModal Component', () => {
   test('should close modal when clicking overlay', () => {
     const onClose = vi.fn();
     const { container } = render(
-      <DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />
+      <DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />,
     );
 
     const overlay = container.querySelector('.modal-overlay');
@@ -301,11 +291,14 @@ describe('ReminderSettings Component', () => {
     const user = userEvent.setup();
     render(<ReminderSettings />);
 
-    // "1 hour before" is not checked by default, so clicking it should check it
-    const oneHourCheckbox = screen.getByLabelText(/1 hour before/i);
-    await user.click(oneHourCheckbox);
+    // "1 day before" is checked by default, click on "3 days before" instead
+    const threeDaysCheckbox = screen.getByLabelText(/3 days before/i);
+    await user.click(threeDaysCheckbox);
 
-    expect(oneHourCheckbox).toBeChecked();
+    // Wait for state update
+    await waitFor(() => {
+      expect(threeDaysCheckbox).toBeChecked();
+    });
   });
 
   test('should allow toggling active state', () => {
@@ -387,9 +380,7 @@ describe('CalendarExport Component', () => {
     render(<CalendarExport />);
 
     const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1)
-      .toISOString()
-      .split('T')[0];
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
 
     const startDateInput = screen.getByLabelText(/from/i);
     expect(startDateInput).toHaveValue(firstDay);
@@ -406,8 +397,12 @@ describe('CalendarExport Component', () => {
 
     // After clicking "This Month", dates should be set to first and last day of current month
     const today = new Date();
-    const expectedFirstDay = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
+    const expectedFirstDay = new Date(today.getFullYear(), today.getMonth(), 1)
+      .toISOString()
+      .split('T')[0];
+    const expectedLastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+      .toISOString()
+      .split('T')[0];
 
     expect((startDateInput as HTMLInputElement).value).toBe(expectedFirstDay);
     expect((endDateInput as HTMLInputElement).value).toBe(expectedLastDay);

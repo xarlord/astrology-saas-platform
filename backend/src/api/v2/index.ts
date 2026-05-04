@@ -14,7 +14,7 @@ router.get('/', (_req, res) => {
   res.json({
     version: 'v2',
     status: 'development',
-    message: 'API v2 is under development'
+    message: 'API v2 is under development',
   });
 });
 

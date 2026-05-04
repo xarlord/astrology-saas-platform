@@ -1,8 +1,15 @@
 # AstroVerse Architecture & UI Definition
 
-> Auto-generated codebase audit — 2026-03-29
+> CTO-authored technical architecture plan — 2026-04-05
+> Based on auto-generated codebase audit (2026-03-29) + CTO review
 
 ---
+
+## 0. Stack Decision
+
+**Keep current monorepo stack.** Express 4 + React 18 + PostgreSQL 15 is battle-tested for SaaS. No migration needed. The monorepo structure via npm workspaces provides good code sharing without build tool overhead.
+
+**Consolidation note:** There is no "MVP vs AstroVerse" split — it's one codebase (`MVP_Projects`) that IS the AstroVerse product. No merge needed.
 
 ## 1. System Overview
 
@@ -303,8 +310,8 @@ Push/PR ──► ci.yml (9 jobs)
 |---|-------|------|--------|--------|
 | W1 | **Real calculation engine unused** — all charts use mock SwissEphemeris | Backend | Users get fake astrological data | OPEN |
 | W2 | **5 core pages are stubs** — ChartCreate, ChartView, Analysis, Transits, Profile | Frontend | 36% of routes non-functional | OPEN |
-| W3 | **CSRF middleware never applied** — defined but not wired | Security | Cross-site request vulnerability | ~~FIXED~~ `1730a98` |
-| W4 | **Rate limiters never applied** — 5 specialized limiters sit unused | Security | No brute-force protection | ~~FIXED~~ `1730a98` |
+| W3 | **CSRF middleware never applied** — defined but not wired | Security | Cross-site request vulnerability | ~~FIXED~~ Sprint 1 |
+| W4 | **Rate limiters never applied** — 5 specialized limiters sit unused | Security | No brute-force protection | ~~FIXED~~ Sprint 1 |
 | W5 | **AI and Notification routes not mounted** — fully implemented, inaccessible | Backend | Features dead on arrival | OPEN |
 | W6 | **Missing `shared_charts` migration** — service references non-existent table | Backend | Chart sharing will fail in production | OPEN |
 
@@ -312,15 +319,15 @@ Push/PR ──► ci.yml (9 jobs)
 
 | # | Issue | Area | Impact | Status |
 |---|-------|------|--------|--------|
-| W7 | **38 non-null assertions** (`req.user!.id`) across 8 controllers | Backend | Runtime TypeError on auth failure | ~~FIXED~~ `bf2367e` (1 remaining) |
-| W8 | **Dual token storage** — Zustand persist + raw localStorage can diverge | Frontend | Auth state desync | ~~FIXED~~ `73fdaed` |
-| W9 | **Three error-handling patterns** — inconsistent across controllers | Backend | Errors may bypass global handler |
+| W7 | **38 non-null assertions** (`req.user!.id`) across 8 controllers | Backend | Runtime TypeError on auth failure | ~~FIXED~~ Sprint 1 (1 remaining) |
+| W8 | **Dual token storage** — Zustand persist + raw localStorage can diverge | Frontend | Auth state desync | ~~FIXED~~ Sprint 1 |
+| W9 | **Three error-handling patterns** — inconsistent across controllers | Backend | Errors may bypass global handler | PARTIAL |
 | W10 | **Three data-access patterns** — class-singleton, standalone functions, inline Knex | Backend | Maintenance burden, inconsistency |
-| W11 | **Duplicate auth forms** — `AuthenticationForms` (full) vs page-level (simple) | Frontend | WCAG-compliant forms unused | OPEN |
-| W12 | **Inconsistent layout wrapping** — only Synastry uses AppLayout | Frontend | Navigation/sidebar only on 1 page | ~~FIXED~~ `42c77c3` |
-| W13 | **Raw `<a>` tags in AppLayout** — full page reloads instead of `<Link>` | Frontend | SPA navigation broken in sidebar | OPEN (16 remaining) |
+| W11 | **Duplicate auth forms** — `AuthenticationForms` (full) vs page-level (simple) | Frontend | WCAG-compliant forms unused | ~~FIXED~~ Sprint 4 (pages consolidated) |
+| W12 | **Inconsistent layout wrapping** — only Synastry uses AppLayout | Frontend | Navigation/sidebar only on 1 page | ~~FIXED~~ Sprint 4 |
+| W13 | **Raw `<a>` tags in AppLayout** — full page reloads instead of `<Link>` | Frontend | SPA navigation broken in sidebar | ~~FIXED~~ Sprint 1 |
 | W14 | **No React error boundary** — render crashes take down entire app | Frontend | No graceful error recovery |
-| W15 | **No CD pipeline** — manual Railway deployment only | Infra | No automated deployments |
+| W15 | **No CD pipeline** — no automated deployment pipeline | Infra | No automated deployments | OPEN (Railway credentials needed) |
 | W16 | **No security scanning** — no npm audit, Snyk, or Dependabot | Infra | Vulnerable dependencies undetected |
 
 ### MEDIUM (quality / maintainability)
@@ -411,3 +418,131 @@ Legend: ✅ Working | ⚠️ Partial | ❌ Not working | — Not applicable
 17. Standardize all pages to use AppLayout
 18. Consolidate E2E test directories
 19. Add missing CI configs
+
+---
+
+## 8. AI Integration Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       Request Flow                          │
+│                                                             │
+│  User → Controller → AIInterpretationService               │
+│                          │                                  │
+│              ┌───────────┼──────────────┐                   │
+│              ▼           ▼              ▼                   │
+│         Cache Check   Usage Check    Rate Limit             │
+│         (PostgreSQL)  (Plan Tier)   (Per User)             │
+│              │           │              │                   │
+│              ▼           ▼              ▼                   │
+│         Hit? Return   Over Limit?   Generate Prompt         │
+│         Miss→Continue  → 429 Error    → OpenAI API          │
+│                                              │              │
+│                                     ┌────────┴────────┐     │
+│                                     ▼                 ▼     │
+│                              GPT-4o-mini        Future:    │
+│                              (Primary)         Anthropic   │
+│                                     │           (Fallback)  │
+│                                     ▼                       │
+│                              Cache Result                   │
+│                              Track Usage                    │
+│                              Return to User                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key design decisions:**
+- **OpenAI as primary LLM**: GPT-4o-mini offers the best cost/quality ratio for astrology interpretations
+- **PostgreSQL cache**: Deduplicates identical queries, reduces API spend by ~40%
+- **Plan-based rate limiting**: Free (5/day), Pro (50/day), Enterprise (unlimited)
+- **Hybrid interpretation**: Static interpretations from `data/interpretations.ts` for common queries, AI for personalized analysis
+
+**Provider abstraction path** (future): Extract OpenAI-specific logic behind a generic `LLMProvider` interface if we need fallback providers.
+
+---
+
+## 9. Deployment & Infrastructure
+
+### Current CI/CD
+
+```
+Push/PR → GitHub Actions
+  ├── backend-test (lint + type-check + unit + coverage)
+  ├── frontend-test (lint + type-check + unit + coverage)
+  ├── e2e-tests (Playwright + PostgreSQL service container)
+  ├── visual-tests (path-filtered, PR auto-comment)
+  └── mutation-tests (Stryker, on-demand)
+
+Manual → deploy.yml (staging/production selection)
+```
+
+### Environment Strategy
+
+| Environment | Hosting | Database | Status |
+|-------------|---------|----------|--------|
+| Development | Local (Docker Compose) | PostgreSQL 15 on port 5434 | Active |
+| Staging | Docker Compose or Railway | Managed PostgreSQL | Blocked (Railway credentials) |
+| Production | Railway or VPS | Managed PostgreSQL + Redis | Blocked (Railway credentials) |
+
+### Monitoring Plan (post-launch)
+- **Error tracking**: Sentry (auto-capture unhandled errors)
+- **APM**: Railway built-in or New Relic
+- **Logging**: Winston → structured JSON → aggregation service
+- **Health checks**: `GET /health` endpoint (exists), add `/health/detailed` for deeper checks
+- **Uptime**: Railway built-in or UptimeRobot
+
+---
+
+## 10. Phased Delivery Roadmap
+
+### v0.1 — Foundation (Current Sprint)
+Core platform with auth, charts, AI interpretations, billing.
+- [x] Express + React monorepo with shared packages
+- [x] JWT auth + CSRF + rate limiting
+- [x] Natal chart generation (Swiss Ephemeris mock → real engine integration pending)
+- [x] AI interpretations via OpenAI
+- [x] Stripe billing module (subscriptions + one-time)
+- [x] CI/CD pipeline (GitHub Actions)
+- [x] WCAG 2.1 AA accessibility compliance
+- [x] E2E test infrastructure (Playwright)
+- [x] Code review remediation (43/45 resolved)
+- [ ] **Production deployment** (blocked: Railway credentials from board)
+
+### v0.5 — Enhanced Features
+User engagement features, performance, and sharing.
+- [ ] Daily Cosmic Briefing (email + in-app)
+- [ ] Shareable chart cards (social media sharing)
+- [ ] Monthly transit reports
+- [ ] Redis caching layer (replacing in-memory caches)
+- [ ] Push notifications
+- [ ] Enhanced synastry scoring algorithm
+- [ ] PWA offline mode improvements
+- [ ] Real Swiss Ephemeris integration (replace mock)
+
+### v1.0 — Production Launch
+Hardening, optimization, and scale.
+- [ ] Production deployment + monitoring (Sentry, APM)
+- [ ] Load testing and performance optimization
+- [ ] Security audit (penetration testing)
+- [ ] Mobile-responsive polish
+- [ ] Onboarding flow optimization
+- [ ] Analytics integration (Mixpanel or PostHog)
+- [ ] API rate limiting tuning based on real traffic
+- [ ] Documentation site for API consumers
+
+---
+
+## 11. Key Technical Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Monorepo tool | npm workspaces | Zero config, no build overhead, native npm |
+| ORM/Query | Knex.js (query builder) | More control than full ORM, SQL transparency |
+| Auth tokens | JWT + refresh rotation | Stateless, scales horizontally, SPA-friendly |
+| CSRF | Double-submit cookie | Simple, effective with JWT |
+| Client state | Zustand + React Query | Minimal boilerplate, server/client state separation |
+| Chart rendering | D3.js + Swiss Ephemeris | Most accurate ephemeris, flexible SVG rendering |
+| AI provider | OpenAI GPT-4o-mini | Best cost/quality for structured interpretations |
+| CSS framework | Tailwind 3 | Rapid prototyping, utility-first, small bundle |
+| Testing stack | Jest + Vitest + Playwright | Best-in-class per layer |
+| CI/CD | GitHub Actions | Native GitHub integration, generous free tier |
+| API style | REST (not GraphQL) | Simple, cacheable, sufficient for SPA data needs |

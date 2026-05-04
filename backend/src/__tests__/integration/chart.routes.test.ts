@@ -4,11 +4,17 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import request from 'supertest';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, createTestChart, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 // Import app
 import app from '../../server';
@@ -71,14 +77,11 @@ describe('Chart Routes Integration Tests', () => {
         birth_date: '1990-01-15',
         birth_place_name: 'New York, NY',
         birth_latitude: 40.7128,
-        birth_longitude: -74.0060,
+        birth_longitude: -74.006,
         birth_timezone: 'America/New_York',
       };
 
-      const response = await request(app)
-        .post('/api/charts')
-        .send(chartData)
-        .expect(401);
+      const response = await request(app).post('/api/charts').send(chartData).expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });

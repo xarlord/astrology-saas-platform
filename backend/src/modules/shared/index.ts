@@ -32,3 +32,11 @@ export { TransitCacheService, getTransitCache } from './services/transitCache.se
 export { ChartSharingService, chartSharingService } from './services/chartSharing.service';
 export { PDFGenerationService } from './services/pdfGeneration.service';
 export { SecurityLoggingService } from './services/securityLogging.service';
+export {
+  getRedisClient,
+  connectRedis,
+  disconnectRedis,
+  isRedisConnected,
+  requireRedis,
+  RedisCache,
+} from './services/redis.service';

@@ -4,7 +4,11 @@
  */
 
 import knex from '../../config/database';
-import UserModel, { User, CreateUserData, UpdateUserData } from '../../modules/users/models/user.model';
+import UserModel, {
+  User,
+  CreateUserData,
+  UpdateUserData,
+} from '../../modules/users/models/user.model';
 
 // Mock database
 jest.mock('../../config/database');
@@ -168,7 +172,7 @@ describe('User Model', () => {
           plan: 'free',
           subscription_status: 'active',
           timezone: 'UTC',
-        })
+        }),
       );
       expect(result).toEqual(createdUser);
     });
@@ -203,7 +207,7 @@ describe('User Model', () => {
       expect(mockQueryBuilder.insert).toHaveBeenCalledWith(
         expect.objectContaining({
           timezone: 'America/New_York',
-        })
+        }),
       );
     });
   });
@@ -245,7 +249,7 @@ describe('User Model', () => {
           name: 'Updated Name',
           avatar_url: 'https://example.com/avatar.jpg',
           updated_at: expect.any(Date),
-        })
+        }),
       );
       expect(result).toEqual(updatedUser);
     });
@@ -329,7 +333,7 @@ describe('User Model', () => {
         expect.objectContaining({
           plan: 'premium',
           subscription_status: 'active',
-        })
+        }),
       );
       expect(result).toEqual(updatedUser);
     });
@@ -349,7 +353,7 @@ describe('User Model', () => {
       expect(mockQueryBuilder.update).toHaveBeenCalledWith(
         expect.objectContaining({
           subscription_status: 'active',
-        })
+        }),
       );
     });
   });
@@ -435,7 +439,10 @@ describe('User Model', () => {
         .mockReturnValueOnce(findQueryBuilder as unknown as ReturnType<typeof knex>)
         .mockReturnValueOnce(updateQueryBuilder as unknown as ReturnType<typeof knex>);
 
-      const result = await UserModel.updatePreferences('123', { houseSystem: 'whole_sign', theme: 'dark' });
+      const result = await UserModel.updatePreferences('123', {
+        houseSystem: 'whole_sign',
+        theme: 'dark',
+      });
 
       expect(updateQueryBuilder.update).toHaveBeenCalledWith({
         preferences: { theme: 'dark', houseSystem: 'whole_sign' },

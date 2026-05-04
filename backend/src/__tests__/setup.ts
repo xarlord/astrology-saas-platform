@@ -40,23 +40,45 @@ expect.extend({
     const pass = !isNaN(Date.parse(received));
     return {
       pass,
-      message: () => (pass ? `Expected ${received} not to be a valid date` : `Expected ${received} to be a valid date`),
+      message: () =>
+        pass
+          ? `Expected ${received} not to be a valid date`
+          : `Expected ${received} to be a valid date`,
     };
   },
   toBeWithinRange(received: number, min: number, max: number) {
     const pass = received >= min && received <= max;
     return {
       pass,
-      message: () => (pass ? `Expected ${received} not to be within range [${min}, ${max}]` : `Expected ${received} to be within range [${min}, ${max}]`),
+      message: () =>
+        pass
+          ? `Expected ${received} not to be within range [${min}, ${max}]`
+          : `Expected ${received} to be within range [${min}, ${max}]`,
     };
   },
   toBePlanetPosition(received) {
-    const validKeys = ['planet', 'sign', 'degree', 'minute', 'second', 'house', 'retrograde', 'latitude', 'longitude', 'speed'];
-    const hasRequiredKeys = ['planet', 'sign', 'degree', 'minute', 'second', 'house'].every(key => key in received);
+    const validKeys = [
+      'planet',
+      'sign',
+      'degree',
+      'minute',
+      'second',
+      'house',
+      'retrograde',
+      'latitude',
+      'longitude',
+      'speed',
+    ];
+    const hasRequiredKeys = ['planet', 'sign', 'degree', 'minute', 'second', 'house'].every(
+      (key) => key in received,
+    );
     const pass = hasRequiredKeys;
     return {
       pass,
-      message: () => (pass ? `Expected ${received} to have required planet position keys` : `Expected ${received} to have keys: ${validKeys.join(', ')}`),
+      message: () =>
+        pass
+          ? `Expected ${received} to have required planet position keys`
+          : `Expected ${received} to have keys: ${validKeys.join(', ')}`,
     };
   },
 });

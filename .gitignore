@@ -3,6 +3,9 @@ node_modules/
 .pnp
 .pnp.js
 
+# Claude Code worktrees (temp, never commit)
+.claude/worktrees/
+
 # Testing
 coverage/
 .nyc_output/
@@ -12,6 +15,11 @@ frontend/e2e/.auth/
 frontend/playwright-report/
 frontend/test-results/
 frontend/test-results.json
+frontend/test-results2.json
+**/playwright-report/
+**/test-results/
+**/test-results.json
+.last-run.json
 
 # Production
 dist/
@@ -68,10 +76,6 @@ temp/
 
 # Lock files (optional - comment out if using workspaces)
 # package-lock.json
-
-# Testing
-coverage/
-.nyc_output/
 
 # Misc
 .cache/

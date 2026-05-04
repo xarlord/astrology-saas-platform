@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse Solar Return 2024</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f5a524",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#0B0D17",
+                        "cosmic-purple": "#6C3CE1",
+                        "warm-amber": "#d97706",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cosmic-gradient {
+            background: radial-gradient(circle at top right, rgba(108, 60, 225, 0.15), transparent),
+                        radial-gradient(circle at bottom left, rgba(245, 166, 35, 0.1), transparent);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen cosmic-gradient">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 glass border-b border-white/10 px-6 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-background-dark font-bold">flare</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tight text-white uppercase">AstroVerse</h1>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Reports</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Charts</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Consultations</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Academy</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-xl glass hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary overflow-hidden">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="User profile avatar close up portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbO6-O3aFOa4qXti228W0hQ-arHNIANALIRzlv4hb3HYgMQs7z1sAYFDNbf2PYRV1zhMFDVqNBlMDO7KrIQ1j2sb_JGehU5sZtHa239sHT77knPzqXYUrjhs_4ptDPkgwk4QJRcQPPsgbeQOOnVoyotJhWg7nfFuWB99sRAj8Ow-VCeXT9Tw4MFfIgVa1nfTAw5_-Ju7JbBR-5bJ7Pp-EVu3sJ4kvok586PWZiTjn5BVYbh2LsDDtIV2paHsNvg2IZwQYcAmOiI9f2"/>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-20 px-4 md:px-10 max-w-7xl mx-auto space-y-10">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary">wb_sunny</span>
+<span class="text-primary font-bold tracking-widest text-sm uppercase">Annual Forecast</span>
+</div>
+<h2 class="text-4xl md:text-5xl font-black text-white leading-tight">Solar Return Report 2024</h2>
+<p class="text-slate-400 mt-2 text-lg">Your birthday chart and annual forecast for the year ahead.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 rounded-xl glass border border-white/20 text-sm font-bold flex items-center gap-2 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-sm">archive</span>
+                    View Archive
+                </button>
+<button class="px-5 py-2.5 rounded-xl bg-primary text-background-dark text-sm font-bold flex items-center gap-2 hover:scale-105 transition-all">
+<span class="material-symbols-outlined text-sm">download</span>
+                    Download PDF
+                </button>
+</div>
+</header>
+<!-- Hero Section: Yearly Theme -->
+<section class="glass rounded-xl p-8 md:p-12 relative overflow-hidden group">
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 blur-[100px] rounded-full"></div>
+<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-cosmic-purple/10 blur-[100px] rounded-full"></div>
+<div class="grid md:grid-cols-2 gap-12 items-center relative z-10">
+<div class="flex justify-center md:justify-start order-2 md:order-1">
+<div class="relative w-64 h-64 md:w-80 md:h-80">
+<div class="absolute inset-0 bg-primary/20 blur-3xl animate-pulse"></div>
+<img alt="Solar Theme" class="w-full h-full object-cover rounded-full shadow-2xl shadow-primary/20 border-4 border-primary/30" data-alt="Abstract golden glowing sun orb against a dark cosmic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUmSF4r8c0BJzE3rV72jT8RwkCQ5A8UFJ64a50B3Ifhc3d4X66ws_UgYZl-LxR0rhfQXXrncC35aODBnkjMeiNnEs5iYV0dLGjvyIhiSGWR-1kaKSuTpkNr2iu8BIz1LEclNXceH5IiTR1bvf0KKZDFhksNsSmaq8FGBqa0vxuh6umuOXeicsHuE_p2t39AwMTBOj8mPqK2RPAsEM1PUKqs9P4Sn16uFW9iaOuCToTub6GkHPa39xmQ1Gnc2ZNln8vs1bN7_Q6zh8w"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[120px] text-primary drop-shadow-[0_0_15px_rgba(245,165,36,0.8)]">light_mode</span>
+</div>
+</div>
+</div>
+<div class="order-1 md:order-2 space-y-6">
+<div>
+<span class="text-primary font-bold text-sm tracking-widest uppercase mb-2 block">The Yearly Theme</span>
+<h3 class="text-4xl md:text-6xl font-black text-white leading-[1.1]">The Year of Personal Expansion</h3>
+</div>
+<div class="space-y-4 text-slate-300 text-lg leading-relaxed">
+<p>This year marks a monumental shift in your personal evolution. As the Sun returns to the exact degree of your birth, it illuminates your sector of growth and wisdom, promising a twelve-month period defined by breaking boundaries and seeking higher truths.</p>
+<p>With Jupiter as your guiding star, the theme of 'Expansion' manifests in your career and spiritual life. You are encouraged to take bold risks, travel beyond your comfort zone, and embrace a philosophy of abundance that will redefine your future trajectory.</p>
+</div>
+<button class="text-primary font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                        Read Full Executive Summary <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Chart Comparison Section -->
+<section class="space-y-6">
+<div class="flex items-center justify-between px-2">
+<h3 class="text-2xl font-bold text-white">Chart Comparison: Natal vs. Solar Return</h3>
+<span class="text-slate-400 text-sm flex items-center gap-1"><span class="material-symbols-outlined text-sm">info</span> Swipe to compare details</span>
+</div>
+<div class="relative flex flex-col md:flex-row gap-6 items-center">
+<!-- Natal Chart Card -->
+<div class="flex-1 w-full glass rounded-xl p-8 flex flex-col items-center gap-6 border-l-4 border-slate-500">
+<p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Natal Birth Chart</p>
+<div class="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-slate-700/50 flex items-center justify-center bg-black/20">
+<img alt="Natal Chart Wheel" class="w-full h-full object-cover rounded-full opacity-60" data-alt="Circular astrology chart with complex zodiac signs and planetary symbols" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-c8QwHJVyfAfxOdHbL2hOXKzwCVZmWhMOugWzn-_ENKYTJvBtXqzYG2-xLv416D-55u-VsPrrNty-n1P6dGPfHmD3jdw3ugUDfcjqYHRMPLlXvdz7ndytUPRRYzpmwR85n8hPgixIk8gomEvzeqB80gJG76ydrRM5lOKC7dpmLsD7LQcqMWi5jYi9-jOzwoI9tHv-hEyf7c-e0xf032vguOdXmeJ99jw95CjKifq01K40TsFCAa2gPgx4wQqWga8cdu6S6DSlG-eE"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[100px] text-slate-500/30">auto_awesome</span>
+</div>
+</div>
+<p class="text-center text-slate-300 text-sm">Fixed positions at time of birth in London, UK</p>
+</div>
+<!-- Central Badge -->
+<div class="md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20">
+<div class="bg-primary text-background-dark px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(245,166,35,0.4)] flex flex-col items-center border-4 border-background-dark">
+<span class="text-[10px] font-black uppercase tracking-tighter opacity-80">Solar Return Ascendant</span>
+<span class="text-2xl font-black">LEO RISING</span>
+<span class="material-symbols-outlined text-sm">king_bed</span>
+</div>
+</div>
+<!-- Solar Return Chart Card -->
+<div class="flex-1 w-full glass rounded-xl p-8 flex flex-col items-center gap-6 border-r-4 border-primary">
+<p class="text-primary font-bold uppercase tracking-widest text-xs">Solar Return 2024 Chart</p>
+<div class="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-primary/30 flex items-center justify-center bg-primary/5">
+<img alt="Solar Return Chart Wheel" class="w-full h-full object-cover rounded-full opacity-80" data-alt="Vibrant golden astrology chart wheel with glowing celestial points" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsEmcuNMK5lsZhpoOyxXcoYQSR1xqAKjp6TUSwGlzea803pqjUFgsNM_OYuyrScjNHtg0c2DprLHubXUeUHM6ZqrZcrTKkS9YNTJ6SD7m-yrak5gp4vq-JdkfH_Ku70jFbgeiBpQWqOga-CWB6quWB__UyLwsPLWoCBNzfTOb0FcdXwlj8L8U2DJtTT7Pydji5R6MapWv9AcRWSnOSQCEfPWG2--sDXZtKOWpwtJowFVKEgtafrt4mXWkNN5C__PtoaPfICjGquTxp"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[100px] text-primary/40">flare</span>
+</div>
+</div>
+<p class="text-center text-slate-300 text-sm">Annual celestial alignment for current year</p>
+</div>
+</div>
+</section>
+<!-- Key Placements Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Placement 1 -->
+<div class="glass p-8 rounded-xl space-y-4 hover:border-primary/50 transition-colors group">
+<div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined">home</span>
+</div>
+<h4 class="text-slate-400 font-bold text-xs uppercase tracking-widest">The Solar House</h4>
+<div class="space-y-1">
+<p class="text-2xl font-bold text-white">Sun in the 9th House</p>
+<p class="text-primary font-medium">Horizon Expansion</p>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">Your vital energy is focused on travel, higher learning, and spiritual philosophy. A prime year for academic pursuits or international ventures.</p>
+</div>
+<!-- Placement 2 -->
+<div class="glass p-8 rounded-xl space-y-4 hover:border-primary/50 transition-colors group">
+<div class="w-12 h-12 rounded-lg bg-cosmic-purple/20 flex items-center justify-center text-cosmic-purple mb-6">
+<span class="material-symbols-outlined">stars</span>
+</div>
+<h4 class="text-slate-400 font-bold text-xs uppercase tracking-widest">Yearly Ruler</h4>
+<div class="space-y-1">
+<p class="text-2xl font-bold text-white">Jupiter</p>
+<p class="text-cosmic-purple font-medium">Benevolent Growth</p>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">Jupiter acts as your personal advocate this year, magnifying abundance in whichever house it currently transits. Focus on "Yes" as your default.</p>
+</div>
+<!-- Placement 3 -->
+<div class="glass p-8 rounded-xl space-y-4 hover:border-primary/50 transition-colors group">
+<div class="w-12 h-12 rounded-lg bg-warm-amber/20 flex items-center justify-center text-warm-amber mb-6">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<h4 class="text-slate-400 font-bold text-xs uppercase tracking-widest">Crucial Aspect</h4>
+<div class="space-y-1">
+<p class="text-2xl font-bold text-white">Sun Conjunct Midheaven</p>
+<p class="text-warm-amber font-medium">Public Peak</p>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">A rare alignment signaling a professional peak. Your visibility is at an all-time high; the world is watching your career moves closely.</p>
+</div>
+</section>
+<!-- Annual Timeline -->
+<section class="space-y-6">
+<h3 class="text-2xl font-bold text-white px-2">Annual 12-Month Timeline</h3>
+<div class="glass rounded-xl p-8 overflow-x-auto hide-scrollbar">
+<div class="flex min-w-[1200px] relative">
+<!-- Progress Line -->
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2"></div>
+<!-- Month Nodes -->
+<div class="flex justify-between w-full relative z-10">
+<div class="flex flex-col items-center gap-4 group">
+<span class="text-xs font-bold text-slate-500 group-hover:text-primary transition-colors">MAY</span>
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark shadow-[0_0_15px_rgba(245,166,35,0.4)]">
+<span class="material-symbols-outlined text-sm font-bold">star</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-primary font-bold uppercase">Power Date</p>
+<p class="text-[9px] text-slate-400">May 14</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">JUN</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+<div class="flex flex-col items-center gap-4 group">
+<span class="text-xs font-bold text-slate-500 group-hover:text-slate-300">JUL</span>
+<div class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-slate-400 font-bold uppercase">Challenge</p>
+<p class="text-[9px] text-slate-500">Jul 28</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">AUG</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+<div class="flex flex-col items-center gap-4 group">
+<span class="text-xs font-bold text-slate-500 group-hover:text-primary transition-colors">SEP</span>
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark shadow-[0_0_15px_rgba(245,166,35,0.4)]">
+<span class="material-symbols-outlined text-sm font-bold">star</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-primary font-bold uppercase">Power Date</p>
+<p class="text-[9px] text-slate-400">Sep 22</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">OCT</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+<div class="flex flex-col items-center gap-4 group">
+<span class="text-xs font-bold text-slate-500 group-hover:text-slate-300">NOV</span>
+<div class="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-slate-400 font-bold uppercase">Challenge</p>
+<p class="text-[9px] text-slate-500">Nov 11</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">DEC</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+<div class="flex flex-col items-center gap-4 group">
+<span class="text-xs font-bold text-slate-500 group-hover:text-primary transition-colors">JAN</span>
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark shadow-[0_0_15px_rgba(245,166,35,0.4)]">
+<span class="material-symbols-outlined text-sm font-bold">star</span>
+</div>
+<div class="text-center">
+<p class="text-[10px] text-primary font-bold uppercase">Peak Power</p>
+<p class="text-[9px] text-slate-400">Jan 05</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">FEB</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">MAR</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<span class="text-xs font-bold text-slate-500">APR</span>
+<div class="w-3 h-3 rounded-full bg-white/20 mt-3.5"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Interpretations: Accordions -->
+<section class="space-y-4">
+<h3 class="text-2xl font-bold text-white px-2 mb-6">Detailed Interpretations</h3>
+<!-- Accordion 1 -->
+<div class="glass rounded-xl overflow-hidden group">
+<button class="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">work</span>
+</div>
+<span class="text-lg font-bold text-white">Career &amp; Purpose</span>
+</div>
+<span class="material-symbols-outlined text-slate-500 group-hover:rotate-180 transition-transform">expand_more</span>
+</button>
+<div class="p-6 pt-0 text-slate-400 leading-relaxed border-t border-white/5">
+                    Your professional landscape is undergoing a radical transformation. The placement of the Solar Midheaven suggests that you are ready to step into a leadership role that aligns more closely with your personal ethics. Look for opportunities between September and January to pitch high-stakes projects or ask for significant advancements.
+                </div>
+</div>
+<!-- Accordion 2 -->
+<div class="glass rounded-xl overflow-hidden group">
+<button class="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-cosmic-purple/10 flex items-center justify-center text-cosmic-purple">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<span class="text-lg font-bold text-white">Love &amp; Social Life</span>
+</div>
+<span class="material-symbols-outlined text-slate-500">expand_more</span>
+</button>
+<div class="p-6 pt-0 text-slate-400 leading-relaxed hidden">
+                    Social dynamics will shift as you prioritize deep intellectual connections over surface-level interactions.
+                </div>
+</div>
+<!-- Accordion 3 -->
+<div class="glass rounded-xl overflow-hidden group">
+<button class="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-warm-amber/10 flex items-center justify-center text-warm-amber">
+<span class="material-symbols-outlined">vital_signs</span>
+</div>
+<span class="text-lg font-bold text-white">Health &amp; Vitality</span>
+</div>
+<span class="material-symbols-outlined text-slate-500">expand_more</span>
+</button>
+<div class="p-6 pt-0 text-slate-400 leading-relaxed hidden">
+                    Focus on routine and mental health as a foundation for physical stamina this year.
+                </div>
+</div>
+</section>
+<!-- Final Actions Bar -->
+<section class="flex flex-wrap items-center justify-center gap-6 py-10 border-t border-white/10">
+<button class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">compare_arrows</span>
+<span class="font-bold">Compare with Previous Year</span>
+</button>
+<button class="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">calendar_add_on</span>
+<span class="font-bold">Add Power Dates to Calendar</span>
+</button>
+<div class="w-px h-6 bg-white/20 hidden md:block"></div>
+<button class="px-8 py-3 rounded-full bg-primary text-background-dark font-black hover:shadow-[0_0_20px_rgba(245,166,35,0.3)] transition-all">
+                BOOK CONSULTATION FOR THIS REPORT
+            </button>
+</section>
+</main>
+<!-- Background Decorative Elements -->
+<div class="fixed top-1/4 -left-64 w-[500px] h-[500px] bg-cosmic-purple/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+<div class="fixed bottom-1/4 -right-64 w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
+</body></html>

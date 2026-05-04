@@ -138,7 +138,7 @@ describe('GlobalEventsService', () => {
       // Verify sorted by date
       for (let i = 1; i < retrogrades.length; i++) {
         expect(retrogrades[i].startDate.getTime()).toBeGreaterThanOrEqual(
-          retrogrades[i - 1].startDate.getTime()
+          retrogrades[i - 1].startDate.getTime(),
         );
       }
 

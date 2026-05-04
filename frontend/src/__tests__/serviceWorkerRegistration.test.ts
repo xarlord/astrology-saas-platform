@@ -1,10 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { registerSW, isOffline, getSWRegistration } from '../utils/serviceWorkerRegistration';
 
@@ -226,7 +219,10 @@ describe('Service Worker Registration', () => {
 
       await registerSW({ onNeedRefresh, onOfflineReady: vi.fn() });
 
-      expect(mockRegistration.addEventListener).toHaveBeenCalledWith('updatefound', expect.any(Function));
+      expect(mockRegistration.addEventListener).toHaveBeenCalledWith(
+        'updatefound',
+        expect.any(Function),
+      );
     });
 
     it('should reload page on controller change', async () => {

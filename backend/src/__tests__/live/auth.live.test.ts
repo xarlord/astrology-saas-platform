@@ -63,7 +63,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/register',
         { name: 'Test', email: 'not-an-email', password: 'TestPass123' },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       expect(res.status).toBe(400);
@@ -77,7 +77,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/register',
         { name: 'Test', email: 'weak@test.com', password: 'short' },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       expect(res.status).toBe(400);
@@ -116,7 +116,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/login',
         { email: TEST_USER.email, password: TEST_USER.password },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       expect(res.status).toBe(200);
@@ -139,7 +139,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/login',
         { email: TEST_USER.email, password: 'WrongPassword123' },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       expect(res.status).toBe(401);
@@ -154,7 +154,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/login',
         { email: 'nonexistent@astroverse.com', password: 'TestPass123' },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       expect(res.status).toBe(401);
@@ -168,7 +168,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/login',
         { email: TEST_USER.email },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       expect(res.status).toBe(400);
@@ -180,7 +180,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
   // ============================================================
   describe('POST /auth/refresh', () => {
     it('should refresh access token with valid refresh token', async () => {
-      await new Promise(r => setTimeout(r, 1000)); // Avoid rate limit
+      await new Promise((r) => setTimeout(r, 1000)); // Avoid rate limit
       const { csrf, cookies: c } = await getCsrf(cookies);
       cookies += '; ' + c;
 
@@ -188,7 +188,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/refresh',
         { refreshToken: refreshTokenValue },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       // Accept rate limit response
@@ -204,7 +204,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
     }, 10000);
 
     it('should reject invalid refresh token', async () => {
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
       const { csrf, cookies: c } = await getCsrf(cookies);
       cookies += '; ' + c;
 
@@ -212,7 +212,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
         'POST',
         '/auth/refresh',
         { refreshToken: 'invalid-token-12345' },
-        { 'X-CSRF-Token': csrf, Cookie: cookies }
+        { 'X-CSRF-Token': csrf, Cookie: cookies },
       );
 
       if (res.status === 429) return;
@@ -228,18 +228,13 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
   // ============================================================
   describe('POST /auth/logout', () => {
     it('should logout successfully', async () => {
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
       const { csrf, cookies: c } = await getCsrf(cookies);
       cookies += '; ' + c;
 
-      const res = await authed(
-        'POST',
-        '/auth/logout',
-        accessToken,
-        cookies,
-        csrf,
-        { refreshToken: refreshTokenValue }
-      );
+      const res = await authed('POST', '/auth/logout', accessToken, cookies, csrf, {
+        refreshToken: refreshTokenValue,
+      });
 
       if (res.status === 429) return;
       if (res.status === 200) {
@@ -249,7 +244,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
     }, 10000);
 
     it('should still respond to /auth/me after logout (token may still be valid)', async () => {
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
       const res = await api('GET', '/auth/me', undefined, {
         Authorization: `Bearer ${accessToken}`,
         Cookie: cookies,

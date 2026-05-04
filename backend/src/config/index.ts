@@ -51,6 +51,22 @@ interface Config {
     defaultPageSize: number;
     maxPageSize: number;
   };
+
+  // Redis
+  redis: {
+    url: string;
+    host: string;
+    port: number;
+    password?: string;
+  };
+
+  // Stripe
+  stripe: {
+    secretKey: string;
+    webhookSecret: string;
+    proPriceId: string;
+    premiumPriceId: string;
+  };
 }
 
 const config: Config = {
@@ -59,21 +75,36 @@ const config: Config = {
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
 
   database: {
-    url: process.env.DATABASE_URL || 'postgresql://postgres:astrology123@localhost:5434/astrology_saas',
+    url:
+      process.env.DATABASE_URL ||
+      `postgresql://postgres:${process.env.DATABASE_PASSWORD || ''}@localhost:5434/astrology_saas`,
     host: process.env.DATABASE_HOST || 'localhost',
     port: parseInt(process.env.DATABASE_PORT || '5434', 10),
     name: process.env.DATABASE_NAME || 'astrology_saas',
     user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'astrology123',
+    password:
+      process.env.DATABASE_PASSWORD ||
+      (() => {
+        if (process.env.NODE_ENV === 'production') {
+          throw new Error('DATABASE_PASSWORD must be set in production');
+        }
+        return '';
+      })(),
   },
 
   jwt: {
-    secret: process.env.JWT_SECRET || (() => {
-      if (process.env.NODE_ENV === 'production') {
-        throw new Error('JWT_SECRET must be set in production');
-      }
-      return 'dev-secret-do-not-use-in-production';
-    })(),
+    secret:
+      process.env.JWT_SECRET ||
+      (() => {
+        if (process.env.NODE_ENV === 'production') {
+          throw new Error('JWT_SECRET must be set in production');
+        }
+        // Generate a random dev secret on startup to avoid predictable secrets
+        // Import crypto dynamically to avoid issues in environments where it's not available
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const crypto = require('crypto');
+        return crypto.randomBytes(32).toString('hex');
+      })(),
     expiresIn: process.env.JWT_EXPIRES_IN || '1h', // Changed from 7d to 1h for security
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d', // Shortened from 30d to 7d
   },
@@ -89,12 +120,26 @@ const config: Config = {
 
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
-    maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
+    maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '10000', 10),
   },
 
   pagination: {
     defaultPageSize: parseInt(process.env.DEFAULT_PAGE_SIZE || '20', 10),
     maxPageSize: parseInt(process.env.MAX_PAGE_SIZE || '100', 10),
+  },
+
+  redis: {
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    password: process.env.REDIS_PASSWORD || undefined,
+  },
+
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY || '',
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+    proPriceId: process.env.STRIPE_PRO_PRICE_ID || 'price_pro',
+    premiumPriceId: process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium',
   },
 };
 

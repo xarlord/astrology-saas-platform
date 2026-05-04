@@ -7,14 +7,7 @@
  * Run: cd backend && npx jest --config=jest.config.js --testPathPattern='charts.live' --forceExit --verbose
  */
 
-import {
-  api,
-  authed,
-  getCsrf,
-  registerTestUser,
-  SAMPLE_CHART,
-  cleanupTestData,
-} from './helpers';
+import { api, authed, getCsrf, registerTestUser, SAMPLE_CHART, cleanupTestData } from './helpers';
 
 let accessToken = '';
 let cookies = '';
@@ -102,7 +95,13 @@ describe('GET /charts/:id', () => {
   });
 
   it('should return 404 for nonexistent chart', async () => {
-    const res = await authed('GET', '/charts/00000000-0000-0000-0000-000000000000', accessToken, cookies, '');
+    const res = await authed(
+      'GET',
+      '/charts/00000000-0000-0000-0000-000000000000',
+      accessToken,
+      cookies,
+      '',
+    );
 
     expect(res.status).toBe(404);
   });
@@ -118,7 +117,14 @@ describe('POST /charts/:id/calculate', () => {
     const { csrf, cookies: c } = await getCsrf(cookies);
     cookies = c;
 
-    const res = await authed('POST', `/charts/${testChartIds[0]}/calculate`, accessToken, cookies, csrf, {});
+    const res = await authed(
+      'POST',
+      `/charts/${testChartIds[0]}/calculate`,
+      accessToken,
+      cookies,
+      csrf,
+      {},
+    );
 
     expect(res.status).toBe(200);
     expect(res.data.success).toBe(true);
@@ -132,7 +138,14 @@ describe('POST /charts/:id/calculate', () => {
     const { csrf, cookies: c } = await getCsrf(cookies);
     cookies = c;
 
-    const res = await authed('POST', '/charts/00000000-0000-0000-0000-000000000000/calculate', accessToken, cookies, csrf, {});
+    const res = await authed(
+      'POST',
+      '/charts/00000000-0000-0000-0000-000000000000/calculate',
+      accessToken,
+      cookies,
+      csrf,
+      {},
+    );
 
     expect(res.status).toBe(404);
   }, 15000);
@@ -189,7 +202,10 @@ describe('Chart Calculation Consistency', () => {
     const { csrf, cookies: c } = await getCsrf(cookies);
     cookies = c;
 
-    const res1 = await authed('POST', '/charts', accessToken, cookies, csrf, { ...SAMPLE_CHART, name: 'Consistency Test 1' });
+    const res1 = await authed('POST', '/charts', accessToken, cookies, csrf, {
+      ...SAMPLE_CHART,
+      name: 'Consistency Test 1',
+    });
     expect(res1.status).toBe(201);
     const chart1Id = res1.data.data.chart.id;
     testChartIds.push(chart1Id);
@@ -197,7 +213,10 @@ describe('Chart Calculation Consistency', () => {
     const { csrf: csrf2, cookies: c2 } = await getCsrf(cookies);
     cookies = c2;
 
-    const res2 = await authed('POST', '/charts', accessToken, cookies, csrf2, { ...SAMPLE_CHART, name: 'Consistency Test 2' });
+    const res2 = await authed('POST', '/charts', accessToken, cookies, csrf2, {
+      ...SAMPLE_CHART,
+      name: 'Consistency Test 2',
+    });
     expect(res2.status).toBe(201);
     const chart2Id = res2.data.data.chart.id;
     testChartIds.push(chart2Id);
@@ -205,11 +224,25 @@ describe('Chart Calculation Consistency', () => {
     // Calculate both
     const { csrf: calcCsrf1, cookies: cc1 } = await getCsrf(cookies);
     cookies = cc1;
-    const calc1 = await authed('POST', `/charts/${chart1Id}/calculate`, accessToken, cookies, calcCsrf1, {});
+    const calc1 = await authed(
+      'POST',
+      `/charts/${chart1Id}/calculate`,
+      accessToken,
+      cookies,
+      calcCsrf1,
+      {},
+    );
 
     const { csrf: calcCsrf2, cookies: cc2 } = await getCsrf(cookies);
     cookies = cc2;
-    const calc2 = await authed('POST', `/charts/${chart2Id}/calculate`, accessToken, cookies, calcCsrf2, {});
+    const calc2 = await authed(
+      'POST',
+      `/charts/${chart2Id}/calculate`,
+      accessToken,
+      cookies,
+      calcCsrf2,
+      {},
+    );
 
     if (calc1.status === 200 && calc2.status === 200) {
       const p1 = calc1.data.data.chart.planets;

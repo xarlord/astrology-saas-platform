@@ -1,6 +1,8 @@
 /**
  * Models Index
- * Central exports for all models - explicit named exports to avoid conflicts
+ * Central exports for all models
+ * NOTE: Where multiple modules export the same type names, we use explicit
+ * exports to avoid ambiguity (e.g., MoonPhase, Planet, PlanetPosition).
  */
 
 // Charts
@@ -14,43 +16,24 @@ export type { User, CreateUserData, UpdateUserData } from '../modules/users/mode
 // Auth
 export * from '../modules/auth/models/refreshToken.model';
 
-// Calendar
-export type {
-  EventType,
-  AspectType,
-  Planet,
-  MoonPhase,
-  RetrogradePeriod,
-  Eclipse,
-  MoonPhaseEvent,
-  AstrologicalEvent,
-  TransitEvent,
-  DailyWeather,
-  CalendarMonth,
-  UserReminder,
-  CalendarView,
-  NotificationPayload,
-} from '../modules/calendar/models/calendar.model';
+// Calendar model — authoritative source for MoonPhase, Planet
+export * from '../modules/calendar/models/calendar.model';
 
-// Calendar Events - only unique exports
-export type {
-  CalendarEvent,
-  MoonPhaseDetails,
-} from '../modules/calendar/models/calendarEvent.model';
+// CalendarEvent — skip Planet, MoonPhase, PlanetPosition to avoid conflicts
+export { type CalendarEvent } from '../modules/calendar/models/calendarEvent.model';
 
-// Lunar - only unique exports
-export type {
-  LunarReturnChart,
-  LunarAspect,
-  LunarMonthForecast,
-  KeyDate,
-  MonthlyPrediction,
-  MonthlyRitual,
-  UserLunarReturn,
-  CurrentLunarReturn,
+// Lunar model — skip NatalChart, ZodiacSign, MoonPhase to avoid conflicts
+export {
+  type LunarReturnChart,
+  type LunarAspect,
+  type LunarMonthForecast,
+  type KeyDate,
+  type MonthlyPrediction,
+  type MonthlyRitual,
+  type UserLunarReturn,
+  type CurrentLunarReturn,
 } from '../modules/lunar/models/lunarReturn.model';
 
-// Notifications
 export * from '../modules/notifications/models/pushSubscription.model';
 
 // Solar

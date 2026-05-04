@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AstroVerse - Create New Chart</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6b3de1",
+                        "primary-dark": "#5a32c2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0B0D17", // Deep Navy
+                        "surface-glass": "rgba(22, 18, 33, 0.7)",
+                        "accent-gold": "#F5A623",
+                        "accent-blue": "#2563EB",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'constellation': "radial-gradient(circle at 15% 50%, rgba(108, 61, 225, 0.12) 0%, transparent 25%), radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.1) 0%, transparent 25%)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D17; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2f2645; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #433663; 
+        }
+
+        /* Glassmorphism utilities */
+        .glass-panel {
+            background: rgba(22, 18, 33, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-glass {
+            background: rgba(33, 27, 49, 0.6);
+            border: 1px solid rgba(67, 54, 99, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .input-glass:focus-within {
+            border-color: #6b3de1;
+            box-shadow: 0 0 0 1px #6b3de1, 0 0 15px rgba(107, 61, 225, 0.2);
+        }
+
+        /* Animated stars background simulation */
+        .stars {
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 160px 120px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
+            animation: twinkle 5s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col overflow-hidden text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-white">
+<!-- Background Effects -->
+<div class="fixed inset-0 pointer-events-none z-0 bg-constellation"></div>
+<div class="fixed inset-0 pointer-events-none z-0 stars"></div>
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 right-0 h-16 glass-panel z-50 px-6 flex items-center justify-between border-b-0 border-b-white/5">
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-[24px]">auto_awesome</span>
+</div>
+<h1 class="text-white text-xl font-bold tracking-tight">AstroVerse</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 text-slate-300 transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="hidden sm:inline">Help</span>
+</button>
+<div class="h-8 w-[1px] bg-white/10 mx-1"></div>
+<button class="flex items-center gap-3 pl-2 pr-1 rounded-full hover:bg-white/5 transition-colors group">
+<div class="text-right hidden sm:block">
+<p class="text-xs text-slate-400 font-medium">Logged in as</p>
+<p class="text-sm text-white font-bold leading-none">Sarah Cosmos</p>
+</div>
+<div class="size-9 rounded-full bg-gradient-to-br from-primary to-accent-blue p-[2px]">
+<img alt="User Avatar" class="rounded-full size-full object-cover border-2 border-[#0B0D17]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVIAyLLDaOBIhjwGaS_hKuVHgSUH49JgbsrFDFAwCW3jRaoFDOepHl7suLyOpTq8OI-n5RTldoBSQ34oh69W7uGjE5K6TfIi3BxG38it0lRir2YLQMrO7ld2St7VBP6gLUAPtaz62hL6skBMetfgV0REK5QZBK-L-aSAzTdiDOsOaKbtXjYSRMc-uoHEzRMBxzoCU5oRQXugO21JdaoSNMMsUaVV1ik1tbBHgOXlXB4XhwTzxc1ZDI-1hEAhuJv-rEEtIn5-lmbzYr"/>
+</div>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="relative z-10 flex flex-1 flex-col pt-20 pb-6 px-4 sm:px-8 h-screen max-h-screen overflow-hidden">
+<!-- Step Indicator -->
+<div class="w-full max-w-4xl mx-auto mb-8 mt-4">
+<div class="flex items-center justify-between relative">
+<!-- Line background -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[2px] bg-white/10 -z-10 rounded-full"></div>
+<!-- Step 1 (Active) -->
+<div class="flex flex-col items-center gap-2">
+<div class="size-10 rounded-full bg-primary flex items-center justify-center shadow-[0_0_15px_rgba(107,61,225,0.5)] border-2 border-primary-dark ring-4 ring-primary/20 z-10 transition-all">
+<span class="material-symbols-outlined text-white text-[20px]">person</span>
+</div>
+<span class="text-sm font-bold text-white tracking-wide">Birth Details</span>
+</div>
+<!-- Connector Active -->
+<div class="flex-1 h-[2px] bg-gradient-to-r from-primary to-white/10 mx-2"></div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-2 opacity-50">
+<div class="size-8 rounded-full bg-[#161221] border-2 border-white/20 flex items-center justify-center z-10">
+<span class="text-xs font-bold text-slate-400">2</span>
+</div>
+<span class="text-xs font-medium text-slate-400">Location</span>
+</div>
+<!-- Connector Inactive -->
+<div class="flex-1 h-[2px] bg-white/10 mx-2"></div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-2 opacity-50">
+<div class="size-8 rounded-full bg-[#161221] border-2 border-white/20 flex items-center justify-center z-10">
+<span class="text-xs font-bold text-slate-400">3</span>
+</div>
+<span class="text-xs font-medium text-slate-400">Options</span>
+</div>
+</div>
+</div>
+<!-- Wizard Layout -->
+<div class="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto w-full flex-1 min-h-0">
+<!-- LEFT: Form Card -->
+<div class="flex-1 flex flex-col glass-panel rounded-2xl overflow-y-auto custom-scrollbar p-1">
+<div class="p-8 pb-4">
+<div class="flex items-center gap-3 mb-2">
+<h2 class="text-3xl font-bold text-white tracking-tight">Create New Chart</h2>
+<span class="text-2xl animate-pulse">✨</span>
+</div>
+<p class="text-slate-400 text-sm">Enter the birth details below. Precision is key for an accurate reading.</p>
+</div>
+<div class="px-8 py-4 flex flex-col gap-6">
+<!-- Chart Name Input -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-300 text-sm font-medium ml-1">Chart Name</label>
+<div class="input-glass rounded-xl flex items-center px-4 h-14 w-full group">
+<input class="bg-transparent border-none text-white placeholder-slate-500 w-full focus:ring-0 h-full p-0 text-base" placeholder="e.g. John's Natal Chart" type="text"/>
+<span class="material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors">sell</span>
+</div>
+</div>
+<!-- Date & Time Row -->
+<div class="flex flex-col md:flex-row gap-6">
+<!-- Date -->
+<div class="flex-1 flex flex-col gap-2">
+<label class="text-slate-300 text-sm font-medium ml-1">Date of Birth</label>
+<div class="input-glass rounded-xl flex items-center px-4 h-14 w-full group relative">
+<input class="bg-transparent border-none text-white placeholder-slate-500 w-full focus:ring-0 h-full p-0 text-base appearance-none [&amp;::-webkit-calendar-picker-indicator]:opacity-0 z-10 cursor-pointer" type="date"/>
+<span class="absolute right-4 pointer-events-none material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors">calendar_month</span>
+<span class="absolute left-4 pointer-events-none text-slate-500 text-base hidden peer-valid:block">DD / MM / YYYY</span>
+</div>
+</div>
+<!-- Time -->
+<div class="flex-1 flex flex-col gap-2">
+<label class="text-slate-300 text-sm font-medium ml-1">Time of Birth</label>
+<div class="input-glass rounded-xl flex items-center px-4 h-14 w-full group">
+<input class="bg-transparent border-none text-white placeholder-slate-500 w-full focus:ring-0 h-full p-0 text-base [&amp;::-webkit-calendar-picker-indicator]:filter [&amp;::-webkit-calendar-picker-indicator]:invert" type="time"/>
+<span class="material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors">schedule</span>
+</div>
+<!-- Unknown Time Checkbox -->
+<label class="flex items-center gap-2 cursor-pointer group mt-1 ml-1 select-none">
+<div class="relative flex items-center">
+<input class="peer appearance-none size-4 border border-slate-500 rounded bg-transparent checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0 transition-colors" type="checkbox"/>
+<span class="material-symbols-outlined text-white absolute inset-0 opacity-0 peer-checked:opacity-100 text-[14px] pointer-events-none" style="font-weight: 800;">check</span>
+</div>
+<span class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Time unknown</span>
+</label>
+</div>
+</div>
+<!-- Gender/Gender Identity (Optional enhancement for context) -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-300 text-sm font-medium ml-1">Gender (Optional)</label>
+<div class="flex gap-3">
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="gender" type="radio"/>
+<div class="input-glass rounded-xl h-12 flex items-center justify-center text-slate-400 peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-white hover:bg-white/5 transition-all">
+                                    Male
+                                </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="gender" type="radio"/>
+<div class="input-glass rounded-xl h-12 flex items-center justify-center text-slate-400 peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-white hover:bg-white/5 transition-all">
+                                    Female
+                                </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="gender" type="radio"/>
+<div class="input-glass rounded-xl h-12 flex items-center justify-center text-slate-400 peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-white hover:bg-white/5 transition-all">
+                                    Other
+                                </div>
+</label>
+</div>
+</div>
+<!-- Info Banner -->
+<div class="mt-2 p-4 rounded-xl bg-primary/10 border border-primary/20 flex gap-3 items-start">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">info</span>
+<div class="flex flex-col gap-1">
+<p class="text-slate-200 text-sm font-medium">Why is birth time important?</p>
+<p class="text-slate-400 text-xs leading-relaxed">Accurate birth time is essential for precise house calculations and rising sign determination. If unknown, a Noon chart will be used.</p>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="mt-auto p-8 pt-4 flex items-center justify-between border-t border-white/5">
+<button class="px-6 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors font-medium text-sm">
+                        Cancel
+                    </button>
+<div class="flex items-center gap-4">
+<span class="hidden md:block text-xs text-slate-500">Press <span class="font-mono bg-white/10 px-1 py-0.5 rounded text-slate-300">Enter</span> to continue</span>
+<button class="bg-gradient-to-r from-primary to-[#8b5cf6] hover:from-[#7c4dff] hover:to-[#9d70ff] text-white px-8 py-3 rounded-xl font-bold shadow-[0_0_20px_rgba(107,61,225,0.4)] hover:shadow-[0_0_30px_rgba(107,61,225,0.6)] transition-all flex items-center gap-2 group">
+                            Next: Location
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- RIGHT: Preview Panel (Sidebar) -->
+<div class="w-full lg:w-80 glass-panel rounded-2xl p-6 flex flex-col gap-6 hidden md:flex sticky top-0 self-start">
+<div class="flex items-center justify-between">
+<h3 class="text-white font-bold text-sm tracking-wide uppercase opacity-80">Chart Preview</h3>
+<div class="bg-accent-gold/10 text-accent-gold border border-accent-gold/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">sunny</span>
+                        Sun in Aries
+                    </div>
+</div>
+<!-- Zodiac Wheel Placeholder -->
+<div class="relative aspect-square w-full rounded-full border border-white/10 flex items-center justify-center bg-background-dark/30 overflow-hidden group">
+<!-- Rotating background effect -->
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-20 group-hover:opacity-30 transition-opacity"></div>
+<!-- SVG Zodiac Wheel -->
+<svg class="w-full h-full p-2 opacity-40 animate-[spin_60s_linear_infinite]" data-alt="Abstract zodiac wheel outline showing house divisions" viewbox="0 0 100 100">
+<circle class="text-slate-500" cx="50" cy="50" fill="none" r="48" stroke="currentColor" stroke-width="0.5"></circle>
+<circle class="text-slate-600" cx="50" cy="50" fill="none" r="35" stroke="currentColor" stroke-width="0.5"></circle>
+<circle class="text-primary" cx="50" cy="50" fill="none" r="15" stroke="currentColor" stroke-width="0.5"></circle>
+<!-- Spokes -->
+<path class="text-slate-600" d="M50 2 L50 98 M2 50 L98 50 M16 16 L84 84 M16 84 L84 16" stroke="currentColor" stroke-width="0.2"></path>
+</svg>
+<!-- Center content placeholder -->
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<div class="size-16 rounded-full bg-background-dark border border-white/10 flex items-center justify-center mb-1 shadow-lg z-10">
+<span class="material-symbols-outlined text-primary text-[32px]">public</span>
+</div>
+<p class="text-[10px] text-slate-500 font-medium">Location needed</p>
+</div>
+</div>
+<!-- Dynamic Data Preview (Empty State) -->
+<div class="space-y-3">
+<div class="h-px w-full bg-white/10"></div>
+<div class="flex items-center gap-3 opacity-50">
+<div class="size-8 rounded bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400 text-[16px]">badge</span>
+</div>
+<div class="flex flex-col gap-1 w-full">
+<div class="h-2 w-16 bg-white/10 rounded-full"></div>
+<div class="h-3 w-24 bg-white/5 rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 opacity-50">
+<div class="size-8 rounded bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400 text-[16px]">event</span>
+</div>
+<div class="flex flex-col gap-1 w-full">
+<div class="h-2 w-12 bg-white/10 rounded-full"></div>
+<div class="h-3 w-20 bg-white/5 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto bg-primary/5 rounded-lg p-3 border border-primary/10">
+<div class="flex gap-2">
+<div class="text-primary">
+<span class="material-symbols-outlined text-[18px]">stars</span>
+</div>
+<p class="text-[11px] text-primary/80 leading-tight">
+                             Entering data will update the chart preview in real-time.
+                         </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

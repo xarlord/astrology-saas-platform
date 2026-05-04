@@ -7,13 +7,7 @@
  * Run: npx jest --testPathPattern="live/share.live" --forceExit --verbose
  */
 
-import {
-  api,
-  authed,
-  getCsrf,
-  setupUserWithChart,
-  checkServerRunning,
-} from './helpers';
+import { api, authed, getCsrf, setupUserWithChart, checkServerRunning } from './helpers';
 
 describe('Chart Sharing - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -42,14 +36,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
   // ============================================================
   describe('POST /charts/:id/share', () => {
     it('should create a share link for a chart', async () => {
-      const res = await authed(
-        'POST',
-        `/charts/${chartId}/share`,
-        accessToken,
-        cookies,
-        csrf,
-        {}
-      );
+      const res = await authed('POST', `/charts/${chartId}/share`, accessToken, cookies, csrf, {});
 
       // Accept 201 (created), 200 (success), or 404 if route not yet exposed
       expect([200, 201, 404]).toContain(res.status);
@@ -70,14 +57,9 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
     }, 15000);
 
     it('should create a password-protected share link', async () => {
-      const res = await authed(
-        'POST',
-        `/charts/${chartId}/share`,
-        accessToken,
-        cookies,
-        csrf,
-        { password: 'SharePass123!' }
-      );
+      const res = await authed('POST', `/charts/${chartId}/share`, accessToken, cookies, csrf, {
+        password: 'SharePass123!',
+      });
 
       // Accept success or 404 if route not yet exposed
       expect([200, 201, 404]).toContain(res.status);
@@ -101,7 +83,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
         accessToken,
         cookies,
         csrf,
-        {}
+        {},
       );
 
       expect([404, 400]).toContain(res.status);
@@ -121,7 +103,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
           accessToken,
           cookies,
           csrf,
-          {}
+          {},
         );
 
         if (createRes.status === 201 || createRes.status === 200) {
@@ -166,7 +148,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
         accessToken,
         cookies,
         csrf,
-        { password: 'CorrectPassword123!' }
+        { password: 'CorrectPassword123!' },
       );
 
       if (createRes.status !== 200 && createRes.status !== 201) {
@@ -189,10 +171,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
       }
 
       // Try accessing with wrong password
-      const wrongPassRes = await api(
-        'GET',
-        `/share/${protectedToken}?password=WrongPassword456!`
-      );
+      const wrongPassRes = await api('GET', `/share/${protectedToken}?password=WrongPassword456!`);
 
       if (wrongPassRes.status !== 404) {
         expect([401, 403]).toContain(wrongPassRes.status);
@@ -230,13 +209,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
   // ============================================================
   describe('GET /charts/shares', () => {
     it('should list user shared charts', async () => {
-      const res = await authed(
-        'GET',
-        '/charts/shares',
-        accessToken,
-        cookies,
-        ''
-      );
+      const res = await authed('GET', '/charts/shares', accessToken, cookies, '');
 
       // Accept 200, 404, or 500 if listing route not yet fully implemented
       expect([200, 404, 500]).toContain(res.status);
@@ -269,7 +242,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
         accessToken,
         cookies,
         csrf,
-        {}
+        {},
       );
 
       if (createRes.status !== 200 && createRes.status !== 201) {
@@ -289,7 +262,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
         `/charts/${chartId}/share/${idToRevoke}`,
         accessToken,
         cookies,
-        csrf
+        csrf,
       );
 
       expect([200, 204, 404]).toContain(deleteRes.status);
@@ -302,10 +275,7 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
     }, 15000);
 
     it('should reject revocation without authentication', async () => {
-      const res = await api(
-        'DELETE',
-        `/charts/${chartId}/share/${shareId || 'fake-share-id'}`
-      );
+      const res = await api('DELETE', `/charts/${chartId}/share/${shareId || 'fake-share-id'}`);
 
       expect(res.status).toBe(401);
     }, 10000);

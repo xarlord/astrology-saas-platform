@@ -4,11 +4,17 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import request from 'supertest';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 // Import app
 import app from '../../server';
@@ -72,9 +78,7 @@ describe('Calendar Routes Integration Tests', () => {
 
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
-      const response = await request(app)
-        .get('/api/calendar/month/2026/2')
-        .expect(401);
+      const response = await request(app).get('/api/calendar/month/2026/2').expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });

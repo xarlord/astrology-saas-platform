@@ -3,12 +3,6 @@
  * TDD: Tests written before implementation
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient } from '@tanstack/react-query';
@@ -111,9 +105,7 @@ describe('useAIInterpretation Hook', () => {
     });
 
     const interpretation = await result.current.generateNatal({
-      planets: [
-        { planet: 'sun', sign: 'aries', degree: 15, house: 1 },
-      ],
+      planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }],
     });
 
     await waitFor(() => {

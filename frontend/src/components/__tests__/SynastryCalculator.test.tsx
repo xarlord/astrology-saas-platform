@@ -21,9 +21,9 @@ vi.mock('../../services/synastry.api');
 
 describe('SynastryCalculator', () => {
   const mockCharts = [
-    { id: 'chart1', name: 'John\'s Chart' },
-    { id: 'chart2', name: 'Jane\'s Chart' },
-    { id: 'chart3', name: 'Bob\'s Chart' },
+    { id: 'chart1', name: "John's Chart" },
+    { id: 'chart2', name: "Jane's Chart" },
+    { id: 'chart3', name: "Bob's Chart" },
   ];
 
   const mockSynastryData = {
@@ -59,9 +59,7 @@ describe('SynastryCalculator', () => {
       'Deep emotional understanding',
       'Strong romantic attraction',
     ],
-    challenges: [
-      'May need to work on communication',
-    ],
+    challenges: ['May need to work on communication'],
     advice: 'Focus on open communication and emotional honesty',
   };
 

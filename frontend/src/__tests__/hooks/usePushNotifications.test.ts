@@ -230,7 +230,7 @@ describe('usePushNotifications Hook', () => {
       () =>
         new Promise((resolve) => {
           setTimeout(() => resolve({ data: { success: true } }), 100);
-        })
+        }),
     );
 
     mockNotification.requestPermission.mockResolvedValue('granted');
@@ -248,9 +248,12 @@ describe('usePushNotifications Hook', () => {
     });
 
     // Wait for subscription to complete
-    await waitFor(() => {
-      expect(result.current.subscribing).toBe(false);
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        expect(result.current.subscribing).toBe(false);
+      },
+      { timeout: 3000 },
+    );
   });
 
   it('should handle service worker not registered error', async () => {

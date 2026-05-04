@@ -10,22 +10,23 @@ import { createElement } from 'react';
  * Lazy load a component with error handling
  */
 export function lazyLoadComponent<T extends ComponentType<Record<string, unknown>>>(
-  importFn: () => Promise<{ default: T }>
+  importFn: () => Promise<{ default: T }>,
 ): T {
-  return lazy(() => importFn().catch((error) => {
-    console.error('Failed to load component:', error);
+  return lazy(() =>
+    importFn().catch((error) => {
+      console.error('Failed to load component:', error);
 
-    // Return a fallback component
-    return {
-      default: (() =>
-        createElement(
-          'div',
-          { className: 'lazy-load-error' },
-          createElement('p', null, 'Failed to load component. Please refresh the page.')
-        )
-      ) as unknown as T,
-    };
-  })) as unknown as T;
+      // Return a fallback component
+      return {
+        default: (() =>
+          createElement(
+            'div',
+            { className: 'lazy-load-error' },
+            createElement('p', null, 'Failed to load component. Please refresh the page.'),
+          )) as unknown as T,
+      };
+    }),
+  ) as unknown as T;
 }
 
 /**
@@ -33,7 +34,7 @@ export function lazyLoadComponent<T extends ComponentType<Record<string, unknown
  */
 export function lazyLoadWithRetry<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
-  maxRetries = 3
+  maxRetries = 3,
 ): T {
   let retries = 0;
 

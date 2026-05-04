@@ -14,6 +14,7 @@ import { registerRoute, NavigationRoute, setCatchHandler } from 'workbox-routing
 import { NetworkFirst, StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
+import { CACHE, HTTP } from './utils/constants';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -40,11 +41,11 @@ const apiCacheStrategy = new NetworkFirst({
   cacheName: CACHE_NAMES.API,
   plugins: [
     new CacheableResponsePlugin({
-      statuses: [0, 200],
+      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
     }),
     new ExpirationPlugin({
       maxEntries: 50,
-      maxAgeSeconds: 60 * 60 * 24, // 24 hours
+      maxAgeSeconds: CACHE.ONE_DAY_SECONDS,
       purgeOnQuotaError: true,
     }),
   ],
@@ -58,11 +59,11 @@ const imageCacheStrategy = new CacheFirst({
   cacheName: CACHE_NAMES.IMAGES,
   plugins: [
     new CacheableResponsePlugin({
-      statuses: [0, 200],
+      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
     }),
     new ExpirationPlugin({
       maxEntries: 60,
-      maxAgeSeconds: 60 * 60 * 24, // 24 hours
+      maxAgeSeconds: CACHE.ONE_DAY_SECONDS,
       purgeOnQuotaError: true,
     }),
   ],
@@ -76,7 +77,7 @@ const staticCacheStrategy = new StaleWhileRevalidate({
   cacheName: CACHE_NAMES.STATIC,
   plugins: [
     new CacheableResponsePlugin({
-      statuses: [0, 200],
+      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
     }),
   ],
 });
@@ -107,14 +108,14 @@ const navigationRoute = new NavigationRoute(
   }),
   {
     allowlist: [/^\/(?!api).*/],
-  }
+  },
 );
 
 registerRoute(navigationRoute);
 
 // Skip waiting on message
 (self as any).addEventListener('message', (event: any) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+  if (event.data?.type === 'SKIP_WAITING') {
     (self as any).skipWaiting();
   }
 });
@@ -127,11 +128,11 @@ registerRoute(navigationRoute);
 
   const data = event.data.json();
   const options: any = {
-    body: data.body || '',
+    body: data.body ?? '',
     icon: '/pwa-192x192.png',
     badge: '/pwa-192x192.png',
     data: {
-      url: data.url || '/',
+      url: data.url ?? '/',
     },
     actions: [
       {
@@ -146,7 +147,7 @@ registerRoute(navigationRoute);
   };
 
   event.waitUntil(
-    (self as any).registration.showNotification(data.title || 'Notification', options)
+    (self as any).registration.showNotification(data.title ?? 'Notification', options),
   );
 });
 
@@ -155,9 +156,7 @@ registerRoute(navigationRoute);
   event.notification.close();
 
   if (event.action === 'view') {
-    event.waitUntil(
-      (self as any).clients.openWindow(event.notification.data?.url || '/')
-    );
+    event.waitUntil((self as any).clients.openWindow(event.notification.data?.url ?? '/'));
   }
 });
 
@@ -174,32 +173,34 @@ registerRoute(navigationRoute);
           return Promise.resolve();
         } catch (error) {
           console.error('Sync failed:', error);
-          return Promise.reject(error);
+          return Promise.reject(error instanceof Error ? error : new Error(String(error)));
         }
-      })()
+      })(),
     );
   }
 });
 
 // Catch handler for offline fallback
-setCatchHandler(({ event }) => {
-  // For document requests (navigation), return offline HTML page
-  if (event.request.destination === 'document') {
-    return new Promise<Response>((resolve) => {
-      resolve(new Response(
-        '<!DOCTYPE html><html><head><title>Offline</title><style>body{font-family:system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;color:#333;background:#f5f5f5}h1{margin-bottom:16px}</style></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>',
-        {
-          headers: { 'Content-Type': 'text/html' },
-        }
-      ));
-    });
-  }
+setCatchHandler(({ event }) =>
+  Promise.resolve().then(() => {
+    // For document requests (navigation), return offline HTML page
+    if (event.request.destination === 'document') {
+      return new Promise<Response>((resolve) => {
+        resolve(
+          new Response(
+            '<!DOCTYPE html><html><head><title>Offline</title><style>body{font-family:system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;color:#333;background:#f5f5f5}h1{margin-bottom:16px}</style></head><body><h1>You are offline</h1><p>Please check your internet connection.</p></body></html>',
+            {
+              headers: { 'Content-Type': 'text/html' },
+            },
+          ),
+        );
+      });
+    }
 
-  // For other requests, return error
-  return new Promise<Response>((resolve) => {
-    resolve(Response.error());
-  });
-});
+    // For other requests, return error
+    return Response.error();
+  }),
+);
 
 // Activate event - clean up old caches
 (self as any).addEventListener('activate', (event: any) => {
@@ -214,7 +215,7 @@ setCatchHandler(({ event }) => {
           await caches.delete(cacheName);
         }
       }
-    })()
+    })(),
   );
 });
 

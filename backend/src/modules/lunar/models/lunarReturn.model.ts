@@ -69,13 +69,7 @@ export interface KeyDate {
 }
 
 export interface MonthlyPrediction {
-  category:
-    | 'relationships'
-    | 'career'
-    | 'finances'
-    | 'health'
-    | 'creativity'
-    | 'spirituality';
+  category: 'relationships' | 'career' | 'finances' | 'health' | 'creativity' | 'spirituality';
   prediction: string;
   likelihood: number; // 1-10
   advice: string[];
