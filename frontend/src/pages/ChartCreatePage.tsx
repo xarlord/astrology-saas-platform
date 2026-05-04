@@ -1,26 +1,19 @@
 /**
  * Chart Create Page Component
- * Redirects to the full Chart Creation Wizard
+ * Full chart creation form with geocoding and house system selection
  */
 
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppLayout } from '../components';
-import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { AppLayout, BirthDataForm } from '../components';
 
 export default function ChartCreatePage() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Redirect to the full chart creation wizard
-    navigate('/charts/create', { replace: true });
-  }, [navigate]);
-
   return (
     <AppLayout>
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner size="lg" />
-        <span className="ml-3 text-slate-400">Redirecting to chart creation...</span>
+      <div className="max-w-2xl mx-auto py-8 px-4">
+        <h1 className="font-display text-3xl font-bold text-white mb-6">Create New Chart</h1>
+        <BirthDataForm onSuccess={(chartId) => navigate(`/charts/${chartId}`)} />
       </div>
     </AppLayout>
   );
