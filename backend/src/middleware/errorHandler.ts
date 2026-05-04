@@ -6,10 +6,6 @@ import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 import { AppError } from '../utils/appError';
 
-// Re-export AppError for convenience
-/** @deprecated Import AppError from utils/appError instead */
-export { AppError } from '../utils/appError';
-
 interface ErrorWithStatusCode extends Error {
   statusCode?: number;
   isOperational?: boolean;
