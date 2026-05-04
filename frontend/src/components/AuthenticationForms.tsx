@@ -152,18 +152,10 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 placeholder="cosmic.traveler@example.com"
               />
               {errors.email && (
-                <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
                   <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
                 </div>
               )}
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-200 hover:text-slate-200 pointer-events-none"
-                aria-hidden="true"
-              >
-                <div className="w-5 h-5" />
-              </button>
             </div>
             {errors.email && <ErrorMessage message={errors.email} id={emailErrorId} />}
           </div>
@@ -273,7 +265,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             <div className="w-full border-t border-white/15" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-cosmic-page px-3 text-xs font-medium uppercase tracking-wider text-slate-200 rounded-full">
+            <span className="bg-cosmic-card-solid px-3 text-xs font-medium uppercase tracking-wider text-slate-200 rounded-full">
               Or continue with
             </span>
           </div>
@@ -655,7 +647,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             type="submit"
             disabled={isLoading}
             data-testid="register-submit"
-            className="w-full py-3.5 px-4 bg-cosmic-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mt-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3.5 px-4 bg-cosmic-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 mt-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <span className="flex items-center gap-2">

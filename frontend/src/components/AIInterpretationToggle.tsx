@@ -49,7 +49,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   };
 
   return (
-    <div role="region" aria-label="AI interpretation controls" aria-busy={isGenerating} className="bg-primary rounded-xl p-5 text-white mb-5">
+    <div role="region" aria-label="AI interpretation controls" aria-busy={isGenerating} className="bg-gradient-to-r from-primary/20 to-cosmic-blue/20 backdrop-blur-md border border-primary/20 rounded-xl p-5 text-white mb-5">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2 font-semibold text-base">
           <span className="material-symbols-outlined animate-pulse" aria-hidden="true" style={{ fontSize: '18px' }}>auto_awesome</span>

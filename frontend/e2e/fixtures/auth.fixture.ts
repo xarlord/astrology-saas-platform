@@ -19,6 +19,7 @@ import { test as base, type BrowserContext, type APIRequestContext } from '@play
 import {
   registerAndLogin,
   createChart,
+  calculateChart,
   cleanupUser,
   defaultChartData,
   type AuthResponse,
@@ -79,7 +80,7 @@ export async function injectAuthState(context: BrowserContext, auth: AuthRespons
   const page = await context.newPage();
 
   // Navigate to the app origin so localStorage is scoped correctly
-  const baseUrl = process.env.BASE_URL ?? 'http://localhost:5173';
+  const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
   await page.goto(baseUrl);
 
   // Set localStorage items that the frontend expects
@@ -149,6 +150,8 @@ export const test = base.extend<AuthFixture>({
   testChart: async ({ auth, request }, use) => {
     // Seed a test chart using the authenticated user's token
     const chart = await createChart(request, auth.accessToken, defaultChartData('fixture'));
+    // Calculate the chart so it has calculated_data for transit/analysis features
+    await calculateChart(request, auth.accessToken, chart.id);
 
     // Provide chart to the test
     await use(chart);
@@ -175,7 +178,7 @@ export function buildStorageState(auth: AuthResponse): {
     cookies: [],
     origins: [
       {
-        origin: process.env.BASE_URL ?? 'http://localhost:5173',
+        origin: process.env.BASE_URL ?? 'http://localhost:3000',
         localStorage: buildAuthLocalStorage(auth),
       },
     ],

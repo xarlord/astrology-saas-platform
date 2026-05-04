@@ -105,8 +105,8 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
   };
 
   return (
-    <div className="bg-white/15 rounded-xl p-6 border border-white/15">
-      <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/15 sm:flex-row flex-col sm:items-start gap-4">
+    <div className="glass-card rounded-xl p-6 border border-cosmic-border-subtle">
+      <div className="flex justify-between items-center mb-6 pb-4 border-b border-cosmic-border-subtle sm:flex-row flex-col sm:items-start gap-4">
         <div className="flex items-center gap-4">
           <span className="material-symbols-outlined text-primary" style={{ fontSize: '24px' }} aria-hidden="true">share</span>
           <div>
@@ -210,8 +210,8 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
           aria-labelledby="modal-title"
           onKeyDown={(e) => { if (e.key === 'Escape') setShowCreateModal(false); }}
         >
-          <div className="bg-cosmic-card-solid rounded-xl w-full max-w-[400px] border border-white/15">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-white/15">
+          <div className="glass-card rounded-xl w-full max-w-[400px] border border-cosmic-border-subtle">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-cosmic-border-subtle">
               <h3 id="modal-title" className="m-0 text-lg">Create Share Link</h3>
               <button
                 className="bg-transparent border-none text-slate-200 text-2xl cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center leading-none hover:text-white"
@@ -261,7 +261,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                 </select>
               </div>
             </div>
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-white/15">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-cosmic-border-subtle">
               <button
                 className="inline-flex items-center gap-2 py-2.5 px-4 text-sm font-medium rounded-md border-none cursor-pointer transition-all bg-white/15 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={() => setShowCreateModal(false)}

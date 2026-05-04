@@ -158,7 +158,7 @@ export default function EphemerisPage() {
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-white/15 border border-white/15 rounded-xl hover:bg-white/15 transition-colors cursor-pointer"
               aria-label="Refresh transit data"
             >
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>refresh</span>
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">refresh</span>
               Refresh
             </button>
           )}
@@ -179,7 +179,7 @@ export default function EphemerisPage() {
         </div>
       ) : error ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
+          icon={<span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ color: '#ef4444' }}>warning</span>}
           title="Unable to load transit data"
           description={getErrorMessage(error, 'Failed to fetch today\'s transits')}
           actionText="Retry"
@@ -189,7 +189,7 @@ export default function EphemerisPage() {
         <TransitTable data={data} />
       ) : (
         <EmptyState
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#8b5cf6' }}>nights_stay</span>}
+          icon={<span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ color: '#8b5cf6' }}>nights_stay</span>}
           title="No transit data available"
           description="Create a natal chart first to see how current planetary positions affect your birth chart."
         />

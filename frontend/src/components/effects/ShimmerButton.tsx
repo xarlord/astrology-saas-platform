@@ -9,7 +9,7 @@ interface ShimmerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export function ShimmerButton({ children, className = '', ...props }: ShimmerButtonProps) {
   return (
     <button
-      className={`relative overflow-hidden bg-primary text-white rounded-lg px-6 py-3 font-semibold ${className}`}
+      className={`relative overflow-hidden bg-primary text-white rounded-lg px-6 py-3 font-semibold hover:bg-primary/90 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all ${className}`}
       {...props}
     >
       <motion.div

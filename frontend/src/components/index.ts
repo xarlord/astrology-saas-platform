@@ -44,6 +44,7 @@ export type { UserProfile as UserProfileType, Chart, HouseSystem } from './UserP
 
 // Layout
 export { AppLayout } from './AppLayout';
+export { AuthLayout } from './AuthLayout';
 export { PageTransition } from './PageTransition';
 export { PublicPageLayout } from './PublicPageLayout';
 

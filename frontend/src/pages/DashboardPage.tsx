@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { useCharts, useTodayTransits } from '../hooks';
-import { SkeletonGrid, EmptyStates, AppLayout } from '../components';
+import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
 
 const PLANET_META: Record<string, { icon: string; color: string }> = {
   Sun: { icon: 'sunny', color: 'text-gold' },
@@ -74,7 +74,8 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const { charts, fetchCharts, isLoading } = useCharts();
-  const { data: todayTransits } = useTodayTransits();
+  const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits();
+  const transitsLoading = transitsFetching && !todayTransits;
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -98,7 +99,7 @@ export default function DashboardPage() {
     <AppLayout>
       <div data-testid="dashboard" className="relative pb-8">
         {/* ===== Welcome Section ===== */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-primary text-sm font-medium tracking-wider uppercase mb-1">
               <span className="material-symbols-outlined text-base" aria-hidden="true">wb_twilight</span>
@@ -131,6 +132,11 @@ export default function DashboardPage() {
             {/* Today's Highlights Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Energy Meter */}
+              {transitsLoading ? (
+                <div className="glass-panel p-6 rounded-2xl">
+                  <SkeletonLoader variant="card" />
+                </div>
+              ) : (
               <div className="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group">
                 <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
                 <h3 className="text-slate-200 text-sm font-medium mb-2 z-10">Cosmic Energy</h3>
@@ -159,8 +165,7 @@ export default function DashboardPage() {
                   High Vitality
                 </p>
               </div>
-
-              {/* Highlight Card */}
+              )}
               <div className="md:col-span-2 relative rounded-2xl overflow-hidden p-6 flex flex-col justify-between min-h-[220px]">
                 <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/20 via-cosmic-blue/10 to-transparent" />
                 <div className="absolute inset-0 z-0 bg-gradient-to-t from-cosmic-page via-cosmic-page/80 to-transparent" />
@@ -186,6 +191,11 @@ export default function DashboardPage() {
             </div>
 
             {/* Planetary Positions Grid */}
+            {transitsLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[0, 1, 2, 3].map((i) => <SkeletonLoader key={i} variant="card" />)}
+              </div>
+            ) : (
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Current Positions</h3>
@@ -199,6 +209,10 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={name}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${name} in ${pData.sign ?? 'unknown'} at ${pData.degree != null ? pData.degree.toFixed(2) : (pData.longitude ?? 0).toFixed(2)} degrees`}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/ephemeris'); } }}
                       className="bg-cosmic-page/50 border border-white/15 p-4 rounded-xl flex flex-col gap-3 group hover:border-primary/30 transition-colors cursor-pointer"
                     >
                       <div className="flex items-center justify-between">
@@ -218,8 +232,7 @@ export default function DashboardPage() {
                 })}
               </div>
             </div>
-
-            {/* Upcoming Transits */}
+            )}
             <div className="glass-panel rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Upcoming Transits</h3>
@@ -227,6 +240,11 @@ export default function DashboardPage() {
                   View All Transits
                 </Link>
               </div>
+              {transitsLoading ? (
+                <div className="space-y-4">
+                  {[0, 1, 2].map((i) => <SkeletonLoader key={i} variant="list" />)}
+                </div>
+              ) : (
               <div className="space-y-4">
                 {[
                   {
@@ -244,6 +262,10 @@ export default function DashboardPage() {
                 ].map((transit) => (
                   <div
                     key={transit.name}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${transit.name}: ${transit.desc}`}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/transits'); } }}
                     className="flex items-center gap-4 p-3 hover:bg-white/15 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-white/15"
                   >
                     <div className="flex flex-col items-center justify-center min-w-[50px] text-center">
@@ -263,6 +285,7 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
+              )}
             </div>
           </div>
 

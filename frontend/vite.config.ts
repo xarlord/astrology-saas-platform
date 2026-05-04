@@ -73,6 +73,7 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
       '@types': path.resolve(__dirname, './src/types'),
     },
+    dedupe: ['react', 'react-dom'],
   },
   server: {
     port: 3000,

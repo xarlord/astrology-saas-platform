@@ -178,9 +178,9 @@ export const SolarReturnsPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-900/30 text-red-400 rounded-xl text-sm flex items-center justify-between">
+        <div role="alert" aria-live="assertive" className="mb-4 p-3 bg-red-900/30 text-red-400 rounded-xl text-sm flex items-center justify-between">
           {error}
-          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">✕</button>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2" aria-label="Dismiss error">✕</button>
         </div>
       )}
 

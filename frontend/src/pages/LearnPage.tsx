@@ -36,9 +36,9 @@ function ExpandableCard({ title, subtitle, accentColor, children }: ExpandableCa
           </div>
         </div>
         {isOpen ? (
-          <span className="material-symbols-outlined text-slate-200 flex-shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>expand_less</span>
+          <span className="material-symbols-outlined text-slate-200 flex-shrink-0 text-xl" aria-hidden="true">expand_less</span>
         ) : (
-          <span className="material-symbols-outlined text-slate-200 flex-shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>expand_more</span>
+          <span className="material-symbols-outlined text-slate-200 flex-shrink-0 text-xl" aria-hidden="true">expand_more</span>
         )}
       </button>
       {isOpen && (
@@ -131,7 +131,7 @@ export default function LearnPage() {
       {/* Section 1: The Planets */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#f59e0b' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#f59e0b' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Planets</h3>
           <span className="text-sm text-slate-200 ml-2">
             The celestial bodies that shape your chart
@@ -155,7 +155,7 @@ export default function LearnPage() {
       {/* Section 2: The Signs */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#f43f5e' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#f43f5e' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Zodiac Signs</h3>
           <span className="text-sm text-slate-200 ml-2">
             Twelve archetypes of expression
@@ -191,7 +191,7 @@ export default function LearnPage() {
       {/* Section 3: The Houses */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#10b981' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#10b981' }}>auto_awesome</span>
           <h3 className="text-xl font-bold text-white">The Houses</h3>
           <span className="text-sm text-slate-200 ml-2">
             Twelve domains of life experience

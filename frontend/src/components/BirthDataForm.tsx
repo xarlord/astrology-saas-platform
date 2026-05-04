@@ -242,7 +242,7 @@ export function BirthDataForm({
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit} className="space-y-8">
       {/* Date & Time Section */}
-      <div className="bg-cosmic-card backdrop-blur-md rounded-xl border border-cosmic-border p-6">
+      <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">
           Date & Time
         </h3>
@@ -263,11 +263,11 @@ export function BirthDataForm({
                 aria-required="true"
                 aria-invalid={errors.birthDate ? 'true' : undefined}
                 aria-describedby={errors.birthDate ? birthDateErrorId : undefined}
-                className={`mt-1 block w-full rounded-md pr-10 ${
+                className={`mt-1 block w-full rounded-lg pr-10 ${
                   errors.birthDate
                     ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
                     : 'border-cosmic-border focus:border-primary focus:ring-primary'
-                } bg-white/15 px-3 py-2 text-white transition-colors`}
+                } ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white transition-colors`}
               />
               {errors.birthDate && (
                 <div className="error-icon-wrapper">
@@ -294,11 +294,11 @@ export function BirthDataForm({
                 aria-required={!formData.timeUnknown ? 'true' : 'false'}
                 aria-invalid={errors.birthTime ? 'true' : undefined}
                 aria-describedby={errors.birthTime ? birthTimeErrorId : birthTimeDescId}
-                className={`mt-1 block w-full rounded-md pr-10 ${
+                className={`mt-1 block w-full rounded-lg pr-10 ${
                   errors.birthTime
                     ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
                     : 'border-cosmic-border focus:border-primary focus:ring-primary'
-                } disabled:bg-white/[0.02] bg-white/15 px-3 py-2 text-white transition-colors`}
+                } disabled:bg-white/[0.02] ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white transition-colors`}
               />
               {errors.birthTime && (
                 <div className="error-icon-wrapper">
@@ -330,7 +330,7 @@ export function BirthDataForm({
       </div>
 
       {/* Location Section */}
-      <div className="bg-cosmic-card backdrop-blur-md rounded-xl border border-cosmic-border p-6">
+      <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">
           Location
         </h3>
@@ -351,11 +351,11 @@ export function BirthDataForm({
                 aria-required="true"
                 aria-invalid={errors.birthPlace ? 'true' : undefined}
                 aria-describedby={errors.birthPlace ? birthPlaceErrorId : undefined}
-                className={`mt-1 block w-full rounded-md pr-10 ${
+                className={`mt-1 block w-full rounded-lg pr-10 ${
                   errors.birthPlace
                     ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
                     : 'border-cosmic-border focus:border-primary focus:ring-primary'
-                } bg-white/15 px-3 py-2 text-white transition-colors`}
+                } ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white transition-colors`}
               />
               {errors.birthPlace && (
                 <div className="error-icon-wrapper">
@@ -373,7 +373,7 @@ export function BirthDataForm({
                     key={index}
                     type="button"
                     onClick={() => void getPlaceCoordinates(place)}
-                    className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/15"
+                    className="w-full text-left px-3 py-2 text-sm text-white hover:bg-cosmic-hover"
                   >
                     {place}
                   </button>
@@ -394,7 +394,7 @@ export function BirthDataForm({
       </div>
 
       {/* Chart Details Section */}
-      <div className="bg-cosmic-card backdrop-blur-md rounded-xl border border-cosmic-border p-6">
+      <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">
           Chart Details
         </h3>
@@ -415,11 +415,11 @@ export function BirthDataForm({
                 aria-required="true"
                 aria-invalid={errors.chartName ? 'true' : undefined}
                 aria-describedby={errors.chartName ? chartNameErrorId : undefined}
-                className={`mt-1 block w-full rounded-md pr-10 ${
+                className={`mt-1 block w-full rounded-lg pr-10 ${
                   errors.chartName
                     ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
                     : 'border-cosmic-border focus:border-primary focus:ring-primary'
-                } bg-white/15 px-3 py-2 text-white transition-colors`}
+                } ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white transition-colors`}
               />
               {errors.chartName && (
                 <div className="error-icon-wrapper">
@@ -440,7 +440,7 @@ export function BirthDataForm({
               name="houseSystem"
               value={formData.houseSystem}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-cosmic-border bg-white/15 px-3 py-2 text-white focus:border-primary focus:ring-primary"
+              className="mt-1 block w-full rounded-lg border-cosmic-border ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white focus:border-primary focus:ring-primary"
             >
               {HOUSE_SYSTEMS.map((system) => (
                 <option key={system.value} value={system.value}>
@@ -460,7 +460,7 @@ export function BirthDataForm({
               name="zodiac"
               value={formData.zodiac}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-cosmic-border bg-white/15 px-3 py-2 text-white focus:border-primary focus:ring-primary"
+              className="mt-1 block w-full rounded-lg border-cosmic-border ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white focus:border-primary focus:ring-primary"
             >
               {ZODIAC_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -480,7 +480,7 @@ export function BirthDataForm({
                   name="siderealMode"
                   value={formData.siderealMode}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-cosmic-border bg-white/15 px-3 py-2 text-white focus:border-primary focus:ring-primary"
+                  className="mt-1 block w-full rounded-lg border-cosmic-border ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white focus:border-primary focus:ring-primary"
                 >
                   {SIDEREAL_MODES.map((mode) => (
                     <option key={mode.value} value={mode.value}>

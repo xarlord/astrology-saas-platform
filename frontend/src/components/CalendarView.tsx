@@ -166,7 +166,7 @@ export function CalendarView({
     <div className="w-full max-w-[1200px] mx-auto p-5 md:p-3 glass-panel rounded-2xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <button type="button" onClick={handlePrevMonth} className="flex items-center justify-center w-10 h-10 border border-white/15 bg-transparent rounded-lg cursor-pointer transition-all duration-200 text-slate-200 hover:bg-white/15 hover:border-primary hover:text-primary" aria-label="Previous month">
+        <button type="button" onClick={handlePrevMonth} className="flex items-center justify-center w-10 h-10 border border-white/15 bg-transparent rounded-lg cursor-pointer transition-all duration-200 text-slate-200 hover:bg-white/15 hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary" aria-label="Previous month">
           <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
         </button>
 
@@ -174,7 +174,7 @@ export function CalendarView({
           {monthNames[currentMonth - 1]} {currentYear}
         </h2>
 
-        <button type="button" onClick={handleNextMonth} className="flex items-center justify-center w-10 h-10 border border-white/15 bg-transparent rounded-lg cursor-pointer transition-all duration-200 text-slate-200 hover:bg-white/15 hover:border-primary hover:text-primary" aria-label="Next month">
+        <button type="button" onClick={handleNextMonth} className="flex items-center justify-center w-10 h-10 border border-white/15 bg-transparent rounded-lg cursor-pointer transition-all duration-200 text-slate-200 hover:bg-white/15 hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary" aria-label="Next month">
           <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_right</span>
         </button>
       </div>
@@ -216,7 +216,10 @@ export function CalendarView({
           return (
             <div
               key={day}
-              className={`bg-cosmic-card-solid/70 min-h-[100px] md:min-h-[70px] p-2 md:p-1 cursor-pointer transition-colors duration-200 relative hover:bg-white/15 ${isToday ? '!bg-primary/10' : ''}`}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleDateClick(date); } }}
+              className={`bg-cosmic-card-solid/70 min-h-[100px] md:min-h-[70px] p-2 md:p-1 cursor-pointer transition-colors duration-200 relative hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary ${isToday ? '!bg-primary/10' : ''}`}
               onClick={() => handleDateClick(date)}
             >
               <span className={`text-sm md:text-xs font-medium text-slate-200 mb-1 inline-block w-7 h-7 md:w-6 md:h-6 leading-7 md:leading-6 text-center ${isToday ? 'bg-primary text-white rounded-full w-7 h-7 md:w-6 md:h-6 flex items-center justify-center !text-white !leading-none' : ''}`}>{day}</span>

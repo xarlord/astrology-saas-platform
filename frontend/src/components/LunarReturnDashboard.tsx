@@ -114,7 +114,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
 
       {/* Natal Moon Info */}
       {nextReturn && (
-        <div className="bg-cosmic-card backdrop-blur-md p-6 rounded-xl border border-white/15 mb-6">
+        <div className="glass-card rounded-xl p-6 border border-cosmic-border-subtle mb-6">
           <h3 className="m-0 mb-4 text-white">Your Natal Moon</h3>
           <div className="flex gap-3 items-center mb-4">
             <span className="text-2xl font-bold text-primary capitalize">{nextReturn.natalMoon.sign}</span>
@@ -145,7 +145,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
           <span className="text-2xl">🌗</span>
           <span>View Return Chart</span>
         </button>
-        <button onClick={onHistoryClick} type="button" className="flex items-center gap-3 p-5 border-2 border-cosmic-border rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-cosmic-card backdrop-blur-md text-slate-200 hover:bg-white/15">
+        <button onClick={onHistoryClick} type="button" className="flex items-center gap-3 p-5 border-2 border-cosmic-border rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 glass-card text-slate-200 hover:bg-cosmic-hover">
           <span className="text-2xl">📚</span>
           <span>View History</span>
         </button>
@@ -155,22 +155,22 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
       <div className="mt-8">
         <h3 className="text-center mb-6 text-white">About Lunar Returns</h3>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
-          <div className="bg-cosmic-card backdrop-blur-md p-6 rounded-xl text-center border border-white/15">
+          <div className="glass-card rounded-xl p-6 text-center border border-cosmic-border-subtle">
             <span className="text-4xl block mb-3">🔄</span>
             <h4 className="my-2 text-white">Every 27.3 Days</h4>
             <p className="text-slate-200 leading-relaxed m-0">The moon returns to its natal position approximately monthly, starting a new emotional cycle.</p>
           </div>
-          <div className="bg-cosmic-card backdrop-blur-md p-6 rounded-xl text-center border border-white/15">
+          <div className="glass-card rounded-xl p-6 text-center border border-cosmic-border-subtle">
             <span className="text-4xl block mb-3">🏠</span>
             <h4 className="my-2 text-white">House Placement</h4>
             <p className="text-slate-200 leading-relaxed m-0">The house shows which life area will be highlighted emotionally this month.</p>
           </div>
-          <div className="bg-cosmic-card backdrop-blur-md p-6 rounded-xl text-center border border-white/15">
+          <div className="glass-card rounded-xl p-6 text-center border border-cosmic-border-subtle">
             <span className="text-4xl block mb-3">🌓</span>
             <h4 className="my-2 text-white">Moon Phase</h4>
             <p className="text-slate-200 leading-relaxed m-0">The phase at your return influences the emotional tone and energy of the month.</p>
           </div>
-          <div className="bg-cosmic-card backdrop-blur-md p-6 rounded-xl text-center border border-white/15">
+          <div className="glass-card rounded-xl p-6 text-center border border-cosmic-border-subtle">
             <span className="text-4xl block mb-3">💫</span>
             <h4 className="my-2 text-white">Intensity</h4>
             <p className="text-slate-200 leading-relaxed m-0">Some months are more emotionally charged than others based on aspects and phase.</p>

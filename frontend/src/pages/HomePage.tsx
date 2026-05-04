@@ -4,9 +4,12 @@
  * testimonials, pricing, and bottom CTA
  */
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="bg-cosmic-page text-slate-100 font-sans antialiased overflow-x-hidden">
       {/* Skip to content */}
@@ -44,13 +47,87 @@ export default function HomePage() {
 
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
-              <button type="button" className="text-slate-200 hover:text-white" aria-label="Open navigation menu">
+              <button
+                type="button"
+                className="text-slate-200 hover:text-white"
+                aria-label="Open navigation menu"
+                onClick={() => setMobileMenuOpen(true)}
+              >
                 <span className="material-symbols-outlined" aria-hidden="true">menu</span>
               </button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile Menu Panel */}
+      <div
+        className={`fixed top-0 right-0 bottom-0 z-50 w-72 bg-cosmic-card-solid backdrop-blur-md border-l border-cosmic-border transform transition-transform duration-300 ease-out md:hidden ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+      >
+        <div className="flex items-center justify-between p-6 border-b border-cosmic-border">
+          <span className="text-lg font-bold text-white">Menu</span>
+          <button
+            type="button"
+            className="text-slate-200 hover:text-white"
+            aria-label="Close navigation menu"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+        <div className="flex flex-col p-6 gap-1">
+          <a
+            href="#features"
+            className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Features
+          </a>
+          <a
+            href="#testimonials"
+            className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Testimonials
+          </a>
+          <a
+            href="#pricing"
+            className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Pricing
+          </a>
+          <div className="my-4 border-t border-cosmic-border" />
+          <Link
+            to="/login"
+            className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/register"
+            className="mt-2 w-full text-center bg-cosmic-gradient text-white py-3 rounded-xl font-semibold btn-glow"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Get Started
+          </Link>
+        </div>
+      </div>
 
       <main id="main-content" tabIndex={-1}>
         {/* ===== Hero Section ===== */}
@@ -238,6 +315,7 @@ export default function HomePage() {
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className="text-gold text-sm" aria-hidden="true">star</span>
                     ))}
+                    <span className="sr-only">5 out of 5 stars</span>
                   </div>
                   <p className="text-slate-200 mb-6 leading-relaxed">&ldquo;{testimonial.quote}&rdquo;</p>
                   <div className="flex items-center gap-3">

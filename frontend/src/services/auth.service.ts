@@ -86,6 +86,13 @@ export const authService = {
   },
 
   /**
+   * Request password reset email
+   */
+  async forgotPassword(email: string): Promise<void> {
+    await api.post('/auth/forgot-password', { email });
+  },
+
+  /**
    * Refresh token
    */
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {

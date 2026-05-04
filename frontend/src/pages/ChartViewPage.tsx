@@ -180,14 +180,14 @@ export default function ChartViewPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Chart Wheel */}
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-4">Chart Wheel</h3>
+              <h2 className="text-xl font-bold mb-4">Chart Wheel</h2>
               <ChartWheel data={chartData} interactive={true} />
               <ChartWheelLegend />
             </div>
 
             {/* Planetary Positions */}
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-4">Planetary Positions</h3>
+              <h2 className="text-xl font-bold mb-4">Planetary Positions</h2>
               <div className="space-y-2">
                 {planetList.map((planet) => (
                   <div
@@ -204,7 +204,7 @@ export default function ChartViewPage() {
               </div>
 
               {/* House Cusps */}
-              <h3 className="text-xl font-bold mb-4 mt-6">House Cusps</h3>
+              <h2 className="text-xl font-bold mb-4 mt-6">House Cusps</h2>
               <div className="space-y-2">
                 {chartData.houses.map((house) => (
                   <div

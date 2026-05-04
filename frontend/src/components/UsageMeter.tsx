@@ -132,7 +132,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
           <span>Approaching storage limit</span>
           {onUpgradeClick && (
             <button
-              className="ml-auto sm:ml-auto ml-0 mt-0 sm:mt-0 bg-transparent border-none text-inherit underline cursor-pointer p-0 hover:opacity-80 sm:w-auto w-full sm:text-left text-center sm:bg-transparent bg-white/15 sm:py-0 py-1.5 sm:px-0 px-3 sm:rounded-none rounded sm:no-underline underline"
+              className="ml-auto text-sm text-amber-300 hover:text-white underline hover:opacity-80 transition-opacity cursor-pointer"
               onClick={onUpgradeClick}
               aria-label="Upgrade plan for more storage"
             >
@@ -148,7 +148,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
           <span>Storage limit reached</span>
           {onUpgradeClick && (
             <button
-              className="ml-auto sm:ml-auto ml-0 mt-0 sm:mt-0 bg-transparent border-none text-inherit underline cursor-pointer p-0 hover:opacity-80 sm:w-auto w-full sm:text-left text-center sm:bg-transparent bg-white/15 sm:py-0 py-1.5 sm:px-0 px-3 sm:rounded-none rounded sm:no-underline underline"
+              className="ml-auto text-sm text-red-300 hover:text-white underline hover:opacity-80 transition-opacity cursor-pointer"
               onClick={onUpgradeClick}
               aria-label="Upgrade plan to create more charts"
             >

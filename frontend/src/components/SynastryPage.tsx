@@ -161,7 +161,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts }) => {
             <>
               <div className="space-y-4">
                 {reports.map((report) => (
-                  <div key={report.id} className="bg-cosmic-card backdrop-blur-md rounded-2xl shadow-sm border border-white/15 overflow-hidden">
+                  <div key={report.id} className="glass-card rounded-2xl shadow-sm border border-cosmic-border-subtle overflow-hidden">
                     <div className="flex justify-between items-start p-6">
                       <div>
                         <h3 className="text-lg font-semibold text-white m-0">

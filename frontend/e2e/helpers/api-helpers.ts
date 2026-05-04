@@ -8,6 +8,24 @@ import type { APIRequestContext } from '@playwright/test';
 
 const API_BASE = 'http://localhost:3001/api/v1';
 
+/**
+ * Retry a request-making function on rate limit (429) responses.
+ * Waits with exponential backoff between retries.
+ */
+async function retryOn429<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const is429 = err instanceof Error && err.message.includes('(429)');
+      if (!is429 || attempt === maxRetries) throw err;
+      const delay = 1000 * (attempt + 1);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw new Error('retryOn429: unreachable');
+}
+
 // --- Response Types ---
 
 export interface UserProfile {
@@ -64,13 +82,26 @@ interface ApiError {
   };
 }
 
-// --- Helper ---
+// --- Helpers ---
 
 function authHeaders(token: string): Record<string, string> {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   };
+}
+
+async function fetchCsrfToken(request: APIRequestContext): Promise<string> {
+  const response = await request.get(`${API_BASE}/csrf-token`);
+  const body = await response.json();
+  if (!body.success) throw new Error(`Failed to get CSRF token: ${JSON.stringify(body)}`);
+  return body.data.token as string;
+}
+
+function csrfHeaders(token?: string): Record<string, string> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['x-csrf-token'] = token;
+  return headers;
 }
 
 // --- Auth ---
@@ -82,7 +113,9 @@ export async function registerUser(
   request: APIRequestContext,
   userData: { name: string; email: string; password: string },
 ): Promise<AuthResponse> {
+  const csrfToken = await fetchCsrfToken(request);
   const response = await request.post(`${API_BASE}/auth/register`, {
+    headers: csrfHeaders(csrfToken),
     data: userData,
   });
 
@@ -103,7 +136,9 @@ export async function loginUser(
   email: string,
   password: string,
 ): Promise<AuthResponse> {
+  const csrfToken = await fetchCsrfToken(request);
   const response = await request.post(`${API_BASE}/auth/login`, {
+    headers: csrfHeaders(csrfToken),
     data: { email, password },
   });
 
@@ -144,18 +179,21 @@ export async function createChart(
   token: string,
   chartData: ChartData,
 ): Promise<Chart> {
-  const response = await request.post(`${API_BASE}/charts`, {
-    headers: authHeaders(token),
-    data: chartData,
+  return retryOn429(async () => {
+    const csrfToken = await fetchCsrfToken(request);
+    const response = await request.post(`${API_BASE}/charts`, {
+      headers: { ...authHeaders(token), ...csrfHeaders(csrfToken) },
+      data: chartData,
+    });
+
+    if (response.status() !== 201) {
+      const body = (await response.json().catch(() => ({ error: { message: response.statusText() } }))) as ApiError;
+      throw new Error(`Chart creation failed (${response.status()}): ${body.error?.message ?? response.statusText()}`);
+    }
+
+    const body = (await response.json()) as ApiWrapper<{ chart: Chart }>;
+    return body.data.chart;
   });
-
-  if (response.status() !== 201) {
-    const body = (await response.json().catch(() => ({ error: { message: response.statusText() } }))) as ApiError;
-    throw new Error(`Chart creation failed (${response.status()}): ${body.error?.message ?? response.statusText()}`);
-  }
-
-  const body = (await response.json()) as ApiWrapper<{ chart: Chart }>;
-  return body.data.chart;
 }
 
 /**
@@ -188,8 +226,9 @@ export async function deleteChart(
   token: string,
   chartId: string,
 ): Promise<void> {
+  const csrfToken = await fetchCsrfToken(request);
   const response = await request.delete(`${API_BASE}/charts/${chartId}`, {
-    headers: authHeaders(token),
+    headers: { ...authHeaders(token), ...csrfHeaders(csrfToken) },
   });
 
   if (response.status() !== 200 && response.status() !== 204) {
@@ -199,6 +238,31 @@ export async function deleteChart(
 }
 
 // --- Cleanup ---
+
+/**
+ * Trigger chart calculation on the backend.
+ * POST /charts/:id/calculate
+ */
+export async function calculateChart(
+  request: APIRequestContext,
+  token: string,
+  chartId: string,
+): Promise<Chart> {
+  return retryOn429(async () => {
+    const csrfToken = await fetchCsrfToken(request);
+    const response = await request.post(`${API_BASE}/charts/${chartId}/calculate`, {
+      headers: { ...authHeaders(token), ...csrfHeaders(csrfToken) },
+    });
+
+    if (response.status() !== 200) {
+      const body = (await response.json().catch(() => ({ error: { message: response.statusText() } }))) as ApiError;
+      throw new Error(`Chart calculation failed (${response.status()}): ${body.error?.message ?? response.statusText()}`);
+    }
+
+    const body = (await response.json()) as ApiWrapper<{ chart: Chart }>;
+    return body.data.chart;
+  });
+}
 
 /**
  * Delete all charts for the authenticated user (cleanup helper).

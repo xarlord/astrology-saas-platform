@@ -27,6 +27,7 @@ import {
   useTransitForecast,
   useTransitCalendar,
 } from '../hooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { getErrorMessage } from '../utils/errorHandling';
 import {
   mapReadingToTransit,
@@ -36,6 +37,7 @@ import {
 
 export default function ForecastPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { charts, fetchCharts, isLoading: chartsLoading } = useCharts();
   const [selectedTransit, setSelectedTransit] = useState<Transit | null>(null);
 
@@ -121,7 +123,7 @@ export default function ForecastPage() {
           title="Unable to load forecast"
           description={errorMessage}
           actionText="Retry"
-          onAction={() => window.location.reload()}
+          onAction={() => void queryClient.invalidateQueries({ queryKey: ['transits'] })}
         />
       ) : !hasCharts ? (
         <EmptyState

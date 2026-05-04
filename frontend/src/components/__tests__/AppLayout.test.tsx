@@ -431,9 +431,9 @@ describe('AppLayout Component', () => {
         { wrapper: createWrapper() }
       );
 
-      // Social icons changed from <a href="#"> to <span> with sr-only labels
-      expect(screen.getByText('Twitter')).toBeInTheDocument();
-      expect(screen.getByText('GitHub')).toBeInTheDocument();
+      // Social links are <a> elements with aria-labels
+      expect(screen.getByLabelText('Twitter')).toBeInTheDocument();
+      expect(screen.getByLabelText('GitHub')).toBeInTheDocument();
     });
   });
 
@@ -616,7 +616,7 @@ describe('AppLayout Component', () => {
       );
 
       const sidebar = container.querySelector('aside');
-      expect(sidebar?.className).toContain('bg-surface-dark');
+      expect(sidebar?.className).toContain('bg-cosmic-card-solid');
     });
   });
 
