@@ -1,8 +1,7 @@
 /**
  * ChartCreatePage Component Tests
  *
- * Tests for the chart creation redirect page
- * Note: ChartCreatePage is a simple redirect component that navigates to /charts/create
+ * Tests for the chart creation page with BirthDataForm
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -11,9 +10,15 @@ import { createElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Mock the components barrel to avoid circular import SyntaxError
+// Mock the components barrel
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  BirthDataForm: ({ onSuccess }: { onSuccess?: (chartId: string) => void }) => (
+    <div data-testid="birth-data-form">
+      <span>Chart Creation Form</span>
+      <button onClick={() => onSuccess?.('chart-123')}>Submit</button>
+    </div>
+  ),
 }));
 
 // Import after mocks
@@ -46,38 +51,32 @@ describe('ChartCreatePage', () => {
   describe('Page Rendering', () => {
     it('should render without crashing', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The component shows a loading spinner and redirect message
-      expect(screen.getByText(/redirecting to chart creation/i)).toBeInTheDocument();
+      expect(screen.getByText('Create New Chart')).toBeInTheDocument();
     });
 
-    it('should show loading spinner', () => {
+    it('should render BirthDataForm', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // Check for the loading spinner by looking for the container
-      const container = screen.getByText(/redirecting to chart creation/i).closest('div');
-      expect(container).toBeInTheDocument();
+      expect(screen.getByTestId('birth-data-form')).toBeInTheDocument();
     });
 
-    it('should have proper container styling', () => {
+    it('should have proper heading', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The component renders a centered container
-      const container = screen.getByText(/redirecting to chart creation/i).closest('div');
-      expect(container).toHaveClass('flex');
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Create New Chart');
     });
   });
 
-  describe('Redirect Behavior', () => {
-    it('should display redirect message', () => {
+  describe('Form Integration', () => {
+    it('should display chart creation form text', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      expect(screen.getByText(/redirecting to chart creation/i)).toBeInTheDocument();
+      expect(screen.getByText('Chart Creation Form')).toBeInTheDocument();
     });
   });
 
   describe('Accessibility', () => {
-    it('should be accessible with readable text', () => {
+    it('should be accessible with readable heading', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The redirect message should be visible
-      const message = screen.getByText(/redirecting to chart creation/i);
-      expect(message).toBeVisible();
+      const heading = screen.getByText('Create New Chart');
+      expect(heading).toBeVisible();
     });
   });
 });

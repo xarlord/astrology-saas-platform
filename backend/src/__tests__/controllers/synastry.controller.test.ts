@@ -213,6 +213,8 @@ describe('Synastry Controller', () => {
       body: {},
       params: {},
       query: {},
+      method: 'GET',
+      path: '/test',
     };
 
     mockResponse = {
@@ -224,69 +226,65 @@ describe('Synastry Controller', () => {
   });
 
   // =========================================================================
-  // compareCharts  (uses AuthenticatedRequest — req.user.id, no optional chain)
+  // compareCharts  (uses AuthenticatedRequest — req.user?.id with optional chain)
   // =========================================================================
   describe('compareCharts', () => {
-    it('should call next with TypeError when user is undefined (req.user.id throws)', async () => {
-      // compareCharts uses req.user.id directly — no optional chaining.
-      // When req.user is undefined this throws a TypeError caught by next().
+    it('should call next with UnauthorizedError when user is undefined', async () => {
       mockRequest.user = undefined;
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(expect.any(TypeError));
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
       expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 401 when user exists but id is missing', async () => {
+    it('should call next with UnauthorizedError when user exists but id is missing', async () => {
       mockRequest.user = { id: undefined as any, email: 'test@example.com' };
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 400 when chart1Id is missing', async () => {
+    it('should call next with BadRequestError when chart1Id is missing', async () => {
       mockRequest.body = { chart2Id: 'chart-2' };
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'chart1Id and chart2Id are required',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'chart1Id and chart2Id are required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 400 when chart2Id is missing', async () => {
+    it('should call next with BadRequestError when chart2Id is missing', async () => {
       mockRequest.body = { chart1Id: 'chart-1' };
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'chart1Id and chart2Id are required',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'chart1Id and chart2Id are required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 400 when chart1Id equals chart2Id', async () => {
+    it('should call next with BadRequestError when chart1Id equals chart2Id', async () => {
       mockRequest.body = { chart1Id: 'chart-1', chart2Id: 'chart-1' };
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Cannot compare a chart with itself',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'Cannot compare a chart with itself' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 404 when one or both charts are not found', async () => {
+    it('should call next with NotFoundError when one or both charts are not found', async () => {
       mockRequest.body = { chart1Id: 'chart-1', chart2Id: 'chart-2' };
 
       // knex('charts').where({id: chart1Id}).first() => null (chart1 missing)
@@ -296,11 +294,10 @@ describe('Synastry Controller', () => {
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'One or both charts not found',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404, message: 'One or both charts not found' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should create a new synastry record when no existing one is found', async () => {
@@ -375,47 +372,48 @@ describe('Synastry Controller', () => {
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('DB connection lost') }));
     });
   });
 
   // =========================================================================
-  // getCompatibility  (uses AuthenticatedRequest — req.user.id, no optional chain)
+  // getCompatibility  (uses AuthenticatedRequest — req.user?.id with optional chain)
   // =========================================================================
   describe('getCompatibility', () => {
-    it('should call next with TypeError when user is undefined', async () => {
+    it('should call next with UnauthorizedError when user is undefined', async () => {
       mockRequest.user = undefined;
 
       await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(expect.any(TypeError));
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 401 when user exists but id is missing', async () => {
+    it('should call next with UnauthorizedError when user exists but id is missing', async () => {
       mockRequest.user = { id: undefined as any, email: 'test@example.com' };
 
       await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 400 when chart IDs are missing', async () => {
+    it('should call next with BadRequestError when chart IDs are missing', async () => {
       mockRequest.body = {};
 
       await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'chart1Id and chart2Id are required',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'chart1Id and chart2Id are required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 404 when charts are not found', async () => {
+    it('should call next with NotFoundError when charts are not found', async () => {
       mockRequest.body = { chart1Id: 'chart-1', chart2Id: 'chart-2' };
 
       // First chart fetch returns null
@@ -423,11 +421,10 @@ describe('Synastry Controller', () => {
 
       await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'One or both charts not found',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404, message: 'One or both charts not found' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return compatibility scores with composite chart when includeComposite is true', async () => {
@@ -492,19 +489,18 @@ describe('Synastry Controller', () => {
   });
 
   // =========================================================================
-  // getSynastryReports  (uses (req as any).user?.id — safe optional chaining)
+  // getSynastryReports  (uses AuthenticatedRequest — req.user?.id)
   // =========================================================================
   describe('getSynastryReports', () => {
-    it('should return 401 when no user is authenticated', async () => {
+    it('should call next with UnauthorizedError when no user is authenticated', async () => {
       mockRequest.user = undefined;
 
       await getSynastryReports(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return paginated synastry reports', async () => {
@@ -584,23 +580,22 @@ describe('Synastry Controller', () => {
   });
 
   // =========================================================================
-  // getSynastryReport  (uses (req as any).user?.id — safe optional chaining)
+  // getSynastryReport  (uses AuthenticatedRequest — req.user?.id)
   // =========================================================================
   describe('getSynastryReport', () => {
-    it('should return 401 when no user is authenticated', async () => {
+    it('should call next with UnauthorizedError when no user is authenticated', async () => {
       mockRequest.user = undefined;
       mockRequest.params = { id: '1' };
 
       await getSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 404 when report is not found', async () => {
+    it('should call next with NotFoundError when report is not found', async () => {
       mockRequest.params = { id: '999' };
 
       // knex('synastry_charts').where({id, user_id}).first() => undefined
@@ -608,11 +603,10 @@ describe('Synastry Controller', () => {
 
       await getSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Synastry report not found',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404, message: 'Synastry report not found' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return a report with its aspects', async () => {
@@ -667,23 +661,22 @@ describe('Synastry Controller', () => {
   });
 
   // =========================================================================
-  // deleteSynastryReport  (uses (req as any).user?.id)
+  // deleteSynastryReport  (uses AuthenticatedRequest — req.user?.id)
   // =========================================================================
   describe('deleteSynastryReport', () => {
-    it('should return 401 when no user is authenticated', async () => {
+    it('should call next with UnauthorizedError when no user is authenticated', async () => {
       mockRequest.user = undefined;
       mockRequest.params = { id: '1' };
 
       await deleteSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 404 when report is not found', async () => {
+    it('should call next with NotFoundError when report is not found', async () => {
       mockRequest.params = { id: '999' };
 
       // knex('synastry_charts').where({id, user_id}).first() => undefined
@@ -691,11 +684,10 @@ describe('Synastry Controller', () => {
 
       await deleteSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Synastry report not found',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404, message: 'Synastry report not found' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should delete the report and return success', async () => {
@@ -717,23 +709,22 @@ describe('Synastry Controller', () => {
   });
 
   // =========================================================================
-  // updateSynastryReport  (uses (req as any).user?.id)
+  // updateSynastryReport  (uses AuthenticatedRequest — req.user?.id)
   // =========================================================================
   describe('updateSynastryReport', () => {
-    it('should return 401 when no user is authenticated', async () => {
+    it('should call next with UnauthorizedError when no user is authenticated', async () => {
       mockRequest.user = undefined;
       mockRequest.params = { id: '1' };
 
       await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
-    it('should return 404 when report is not found', async () => {
+    it('should call next with NotFoundError when report is not found', async () => {
       mockRequest.params = { id: '999' };
       mockRequest.body = { isFavorite: true };
 
@@ -742,11 +733,10 @@ describe('Synastry Controller', () => {
 
       await updateSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Synastry report not found',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404, message: 'Synastry report not found' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should update isFavorite on the report', async () => {

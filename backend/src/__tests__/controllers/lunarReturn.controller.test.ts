@@ -57,6 +57,8 @@ import {
 // Mock knex chain
 const mockKnexChain = {
   where: jest.fn().mockReturnThis(),
+  whereNull: jest.fn().mockReturnThis(),
+  whereNotNull: jest.fn().mockReturnThis(),
   first: jest.fn(),
   insert: jest.fn().mockReturnThis(),
   orderBy: jest.fn().mockReturnThis(),
@@ -82,6 +84,8 @@ function resetKnexChain() {
   // Must re-wire mockKnex to return the chain object -- clearAllMocks wipes this.
   mockKnex.mockReturnValue(mockKnexChain);
   mockKnexChain.where.mockReturnThis();
+  mockKnexChain.whereNull.mockReturnThis();
+  mockKnexChain.whereNotNull.mockReturnThis();
   mockKnexChain.first.mockResolvedValue(undefined);
   mockKnexChain.insert.mockReturnThis();
   mockKnexChain.orderBy.mockReturnThis();
@@ -93,11 +97,17 @@ function resetKnexChain() {
 
 const natalChartRow = {
   id: 'chart-1',
-  userId: 'user-123',
-  moonSign: 'taurus',
-  moonDegree: 15,
-  moonMinute: 30,
-  moonSecond: 0,
+  user_id: 'user-123',
+  calculated_data: {
+    planets: {
+      moon: {
+        sign: 'taurus',
+        degree: 15,
+        minute: 30,
+        second: 0,
+      },
+    },
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -118,6 +128,8 @@ describe('Lunar Return Controller', () => {
       body: {},
       params: {},
       query: {},
+      method: 'GET',
+      path: '/test',
     };
 
     mockResponse = {
@@ -137,11 +149,10 @@ describe('Lunar Return Controller', () => {
 
       await getNextLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockKnex).not.toHaveBeenCalled();
     });
 
@@ -151,11 +162,13 @@ describe('Lunar Return Controller', () => {
       await getNextLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockKnex).toHaveBeenCalledWith('charts');
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Natal chart not found. Please create a birth chart first.',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'Natal chart not found. Please create a birth chart first.',
+        }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return next return and natal moon on happy path', async () => {
@@ -191,7 +204,10 @@ describe('Lunar Return Controller', () => {
 
       await getNextLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('DB down');
     });
   });
 
@@ -204,11 +220,10 @@ describe('Lunar Return Controller', () => {
 
       await getCurrentLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockRegistry.getCurrentLunarReturn).not.toHaveBeenCalled();
     });
 
@@ -234,7 +249,10 @@ describe('Lunar Return Controller', () => {
 
       await getCurrentLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('Service failure');
     });
   });
 
@@ -247,11 +265,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnChart(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 400 if returnDate is missing', async () => {
@@ -259,11 +276,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnChart(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'returnDate is required',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'returnDate is required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 400 if returnDate is invalid format', async () => {
@@ -271,11 +287,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnChart(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Invalid date format',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'Invalid date format' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 404 if no natal chart found', async () => {
@@ -284,11 +299,13 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnChart(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Natal chart not found. Please create a birth chart first.',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'Natal chart not found. Please create a birth chart first.',
+        }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return chart data on happy path', async () => {
@@ -316,7 +333,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnChart(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('Unexpected');
     });
   });
 
@@ -340,11 +360,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarMonthForecast(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 400 if returnDate is invalid format', async () => {
@@ -352,11 +371,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarMonthForecast(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Invalid date format',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'Invalid date format' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 404 if no natal chart found', async () => {
@@ -365,11 +383,13 @@ describe('Lunar Return Controller', () => {
 
       await getLunarMonthForecast(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Natal chart not found. Please create a birth chart first.',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'Natal chart not found. Please create a birth chart first.',
+        }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return forecast with provided date on happy path', async () => {
@@ -432,12 +452,15 @@ describe('Lunar Return Controller', () => {
       expect(mockKnex).toHaveBeenCalledWith('lunar_returns');
       expect(mockKnexChain.insert).toHaveBeenCalledWith(
         expect.objectContaining({
-          userId: 'user-123',
-          theme: 'Renewal',
-          intensity: 'high',
-          emotionalTheme: 'Hopeful',
+          user_id: 'user-123',
+          natal_chart_id: 'chart-1',
+          forecast_data: expect.any(String),
         }),
       );
+      const insertCall = mockKnexChain.insert.mock.calls[0][0];
+      const forecastData = JSON.parse(insertCall.forecast_data);
+      expect(forecastData.theme).toBe('Renewal');
+      expect(forecastData.intensity).toBe('high');
     });
 
     it('should skip save when forecast already exists', async () => {
@@ -459,7 +482,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarMonthForecast(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('DB fail');
     });
   });
 
@@ -472,11 +498,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnHistory(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return paginated results with parsed JSON fields', async () => {
@@ -485,16 +510,18 @@ describe('Lunar Return Controller', () => {
       const dbReturns = [
         {
           id: 'lr-1',
-          returnDate: '2026-04-01',
-          theme: 'Growth',
-          intensity: 'medium',
-          emotionalTheme: 'Calm',
-          actionAdvice: '[{"action":"Rest"}]',
-          keyDates: '[{"date":"2026-04-15"}]',
-          predictions: '[{"text":"Progress"}]',
-          rituals: '[{"name":"Meditation"}]',
-          journalPrompts: '[{"prompt":"Reflect"}]',
-          createdAt: '2026-04-01T00:00:00Z',
+          return_date: '2026-04-01',
+          forecast_data: JSON.stringify({
+            theme: 'Growth',
+            intensity: 'medium',
+            emotionalTheme: 'Calm',
+            actionAdvice: [{ action: 'Rest' }],
+            keyDates: [{ date: '2026-04-15' }],
+            predictions: [{ text: 'Progress' }],
+            rituals: [{ name: 'Meditation' }],
+            journalPrompts: [{ prompt: 'Reflect' }],
+          }),
+          created_at: '2026-04-01T00:00:00Z',
         },
       ];
 
@@ -588,7 +615,10 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnHistory(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('DB error');
     });
   });
 
@@ -601,11 +631,10 @@ describe('Lunar Return Controller', () => {
 
       await deleteLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 404 if lunar return not found', async () => {
@@ -614,11 +643,13 @@ describe('Lunar Return Controller', () => {
 
       await deleteLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Lunar return not found',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'Lunar return not found',
+        }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should delete and return success on happy path', async () => {
@@ -642,7 +673,10 @@ describe('Lunar Return Controller', () => {
 
       await deleteLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('DB fail');
     });
   });
 
@@ -670,11 +704,10 @@ describe('Lunar Return Controller', () => {
 
       await calculateCustomLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Unauthorized',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 400 if returnDate is missing', async () => {
@@ -682,11 +715,10 @@ describe('Lunar Return Controller', () => {
 
       await calculateCustomLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'returnDate is required',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'returnDate is required' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 400 if returnDate is invalid format', async () => {
@@ -694,11 +726,10 @@ describe('Lunar Return Controller', () => {
 
       await calculateCustomLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Invalid date format',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400, message: 'Invalid date format' }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return 404 if no natal chart found', async () => {
@@ -707,11 +738,13 @@ describe('Lunar Return Controller', () => {
 
       await calculateCustomLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: false,
-        error: 'Natal chart not found. Please create a birth chart first.',
-      });
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'Natal chart not found. Please create a birth chart first.',
+        }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should return chart with forecast when includeForecast is true', async () => {
@@ -776,7 +809,10 @@ describe('Lunar Return Controller', () => {
 
       await calculateCustomLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalled();
+      const calledError = mockNext.mock.calls[0][0];
+      expect(calledError).toBeInstanceOf(Error);
+      expect(calledError.message).toContain('Unexpected');
     });
   });
 });
