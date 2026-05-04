@@ -3,8 +3,14 @@
  * Handles API endpoints for synastry and compatibility calculations
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
+import { asyncHandler } from '../../../middleware/errorHandler';
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from '../../../utils/appError';
 import {
   calculateSynastryChart,
   calculateCompositeChart,
@@ -18,38 +24,22 @@ import knex from '../../../config/database';
  * Compare two charts and calculate synastry
  * POST /synastry/compare
  */
-export async function compareCharts(
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = req.user.id;
+export const compareCharts = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id;
 
     if (!userId) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
-      return;
+      throw new UnauthorizedError('User authentication required');
     }
 
     const { chart1Id, chart2Id } = req.body;
 
     if (!chart1Id || !chart2Id) {
-      res.status(400).json({
-        success: false,
-        error: 'chart1Id and chart2Id are required',
-      });
-      return;
+      throw new BadRequestError('chart1Id and chart2Id are required');
     }
 
     if (chart1Id === chart2Id) {
-      res.status(400).json({
-        success: false,
-        error: 'Cannot compare a chart with itself',
-      });
-      return;
+      throw new BadRequestError('Cannot compare a chart with itself');
     }
 
     // Fetch both charts from database (scoped to user to prevent IDOR)
@@ -59,11 +49,7 @@ export async function compareCharts(
     ]);
 
     if (!chart1Data || !chart2Data) {
-      res.status(404).json({
-        success: false,
-        error: 'One or both charts not found',
-      });
-      return;
+      throw new NotFoundError('One or both charts not found');
     }
 
     // Build chart objects
@@ -319,39 +305,25 @@ export async function compareCharts(
         id: synastryId,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-}
+  },
+);
 
 /**
  * Calculate compatibility score
  * POST /synastry/compatibility
  */
-export async function getCompatibility(
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = req.user.id;
+export const getCompatibility = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id;
 
     if (!userId) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
-      return;
+      throw new UnauthorizedError('User authentication required');
     }
 
     const { chart1Id, chart2Id, includeComposite = false } = req.body;
 
     if (!chart1Id || !chart2Id) {
-      res.status(400).json({
-        success: false,
-        error: 'chart1Id and chart2Id are required',
-      });
-      return;
+      throw new BadRequestError('chart1Id and chart2Id are required');
     }
 
     // Fetch both charts (scoped to user to prevent IDOR)
@@ -365,11 +337,7 @@ export async function getCompatibility(
     ]);
 
     if (!chart1Data || !chart2Data) {
-      res.status(404).json({
-        success: false,
-        error: 'One or both charts not found',
-      });
-      return;
+      throw new NotFoundError('One or both charts not found');
     }
 
     // Build simplified chart objects for calculation
@@ -445,29 +413,19 @@ export async function getCompatibility(
       success: true,
       data: result,
     });
-  } catch (error) {
-    next(error);
-  }
-}
+  },
+);
 
 /**
  * Get all synastry comparisons for user
  * GET /synastry/reports
  */
-export async function getSynastryReports(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = (req as { user?: { id: string } }).user?.id;
+export const getSynastryReports = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id;
 
     if (!userId) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
-      return;
+      throw new UnauthorizedError('User authentication required');
     }
 
     const page = parseInt(req.query.page as string) || 1;
@@ -510,40 +468,26 @@ export async function getSynastryReports(
         },
       },
     });
-  } catch (error) {
-    next(error);
-  }
-}
+  },
+);
 
 /**
  * Get specific synastry report
  * GET /synastry/reports/:id
  */
-export async function getSynastryReport(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = (req as { user?: { id: string } }).user?.id;
+export const getSynastryReport = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id;
     const { id } = req.params;
 
     if (!userId) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
-      return;
+      throw new UnauthorizedError('User authentication required');
     }
 
     const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
 
     if (!report) {
-      res.status(404).json({
-        success: false,
-        error: 'Synastry report not found',
-      });
-      return;
+      throw new NotFoundError('Synastry report not found');
     }
 
     // Fetch aspects
@@ -557,41 +501,27 @@ export async function getSynastryReport(
         aspects,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-}
+  },
+);
 
 /**
  * Delete synastry report
  * DELETE /synastry/reports/:id
  */
-export async function deleteSynastryReport(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = (req as { user?: { id: string } }).user?.id;
+export const deleteSynastryReport = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id;
     const { id } = req.params;
 
     if (!userId) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
-      return;
+      throw new UnauthorizedError('User authentication required');
     }
 
     // Check if report exists and belongs to user
     const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
 
     if (!report) {
-      res.status(404).json({
-        success: false,
-        error: 'Synastry report not found',
-      });
-      return;
+      throw new NotFoundError('Synastry report not found');
     }
 
     await knex('synastry_charts').where({ id, user_id: userId }).del();
@@ -600,42 +530,28 @@ export async function deleteSynastryReport(
       success: true,
       message: 'Synastry report deleted successfully',
     });
-  } catch (error) {
-    next(error);
-  }
-}
+  },
+);
 
 /**
  * Update synastry report (notes, favorite status)
  * PATCH /synastry/reports/:id
  */
-export async function updateSynastryReport(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const userId = (req as { user?: { id: string } }).user?.id;
+export const updateSynastryReport = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id;
     const { id } = req.params;
     const { isFavorite, notes } = req.body;
 
     if (!userId) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
-      return;
+      throw new UnauthorizedError('User authentication required');
     }
 
     // Check if report exists and belongs to user
     const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
 
     if (!report) {
-      res.status(404).json({
-        success: false,
-        error: 'Synastry report not found',
-      });
-      return;
+      throw new NotFoundError('Synastry report not found');
     }
 
     // Update
@@ -657,10 +573,8 @@ export async function updateSynastryReport(
       success: true,
       message: 'Synastry report updated successfully',
     });
-  } catch (error) {
-    next(error);
-  }
-}
+  },
+);
 
 export default {
   compareCharts,
