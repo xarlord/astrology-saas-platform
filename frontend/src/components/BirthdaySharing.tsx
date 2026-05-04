@@ -5,18 +5,27 @@
 
 import React, { useState } from 'react';
 import api from '../services/api';
-import { TIMEOUTS } from '../utils/constants';
-import './BirthdaySharing.css';
+
+interface SolarReturnInterpretation {
+  themes?: string[];
+  sunHouse?: { interpretation: string };
+  [key: string]: unknown;
+}
 
 interface SolarReturnData {
   id: string;
   year: number;
   returnDate: string;
-  interpretation: {
-    themes?: string[];
-    sunHouse?: { interpretation: string };
-    [key: string]: unknown;
-  };
+  interpretation: SolarReturnInterpretation;
+}
+
+// @ts-expect-error - SharedLink interface reserved for future use
+interface _SharedLink {
+  id: string;
+  url: string;
+  expiresAt: string;
+  accessCount: number;
+  maxAccesses: number;
 }
 
 interface BirthdaySharingProps {
@@ -54,22 +63,20 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      const response = await api.post<{ data: { url: string } }>(
-        `/solar-returns/${solarReturn.id}/share`,
-        {
-          type: 'link',
-          expiresInDays: parseInt(linkSettings.expiresIn),
-          maxAccesses: linkSettings.maxAccesses,
-          requirePassword: linkSettings.requirePassword,
-          password: linkSettings.password,
-        },
-      );
+      const response = await api.post(`/v1/solar-returns/${solarReturn.id}/share`, {
+        type: 'link',
+        expiresInDays: parseInt(linkSettings.expiresIn),
+        maxAccesses: linkSettings.maxAccesses,
+        requirePassword: linkSettings.requirePassword,
+        password: linkSettings.password,
+      });
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       setGeneratedLink(response.data.data.url);
       setSuccess(true);
-    } catch (err) {
-      const error = err as { response?: { data?: { error?: { message?: string } } } };
-      setError(error.response?.data?.error?.message ?? 'Failed to generate share link');
+    } catch (err: unknown) {
+      const errorObj = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(errorObj.response?.data?.error?.message ?? 'Failed to generate share link');
     } finally {
       setLoading(false);
     }
@@ -80,7 +87,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       setLoading(true);
       setError(null);
 
-      await api.post(`/solar-returns/${solarReturn.id}/share/email`, {
+      await api.post(`/v1/solar-returns/${solarReturn.id}/share/email`, {
         to: emailSettings.to,
         subject: emailSettings.subject,
         message: emailSettings.message,
@@ -88,9 +95,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       });
 
       setSuccess(true);
-    } catch (err) {
-      const error = err as { response?: { data?: { error?: { message?: string } } } };
-      setError(error.response?.data?.error?.message ?? 'Failed to send email');
+    } catch (err: unknown) {
+      const errorObj = err as { response?: { data?: { error?: { message?: string } } } };
+      setError(errorObj.response?.data?.error?.message ?? 'Failed to send email');
     } finally {
       setLoading(false);
     }
@@ -101,10 +108,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       try {
         await navigator.clipboard.writeText(generatedLink);
         setCopied(true);
-        setTimeout(() => setCopied(false), TIMEOUTS.COPY_FEEDBACK_DURATION_MS);
+        setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        const error = err as Error;
-        console.error('Failed to copy link:', error.message);
+        console.error('Failed to copy link:', err);
       }
     }
   };
@@ -113,14 +119,12 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     const { interpretation, year, returnDate } = solarReturn;
 
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <div className="rounded-xl border border-cosmic-border bg-white/15 p-4">
         <div className="flex items-center gap-3 mb-3">
-          <span className="material-symbols-outlined text-[24px] text-purple-600">
-            card_giftcard
-          </span>
+          <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '24px' }}>card_giftcard</span>
           <div>
-            <h3 className="font-semibold text-gray-800 text-lg">Solar Return Reading for {year}</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="font-semibold text-slate-200 text-lg">Solar Return Reading for {year}</h3>
+            <p className="text-sm text-slate-200">
               {new Date(returnDate).toLocaleDateString('en-US', {
                 month: 'long',
                 day: 'numeric',
@@ -133,35 +137,29 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
         {interpretation && (
           <div className="space-y-3">
             <div>
-              <h4 className="font-medium text-gray-700 mb-1">Themes for {year}:</h4>
+              <h4 className="font-medium text-slate-200 mb-1">Themes for {year}:</h4>
               <div className="flex flex-wrap gap-2">
                 {interpretation.themes?.slice(0, 4).map((theme: string, i: number) => (
-                  <span key={i} className="preview-theme-tag">
-                    {theme}
-                  </span>
-                ))}
-                {(interpretation.themes?.length ?? 0) > 4 && (
-                  <span className="preview-more">
-                    +{(interpretation.themes?.length ?? 0) - 4} more
-                  </span>
-                )}
-              </div>
+                  <span key={i} className="inline-block rounded-full bg-primary/20 px-3 py-1 text-sm text-primary">{theme}</span>
+              ))}
+              {interpretation.themes && interpretation.themes.length > 4 && (
+                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-sm text-slate-200">+{interpretation.themes.length - 4} more</span>
+              )}
+            </div>
             </div>
 
             {interpretation.sunHouse && (
               <div>
-                <h4 className="font-medium text-gray-700 mb-1">Your Focus:</h4>
-                <p className="text-sm text-gray-600">
-                  {interpretation.sunHouse.interpretation.slice(0, 150)}...
-                </p>
+                <h4 className="font-medium text-slate-200 mb-1">Your Focus:</h4>
+                <p className="text-sm text-slate-200">{interpretation.sunHouse.interpretation.slice(0, 150)}...</p>
               </div>
             )}
           </div>
         )}
 
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          <p className="flex items-center gap-2 text-xs text-gray-400">
-            <span className="material-symbols-outlined text-[14px]">lock</span>
+        <div className="mt-3 pt-3 border-t border-cosmic-border">
+          <p className="flex items-center gap-2 text-xs text-slate-200">
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span>
             This is a gift from a friend who cares about your journey.
           </p>
         </div>
@@ -172,33 +170,26 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
   return (
     <div role="region" aria-label="Birthday Sharing" className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
-        <span className="material-symbols-outlined text-[32px] text-purple-600">card_giftcard</span>
+        <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '32px' }}>card_giftcard</span>
         <div>
-          <h2 className="text-xl font-bold text-gray-800">Share as Gift</h2>
-          <p className="text-sm text-gray-500">Send this solar return reading to someone special</p>
+          <h2 className="text-xl font-bold text-slate-200">Share as Gift</h2>
+          <p className="text-sm text-slate-200">Send this solar return reading to someone special</p>
         </div>
       </div>
 
       {/* Preview */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">Preview</h3>
+        <h3 className="text-lg font-semibold text-slate-200 mb-2">Preview</h3>
         {getShareablePreview()}
       </div>
 
       {/* Success Message */}
       {success && !generatedLink && (
-        <div
-          aria-live="polite"
-          className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 mb-4"
-        >
-          <span className="material-symbols-outlined text-[20px] text-green-600 flex-shrink-0">
-            check
-          </span>
+        <div aria-live="polite" className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 p-4 mb-4">
+          <span className="material-symbols-outlined text-green-400 flex-shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>check</span>
           <div>
-            <strong className="text-green-800">Success!</strong>
-            <p className="text-sm text-green-700">
-              {shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}
-            </p>
+            <strong className="text-green-300">Success!</strong>
+            <p className="text-sm text-green-400">{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
           </div>
           <button
             onClick={() => {
@@ -214,17 +205,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div
-          role="alert"
-          className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 mb-4 text-red-700"
-        >
+        <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-4 mb-4 text-red-400">
           <span>{error}</span>
-          <button
-            onClick={() => setError(null)}
-            className="ml-auto text-red-500 hover:text-red-700 font-bold"
-          >
-            ✕
-          </button>
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300 font-bold">✕</button>
         </div>
       )}
 
@@ -235,23 +218,23 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
             <button
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 shareMethod === 'link'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-white/15 text-slate-200 hover:bg-white/15'
               }`}
               onClick={() => setShareMethod('link')}
             >
-              <span className="material-symbols-outlined text-[18px]">link</span>
+              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>link</span>
               Share Link
             </button>
             <button
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 shareMethod === 'email'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-primary text-white'
+                  : 'bg-white/15 text-slate-200 hover:bg-white/15'
               }`}
               onClick={() => setShareMethod('email')}
             >
-              <span className="material-symbols-outlined text-[18px]">mail</span>
+              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>mail</span>
               Send Email
             </button>
           </div>
@@ -259,15 +242,15 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
           {/* Link Sharing */}
           {shareMethod === 'link' && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700">Link Settings</h3>
+              <h3 className="text-lg font-semibold text-slate-200">Link Settings</h3>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Link Expiration</label>
+                <label className="block text-sm font-medium text-slate-200">Link Expiration</label>
                 <select
                   value={linkSettings.expiresIn}
                   onChange={(e) => setLinkSettings({ ...linkSettings, expiresIn: e.target.value })}
                   aria-label="Link expiration period"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   <option value="7">7 days</option>
                   <option value="14">14 days</option>
@@ -278,14 +261,12 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Maximum Accesses</label>
+                <label className="block text-sm font-medium text-slate-200">Maximum Accesses</label>
                 <select
                   value={linkSettings.maxAccesses}
-                  onChange={(e) =>
-                    setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })
-                  }
+                  onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
                   aria-label="Maximum number of accesses"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                   <option value={1}>1 time</option>
                   <option value={5}>5 times</option>
@@ -300,19 +281,15 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   type="checkbox"
                   id="requirePassword"
                   checked={linkSettings.requirePassword}
-                  onChange={(e) =>
-                    setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })
-                  }
-                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  onChange={(e) => setLinkSettings({ ...linkSettings, requirePassword: e.target.checked })}
+                  className="h-4 w-4 rounded border-cosmic-border text-primary focus:ring-primary"
                 />
-                <label htmlFor="requirePassword" className="text-sm text-gray-700">
-                  Require password
-                </label>
+                <label htmlFor="requirePassword" className="text-sm text-slate-200">Require password</label>
               </div>
 
               {linkSettings.requirePassword && (
                 <div className="space-y-1">
-                  <label className="block text-sm font-medium text-gray-700">Password</label>
+                  <label className="block text-sm font-medium text-slate-200">Password</label>
                   <input
                     type="password"
                     value={linkSettings.password}
@@ -320,28 +297,24 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                     placeholder="Enter password"
                     aria-required="true"
                     aria-label="Share link password"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white placeholder:text-slate-200 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
               )}
 
               <button
-                onClick={() => void handleGenerateLink()}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={handleGenerateLink}
                 disabled={loading}
-                className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined text-[18px]">share</span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>share</span>
                 <span aria-live="polite">{loading ? 'Generating...' : 'Generate Link'}</span>
               </button>
 
               {generatedLink && (
-                <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <label
-                    htmlFor="share-link-input"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Your Share Link:
-                  </label>
+                <div className="space-y-3 rounded-xl border border-cosmic-border bg-white/15 p-4">
+                  <label htmlFor="share-link-input" className="block text-sm font-medium text-slate-200">Your Share Link:</label>
                   <div className="flex gap-2">
                     <input
                       id="share-link-input"
@@ -350,28 +323,18 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                       readOnly
                       title="Generated share link"
                       onClick={(e) => (e.target as HTMLInputElement).select()}
-                      className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+                      className="flex-1 rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white"
                     />
-                    <button onClick={() => void handleCopyLink()} className="copy-btn">
-                      {copied ? (
-                        <span className="material-symbols-outlined text-[18px]">check</span>
-                      ) : (
-                        <span className="material-symbols-outlined text-[18px]">content_copy</span>
-                      )}
+                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                    <button onClick={handleCopyLink} className="flex items-center gap-1 rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm font-medium text-slate-200 hover:bg-white/15 transition-colors">
+                      {copied ? <span className="material-symbols-outlined text-green-400" aria-hidden="true" style={{ fontSize: '18px' }}>check</span> : <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>content_copy</span>}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
 
-                  <div className="space-y-1 text-xs text-gray-500">
-                    <p className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">calendar_month</span>{' '}
-                      Expires: {linkSettings.expiresIn} days
-                    </p>
-                    <p className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">lock</span> Max
-                      accesses:{' '}
-                      {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}
-                    </p>
+                  <div className="space-y-1 text-xs text-slate-200">
+                    <p className="flex items-center gap-1"><span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>calendar_today</span> Expires: {linkSettings.expiresIn} days</p>
+                    <p className="flex items-center gap-1"><span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
                   </div>
                 </div>
               )}
@@ -381,10 +344,10 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
           {/* Email Sharing */}
           {shareMethod === 'email' && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700">Email Settings</h3>
+              <h3 className="text-lg font-semibold text-slate-200">Email Settings</h3>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Recipient Email</label>
+                <label className="block text-sm font-medium text-slate-200">Recipient Email</label>
                 <input
                   type="email"
                   value={emailSettings.to}
@@ -393,29 +356,29 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   aria-required="true"
                   aria-label="Recipient email address"
                   required
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white placeholder:text-slate-200 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Subject</label>
+                <label className="block text-sm font-medium text-slate-200">Subject</label>
                 <input
                   type="text"
                   value={emailSettings.subject}
                   onChange={(e) => setEmailSettings({ ...emailSettings, subject: e.target.value })}
                   placeholder="Your Solar Return Reading"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white placeholder:text-slate-200 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">Personal Message</label>
+                <label className="block text-sm font-medium text-slate-200">Personal Message</label>
                 <textarea
                   value={emailSettings.message}
                   onChange={(e) => setEmailSettings({ ...emailSettings, message: e.target.value })}
                   placeholder="Add a personal message..."
                   rows={4}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white placeholder:text-slate-200 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 
@@ -424,22 +387,19 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   type="checkbox"
                   id="includeChart"
                   checked={emailSettings.includeChart}
-                  onChange={(e) =>
-                    setEmailSettings({ ...emailSettings, includeChart: e.target.checked })
-                  }
-                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  onChange={(e) => setEmailSettings({ ...emailSettings, includeChart: e.target.checked })}
+                  className="h-4 w-4 rounded border-cosmic-border text-primary focus:ring-primary"
                 />
-                <label htmlFor="includeChart" className="text-sm text-gray-700">
-                  Include chart visualization
-                </label>
+                <label htmlFor="includeChart" className="text-sm text-slate-200">Include chart visualization</label>
               </div>
 
               <button
-                onClick={() => void handleSendEmail()}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={handleSendEmail}
                 disabled={loading || !emailSettings.to}
-                className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined text-[18px]">mail</span>
+                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>mail</span>
                 <span aria-live="polite">{loading ? 'Sending...' : 'Send Email'}</span>
               </button>
             </div>

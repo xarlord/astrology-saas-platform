@@ -10,8 +10,8 @@ describe('SkeletonLoader', () => {
   describe('Rendering', () => {
     it('renders with default card variant', () => {
       const { container } = render(<SkeletonLoader />);
-      // Card variant renders a container with rounded-lg and p-6
-      expect(container.querySelector('.rounded-lg.p-6')).toBeInTheDocument();
+      // Card variant renders a container with glass-panel, rounded-2xl and p-6
+      expect(container.querySelector('.glass-panel.rounded-2xl.p-6')).toBeInTheDocument();
     });
 
     it('renders list variant', () => {
@@ -22,8 +22,8 @@ describe('SkeletonLoader', () => {
 
     it('renders text variant', () => {
       const { container } = render(<SkeletonLoader variant="text" />);
-      // Text variant renders animated pulse bars
-      expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
+      // Text variant renders shimmer animated bars
+      expect(container.querySelector('[class*="animate-[shimmer"]')).toBeInTheDocument();
     });
 
     it('renders calendar variant', () => {
@@ -40,8 +40,8 @@ describe('SkeletonLoader', () => {
 
     it('renders multiple skeletons when count is specified', () => {
       const { container } = render(<SkeletonLoader count={3} />);
-      // Each card has rounded-lg and p-6
-      expect(container.querySelectorAll('.rounded-lg.p-6')).toHaveLength(3);
+      // Each card has glass-panel, rounded-2xl and p-6
+      expect(container.querySelectorAll('.glass-panel.rounded-2xl.p-6')).toHaveLength(3);
     });
 
     it('applies custom className', () => {
@@ -87,8 +87,8 @@ describe('SkeletonLoader', () => {
 
     it('renders card body with lines', () => {
       const { container } = render(<SkeletonLoader variant="card" />);
-      // Card body has full-width animated lines
-      const bodyLines = container.querySelectorAll('.animate-pulse.rounded.w-full.h-4');
+      // Card body has full-width shimmer animated lines
+      const bodyLines = container.querySelectorAll('[class*="animate-[shimmer"].rounded.w-full.h-4');
       expect(bodyLines.length).toBeGreaterThan(0);
     });
 
@@ -104,8 +104,8 @@ describe('SkeletonLoader', () => {
   describe('List Skeleton Structure', () => {
     it('renders list item with header', () => {
       const { container } = render(<SkeletonLoader variant="list" />);
-      // List has rounded-full icons and text bars
-      expect(container.querySelector('.animate-pulse.rounded.w-full.h-4')).toBeInTheDocument();
+      // List has shimmer animated text bars
+      expect(container.querySelector('[class*="animate-[shimmer"].rounded.w-full.h-4')).toBeInTheDocument();
     });
 
     it('renders large symbols for list items', () => {
@@ -174,11 +174,11 @@ describe('SkeletonGrid', () => {
 
   it('renders specified number of skeletons', () => {
     const { container } = render(<SkeletonGrid count={5} />);
-    expect(container.querySelectorAll('.rounded-lg.p-6')).toHaveLength(5);
+    expect(container.querySelectorAll('.glass-panel.rounded-2xl.p-6')).toHaveLength(5);
   });
 
   it('renders default 3 skeletons when count not specified', () => {
     const { container } = render(<SkeletonGrid />);
-    expect(container.querySelectorAll('.rounded-lg.p-6')).toHaveLength(3);
+    expect(container.querySelectorAll('.glass-panel.rounded-2xl.p-6')).toHaveLength(3);
   });
 });

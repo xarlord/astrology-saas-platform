@@ -91,7 +91,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-center text-center bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 ${containerSizeClasses[size]} ${className}`}
+      className={`flex items-center justify-center text-center glass-panel rounded-2xl ${containerSizeClasses[size]} ${className}`}
       role="status"
       aria-live="polite"
     >
@@ -106,28 +106,24 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         </div>
 
         {/* Title */}
-        <h3
-          className={`${titleSizeClasses[size]} font-bold text-gray-900 dark:text-gray-50 mb-3 leading-snug`}
-        >
+        <h3 className={`${titleSizeClasses[size]} font-bold text-white mb-3 leading-snug`}>
           {title}
         </h3>
 
         {/* Description */}
         {description && (
-          <p
-            className={`${descriptionSizeClasses[size]} text-gray-500 dark:text-gray-400 leading-relaxed`}
-          >
+          <p className={`${descriptionSizeClasses[size]} text-slate-200 leading-relaxed`}>
             {description}
           </p>
         )}
 
         {/* Actions */}
         {(actionText ?? secondaryActionText) && (
-          <div className="empty-state-actions">
+          <div className="flex flex-col gap-3 items-center sm:flex-row sm:justify-center">
             {actionText && onAction && (
               <button
                 onClick={onAction}
-                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-px hover:shadow-[0_4px_6px_-1px_rgba(79,70,229,0.2)] active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-400"
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-primary text-white hover:bg-primary/90 hover:-translate-y-px hover:shadow-primary/10 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 {actionText}
               </button>
@@ -135,7 +131,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             {secondaryActionText && onSecondaryAction && (
               <button
                 onClick={onSecondaryAction}
-                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 whitespace-nowrap bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-gray-50 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:border-gray-500 dark:focus-visible:outline-indigo-400"
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 whitespace-nowrap bg-white/15 text-white border border-white/15 hover:bg-white/15 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 {secondaryActionText}
               </button>
@@ -148,11 +144,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 // Pre-configured empty states for common use cases
+// eslint-disable-next-line react-refresh/only-export-components
 export const EmptyStates = {
   // No charts
   NoCharts: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="✨"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#f59e0b' }}>auto_awesome</span>}
       title="No charts yet"
       description="Create your first natal chart to get started with your astrological journey"
       actionText="Create Your First Chart"
@@ -163,7 +160,7 @@ export const EmptyStates = {
   // No transits
   NoTransits: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="🌙"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#8b5cf6' }}>dark_mode</span>}
       title="No major transits today"
       description="The cosmos is relatively quiet. Check back later for upcoming astrological events."
       {...props}
@@ -173,7 +170,7 @@ export const EmptyStates = {
   // No calendar events
   NoCalendarEvents: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="📅"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#6366f1' }}>calendar_month</span>}
       title="No events this month"
       description="There are no major astrological events scheduled for this month."
       {...props}
@@ -183,7 +180,7 @@ export const EmptyStates = {
   // No search results
   NoSearchResults: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="🔍"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#94a3b8' }}>search</span>}
       title="No results found"
       description="Try adjusting your search terms or filters to find what you're looking for."
       {...props}
@@ -193,7 +190,7 @@ export const EmptyStates = {
   // Error state
   Error: (props: Omit<EmptyStateProps, 'icon' | 'title'>) => (
     <EmptyState
-      icon="⚠️"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
       title="Something went wrong"
       description="We encountered an error loading your data. Please try again."
       actionText="Retry"
@@ -204,7 +201,7 @@ export const EmptyStates = {
   // Network error
   NetworkError: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="🌐"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#ef4444' }}>wifi_off</span>}
       title="Connection error"
       description="Unable to connect to the server. Please check your internet connection and try again."
       actionText="Retry"
@@ -215,7 +212,7 @@ export const EmptyStates = {
   // Not found
   NotFound: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="🤷"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#94a3b8' }}>help</span>}
       title="Page not found"
       description="The page you're looking for doesn't exist or has been moved."
       actionText="Go to Dashboard"
@@ -226,7 +223,7 @@ export const EmptyStates = {
   // No analyses
   NoAnalyses: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="📊"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#6366f1' }}>analytics</span>}
       title="No analyses yet"
       description="Generate your first astrological analysis to discover insights about your chart."
       actionText="Generate Analysis"
@@ -237,7 +234,7 @@ export const EmptyStates = {
   // No reminders
   NoReminders: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon="🔔"
+      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#f59e0b' }}>notifications</span>}
       title="No reminders set"
       description="Set up reminders for important astrological events so you never miss them."
       actionText="Set Reminder"

@@ -3,7 +3,7 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { AppLayout } from '../AppLayout';
 
 // Mock the auth hook
@@ -16,18 +16,11 @@ vi.mock('../hooks', () => ({
 
 describe('Mobile Bottom Navigation Active States', () => {
   const renderWithRouter = (ui: React.ReactElement, initialEntries = ['/']) => {
-    const router = createMemoryRouter(
-      [
-        {
-          path: '*',
-          element: ui,
-        },
-      ],
-      {
-        initialEntries,
-      },
+    return render(
+      <MemoryRouter initialEntries={initialEntries}>
+        {ui}
+      </MemoryRouter>
     );
-    return render(<RouterProvider router={router} />);
   };
 
   describe('Active Route Detection', () => {
@@ -58,8 +51,8 @@ describe('Mobile Bottom Navigation Active States', () => {
       });
     });
 
-    it('should highlight Learn as active on /learning path', async () => {
-      renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/learning']);
+    it('should highlight Learn as active on /learn path', async () => {
+      renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/learn']);
 
       const learnLink = screen.getByLabelText('Learn');
       await waitFor(() => {
@@ -98,15 +91,15 @@ describe('Mobile Bottom Navigation Active States', () => {
     it('should apply active styling to icon container', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
-      // Active icon container should have indigo background
-      const activeContainer = container.querySelector('.bg-primary\\/20');
+      // Active icon container should have primary background tint
+      const activeContainer = container.querySelector('[class*="bg-primary"]');
       expect(activeContainer).toBeInTheDocument();
     });
 
     it('should apply active styling to label text', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
 
-      // Active label should have indigo color
+      // Active label should have primary color
       const activeLabel = container.querySelector('.text-primary');
       expect(activeLabel).toBeInTheDocument();
     });
@@ -197,29 +190,28 @@ describe('Mobile Bottom Navigation Active States', () => {
     it('should have safe area inset for bottom padding', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Check for mobile navigation element
-      const nav = container.querySelector('nav[aria-label="Mobile navigation"]');
+      // Navigation should have padding-bottom style for safe area
+      const nav = container.querySelector('[aria-label="Mobile navigation"]');
       expect(nav).toBeInTheDocument();
-      // Verify safe area style is applied
       expect(nav).toHaveStyle({ paddingBottom: 'env(safe-area-inset-bottom)' });
     });
   });
 
-  describe('Dark Mode Support', () => {
-    it('should have dark mode active state styling', () => {
+  describe('Cosmic Theme Support', () => {
+    it('should have cosmic theme active state styling', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Should have permanent dark theme classes
-      const darkModeClasses = container.querySelectorAll('.bg-\\[\\#141627\\]');
-      expect(darkModeClasses.length).toBeGreaterThan(0);
+      // Should have cosmic theme classes (bg-primary/15 for active state)
+      const activeContainers = container.querySelectorAll('[class*="bg-primary"]');
+      expect(activeContainers.length).toBeGreaterThan(0);
     });
 
-    it('should have dark mode active indicator', () => {
+    it('should have cosmic theme active indicator', () => {
       const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>);
 
-      // Active bar should have primary color
-      const darkModeBar = container.querySelectorAll('.bg-primary.rounded-full');
-      expect(darkModeBar.length).toBeGreaterThan(0);
+      // Active bar should have primary color in cosmic theme
+      const activeBar = container.querySelectorAll('.bg-primary');
+      expect(activeBar.length).toBeGreaterThan(0);
     });
   });
 });

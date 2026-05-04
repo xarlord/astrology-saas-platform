@@ -9,9 +9,7 @@ export { LoginForm, RegisterForm } from './AuthenticationForms';
 // Basic Symbols & Badges
 export { PlanetSymbol } from './PlanetSymbol';
 export { AspectSymbol } from './AspectSymbol';
-
-// Astrology Components (New)
-export * from './astrology';
+export { ZodiacBadge } from './ZodiacBadge';
 
 // Chart & Analysis
 export { ChartWheel, ChartWheelLegend } from './ChartWheel';
@@ -29,7 +27,10 @@ export { BirthDataForm } from './BirthDataForm';
 export type { BirthData } from './BirthDataForm';
 
 // Transit
-export { TransitDashboard, TransitDetailModal } from './TransitDashboard';
+export {
+  TransitDashboard,
+  TransitDetailModal,
+} from './TransitDashboard';
 export type {
   Transit,
   TransitHighlight,
@@ -43,6 +44,9 @@ export type { UserProfile as UserProfileType, Chart, HouseSystem } from './UserP
 
 // Layout
 export { AppLayout } from './AppLayout';
+export { AuthLayout } from './AuthLayout';
+export { PageTransition } from './PageTransition';
+export { PublicPageLayout } from './PublicPageLayout';
 
 // Calendar
 export {
@@ -82,6 +86,14 @@ export { SkeletonLoader, SkeletonGrid } from './SkeletonLoader';
 export { EmptyState, EmptyStates } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
 
-// Error Handling
+// Effects
+export { MeteorEffect, TextGenerateEffect, ShimmerButton, Sparkles } from './effects';
+
+// Calendar
+export { default as AstrologicalCalendar } from './AstrologicalCalendar';
+export { TransitCalendar } from './TransitCalendar';
+
+// Utility
 export { ErrorBoundary } from './ErrorBoundary';
-export { default as ErrorFallback } from './ErrorFallback';
+export { UsageMeter } from './UsageMeter';
+

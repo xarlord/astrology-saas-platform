@@ -1,161 +1,111 @@
-/**
- * Forgot Password Page Component
- *
- * Allows users to request password reset link via email
- */
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { PublicPageLayout } from '../components/PublicPageLayout';
+import { authService } from '../services/auth.service';
+import { getErrorMessage } from '../utils/errorHandling';
 
-export default function ForgotPasswordPage() {
+export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    // Basic validation
-    if (!email?.includes('@')) {
-      setError('Please enter a valid email address');
-      return;
+    setApiError(null);
+    setIsSubmitting(true);
+    try {
+      await authService.forgotPassword(email);
+      setSubmitted(true);
+    } catch (err) {
+      setApiError(getErrorMessage(err, 'Failed to send reset email. Please try again.'));
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // TODO: Implement actual password reset API call
-    setIsSubmitted(true);
   };
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          <div className="bg-surface-dark border border-white/10 rounded-2xl p-8">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
-                <span className="material-symbols-outlined text-green-500 text-3xl">
-                  check_circle
-                </span>
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-2">Check Your Email</h2>
-              <p className="text-slate-400">
-                We've sent a password reset link to <strong>{email}</strong>
-              </p>
-            </div>
+  return (
+    <PublicPageLayout>
+      <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <span className="material-symbols-outlined text-primary mb-4 text-5xl" aria-hidden="true">
+              lock_reset
+            </span>
+            <h1 className="text-3xl font-bold text-white mb-2">Reset Password</h1>
+            <p className="text-[var(--color-text-body)]">
+              Enter your email and we'll send you a reset link
+            </p>
+          </div>
 
-            <div className="space-y-4">
-              <p className="text-sm text-slate-400 text-center">
-                Didn't receive the email? Check your spam folder or request a new link.
+          {submitted ? (
+            <div className="glass-card rounded-2xl p-8 text-center">
+              <span className="material-symbols-outlined text-green-400 mb-4 text-5xl" aria-hidden="true">
+                mark_email_read
+              </span>
+              <h2 className="text-xl font-semibold text-white mb-2">Check your email</h2>
+              <p className="text-[var(--color-text-body)] mb-6">
+                If an account exists for {email}, you'll receive a password reset link shortly.
               </p>
-
-              <button
-                onClick={() => {
-                  setIsSubmitted(false);
-                  setEmail('');
-                }}
-                className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors"
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
               >
-                Request New Link
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">arrow_back</span>
+                Back to Login
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-5">
+              {apiError && (
+                <div role="alert" className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">error</span>
+                  {apiError}
+                </div>
+              )}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  aria-required="true"
+                  placeholder="you@example.com"
+                  className="input"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3.5 bg-cosmic-gradient text-white rounded-xl font-medium hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <span className="inline-flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Sending...
+                  </span>
+                ) : 'Send Reset Link'}
               </button>
-
               <div className="text-center">
                 <Link
                   to="/login"
-                  className="text-sm text-primary hover:text-primary-light transition-colors"
+                  className="text-sm text-[var(--color-text-body)] hover:text-white transition-colors"
                 >
-                  ← Back to Login
+                  Back to Login
                 </Link>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-3">
-            <div className="size-12 bg-gradient-to-br from-primary to-cosmic-blue rounded-full flex items-center justify-center shadow-lg">
-              <span className="material-symbols-outlined text-white text-2xl">auto_awesome</span>
-            </div>
-            <h1 className="text-2xl font-bold text-white">AstroVerse</h1>
-          </Link>
-        </div>
-
-        {/* Form Card */}
-        <div className="bg-surface-dark border border-white/10 rounded-2xl p-8">
-          <h2 className="text-2xl font-bold text-white mb-2">Forgot Password?</h2>
-          <p className="text-slate-400 mb-6">
-            Enter your email address and we'll send you a link to reset your password.
-          </p>
-
-          {error && (
-            <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 text-sm">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">error</span>
-                <p>{error}</p>
-              </div>
-            </div>
+            </form>
           )}
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void handleSubmit(e);
-            }}
-            className="space-y-5"
-          >
-            {/* Email Input */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2" htmlFor="email">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-slate-500">mail</span>
-                </div>
-                <input
-                  className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-full text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  data-testid="email-input"
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-3.5 px-4 text-white font-bold rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
-              style={{
-                background: 'linear-gradient(90deg, #b23de1 0%, #2563EB 100%)',
-              }}
-              data-testid="submit-button"
-            >
-              Send Reset Link
-            </button>
-          </form>
-
-          {/* Back to Login */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-slate-400">
-              Remember your password?{' '}
-              <Link to="/login" className="text-primary hover:text-primary-light font-medium">
-                Sign In
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
-    </div>
+    </PublicPageLayout>
   );
 }

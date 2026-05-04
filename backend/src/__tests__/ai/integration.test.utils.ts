@@ -3,15 +3,20 @@
  * Helper functions for AI integration tests
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import bcrypt from 'bcryptjs';
+import type { Knex } from 'knex';
+import type { SuperTest } from 'supertest';
 
 /**
  * Clean database tables
  */
-export async function cleanDatabase(database: any) {
-  const tables = ['refresh_tokens', 'ai_cache', 'charts', 'users'];
+export async function cleanDatabase(database: Knex) {
+  const tables = [
+    'refresh_tokens',
+    'ai_cache',
+    'charts',
+    'users',
+  ];
 
   for (const table of tables) {
     await database(table).del();
@@ -21,7 +26,7 @@ export async function cleanDatabase(database: any) {
 /**
  * Create test user in database
  */
-export async function createTestUser(database: any) {
+export async function createTestUser(database: Knex) {
   const hashedPassword = await bcrypt.hash('Password123!', 10);
 
   const [user] = await database('users')
@@ -39,13 +44,15 @@ export async function createTestUser(database: any) {
 /**
  * Create authenticated test user with token
  */
-export async function createAuthenticatedUser(database: any, request: any) {
+export async function createAuthenticatedUser(database: Knex, request: SuperTest) {
   await createTestUser(database);
 
-  const loginResponse = await request.post('/api/v1/auth/login').send({
-    email: 'test@example.com',
-    password: 'Password123!',
-  });
+  const loginResponse = await request
+    .post('/api/v1/auth/login')
+    .send({
+      email: 'test@example.com',
+      password: 'Password123!',
+    });
 
   return {
     user: loginResponse.body.data.user,

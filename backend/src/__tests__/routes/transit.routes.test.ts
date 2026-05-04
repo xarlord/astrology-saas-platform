@@ -8,7 +8,6 @@ import type { Request, Response, NextFunction } from 'express';
 // Mock dependencies BEFORE imports
 jest.mock('../../middleware/auth', () => ({
   authenticate: (_req: Request, _res: Response, next: NextFunction) => next(),
-  optionalAuthenticate: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 jest.mock('../../middleware/errorHandler', () => ({

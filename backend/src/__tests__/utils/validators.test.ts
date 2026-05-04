@@ -38,7 +38,7 @@ describe('Validators', () => {
       const { error } = registerSchema.validate(data);
 
       expect(error).toBeDefined();
-      expect(error?.details.some((d) => d.path.includes('name'))).toBe(true);
+      expect(error?.details.some(d => d.path.includes('name'))).toBe(true);
     });
 
     it('should require name min 2 characters', () => {
@@ -153,7 +153,7 @@ describe('Validators', () => {
       birth_time: '14:30:00',
       birth_place_name: 'New York, NY',
       birth_latitude: 40.7128,
-      birth_longitude: -74.006,
+      birth_longitude: -74.0060,
       birth_timezone: 'America/New_York',
     };
 
@@ -226,7 +226,7 @@ describe('Validators', () => {
     it('should accept valid chart types', () => {
       const types = ['natal', 'synastry', 'composite', 'transit', 'progressed'];
 
-      types.forEach((type) => {
+      types.forEach(type => {
         const data = { ...validChart, type };
         const { error } = createChartSchema.validate(data);
         expect(error).toBeUndefined();
@@ -236,7 +236,7 @@ describe('Validators', () => {
     it('should accept valid house systems', () => {
       const systems = ['placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'];
 
-      systems.forEach((system) => {
+      systems.forEach(system => {
         const data = { ...validChart, house_system: system };
         const { error } = createChartSchema.validate(data);
         expect(error).toBeUndefined();
@@ -246,7 +246,7 @@ describe('Validators', () => {
     it('should accept valid zodiac types', () => {
       const zodiacs = ['tropical', 'sidereal'];
 
-      zodiacs.forEach((zodiac) => {
+      zodiacs.forEach(zodiac => {
         const data = { ...validChart, zodiac };
         const { error } = createChartSchema.validate(data);
         expect(error).toBeUndefined();
@@ -356,9 +356,7 @@ describe('Validators', () => {
       });
 
       const middleware = validateBody(schema);
-      const req = { body: { name: 'John', age: 30, extra: 'field' } } as unknown as {
-        body: Record<string, unknown>;
-      };
+      const req = { body: { name: 'John', age: 30, extra: 'field' } } as unknown as { body: Record<string, unknown> };
       const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
@@ -394,7 +392,7 @@ describe('Validators', () => {
             message: 'Validation failed',
             statusCode: 400,
           }),
-        }),
+        })
       );
       expect(next).not.toHaveBeenCalled();
     });
@@ -439,7 +437,7 @@ describe('Validators', () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: false,
-        }),
+        })
       );
     });
   });

@@ -156,7 +156,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
 
         // If we created a subscription earlier, it should appear
         if (subscriptionId && Array.isArray(subs) && subs.length > 0) {
-          const found = subs.find((s: any) => s.id === subscriptionId);
+          const found = subs.find((s: { id: string }) => s.id === subscriptionId);
           expect(found).toBeDefined();
         }
       }
@@ -233,7 +233,7 @@ describe('Push Notifications - LIVE SYSTEM', () => {
         if (listRes.status === 200) {
           const subs = listRes.data.data.subscriptions || listRes.data.data;
           if (Array.isArray(subs)) {
-            const found = subs.find((s: any) => s.id === targetId);
+            const found = subs.find((s: { id: string }) => s.id === targetId);
             expect(found).toBeUndefined();
           }
         }

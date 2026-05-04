@@ -72,17 +72,13 @@ describe('DailyWeatherModal Component', () => {
 
   describe('Rendering', () => {
     it('should render modal overlay', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const overlay = container.querySelector('.fixed.inset-0');
       expect(overlay).toBeInTheDocument();
     });
 
     it('should render modal content', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const content = container.querySelector('[role="dialog"]');
       expect(content).toBeInTheDocument();
     });
@@ -113,34 +109,26 @@ describe('DailyWeatherModal Component', () => {
     });
 
     it('should color code rating correctly', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const ratingDiv = container.querySelector('[style*="background-color"]');
       expect(ratingDiv).toBeTruthy();
     });
 
     it('should show "Excellent" for rating >= 8', () => {
       const highRatingWeather = { ...mockWeather, rating: 8 };
-      render(
-        <DailyWeatherModal date="2026-01-15" weather={highRatingWeather} onClose={mockOnClose} />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={highRatingWeather} onClose={mockOnClose} />);
       expect(screen.getByText('Excellent')).toBeInTheDocument();
     });
 
     it('should show "Challenging" for rating <= 4', () => {
       const lowRatingWeather = { ...mockWeather, rating: 3 };
-      render(
-        <DailyWeatherModal date="2026-01-15" weather={lowRatingWeather} onClose={mockOnClose} />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={lowRatingWeather} onClose={mockOnClose} />);
       expect(screen.getByText('Challenging')).toBeInTheDocument();
     });
 
     it('should show "Moderate" for rating between 4 and 6', () => {
       const mediumRatingWeather = { ...mockWeather, rating: 5 };
-      render(
-        <DailyWeatherModal date="2026-01-15" weather={mediumRatingWeather} onClose={mockOnClose} />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={mediumRatingWeather} onClose={mockOnClose} />);
       expect(screen.getByText('Moderate')).toBeInTheDocument();
     });
   });
@@ -178,13 +166,7 @@ describe('DailyWeatherModal Component', () => {
         ...mockWeather,
         moonPhase: { phase: 'first-quarter', sign: 'aries', illumination: 50 },
       };
-      render(
-        <DailyWeatherModal
-          date="2026-01-15"
-          weather={weatherWithDash as any}
-          onClose={mockOnClose}
-        />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={weatherWithDash as any} onClose={mockOnClose} />);
       expect(screen.getByText('First Quarter')).toBeInTheDocument();
     });
   });
@@ -197,17 +179,13 @@ describe('DailyWeatherModal Component', () => {
 
     it('should not render global events section when empty', () => {
       const noEventsWeather = { ...mockWeather, globalEvents: [] };
-      render(
-        <DailyWeatherModal date="2026-01-15" weather={noEventsWeather} onClose={mockOnClose} />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={noEventsWeather} onClose={mockOnClose} />);
       expect(screen.queryByText('Astrological Events')).not.toBeInTheDocument();
     });
 
     it('should display event cards for each global event', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
-      const eventCards = container.querySelectorAll('.border.border-gray-200.rounded-lg');
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
+      const eventCards = container.querySelectorAll('.border.border-white\\/15.rounded-lg');
       expect(eventCards.length).toBe(3);
     });
 
@@ -227,9 +205,7 @@ describe('DailyWeatherModal Component', () => {
 
     it('should not render personal transits section when empty', () => {
       const noTransitsWeather = { ...mockWeather, personalTransits: [] };
-      render(
-        <DailyWeatherModal date="2026-01-15" weather={noTransitsWeather} onClose={mockOnClose} />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={noTransitsWeather} onClose={mockOnClose} />);
       expect(screen.queryByText('Your Transits')).not.toBeInTheDocument();
     });
 
@@ -261,9 +237,7 @@ describe('DailyWeatherModal Component', () => {
         luckyActivities: [],
         challengingActivities: [],
       };
-      render(
-        <DailyWeatherModal date="2026-01-15" weather={noActivitiesWeather} onClose={mockOnClose} />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={noActivitiesWeather} onClose={mockOnClose} />);
       expect(screen.queryByText(/Favorable For:/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/Challenging For:/i)).not.toBeInTheDocument();
     });
@@ -280,9 +254,7 @@ describe('DailyWeatherModal Component', () => {
 
     it('should call onClose when overlay is clicked', async () => {
       const user = userEvent.setup();
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const overlay = container.querySelector('.fixed.inset-0');
       if (overlay) {
         await user.click(overlay);
@@ -292,9 +264,7 @@ describe('DailyWeatherModal Component', () => {
 
     it('should not call onClose when modal content is clicked', async () => {
       const user = userEvent.setup();
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const content = container.querySelector('[role="dialog"]');
       if (content) {
         await user.click(content);
@@ -322,12 +292,10 @@ describe('DailyWeatherModal Component', () => {
     });
 
     it('should color code event intensity', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
-      const intensities = container.querySelectorAll('.event-intensity');
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
+      const intensities = container.querySelectorAll('.rounded-full[style*="background-color"]');
       expect(intensities.length).toBeGreaterThan(0);
-      intensities.forEach((intensityBadge) => {
+      intensities.forEach(intensityBadge => {
         const bgColor = (intensityBadge as HTMLElement).style.backgroundColor;
         expect(bgColor).toMatch(/rgb\(\d+, \d+, \d+\)/);
       });
@@ -342,9 +310,7 @@ describe('DailyWeatherModal Component', () => {
     });
 
     it('should trap focus within modal', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const modal = container.querySelector('[role="dialog"]');
       expect(modal).toBeInTheDocument();
     });
@@ -377,13 +343,7 @@ describe('DailyWeatherModal Component', () => {
         ...mockWeather,
         moonPhase: { phase: 'unknown', sign: 'aries', illumination: 50 },
       };
-      render(
-        <DailyWeatherModal
-          date="2026-01-15"
-          weather={unknownPhaseWeather as any}
-          onClose={mockOnClose}
-        />,
-      );
+      render(<DailyWeatherModal date="2026-01-15" weather={unknownPhaseWeather as any} onClose={mockOnClose} />);
       const moonIcons = screen.getAllByText('🌙');
       expect(moonIcons.length).toBeGreaterThan(0);
     });
@@ -398,10 +358,8 @@ describe('DailyWeatherModal Component', () => {
           },
         ],
       };
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={noDescWeather} onClose={mockOnClose} />,
-      );
-      expect(container.querySelector('.border.border-gray-200.rounded-lg')).toBeInTheDocument();
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={noDescWeather} onClose={mockOnClose} />);
+      expect(container.querySelector('.border.border-white\\/15.rounded-lg')).toBeInTheDocument();
     });
 
     it('should handle empty advice array', () => {
@@ -414,18 +372,14 @@ describe('DailyWeatherModal Component', () => {
           },
         ],
       };
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={noAdviceWeather} onClose={mockOnClose} />,
-      );
-      expect(container.querySelector('.border.border-gray-200.rounded-lg')).toBeInTheDocument();
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={noAdviceWeather} onClose={mockOnClose} />);
+      expect(container.querySelector('.border.border-white\\/15.rounded-lg')).toBeInTheDocument();
     });
   });
 
   describe('Responsive Design', () => {
     it('should adapt to mobile viewport', () => {
-      const { container } = render(
-        <DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />,
-      );
+      const { container } = render(<DailyWeatherModal date="2026-01-15" weather={mockWeather} onClose={mockOnClose} />);
       const modal = container.querySelector('[role="dialog"]');
       expect(modal).toBeInTheDocument();
     });

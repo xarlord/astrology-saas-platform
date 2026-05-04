@@ -25,7 +25,6 @@ interface TestUser {
  */
 export async function cleanDatabase(database: Knex) {
   const tables = [
-    'generated_cards',
     'synastry_reports',
     'monthly_forecasts',
     'lunar_returns',
@@ -40,7 +39,6 @@ export async function cleanDatabase(database: Knex) {
     'interpretations',
     'transit_readings',
     'charts',
-    'password_reset_tokens',
     'refresh_tokens',
     'audit_log',
     'users',
@@ -49,7 +47,7 @@ export async function cleanDatabase(database: Knex) {
   for (const table of tables) {
     try {
       await database(table).del();
-    } catch {
+    } catch (error) {
       // Table might not exist, ignore
     }
   }
@@ -80,11 +78,7 @@ export async function createTestUser(database: Knex, overrides: Record<string, u
 /**
  * Create test chart in database
  */
-export async function createTestChart(
-  database: Knex,
-  userId: string,
-  overrides: Record<string, unknown> = {},
-) {
+export async function createTestChart(database: Knex, userId: string, overrides: Record<string, unknown> = {}) {
   const [chart] = await database('charts')
     .insert({
       user_id: userId,
@@ -93,7 +87,7 @@ export async function createTestChart(
       birth_time: '12:00:00',
       birth_place_name: 'New York, NY', // Changed from birth_place to birth_place_name
       birth_latitude: 40.7128, // Changed from latitude
-      birth_longitude: -74.006, // Changed from longitude
+      birth_longitude: -74.0060, // Changed from longitude
       birth_timezone: 'America/New_York', // Changed from timezone
       house_system: 'placidus',
       zodiac: 'tropical', // Changed from zodiac_type to zodiac
@@ -121,7 +115,7 @@ export function generateAuthToken(user: TestUser): string {
     JWT_SECRET,
     {
       expiresIn: '1h',
-    },
+    }
   );
 }
 
@@ -138,7 +132,7 @@ export function generateRefreshToken(user: { id: string; email: string }): strin
     JWT_SECRET,
     {
       expiresIn: '7d',
-    },
+    }
   );
 }
 
@@ -146,8 +140,10 @@ export function generateRefreshToken(user: { id: string; email: string }): strin
  * Make an authenticated request
  */
 export function authenticatedRequest(app: Application, method: string, url: string, token: string) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (request(app) as any)[method.toLowerCase()](url).set('Authorization', `Bearer ${token}`);
+  const agent = request(app);
+  const methodKey = method.toLowerCase() as keyof typeof agent;
+  return (agent[methodKey] as (url: string) => request.Test)(url)
+    .set('Authorization', `Bearer ${token}`);
 }
 
 /**

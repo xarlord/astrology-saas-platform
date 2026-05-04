@@ -41,7 +41,7 @@ class APIPerformanceTest {
     method: 'get' | 'post' | 'put' | 'delete' = 'get',
     maxExpectedTime: number = 500,
     iterations: number = 50,
-    concurrency: number = 1,
+    concurrency: number = 1
   ) {
     this.endpoint = endpoint;
     this.method = method;
@@ -50,11 +50,7 @@ class APIPerformanceTest {
     this.concurrency = concurrency;
   }
 
-  async run(
-    app: Application,
-    authToken?: string,
-    data?: Record<string, unknown>,
-  ): Promise<APIPerformanceResult> {
+  async run(app: Application, authToken?: string, data?: Record<string, unknown>): Promise<APIPerformanceResult> {
     const times: number[] = [];
     const startTime = performance.now();
 
@@ -95,46 +91,44 @@ class APIPerformanceTest {
     } else {
       // Concurrent requests
       const batchSize = Math.ceil(this.iterations / this.concurrency);
-      const batches = Array(this.concurrency)
-        .fill(null)
-        .map(async () => {
-          const batchTimes: number[] = [];
+      const batches = Array(this.concurrency).fill(null).map(async () => {
+        const batchTimes: number[] = [];
 
-          for (let i = 0; i < batchSize; i++) {
-            const requestStart = performance.now();
+        for (let i = 0; i < batchSize; i++) {
+          const requestStart = performance.now();
 
-            let req: request.Test;
-            switch (this.method) {
-              case 'get':
-                req = request(app).get(this.endpoint);
-                break;
-              case 'post':
-                req = request(app).post(this.endpoint);
-                break;
-              case 'put':
-                req = request(app).put(this.endpoint);
-                break;
-              case 'delete':
-                req = request(app).delete(this.endpoint);
-                break;
-            }
-
-            if (authToken) {
-              req = req.set('Authorization', authToken);
-            }
-
-            if (data) {
-              req = req.send(data);
-            }
-
-            await req.expect(200);
-
-            const requestEnd = performance.now();
-            batchTimes.push(requestEnd - requestStart);
+          let req: request.Test;
+          switch (this.method) {
+            case 'get':
+              req = request(app).get(this.endpoint);
+              break;
+            case 'post':
+              req = request(app).post(this.endpoint);
+              break;
+            case 'put':
+              req = request(app).put(this.endpoint);
+              break;
+            case 'delete':
+              req = request(app).delete(this.endpoint);
+              break;
           }
 
-          return batchTimes;
-        });
+          if (authToken) {
+            req = req.set('Authorization', authToken);
+          }
+
+          if (data) {
+            req = req.send(data);
+          }
+
+          await req.expect(200);
+
+          const requestEnd = performance.now();
+          batchTimes.push(requestEnd - requestStart);
+        }
+
+        return batchTimes;
+      });
 
       const allTimes = await Promise.all(batches);
       times.push(...allTimes.flat());
@@ -251,7 +245,10 @@ describe('API Performance Tests', () => {
       const times: number[] = [];
       for (let i = 0; i < test.iterations; i++) {
         const start = performance.now();
-        await request(app).post('/api/auth/register').send(generateData()).expect(201);
+        await request(app)
+          .post('/api/auth/register')
+          .send(generateData())
+          .expect(201);
         times.push(performance.now() - start);
       }
 
@@ -302,7 +299,7 @@ describe('API Performance Tests', () => {
         birth_time: '14:30',
         birth_place: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.006,
+        longitude: -74.0060,
         timezone: 'America/New_York',
         house_system: 'placidus',
         zodiac_type: 'tropical',
@@ -387,15 +384,12 @@ describe('API Performance Tests', () => {
       console.log(`  Average: ${avgTime.toFixed(2)}ms`);
       console.log(`  P95: ${p95.toFixed(2)}ms`);
       console.log(`  First request (cold): ${sortedTimes[0].toFixed(2)}ms`);
-      console.log(
-        `  Subsequent requests (cached avg): ${
-          sortedTimes.slice(1).reduce((sum, t) => sum + t, 0) / (sortedTimes.length - 1)
-        }ms`,
-      );
+      console.log(`  Subsequent requests (cached avg): ${
+        sortedTimes.slice(1).reduce((sum, t) => sum + t, 0) / (sortedTimes.length - 1)
+      }ms`);
 
       // Cached requests should be much faster
-      const avgCached =
-        sortedTimes.slice(1).reduce((sum, t) => sum + t, 0) / (sortedTimes.length - 1);
+      const avgCached = sortedTimes.slice(1).reduce((sum, t) => sum + t, 0) / (sortedTimes.length - 1);
       expect(avgCached).toBeLessThan(200); // Cached should be under 200ms
       expect(p95).toBeLessThan(1000);
     });
@@ -436,7 +430,7 @@ describe('API Performance Tests', () => {
         birth_time: '14:30',
         birth_place: 'New York, NY',
         latitude: 40.7128,
-        longitude: -74.006,
+        longitude: -74.0060,
         timezone: 'America/New_York',
         house_system: 'placidus',
         zodiac_type: 'tropical',
@@ -444,18 +438,16 @@ describe('API Performance Tests', () => {
 
       const startTime = performance.now();
 
-      const promises = Array(50)
-        .fill(null)
-        .map((_, i) => {
-          return request(app)
-            .post('/api/charts')
-            .set('Authorization', authToken)
-            .send({
-              ...chartData,
-              name: `${chartData.name} ${i}`,
-            })
-            .expect(201);
-        });
+      const promises = Array(50).fill(null).map((_, i) => {
+        return request(app)
+          .post('/api/charts')
+          .set('Authorization', authToken)
+          .send({
+            ...chartData,
+            name: `${chartData.name} ${i}`,
+          })
+          .expect(201);
+      });
 
       await Promise.all(promises);
 
@@ -477,14 +469,12 @@ describe('API Performance Tests', () => {
     it('should handle 100 concurrent read requests', async () => {
       const startTime = performance.now();
 
-      const promises = Array(100)
-        .fill(null)
-        .map(() => {
-          return request(app)
-            .get(`/api/charts/${testChart.id}`)
-            .set('Authorization', authToken)
-            .expect(200);
-        });
+      const promises = Array(100).fill(null).map(() => {
+        return request(app)
+          .get(`/api/charts/${testChart.id}`)
+          .set('Authorization', authToken)
+          .expect(200);
+      });
 
       await Promise.all(promises);
 

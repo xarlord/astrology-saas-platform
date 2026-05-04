@@ -3,6 +3,7 @@
  */
 
 import { Request, Response } from 'express';
+import type { Socket } from 'net';
 import { getCsrfToken, csrfMiddleware } from '../../middleware/csrf';
 
 // Mock the logger
@@ -12,11 +13,6 @@ jest.mock('../../utils/logger', () => ({
     warn: jest.fn(),
     error: jest.fn(),
   },
-}));
-
-// Mock the security logger
-jest.mock('../../utils/securityLogger', () => ({
-  logCSRFViolation: jest.fn(),
 }));
 
 describe('CSRF Middleware', () => {
@@ -38,8 +34,7 @@ describe('CSRF Middleware', () => {
       path: '/api/v1/test',
       ip: '127.0.0.1',
       headers: {},
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      socket: { remoteAddress: '127.0.0.1' } as any,
+      socket: { remoteAddress: '127.0.0.1' } as Partial<Socket>,
     };
     mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -103,7 +98,7 @@ describe('CSRF Middleware', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: false,
-        }),
+        })
       );
       expect(mockNext).not.toHaveBeenCalled();
     });

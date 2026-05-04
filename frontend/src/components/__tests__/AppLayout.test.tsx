@@ -14,21 +14,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AppLayout } from '../AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../store';
 
-// Mock the hooks
-vi.mock('../../hooks', () => ({
-  useAuth: vi.fn(),
-}));
-
-// Mock the stores
-vi.mock('../../stores', () => ({
+// Mock the auth store
+vi.mock('../../store', () => ({
   useAuthStore: vi.fn(),
   useChartsStore: vi.fn(),
 }));
@@ -61,8 +56,8 @@ describe('AppLayout Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Mock useAuth hook to return our mock user
-    (useAuth as any).mockReturnValue({
+    // Mock useAuthStore to return our mock user
+    (useAuthStore as any).mockReturnValue({
       user: mockUser,
       isAuthenticated: true,
       logout: mockLogout,
@@ -71,7 +66,7 @@ describe('AppLayout Component', () => {
     // Mock window.matchMedia for responsive tests
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: vi.fn().mockImplementation((query) => ({
+      value: vi.fn().mockImplementation(query => ({
         matches: false,
         media: query,
         onchange: null,
@@ -84,18 +79,13 @@ describe('AppLayout Component', () => {
     });
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-    cleanup();
-  });
-
   describe('Rendering', () => {
     it('should render layout with all main sections', () => {
       render(
         <AppLayout>
           <div>Test Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByText('Test Content')).toBeInTheDocument();
@@ -106,7 +96,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const logo = screen.getAllByText('AstroVerse');
@@ -118,22 +108,24 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
+      // "New Chart" appears in both sidebar and top nav
       expect(screen.getAllByText('New Chart').length).toBeGreaterThan(0);
-      expect(screen.getAllByText('Transits').length).toBeGreaterThan(0);
+      expect(screen.getByText('Today\'s Transits')).toBeInTheDocument();
     });
 
-    it('should render sidebar upgrade banner', () => {
-      render(
+    it('should render footer', () => {
+      const { container } = render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('Upgrade to Premium')).toBeInTheDocument();
+      const footer = container.querySelector('footer');
+      expect(footer).toBeInTheDocument();
     });
   });
 
@@ -143,7 +135,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       // Find all elements with 'T' and check one of them is the avatar
@@ -151,27 +143,29 @@ describe('AppLayout Component', () => {
       expect(tElements.length).toBeGreaterThan(0);
     });
 
-    it('should display user name', () => {
+    it('should display user avatar initial', () => {
       render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('Test User')).toBeInTheDocument();
+      // Stitch UI: user name is no longer visible; avatar shows initial letter
+      const avatarInitials = screen.getAllByText('T');
+      expect(avatarInitials.length).toBeGreaterThan(0);
     });
 
     it('should have notification bell', () => {
-      const { container } = render(
+      render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      const notificationBtn = container.querySelector('button[aria-label*="notification"]');
-      expect(notificationBtn).toBeInTheDocument();
+      // Stitch UI: notification bell uses Material Symbol icon with aria-label
+      expect(screen.getByLabelText('Notifications')).toBeInTheDocument();
     });
 
     it('should show notification badge', () => {
@@ -179,7 +173,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const badge = container.querySelector('.bg-red-500.rounded-full');
@@ -193,12 +187,13 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+      // "New Chart" appears in sidebar and top nav
       expect(screen.getAllByText('New Chart').length).toBeGreaterThan(0);
-      expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0);
+      expect(screen.getByText('Today\'s Transits')).toBeInTheDocument();
     });
 
     it('should render my charts section', () => {
@@ -206,12 +201,13 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      expect(screen.getAllByText('Features').length).toBeGreaterThan(0);
-      expect(screen.getByText('Calendar')).toBeInTheDocument();
-      expect(screen.getByText('Synastry')).toBeInTheDocument();
+      expect(screen.getByText('My Charts')).toBeInTheDocument();
+      expect(screen.getByText('Natal Chart')).toBeInTheDocument();
+      expect(screen.getByText('Compatibility')).toBeInTheDocument();
+      // Transits appears in multiple places
       expect(screen.getAllByText('Transits').length).toBeGreaterThan(0);
     });
 
@@ -220,12 +216,13 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      // Check for additional features beyond the basic ones
-      expect(screen.getByText('Solar Returns')).toBeInTheDocument();
-      expect(screen.getByText('Lunar Returns')).toBeInTheDocument();
+      expect(screen.getByText('Tools')).toBeInTheDocument();
+      expect(screen.getByText('Ephemeris')).toBeInTheDocument();
+      expect(screen.getByText('Moon Calendar')).toBeInTheDocument();
+      expect(screen.getByText('Retrograde Calendar')).toBeInTheDocument();
     });
 
     it('should render upgrade banner', () => {
@@ -233,7 +230,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByText('Upgrade to Premium')).toBeInTheDocument();
@@ -246,11 +243,13 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      const userMenuBtn = screen.getByText('Test User').closest('button');
+      // Stitch UI: user menu button is identified by aria-label, no name text visible
+      const userMenuBtn = screen.getByLabelText('User menu');
       expect(userMenuBtn).toBeInTheDocument();
+      expect(userMenuBtn.tagName).toBe('BUTTON');
     });
 
     it('should show profile link in dropdown', () => {
@@ -258,7 +257,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       // Profile appears in multiple places (sidebar + dropdown + mobile nav)
@@ -272,13 +271,12 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      // Click the user menu button to open the dropdown
-      const userMenuBtn = screen.getByText('Test User').closest('button');
-      expect(userMenuBtn).toBeInTheDocument();
-      await user.click(userMenuBtn!);
+      // Open the dropdown first (it is hidden behind React state)
+      const userMenuBtn = screen.getByLabelText('User menu');
+      await user.click(userMenuBtn);
 
       expect(screen.getByText('Settings')).toBeInTheDocument();
     });
@@ -289,13 +287,12 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      // Click the user menu button to open the dropdown
-      const userMenuBtn = screen.getByText('Test User').closest('button');
-      expect(userMenuBtn).toBeInTheDocument();
-      await user.click(userMenuBtn!);
+      // Open the dropdown first (it is hidden behind React state)
+      const userMenuBtn = screen.getByLabelText('User menu');
+      await user.click(userMenuBtn);
 
       expect(screen.getByText('Logout')).toBeInTheDocument();
     });
@@ -306,13 +303,12 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      // Click the user menu button to open the dropdown
-      const userMenuBtn = screen.getByText('Test User').closest('button');
-      expect(userMenuBtn).toBeInTheDocument();
-      await user.click(userMenuBtn!);
+      // Open the dropdown first (it is hidden behind React state)
+      const userMenuBtn = screen.getByLabelText('User menu');
+      await user.click(userMenuBtn);
 
       const logoutBtn = screen.getByText('Logout');
       await user.click(logoutBtn);
@@ -327,7 +323,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       // Look for any button in the rendered output
@@ -340,7 +336,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const bottomNav = container.querySelector('.lg\\:hidden.fixed.bottom-0');
@@ -352,7 +348,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByText('Home')).toBeInTheDocument();
@@ -363,17 +359,81 @@ describe('AppLayout Component', () => {
     });
   });
 
-  describe('Sidebar Footer', () => {
-    it('should render upgrade banner with call to action', () => {
+  describe('Footer', () => {
+    it('should render product links', () => {
       render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      expect(screen.getByText('Upgrade to Premium')).toBeInTheDocument();
-      expect(screen.getByText('Upgrade Now')).toBeInTheDocument();
+      expect(screen.getByText('Features')).toBeInTheDocument();
+      expect(screen.getByText('Pricing')).toBeInTheDocument();
+      expect(screen.getByText('API')).toBeInTheDocument();
+    });
+
+    it('should render resources links', () => {
+      render(
+        <AppLayout>
+          <div>Content</div>
+        </AppLayout>,
+        { wrapper: createWrapper() }
+      );
+
+      expect(screen.getByText('Learn Astrology')).toBeInTheDocument();
+      expect(screen.getByText('Blog')).toBeInTheDocument();
+      expect(screen.getByText('Support')).toBeInTheDocument();
+    });
+
+    it('should render company links', () => {
+      render(
+        <AppLayout>
+          <div>Content</div>
+        </AppLayout>,
+        { wrapper: createWrapper() }
+      );
+
+      expect(screen.getByText('About')).toBeInTheDocument();
+      expect(screen.getByText('Careers')).toBeInTheDocument();
+      expect(screen.getByText('Contact')).toBeInTheDocument();
+    });
+
+    it('should render legal links', () => {
+      render(
+        <AppLayout>
+          <div>Content</div>
+        </AppLayout>,
+        { wrapper: createWrapper() }
+      );
+
+      expect(screen.getByText('Privacy Policy')).toBeInTheDocument();
+      expect(screen.getByText('Terms of Service')).toBeInTheDocument();
+      expect(screen.getByText('Cookie Policy')).toBeInTheDocument();
+    });
+
+    it('should display copyright', () => {
+      render(
+        <AppLayout>
+          <div>Content</div>
+        </AppLayout>,
+        { wrapper: createWrapper() }
+      );
+
+      expect(screen.getByText(/© 2026 AstroVerse/i)).toBeInTheDocument();
+    });
+
+    it('should render social media links', () => {
+      render(
+        <AppLayout>
+          <div>Content</div>
+        </AppLayout>,
+        { wrapper: createWrapper() }
+      );
+
+      // Social links are <a> elements with aria-labels
+      expect(screen.getByLabelText('Twitter')).toBeInTheDocument();
+      expect(screen.getByLabelText('GitHub')).toBeInTheDocument();
     });
   });
 
@@ -383,14 +443,16 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      const newChartLink = screen.getAllByText('New Chart')[0].closest('a');
-      expect(newChartLink).toHaveAttribute('href', '/charts/create');
+      // "New Chart" appears in sidebar and top nav — use getAllByText and check first
+      const newChartLinks = screen.getAllByText('New Chart').map(el => el.closest('a')).filter(Boolean);
+      expect(newChartLinks.length).toBeGreaterThan(0);
+      expect(newChartLinks[0]).toHaveAttribute('href', '/charts/new');
 
-      const dashboardLink = screen.getByText('Dashboard').closest('a');
-      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
+      const natalChartLink = screen.getByText('Natal Chart').closest('a');
+      expect(natalChartLink).toHaveAttribute('href', '/charts/natal');
     });
 
     it('should render desktop navigation links', () => {
@@ -398,7 +460,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       // Charts appears in multiple places
@@ -432,7 +494,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const sidebar = container.querySelector('.lg\\:translate-x-0');
@@ -444,7 +506,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const mobileNav = container.querySelector('.lg\\:hidden');
@@ -458,12 +520,16 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      // Check for aria-label attributes on buttons (accessible labels)
-      const ariaLabeledButtons = container.querySelectorAll('button[aria-label]');
-      expect(ariaLabeledButtons.length).toBeGreaterThan(0);
+      // Stitch UI: ARIA labels are on buttons directly via aria-label attribute
+      const labelledButtons = container.querySelectorAll('button[aria-label]');
+      expect(labelledButtons.length).toBeGreaterThan(0);
+
+      // Verify specific aria-labels exist
+      expect(screen.getByLabelText('User menu')).toBeInTheDocument();
+      expect(screen.getByLabelText('Notifications')).toBeInTheDocument();
     });
 
     it('should have semantic HTML structure', () => {
@@ -471,16 +537,17 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const header = container.querySelector('header');
       const main = container.querySelector('main');
+      const footer = container.querySelector('footer');
       const aside = container.querySelector('aside');
 
       expect(header).toBeInTheDocument();
       expect(main).toBeInTheDocument();
-      // Footer was removed in the AstroVerse redesign
+      expect(footer).toBeInTheDocument();
       expect(aside).toBeInTheDocument();
     });
 
@@ -489,7 +556,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const nav = screen.getAllByRole('navigation');
@@ -503,7 +570,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div data-testid="child-content">Child Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByTestId('child-content')).toBeInTheDocument();
@@ -517,7 +584,7 @@ describe('AppLayout Component', () => {
           <div>Second Child</div>
           <div>Third Child</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByText('First Child')).toBeInTheDocument();
@@ -527,28 +594,29 @@ describe('AppLayout Component', () => {
   });
 
   describe('Theme Support', () => {
-    it('should support dark theme classes', () => {
+    it('should support cosmic theme classes', () => {
       const { container } = render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      const darkElements = container.querySelectorAll('.bg-\\[\\#0B0D17\\]');
-      expect(darkElements.length).toBeGreaterThan(0);
+      // Stitch design uses glass-nav with backdrop-blur
+      const glassElements = container.querySelectorAll('[class*="glass-nav"], [class*="bg-surface-dark"]');
+      expect(glassElements.length).toBeGreaterThan(0);
     });
 
-    it('should have dark theme sidebar', () => {
+    it('should have cosmic theme sidebar', () => {
       const { container } = render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const sidebar = container.querySelector('aside');
-      expect(sidebar).toHaveClass('bg-[#0B0D17]');
+      expect(sidebar?.className).toContain('bg-cosmic-card-solid');
     });
   });
 
@@ -558,7 +626,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       // Just check that buttons exist in the component
@@ -571,7 +639,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       expect(screen.getByText('Get unlimited charts and detailed analysis')).toBeInTheDocument();
@@ -585,7 +653,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const sidebar = container.querySelector('aside');
@@ -599,7 +667,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       const logos = screen.getAllByText('AstroVerse');
@@ -613,7 +681,7 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
       // Should still render layout - get all AstroVerse instances
@@ -626,20 +694,18 @@ describe('AppLayout Component', () => {
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      // Check that the user avatar div with gradient background exists
+      // Check that the user avatar div with primary background exists
       const { container } = render(
         <AppLayout>
           <div>Content</div>
         </AppLayout>,
-        { wrapper: createWrapper() },
+        { wrapper: createWrapper() }
       );
 
-      const avatar = container.querySelectorAll(
-        '.bg-gradient-to-br.from-indigo-500.to-purple-600.rounded-full',
-      );
+      const avatar = container.querySelectorAll('.bg-primary.rounded-full');
       expect(avatar.length).toBeGreaterThan(0);
     });
   });

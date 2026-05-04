@@ -26,10 +26,7 @@ interface SynastryCalculatorProps {
   onReportSave?: (report: SynastryChart) => void;
 }
 
-const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
-  charts,
-  onReportSave: _onReportSave,
-}) => {
+const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onReportSave: _onReportSave }) => {
   const [chart1, setChart1] = useState<string>('');
   const [chart2, setChart2] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -40,9 +37,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
     elementalBalance: ElementalBalance;
     compositeChart?: CompositeChart;
   } | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'aspects' | 'composite' | 'scores'>(
-    'overview',
-  );
+  const [activeTab, setActiveTab] = useState<'overview' | 'aspects' | 'composite' | 'scores'>('overview');
 
   const handleCalculate = async () => {
     if (!chart1 || !chart2) {
@@ -66,10 +61,11 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
 
       setSynastryData(synastry);
       setCompatibilityData(compatibility);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error calculating synastry:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to calculate compatibility';
-      setError(errorMessage);
+      const axiosErr = err as { response?: { data?: { error?: string; message?: string } } };
+      const msg = axiosErr.response?.data?.error ?? axiosErr.response?.data?.message;
+      setError(typeof msg === 'string' ? msg : 'Failed to calculate compatibility');
     } finally {
       setLoading(false);
     }
@@ -94,14 +90,9 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
 
   if (loading) {
     return (
-      <div
-        className="max-w-screen-xl mx-auto p-4 md:p-8"
-        role="region"
-        aria-label="Synastry Chart Calculator"
-        aria-busy="true"
-      >
+      <div className="max-w-screen-xl mx-auto p-4 md:p-8" role="region" aria-label="Synastry Chart Calculator" aria-busy="true">
         <div className="flex flex-col items-center justify-center py-16 px-8">
-          <div className="w-[50px] h-[50px] border-4 border-gray-200 dark:border-gray-700 border-t-indigo-500 dark:border-t-indigo-400 rounded-full animate-spin mb-4" />
+          <div className="w-[50px] h-[50px] border-4 border-white/15 border-t-primary rounded-full animate-spin mb-4" />
           <p>Calculating compatibility...</p>
         </div>
       </div>
@@ -115,14 +106,14 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
     challenging: 'from-red-500 to-red-600',
   };
 
-  const _scoreValueColor: Record<string, string> = {
+  const scoreValueColor: Record<string, string> = {
     excellent: 'text-green-500',
     good: 'text-blue-500',
     fair: 'text-amber-500',
     challenging: 'text-red-500',
   };
 
-  const _scoreFillBg: Record<string, string> = {
+  const scoreFillBg: Record<string, string> = {
     excellent: 'bg-gradient-to-r from-green-500 to-green-400',
     good: 'bg-gradient-to-r from-blue-500 to-blue-400',
     fair: 'bg-gradient-to-r from-amber-500 to-amber-400',
@@ -130,30 +121,19 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
   };
 
   return (
-    <div
-      className="max-w-screen-xl mx-auto p-4 md:p-8"
-      role="region"
-      aria-label="Synastry Chart Calculator"
-    >
+    <div className="max-w-screen-xl mx-auto p-4 md:p-8" role="region" aria-label="Synastry Chart Calculator">
       {/* Chart Selection */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-8 mb-8 shadow-sm">
-        <h2 className="m-0 mb-6 text-gray-900 dark:text-white text-center text-xl font-semibold">
-          Compare Two Charts
-        </h2>
+      <div className="glass-panel rounded-2xl p-8 mb-8">
+        <h2 className="m-0 mb-6 text-white text-center text-xl font-semibold">Compare Two Charts</h2>
         <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
           <div className="flex-1 w-full">
-            <label
-              htmlFor="chart1"
-              className="block mb-2 text-gray-500 dark:text-gray-400 text-sm font-medium"
-            >
-              First Chart
-            </label>
+            <label htmlFor="chart1" className="block mb-2 text-slate-200 text-sm font-medium">First Chart</label>
             <select
               id="chart1"
               value={chart1}
               onChange={(e) => setChart1(e.target.value)}
               aria-required="true"
-              className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
+              className="w-full p-3 border-2 border-white/15 rounded-lg text-base bg-white/15 text-white cursor-pointer focus:outline-none focus:border-primary transition-colors"
             >
               <option value="">Select a chart...</option>
               {charts.map((chart) => (
@@ -164,23 +144,16 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
             </select>
           </div>
 
-          <div className="flex items-center justify-center w-[50px] h-[50px] bg-indigo-500 text-white rounded-full font-bold text-xl shrink-0 md:rotate-0 rotate-0">
-            VS
-          </div>
+          <div className="flex items-center justify-center w-[50px] h-[50px] bg-primary text-white rounded-full font-bold text-xl shrink-0 md:rotate-0 rotate-0">VS</div>
 
           <div className="flex-1 w-full">
-            <label
-              htmlFor="chart2"
-              className="block mb-2 text-gray-500 dark:text-gray-400 text-sm font-medium"
-            >
-              Second Chart
-            </label>
+            <label htmlFor="chart2" className="block mb-2 text-slate-200 text-sm font-medium">Second Chart</label>
             <select
               id="chart2"
               value={chart2}
               onChange={(e) => setChart2(e.target.value)}
               aria-required="true"
-              className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors"
+              className="w-full p-3 border-2 border-white/15 rounded-lg text-base bg-white/15 text-white cursor-pointer focus:outline-none focus:border-primary transition-colors"
             >
               <option value="">Select a chart...</option>
               {charts.map((chart) => (
@@ -193,69 +166,53 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
         </div>
 
         <button
-          onClick={() => void handleCalculate()}
-          className="calculate-button"
+          onClick={() => { void handleCalculate(); }}
+          className="w-full p-4 bg-primary text-white border-none rounded-lg text-lg font-semibold cursor-pointer transition-all hover:bg-primary/90 active:scale-[0.98] disabled:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={!chart1 || !chart2 || chart1 === chart2}
         >
           Calculate Compatibility
         </button>
 
-        {error && (
-          <div
-            className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-center"
-            role="alert"
-          >
-            {error}
-          </div>
-        )}
+        {error && <div className="mt-4 p-4 bg-red-900/30 text-red-400 rounded-lg text-center" role="alert">{error}</div>}
       </div>
 
       {/* Results */}
       {synastryData && compatibilityData && (
-        <div
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden"
-          aria-live="polite"
-        >
+        <div className="glass-panel rounded-2xl overflow-hidden" aria-live="polite">
           {/* Overall Score */}
-          <div
-            className={`flex flex-col md:flex-row items-center gap-8 p-8 bg-gradient-to-br ${scoreGradient[getScoreColor(compatibilityData.scores.overall)]} text-white`}
-          >
+          <div className={`flex flex-col md:flex-row items-center gap-8 p-8 bg-gradient-to-br ${scoreGradient[getScoreColor(compatibilityData.scores.overall)]} text-white`}>
             <div className="flex flex-col items-center justify-center w-[120px] h-[120px] bg-white/20 rounded-full shrink-0">
-              <span className="text-5xl font-bold leading-none">
-                {compatibilityData.scores.overall}
-              </span>
+              <span className="text-5xl font-bold leading-none">{compatibilityData.scores.overall}</span>
               <span className="text-xl opacity-90">/10</span>
             </div>
             <div>
               <h3 className="m-0 mb-2 text-3xl">Overall Compatibility</h3>
-              <p className="m-0 text-lg opacity-95 leading-relaxed">
-                {synastryData.relationshipTheme}
-              </p>
+              <p className="m-0 text-lg opacity-95 leading-relaxed">{String(synastryData.relationshipTheme ?? '')}</p>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 px-8 pt-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+          <div className="flex gap-2 px-8 pt-4 glass-panel border-b border-white/15 overflow-x-auto">
             <button
-              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'overview' ? 'text-indigo-500 border-b-3 border-indigo-500' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-3 border-transparent'}`}
+              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'overview' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('overview')}
             >
               Overview
             </button>
             <button
-              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'scores' ? 'text-indigo-500 border-b-3 border-indigo-500' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-3 border-transparent'}`}
+              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'scores' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('scores')}
             >
               Category Scores
             </button>
             <button
-              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'aspects' ? 'text-indigo-500 border-b-3 border-indigo-500' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-3 border-transparent'}`}
+              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'aspects' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('aspects')}
             >
               Aspects
             </button>
             <button
-              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'composite' ? 'text-indigo-500 border-b-3 border-indigo-500' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border-b-3 border-transparent'}`}
+              className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'composite' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('composite')}
             >
               Composite
@@ -267,36 +224,25 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
             {activeTab === 'overview' && (
               <div className="flex flex-col gap-8">
                 {/* Strengths */}
-                <div className="strengths-section">
-                  ?? <h3>Strengths</h3>
-                  <ul className="strengths-list">
-                    {synastryData.strengths.map((strength, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded"
-                      >
-                        <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full shrink-0 font-bold text-sm">
-                          ✓
-                        </span>
+                <div>
+                  <h3 className="m-0 mb-4 text-white text-xl">Strengths</h3>
+                  <ul className="list-none p-0 m-0 flex flex-col gap-3">
+                    {(synastryData.strengths ?? []).map((strength, index) => (
+                      <li key={index} className="flex items-start gap-3 p-4 bg-green-900/20 border-l-4 border-green-500 rounded">
+                        <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full shrink-0 font-bold text-sm">✓</span>
                         {strength}
                       </li>
                     ))}
-                    ??{' '}
                   </ul>
                 </div>
 
                 {/* Challenges */}
                 <div>
-                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">Challenges</h3>
+                  <h3 className="m-0 mb-4 text-white text-xl">Challenges</h3>
                   <ul className="list-none p-0 m-0 flex flex-col gap-3">
-                    {synastryData.challenges.map((challenge, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded"
-                      >
-                        <span className="flex items-center justify-center w-6 h-6 bg-red-500 text-white rounded-full shrink-0 font-bold text-sm">
-                          !
-                        </span>
+                    {(synastryData.challenges ?? []).map((challenge, index) => (
+                      <li key={index} className="flex items-start gap-3 p-4 bg-red-900/20 border-l-4 border-red-500 rounded">
+                        <span className="flex items-center justify-center w-6 h-6 bg-red-500 text-white rounded-full shrink-0 font-bold text-sm">!</span>
                         {challenge}
                       </li>
                     ))}
@@ -305,66 +251,39 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
 
                 {/* Advice */}
                 <div>
-                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">
-                    Relationship Advice
-                  </h3>
-                  <p className="m-0 p-4 bg-gray-50 dark:bg-gray-700 border-l-4 border-indigo-500 rounded leading-relaxed">
-                    {synastryData.advice}
-                  </p>
+                  <h3 className="m-0 mb-4 text-white text-xl">Relationship Advice</h3>
+                  <p className="m-0 p-4 bg-white/15 border-l-4 border-primary rounded leading-relaxed">{String(synastryData.advice ?? '')}</p>
                 </div>
 
                 {/* Elemental Balance */}
-                <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-xl">
-                    Elemental Balance
-                  </h3>
+                <div className="p-6 bg-white/15 rounded-lg">
+                  <h3 className="m-0 mb-4 text-white text-xl">Elemental Balance</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-red-500">
+                    <div className="flex flex-col items-center p-6 glass-panel rounded-2xl gap-2 border-t-[3px] border-red-500">
                       <span className="text-4xl">🔥</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                        {compatibilityData.elementalBalance.fire}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                        Fire
-                      </span>
+                      <span className="text-4xl font-bold text-white">{compatibilityData.elementalBalance.fire}</span>
+                      <span className="text-sm text-slate-200 capitalize">Fire</span>
                     </div>
-                    <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-amber-700">
+                    <div className="flex flex-col items-center p-6 glass-panel rounded-2xl gap-2 border-t-[3px] border-amber-700">
                       <span className="text-4xl">🌍</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                        {compatibilityData.elementalBalance.earth}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                        Earth
-                      </span>
+                      <span className="text-4xl font-bold text-white">{compatibilityData.elementalBalance.earth}</span>
+                      <span className="text-sm text-slate-200 capitalize">Earth</span>
                     </div>
-                    <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-blue-300">
+                    <div className="flex flex-col items-center p-6 glass-panel rounded-2xl gap-2 border-t-[3px] border-blue-300">
                       <span className="text-4xl">💨</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                        {compatibilityData.elementalBalance.air}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                        Air
-                      </span>
+                      <span className="text-4xl font-bold text-white">{compatibilityData.elementalBalance.air}</span>
+                      <span className="text-sm text-slate-200 capitalize">Air</span>
                     </div>
-                    <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg gap-2 border-t-[3px] border-blue-500">
+                    <div className="flex flex-col items-center p-6 glass-panel rounded-2xl gap-2 border-t-[3px] border-blue-500">
                       <span className="text-4xl">💧</span>
-                      <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                        {compatibilityData.elementalBalance.water}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                        Water
-                      </span>
+                      <span className="text-4xl font-bold text-white">{compatibilityData.elementalBalance.water}</span>
+                      <span className="text-sm text-slate-200 capitalize">Water</span>
                     </div>
                   </div>
-                  <p
-                    className={`text-center text-lg font-semibold capitalize ${
-                      getBalanceType(compatibilityData.elementalBalance) === 'well-balanced'
-                        ? 'text-green-500'
-                        : getBalanceType(compatibilityData.elementalBalance) === 'balanced'
-                          ? 'text-amber-500'
-                          : 'text-red-500'
-                    }`}
-                  >
+                  <p className={`text-center text-lg font-semibold capitalize ${
+                    getBalanceType(compatibilityData.elementalBalance) === 'well-balanced' ? 'text-green-500' :
+                    getBalanceType(compatibilityData.elementalBalance) === 'balanced' ? 'text-amber-500' : 'text-red-500'
+                  }`}>
                     {getBalanceType(compatibilityData.elementalBalance).replace('-', ' ')}
                   </p>
                 </div>
@@ -373,25 +292,23 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
 
             {activeTab === 'scores' && (
               <div>
-                <h3 className="m-0 mb-6 text-gray-900 dark:text-white text-2xl">
-                  Compatibility by Category
-                </h3>
+                <h3 className="m-0 mb-6 text-white text-2xl">Compatibility by Category</h3>
                 <div className="flex flex-col gap-6">
                   {Object.entries(compatibilityData.scores).map(([category, score]) => (
                     <div key={category} className="flex flex-col gap-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
+                        <span className="text-lg font-semibold text-white capitalize">
                           {category.charAt(0).toUpperCase() + category.slice(1)}
                         </span>
-                        <span className={`score-value ${getScoreColor(score as number)}`}>
+                        <span className={`text-lg font-bold ${scoreValueColor[getScoreColor(score as number)]}`}>
                           {score as number}/10
                         </span>
                       </div>
-                      <div className="w-full h-3 bg-gray-100 dark:bg-gray-600 rounded-full overflow-hidden">
+                      <div className="w-full h-3 bg-white/15 rounded-full overflow-hidden">
                         <div
-                          className={`score-fill ${getScoreColor(score as number)}`}
+                          className={`h-full transition-[width] duration-300 ease-in-out rounded-full ${scoreFillBg[getScoreColor(score as number)]}`}
                           style={{ width: `${(score as number) * 10}%` }}
-                        ></div>
+                        />
                       </div>
                     </div>
                   ))}
@@ -401,48 +318,39 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
 
             {activeTab === 'aspects' && (
               <div>
-                <h3 className="m-0 mb-6 text-gray-900 dark:text-white text-2xl">
-                  Cross-Chart Aspects
-                </h3>
-                {synastryData.synastryAspects.length === 0 ? (
-                  <p className="text-center text-gray-400 dark:text-gray-500 italic">
-                    No significant aspects found between these charts.
-                  </p>
+                <h3 className="m-0 mb-6 text-white text-2xl">Cross-Chart Aspects</h3>
+                {(synastryData.synastryAspects ?? []).length === 0 ? (
+                  <p className="text-center text-slate-200 italic">No significant aspects found between these charts.</p>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
-                    {synastryData.synastryAspects.map((aspect, index) => (
+                    {(synastryData.synastryAspects ?? []).map((aspect, index) => (
                       <div
                         key={index}
-                        className={`p-6 rounded-lg border-2 border-transparent transition-all hover:border-gray-200 dark:hover:border-gray-600 hover:-translate-y-0.5 ${
+                        className={`p-6 rounded-lg border-2 border-transparent transition-all hover:border-white/15 hover:-translate-y-0.5 ${
                           aspect.soulmateIndicator
-                            ? 'border-pink-500 bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/30 dark:to-pink-800/30'
-                            : 'bg-gray-50 dark:bg-gray-700'
+                            ? 'border-pink-500 bg-gradient-to-br from-pink-900/30 to-pink-800/30'
+                            : 'bg-white/15'
                         }`}
                       >
-                        <div className="aspect-header">
-                          <div className="planets">
+                        <div className="flex justify-between items-center mb-4">
+                          <div className="flex items-center gap-2">
                             <PlanetSymbol planet={aspect.planet1} />
-                            <span className="aspect-name">{aspect.aspect}</span>
+                            <span className="text-sm font-semibold text-slate-200 capitalize">{aspect.aspect}</span>
                             <PlanetSymbol planet={aspect.planet2} />
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {aspect.orb.toFixed(1)}°{aspect.applying ? ' ⚡' : ''}
+                          <div className="text-sm text-slate-200">
+                            {aspect.orb.toFixed(1)}°
+                            {aspect.applying ? ' ⚡' : ''}
                           </div>
                         </div>
                         <div className="mb-4">
-                          <p className="m-0 mb-2 leading-relaxed text-gray-900 dark:text-white">
-                            {aspect.interpretation}
-                          </p>
+                          <p className="m-0 mb-2 leading-relaxed text-white">{aspect.interpretation}</p>
                           {aspect.soulmateIndicator && (
-                            <span className="inline-block px-3 py-1 bg-pink-500 text-white rounded-xl text-xs font-semibold">
-                              Soulmate Connection
-                            </span>
+                            <span className="inline-block px-3 py-1 bg-pink-500 text-white rounded-xl text-xs font-semibold">Soulmate Connection</span>
                           )}
                         </div>
-                        <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-600">
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
-                            Weight: {aspect.weight}/5
-                          </span>
+                        <div className="flex justify-between items-center pt-3 border-t border-white/15">
+                          <span className="text-sm text-slate-200">Weight: {aspect.weight}/5</span>
                         </div>
                       </div>
                     ))}
@@ -453,23 +361,21 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({
 
             {activeTab === 'composite' && compatibilityData.compositeChart && (
               <div>
-                <h3 className="m-0 mb-4 text-gray-900 dark:text-white text-2xl">Composite Chart</h3>
-                <p className="m-0 mb-8 text-gray-500 dark:text-gray-400 text-lg leading-relaxed">
-                  The composite chart represents your relationship as a separate entity. It shows
-                  the midpoint of your two charts.
+                <h3 className="m-0 mb-4 text-white text-2xl">Composite Chart</h3>
+                <p className="m-0 mb-8 text-slate-200 text-lg leading-relaxed">
+                  The composite chart represents your relationship as a separate entity.
+                  It shows the midpoint of your two charts.
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
-                  {Object.entries(compatibilityData.compositeChart.planets).map(
-                    ([name, planet]) => (
-                      <div key={name} className="composite-planet">
-                        <PlanetSymbol planet={name} />
-                        <ZodiacBadge sign={planet.sign} />
-                        <span className="degree">
-                          {planet.degree}° {planet.minute}' {planet.second}"
-                        </span>
-                      </div>
-                    ),
-                  )}
+                  {Object.entries(compatibilityData.compositeChart.planets).map(([name, planet]) => (
+                    <div key={name} className="flex flex-col items-center gap-2 p-6 bg-white/15 rounded-lg">
+                      <PlanetSymbol planet={name} />
+                      <ZodiacBadge sign={planet.sign} />
+                      <span className="text-sm text-slate-200">
+                        {planet.degree}° {planet.minute}&apos; {planet.second}&quot;
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

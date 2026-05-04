@@ -28,12 +28,10 @@ class AICacheModel {
   /**
    * Set cache entry (insert or update on conflict)
    */
-  async set(
-    cacheKey: string,
-    data: Record<string, unknown>,
-    ttlSeconds?: number,
-  ): Promise<AICacheEntry> {
-    const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : null;
+  async set(cacheKey: string, data: Record<string, unknown>, ttlSeconds?: number): Promise<AICacheEntry> {
+    const expiresAt = ttlSeconds
+      ? new Date(Date.now() + ttlSeconds * 1000)
+      : null;
 
     const [entry] = await knex(this.tableName)
       .insert({
@@ -60,7 +58,9 @@ class AICacheModel {
     const entry = await knex(this.tableName)
       .where('cache_key', cacheKey)
       .where((builder: Knex.QueryBuilder) =>
-        builder.whereNull('expires_at').orWhere('expires_at', '>', new Date()),
+        builder
+          .whereNull('expires_at')
+          .orWhere('expires_at', '>', new Date())
       )
       .first();
 
@@ -71,7 +71,9 @@ class AICacheModel {
    * Delete cache entry by key
    */
   async delete(cacheKey: string): Promise<boolean> {
-    const count = await knex(this.tableName).where('cache_key', cacheKey).delete();
+    const count = await knex(this.tableName)
+      .where('cache_key', cacheKey)
+      .delete();
 
     return count > 0;
   }
@@ -88,7 +90,9 @@ class AICacheModel {
    * Returns count of deleted entries
    */
   async clearExpired(): Promise<number> {
-    return knex(this.tableName).where('expires_at', '<', new Date()).delete();
+    return knex(this.tableName)
+      .where('expires_at', '<', new Date())
+      .delete();
   }
 
   /**
@@ -105,7 +109,9 @@ class AICacheModel {
       .count('* as count');
     const [activeResult] = await knex(this.tableName)
       .where((builder: Knex.QueryBuilder) =>
-        builder.whereNull('expires_at').orWhere('expires_at', '>', new Date()),
+        builder
+          .whereNull('expires_at')
+          .orWhere('expires_at', '>', new Date())
       )
       .count('* as count');
 

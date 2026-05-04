@@ -3,8 +3,6 @@
  * Shared utilities for all live test suites
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export const BASE_URL = 'http://localhost:3001/api/v1';
 
 export const TEST_USER = {
@@ -37,7 +35,7 @@ export const SECOND_CHART = {
   zodiac: 'tropical',
 };
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * Parse a cookie string into a Map (name -> value).
@@ -98,7 +96,7 @@ export async function api(
   path: string,
   body?: Record<string, unknown>,
   headers?: Record<string, string>,
-  retries = 2,
+  retries = 2
 ) {
   const opts: RequestInit = {
     method,
@@ -140,7 +138,8 @@ export async function getCsrf(cookies?: string): Promise<{ csrf: string; cookies
   try {
     const res = await api('GET', '/csrf-token', undefined, headers, 1);
     const merged = mergeCookies(cookies || '', res.cookies);
-    const csrf = (res.data as any)?.data?.token || '';
+    const payload = (res.data?.data ?? {}) as Record<string, unknown>;
+    const csrf = (payload.token as string) || '';
     return { csrf, cookies: merged };
   } catch {
     return { csrf: '', cookies: cookies || '' };
@@ -156,7 +155,7 @@ export async function authed(
   token: string,
   cookies: string,
   csrf: string,
-  body?: Record<string, unknown>,
+  body?: Record<string, unknown>
 ) {
   const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
@@ -189,13 +188,13 @@ export async function registerTestUser(): Promise<{
   }
 
   const authCookies = mergeCookies('', res.cookies);
+  const authPayload = (res.data?.data ?? {}) as Record<string, unknown>;
 
-  const data = (res.data as any).data;
   return {
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
+    accessToken: authPayload.accessToken as string,
+    refreshToken: authPayload.refreshToken as string,
     cookies: authCookies,
-    user: data.user,
+    user: (authPayload.user ?? {}) as Record<string, unknown>,
   };
 }
 
@@ -215,41 +214,27 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
       const auth = await registerTestUser();
 
       const chartData = { ...SAMPLE_CHART, ...chartOverrides };
-      const chartRes = await authed(
-        'POST',
-        '/charts',
-        auth.accessToken,
-        auth.cookies,
-        '',
-        chartData,
-      );
+      const chartRes = await authed('POST', '/charts', auth.accessToken, auth.cookies, '', chartData);
 
       if (chartRes.status !== 201) {
         if (chartRes.status === 429) {
           await sleep(3000 * (attempt + 1));
           continue;
         }
-        throw new Error(
-          `Chart creation failed: ${chartRes.status} ${JSON.stringify(chartRes.data)}`,
-        );
+        throw new Error(`Chart creation failed: ${chartRes.status} ${JSON.stringify(chartRes.data)}`);
       }
 
-      const createdChart = (chartRes.data as any).data.chart;
+      const chartPayload = (chartRes.data?.data ?? {}) as Record<string, unknown>;
+      const createdChart = (chartPayload.chart ?? {}) as Record<string, unknown>;
 
       // Calculate the chart so analysis and other endpoints have data
       const { csrf: calcCsrf, cookies: calcCookies } = await getCsrf(auth.cookies);
-      const calcRes = await authed(
-        'POST',
-        `/charts/${createdChart.id}/calculate`,
-        auth.accessToken,
-        calcCookies,
-        calcCsrf,
-        {},
-      );
+      const calcRes = await authed('POST', `/charts/${createdChart.id}/calculate`, auth.accessToken, calcCookies, calcCsrf, {});
+      const calcPayload = (calcRes.data?.data ?? {}) as Record<string, unknown>;
 
-      if (calcRes.status === 200 && (calcRes.data as any)?.data?.chart) {
+      if (calcRes.status === 200 && calcPayload.chart) {
         // Use the fully-calculated chart object
-        return { ...auth, cookies: calcCookies, chart: (calcRes.data as any).data.chart };
+        return { ...auth, cookies: calcCookies, chart: (calcPayload.chart ?? {}) as Record<string, unknown> };
       }
 
       return {
@@ -258,7 +243,7 @@ export async function setupUserWithChart(chartOverrides?: Record<string, unknown
         chart: createdChart,
       };
     } catch (err) {
-      if (attempt < 2 && err instanceof Error && err.message.includes('429')) {
+      if (attempt < 2 && (err instanceof Error && err.message.includes('429'))) {
         await sleep(3000 * (attempt + 1));
         continue;
       }
@@ -275,8 +260,9 @@ export async function cleanupTestData(accessToken: string, cookies: string): Pro
   try {
     // Get user's charts and delete them
     const chartsRes = await authed('GET', '/charts', accessToken, cookies, '');
-    if (chartsRes.status === 200 && Array.isArray((chartsRes.data as any)?.data?.charts)) {
-      for (const chart of (chartsRes.data as any).data.charts) {
+    const chartsPayload = (chartsRes.data?.data ?? {}) as Record<string, unknown>;
+    if (chartsRes.status === 200 && Array.isArray(chartsPayload.charts)) {
+      for (const chart of chartsPayload.charts as Array<Record<string, unknown>>) {
         if (chart.id) {
           await authed('DELETE', `/charts/${chart.id}`, accessToken, cookies, '');
         }

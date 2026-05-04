@@ -3,173 +3,133 @@
  * Displays chart personality analysis with AI-enhanced interpretations
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  AIInterpretationToggle,
-  AIInterpretationDisplay,
-  SkeletonLoader,
-  EmptyState,
-  AppLayout,
-} from '../components';
+import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState, AppLayout } from '../components';
 import { PersonalityAnalysis } from '../components';
-import { analysisService } from '../services/analysis.service';
-import type { PersonalityAnalysisResponse } from '../services/analysis.service';
 import type { PersonalityAnalysisData } from '../components/PersonalityAnalysis';
+import { useChartAnalysis } from '../hooks';
+import { getErrorMessage } from '../utils/errorHandling';
 
-/** Fallback interpretation for missing sign data */
-function fallbackInterpretation(planet: string, sign: string) {
+/**
+ * Build a PlanetSignInterpretation from minimal API data (sign name only).
+ * The API returns SignInfo { sign, degree } which lacks interpretation text,
+ * so we provide empty defaults that the component can render gracefully.
+ */
+function toPlanetSignInterpretation(planet: string, signInfo: { sign: string; degree: number }) {
   return {
     planet,
-    sign,
+    sign: signInfo.sign,
     keywords: [],
-    general: `${planet} in ${sign}`,
+    general: `${planet} in ${signInfo.sign} (${signInfo.degree.toFixed(1)} degrees)`,
     strengths: [],
     challenges: [],
     advice: [],
   };
 }
 
-/** Map API response to PersonalityAnalysisData shape expected by component */
-function mapAnalysisToComponentData(
-  analysis: PersonalityAnalysisResponse,
-): PersonalityAnalysisData {
-  return {
-    overview: {
-      sunSign: analysis.overview.sunSign ?? fallbackInterpretation('sun', 'unknown'),
-      moonSign: analysis.overview.moonSign ?? fallbackInterpretation('moon', 'unknown'),
-      ...(analysis.overview.ascendantSign && { ascendantSign: analysis.overview.ascendantSign }),
-    },
-    planetsInSigns: analysis.planetsInSigns.map((p) => p.interpretation),
-    houses: analysis.houses.map((h) => ({
-      house: h.house,
-      signOnCusp: h.signOnCusp,
-      planetsInHouse: h.planetsInHouse,
-      themes: h.themes,
-      interpretation: h.interpretation,
-      advice: h.advice,
-    })),
-    aspects: analysis.aspects.map((a) => ({
-      planet1: a.planet1,
-      planet2: a.planet2,
-      aspect: a.aspect,
-      orb: a.orb,
-      harmonious: a.harmonious ?? false,
-      keywords: a.keywords,
-      interpretation: a.interpretation,
-      expression: a.expression,
-      advice: a.advice,
-    })),
-    patterns: analysis.patterns?.map((p) => ({
-      type: p.type,
-      description: p.description,
-      planets: p.planets,
-    })),
-  };
-}
-
-export default function AnalysisPage() {
+export function AnalysisPage() {
   const { chartId } = useParams<{ chartId: string }>();
   const navigate = useNavigate();
-  const [analysisData, setAnalysisData] = useState<PersonalityAnalysisData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [aiInterpretation, setAIInterpretation] = useState<{
-    interpretation: string;
-    ai: boolean;
-    source: string;
-  } | null>(null);
+  const [aiInterpretation, setAIInterpretation] = useState<Record<string, unknown> | null>(null);
 
-  useEffect(() => {
-    if (!chartId) return;
+  const {
+    data: analysisResult,
+    isLoading,
+    error,
+  } = useChartAnalysis(chartId ?? '');
 
-    let cancelled = false;
+  const analysis = analysisResult?.analysis ?? null;
 
-    const fetchAnalysis = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const { analysis } = await analysisService.getPersonalityAnalysis(chartId);
-
-        if (!cancelled) {
-          setAnalysisData(mapAnalysisToComponentData(analysis));
-        }
-      } catch (err: unknown) {
-        if (!cancelled) {
-          const message =
-            err instanceof Error ? err.message : 'Failed to load personality analysis';
-          setError(message);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    void fetchAnalysis();
-    return () => {
-      cancelled = true;
-    };
-  }, [chartId]);
-
-  const handleAIInterpretation = (interpretation: {
-    interpretation: string;
-    ai: boolean;
-    source: string;
-  }) => {
+  const handleAIInterpretation = (interpretation: Record<string, unknown>) => {
     setAIInterpretation(interpretation);
   };
 
-  if (loading) {
-    return (
-      <AppLayout>
-        <h2 className="text-3xl font-bold mb-6">Personality Analysis</h2>
-        <SkeletonLoader variant="text" count={5} />
-      </AppLayout>
-    );
-  }
+  /**
+   * Transform the raw API PersonalityAnalysis into the shape expected
+   * by the PersonalityAnalysis display component (PersonalityAnalysisData).
+   */
+  const buildComponentData = (): PersonalityAnalysisData | null => {
+    if (!analysis) return null;
 
-  if (error ?? !analysisData) {
-    return (
-      <AppLayout>
-        <h2 className="text-3xl font-bold mb-6">Personality Analysis</h2>
+    return {
+      overview: {
+        sunSign: toPlanetSignInterpretation('sun', analysis.overview.sunSign),
+        moonSign: toPlanetSignInterpretation('moon', analysis.overview.moonSign),
+        ascendantSign: toPlanetSignInterpretation('ascendant', analysis.overview.ascendant),
+      },
+      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => toPlanetSignInterpretation(p.planet, p)),
+      houses: [],
+      aspects: (analysis.majorAspects ?? []).map((a) => ({
+        planet1: a.planet1,
+        planet2: a.planet2,
+        aspect: a.aspect,
+        orb: a.orb,
+        harmonious: false,
+        keywords: [],
+        interpretation: `${a.planet1} ${a.aspect} ${a.planet2}`,
+        expression: '',
+        advice: [],
+      })),
+      patterns: analysis.chartPattern
+        ? [{ type: analysis.chartPattern.name, description: analysis.chartPattern.description, planets: [] }]
+        : undefined,
+    };
+  };
+
+  const componentData = analysis ? buildComponentData() : null;
+
+  return (
+    <AppLayout>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Personality Analysis</h1>
+      </div>
+
+      {isLoading ? (
+        <SkeletonLoader variant="text" count={5} />
+      ) : error ? (
         <EmptyState
           icon="📊"
-          title={error ? 'Failed to load analysis' : 'No chart data available'}
-          description={error ?? 'Unable to load personality analysis. Please create a chart first.'}
+          title="Failed to load analysis"
+          description={getErrorMessage(error, 'Unable to load personality analysis. Please try again.')}
+          actionText="Retry"
+          onAction={() => navigate(0)}
+          secondaryActionText="Back to Dashboard"
+          onSecondaryAction={() => navigate('/dashboard')}
+        />
+      ) : !componentData ? (
+        <EmptyState
+          icon="📊"
+          title="No chart data available"
+          description="Unable to load personality analysis. Please create a chart first."
           actionText="Create Chart"
           onAction={() => navigate('/charts/new')}
           secondaryActionText="Back to Dashboard"
           onSecondaryAction={() => navigate('/dashboard')}
         />
-      </AppLayout>
-    );
-  }
+      ) : (
+        <>
+          {/* AI Toggle Section */}
+          <div className="mb-6">
+            <AIInterpretationToggle
+              chartData={analysis as unknown as Record<string, unknown>}
+              onInterpretationGenerated={handleAIInterpretation}
+            />
+          </div>
 
-  return (
-    <AppLayout>
-      <h2 className="text-3xl font-bold mb-6">Personality Analysis</h2>
+          {/* AI Interpretation Display */}
+          {aiInterpretation && (
+            <div className="mb-6">
+              <AIInterpretationDisplay interpretation={aiInterpretation as { ai: boolean; enhanced?: string | Record<string, unknown>; generatedAt?: string; model?: string }} />
+            </div>
+          )}
 
-      {/* AI Toggle Section */}
-      <div className="mb-6">
-        <AIInterpretationToggle
-          chartData={{ chartId: chartId!, birthData: analysisData }}
-          onInterpretationGenerated={handleAIInterpretation}
-        />
-      </div>
-
-      {/* AI Interpretation Display */}
-      {aiInterpretation && (
-        <div className="mb-6">
-          <AIInterpretationDisplay interpretation={aiInterpretation} />
-        </div>
+          {/* Traditional Analysis */}
+          <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+            <PersonalityAnalysis data={componentData} />
+          </div>
+        </>
       )}
-
-      {/* Traditional Analysis */}
-      <div className="card">
-        <PersonalityAnalysis data={analysisData} />
-      </div>
     </AppLayout>
   );
 }

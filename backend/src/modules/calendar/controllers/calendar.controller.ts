@@ -11,6 +11,13 @@ import calendarEventModel, { CalendarEvent } from '../models/calendarEvent.model
 import globalEventsService from '../services/globalEvents.service';
 
 /**
+ * Helper: Capitalize first letter
+ */
+function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
  * Generate global astrological events for a month
  */
 interface GlobalEventRow {
@@ -23,10 +30,6 @@ interface GlobalEventRow {
   interpretation?: string;
   created_at?: Date;
   updated_at?: Date;
-}
-
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 async function generateGlobalEvents(year: number, month: number): Promise<GlobalEventRow[]> {
@@ -102,7 +105,11 @@ export const getMonthEvents = asyncHandler(
     }
 
     // Get user's personalized events for the month
-    const personalEvents = await calendarEventModel.findByMonth(userId, yearNum, monthNum);
+    const personalEvents = await calendarEventModel.findByMonth(
+      userId,
+      yearNum,
+      monthNum
+    );
 
     let events: Array<CalendarEvent | GlobalEventRow> = [...personalEvents];
 
@@ -121,7 +128,7 @@ export const getMonthEvents = asyncHandler(
         total: events.length,
       },
     });
-  },
+  }
 );
 
 /**
@@ -150,7 +157,7 @@ export const createCustomEvent = asyncHandler(
       success: true,
       data: event,
     });
-  },
+  }
 );
 
 /**
@@ -173,5 +180,5 @@ export const deleteEvent = asyncHandler(
       success: true,
       message: 'Event deleted successfully',
     });
-  },
+  }
 );

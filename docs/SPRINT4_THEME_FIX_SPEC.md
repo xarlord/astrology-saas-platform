@@ -1,395 +1,303 @@
-# Sprint 4: Theme Fix Specification
+# Sprint 4: Cosmic Theme Application Spec
 
 **Date:** 2026-04-04
 **Author:** UX Designer 2
-**Companion to:** `docs/SPRINT4_UX_DESIGN_SYSTEM_AUDIT.md`
-**Target:** Frontend Engineer implementation guide
+**Resolves:** C1, C2, H1, H2, H3, M4 from SPRINT4_UX_DESIGN_SYSTEM_AUDIT.md
+**Depends on:** Existing cosmic theme tokens in AppLayout and core components
 
 ---
 
-## Design Token Reference
+## Overview
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `bg-primary` | `#6b3de1` | Primary buttons, accents, active states |
-| `bg-[#0B0D17]` | Page background | Deepest background layer |
-| `bg-[#141627]/70` | Card background | Cards, panels with backdrop blur |
-| `bg-white/5` | Hover state | `hover:bg-white/5` |
-| `bg-white/10` | Active state | Interactive elements |
-| `border-white/10` | Standard border | Cards, dividers |
-| `border-[#2f2645]` | Emphasized border | Accent borders |
-| `text-white` | Primary text | Headings, emphasis |
-| `text-slate-300` | Secondary text | Labels, descriptions |
-| `text-slate-400` | Body text | Paragraph text (min WCAG AA) |
-| `text-slate-500` | Muted text | Decorative only, timestamps |
-| `text-violet-300` | Links on dark bg | WCAG AA compliant link color |
-| `text-primary` | Accent text | Highlights, active labels |
+This spec provides exact class replacements for bringing 8 new pages into the AstroVerse cosmic dark theme. Every change is a 1:1 class swap — no structural or logic changes needed.
 
 ---
 
-## Fix 1: SubscriptionPage — Full Retheme
+## Token Mapping Table
 
-### 1a. Remove heroicons dependency
+### Background Tokens
 
-**Remove import:**
-```diff
-- import { CheckIcon, StarIcon, SparklesIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-```
+| Generic Class | Replace With |
+|--------------|-------------|
+| `bg-white dark:bg-gray-800` | `bg-[#141627]/70 backdrop-blur-md` |
+| `bg-gray-50 dark:bg-gray-900` | `bg-[#0B0D17]` |
+| `bg-gray-50 dark:bg-gray-750` | `bg-white/5` |
+| `hover:bg-gray-50 dark:hover:bg-gray-700/50` | `hover:bg-white/5` |
+| `hover:bg-gray-50 dark:hover:bg-gray-700` | `hover:bg-white/5` |
+| `hover:bg-gray-50 dark:hover:bg-gray-600` | `hover:bg-white/5` |
+| `bg-white/5 dark:bg-black/20` | `bg-white/5` (already close) |
+| `bg-gray-100 dark:bg-gray-700` | `bg-white/10` |
+| `bg-green-50 dark:bg-green-900/20` | `bg-green-500/10` |
+| `bg-indigo-100 dark:bg-indigo-900/30` | `bg-primary/10` |
 
-**Replace each heroicon with Material Symbols Outlined:**
+### Border Tokens
 
-| Heroicon Component | Location | Replacement |
-|-------------------|----------|-------------|
-| `ArrowLeftIcon className="w-4 h-4"` | Back button | `<span className="material-symbols-outlined text-[18px]">arrow_back</span>` |
-| `StarIcon className="w-4 h-4"` | Current plan badge | `<span className="material-symbols-outlined text-[16px]">star</span>` |
-| `SparklesIcon className="w-3 h-3"` | "Most Popular" badge | `<span className="material-symbols-outlined text-[14px]">auto_awesome</span>` |
-| `CheckIcon className="w-4 h-4 mt-0.5 text-green-500"` | Feature list items | `<span className="material-symbols-outlined text-[18px] text-emerald-400">check_circle</span>` |
+| Generic Class | Replace With |
+|--------------|-------------|
+| `border-gray-200 dark:border-gray-700` | `border-[#2f2645]` |
+| `border-gray-300 dark:border-gray-600` | `border-[#2f2645]` |
+| `border-gray-100 dark:border-gray-700` | `border-white/[0.08]` |
+| `border-b border-gray-200 dark:border-gray-700` | `border-b border-white/[0.08]` |
+| `divide-y divide-gray-100 dark:divide-gray-700` | `divide-y divide-white/[0.06]` |
+| `border-t border-gray-100 dark:border-gray-700` | `border-t border-white/[0.08]` |
 
-### 1b. Retheme page shell
+### Text Tokens
 
-**Back link (line ~158):**
-```diff
-- className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
-+ className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white mb-6 transition-colors"
-```
+| Generic Class | Replace With |
+|--------------|-------------|
+| `text-gray-900 dark:text-white` | `text-white` |
+| `text-gray-700 dark:text-gray-300` | `text-slate-300` |
+| `text-gray-600 dark:text-gray-400` | `text-slate-400` |
+| `text-gray-500 dark:text-gray-400` | `text-slate-400` |
+| `text-gray-400 dark:text-gray-500` | `text-slate-500` |
+| `text-gray-300 dark:text-gray-600` | `text-slate-500` |
+| `text-indigo-600 dark:text-indigo-400` | `text-violet-300` |
+| `text-indigo-600 dark:text-white` | `text-primary` |
+| `hover:text-indigo-700 dark:hover:text-indigo-300` | `hover:text-violet-200` |
+| `text-gray-300 dark:text-gray-600` (dash placeholder) | `text-white/20` |
 
-**Page heading (line ~166):**
-```diff
-- <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
-+ <h1 className="text-3xl font-bold text-white mb-3">
-```
+### Button Tokens
 
-**Subtitle (line ~169):**
-```diff
-- <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-+ <p className="text-slate-400 max-w-xl mx-auto">
-```
+| Generic Class | Replace With |
+|--------------|-------------|
+| `bg-indigo-600` | `bg-primary` |
+| `hover:bg-indigo-700` | `hover:bg-primary/90` |
+| `focus-visible:outline-indigo-600` | `focus-visible:outline-primary` |
+| `focus-visible:ring-indigo-500` | `focus-visible:ring-primary` |
+| `border-indigo-500 dark:border-indigo-400` | `border-primary` |
+| `shadow-lg` on card with popular badge | `shadow-primary/25` |
 
-### 1c. Retheme status banners
+### Shadow Tokens
 
-**Success banner (line ~178):**
-```diff
-- className={`mb-6 px-4 py-3 rounded-lg border text-sm ${
--   statusMessage.type === 'success'
--     ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300'
--     : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
-- }`}
-+ className={`mb-6 px-4 py-3 rounded-lg border text-sm ${
-+   statusMessage.type === 'success'
-+     ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-+     : 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
-+ }`}
-```
+| Generic Class | Replace With |
+|--------------|-------------|
+| `shadow-sm` | `shadow-none` (cosmic theme uses borders, not shadows) |
+| `shadow-lg` | `shadow-none` |
+| `hover:shadow-lg` | `hover:border-primary/50` |
 
-**Error banner (line ~190):**
-```diff
-- className="mb-6 px-4 py-3 rounded-lg border bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm"
-+ className="mb-6 px-4 py-3 rounded-lg border bg-red-500/10 border-red-500/30 text-red-400 text-sm"
-```
+---
 
-### 1d. Retheme current plan badge
+## Icon Migration Map
 
-**"Current plan" badge (line ~198):**
-```diff
-- <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-sm font-medium">
-+ <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
-```
+### Heroicons → Material Symbols Outlined
 
-**Manage link (line ~204):**
-```diff
-- className="ml-3 text-sm text-indigo-600 dark:text-indigo-400 hover:underline disabled:opacity-50"
-+ className="ml-3 text-sm text-violet-300 hover:text-violet-200 hover:underline disabled:opacity-50"
-```
+| Heroicon Component | Material Symbol |
+|-------------------|----------------|
+| `UserIcon` | `person` |
+| `SunIcon` | `light_mode` |
+| `BellIcon` | `notifications` |
+| `ArrowRightIcon` | `arrow_forward` |
+| `BookOpenIcon` | `menu_book` |
+| `SparklesIcon` | `auto_awesome` |
+| `ChevronDownIcon` | `expand_more` |
+| `ChevronUpIcon` | `expand_less` |
+| `CheckIcon` | `check` |
 
-### 1e. Retheme plan cards
+### Lucide → Material Symbols Outlined
 
-**Card container (line ~221):**
-```diff
-- className={`relative rounded-2xl border p-6 flex flex-col transition-shadow hover:shadow-lg ${
--   plan.highlighted
--     ? 'border-indigo-500 dark:border-indigo-400 ring-2 ring-indigo-500/20'
--     : 'border-gray-200 dark:border-gray-700'
-- } ${isCurrent ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : 'bg-white dark:bg-gray-800'}`}
-+ className={`relative rounded-2xl border p-6 flex flex-col transition-all hover:shadow-lg ${
-+   plan.highlighted
-+     ? 'border-primary ring-2 ring-primary/20'
-+     : 'border-white/10'
-+ } ${isCurrent ? 'bg-primary/5' : 'bg-[#141627]/70 backdrop-blur-md'}`}
-```
+| Lucide Component | Material Symbol |
+|-----------------|----------------|
+| `RefreshCw` | `refresh` |
+| `Globe` | `public` |
+| `Crown` | `workspace_premium` |
+| `Star` | `star` |
+| `Zap` | `bolt` |
+| `AlertTriangle` | `warning` |
+| `BarChart3` | `bar_chart` |
 
-**"Most Popular" badge (line ~228):**
-```diff
-- <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-full flex items-center gap-1">
-+ <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full flex items-center gap-1 shadow-[0_0_12px_rgba(107,61,225,0.4)]">
-```
+### Emoji → Material Symbols Outlined
 
-**Plan name (line ~235):**
-```diff
-- <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{plan.name}</h3>
-+ <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
-```
+| Emoji | Material Symbol |
+|-------|----------------|
+| ➕ | `add_circle` |
+| 📅 | `calendar_today` |
+| 📍 | `location_on` |
+| ⚠️ | `warning` |
+| 🌙 | `dark_mode` |
+| 🌌 | `nights_stay` |
 
-**Price display (lines ~241-244):**
-```diff
-- <span className="text-3xl font-bold text-gray-900 dark:text-white">$15</span>
-- <span className="text-gray-500 dark:text-gray-400 text-sm">/month</span>
-+ <span className="text-3xl font-bold text-white">$15</span>
-+ <span className="text-slate-400 text-sm">/month</span>
-```
+### Material Symbol Usage Pattern
 
-**Chart count subtitle (line ~250):**
-```diff
-- <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-+ <p className="mt-1 text-sm text-slate-400">
-```
+```tsx
+// Correct usage:
+<span className="material-symbols-outlined" style={{ fontSize: '18px' }} aria-hidden="true">
+  icon_name
+</span>
 
-**Feature list items (line ~257):**
-```diff
-- <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-+ <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-```
-
-**CTA button (line ~268):**
-```diff
-  className={`w-full py-2.5 px-4 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-    isCurrent
--     ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-default'
-+     ? 'bg-white/5 text-slate-500 cursor-default'
-      : plan.highlighted
--       ? 'bg-indigo-600 text-white hover:bg-indigo-700'
--       : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
-+       ? 'bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(107,61,225,0.3)]'
-+       : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
-  }`}
-```
-
-**Footer text (line ~289):**
-```diff
-- <p className="mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-+ <p className="mt-8 text-center text-xs text-slate-500">
+// With button:
+<button className="flex items-center gap-2 ...">
+  <span className="material-symbols-outlined" style={{ fontSize: '18px' }} aria-hidden="true">
+    refresh
+  </span>
+  Refresh
+</button>
 ```
 
 ---
 
-## Fix 2: SolarReturnsPage — Full Retheme
+## Page-by-Page Changes
 
-### 2a. Remove lucide-react dependency
+### 1. SettingsPage.tsx
 
-**Remove import:**
-```diff
-- import { Calendar, Settings, Share2, ArrowLeft } from 'lucide-react';
-```
+**Icon changes:**
+- `UserIcon` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>person</span>`
+- `SunIcon` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>light_mode</span>`
+- `BellIcon` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>notifications</span>`
+- `ArrowRightIcon` → `<span className="material-symbols-outlined" style={{ fontSize: '18px' }}>arrow_forward</span>`
 
-**Replace each lucide icon with Material Symbols Outlined:**
+**Theme changes on SettingsSection wrapper:**
+- `bg-white dark:bg-gray-800` → `bg-[#141627]/70 backdrop-blur-md`
+- `border border-gray-200 dark:border-gray-700` → `border border-[#2f2645]`
+- `border-b border-gray-200 dark:border-gray-700` → `border-b border-white/[0.08]`
+- `bg-gray-100 dark:bg-gray-700 rounded-lg` → `bg-white/10 rounded-lg`
+- `divide-y divide-gray-100 dark:divide-gray-700` → `divide-y divide-white/[0.06]`
 
-| Lucide Component | Location | Replacement |
-|-----------------|----------|-------------|
-| `ArrowLeft size={18}` | Breadcrumb back | `<span className="material-symbols-outlined text-[18px]">arrow_back</span>` |
-| `Calendar size={18}` | Chart tab | `<span className="material-symbols-outlined text-[18px]">calendar_month</span>` |
-| `Calendar size={18}` | Interpretation tab | `<span className="material-symbols-outlined text-[18px]">psychology</span>` |
-| `Settings size={18}` | Relocate tab | `<span className="material-symbols-outlined text-[18px]">tune</span>` |
-| `Share2 size={18}` | Share tab | `<span className="material-symbols-outlined text-[18px]">share</span>` |
+**Button:**
+- `bg-indigo-600` → `bg-primary`
+- `hover:bg-indigo-700` → `hover:bg-primary/90`
+- `focus-visible:outline-indigo-600` → `focus-visible:outline-primary`
 
-### 2b. Retheme breadcrumb
+**Link:**
+- `text-indigo-600 dark:text-indigo-400` → `text-violet-300`
+- `hover:text-indigo-700 dark:hover:text-indigo-300` → `hover:text-violet-200`
 
-**Back button (line ~111):**
-```diff
-- className="flex items-center gap-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
-+ className="flex items-center gap-1 text-violet-300 hover:text-violet-200 transition-colors"
-```
+---
 
-**Separator (line ~119):**
-```diff
-- <span className="text-gray-400">/</span>
-+ <span className="text-slate-500">/</span>
-```
+### 2. SubscriptionPage.tsx
 
-**Current segment (line ~120):**
-```diff
-- <span className="text-gray-700 dark:text-gray-300">Solar Return {selectedYear}</span>
-+ <span className="text-slate-300">Solar Return {selectedYear}</span>
-```
+**Icon changes:**
+- `CheckIcon` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>check</span>`
+- `Crown` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>workspace_premium</span>`
+- `Star` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>star</span>`
+- `Zap` → `<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>bolt</span>`
 
-### 2c. Retheme view mode tabs
+**Theme changes on PricingTierCard:**
+- `bg-white dark:bg-gray-800` → `bg-[#141627]/70 backdrop-blur-md`
+- `border-gray-200 dark:border-gray-700` → `border-[#2f2645]`
+- `border-indigo-500 dark:border-indigo-400` → `border-primary`
+- `border-green-500 dark:border-green-400` → `border-green-500/50`
+- `bg-indigo-600` (popular badge) → `bg-primary`
+- `bg-indigo-600` (CTA button) → `bg-primary`
+- `hover:bg-indigo-700` → `hover:bg-primary/90`
+- `bg-white dark:bg-gray-700` (secondary CTA) → `bg-white/5`
+- `border border-gray-300 dark:border-gray-600` → `border border-[#2f2645]`
+- `hover:bg-gray-50 dark:hover:bg-gray-600` → `hover:bg-white/10`
+- `text-gray-700 dark:text-gray-200` → `text-white`
 
-**Tab bar container (line ~138):**
-```diff
-- <div className="flex gap-2.5 mb-5 border-b-2 border-gray-200 dark:border-gray-700 pb-2.5">
-+ <div className="flex gap-2.5 mb-5 border-b border-white/10 pb-2.5">
-```
+**Feature comparison table:**
+- `bg-white dark:bg-gray-800` → `bg-[#141627]/70 backdrop-blur-md`
+- `border border-gray-200 dark:border-gray-700` → `border border-[#2f2645]`
+- `bg-gray-50 dark:bg-gray-750` → `bg-white/5`
+- `border-b border-gray-200 dark:border-gray-700` → `border-b border-white/[0.08]`
+- `divide-y divide-gray-100 dark:divide-gray-700` → `divide-y divide-white/[0.06]`
+- `hover:bg-gray-50 dark:hover:bg-gray-700/50` → `hover:bg-white/5`
+- `text-indigo-600 dark:text-indigo-400` → `text-primary`
+- `text-amber-600 dark:text-amber-400` → `text-amber-400`
 
-**Tab button (line ~143):**
-```diff
-  className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-    viewMode === tab.mode
--     ? 'bg-indigo-600 text-white'
--     : 'bg-transparent text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
-+     ? 'bg-primary text-white'
-+     : 'bg-transparent text-slate-400 hover:bg-white/5 hover:text-white'
-  }`}
-```
+---
 
-### 2d. Retheme page header
+### 3. EphemerisPage.tsx
 
-**Title (line ~161):**
-```diff
-- <h2 className="text-3xl font-bold mb-2">Solar Returns</h2>
-+ <h2 className="text-3xl font-bold text-white mb-2">Solar Returns</h2>
-```
+**Icon changes:**
+- `RefreshCw` → `refresh`
+- `Globe` → `public`
 
-**Subtitle (line ~162):**
-```diff
-- <p className="text-gray-600 dark:text-gray-400">Your birthday year forecasts and themes</p>
-+ <p className="text-slate-400">Your birthday year forecasts and themes</p>
-```
+**Theme changes on TransitTable cards:**
+- `bg-white dark:bg-gray-800` → `bg-[#141627]/70 backdrop-blur-md`
+- `border border-gray-200 dark:border-gray-700` → `border border-[#2f2645]`
+- `bg-gray-50 dark:bg-gray-750` → `bg-white/5`
+- `border-b border-gray-200 dark:border-gray-700` → `border-b border-white/[0.08]`
+- `divide-y divide-gray-100 dark:divide-gray-700` → `divide-y divide-white/[0.06]`
+- `hover:bg-gray-50 dark:hover:bg-gray-700/50` → `hover:bg-white/5`
+- `bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600` (refresh button) → `bg-white/5 border border-[#2f2645]`
+- `hover:bg-gray-50 dark:hover:bg-gray-700` → `hover:bg-white/10`
+- `bg-indigo-100 dark:bg-indigo-900/30` → `bg-primary/10`
 
-### 2e. Retheme error banner
+---
 
-**Error state (line ~168):**
-```diff
-- <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-sm flex items-center justify-between">
--   {error}
--   <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2">✕</button>
-+ <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg text-sm flex items-center justify-between">
-+   {error}
-+   <button onClick={() => setError(null)} className="text-red-400 hover:text-red-300 ml-2">
-+     <span className="material-symbols-outlined text-[18px]">close</span>
-+   </button>
-  </div>
-```
+### 4. LearnPage.tsx
 
-### 2f. Retheme loading spinner
+**Icon changes:**
+- `BookOpenIcon` → `menu_book`
+- `SparklesIcon` → `auto_awesome`
+- `ChevronDownIcon` → `expand_more`
+- `ChevronUpIcon` → `expand_less`
 
-**Loading state (line ~196):**
-```diff
-- <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-- <p className="text-gray-500">Loading...</p>
-+ <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-+ <p className="text-slate-400">Loading...</p>
+**Theme changes on ExpandableCard:**
+- `bg-white dark:bg-gray-800` → `bg-[#141627]/70 backdrop-blur-md`
+- `border border-gray-200 dark:border-gray-700` → `border border-[#2f2645]`
+- `shadow-sm` → remove (cosmic theme uses borders)
+- `hover:bg-gray-50 dark:hover:bg-gray-750` → `hover:bg-white/5`
+- `border-t border-gray-100 dark:border-gray-700` → `border-t border-white/[0.08]`
+
+---
+
+### 5. StaticPage.tsx
+
+**Theme changes:**
+- "Go Home" button: `bg-indigo-600` → `bg-primary`, `hover:bg-indigo-700` → `hover:bg-primary/90`
+- Back to Home link: `text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300` → `text-violet-300 hover:text-violet-200`
+- Divider: `bg-gray-200 dark:bg-gray-700` → `bg-white/[0.08]`
+- Footer border: `border-gray-200 dark:border-gray-700` → `border-white/[0.08]`
+
+---
+
+### 6. DashboardPage.tsx
+
+**Emoji → Icon changes:**
+- Line 77: `➕` → `<span className="material-symbols-outlined" style={{ fontSize: '28px' }}>add_circle</span>`
+- Line 53: `📅` → remove emoji, use `<span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>`
+- Line 53: `📍` → remove emoji, use `<span className="material-symbols-outlined" style={{ fontSize: '16px' }}>location_on</span>`
+
+---
+
+### 7. TodayTransitsPage / RetrogradePage
+
+**EmptyState emoji → icons:**
+These pages pass emoji strings to the `EmptyState` component. The `EmptyState` component itself should be updated to support Material Symbols as an alternative to emoji.
+
+**Proposed EmptyState API change:**
+```tsx
+interface EmptyStateProps {
+  // Either icon (emoji string) or iconSymbol (material symbol name)
+  icon?: string;
+  iconSymbol?: string;  // NEW: material-symbols-outlined name
+  title: string;
+  description?: string;
+  // ...rest
+}
 ```
 
 ---
 
-## Fix 3: Emoji-to-Icon Migration
+### 8. UsageMeter.tsx
 
-### 3a. DashboardPage.tsx — Welcome text (line ~246)
+**Icon changes:**
+- `Crown` → `workspace_premium`
+- `BarChart3` → `bar_chart`
+- `AlertTriangle` → `warning`
 
-```diff
-- <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
--   Welcome back, {user?.name ?? 'Stargazer'} ✨
-- </h2>
-+ <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-+   Welcome back, {user?.name ?? 'Stargazer'}
-+ </h2>
-```
-
-Remove the `✨` emoji. The cosmic theme already communicates the brand — no decorative emoji needed in headings.
-
-### 3b. DailyBriefingPage.tsx — Moon phase icon
-
-Replace the emoji moon with a Material Symbol or SVG:
-
-```diff
-  const MOCK_MOON_PHASE: MoonPhaseData = {
--   icon: '🌙',
-+   icon: 'dark_mode',  // Material Symbols Outlined icon name
-    phase: 'Waxing Gibbous',
-    ...
-  };
-```
-
-Then in the template (line ~209):
-```diff
-- <span className="text-3xl leading-none" role="img" aria-label="Moon">
--   {moonPhase.icon}
-- </span>
-+ <span className="material-symbols-outlined text-4xl text-yellow-100" aria-hidden="true">
-+   {moonPhase.icon}
-+ </span>
-```
-
-### 3c. DailyBriefingPage.tsx — Transit emojis
-
-Replace the emoji field with Material Symbol icon names:
-
-```diff
-  const MOCK_TRANSITS: TransitCardData[] = [
-    {
-      planet: 'Venus',
-      sign: 'Pisces',
-      description: 'Heightened romance and creativity...',
-      badge: 'favorable',
--     emoji: '⭐',
-+     emoji: 'star',
-    },
-    {
-      planet: 'Mars',
-      sign: 'Gemini',
-      description: 'Mental energy peaks today...',
-      badge: 'major',
--     emoji: '⚡',
-+     emoji: 'bolt',
-    },
-    {
-      planet: 'Neptune',
-      sign: 'Pisces',
-      description: 'Dreamy intuition...',
-      badge: 'challenging',
--     emoji: '🌊',
-+     emoji: 'water',
-    },
-  ];
-```
-
-Update the template (line ~283):
-```diff
-- <span className="text-lg leading-none">{transit.emoji}</span>
-+ <span className="material-symbols-outlined text-[20px] text-slate-300">{transit.emoji}</span>
-```
-
-### 3d. ProfileSettingsPage.tsx — "Pro Plan ✨" heading
-
-```diff
-- <h3 className="text-2xl font-bold text-white">Pro Plan ✨</h3>
-+ <h3 className="text-2xl font-bold text-white flex items-center gap-2">
-+   Pro Plan
-+   <span className="material-symbols-outlined text-gold text-[20px]">auto_awesome</span>
-+ </h3>
-```
+**Minor theme adjustments:**
+- `border-white/10` is already close to the design system
+- `text-white/70` → `text-slate-300` for better consistency
+- `text-white/50` → `text-slate-400`
+- `text-white/[0.08]` border → `border-white/[0.08]` (already correct)
 
 ---
 
-## Fix 4: Data Inconsistencies (DS1 + DS2)
+## Testing Checklist
 
-### DS1: Pricing mismatch
+After all changes are applied:
 
-Coordinate with backend to ensure the plans endpoint returns consistent pricing. The FALLBACK_PLANS in SubscriptionPage should match the ProfileSettingsPage display. Use backend as source of truth.
-
-Options:
-1. Update FALLBACK_PLANS Pro price to match backend ($12/mo or $9.99/mo)
-2. Remove the static subscription display in ProfileSettingsPage and link to SubscriptionPage instead
-
-### DS2: Tier mapping
-
-```diff
-  const rawTier = user?.plan ?? 'free';
-- const currentTier: string = rawTier === 'basic' ? 'pro' : rawTier;
-+ const TIER_MAP: Record<string, string> = { free: 'free', basic: 'pro', pro: 'pro', premium: 'premium' };
-+ const currentTier = TIER_MAP[rawTier] ?? 'free';
-```
-
----
-
-## Implementation Checklist
-
-- [ ] SubscriptionPage: Remove `@heroicons/react` import, replace all icon components
-- [ ] SubscriptionPage: Retheme all color classes per section 1b–1e
-- [ ] SolarReturnsPage: Remove `lucide-react` import, replace all icon components
-- [ ] SolarReturnsPage: Retheme all color classes per section 2b–2f
-- [ ] DashboardPage: Remove `✨` emoji from welcome heading
-- [ ] DailyBriefingPage: Replace moon emoji with Material Symbol
-- [ ] DailyBriefingPage: Replace transit emojis with Material Symbols
-- [ ] ProfileSettingsPage: Replace `✨` with Material Symbol icon
-- [ ] Verify all pages visually match cosmic theme after changes
-- [ ] Run `npm run build` to confirm no import/compilation errors
-- [ ] Manual accessibility check: verify contrast ratios on changed elements
+- [ ] All pages render correctly in dark mode
+- [ ] No leftover `bg-white`, `bg-gray-800`, `border-gray-200`, `border-gray-700` on new pages
+- [ ] All icons render as Material Symbols Outlined
+- [ ] No emoji characters remain in production components (except in user-generated content)
+- [ ] All buttons use `bg-primary` not `bg-indigo-600`
+- [ ] All links use `text-violet-300` not `text-indigo-400`
+- [ ] Color contrast passes WCAG AA on all text elements
+- [ ] No visual regressions on existing pages (AppLayout, Dashboard, ChartCreate, etc.)
+- [ ] Mobile layout works correctly on all updated pages
+- [ ] Toggle switch still functional in Settings
+- [ ] Expandable cards still functional in Learn page
+- [ ] Pricing cards still correctly show tier comparison

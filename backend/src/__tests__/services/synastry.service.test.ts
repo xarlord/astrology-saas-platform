@@ -411,14 +411,15 @@ describe('Synastry Service', () => {
       expect(composite.planets.sun).toBeDefined();
       // Chart1: 15° Leo (135° absolute), Chart2: 45° Taurus (75° absolute)
       // Midpoint: 105° absolute = 15° Cancer
-      expect(composite.planets.sun!.degree).toBe(15);
-      expect(composite.planets.sun!.sign).toBe('cancer');
+      if (!composite.planets.sun || !composite.planets.moon) return;
+      expect(composite.planets.sun.degree).toBe(15);
+      expect(composite.planets.sun.sign).toBe('cancer');
 
       expect(composite.planets.moon).toBeDefined();
       // Chart1: 45° Taurus (75° absolute), Chart2: 75° Gemini (135° absolute)
       // Midpoint: 105° absolute = 15° Cancer
-      expect(composite.planets.moon!.degree).toBe(15);
-      expect(composite.planets.moon!.sign).toBe('cancer');
+      expect(composite.planets.moon.degree).toBe(15);
+      expect(composite.planets.moon.sign).toBe('cancer');
     });
 
     test('should handle planets only in one chart', () => {

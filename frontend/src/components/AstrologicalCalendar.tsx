@@ -3,6 +3,8 @@
  * Displays monthly astrological events (moon phases, retrogrades, eclipses)
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import React, { useState } from 'react';
@@ -15,19 +17,15 @@ interface AstrologicalCalendarProps {
 }
 
 const eventBadgeClasses: Record<string, string> = {
-  new_moon: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
-  full_moon: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  mercury_retrograde: 'bg-red-100 text-red-600 font-semibold dark:bg-red-900/30 dark:text-red-400',
-  venus_retrograde: 'bg-red-100 text-red-600 font-semibold dark:bg-red-900/30 dark:text-red-400',
-  mars_retrograde: 'bg-red-100 text-red-600 font-semibold dark:bg-red-900/30 dark:text-red-400',
-  jupiter_retrograde:
-    'bg-amber-100 text-amber-600 font-semibold dark:bg-amber-900/30 dark:text-amber-400',
-  saturn_retrograde:
-    'bg-amber-100 text-amber-600 font-semibold dark:bg-amber-900/30 dark:text-amber-400',
-  solar_eclipse:
-    'bg-red-200 text-red-800 font-semibold border-2 border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-500',
-  lunar_eclipse:
-    'bg-red-200 text-red-800 font-semibold border-2 border-red-300 dark:bg-red-900/40 dark:text-red-300 dark:border-red-500',
+  new_moon: 'bg-indigo-500/20 text-indigo-300',
+  full_moon: 'bg-red-500/20 text-red-400',
+  mercury_retrograde: 'bg-red-500/20 text-red-400 font-semibold',
+  venus_retrograde: 'bg-red-500/20 text-red-400 font-semibold',
+  mars_retrograde: 'bg-red-500/20 text-red-400 font-semibold',
+  jupiter_retrograde: 'bg-amber-500/20 text-amber-400 font-semibold',
+  saturn_retrograde: 'bg-amber-500/20 text-amber-400 font-semibold',
+  solar_eclipse: 'bg-red-500/20 text-red-400 font-semibold border-2 border-red-500/20',
+  lunar_eclipse: 'bg-red-500/20 text-red-400 font-semibold border-2 border-red-500/20',
 };
 
 const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
@@ -36,18 +34,15 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month - 1, 1));
 
-  const {
-    data: events,
-    isLoading,
-    error,
-    refetch,
-  } = useCalendarEvents(currentDate.getFullYear(), currentDate.getMonth() + 1);
+  const { data: events, isLoading, error, refetch } = useCalendarEvents(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1
+  );
 
   const getEventForDate = (date: Date) => {
-    if (!events) return [];
+    if (!events || !Array.isArray(events)) return [];
 
-    return events.data.filter((event) => {
-      if (!event.event_date) return false;
+    return events.filter((event) => {
       const eventDate = new Date(event.event_date);
       return (
         eventDate.getDate() === date.getDate() &&
@@ -67,12 +62,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 
     // Empty cells for days before month starts
     for (let i = 0; i < startingDayOfWeek; i++) {
-      calendar.push(
-        <div
-          key={`empty-${i}`}
-          className="bg-gray-50 dark:bg-gray-800/50 min-h-[100px] sm:min-h-[80px]"
-        />,
-      );
+      calendar.push(<div key={`empty-${i}`} className="bg-cosmic-card-solid/30 min-h-[100px] sm:min-h-[80px]" />);
     }
 
     // Days of the month
@@ -81,38 +71,32 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
       const dayEvents = getEventForDate(date);
 
       calendar.push(
-        <div
-          key={day}
-          className="bg-white dark:bg-gray-800 min-h-[100px] sm:min-h-[80px] p-2 sm:p-1 relative transition-colors hover:bg-gray-50 dark:hover:bg-gray-750"
-        >
-          <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm sm:text-xs block mb-1">
-            {day}
-          </span>
+        <div key={day} className="bg-cosmic-card-solid min-h-[100px] sm:min-h-[80px] p-2 sm:p-1 relative transition-colors hover:bg-white/15 border border-white/15">
+          <span className="font-semibold text-slate-200 text-sm sm:text-xs block mb-1">{day}</span>
           {dayEvents.length > 0 && (
             <div className="flex flex-col gap-0.5">
               {dayEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`inline-flex items-center text-[11px] sm:text-[9px] py-0.5 px-1 rounded bg-amber-100 dark:bg-amber-900/30 cursor-help transition-transform hover:scale-105 hover:shadow-sm whitespace-nowrap ${eventBadgeClasses[event.event_type] || ''}`}
+                  className={`inline-flex items-center text-[11px] sm:text-[9px] py-0.5 px-1 rounded bg-amber-500/20 cursor-help transition-transform hover:scale-105 whitespace-nowrap ${eventBadgeClasses[event.event_type] || ''}`}
                   title={event.interpretation}
                 >
                   <span className="mr-1 text-sm sm:text-xs">
                     {event.event_type === 'new_moon' && '\u{1F311}'}
                     {event.event_type === 'full_moon' && '\u{1F315}'}
                     {event.event_type.includes('retrograde') && '\u21C4'}
-                    {event.event_type.includes('eclipse') &&
-                      (event.event_type === 'solar_eclipse' ? '\u{1F311}' : '\u{1F315}')}
+                    {(event.event_type.includes('eclipse') && (event.event_type === 'solar_eclipse' ? '\u{1F311}' : '\u{1F315}'))}
                   </span>
-                  {(event.event_data as { sign?: string } | null)?.sign && (
-                    <span className="event-sign">
-                      {capitalize((event.event_data as { sign?: string }).sign!)}
+                  {typeof event.event_data?.sign === 'string' && (
+                    <span className="text-[10px] font-semibold ml-1 uppercase tracking-wide">
+                      {capitalize(event.event_data.sign)}
                     </span>
                   )}
                 </div>
               ))}
             </div>
           )}
-        </div>,
+        </div>
       );
     }
 
@@ -138,18 +122,8 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   };
 
   const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -157,7 +131,9 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   if (isLoading) {
     return (
       <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
-        <SkeletonLoader variant="calendar" />
+        <div className="glass-panel rounded-xl p-6">
+          <SkeletonLoader variant="calendar" />
+        </div>
       </div>
     );
   }
@@ -165,25 +141,29 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   if (error) {
     return (
       <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
-        <EmptyState
-          icon="\u{1F4C5}"
-          title="Unable to load calendar"
-          description="We encountered an error loading the astrological calendar. Please check your connection and try again."
-          actionText="Retry"
-          onAction={() => refetch()}
-        />
+        <div className="glass-panel rounded-xl p-6">
+          <EmptyState
+            icon="\u{1F4C5}"
+            title="Unable to load calendar"
+            description="We encountered an error loading the astrological calendar. Please check your connection and try again."
+            actionText="Retry"
+            onAction={() => refetch()}
+          />
+        </div>
       </div>
     );
   }
 
-  if (!events || events.data.length === 0) {
+  if (!events || !Array.isArray(events) || events.length === 0) {
     return (
       <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
-        <EmptyState
-          icon="\u{1F319}"
-          title="No events this month"
-          description={`There are no major astrological events scheduled for ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}. Check adjacent months for upcoming moon phases, retrogrades, and eclipses.`}
-        />
+        <div className="glass-panel rounded-xl p-6">
+          <EmptyState
+            icon="\u{1F319}"
+            title="No events this month"
+            description={`There are no major astrological events scheduled for ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}. Check adjacent months for upcoming moon phases, retrogrades, and eclipses.`}
+          />
+        </div>
       </div>
     );
   }
@@ -191,61 +171,47 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   return (
     <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
       <div className="flex justify-between items-center mb-5 gap-4 sm:flex-col sm:gap-2.5">
-        <button
-          onClick={goToPreviousMonth}
-          className="py-2 px-4 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600 sm:w-full"
-          aria-label="Previous month"
-        >
+        <button onClick={goToPreviousMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Previous month">
           \u2190 Previous
         </button>
 
         <div className="text-center flex-1 sm:flex-none">
-          <h2 className="m-0 text-gray-800 dark:text-gray-200">
-            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-          </h2>
-          <button
-            onClick={goToToday}
-            className="ml-2.5 py-1.5 px-3 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600"
-          >
+          <h2 className="m-0 text-white">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
+          <button onClick={goToToday} className="ml-2.5 py-1.5 px-3 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90">
             Today
           </button>
         </div>
 
-        <button
-          onClick={goToNextMonth}
-          className="py-2 px-4 bg-indigo-500 text-white border-none rounded-md cursor-pointer text-sm transition-colors hover:bg-indigo-600 sm:w-full"
-          aria-label="Next month"
-        >
+        <button onClick={goToNextMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Next month">
           Next \u2192
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-px mb-2.5">
-        {weekdays.map((day) => (
-          <div
-            key={day}
-            className="text-center font-semibold text-gray-500 dark:text-gray-400 py-2.5 text-sm sm:text-xs sm:py-2"
-          >
-            {day}
-          </div>
-        ))}
+      <div className="glass-panel rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-7 border-b border-white/15 bg-cosmic-card-solid/50">
+          {weekdays.map((day) => (
+            <div key={day} className="text-center font-semibold text-slate-200 py-3 text-xs uppercase tracking-widest">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-px bg-cosmic-border/30">
+          {renderCalendar()}
+        </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700 border border-gray-200 dark:border-gray-700">
-        {renderCalendar()}
-      </div>
-
-      <div className="flex gap-5 mt-5 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg flex-wrap sm:flex-col sm:gap-2.5">
-        <div className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
+      <div className="flex gap-5 mt-5 p-4 glass-panel rounded-xl flex-wrap sm:flex-col sm:gap-2.5">
+        <div className="flex items-center gap-1.5 text-sm text-slate-200">
           <span className="text-lg">{'\u{1F311}'}</span> New Moon
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
+        <div className="flex items-center gap-1.5 text-sm text-slate-200">
           <span className="text-lg">{'\u{1F315}'}</span> Full Moon
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
+        <div className="flex items-center gap-1.5 text-sm text-slate-200">
           <span className="text-lg">{'\u21C4'}</span> Retrograde
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
+        <div className="flex items-center gap-1.5 text-sm text-slate-200">
           <span className="text-lg">{'\u{1F311}\u{1F315}'}</span> Eclipse
         </div>
       </div>

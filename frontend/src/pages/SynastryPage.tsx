@@ -59,13 +59,15 @@ const SynastryPageWrapper: React.FC = () => {
     );
   }
 
-  if (charts.length === 0) {
+  if (charts.length < 2) {
     return (
       <AppLayout>
         <EmptyState
           icon="💫"
-          title="No charts available"
-          description="You need at least two charts to compare compatibility. Create your charts first."
+          title={charts.length === 0 ? 'No charts available' : 'Need another chart'}
+          description={charts.length === 0
+            ? 'You need at least two charts to compare compatibility. Create your charts first.'
+            : 'You have one chart. Create another chart to compare compatibility.'}
           actionText="Create Chart"
           onAction={() => navigate('/charts/new')}
           secondaryActionText="Back to Dashboard"

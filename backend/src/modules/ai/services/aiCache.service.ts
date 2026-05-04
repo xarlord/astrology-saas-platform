@@ -30,7 +30,7 @@ class AICacheService {
    */
   async set(key: string, data: unknown, options?: CacheOptions): Promise<void> {
     try {
-      await aiCacheModel.set(key, data as Record<string, unknown>, options?.ttl);
+      await aiCacheModel.set(key, (typeof data === 'object' && data !== null ? data : { value: data }) as Record<string, unknown>, options?.ttl);
     } catch (error) {
       logger.error('Cache set error:', error);
     }
@@ -76,7 +76,10 @@ class AICacheService {
    * Creates consistent hash for identical inputs
    */
   generateKey(data: unknown): string {
-    const hash = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
+    const hash = crypto
+      .createHash('sha256')
+      .update(JSON.stringify(data))
+      .digest('hex');
 
     return `ai:${hash}`;
   }
@@ -85,16 +88,16 @@ class AICacheService {
    * Get or generate pattern (cache-aside)
    * Tries cache first, generates on miss, then caches result
    */
-  async getOrGenerate(
+  async getOrGenerate<T>(
     key: string,
-    generator: () => Promise<unknown>,
-    options?: CacheOptions,
-  ): Promise<unknown> {
+    generator: () => Promise<T>,
+    options?: CacheOptions
+  ): Promise<T> {
     // Try to get from cache
     const cached = await this.get(key);
     if (cached) {
       logger.info('Cache hit:', key);
-      return cached;
+      return cached as T;
     }
 
     // Generate new data
