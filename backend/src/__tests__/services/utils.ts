@@ -20,7 +20,14 @@ export function toJulianDay(date: Date): number {
   const y = year + 4800 - a;
   const m = month + 12 * a - 3;
 
-  let jd = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  let jd =
+    day +
+    Math.floor((153 * m + 2) / 5) +
+    365 * y +
+    Math.floor(y / 4) -
+    Math.floor(y / 100) +
+    Math.floor(y / 400) -
+    32045;
 
   // Add fractional day for time
   const fractionalDay = (hour + minute / 60 + second / 3600) / 24;

@@ -108,7 +108,7 @@ export async function createCheckoutSession(
   userEmail: string,
   priceId: string,
   successUrl: string,
-  cancelUrl: string
+  cancelUrl: string,
 ): Promise<CheckoutSessionResult> {
   const session = await getStripe().checkout.sessions.create({
     mode: 'subscription',
@@ -131,7 +131,7 @@ export async function createCheckoutSession(
  */
 export async function createPortalSession(
   customerId: string,
-  returnUrl: string
+  returnUrl: string,
 ): Promise<PortalSessionResult> {
   const session = await getStripe().billingPortal.sessions.create({
     customer: customerId,
@@ -160,15 +160,8 @@ export function priceIdToPlan(priceId: string): 'pro' | 'premium' | null {
 /**
  * Verify a Stripe webhook signature and return the parsed event
  */
-export function verifyWebhookSignature(
-  payload: string | Buffer,
-  signature: string
-) {
-  return getStripe().webhooks.constructEvent(
-    payload,
-    signature,
-    config.stripe.webhookSecret
-  );
+export function verifyWebhookSignature(payload: string | Buffer, signature: string) {
+  return getStripe().webhooks.constructEvent(payload, signature, config.stripe.webhookSecret);
 }
 
 /**

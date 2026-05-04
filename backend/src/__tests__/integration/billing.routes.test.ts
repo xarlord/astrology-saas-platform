@@ -9,7 +9,12 @@
 import request from 'supertest';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 import app from '../../server';
 
@@ -40,9 +45,7 @@ describe('Billing Routes Integration Tests', () => {
     it('should return available subscription plans', async () => {
       if (!isDatabaseAvailable()) return;
 
-      const response = await request(app)
-        .get('/api/v1/billing/plans')
-        .expect(200);
+      const response = await request(app).get('/api/v1/billing/plans').expect(200);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body.data).toBeInstanceOf(Array);
@@ -57,9 +60,7 @@ describe('Billing Routes Integration Tests', () => {
     it('should include expected plan fields', async () => {
       if (!isDatabaseAvailable()) return;
 
-      const response = await request(app)
-        .get('/api/v1/billing/plans')
-        .expect(200);
+      const response = await request(app).get('/api/v1/billing/plans').expect(200);
 
       const freePlan = response.body.data.find((p: any) => p.id === 'free');
       expect(freePlan).toBeDefined();
@@ -74,9 +75,7 @@ describe('Billing Routes Integration Tests', () => {
     it('should be accessible without authentication', async () => {
       if (!isDatabaseAvailable()) return;
 
-      await request(app)
-        .get('/api/v1/billing/plans')
-        .expect(200);
+      await request(app).get('/api/v1/billing/plans').expect(200);
     });
   });
 
@@ -108,9 +107,7 @@ describe('Billing Routes Integration Tests', () => {
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
 
-      const response = await request(app)
-        .get('/api/v1/billing/subscription')
-        .expect(401);
+      const response = await request(app).get('/api/v1/billing/subscription').expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });
@@ -120,13 +117,11 @@ describe('Billing Routes Integration Tests', () => {
 
       // Update user plan directly in database
       const renewsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-      await db('users')
-        .where({ id: testUser.id })
-        .update({
-          plan: 'pro',
-          subscription_status: 'active',
-          subscription_renews_at: renewsAt,
-        });
+      await db('users').where({ id: testUser.id }).update({
+        plan: 'pro',
+        subscription_status: 'active',
+        subscription_renews_at: renewsAt,
+      });
 
       const response = await request(app)
         .get('/api/v1/billing/subscription')
@@ -181,10 +176,7 @@ describe('Billing Routes Integration Tests', () => {
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
 
-      const response = await request(app)
-        .post('/api/v1/billing/portal')
-        .send({})
-        .expect(401);
+      const response = await request(app).post('/api/v1/billing/portal').send({}).expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });

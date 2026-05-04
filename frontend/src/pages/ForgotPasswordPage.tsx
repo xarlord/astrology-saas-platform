@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
     setError('');
 
     // Basic validation
-    if (!email || !email.includes('@')) {
+    if (!email?.includes('@')) {
       setError('Please enter a valid email address');
       return;
     }

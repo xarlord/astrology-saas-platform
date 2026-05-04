@@ -138,8 +138,13 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             className="p-2 rounded-lg hover:bg-white/5 relative transition-colors"
             aria-label="1 unread notification"
           >
-            <span className="material-symbols-outlined text-[24px] text-slate-400">notifications</span>
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" aria-hidden="true" />
+            <span className="material-symbols-outlined text-[24px] text-slate-400">
+              notifications
+            </span>
+            <span
+              className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+              aria-hidden="true"
+            />
           </button>
 
           <div className="relative" ref={dropdownRef}>
@@ -161,7 +166,9 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
               </span>
               <span
                 className={`material-symbols-outlined text-[16px] text-slate-500 hidden md:inline-block transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-              >expand_more</span>
+              >
+                expand_more
+              </span>
             </button>
 
             {/* Dropdown Menu */}
@@ -171,7 +178,9 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                 role="menu"
                 aria-label="User menu"
                 onKeyDown={(e) => {
-                  const items = (e.currentTarget as HTMLElement).querySelectorAll('[role="menuitem"]');
+                  const items = (e.currentTarget as HTMLElement).querySelectorAll(
+                    '[role="menuitem"]',
+                  );
                   const arr = Array.from(items) as HTMLElement[];
                   const idx = arr.indexOf(document.activeElement as HTMLElement);
                   if (e.key === 'ArrowDown') {
@@ -277,7 +286,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -298,7 +309,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -310,7 +323,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -322,7 +337,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -334,7 +351,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -355,7 +374,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -367,7 +388,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/20 text-primary' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    isActive
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`
                 }
               >
@@ -383,7 +406,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           {isPaid ? (
             <div className="bg-gradient-to-br from-emerald-900/20 to-green-900/20 rounded-lg p-4 border border-emerald-500/20">
               <div className="flex items-center gap-2 mb-1">
-                <span className="material-symbols-outlined text-[16px] text-emerald-400">auto_awesome</span>
+                <span className="material-symbols-outlined text-[16px] text-emerald-400">
+                  auto_awesome
+                </span>
                 <p className="text-sm font-medium text-emerald-300">
                   {tier === 'basic' ? 'Pro Plan' : 'Premium Plan'}
                 </p>
@@ -394,7 +419,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `block text-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? 'bg-emerald-700 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                    isActive
+                      ? 'bg-emerald-700 text-white'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-700'
                   }`
                 }
               >
@@ -412,7 +439,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className={({ isActive }) =>
                   `block text-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? 'bg-primary/90 text-white' : 'bg-primary text-white hover:bg-primary/90'
+                    isActive
+                      ? 'bg-primary/90 text-white'
+                      : 'bg-primary text-white hover:bg-primary/90'
                   }`
                 }
               >

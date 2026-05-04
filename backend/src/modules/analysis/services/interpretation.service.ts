@@ -71,7 +71,7 @@ export interface AspectPattern {
  * Generate complete personality analysis from chart data
  */
 export function generateCompletePersonalityAnalysis(
-  chartData: PersonalityAnalysisRequest
+  chartData: PersonalityAnalysisRequest,
 ): PersonalityAnalysisResponse {
   const { planets, houses, aspects } = chartData;
 
@@ -80,12 +80,8 @@ export function generateCompletePersonalityAnalysis(
   const _moonPlanet = planets.find((p) => p.planet === 'moon');
   const ascendantSign = houses[0]?.sign; // First house cusp
 
-  const sunSign = _sunPlanet
-    ? getPlanetInSignInterpretation('sun', _sunPlanet.sign)
-    : null;
-  const moonSign = _moonPlanet
-    ? getPlanetInSignInterpretation('moon', _moonPlanet.sign)
-    : null;
+  const sunSign = _sunPlanet ? getPlanetInSignInterpretation('sun', _sunPlanet.sign) : null;
+  const moonSign = _moonPlanet ? getPlanetInSignInterpretation('moon', _moonPlanet.sign) : null;
 
   // Generate planets in signs analysis
   const planetsInSigns = planets.map((planet) => ({
@@ -97,9 +93,7 @@ export function generateCompletePersonalityAnalysis(
 
   // Generate houses analysis
   const housesAnalysis = houses.map((house) => {
-    const planetsInHouse = planets
-      .filter((p) => p.house === house.house)
-      .map((p) => p.planet);
+    const planetsInHouse = planets.filter((p) => p.house === house.house).map((p) => p.planet);
 
     const houseInterpretation = getHouseInterpretation(house.house);
 
@@ -159,10 +153,7 @@ export function generateCompletePersonalityAnalysis(
 /**
  * Detect aspect patterns (Grand Trine, T-Square, Grand Cross, Yod, etc.)
  */
-function detectAspectPatterns(
-  aspects: Aspect[],
-  planets: PlanetPosition[]
-): AspectPattern[] {
+function detectAspectPatterns(aspects: Aspect[], planets: PlanetPosition[]): AspectPattern[] {
   const patterns: AspectPattern[] = [];
 
   // Group aspects by type
@@ -247,7 +238,7 @@ function detectAspectPatterns(
 function findPolygonPatterns(
   aspects: Aspect[],
   planets: PlanetPosition[],
-  sides: number
+  sides: number,
 ): string[][] {
   const patterns: string[][] = [];
 
@@ -263,12 +254,7 @@ function findPolygonPatterns(
   // Find cycles of length 'sides'
   const visited = new Set<string>();
 
-  const findCycle = (
-    start: string,
-    current: string,
-    path: string[],
-    depth: number
-  ): void => {
+  const findCycle = (start: string, current: string, path: string[], depth: number): void => {
     if (depth === sides) {
       if (current === start && path.length === sides) {
         patterns.push([...path]);
@@ -305,23 +291,22 @@ function findPolygonPatterns(
 function findTSquares(
   oppositions: Aspect[],
   squares: Aspect[],
-  _planets: PlanetPosition[]
+  _planets: PlanetPosition[],
 ): string[][] {
   const patterns: string[][] = [];
 
   oppositions.forEach((opp) => {
     // Find a planet that squares both planets in the opposition
     const squaringPlanet1 = squares.filter(
-      (s) => s.planet1 === opp.planet1 || s.planet2 === opp.planet1
+      (s) => s.planet1 === opp.planet1 || s.planet2 === opp.planet1,
     );
     const squaringPlanet2 = squares.filter(
-      (s) => s.planet1 === opp.planet2 || s.planet2 === opp.planet2
+      (s) => s.planet1 === opp.planet2 || s.planet2 === opp.planet2,
     );
 
     // Find common squaring planet
     squaringPlanet1.forEach((sq1) => {
-      const focalPlanet =
-        sq1.planet1 === opp.planet1 ? sq1.planet2 : sq1.planet1;
+      const focalPlanet = sq1.planet1 === opp.planet1 ? sq1.planet2 : sq1.planet1;
 
       squaringPlanet2.forEach((sq2) => {
         if (
@@ -343,7 +328,7 @@ function findTSquares(
 function findGrandCross(
   oppositions: Aspect[],
   squares: Aspect[],
-  _planets: PlanetPosition[]
+  _planets: PlanetPosition[],
 ): string[][] {
   const patterns: string[][] = [];
 
@@ -368,13 +353,11 @@ function findGrandCross(
       let allSquare = true;
 
       for (const planet of fourPlanets) {
-        const squaresToOthers = squares.filter(
-          (s) => s.planet1 === planet || s.planet2 === planet
-        );
+        const squaresToOthers = squares.filter((s) => s.planet1 === planet || s.planet2 === planet);
 
         // Should have 2 squares to the other opposition's planets
         const squaresToOpposite = squaresToOthers.filter((s) =>
-          fourPlanets.includes(s.planet1 === planet ? s.planet2 : s.planet1)
+          fourPlanets.includes(s.planet1 === planet ? s.planet2 : s.planet1),
         );
 
         if (squaresToOpposite.length < 2) {
@@ -398,7 +381,7 @@ function findGrandCross(
 function findYods(
   sextiles: Aspect[],
   quincunxes: Aspect[],
-  _planets: PlanetPosition[]
+  _planets: PlanetPosition[],
 ): string[][] {
   const patterns: string[][] = [];
 
@@ -408,16 +391,11 @@ function findYods(
     const planet2 = sextile.planet2;
 
     // Find a planet that quincunxes both
-    const quincunx1 = quincunxes.filter(
-      (q) => q.planet1 === planet1 || q.planet2 === planet1
-    );
-    const quincunx2 = quincunxes.filter(
-      (q) => q.planet1 === planet2 || q.planet2 === planet2
-    );
+    const quincunx1 = quincunxes.filter((q) => q.planet1 === planet1 || q.planet2 === planet1);
+    const quincunx2 = quincunxes.filter((q) => q.planet1 === planet2 || q.planet2 === planet2);
 
     quincunx1.forEach((q1) => {
-      const focalPlanet =
-        q1.planet1 === planet1 ? q1.planet2 : q1.planet1;
+      const focalPlanet = q1.planet1 === planet1 ? q1.planet2 : q1.planet1;
 
       quincunx2.forEach((q2) => {
         if (
@@ -436,11 +414,7 @@ function findYods(
 /**
  * Find Kite patterns
  */
-function findKites(
-  trines: Aspect[],
-  sextiles: Aspect[],
-  planets: PlanetPosition[]
-): string[][] {
+function findKites(trines: Aspect[], sextiles: Aspect[], planets: PlanetPosition[]): string[][] {
   const patterns: string[][] = [];
 
   // First find Grand Trines
@@ -455,7 +429,7 @@ function findKites(
       const sextileCount = sextiles.filter(
         (s) =>
           (s.planet1 === planet.planet && trinePlanets.includes(s.planet2)) ||
-          (s.planet2 === planet.planet && trinePlanets.includes(s.planet1))
+          (s.planet2 === planet.planet && trinePlanets.includes(s.planet1)),
       ).length;
 
       if (sextileCount >= 2) {
@@ -481,7 +455,7 @@ function findMysticRectangles(
   trines: Aspect[],
   sextiles: Aspect[],
   oppositions: Aspect[],
-  _planets: PlanetPosition[]
+  _planets: PlanetPosition[],
 ): string[][] {
   const patterns: string[][] = [];
   const seen = new Set<string>();
@@ -501,12 +475,12 @@ function findMysticRectangles(
       // Check: each planet in opp1 should trine one planet in opp2 and sextile the other
       // opp1.planet1 trines opp2.planet1 and sextiles opp2.planet2 (or vice versa)
       const hasTrine = (a: string, b: string) =>
-        trines.some(t =>
-          (t.planet1 === a && t.planet2 === b) || (t.planet1 === b && t.planet2 === a)
+        trines.some(
+          (t) => (t.planet1 === a && t.planet2 === b) || (t.planet1 === b && t.planet2 === a),
         );
       const hasSextile = (a: string, b: string) =>
-        sextiles.some(s =>
-          (s.planet1 === a && s.planet2 === b) || (s.planet1 === b && s.planet2 === a)
+        sextiles.some(
+          (s) => (s.planet1 === a && s.planet2 === b) || (s.planet1 === b && s.planet2 === a),
         );
 
       // Two possible configurations:
@@ -576,9 +550,7 @@ export interface TransitHighlight {
 /**
  * Generate complete transit analysis
  */
-export function generateTransitAnalysis(
-  request: TransitAnalysisRequest
-): TransitAnalysisResponse {
+export function generateTransitAnalysis(request: TransitAnalysisRequest): TransitAnalysisResponse {
   const { natalChart, transitingPlanets, date } = request;
 
   // Calculate all aspects between transiting and natal planets
@@ -591,10 +563,7 @@ export function generateTransitAnalysis(
         return;
       }
 
-      const aspect = calculateAspect(
-        transitingPlanet.longitude,
-        natalPlanet.longitude
-      );
+      const aspect = calculateAspect(transitingPlanet.longitude, natalPlanet.longitude);
 
       if (aspect && aspect.orb <= 10) {
         // Within orb
@@ -639,10 +608,7 @@ export function generateTransitAnalysis(
   // Major transits (outer planets or tight orbs)
   activeTransits.forEach((transit) => {
     const outerPlanets = ['jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
-    if (
-      outerPlanets.includes(transit.transitingPlanet) ||
-      transit.orb <= 1
-    ) {
+    if (outerPlanets.includes(transit.transitingPlanet) || transit.orb <= 1) {
       highlights.push({
         type: 'major-transit',
         title: `${transit.transitingPlanet} ${transit.aspect} ${transit.natalPlanet}`,
@@ -662,7 +628,10 @@ export function generateTransitAnalysis(
 /**
  * Calculate aspect between two longitudes
  */
-function calculateAspect(lon1: number, lon2: number): {
+function calculateAspect(
+  lon1: number,
+  lon2: number,
+): {
   type: string;
   orb: number;
   applying: boolean;
@@ -680,7 +649,10 @@ function calculateAspect(lon1: number, lon2: number): {
   const normalizedDiff = diff > 180 ? 360 - diff : diff;
 
   for (const aspect of aspects) {
-    if (normalizedDiff <= aspect.angle + aspect.orb && normalizedDiff >= aspect.angle - aspect.orb) {
+    if (
+      normalizedDiff <= aspect.angle + aspect.orb &&
+      normalizedDiff >= aspect.angle - aspect.orb
+    ) {
       return {
         type: aspect.type,
         orb: Math.abs(normalizedDiff - aspect.angle),

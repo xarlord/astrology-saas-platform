@@ -60,7 +60,14 @@ export interface SynastryChart {
 export interface SynastryAspect {
   planet1: string;
   planet2: string;
-  aspect: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile';
+  aspect:
+    | 'conjunction'
+    | 'opposition'
+    | 'trine'
+    | 'square'
+    | 'sextile'
+    | 'quincunx'
+    | 'semi-sextile';
   orb: number;
   applying: boolean;
   interpretation: string;

@@ -392,7 +392,9 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       <div className="relative flex justify-center">
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-gray-900/80 z-10">
-            <span className="material-symbols-outlined text-[32px] animate-spin text-indigo-500">progress_activity</span>
+            <span className="material-symbols-outlined text-[32px] animate-spin text-indigo-500">
+              progress_activity
+            </span>
             <p aria-live="polite" className="mt-2 text-gray-500 dark:text-gray-400">
               Calculating chart...
             </p>

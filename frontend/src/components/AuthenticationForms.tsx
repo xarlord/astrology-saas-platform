@@ -25,7 +25,9 @@ function ErrorMessage({ message, id }: ErrorMessageProps) {
       role="alert"
       aria-live="assertive"
     >
-      <span className="material-symbols-outlined error-icon" aria-hidden="true">error</span>
+      <span className="material-symbols-outlined error-icon" aria-hidden="true">
+        error
+      </span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -162,7 +164,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               />
               {errors.email && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">error</span>
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
+                    error
+                  </span>
                 </div>
               )}
               <button
@@ -211,7 +218,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               />
               {errors.password && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">error</span>
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
+                    error
+                  </span>
                 </div>
               )}
               <button
@@ -510,7 +522,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.name && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">error</span>
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
+                    error
+                  </span>
                 </div>
               )}
             </div>
@@ -551,7 +568,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.email && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">error</span>
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
+                    error
+                  </span>
                 </div>
               )}
             </div>
@@ -592,7 +614,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.password && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">error</span>
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
+                    error
+                  </span>
                 </div>
               )}
               <button
@@ -652,7 +679,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.confirmPassword && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-[20px] text-red-500" aria-hidden="true">error</span>
+                  <span
+                    className="material-symbols-outlined text-[20px] text-red-500"
+                    aria-hidden="true"
+                  >
+                    error
+                  </span>
                 </div>
               )}
               <button

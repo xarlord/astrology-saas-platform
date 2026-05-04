@@ -112,7 +112,10 @@ class AIUsageService {
   /**
    * Get daily usage statistics
    */
-  async getDailyUsage(userId: string, days = 30): Promise<Array<{ date: string; tokens: number; cost: number; requests: number }>> {
+  async getDailyUsage(
+    userId: string,
+    days = 30,
+  ): Promise<Array<{ date: string; tokens: number; cost: number; requests: number }>> {
     try {
       return await aiUsageModel.getDailyUsage(userId, days);
     } catch (error) {
@@ -138,11 +141,7 @@ class AIUsageService {
   /**
    * Get usage for a specific date range
    */
-  async getUsageByDateRange(
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ): Promise<AIUsage[]> {
+  async getUsageByDateRange(userId: string, startDate: Date, endDate: Date): Promise<AIUsage[]> {
     try {
       return await aiUsageModel.getByDateRange(userId, startDate, endDate);
     } catch (error) {

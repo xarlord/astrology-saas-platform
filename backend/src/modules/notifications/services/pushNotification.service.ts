@@ -4,7 +4,9 @@
  */
 
 import webpush from 'web-push';
-import pushSubscriptionModel, { PushSubscription as PushSubscriptionRecord } from '../models/pushSubscription.model';
+import pushSubscriptionModel, {
+  PushSubscription as PushSubscriptionRecord,
+} from '../models/pushSubscription.model';
 import logger from '../../../utils/logger';
 
 // Configure Web Push
@@ -79,17 +81,14 @@ class PushNotificationService {
    */
   async sendToSubscription(
     subscription: PushSubscriptionRecord,
-    payload: PushNotificationPayload
+    payload: PushNotificationPayload,
   ): Promise<void> {
     const pushSubscription = {
       endpoint: subscription.endpoint,
       keys: subscription.keys,
     };
 
-    await webpush.sendNotification(
-      pushSubscription,
-      JSON.stringify(payload)
-    );
+    await webpush.sendNotification(pushSubscription, JSON.stringify(payload));
   }
 
   /**
@@ -97,7 +96,7 @@ class PushNotificationService {
    */
   async sendNotification(
     userId: string,
-    payload: PushNotificationPayload
+    payload: PushNotificationPayload,
   ): Promise<SendNotificationResult> {
     const subscriptions = await pushSubscriptionModel.findByUserId(userId);
 
@@ -147,10 +146,10 @@ class PushNotificationService {
    */
   async sendToUsers(
     userIds: string[],
-    payload: PushNotificationPayload
+    payload: PushNotificationPayload,
   ): Promise<SendNotificationResult> {
     const results = await Promise.all(
-      userIds.map((userId) => this.sendNotification(userId, payload))
+      userIds.map((userId) => this.sendNotification(userId, payload)),
     );
 
     return results.reduce(
@@ -160,7 +159,7 @@ class PushNotificationService {
         failedCount: acc.failedCount + result.failedCount,
         errors: [...acc.errors, ...result.errors],
       }),
-      { success: false, sentCount: 0, failedCount: 0, errors: [] }
+      { success: false, sentCount: 0, failedCount: 0, errors: [] },
     );
   }
 

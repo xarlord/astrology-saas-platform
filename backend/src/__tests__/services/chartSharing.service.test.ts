@@ -8,8 +8,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { ChartSharingService, chartSharingService } from '../../modules/shared/services/chartSharing.service';
-import type { SharedChart, ShareCreationOptions } from '../../modules/shared/services/chartSharing.service';
+import {
+  ChartSharingService,
+  chartSharingService,
+} from '../../modules/shared/services/chartSharing.service';
+import type {
+  SharedChart,
+  ShareCreationOptions,
+} from '../../modules/shared/services/chartSharing.service';
 
 // ---------- Mocks ----------
 
@@ -814,7 +820,8 @@ describe('ChartSharingService', () => {
 
       const extended = await service.extendShare(created.shareToken, 'user-1', 60);
 
-      const diffDays = (extended!.expiresAt.getTime() - originalExpiry.getTime()) / (1000 * 60 * 60 * 24);
+      const diffDays =
+        (extended!.expiresAt.getTime() - originalExpiry.getTime()) / (1000 * 60 * 60 * 24);
       expect(diffDays).toBeGreaterThanOrEqual(59.9);
       expect(diffDays).toBeLessThanOrEqual(60.1);
     });

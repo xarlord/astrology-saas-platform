@@ -251,9 +251,7 @@ export class FormValidator {
 
       if (!result.isValid) {
         isValid = false;
-        if (!firstErrorField) {
-          firstErrorField = fieldSchema.name;
-        }
+        firstErrorField ??= fieldSchema.name;
       }
     }
 
@@ -293,9 +291,7 @@ export class FormValidator {
 
       if (!result.isValid) {
         isValid = false;
-        if (!firstErrorField) {
-          firstErrorField = fieldName;
-        }
+        firstErrorField ??= fieldName;
       }
     });
 

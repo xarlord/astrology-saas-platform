@@ -113,10 +113,42 @@ interface PriorityArea {
 }
 
 const MOCK_PRIORITY_AREAS: PriorityArea[] = [
-  { key: 'love', label: 'Love', icon: 'favorite', score: 82, trend: 'up', accentBg: 'bg-pink-500/10', accentText: 'text-pink-400' },
-  { key: 'career', label: 'Career', icon: 'work', score: 65, trend: 'stable', accentBg: 'bg-amber-500/10', accentText: 'text-amber-400' },
-  { key: 'health', label: 'Health', icon: 'self_improvement', score: 74, trend: 'up', accentBg: 'bg-emerald-500/10', accentText: 'text-emerald-400' },
-  { key: 'growth', label: 'Growth', icon: 'school', score: 58, trend: 'down', accentBg: 'bg-blue-500/10', accentText: 'text-blue-400' },
+  {
+    key: 'love',
+    label: 'Love',
+    icon: 'favorite',
+    score: 82,
+    trend: 'up',
+    accentBg: 'bg-pink-500/10',
+    accentText: 'text-pink-400',
+  },
+  {
+    key: 'career',
+    label: 'Career',
+    icon: 'work',
+    score: 65,
+    trend: 'stable',
+    accentBg: 'bg-amber-500/10',
+    accentText: 'text-amber-400',
+  },
+  {
+    key: 'health',
+    label: 'Health',
+    icon: 'self_improvement',
+    score: 74,
+    trend: 'up',
+    accentBg: 'bg-emerald-500/10',
+    accentText: 'text-emerald-400',
+  },
+  {
+    key: 'growth',
+    label: 'Growth',
+    icon: 'school',
+    score: 58,
+    trend: 'down',
+    accentBg: 'bg-blue-500/10',
+    accentText: 'text-blue-400',
+  },
 ];
 
 const scoreColor = (s: number): string => {
@@ -216,7 +248,10 @@ const DailyBriefingPage: React.FC = () => {
         <title>Daily Briefing � AstroVerse</title>
       </Helmet>
 
-      <div ref={scrollRef} className="max-w-[860px] mx-auto px-4 sm:px-6 py-6 pb-24 overflow-y-auto max-h-[calc(100vh-4rem)]">
+      <div
+        ref={scrollRef}
+        className="max-w-[860px] mx-auto px-4 sm:px-6 py-6 pb-24 overflow-y-auto max-h-[calc(100vh-4rem)]"
+      >
         {/* ---- Top Bar ---- */}
         <motion.nav
           className="flex items-center justify-between mb-6"
@@ -318,9 +353,7 @@ const DailyBriefingPage: React.FC = () => {
                   {area.icon}
                 </span>
                 <span className="text-xs text-slate-400 mt-1">{area.label}</span>
-                <span className={`text-xl font-bold ${scoreColor(area.score)}`}>
-                  {area.score}
-                </span>
+                <span className={`text-xl font-bold ${scoreColor(area.score)}`}>{area.score}</span>
                 <span
                   className={`material-symbols-outlined text-sm ${scoreColor(area.score)}`}
                   aria-label={area.trend}
@@ -333,7 +366,13 @@ const DailyBriefingPage: React.FC = () => {
         </motion.section>
 
         {/* ---- Top Transits Section ---- */}
-        <motion.div initial="hidden" animate="visible" custom={4} variants={cardVariants} data-testid="briefing-transits-heading">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          custom={4}
+          variants={cardVariants}
+          data-testid="briefing-transits-heading"
+        >
           <h2 className="text-white font-bold text-base mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px] text-primary">trending_up</span>
             Top Transits Today
@@ -367,7 +406,9 @@ const DailyBriefingPage: React.FC = () => {
             data-testid="briefing-notification-prefs"
           >
             <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-[18px] text-primary">notifications</span>
+              <span className="material-symbols-outlined text-[18px] text-primary">
+                notifications
+              </span>
               <h2 className="text-white font-bold text-sm">Notification Preferences</h2>
             </div>
             <div className="space-y-3">
@@ -413,7 +454,9 @@ const DailyBriefingPage: React.FC = () => {
             data-testid="briefing-energy-overview"
           >
             <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-[18px] text-primary">monitor_heart</span>
+              <span className="material-symbols-outlined text-[18px] text-primary">
+                monitor_heart
+              </span>
               <h2 className="text-white font-bold text-sm">Energy Overview</h2>
             </div>
             <div className="space-y-3">
@@ -460,7 +503,9 @@ const DailyBriefingPage: React.FC = () => {
           >
             <span className="material-symbols-outlined text-[18px] text-primary">trending_up</span>
             <span className="font-semibold text-sm">View Full Transit Details</span>
-            <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+            <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">
+              arrow_forward
+            </span>
           </button>
           <button
             onClick={() => navigate('/dashboard')}

@@ -157,9 +157,7 @@ class VideoAnalytics {
     data: Record<string, unknown>,
   ): void {
     let session = this.sessions.get(videoId);
-    if (!session) {
-      session = this.startSession(videoId);
-    }
+    session ??= this.startSession(videoId);
 
     switch (type) {
       case 'play':
@@ -386,9 +384,7 @@ let analyticsInstance: VideoAnalytics | null = null;
  * Get the video analytics instance
  */
 export function getVideoAnalytics(): VideoAnalytics {
-  if (!analyticsInstance) {
-    analyticsInstance = new VideoAnalytics();
-  }
+  analyticsInstance ??= new VideoAnalytics();
   return analyticsInstance;
 }
 

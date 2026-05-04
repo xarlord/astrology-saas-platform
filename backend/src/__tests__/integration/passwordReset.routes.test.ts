@@ -11,7 +11,12 @@ import request from 'supertest';
 import crypto from 'crypto';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 import app from '../../server';
 
@@ -70,9 +75,7 @@ describe('Password Reset Routes Integration Tests', () => {
         .send({ email: testUser.email })
         .expect(200);
 
-      const tokens = await db('password_reset_tokens')
-        .where({ user_id: testUser.id })
-        .select('*');
+      const tokens = await db('password_reset_tokens').where({ user_id: testUser.id }).select('*');
 
       expect(tokens.length).toBeGreaterThan(0);
       expect(tokens[0].token).toBeDefined();
@@ -108,9 +111,7 @@ describe('Password Reset Routes Integration Tests', () => {
         .send({ email: testUser.email })
         .expect(200);
 
-      const tokens = await db('password_reset_tokens')
-        .where({ user_id: testUser.id })
-        .select('*');
+      const tokens = await db('password_reset_tokens').where({ user_id: testUser.id }).select('*');
 
       // Should have 2 tokens, first one invalidated
       expect(tokens.length).toBe(2);
@@ -122,10 +123,7 @@ describe('Password Reset Routes Integration Tests', () => {
     it('should return 400 for missing email', async () => {
       if (!isDatabaseAvailable()) return;
 
-      const response = await request(app)
-        .post('/api/auth/forgot-password')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/api/auth/forgot-password').send({}).expect(400);
 
       expect(response.body).toHaveProperty('success', false);
     });

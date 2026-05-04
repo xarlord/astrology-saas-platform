@@ -65,7 +65,10 @@ class CalendarEventModel {
   /**
    * Create a new calendar event
    */
-  async create(userId: string, event: Omit<CalendarEvent, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<CalendarEvent> {
+  async create(
+    userId: string,
+    event: Omit<CalendarEvent, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
+  ): Promise<CalendarEvent> {
     const [newEvent] = await knex('calendar_events')
       .insert({
         user_id: userId,
@@ -101,9 +104,7 @@ class CalendarEventModel {
    * Get calendar event by ID
    */
   async findById(id: string): Promise<CalendarEvent | null> {
-    const event = await knex('calendar_events')
-      .where('id', id)
-      .first();
+    const event = await knex('calendar_events').where('id', id).first();
 
     return event || null;
   }
@@ -112,9 +113,7 @@ class CalendarEventModel {
    * Delete a calendar event
    */
   async delete(id: string, userId: string): Promise<boolean> {
-    const deleted = await knex('calendar_events')
-      .where({ id, user_id: userId })
-      .del();
+    const deleted = await knex('calendar_events').where({ id, user_id: userId }).del();
 
     return deleted > 0;
   }
@@ -123,9 +122,7 @@ class CalendarEventModel {
    * Delete all events for a user (for cleanup)
    */
   async deleteAllForUser(userId: string): Promise<number> {
-    return knex('calendar_events')
-      .where('user_id', userId)
-      .del();
+    return knex('calendar_events').where('user_id', userId).del();
   }
 }
 

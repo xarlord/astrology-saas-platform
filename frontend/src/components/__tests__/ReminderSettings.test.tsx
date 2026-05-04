@@ -434,7 +434,9 @@ describe('ReminderSettings Component', () => {
         const label = radio.closest('label');
         return label?.textContent?.includes('Email');
       });
-      expect(emailRadio?.closest('label')?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
+      expect(
+        emailRadio?.closest('label')?.querySelector('.material-symbols-outlined'),
+      ).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
@@ -445,7 +447,9 @@ describe('ReminderSettings Component', () => {
         const label = radio.closest('label');
         return label?.textContent?.includes('Push Notification');
       });
-      expect(pushRadio?.closest('label')?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
+      expect(
+        pushRadio?.closest('label')?.querySelector('.material-symbols-outlined'),
+      ).toBeInTheDocument();
     });
   });
 

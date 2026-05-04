@@ -8,7 +8,8 @@ import { PromptTemplate } from './index';
 export const SYNASTRY_PROMPTS: Record<string, PromptTemplate> = {
   basic: {
     name: 'basic-synastry',
-    systemMessage: 'You are an expert relationship astrologer providing insightful compatibility analyses.',
+    systemMessage:
+      'You are an expert relationship astrologer providing insightful compatibility analyses.',
     userPrompt: `Provide a compatibility analysis for two individuals:
 
 CHART A (Person 1):
@@ -59,7 +60,8 @@ Provide balanced, insightful analysis (500-700 words).`,
 
   romantic: {
     name: 'romantic-synastry',
-    systemMessage: 'You are a specialized romantic relationship astrologer with deep insight into love dynamics.',
+    systemMessage:
+      'You are a specialized romantic relationship astrologer with deep insight into love dynamics.',
     userPrompt: `Provide a comprehensive romantic compatibility analysis:
 
 CHART A (Person 1):
@@ -191,7 +193,8 @@ Provide practical friendship insights (400-500 words).`,
 
   business: {
     name: 'business-synastry',
-    systemMessage: 'You are an astrologer specializing in business partnerships and professional relationships.',
+    systemMessage:
+      'You are an astrologer specializing in business partnerships and professional relationships.',
     userPrompt: `Provide a business partnership compatibility analysis:
 
 CHART A (Person 1):
@@ -262,7 +265,8 @@ Provide actionable business insights (600-800 words).`,
 
   family: {
     name: 'family-synastry',
-    systemMessage: 'You are an astrologer specializing in family dynamics and intergenerational relationships.',
+    systemMessage:
+      'You are an astrologer specializing in family dynamics and intergenerational relationships.',
     userPrompt: `Provide a family relationship compatibility analysis:
 
 CHART A (Family Member 1):

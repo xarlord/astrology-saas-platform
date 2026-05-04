@@ -167,7 +167,13 @@ describe('Synastry Controller - LIVE SYSTEM', () => {
     }, 10000);
 
     it('should support pagination', async () => {
-      const res = await authed('GET', '/synastry/reports?page=1&limit=10', accessToken, cookies, '');
+      const res = await authed(
+        'GET',
+        '/synastry/reports?page=1&limit=10',
+        accessToken,
+        cookies,
+        '',
+      );
 
       expect(res.status).toBe(200);
     }, 10000);

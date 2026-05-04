@@ -5,8 +5,13 @@
 import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
-import { validateBody } from '../../../utils/validators';
-import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../../../utils/validators';
+import { validateRequest } from '../../../middleware/validateRequest';
+import {
+  RegisterSchema,
+  LoginSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+} from '../../../shared/schemas/auth.validation';
 import { authRateLimiter, passwordResetRateLimiter } from '../../../middleware/rateLimiter';
 import * as AuthController from '../controllers/auth.controller';
 
@@ -32,9 +37,14 @@ const router = Router();
  * @desc    Register a new user
  * @access  Public
  */
-router.post('/register', authRateLimiter, validateBody(registerSchema), asyncHandler(async (req, res) => {
-  await AuthController.register(req, res);
-}));
+router.post(
+  '/register',
+  authRateLimiter,
+  validateRequest(RegisterSchema),
+  asyncHandler(async (req, res) => {
+    await AuthController.register(req, res);
+  }),
+);
 
 /**
  * @openapi
@@ -58,9 +68,14 @@ router.post('/register', authRateLimiter, validateBody(registerSchema), asyncHan
  * @desc    Login user
  * @access  Public
  */
-router.post('/login', authRateLimiter, validateBody(loginSchema), asyncHandler(async (req, res) => {
-  await AuthController.login(req, res);
-}));
+router.post(
+  '/login',
+  authRateLimiter,
+  validateRequest(LoginSchema),
+  asyncHandler(async (req, res) => {
+    await AuthController.login(req, res);
+  }),
+);
 
 /**
  * @openapi
@@ -80,9 +95,13 @@ router.post('/login', authRateLimiter, validateBody(loginSchema), asyncHandler(a
  * @desc    Logout user
  * @access  Private
  */
-router.post('/logout', authenticate, asyncHandler(async (req, res) => {
-  await AuthController.logout(req, res);
-}));
+router.post(
+  '/logout',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    await AuthController.logout(req, res);
+  }),
+);
 
 /**
  * @openapi
@@ -102,9 +121,13 @@ router.post('/logout', authenticate, asyncHandler(async (req, res) => {
  * @desc    Get current user profile
  * @access  Private
  */
-router.get('/me', authenticate, asyncHandler(async (req, res) => {
-  await AuthController.getProfile(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/me',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    await AuthController.getProfile(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -126,9 +149,13 @@ router.get('/me', authenticate, asyncHandler(async (req, res) => {
  * @desc    Update current user profile
  * @access  Private
  */
-router.put('/me', authenticate, asyncHandler(async (req, res) => {
-  await AuthController.updateProfile(req as AuthenticatedRequest, res);
-}));
+router.put(
+  '/me',
+  authenticate,
+  asyncHandler(async (req, res) => {
+    await AuthController.updateProfile(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @openapi
@@ -150,9 +177,13 @@ router.put('/me', authenticate, asyncHandler(async (req, res) => {
  * @desc    Refresh access token
  * @access  Public
  */
-router.post('/refresh', authRateLimiter, asyncHandler(async (req, res) => {
-  await AuthController.refreshToken(req, res);
-}));
+router.post(
+  '/refresh',
+  authRateLimiter,
+  asyncHandler(async (req, res) => {
+    await AuthController.refreshToken(req, res);
+  }),
+);
 
 /**
  * @openapi
@@ -174,9 +205,14 @@ router.post('/refresh', authRateLimiter, asyncHandler(async (req, res) => {
  * @desc    Request password reset
  * @access  Public
  */
-router.post('/forgot-password', passwordResetRateLimiter, validateBody(forgotPasswordSchema), asyncHandler(async (req, res) => {
-  await AuthController.forgotPassword(req, res);
-}));
+router.post(
+  '/forgot-password',
+  passwordResetRateLimiter,
+  validateRequest(ForgotPasswordSchema),
+  asyncHandler(async (req, res) => {
+    await AuthController.forgotPassword(req, res);
+  }),
+);
 
 /**
  * @openapi
@@ -196,8 +232,12 @@ router.post('/forgot-password', passwordResetRateLimiter, validateBody(forgotPas
  * @desc    Reset password with token
  * @access  Public
  */
-router.post('/reset-password', validateBody(resetPasswordSchema), asyncHandler(async (req, res) => {
-  await AuthController.resetPassword(req, res);
-}));
+router.post(
+  '/reset-password',
+  validateRequest(ResetPasswordSchema),
+  asyncHandler(async (req, res) => {
+    await AuthController.resetPassword(req, res);
+  }),
+);
 
 export { router };

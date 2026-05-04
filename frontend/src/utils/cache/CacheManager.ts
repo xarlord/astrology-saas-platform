@@ -380,9 +380,7 @@ let globalCache: CacheManager | null = null;
  * Get or create the global cache instance
  */
 export function getGlobalCache<T = unknown>(options?: CacheOptions): CacheManager<T> {
-  if (!globalCache) {
-    globalCache = new CacheManager<T>(options);
-  }
+  globalCache ??= new CacheManager<T>(options);
   return globalCache as CacheManager<T>;
 }
 

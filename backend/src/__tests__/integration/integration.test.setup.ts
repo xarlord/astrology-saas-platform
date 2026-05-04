@@ -38,7 +38,11 @@ export async function setupTestDatabase(): Promise<void> {
  */
 export async function teardownTestDatabase(): Promise<void> {
   if (!dbAvailable) {
-    try { await db.destroy(); } catch { /* expected */ }
+    try {
+      await db.destroy();
+    } catch {
+      /* expected */
+    }
     return;
   }
 

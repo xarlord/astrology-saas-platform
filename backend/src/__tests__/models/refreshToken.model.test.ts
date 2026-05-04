@@ -210,17 +210,19 @@ describe('Refresh Token Model', () => {
 
       const qb = createMockQueryBuilder({
         insert: jest.fn().mockReturnValue({
-          returning: jest.fn().mockResolvedValue([{
-            id: 'rt-4',
-            user_id: 'user-4',
-            token: 'refresh-token-jkl',
-            expires_at: expiresAt,
-            revoked: false,
-            revoked_at: null,
-            user_agent: null,
-            ip_address: null,
-            created_at: new Date(),
-          }]),
+          returning: jest.fn().mockResolvedValue([
+            {
+              id: 'rt-4',
+              user_id: 'user-4',
+              token: 'refresh-token-jkl',
+              expires_at: expiresAt,
+              revoked: false,
+              revoked_at: null,
+              user_agent: null,
+              ip_address: null,
+              created_at: new Date(),
+            },
+          ]),
         }),
       });
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
@@ -576,9 +578,7 @@ describe('Refresh Token Model', () => {
       // where is called as: where('revoked', true) then where('revoked_at', '<', cutoffDate)
       // So the date is at index 2 of the second call
       const whereCalls = (qb.where as jest.Mock).mock.calls;
-      const revokedAtCall = whereCalls.find(
-        (call: unknown[]) => call[0] === 'revoked_at',
-      );
+      const revokedAtCall = whereCalls.find((call: unknown[]) => call[0] === 'revoked_at');
       expect(revokedAtCall).toBeDefined();
       const cutoffDate = revokedAtCall![2] as Date;
       const expectedCutoff = new Date(beforeCall);
@@ -597,9 +597,7 @@ describe('Refresh Token Model', () => {
       await cleanupOldRefreshTokens(60);
 
       const whereCalls = (qb.where as jest.Mock).mock.calls;
-      const revokedAtCall = whereCalls.find(
-        (call: unknown[]) => call[0] === 'revoked_at',
-      );
+      const revokedAtCall = whereCalls.find((call: unknown[]) => call[0] === 'revoked_at');
       const cutoffDate = revokedAtCall![2] as Date;
       const expectedCutoff = new Date(beforeCall);
       expectedCutoff.setDate(expectedCutoff.getDate() - 60);

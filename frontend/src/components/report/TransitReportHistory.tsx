@@ -87,7 +87,9 @@ export const TransitReportHistory: React.FC<TransitReportHistoryProps> = ({
         </div>
         <div className="min-w-0">
           <p className="text-white text-sm font-medium truncate">{formatMonth(report)}</p>
-          <p className="text-slate-500 text-xs">{formatDate(report.completedAt ?? report.createdAt)}</p>
+          <p className="text-slate-500 text-xs">
+            {formatDate(report.completedAt ?? report.createdAt)}
+          </p>
         </div>
       </div>
 
@@ -115,13 +117,18 @@ export const TransitReportHistory: React.FC<TransitReportHistoryProps> = ({
   );
 
   return (
-    <div className={`bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`} data-testid="transit-report-history">
+    <div
+      className={`bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
+      data-testid="transit-report-history"
+    >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-[18px]">history</span>
           Report History
         </h3>
-        <span className="text-xs text-slate-500">{transitReports.length} report{transitReports.length !== 1 ? 's' : ''}</span>
+        <span className="text-xs text-slate-500">
+          {transitReports.length} report{transitReports.length !== 1 ? 's' : ''}
+        </span>
       </div>
 
       {/* Recent reports */}

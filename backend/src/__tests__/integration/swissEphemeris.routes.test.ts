@@ -10,7 +10,12 @@
 import request from 'supertest';
 import db from '../../config/database';
 import { cleanDatabase, createTestUser, generateAuthToken } from './utils';
-import { setupTestDatabase, teardownTestDatabase, cleanAllTables, isDatabaseAvailable } from './integration.test.setup';
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+  cleanAllTables,
+  isDatabaseAvailable,
+} from './integration.test.setup';
 
 import app from '../../server';
 
@@ -253,7 +258,7 @@ describe('Swiss Ephemeris / Chart Calculation Integration Tests', () => {
 
       // Both should have the same data
       expect(first.body.data.chart.calculated_data.jd).toBe(
-        second.body.data.chart.calculated_data.jd
+        second.body.data.chart.calculated_data.jd,
       );
     });
 
@@ -271,14 +276,12 @@ describe('Swiss Ephemeris / Chart Calculation Integration Tests', () => {
     it('should return 401 without authentication', async () => {
       if (!isDatabaseAvailable()) return;
 
-      const response = await request(app)
-        .post('/api/v1/charts/some-id/calculate')
-        .expect(401);
+      const response = await request(app).post('/api/v1/charts/some-id/calculate').expect(401);
 
       expect(response.body).toHaveProperty('success', false);
     });
 
-    it('should return 404 when accessing another user\'s chart', async () => {
+    it("should return 404 when accessing another user's chart", async () => {
       if (!isDatabaseAvailable()) return;
 
       // Create chart as first user

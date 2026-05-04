@@ -18,7 +18,11 @@ import knex from '../../../config/database';
  * Compare two charts and calculate synastry
  * POST /synastry/compare
  */
-export async function compareCharts(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+export async function compareCharts(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const userId = req.user.id;
 
@@ -67,76 +71,96 @@ export async function compareCharts(req: AuthenticatedRequest, res: Response, ne
       id: chart1Data.id,
       userId: chart1Data.userId,
       planets: {
-        sun: chart1Data.sunSign ? {
-          name: 'sun',
-          degree: chart1Data.sunDegree || 0,
-          minute: chart1Data.sunMinute || 0,
-          second: chart1Data.sunSecond || 0,
-          sign: chart1Data.sunSign,
-        } : undefined,
-        moon: chart1Data.moonSign ? {
-          name: 'moon',
-          degree: chart1Data.moonDegree || 0,
-          minute: chart1Data.moonMinute || 0,
-          second: chart1Data.moonSecond || 0,
-          sign: chart1Data.moonSign,
-        } : undefined,
-        mercury: chart1Data.mercurySign ? {
-          name: 'mercury',
-          degree: chart1Data.mercuryDegree || 0,
-          minute: chart1Data.mercuryMinute || 0,
-          second: chart1Data.mercurySecond || 0,
-          sign: chart1Data.mercurySign,
-        } : undefined,
-        venus: chart1Data.venusSign ? {
-          name: 'venus',
-          degree: chart1Data.venusDegree || 0,
-          minute: chart1Data.venusMinute || 0,
-          second: chart1Data.venusSecond || 0,
-          sign: chart1Data.venusSign,
-        } : undefined,
-        mars: chart1Data.marsSign ? {
-          name: 'mars',
-          degree: chart1Data.marsDegree || 0,
-          minute: chart1Data.marsMinute || 0,
-          second: chart1Data.marsSecond || 0,
-          sign: chart1Data.marsSign,
-        } : undefined,
-        jupiter: chart1Data.jupiterSign ? {
-          name: 'jupiter',
-          degree: chart1Data.jupiterDegree || 0,
-          minute: chart1Data.jupiterMinute || 0,
-          second: chart1Data.jupiterSecond || 0,
-          sign: chart1Data.jupiterSign,
-        } : undefined,
-        saturn: chart1Data.saturnSign ? {
-          name: 'saturn',
-          degree: chart1Data.saturnDegree || 0,
-          minute: chart1Data.saturnMinute || 0,
-          second: chart1Data.saturnSecond || 0,
-          sign: chart1Data.saturnSign,
-        } : undefined,
-        uranus: chart1Data.uranusSign ? {
-          name: 'uranus',
-          degree: chart1Data.uranusDegree || 0,
-          minute: chart1Data.uranusMinute || 0,
-          second: chart1Data.uranusSecond || 0,
-          sign: chart1Data.uranusSign,
-        } : undefined,
-        neptune: chart1Data.neptuneSign ? {
-          name: 'neptune',
-          degree: chart1Data.neptuneDegree || 0,
-          minute: chart1Data.neptuneMinute || 0,
-          second: chart1Data.neptuneSecond || 0,
-          sign: chart1Data.neptuneSign,
-        } : undefined,
-        pluto: chart1Data.plutoSign ? {
-          name: 'pluto',
-          degree: chart1Data.plutoDegree || 0,
-          minute: chart1Data.plutoMinute || 0,
-          second: chart1Data.plutoSecond || 0,
-          sign: chart1Data.plutoSign,
-        } : undefined,
+        sun: chart1Data.sunSign
+          ? {
+              name: 'sun',
+              degree: chart1Data.sunDegree || 0,
+              minute: chart1Data.sunMinute || 0,
+              second: chart1Data.sunSecond || 0,
+              sign: chart1Data.sunSign,
+            }
+          : undefined,
+        moon: chart1Data.moonSign
+          ? {
+              name: 'moon',
+              degree: chart1Data.moonDegree || 0,
+              minute: chart1Data.moonMinute || 0,
+              second: chart1Data.moonSecond || 0,
+              sign: chart1Data.moonSign,
+            }
+          : undefined,
+        mercury: chart1Data.mercurySign
+          ? {
+              name: 'mercury',
+              degree: chart1Data.mercuryDegree || 0,
+              minute: chart1Data.mercuryMinute || 0,
+              second: chart1Data.mercurySecond || 0,
+              sign: chart1Data.mercurySign,
+            }
+          : undefined,
+        venus: chart1Data.venusSign
+          ? {
+              name: 'venus',
+              degree: chart1Data.venusDegree || 0,
+              minute: chart1Data.venusMinute || 0,
+              second: chart1Data.venusSecond || 0,
+              sign: chart1Data.venusSign,
+            }
+          : undefined,
+        mars: chart1Data.marsSign
+          ? {
+              name: 'mars',
+              degree: chart1Data.marsDegree || 0,
+              minute: chart1Data.marsMinute || 0,
+              second: chart1Data.marsSecond || 0,
+              sign: chart1Data.marsSign,
+            }
+          : undefined,
+        jupiter: chart1Data.jupiterSign
+          ? {
+              name: 'jupiter',
+              degree: chart1Data.jupiterDegree || 0,
+              minute: chart1Data.jupiterMinute || 0,
+              second: chart1Data.jupiterSecond || 0,
+              sign: chart1Data.jupiterSign,
+            }
+          : undefined,
+        saturn: chart1Data.saturnSign
+          ? {
+              name: 'saturn',
+              degree: chart1Data.saturnDegree || 0,
+              minute: chart1Data.saturnMinute || 0,
+              second: chart1Data.saturnSecond || 0,
+              sign: chart1Data.saturnSign,
+            }
+          : undefined,
+        uranus: chart1Data.uranusSign
+          ? {
+              name: 'uranus',
+              degree: chart1Data.uranusDegree || 0,
+              minute: chart1Data.uranusMinute || 0,
+              second: chart1Data.uranusSecond || 0,
+              sign: chart1Data.uranusSign,
+            }
+          : undefined,
+        neptune: chart1Data.neptuneSign
+          ? {
+              name: 'neptune',
+              degree: chart1Data.neptuneDegree || 0,
+              minute: chart1Data.neptuneMinute || 0,
+              second: chart1Data.neptuneSecond || 0,
+              sign: chart1Data.neptuneSign,
+            }
+          : undefined,
+        pluto: chart1Data.plutoSign
+          ? {
+              name: 'pluto',
+              degree: chart1Data.plutoDegree || 0,
+              minute: chart1Data.plutoMinute || 0,
+              second: chart1Data.plutoSecond || 0,
+              sign: chart1Data.plutoSign,
+            }
+          : undefined,
       },
     };
 
@@ -144,76 +168,96 @@ export async function compareCharts(req: AuthenticatedRequest, res: Response, ne
       id: chart2Data.id,
       userId: chart2Data.userId,
       planets: {
-        sun: chart2Data.sunSign ? {
-          name: 'sun',
-          degree: chart2Data.sunDegree || 0,
-          minute: chart2Data.sunMinute || 0,
-          second: chart2Data.sunSecond || 0,
-          sign: chart2Data.sunSign,
-        } : undefined,
-        moon: chart2Data.moonSign ? {
-          name: 'moon',
-          degree: chart2Data.moonDegree || 0,
-          minute: chart2Data.moonMinute || 0,
-          second: chart2Data.moonSecond || 0,
-          sign: chart2Data.moonSign,
-        } : undefined,
-        mercury: chart2Data.mercurySign ? {
-          name: 'mercury',
-          degree: chart2Data.mercuryDegree || 0,
-          minute: chart2Data.mercuryMinute || 0,
-          second: chart2Data.mercurySecond || 0,
-          sign: chart2Data.mercurySign,
-        } : undefined,
-        venus: chart2Data.venusSign ? {
-          name: 'venus',
-          degree: chart2Data.venusDegree || 0,
-          minute: chart2Data.venusMinute || 0,
-          second: chart2Data.venusSecond || 0,
-          sign: chart2Data.venusSign,
-        } : undefined,
-        mars: chart2Data.marsSign ? {
-          name: 'mars',
-          degree: chart2Data.marsDegree || 0,
-          minute: chart2Data.marsMinute || 0,
-          second: chart2Data.marsSecond || 0,
-          sign: chart2Data.marsSign,
-        } : undefined,
-        jupiter: chart2Data.jupiterSign ? {
-          name: 'jupiter',
-          degree: chart2Data.jupiterDegree || 0,
-          minute: chart2Data.jupiterMinute || 0,
-          second: chart2Data.jupiterSecond || 0,
-          sign: chart2Data.jupiterSign,
-        } : undefined,
-        saturn: chart2Data.saturnSign ? {
-          name: 'saturn',
-          degree: chart2Data.saturnDegree || 0,
-          minute: chart2Data.saturnMinute || 0,
-          second: chart2Data.saturnSecond || 0,
-          sign: chart2Data.saturnSign,
-        } : undefined,
-        uranus: chart2Data.uranusSign ? {
-          name: 'uranus',
-          degree: chart2Data.uranusDegree || 0,
-          minute: chart2Data.uranusMinute || 0,
-          second: chart2Data.uranusSecond || 0,
-          sign: chart2Data.uranusSign,
-        } : undefined,
-        neptune: chart2Data.neptuneSign ? {
-          name: 'neptune',
-          degree: chart2Data.neptuneDegree || 0,
-          minute: chart2Data.neptuneMinute || 0,
-          second: chart2Data.neptuneSecond || 0,
-          sign: chart2Data.neptuneSign,
-        } : undefined,
-        pluto: chart2Data.plutoSign ? {
-          name: 'pluto',
-          degree: chart2Data.plutoDegree || 0,
-          minute: chart2Data.plutoMinute || 0,
-          second: chart2Data.plutoSecond || 0,
-          sign: chart2Data.plutoSign,
-        } : undefined,
+        sun: chart2Data.sunSign
+          ? {
+              name: 'sun',
+              degree: chart2Data.sunDegree || 0,
+              minute: chart2Data.sunMinute || 0,
+              second: chart2Data.sunSecond || 0,
+              sign: chart2Data.sunSign,
+            }
+          : undefined,
+        moon: chart2Data.moonSign
+          ? {
+              name: 'moon',
+              degree: chart2Data.moonDegree || 0,
+              minute: chart2Data.moonMinute || 0,
+              second: chart2Data.moonSecond || 0,
+              sign: chart2Data.moonSign,
+            }
+          : undefined,
+        mercury: chart2Data.mercurySign
+          ? {
+              name: 'mercury',
+              degree: chart2Data.mercuryDegree || 0,
+              minute: chart2Data.mercuryMinute || 0,
+              second: chart2Data.mercurySecond || 0,
+              sign: chart2Data.mercurySign,
+            }
+          : undefined,
+        venus: chart2Data.venusSign
+          ? {
+              name: 'venus',
+              degree: chart2Data.venusDegree || 0,
+              minute: chart2Data.venusMinute || 0,
+              second: chart2Data.venusSecond || 0,
+              sign: chart2Data.venusSign,
+            }
+          : undefined,
+        mars: chart2Data.marsSign
+          ? {
+              name: 'mars',
+              degree: chart2Data.marsDegree || 0,
+              minute: chart2Data.marsMinute || 0,
+              second: chart2Data.marsSecond || 0,
+              sign: chart2Data.marsSign,
+            }
+          : undefined,
+        jupiter: chart2Data.jupiterSign
+          ? {
+              name: 'jupiter',
+              degree: chart2Data.jupiterDegree || 0,
+              minute: chart2Data.jupiterMinute || 0,
+              second: chart2Data.jupiterSecond || 0,
+              sign: chart2Data.jupiterSign,
+            }
+          : undefined,
+        saturn: chart2Data.saturnSign
+          ? {
+              name: 'saturn',
+              degree: chart2Data.saturnDegree || 0,
+              minute: chart2Data.saturnMinute || 0,
+              second: chart2Data.saturnSecond || 0,
+              sign: chart2Data.saturnSign,
+            }
+          : undefined,
+        uranus: chart2Data.uranusSign
+          ? {
+              name: 'uranus',
+              degree: chart2Data.uranusDegree || 0,
+              minute: chart2Data.uranusMinute || 0,
+              second: chart2Data.uranusSecond || 0,
+              sign: chart2Data.uranusSign,
+            }
+          : undefined,
+        neptune: chart2Data.neptuneSign
+          ? {
+              name: 'neptune',
+              degree: chart2Data.neptuneDegree || 0,
+              minute: chart2Data.neptuneMinute || 0,
+              second: chart2Data.neptuneSecond || 0,
+              sign: chart2Data.neptuneSign,
+            }
+          : undefined,
+        pluto: chart2Data.plutoSign
+          ? {
+              name: 'pluto',
+              degree: chart2Data.plutoDegree || 0,
+              minute: chart2Data.plutoMinute || 0,
+              second: chart2Data.plutoSecond || 0,
+              sign: chart2Data.plutoSign,
+            }
+          : undefined,
       },
     };
 
@@ -284,7 +328,11 @@ export async function compareCharts(req: AuthenticatedRequest, res: Response, ne
  * Calculate compatibility score
  * POST /synastry/compatibility
  */
-export async function getCompatibility(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+export async function getCompatibility(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const userId = req.user.id;
 
@@ -308,8 +356,12 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
 
     // Fetch both charts (scoped to user to prevent IDOR)
     const [chart1Data, chart2Data] = await Promise.all([
-      knex('charts').where({ id: chart1Id, user_id: userId }).first() as Promise<Record<string, unknown> | undefined>,
-      knex('charts').where({ id: chart2Id, user_id: userId }).first() as Promise<Record<string, unknown> | undefined>,
+      knex('charts').where({ id: chart1Id, user_id: userId }).first() as Promise<
+        Record<string, unknown> | undefined
+      >,
+      knex('charts').where({ id: chart2Id, user_id: userId }).first() as Promise<
+        Record<string, unknown> | undefined
+      >,
     ]);
 
     if (!chart1Data || !chart2Data) {
@@ -334,7 +386,18 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
     };
 
     // Populate planets for both charts
-    const planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'] as const;
+    const planets = [
+      'sun',
+      'moon',
+      'mercury',
+      'venus',
+      'mars',
+      'jupiter',
+      'saturn',
+      'uranus',
+      'neptune',
+      'pluto',
+    ] as const;
     planets.forEach((planet) => {
       const signField = `${planet}Sign` as keyof typeof chart1Data;
       const degreeField = `${planet}Degree` as keyof typeof chart1Data;
@@ -391,7 +454,11 @@ export async function getCompatibility(req: AuthenticatedRequest, res: Response,
  * Get all synastry comparisons for user
  * GET /synastry/reports
  */
-export async function getSynastryReports(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getSynastryReports(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const userId = (req as { user?: { id: string } }).user?.id;
 
@@ -452,7 +519,11 @@ export async function getSynastryReports(req: Request, res: Response, next: Next
  * Get specific synastry report
  * GET /synastry/reports/:id
  */
-export async function getSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getSynastryReport(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const userId = (req as { user?: { id: string } }).user?.id;
     const { id } = req.params;
@@ -465,9 +536,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
       return;
     }
 
-    const report = await knex('synastry_charts')
-      .where({ id, user_id: userId })
-      .first();
+    const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
 
     if (!report) {
       res.status(404).json({
@@ -478,8 +547,7 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
     }
 
     // Fetch aspects
-    const aspects = await knex('synastry_aspects')
-      .where({ synastry_chart_id: id });
+    const aspects = await knex('synastry_aspects').where({ synastry_chart_id: id });
 
     res.json({
       success: true,
@@ -498,7 +566,11 @@ export async function getSynastryReport(req: Request, res: Response, next: NextF
  * Delete synastry report
  * DELETE /synastry/reports/:id
  */
-export async function deleteSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function deleteSynastryReport(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const userId = (req as { user?: { id: string } }).user?.id;
     const { id } = req.params;
@@ -512,9 +584,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
     }
 
     // Check if report exists and belongs to user
-    const report = await knex('synastry_charts')
-      .where({ id, user_id: userId })
-      .first();
+    const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
 
     if (!report) {
       res.status(404).json({
@@ -524,9 +594,7 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
       return;
     }
 
-    await knex('synastry_charts')
-      .where({ id, user_id: userId })
-      .del();
+    await knex('synastry_charts').where({ id, user_id: userId }).del();
 
     res.json({
       success: true,
@@ -541,7 +609,11 @@ export async function deleteSynastryReport(req: Request, res: Response, next: Ne
  * Update synastry report (notes, favorite status)
  * PATCH /synastry/reports/:id
  */
-export async function updateSynastryReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function updateSynastryReport(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   try {
     const userId = (req as { user?: { id: string } }).user?.id;
     const { id } = req.params;
@@ -556,9 +628,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
     }
 
     // Check if report exists and belongs to user
-    const report = await knex('synastry_charts')
-      .where({ id, user_id: userId })
-      .first();
+    const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
 
     if (!report) {
       res.status(404).json({
@@ -581,9 +651,7 @@ export async function updateSynastryReport(req: Request, res: Response, next: Ne
       updateData.notes = notes;
     }
 
-    await knex('synastry_charts')
-      .where({ id, user_id: userId })
-      .update(updateData);
+    await knex('synastry_charts').where({ id, user_id: userId }).update(updateData);
 
     res.json({
       success: true,

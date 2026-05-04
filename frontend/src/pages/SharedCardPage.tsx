@@ -112,23 +112,33 @@ export default function SharedCardPage() {
       handleDownload();
       alert('Image downloaded! Open Instagram and share this image from your gallery.');
     } else {
-      alert('Please wait for the card image to be generated, then download and share to Instagram.');
+      alert(
+        'Please wait for the card image to be generated, then download and share to Instagram.',
+      );
     }
   };
 
   const handleTwitterShare = () => {
     const text = encodeURIComponent(ogMeta?.title ?? 'My Astrology Chart');
     const shareUrl = encodeURIComponent(window.location.href);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${shareUrl}`, '_blank', 'noopener');
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${shareUrl}`,
+      '_blank',
+      'noopener',
+    );
   };
 
   const handleWhatsAppShare = () => {
-    const text = encodeURIComponent(`${ogMeta?.title ?? 'My Astrology Chart'} ${window.location.href}`);
+    const text = encodeURIComponent(
+      `${ogMeta?.title ?? 'My Astrology Chart'} ${window.location.href}`,
+    );
     window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener');
   };
 
   const styleInfo = card?.style ? CARD_STYLES.find((s) => s.id === card.style) : null;
-  const colorInfo = card?.color_theme ? CARD_COLOR_THEMES.find((c) => c.id === card.color_theme) : null;
+  const colorInfo = card?.color_theme
+    ? CARD_COLOR_THEMES.find((c) => c.id === card.color_theme)
+    : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-white">
@@ -166,7 +176,9 @@ export default function SharedCardPage() {
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-            <span className="material-symbols-outlined text-[20px] text-purple-400">auto_awesome</span>
+            <span className="material-symbols-outlined text-[20px] text-purple-400">
+              auto_awesome
+            </span>
             <span className="font-semibold">AstroVerse</span>
           </Link>
 
@@ -178,7 +190,9 @@ export default function SharedCardPage() {
             >
               {copied ? (
                 <>
-                  <span className="material-symbols-outlined text-[14px] text-green-400">check</span>
+                  <span className="material-symbols-outlined text-[14px] text-green-400">
+                    check
+                  </span>
                   <span className="text-green-400">Copied</span>
                 </>
               ) : (
@@ -219,7 +233,7 @@ export default function SharedCardPage() {
             <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-gray-400">Loading card...</p>
           </div>
-        ) : error ?? !card ? (
+        ) : (error ?? !card) ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="text-5xl mb-4">🌟</div>
             <h1 className="text-xl font-semibold mb-2">Card Not Found</h1>
@@ -258,7 +272,9 @@ export default function SharedCardPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-white/10 bg-white/5">
-                <span className="material-symbols-outlined text-[48px] text-purple-400 mb-4">auto_awesome</span>
+                <span className="material-symbols-outlined text-[48px] text-purple-400 mb-4">
+                  auto_awesome
+                </span>
                 <p className="text-gray-400">Card image is being generated</p>
                 <p className="text-xs text-gray-500 mt-1">Check back in a moment</p>
               </div>
@@ -334,9 +350,7 @@ export default function SharedCardPage() {
 
             {/* CTA */}
             <div className="mt-8 text-center">
-              <p className="text-sm text-gray-500 mb-3">
-                Get your own cosmic insights
-              </p>
+              <p className="text-sm text-gray-500 mb-3">Get your own cosmic insights</p>
               <Link
                 to={card?.referral_code ? `/register?ref=${card.referral_code}` : '/register'}
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-sm font-medium transition-colors"

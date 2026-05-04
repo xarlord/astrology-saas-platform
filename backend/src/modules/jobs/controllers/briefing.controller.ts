@@ -7,7 +7,11 @@
 
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
-import { getLatestBriefing, generateBriefing, formatBriefingContent } from '../services/dailyBriefing.service';
+import {
+  getLatestBriefing,
+  generateBriefing,
+  formatBriefingContent,
+} from '../services/dailyBriefing.service';
 
 /**
  * GET /api/v1/briefing
@@ -54,7 +58,8 @@ export async function getBriefing(req: AuthenticatedRequest, res: Response): Pro
     if (message.includes('No natal chart found')) {
       res.status(404).json({
         success: false,
-        error: 'No natal chart found. Please create a natal chart first to receive daily briefings.',
+        error:
+          'No natal chart found. Please create a natal chart first to receive daily briefings.',
       });
       return;
     }

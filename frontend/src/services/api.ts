@@ -47,7 +47,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error instanceof Error ? error : new Error(String(error)));
   },
 );
 
@@ -56,7 +56,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error: unknown) => {
     if (!axios.isAxiosError(error)) {
-      return Promise.reject(error);
+      return Promise.reject(error instanceof Error ? error : new Error(String(error)));
     }
 
     const originalRequest = error.config;
@@ -75,7 +75,7 @@ api.interceptors.response.use(
           originalRequest.headers['x-csrf-token'] = newToken;
           return api(originalRequest);
         } catch {
-          return Promise.reject(error);
+          return Promise.reject(error instanceof Error ? error : new Error(String(error)));
         }
       }
     }
@@ -105,11 +105,13 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed - trigger logout
         window.dispatchEvent(new CustomEvent('auth:session-expired'));
-        return Promise.reject(refreshError);
+        return Promise.reject(
+          refreshError instanceof Error ? refreshError : new Error(String(refreshError)),
+        );
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(error instanceof Error ? error : new Error(String(error)));
   },
 );
 

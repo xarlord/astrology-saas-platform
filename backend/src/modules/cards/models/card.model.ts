@@ -37,27 +37,29 @@ export interface CreateCardData {
   referral_code?: string;
 }
 
-const VALID_TEMPLATES = [
-  'instagram_story',
-  'twitter_x',
-  'pinterest',
-  'square',
-  'linkedin',
-];
+const VALID_TEMPLATES = ['instagram_story', 'twitter_x', 'pinterest', 'square', 'linkedin'];
 
 const VALID_PLANETS = [
-  'sun', 'moon', 'ascendant', 'mercury', 'venus', 'mars',
-  'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'north_node', 'chiron',
+  'sun',
+  'moon',
+  'ascendant',
+  'mercury',
+  'venus',
+  'mars',
+  'jupiter',
+  'saturn',
+  'uranus',
+  'neptune',
+  'pluto',
+  'north_node',
+  'chiron',
 ];
 
 class CardModel {
   private tableName = 'generated_cards';
 
   async findById(id: string): Promise<GeneratedCard | null> {
-    const card = await knex(this.tableName)
-      .where({ id })
-      .whereNull('deleted_at')
-      .first();
+    const card = await knex(this.tableName).where({ id }).whereNull('deleted_at').first();
     return card || null;
   }
 
@@ -83,7 +85,7 @@ class CardModel {
     const result = await knex(this.tableName)
       .where({ user_id: userId })
       .whereNull('deleted_at')
-      .whereRaw("created_at >= CURRENT_DATE")
+      .whereRaw('created_at >= CURRENT_DATE')
       .count('* as count')
       .first();
     return Number(result?.count || 0);
@@ -95,11 +97,14 @@ class CardModel {
 
     // Validate template
     if (!VALID_TEMPLATES.includes(template)) {
-      throw new AppError(`Invalid template: ${template}. Valid: ${VALID_TEMPLATES.join(', ')}`, 400);
+      throw new AppError(
+        `Invalid template: ${template}. Valid: ${VALID_TEMPLATES.join(', ')}`,
+        400,
+      );
     }
 
     // Validate placements (3-5 planets)
-    const validPlacements = placements.filter(p => VALID_PLANETS.includes(p));
+    const validPlacements = placements.filter((p) => VALID_PLANETS.includes(p));
     if (validPlacements.length < 3 || validPlacements.length > 5) {
       throw new AppError('Must select between 3 and 5 planet placements', 400);
     }
@@ -123,12 +128,15 @@ class CardModel {
   }
 
   async incrementViewCount(id: string): Promise<void> {
-    await knex(this.tableName)
-      .where({ id })
-      .increment('view_count', 1);
+    await knex(this.tableName).where({ id }).increment('view_count', 1);
   }
 
-  async updateImageUrl(id: string, imageUrl: string, width?: number, height?: number): Promise<void> {
+  async updateImageUrl(
+    id: string,
+    imageUrl: string,
+    width?: number,
+    height?: number,
+  ): Promise<void> {
     await knex(this.tableName)
       .where({ id })
       .update({

@@ -9,7 +9,7 @@ import { AstronomyEngineService } from '../../shared/services/astronomyEngine.se
 import ChartModel from '../../charts/models/chart.model';
 
 export interface TransitDay {
-  date: string;           // YYYY-MM-DD
+  date: string; // YYYY-MM-DD
   sun: {
     sign: string;
     degree: number;
@@ -48,7 +48,7 @@ export interface TransitDay {
 
 export interface MonthlyTransitReport {
   userId: string;
-  month: string;          // YYYY-MM
+  month: string; // YYYY-MM
   natalChart: {
     id: string;
     birthDate: string;
@@ -83,7 +83,7 @@ export interface MonthlyTransitReport {
  */
 export async function generateMonthlyTransitReport(
   userId: string,
-  month?: string
+  month?: string,
 ): Promise<MonthlyTransitReport> {
   // Get user's primary natal chart
   const charts = await ChartModel.findByUserId(userId);
@@ -115,7 +115,7 @@ export async function generateMonthlyTransitReport(
     const positions = astronomyService.calculatePlanetaryPositions(
       currentDate,
       chart.birth_latitude,
-      chart.birth_longitude
+      chart.birth_longitude,
     );
 
     const sun = positions.get('Sun');
@@ -129,11 +129,36 @@ export async function generateMonthlyTransitReport(
     }
 
     // Calculate house positions (simplified - would need full chart calculation)
-    const sunHouse = calculateHousePosition(sun.longitude, chart.birth_latitude, chart.birth_longitude, currentDate);
-    const moonHouse = calculateHousePosition(moon.longitude, chart.birth_latitude, chart.birth_longitude, currentDate);
-    const mercuryHouse = calculateHousePosition(mercury.longitude, chart.birth_latitude, chart.birth_longitude, currentDate);
-    const venusHouse = calculateHousePosition(venus.longitude, chart.birth_latitude, chart.birth_longitude, currentDate);
-    const marsHouse = calculateHousePosition(mars.longitude, chart.birth_latitude, chart.birth_longitude, currentDate);
+    const sunHouse = calculateHousePosition(
+      sun.longitude,
+      chart.birth_latitude,
+      chart.birth_longitude,
+      currentDate,
+    );
+    const moonHouse = calculateHousePosition(
+      moon.longitude,
+      chart.birth_latitude,
+      chart.birth_longitude,
+      currentDate,
+    );
+    const mercuryHouse = calculateHousePosition(
+      mercury.longitude,
+      chart.birth_latitude,
+      chart.birth_longitude,
+      currentDate,
+    );
+    const venusHouse = calculateHousePosition(
+      venus.longitude,
+      chart.birth_latitude,
+      chart.birth_longitude,
+      currentDate,
+    );
+    const marsHouse = calculateHousePosition(
+      mars.longitude,
+      chart.birth_latitude,
+      chart.birth_longitude,
+      currentDate,
+    );
 
     // Calculate key aspects for this day
     const keyAspects = calculateKeyAspects(positions, chart);
@@ -198,7 +223,7 @@ function calculateHousePosition(
   planetLongitude: number,
   _birthLatitude: number,
   birthLongitude: number,
-  date: Date
+  date: Date,
 ): number {
   // Simplified house calculation (would use full Placidus in production)
   // This is a basic approximation
@@ -212,7 +237,7 @@ function calculateHousePosition(
  */
 function calculateKeyAspects(
   transits: Map<string, any>,
-  natalChart: any
+  natalChart: any,
 ): Array<{ planets: string[]; type: string; degree: number }> {
   const aspects: Array<{ planets: string[]; type: string; degree: number }> = [];
 
@@ -252,7 +277,10 @@ function calculateKeyAspects(
 /**
  * Determine aspect between two planets
  */
-function getAspect(longitude1: number, longitude2: number): { type: string; degree: number } | null {
+function getAspect(
+  longitude1: number,
+  longitude2: number,
+): { type: string; degree: number } | null {
   const diff = Math.abs(longitude1 - longitude2);
   const normalizedDiff = diff > 180 ? 360 - diff : diff;
 
@@ -280,17 +308,15 @@ function getAspect(longitude1: number, longitude2: number): { type: string; degr
 /**
  * Generate monthly summary from daily transits
  */
-function generateMonthlySummary(
-  dailyTransits: TransitDay[]
-): MonthlyTransitReport['summary'] {
+function generateMonthlySummary(dailyTransits: TransitDay[]): MonthlyTransitReport['summary'] {
   const keyThemes: string[] = [];
   const majorTransits: MonthlyTransitReport['summary']['majorTransits'] = [];
   const retrogrades: MonthlyTransitReport['summary']['retrogrades'] = [];
 
   // Analyze patterns in daily transits
-  const mercuryRetrograde = dailyTransits.filter(d => d.mercury.retrograde);
-  const venusRetrograde = dailyTransits.filter(d => d.venus.retrograde);
-  const marsRetrograde = dailyTransits.filter(d => d.mars.retrograde);
+  const mercuryRetrograde = dailyTransits.filter((d) => d.mercury.retrograde);
+  const venusRetrograde = dailyTransits.filter((d) => d.venus.retrograde);
+  const marsRetrograde = dailyTransits.filter((d) => d.mars.retrograde);
 
   // Track retrograde periods
   if (mercuryRetrograde.length > 0) {

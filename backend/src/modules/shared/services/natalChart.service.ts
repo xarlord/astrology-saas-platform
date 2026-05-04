@@ -93,17 +93,34 @@ const ASPECT_ANGLES: Record<string, number> = {
 
 // Element mapping
 const ELEMENT_MAP: Record<string, 'fire' | 'earth' | 'air' | 'water'> = {
-  Aries: 'fire', Leo: 'fire', Sagittarius: 'fire',
-  Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth',
-  Gemini: 'air', Libra: 'air', Aquarius: 'air',
-  Cancer: 'water', Scorpio: 'water', Pisces: 'water',
+  Aries: 'fire',
+  Leo: 'fire',
+  Sagittarius: 'fire',
+  Taurus: 'earth',
+  Virgo: 'earth',
+  Capricorn: 'earth',
+  Gemini: 'air',
+  Libra: 'air',
+  Aquarius: 'air',
+  Cancer: 'water',
+  Scorpio: 'water',
+  Pisces: 'water',
 };
 
 // Modality mapping
 const MODALITY_MAP: Record<string, 'cardinal' | 'fixed' | 'mutable'> = {
-  Aries: 'cardinal', Cancer: 'cardinal', Libra: 'cardinal', Capricorn: 'cardinal',
-  Taurus: 'fixed', Leo: 'fixed', Scorpio: 'fixed', Aquarius: 'fixed',
-  Gemini: 'mutable', Virgo: 'mutable', Sagittarius: 'mutable', Pisces: 'mutable',
+  Aries: 'cardinal',
+  Cancer: 'cardinal',
+  Libra: 'cardinal',
+  Capricorn: 'cardinal',
+  Taurus: 'fixed',
+  Leo: 'fixed',
+  Scorpio: 'fixed',
+  Aquarius: 'fixed',
+  Gemini: 'mutable',
+  Virgo: 'mutable',
+  Sagittarius: 'mutable',
+  Pisces: 'mutable',
 };
 
 export class NatalChartService {
@@ -119,12 +136,7 @@ export class NatalChartService {
    * Calculate complete natal chart
    */
   calculateNatalChart(input: NatalChartInput): NatalChart {
-    const {
-      birthDate,
-      birthTime,
-      latitude,
-      longitude,
-    } = input;
+    const { birthDate, birthTime, latitude, longitude } = input;
 
     const houseSystem = input.houseSystem || 'Placidus';
     const includeChiron = input.includeChiron ?? true;
@@ -149,7 +161,7 @@ export class NatalChartService {
     const planets = this.astronomyEngine.calculatePlanetaryPositions(
       birthDateTime,
       latitude,
-      longitude
+      longitude,
     );
 
     // Calculate houses
@@ -228,10 +240,7 @@ export class NatalChartService {
   /**
    * Assign planets to their houses
    */
-  private assignPlanetsToHouses(
-    planets: Map<string, PlanetaryPosition>,
-    houses: HouseCusps
-  ): void {
+  private assignPlanetsToHouses(planets: Map<string, PlanetaryPosition>, houses: HouseCusps): void {
     for (const planet of planets.values()) {
       const house = this.getHouseForLongitude(planet.longitude, houses);
       planet.house = house;
@@ -298,7 +307,7 @@ export class NatalChartService {
     planet1: string,
     longitude1: number,
     planet2: string,
-    longitude2: number
+    longitude2: number,
   ): Aspect | null {
     const diff = this.angularDistance(longitude1, longitude2);
 

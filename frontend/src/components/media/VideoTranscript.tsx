@@ -351,9 +351,8 @@ export function parseSRT(srtContent: string): TranscriptCue[] {
     if (lines.length < 2) continue;
 
     // Parse timestamp line (format: 00:00:00,000 --> 00:00:00,000)
-    const timeMatch = lines[1].match(
-      /(\d{2}):(\d{2}):(\d{2}),(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2}),(\d{3})/,
-    );
+    const timeMatch =
+      /(\d{2}):(\d{2}):(\d{2}),(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2}),(\d{3})/.exec(lines[1]);
 
     if (!timeMatch) continue;
 
@@ -401,9 +400,8 @@ export function parseWebVTT(vttContent: string): TranscriptCue[] {
 
   while (i < lines.length) {
     // Find timestamp line
-    const timeMatch = lines[i].match(
-      /(\d{2}):(\d{2}):(\d{2})\.(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})\.(\d{3})/,
-    );
+    const timeMatch =
+      /(\d{2}):(\d{2}):(\d{2})\.(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})\.(\d{3})/.exec(lines[i]);
 
     if (!timeMatch) {
       i++;

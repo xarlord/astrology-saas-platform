@@ -80,7 +80,11 @@ describe('Stripe Service', () => {
         jest.doMock('../../config', () => ({
           __esModule: true,
           default: {
-            stripe: { secretKey: 'sk_test', proPriceId: 'price_pro_test', premiumPriceId: 'price_premium_test' },
+            stripe: {
+              secretKey: 'sk_test',
+              proPriceId: 'price_pro_test',
+              premiumPriceId: 'price_premium_test',
+            },
           },
         }));
         const { priceIdToPlan } = require('../../modules/billing/services/stripe.service');
@@ -94,7 +98,11 @@ describe('Stripe Service', () => {
         jest.doMock('../../config', () => ({
           __esModule: true,
           default: {
-            stripe: { secretKey: 'sk_test', proPriceId: 'price_pro_test', premiumPriceId: 'price_premium_test' },
+            stripe: {
+              secretKey: 'sk_test',
+              proPriceId: 'price_pro_test',
+              premiumPriceId: 'price_premium_test',
+            },
           },
         }));
         const { priceIdToPlan } = require('../../modules/billing/services/stripe.service');
@@ -108,7 +116,11 @@ describe('Stripe Service', () => {
         jest.doMock('../../config', () => ({
           __esModule: true,
           default: {
-            stripe: { secretKey: 'sk_test', proPriceId: 'price_pro_test', premiumPriceId: 'price_premium_test' },
+            stripe: {
+              secretKey: 'sk_test',
+              proPriceId: 'price_pro_test',
+              premiumPriceId: 'price_premium_test',
+            },
           },
         }));
         const { priceIdToPlan } = require('../../modules/billing/services/stripe.service');
@@ -122,7 +134,11 @@ describe('Stripe Service', () => {
         jest.doMock('../../config', () => ({
           __esModule: true,
           default: {
-            stripe: { secretKey: 'sk_test', proPriceId: 'price_pro_test', premiumPriceId: 'price_premium_test' },
+            stripe: {
+              secretKey: 'sk_test',
+              proPriceId: 'price_pro_test',
+              premiumPriceId: 'price_premium_test',
+            },
           },
         }));
         const { priceIdToPlan } = require('../../modules/billing/services/stripe.service');
@@ -195,12 +211,16 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
           default: {
-            stripe: { secretKey: 'sk_test_123', proPriceId: 'price_pro', premiumPriceId: 'price_premium' },
+            stripe: {
+              secretKey: 'sk_test_123',
+              proPriceId: 'price_pro',
+              premiumPriceId: 'price_premium',
+            },
           },
         }));
 
@@ -211,7 +231,7 @@ describe('Stripe Service', () => {
           'test@example.com',
           'price_pro',
           'http://success',
-          'http://cancel'
+          'http://cancel',
         ).then((result: any) => {
           expect(result).toEqual({
             sessionId: 'cs_test_abc',
@@ -234,11 +254,16 @@ describe('Stripe Service', () => {
       jest.isolateModules(() => {
         jest.doMock('stripe', () =>
           jest.fn(() => ({
-            checkout: { sessions: { create: jest.fn().mockResolvedValue({ id: 'cs_null', url: null }), retrieve: jest.fn() } },
+            checkout: {
+              sessions: {
+                create: jest.fn().mockResolvedValue({ id: 'cs_null', url: null }),
+                retrieve: jest.fn(),
+              },
+            },
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -258,11 +283,16 @@ describe('Stripe Service', () => {
       jest.isolateModules(() => {
         jest.doMock('stripe', () =>
           jest.fn(() => ({
-            checkout: { sessions: { create: jest.fn().mockRejectedValue(new Error('Stripe API error')), retrieve: jest.fn() } },
+            checkout: {
+              sessions: {
+                create: jest.fn().mockRejectedValue(new Error('Stripe API error')),
+                retrieve: jest.fn(),
+              },
+            },
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -271,7 +301,9 @@ describe('Stripe Service', () => {
 
         const { createCheckoutSession } = require('../../modules/billing/services/stripe.service');
 
-        return expect(createCheckoutSession('u1', 'e@e.com', 'p1', '/s', '/c')).rejects.toThrow('Stripe API error');
+        return expect(createCheckoutSession('u1', 'e@e.com', 'p1', '/s', '/c')).rejects.toThrow(
+          'Stripe API error',
+        );
       });
     });
   });
@@ -282,7 +314,9 @@ describe('Stripe Service', () => {
   describe('createPortalSession', () => {
     it('should create a portal session and return the url', async () => {
       jest.isolateModules(() => {
-        const mockCreate = jest.fn().mockResolvedValue({ url: 'https://billing.stripe.com/portal/s' });
+        const mockCreate = jest
+          .fn()
+          .mockResolvedValue({ url: 'https://billing.stripe.com/portal/s' });
 
         jest.doMock('stripe', () =>
           jest.fn(() => ({
@@ -290,7 +324,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: mockCreate } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -314,10 +348,12 @@ describe('Stripe Service', () => {
         jest.doMock('stripe', () =>
           jest.fn(() => ({
             checkout: { sessions: { create: jest.fn(), retrieve: jest.fn() } },
-            billingPortal: { sessions: { create: jest.fn().mockRejectedValue(new Error('Portal failed')) } },
+            billingPortal: {
+              sessions: { create: jest.fn().mockRejectedValue(new Error('Portal failed')) },
+            },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -326,7 +362,9 @@ describe('Stripe Service', () => {
 
         const { createPortalSession } = require('../../modules/billing/services/stripe.service');
 
-        return expect(createPortalSession('cus_123', 'http://return')).rejects.toThrow('Portal failed');
+        return expect(createPortalSession('cus_123', 'http://return')).rejects.toThrow(
+          'Portal failed',
+        );
       });
     });
   });
@@ -345,7 +383,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: mockConstruct },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -367,9 +405,13 @@ describe('Stripe Service', () => {
           jest.fn(() => ({
             checkout: { sessions: { create: jest.fn(), retrieve: jest.fn() } },
             billingPortal: { sessions: { create: jest.fn() } },
-            webhooks: { constructEvent: jest.fn(() => { throw new Error('Bad sig'); }) },
+            webhooks: {
+              constructEvent: jest.fn(() => {
+                throw new Error('Bad sig');
+              }),
+            },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -392,7 +434,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: mockConstruct },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -426,7 +468,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -446,11 +488,16 @@ describe('Stripe Service', () => {
       jest.isolateModules(() => {
         jest.doMock('stripe', () =>
           jest.fn(() => ({
-            checkout: { sessions: { create: jest.fn(), retrieve: jest.fn().mockRejectedValue(new Error('Not found')) } },
+            checkout: {
+              sessions: {
+                create: jest.fn(),
+                retrieve: jest.fn().mockRejectedValue(new Error('Not found')),
+              },
+            },
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn() },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -478,7 +525,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: mockList },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -502,7 +549,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn().mockResolvedValue({ data: [] }) },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,
@@ -525,7 +572,7 @@ describe('Stripe Service', () => {
             billingPortal: { sessions: { create: jest.fn() } },
             webhooks: { constructEvent: jest.fn() },
             customers: { list: jest.fn().mockRejectedValue(new Error('List failed')) },
-          }))
+          })),
         );
         jest.doMock('../../config', () => ({
           __esModule: true,

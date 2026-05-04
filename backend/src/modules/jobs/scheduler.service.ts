@@ -5,7 +5,12 @@
  * Provides methods to schedule recurring jobs for briefings, reports, and digests.
  */
 
-import { JobType, DailyBriefingPayload, MonthlyReportPayload, EmailDigestPayload } from './job.types';
+import {
+  JobType,
+  DailyBriefingPayload,
+  MonthlyReportPayload,
+  EmailDigestPayload,
+} from './job.types';
 import { getQueue } from './queue.service';
 import logger from '../../utils/logger';
 
@@ -33,15 +38,11 @@ export async function scheduleDailyBriefing(
   // Cron expression from hour/minute
   const cron = `${minute} ${hour} * * *`;
 
-  await queue.add(
-    JobType.DAILY_BRIEFING,
-    { userId, date: '' } as DailyBriefingPayload,
-    {
-      jobId,
-      repeat: { pattern: cron, tz: timezone },
-      removeOnComplete: true,
-    },
-  );
+  await queue.add(JobType.DAILY_BRIEFING, { userId, date: '' } as DailyBriefingPayload, {
+    jobId,
+    repeat: { pattern: cron, tz: timezone },
+    removeOnComplete: true,
+  });
 
   logger.info(`[Scheduler] Daily briefing scheduled for user ${userId} at ${cron} (${timezone})`);
 }
@@ -101,15 +102,11 @@ export async function scheduleEmailDigest(
   }
 
   const pattern = digestType === 'daily' ? '0 9 * * *' : '0 9 * * 1'; // 9 AM daily or Monday
-  await queue.add(
-    JobType.EMAIL_DIGEST,
-    { userId, digestType } as EmailDigestPayload,
-    {
-      jobId,
-      repeat: { pattern, tz: timezone },
-      removeOnComplete: true,
-    },
-  );
+  await queue.add(JobType.EMAIL_DIGEST, { userId, digestType } as EmailDigestPayload, {
+    jobId,
+    repeat: { pattern, tz: timezone },
+    removeOnComplete: true,
+  });
 
   logger.info(`[Scheduler] ${digestType} email digest scheduled for user ${userId}`);
 }

@@ -42,11 +42,51 @@ const mockCalculateNatalChart = __mockCalcNatal as jest.Mock;
 function buildMockChartData(overrides?: Partial<SolarReturnChartData>): SolarReturnChartData {
   return {
     planets: [
-      { planet: 'sun', sign: 'capricorn', degree: 10, minute: 30, second: 0, house: 10, retrograde: false },
-      { planet: 'moon', sign: 'pisces', degree: 15, minute: 0, second: 0, house: 12, retrograde: false },
-      { planet: 'jupiter', sign: 'taurus', degree: 5, minute: 0, second: 0, house: 2, retrograde: false },
-      { planet: 'venus', sign: 'aquarius', degree: 20, minute: 0, second: 0, house: 11, retrograde: false },
-      { planet: 'mars', sign: 'gemini', degree: 8, minute: 0, second: 0, house: 3, retrograde: true },
+      {
+        planet: 'sun',
+        sign: 'capricorn',
+        degree: 10,
+        minute: 30,
+        second: 0,
+        house: 10,
+        retrograde: false,
+      },
+      {
+        planet: 'moon',
+        sign: 'pisces',
+        degree: 15,
+        minute: 0,
+        second: 0,
+        house: 12,
+        retrograde: false,
+      },
+      {
+        planet: 'jupiter',
+        sign: 'taurus',
+        degree: 5,
+        minute: 0,
+        second: 0,
+        house: 2,
+        retrograde: false,
+      },
+      {
+        planet: 'venus',
+        sign: 'aquarius',
+        degree: 20,
+        minute: 0,
+        second: 0,
+        house: 11,
+        retrograde: false,
+      },
+      {
+        planet: 'mars',
+        sign: 'gemini',
+        degree: 8,
+        minute: 0,
+        second: 0,
+        house: 3,
+        retrograde: true,
+      },
     ],
     houses: Array.from({ length: 12 }, (_, i) => ({
       house: i + 1,
@@ -66,8 +106,30 @@ function buildMockChartData(overrides?: Partial<SolarReturnChartData>): SolarRet
 function buildMockNatalChart(overrides?: Record<string, any>) {
   return {
     planets: new Map([
-      ['Sun', { longitude: 280, sign: 'capricorn', degree: 10, minute: 0, second: 0, house: 10, isRetrograde: false }],
-      ['Moon', { longitude: 100, sign: 'cancer', degree: 10, minute: 0, second: 0, house: 4, isRetrograde: false }],
+      [
+        'Sun',
+        {
+          longitude: 280,
+          sign: 'capricorn',
+          degree: 10,
+          minute: 0,
+          second: 0,
+          house: 10,
+          isRetrograde: false,
+        },
+      ],
+      [
+        'Moon',
+        {
+          longitude: 100,
+          sign: 'cancer',
+          degree: 10,
+          minute: 0,
+          second: 0,
+          house: 4,
+          isRetrograde: false,
+        },
+      ],
     ]),
     houses: {
       cusps: Array.from({ length: 12 }, (_, i) => ({
@@ -119,9 +181,7 @@ describe('SolarReturnService', () => {
 
     it('should find lucky days from Jupiter trine aspects', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'jupiter', planet2: 'sun', type: 'trine', orb: 2, applying: true },
-        ],
+        aspects: [{ planet1: 'jupiter', planet2: 'sun', type: 'trine', orb: 2, applying: true }],
       });
 
       const result = service.calculateLuckyDays(chartData, 2026);
@@ -149,9 +209,7 @@ describe('SolarReturnService', () => {
 
     it('should find lucky days from Venus trine aspects', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'venus', planet2: 'mars', type: 'trine', orb: 4, applying: true },
-        ],
+        aspects: [{ planet1: 'venus', planet2: 'mars', type: 'trine', orb: 4, applying: true }],
       });
 
       const result = service.calculateLuckyDays(chartData, 2026);
@@ -163,9 +221,7 @@ describe('SolarReturnService', () => {
 
     it('should find lucky days from Venus sextile aspects', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'moon', planet2: 'venus', type: 'sextile', orb: 1, applying: true },
-        ],
+        aspects: [{ planet1: 'moon', planet2: 'venus', type: 'sextile', orb: 1, applying: true }],
       });
 
       const result = service.calculateLuckyDays(chartData, 2026);
@@ -208,9 +264,7 @@ describe('SolarReturnService', () => {
 
     it('should assign intensity 9 for Jupiter aspects with orb < 3', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'jupiter', planet2: 'moon', type: 'trine', orb: 1.5, applying: true },
-        ],
+        aspects: [{ planet1: 'jupiter', planet2: 'moon', type: 'trine', orb: 1.5, applying: true }],
       });
 
       const result = service.calculateLuckyDays(chartData, 2026);
@@ -220,9 +274,7 @@ describe('SolarReturnService', () => {
 
     it('should assign intensity 7 for Jupiter aspects with orb >= 3', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'jupiter', planet2: 'moon', type: 'trine', orb: 5.0, applying: true },
-        ],
+        aspects: [{ planet1: 'jupiter', planet2: 'moon', type: 'trine', orb: 5.0, applying: true }],
       });
 
       const result = service.calculateLuckyDays(chartData, 2026);
@@ -238,7 +290,15 @@ describe('SolarReturnService', () => {
     it('should return themes for house 1 (self-discovery)', () => {
       const chartData = buildMockChartData({
         planets: [
-          { planet: 'sun', sign: 'aries', degree: 10, minute: 0, second: 0, house: 1, retrograde: false },
+          {
+            planet: 'sun',
+            sign: 'aries',
+            degree: 10,
+            minute: 0,
+            second: 0,
+            house: 1,
+            retrograde: false,
+          },
         ],
       });
 
@@ -251,7 +311,15 @@ describe('SolarReturnService', () => {
     it('should return themes for house 10 (career)', () => {
       const chartData = buildMockChartData({
         planets: [
-          { planet: 'sun', sign: 'capricorn', degree: 10, minute: 0, second: 0, house: 10, retrograde: false },
+          {
+            planet: 'sun',
+            sign: 'capricorn',
+            degree: 10,
+            minute: 0,
+            second: 0,
+            house: 10,
+            retrograde: false,
+          },
         ],
       });
 
@@ -264,7 +332,15 @@ describe('SolarReturnService', () => {
     it('should return themes for house 7 (partnerships)', () => {
       const chartData = buildMockChartData({
         planets: [
-          { planet: 'sun', sign: 'libra', degree: 5, minute: 0, second: 0, house: 7, retrograde: false },
+          {
+            planet: 'sun',
+            sign: 'libra',
+            degree: 5,
+            minute: 0,
+            second: 0,
+            house: 7,
+            retrograde: false,
+          },
         ],
       });
 
@@ -285,7 +361,15 @@ describe('SolarReturnService', () => {
     it('should return themes for house 5 (creativity)', () => {
       const chartData = buildMockChartData({
         planets: [
-          { planet: 'sun', sign: 'leo', degree: 15, minute: 0, second: 0, house: 5, retrograde: false },
+          {
+            planet: 'sun',
+            sign: 'leo',
+            degree: 15,
+            minute: 0,
+            second: 0,
+            house: 5,
+            retrograde: false,
+          },
         ],
       });
 
@@ -298,7 +382,15 @@ describe('SolarReturnService', () => {
     it('should return themes for house 12 (spirituality)', () => {
       const chartData = buildMockChartData({
         planets: [
-          { planet: 'sun', sign: 'pisces', degree: 20, minute: 0, second: 0, house: 12, retrograde: false },
+          {
+            planet: 'sun',
+            sign: 'pisces',
+            degree: 20,
+            minute: 0,
+            second: 0,
+            house: 12,
+            retrograde: false,
+          },
         ],
       });
 
@@ -312,7 +404,15 @@ describe('SolarReturnService', () => {
       for (let house = 1; house <= 12; house++) {
         const chartData = buildMockChartData({
           planets: [
-            { planet: 'sun', sign: 'aries', degree: 10, minute: 0, second: 0, house, retrograde: false },
+            {
+              planet: 'sun',
+              sign: 'aries',
+              degree: 10,
+              minute: 0,
+              second: 0,
+              house,
+              retrograde: false,
+            },
           ],
         });
 
@@ -330,7 +430,7 @@ describe('SolarReturnService', () => {
       let callCount = 0;
       mockCalculatePlanetaryPositions.mockImplementation(() => {
         const map = new Map();
-        const sunLong = callCount < 20 ? 280.5 - (0.5 / (callCount + 1)) : 280.5;
+        const sunLong = callCount < 20 ? 280.5 - 0.5 / (callCount + 1) : 280.5;
         map.set('Sun', { longitude: sunLong, sign: 'capricorn', degree: 10 });
         callCount++;
         return map;
@@ -409,7 +509,7 @@ describe('SolarReturnService', () => {
         year: 2026,
       });
 
-      const sunPlanet = result.chartData.planets.find(p => p.planet === 'sun');
+      const sunPlanet = result.chartData.planets.find((p) => p.planet === 'sun');
       expect(sunPlanet).toBeDefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(sunPlanet!.sign).toBe('capricorn');
@@ -463,12 +563,36 @@ describe('SolarReturnService', () => {
   describe('moon phase calculation', () => {
     it('should calculate full moon phase when Sun-Moon angle is ~180 degrees', async () => {
       setupSunMock();
-      mockCalculateNatalChart.mockReturnValue(buildMockNatalChart({
-        planets: new Map([
-          ['Sun', { longitude: 0, sign: 'aries', degree: 0, minute: 0, second: 0, house: 1, isRetrograde: false }],
-          ['Moon', { longitude: 180, sign: 'libra', degree: 0, minute: 0, second: 0, house: 7, isRetrograde: false }],
-        ]),
-      }));
+      mockCalculateNatalChart.mockReturnValue(
+        buildMockNatalChart({
+          planets: new Map([
+            [
+              'Sun',
+              {
+                longitude: 0,
+                sign: 'aries',
+                degree: 0,
+                minute: 0,
+                second: 0,
+                house: 1,
+                isRetrograde: false,
+              },
+            ],
+            [
+              'Moon',
+              {
+                longitude: 180,
+                sign: 'libra',
+                degree: 0,
+                minute: 0,
+                second: 0,
+                house: 7,
+                isRetrograde: false,
+              },
+            ],
+          ]),
+        }),
+      );
 
       const result = await service.calculateSolarReturn({
         natalChartId: 'chart-1',
@@ -483,12 +607,36 @@ describe('SolarReturnService', () => {
 
     it('should calculate new moon when Sun and Moon are conjunct', async () => {
       setupSunMock();
-      mockCalculateNatalChart.mockReturnValue(buildMockNatalChart({
-        planets: new Map([
-          ['Sun', { longitude: 100, sign: 'cancer', degree: 10, minute: 0, second: 0, house: 4, isRetrograde: false }],
-          ['Moon', { longitude: 105, sign: 'cancer', degree: 15, minute: 0, second: 0, house: 4, isRetrograde: false }],
-        ]),
-      }));
+      mockCalculateNatalChart.mockReturnValue(
+        buildMockNatalChart({
+          planets: new Map([
+            [
+              'Sun',
+              {
+                longitude: 100,
+                sign: 'cancer',
+                degree: 10,
+                minute: 0,
+                second: 0,
+                house: 4,
+                isRetrograde: false,
+              },
+            ],
+            [
+              'Moon',
+              {
+                longitude: 105,
+                sign: 'cancer',
+                degree: 15,
+                minute: 0,
+                second: 0,
+                house: 4,
+                isRetrograde: false,
+              },
+            ],
+          ]),
+        }),
+      );
 
       const result = await service.calculateSolarReturn({
         natalChartId: 'chart-1',
@@ -501,12 +649,25 @@ describe('SolarReturnService', () => {
 
     it('should handle missing Sun or Moon positions', async () => {
       setupSunMock();
-      mockCalculateNatalChart.mockReturnValue(buildMockNatalChart({
-        planets: new Map([
-          ['Sun', { longitude: 100, sign: 'cancer', degree: 10, minute: 0, second: 0, house: 4, isRetrograde: false }],
-          // No Moon
-        ]),
-      }));
+      mockCalculateNatalChart.mockReturnValue(
+        buildMockNatalChart({
+          planets: new Map([
+            [
+              'Sun',
+              {
+                longitude: 100,
+                sign: 'cancer',
+                degree: 10,
+                minute: 0,
+                second: 0,
+                house: 4,
+                isRetrograde: false,
+              },
+            ],
+            // No Moon
+          ]),
+        }),
+      );
 
       const result = await service.calculateSolarReturn({
         natalChartId: 'chart-1',
@@ -519,12 +680,36 @@ describe('SolarReturnService', () => {
 
     it('should calculate first-quarter phase (100 degrees)', async () => {
       setupSunMock();
-      mockCalculateNatalChart.mockReturnValue(buildMockNatalChart({
-        planets: new Map([
-          ['Sun', { longitude: 0, sign: 'aries', degree: 0, minute: 0, second: 0, house: 1, isRetrograde: false }],
-          ['Moon', { longitude: 100, sign: 'cancer', degree: 10, minute: 0, second: 0, house: 4, isRetrograde: false }],
-        ]),
-      }));
+      mockCalculateNatalChart.mockReturnValue(
+        buildMockNatalChart({
+          planets: new Map([
+            [
+              'Sun',
+              {
+                longitude: 0,
+                sign: 'aries',
+                degree: 0,
+                minute: 0,
+                second: 0,
+                house: 1,
+                isRetrograde: false,
+              },
+            ],
+            [
+              'Moon',
+              {
+                longitude: 100,
+                sign: 'cancer',
+                degree: 10,
+                minute: 0,
+                second: 0,
+                house: 4,
+                isRetrograde: false,
+              },
+            ],
+          ]),
+        }),
+      );
 
       const result = await service.calculateSolarReturn({
         natalChartId: 'chart-1',
@@ -537,12 +722,36 @@ describe('SolarReturnService', () => {
 
     it('should calculate waning-crescent phase (330+ degrees)', async () => {
       setupSunMock();
-      mockCalculateNatalChart.mockReturnValue(buildMockNatalChart({
-        planets: new Map([
-          ['Sun', { longitude: 0, sign: 'aries', degree: 0, minute: 0, second: 0, house: 1, isRetrograde: false }],
-          ['Moon', { longitude: 330, sign: 'pisces', degree: 0, minute: 0, second: 0, house: 12, isRetrograde: false }],
-        ]),
-      }));
+      mockCalculateNatalChart.mockReturnValue(
+        buildMockNatalChart({
+          planets: new Map([
+            [
+              'Sun',
+              {
+                longitude: 0,
+                sign: 'aries',
+                degree: 0,
+                minute: 0,
+                second: 0,
+                house: 1,
+                isRetrograde: false,
+              },
+            ],
+            [
+              'Moon',
+              {
+                longitude: 330,
+                sign: 'pisces',
+                degree: 0,
+                minute: 0,
+                second: 0,
+                house: 12,
+                isRetrograde: false,
+              },
+            ],
+          ]),
+        }),
+      );
 
       const result = await service.calculateSolarReturn({
         natalChartId: 'chart-1',
@@ -659,7 +868,15 @@ describe('SolarReturnService', () => {
     it('should handle planets with zero degree', () => {
       const chartData = buildMockChartData({
         planets: [
-          { planet: 'sun', sign: 'aries', degree: 0, minute: 0, second: 0, house: 1, retrograde: false },
+          {
+            planet: 'sun',
+            sign: 'aries',
+            degree: 0,
+            minute: 0,
+            second: 0,
+            house: 1,
+            retrograde: false,
+          },
         ],
       });
 
@@ -671,9 +888,7 @@ describe('SolarReturnService', () => {
 
     it('should calculate lucky days for different years', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'jupiter', planet2: 'sun', type: 'trine', orb: 2, applying: true },
-        ],
+        aspects: [{ planet1: 'jupiter', planet2: 'sun', type: 'trine', orb: 2, applying: true }],
       });
 
       const result2025 = service.calculateLuckyDays(chartData, 2025);
@@ -685,9 +900,7 @@ describe('SolarReturnService', () => {
 
     it('should handle aspects where planet is in planet2 position', () => {
       const chartData = buildMockChartData({
-        aspects: [
-          { planet1: 'mars', planet2: 'jupiter', type: 'trine', orb: 1, applying: true },
-        ],
+        aspects: [{ planet1: 'mars', planet2: 'jupiter', type: 'trine', orb: 1, applying: true }],
       });
 
       const result = service.calculateLuckyDays(chartData, 2026);

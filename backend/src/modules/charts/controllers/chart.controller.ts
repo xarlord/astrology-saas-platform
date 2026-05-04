@@ -8,6 +8,10 @@ import { AppError } from '../../../utils/appError';
 import { ChartModel } from '../models';
 import { NatalChartService } from '../../shared/services/natalChart.service';
 import type { NatalChart } from '../../shared/services/natalChart.service';
+import type {
+  CreateNatalChartInput,
+  UpdateChartInput,
+} from '../../../shared/schemas/chart.validation';
 
 const natalChartService = new NatalChartService();
 
@@ -105,6 +109,9 @@ function adaptNatalChart(chart: NatalChart): Record<string, unknown> {
  * Create new chart
  */
 export async function createChart(req: AuthenticatedRequest, res: Response): Promise<void> {
+  // Use validated data from request middleware with proper types
+  const validatedData = req.validated as CreateNatalChartInput;
+
   const {
     name,
     type = 'natal',
@@ -118,18 +125,25 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
     house_system = 'placidus',
     zodiac = 'tropical',
     sidereal_mode,
-  } = req.body;
+  } = validatedData;
 
-  // Validate required fields
-  if (!name || !birth_date || !birth_place_name || birth_latitude === undefined || birth_longitude === undefined || !birth_timezone) {
-    throw new AppError('Missing required fields', 400);
-  }
+  // Map validation schema values to model enum values
+  const mappedHouseSystem: CreateNatalChartInput['house_system'] =
+    house_system === 'whole-sign' ? ('whole' as any) : house_system;
+
+  // Map type to supported model values (validation allows solar-return, lunar-return but model expects transit/progressed)
+  const mappedType: CreateNatalChartInput['type'] =
+    type === 'solar-return'
+      ? ('progressed' as any)
+      : type === 'lunar-return'
+        ? ('transit' as any)
+        : type;
 
   // Create chart
   const chart = await ChartModel.create({
     user_id: req.user.id,
     name,
-    type,
+    type: mappedType as any,
     birth_date: new Date(birth_date),
     birth_time: birth_time || '12:00:00',
     birth_time_unknown,
@@ -137,7 +151,7 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
     birth_latitude,
     birth_longitude,
     birth_timezone,
-    house_system,
+    house_system: mappedHouseSystem as any,
     zodiac,
     sidereal_mode,
   });
@@ -197,11 +211,17 @@ export async function getChart(req: AuthenticatedRequest, res: Response): Promis
 export async function updateChart(req: AuthenticatedRequest, res: Response): Promise<void> {
   const { id } = req.params;
 
-  const { name, house_system, zodiac, sidereal_mode } = req.body;
+  // Use validated data from request middleware with proper types
+  const validatedData = req.validated as UpdateChartInput;
+
+  const { name, house_system, zodiac, sidereal_mode } = validatedData;
+
+  // Map validation schema values to model enum values
+  const mappedHouseSystem = house_system === 'whole-sign' ? ('whole' as any) : house_system;
 
   const chart = await ChartModel.update(id, req.user.id, {
     name,
-    house_system,
+    house_system: mappedHouseSystem as any,
     zodiac,
     sidereal_mode,
   });

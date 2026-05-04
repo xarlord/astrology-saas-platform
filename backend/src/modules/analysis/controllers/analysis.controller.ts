@@ -8,9 +8,7 @@ import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import { ChartModel } from '../models';
 import { swissEphemeris } from '../../shared';
-import {
-  generateCompletePersonalityAnalysis,
-} from '../services/interpretation.service';
+import { generateCompletePersonalityAnalysis } from '../services/interpretation.service';
 import { HouseCusp, Aspect } from '../../../types/chart';
 
 interface PlanetCalcData {
@@ -45,8 +43,20 @@ interface AspectData {
  * Helper: Convert degree to zodiac sign
  */
 function getZodiacSign(degree: number): string {
-  const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-                 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+  const signs = [
+    'aries',
+    'taurus',
+    'gemini',
+    'cancer',
+    'leo',
+    'virgo',
+    'libra',
+    'scorpio',
+    'sagittarius',
+    'capricorn',
+    'aquarius',
+    'pisces',
+  ];
   const normalizedDegree = ((degree % 360) + 360) % 360;
   return signs[Math.floor(normalizedDegree / 30)];
 }
@@ -54,7 +64,10 @@ function getZodiacSign(degree: number): string {
 /**
  * Get personality analysis for a chart
  */
-export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Response): Promise<void> {
+export async function getPersonalityAnalysis(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
   const userId = req.user.id;
   const { chartId } = req.params;
 
@@ -74,7 +87,7 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
     houses: { houses: HouseCalcData[] } | HouseCalcData[];
     aspects: AspectData[];
   };
-  const houseArray = (houses as { houses?: HouseCalcData[] }).houses || houses as HouseCalcData[]; // Handle both formats
+  const houseArray = (houses as { houses?: HouseCalcData[] }).houses || (houses as HouseCalcData[]); // Handle both formats
 
   // Helper function to convert decimal degrees to DMS
   const longitudeToDMS = (longitude: number) => {
@@ -96,11 +109,12 @@ export async function getPersonalityAnalysis(req: AuthenticatedRequest, res: Res
       speed: data.speed,
       ...dms, // degree, minute, second
       retrograde: data.speed < 0, // Negative speed indicates retrograde
-      house: houseArray.findIndex((h: HouseCalcData) => {
-        // Simple house calculation based on longitude
-        const houseSize = 30;
-        return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
-      }) + 1,
+      house:
+        houseArray.findIndex((h: HouseCalcData) => {
+          // Simple house calculation based on longitude
+          const houseSize = 30;
+          return h.cusp <= data.longitude && data.longitude < h.cusp + houseSize;
+        }) + 1,
     };
   });
 
@@ -175,7 +189,7 @@ export async function getAspectPatterns(req: AuthenticatedRequest, res: Response
     houses: { houses: HouseCalcData[] } | HouseCalcData[];
     aspects: AspectData[];
   };
-  const houseArray = (houses as { houses?: HouseCalcData[] }).houses || houses as HouseCalcData[]; // Handle both formats
+  const houseArray = (houses as { houses?: HouseCalcData[] }).houses || (houses as HouseCalcData[]); // Handle both formats
 
   // Convert planets object to array format for interpretation service
   const planetsArray = Object.entries(planets).map(([planet, data]: [string, PlanetCalcData]) => {
@@ -296,11 +310,14 @@ function buildPlanetsInSigns(planets: Record<string, PlanetCalcData>) {
   }));
 }
 
-function buildPlanetsInHouses(planets: Record<string, PlanetCalcData>, houses: { houses: HouseCalcData[] }) {
+function buildPlanetsInHouses(
+  planets: Record<string, PlanetCalcData>,
+  houses: { houses: HouseCalcData[] },
+) {
   const planetHousePositions: Record<string, number> = {};
 
   // For each planet, determine which house it's in
-  Object.keys(planets).forEach(planetKey => {
+  Object.keys(planets).forEach((planetKey) => {
     const planet = planets[planetKey];
     const houseNum = findHouseForPosition(planet.longitude, houses.houses);
     planetHousePositions[planetKey] = houseNum;
@@ -309,7 +326,7 @@ function buildPlanetsInHouses(planets: Record<string, PlanetCalcData>, houses: {
   return planetHousePositions;
 }
 
-function findHouseForPosition(longitude: number, houseCusps: Array<{cusp: number}>): number {
+function findHouseForPosition(longitude: number, houseCusps: Array<{ cusp: number }>): number {
   for (let i = 0; i < houseCusps.length; i++) {
     const currentCusp = houseCusps[i].cusp;
     const nextCusp = houseCusps[(i + 1) % 12].cusp;
@@ -327,7 +344,7 @@ function findHouseForPosition(longitude: number, houseCusps: Array<{cusp: number
 function groupAspectsByType(aspects: AspectData[]) {
   const grouped: Record<string, AspectData[]> = {};
 
-  aspects.forEach(aspect => {
+  aspects.forEach((aspect) => {
     if (!grouped[aspect.aspect]) grouped[aspect.aspect] = [];
     grouped[aspect.aspect].push(aspect);
   });
@@ -338,7 +355,7 @@ function groupAspectsByType(aspects: AspectData[]) {
 function buildAspectGrid(aspects: AspectData[]) {
   // Collect all unique planet names
   const planetSet = new Set<string>();
-  aspects.forEach(a => {
+  aspects.forEach((a) => {
     planetSet.add(a.planet1);
     planetSet.add(a.planet2);
   });
@@ -353,7 +370,7 @@ function buildAspectGrid(aspects: AspectData[]) {
     }
   }
 
-  aspects.forEach(a => {
+  aspects.forEach((a) => {
     grid[a.planet1][a.planet2] = a.aspect;
     grid[a.planet2][a.planet1] = a.aspect; // symmetrical
   });
@@ -362,26 +379,38 @@ function buildAspectGrid(aspects: AspectData[]) {
 }
 
 function getMajorAspects(_aspects: AspectData[]) {
-  return _aspects.filter(a => a.orb <= 3); // Tight orbs
+  return _aspects.filter((a) => a.orb <= 3); // Tight orbs
 }
 
 function getHarmoniousAspects(_aspects: AspectData[]) {
-  return _aspects.filter(a => ['trine', 'sextile'].includes(a.aspect));
+  return _aspects.filter((a) => ['trine', 'sextile'].includes(a.aspect));
 }
 
 function getChallengingAspects(_aspects: AspectData[]) {
-  return _aspects.filter(a => ['square', 'opposition', 'quincunx'].includes(a.aspect));
+  return _aspects.filter((a) => ['square', 'opposition', 'quincunx'].includes(a.aspect));
 }
 
 /**
  * Calculate the ruling planet of each house based on the sign on its cusp.
  * For each house: sign on cusp → ruling planet → where that planet sits in the chart.
  */
-function calculateHouseRulers(planets: Record<string, PlanetCalcData>, houses: { houses: HouseCalcData[] }) {
+function calculateHouseRulers(
+  planets: Record<string, PlanetCalcData>,
+  houses: { houses: HouseCalcData[] },
+) {
   const ZODIAC_RULERS: Record<string, string> = {
-    aries: 'mars', taurus: 'venus', gemini: 'mercury', cancer: 'moon',
-    leo: 'sun', virgo: 'mercury', libra: 'venus', scorpio: 'pluto',
-    sagittarius: 'jupiter', capricorn: 'saturn', aquarius: 'uranus', pisces: 'neptune',
+    aries: 'mars',
+    taurus: 'venus',
+    gemini: 'mercury',
+    cancer: 'moon',
+    leo: 'sun',
+    virgo: 'mercury',
+    libra: 'venus',
+    scorpio: 'pluto',
+    sagittarius: 'jupiter',
+    capricorn: 'saturn',
+    aquarius: 'uranus',
+    pisces: 'neptune',
   };
 
   const rulerOf: Record<string, string[]> = {};
@@ -390,12 +419,15 @@ function calculateHouseRulers(planets: Record<string, PlanetCalcData>, houses: {
     rulerOf[ruler].push(sign);
   }
 
-  const result: Record<number, {
-    signOnCusp: string;
-    ruler: string;
-    rulerInHouse: number | null;
-    rulerInSign: string | null;
-  }> = {};
+  const result: Record<
+    number,
+    {
+      signOnCusp: string;
+      ruler: string;
+      rulerInHouse: number | null;
+      rulerInSign: string | null;
+    }
+  > = {};
 
   const planetKeys = Object.keys(planets);
 
@@ -414,7 +446,7 @@ function calculateHouseRulers(planets: Record<string, PlanetCalcData>, houses: {
     } else if (ruler) {
       // Ruling planet not in the calculated planets set (e.g., outer planets omitted)
       // Try a case-insensitive match
-      const matchedKey = planetKeys.find(k => k.toLowerCase() === ruler.toLowerCase());
+      const matchedKey = planetKeys.find((k) => k.toLowerCase() === ruler.toLowerCase());
       if (matchedKey) {
         rulerInSign = planets[matchedKey].sign;
         rulerInHouse = findHouseForPosition(planets[matchedKey].longitude, houses.houses);
@@ -435,7 +467,10 @@ function calculateHouseRulers(planets: Record<string, PlanetCalcData>, houses: {
 /**
  * Identify houses that contain no natal planets.
  */
-function identifyEmptyHouses(planets: Record<string, PlanetCalcData>, houses: { houses: HouseCalcData[] }) {
+function identifyEmptyHouses(
+  planets: Record<string, PlanetCalcData>,
+  houses: { houses: HouseCalcData[] },
+) {
   const emptyHouses: number[] = [];
 
   // Build a set of occupied house numbers
@@ -464,7 +499,10 @@ interface Stellium {
 /**
  * Identify stelliums — 3+ planets in the same sign or house.
  */
-function identifyStelliums(planets: Record<string, PlanetCalcData>, houses: { houses: HouseCalcData[] }): Stellium[] {
+function identifyStelliums(
+  planets: Record<string, PlanetCalcData>,
+  houses: { houses: HouseCalcData[] },
+): Stellium[] {
   const stelliums: Stellium[] = [];
   const STELLIUM_THRESHOLD = 3;
 

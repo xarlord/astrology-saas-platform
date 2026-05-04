@@ -40,7 +40,7 @@ export const useCharts = (autoLoad = true) => {
       try {
         const chart = await createChart(data);
         return chart;
-      } catch (error: unknown) {
+      } catch {
         return null;
       }
     },
@@ -53,7 +53,7 @@ export const useCharts = (autoLoad = true) => {
       try {
         await updateChart(id, data);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },
@@ -66,7 +66,7 @@ export const useCharts = (autoLoad = true) => {
       try {
         await deleteChart(id);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },
@@ -79,7 +79,7 @@ export const useCharts = (autoLoad = true) => {
       try {
         await calculateChart(id);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },

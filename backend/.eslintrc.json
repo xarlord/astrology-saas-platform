@@ -20,5 +20,13 @@
     "@typescript-eslint/no-non-null-assertion": "warn",
     "no-console": "off"
   },
-  "ignorePatterns": ["dist", "node_modules", "*.js"]
+  "ignorePatterns": ["dist", "node_modules", "*.js"],
+  "overrides": [
+    {
+      "files": ["**/__tests__/**", "**/*.test.ts", "scripts/**"],
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    }
+  ]
 }

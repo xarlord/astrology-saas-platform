@@ -11,12 +11,7 @@ import bcrypt from 'bcryptjs';
  * Clean database tables
  */
 export async function cleanDatabase(database: any) {
-  const tables = [
-    'refresh_tokens',
-    'ai_cache',
-    'charts',
-    'users',
-  ];
+  const tables = ['refresh_tokens', 'ai_cache', 'charts', 'users'];
 
   for (const table of tables) {
     await database(table).del();
@@ -47,12 +42,10 @@ export async function createTestUser(database: any) {
 export async function createAuthenticatedUser(database: any, request: any) {
   await createTestUser(database);
 
-  const loginResponse = await request
-    .post('/api/v1/auth/login')
-    .send({
-      email: 'test@example.com',
-      password: 'Password123!',
-    });
+  const loginResponse = await request.post('/api/v1/auth/login').send({
+    email: 'test@example.com',
+    password: 'Password123!',
+  });
 
   return {
     user: loginResponse.body.data.user,

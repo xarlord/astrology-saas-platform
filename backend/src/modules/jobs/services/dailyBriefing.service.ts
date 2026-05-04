@@ -67,7 +67,7 @@ const PLANET_THEMES: Record<string, string> = {
 };
 
 const DAILY_AFFIRMATIONS: Record<string, string[]> = {
-  'new': [
+  new: [
     'Today is a fresh start. Set your intentions clearly.',
     'New beginnings are favored. Plant the seeds of what you want to grow.',
   ],
@@ -83,12 +83,12 @@ const DAILY_AFFIRMATIONS: Record<string, string[]> = {
     'Almost there. Refine your approach before the full moon.',
     'Your efforts are ripening. Stay focused on what matters.',
   ],
-  'full': [
-    'Peak illumination. Celebrate how far you\'ve come.',
+  full: [
+    "Peak illumination. Celebrate how far you've come.",
     'What has been illuminated? Acknowledge your growth.',
   ],
   'waning-gibbous': [
-    'Begin integrating what you\'ve learned. Share your wisdom.',
+    "Begin integrating what you've learned. Share your wisdom.",
     'Gratitude opens doors. Count your blessings today.',
   ],
   'last-quarter': [
@@ -102,12 +102,12 @@ const DAILY_AFFIRMATIONS: Record<string, string[]> = {
 };
 
 const TRANSIT_INTERPRETATIONS: Record<string, string> = {
-  'conjunction': 'This transit amplifies and focuses energy directly.',
-  'opposition': 'This transit creates tension that demands balance and awareness.',
-  'trine': 'This transit flows naturally — a gift of ease and harmony.',
-  'square': 'This transit challenges you to grow through friction and effort.',
-  'sextile': 'This transit offers opportunities if you take initiative.',
-  'quincunx': 'This transit asks for adjustment — a subtle but important shift.',
+  conjunction: 'This transit amplifies and focuses energy directly.',
+  opposition: 'This transit creates tension that demands balance and awareness.',
+  trine: 'This transit flows naturally — a gift of ease and harmony.',
+  square: 'This transit challenges you to grow through friction and effort.',
+  sextile: 'This transit offers opportunities if you take initiative.',
+  quincunx: 'This transit asks for adjustment — a subtle but important shift.',
 };
 
 // ---- Core Functions ----
@@ -133,13 +133,21 @@ export async function generateBriefing(userId: string, dateStr?: string): Promis
   const moonPhase = calculateMoonPhase(targetDate);
 
   // 3. Calculate current transits
-  const natalPlanets = (chart.calculated_data as Record<string, unknown>)?.planets as Record<string, { longitude: number }> | undefined;
-  const topTransits = await calculateTopTransits(natalPlanets, chart.birth_latitude, chart.birth_longitude, targetDate);
+  const natalPlanets = (chart.calculated_data as Record<string, unknown>)?.planets as
+    | Record<string, { longitude: number }>
+    | undefined;
+  const topTransits = await calculateTopTransits(
+    natalPlanets,
+    chart.birth_latitude,
+    chart.birth_longitude,
+    targetDate,
+  );
 
   // 4. Daily theme & affirmation
   const moonPhaseKey = moonPhase.phase;
   const affirmationOptions = DAILY_AFFIRMATIONS[moonPhaseKey] || DAILY_AFFIRMATIONS['new'];
-  const affirmationIndex = dateISO.split('-').reduce((acc, d) => acc + parseInt(d, 10), 0) % affirmationOptions.length;
+  const affirmationIndex =
+    dateISO.split('-').reduce((acc, d) => acc + parseInt(d, 10), 0) % affirmationOptions.length;
   const dailyTheme = deriveDailyTheme(topTransits, moonPhase.phase);
   const affirmation = affirmationOptions[affirmationIndex];
 
@@ -174,7 +182,10 @@ export function formatBriefingContent(briefing: DailyBriefing): BriefingContent 
   });
 
   const transitLines = briefing.topTransits
-    .map((t, i) => `${i + 1}. ${capitalize(t.transitPlanet)} ${t.aspect} ${capitalize(t.natalPlanet)} (${t.orb}° orb) — ${t.interpretation}`)
+    .map(
+      (t, i) =>
+        `${i + 1}. ${capitalize(t.transitPlanet)} ${t.aspect} ${capitalize(t.natalPlanet)} (${t.orb}° orb) — ${t.interpretation}`,
+    )
     .join('\n');
 
   const title = `Your Cosmic Briefing — ${dateFormatted}`;
@@ -210,7 +221,9 @@ export async function sendBriefingPush(userId: string, content: BriefingContent)
     });
     logger.info(`[Briefing] Push notification sent to user ${userId}`);
   } catch (err) {
-    logger.error(`[Briefing] Push notification failed for user ${userId}: ${(err as Error).message}`);
+    logger.error(
+      `[Briefing] Push notification failed for user ${userId}: ${(err as Error).message}`,
+    );
   }
 }
 
@@ -300,7 +313,8 @@ async function calculateTopTransits(
             natalPlanet: natalName.toLowerCase(),
             aspect: aspectType,
             orb: Math.round(deviation * 100) / 100,
-            interpretation: TRANSIT_INTERPRETATIONS[aspectType] || `This ${aspectType} brings focused energy.`,
+            interpretation:
+              TRANSIT_INTERPRETATIONS[aspectType] || `This ${aspectType} brings focused energy.`,
           });
           break;
         }
@@ -320,11 +334,12 @@ function deriveDailyTheme(transits: DailyBriefing['topTransits'], moonPhase: str
   // Weight themes from the tightest transit
   const primary = transits[0];
   const theme = PLANET_THEMES[primary.transitPlanet] || 'personal growth';
-  const aspectFlavor = (primary.aspect === 'trine' || primary.aspect === 'sextile')
-    ? 'harmonious flow'
-    : (primary.aspect === 'square' || primary.aspect === 'opposition')
-      ? 'transformative challenge'
-      : 'focused energy';
+  const aspectFlavor =
+    primary.aspect === 'trine' || primary.aspect === 'sextile'
+      ? 'harmonious flow'
+      : primary.aspect === 'square' || primary.aspect === 'opposition'
+        ? 'transformative challenge'
+        : 'focused energy';
 
   return `A day of ${theme} — ${aspectFlavor} is highlighted by ${capitalize(primary.transitPlanet)} ${primary.aspect} ${capitalize(primary.natalPlanet)}.`;
 }
@@ -356,7 +371,8 @@ function derivePlanetaryHighlight(
   return {
     planet: primary.transitPlanet,
     sign: 'aries', // Simplified — would need transit chart data for actual sign
-    message: signMessages[primary.transitPlanet] || 'This planet brings focused energy to your day.',
+    message:
+      signMessages[primary.transitPlanet] || 'This planet brings focused energy to your day.',
   };
 }
 
@@ -404,12 +420,16 @@ function buildEmailHtml(
     <p>${escapeHtml(briefing.dailyTheme)}</p>
 
     <h3 class="section-title">Active Transits</h3>
-    ${briefing.topTransits.map(t => `
+    ${briefing.topTransits
+      .map(
+        (t) => `
       <div class="transit">
         <span class="transit-planet">${escapeHtml(capitalize(t.transitPlanet))}</span> ${escapeHtml(t.aspect)} ${escapeHtml(capitalize(t.natalPlanet))}
         <br><small>${escapeHtml(t.interpretation)} (${t.orb}° orb)</small>
       </div>
-    `).join('')}
+    `,
+      )
+      .join('')}
 
     <p class="affirmation">"${escapeHtml(briefing.affirmation)}"</p>
 
@@ -424,9 +444,14 @@ function buildEmailHtml(
 
 function getMoonEmoji(phase: string): string {
   const emojis: Record<string, string> = {
-    'new': '🌑', 'waxing-crescent': '🌒', 'first-quarter': '🌓',
-    'waxing-gibbous': '🌔', 'full': '🌕', 'waning-gibbous': '🌖',
-    'last-quarter': '🌗', 'waning-crescent': '🌘',
+    new: '🌑',
+    'waxing-crescent': '🌒',
+    'first-quarter': '🌓',
+    'waxing-gibbous': '🌔',
+    full: '🌕',
+    'waning-gibbous': '🌖',
+    'last-quarter': '🌗',
+    'waning-crescent': '🌘',
   };
   return emojis[phase] || '🌙';
 }

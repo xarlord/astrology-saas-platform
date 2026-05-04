@@ -7,7 +7,6 @@
  * - Solstices and equinoxes
  */
 
-
 export interface RetrogradePeriod {
   planet: string;
   startDate: Date;
@@ -19,8 +18,15 @@ export interface RetrogradePeriod {
 
 export interface MoonPhase {
   date: Date;
-  phase: 'new' | 'waxing-crescent' | 'first-quarter' | 'waxing-gibbous' |
-          'full' | 'waning-gibbous' | 'last-quarter' | 'waning-crescent';
+  phase:
+    | 'new'
+    | 'waxing-crescent'
+    | 'first-quarter'
+    | 'waxing-gibbous'
+    | 'full'
+    | 'waning-gibbous'
+    | 'last-quarter'
+    | 'waning-crescent';
   sign: string;
   degree: number;
   illumination: number; // 0-100%
@@ -317,8 +323,20 @@ class GlobalEventsService {
    * Get zodiac sign from degree
    */
   private getZodiacSign(degree: number): { sign: string; degree: number } {
-    const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-                   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+    const signs = [
+      'aries',
+      'taurus',
+      'gemini',
+      'cancer',
+      'leo',
+      'virgo',
+      'libra',
+      'scorpio',
+      'sagittarius',
+      'capricorn',
+      'aquarius',
+      'pisces',
+    ];
     const signIndex = Math.floor(degree / 30);
     const signDegree = degree % 30;
 
@@ -384,13 +402,7 @@ class GlobalEventsService {
   async getAllRetrogrades(year: number): Promise<RetrogradePeriod[]> {
     const retrogrades: RetrogradePeriod[] = [];
 
-    const [
-      mercury,
-      venus,
-      mars,
-      jupiter,
-      saturn,
-    ] = await Promise.all([
+    const [mercury, venus, mars, jupiter, saturn] = await Promise.all([
       this.calculateMercuryRetrograde(year),
       this.calculateVenusRetrograde(year),
       this.calculateMarsRetrograde(year),

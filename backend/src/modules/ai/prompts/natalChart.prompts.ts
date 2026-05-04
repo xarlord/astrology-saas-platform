@@ -8,7 +8,8 @@ import { PromptTemplate } from './index';
 export const NATAL_CHART_PROMPTS: Record<string, PromptTemplate> = {
   basic: {
     name: 'basic-natal',
-    systemMessage: 'You are an expert astrologer providing clear, insightful, and empowering natal chart interpretations.',
+    systemMessage:
+      'You are an expert astrologer providing clear, insightful, and empowering natal chart interpretations.',
     userPrompt: `Provide a comprehensive interpretation for this natal chart:
 
 CHART DATA:
@@ -35,7 +36,8 @@ Keep interpretations specific, nuanced, and empowering. Avoid generic statements
 
   detailed: {
     name: 'detailed-natal',
-    systemMessage: 'You are a master astrologer with deep knowledge of psychological, evolutionary, and traditional astrology.',
+    systemMessage:
+      'You are a master astrologer with deep knowledge of psychological, evolutionary, and traditional astrology.',
     userPrompt: `Provide an in-depth interpretation for this natal chart, considering both traditional and modern approaches:
 
 CHART DATA:

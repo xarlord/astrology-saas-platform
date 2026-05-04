@@ -30,9 +30,7 @@ describe('TransitCacheService', () => {
       moon: { longitude: 210.2, sign: 'scorpio', degree: 0.2, isRetrograde: false },
     },
     moonPhase: { phase: 'waxing_gibbous', illumination: 0.75 },
-    aspects: [
-      { planet1: 'sun', planet2: 'moon', type: 'trine', orb: 2.5 },
-    ],
+    aspects: [{ planet1: 'sun', planet2: 'moon', type: 'trine', orb: 2.5 }],
     retrogrades: ['saturn'],
     generatedAt: new Date('2024-06-15T00:00:00Z'),
   };

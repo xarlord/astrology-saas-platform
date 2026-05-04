@@ -121,7 +121,7 @@ export class ChartSharingService {
   async accessSharedChart(
     shareToken: string,
     password?: string,
-    chartDataProvider?: (chartId: string) => Promise<Record<string, unknown>>
+    chartDataProvider?: (chartId: string) => Promise<Record<string, unknown>>,
   ): Promise<ShareAccessResult> {
     // Find share by token
     let sharedChart: SharedChart | null = null;
@@ -200,7 +200,7 @@ export class ChartSharingService {
     if (chartDataProvider) {
       try {
         chartData = await chartDataProvider(sharedChart.chartId);
-      } catch (error) {
+      } catch {
         return { success: false, error: 'Failed to retrieve chart data' };
       }
     }
@@ -321,9 +321,7 @@ export class ChartSharingService {
    */
   async getShareByToken(shareToken: string): Promise<SharedChart | null> {
     if (this.db) {
-      const row = await this.db('shared_charts')
-        .where('share_token', shareToken)
-        .first();
+      const row = await this.db('shared_charts').where('share_token', shareToken).first();
 
       if (!row) return null;
 
@@ -351,7 +349,11 @@ export class ChartSharingService {
   /**
    * Extend share expiration
    */
-  async extendShare(shareToken: string, userId: string, additionalDays: number = 30): Promise<SharedChart | null> {
+  async extendShare(
+    shareToken: string,
+    userId: string,
+    additionalDays: number = 30,
+  ): Promise<SharedChart | null> {
     if (this.db) {
       const share = await this.getShareByToken(shareToken);
       if (!share || share.createdBy !== userId) {
@@ -380,7 +382,9 @@ export class ChartSharingService {
     }
 
     // Extend expiration (create new Date to avoid mutation issues)
-    sharedChart.expiresAt = new Date(sharedChart.expiresAt.getTime() + additionalDays * 24 * 60 * 60 * 1000);
+    sharedChart.expiresAt = new Date(
+      sharedChart.expiresAt.getTime() + additionalDays * 24 * 60 * 60 * 1000,
+    );
 
     return sharedChart;
   }
@@ -390,9 +394,7 @@ export class ChartSharingService {
    */
   async cleanupExpiredShares(): Promise<number> {
     if (this.db) {
-      const result = await this.db('shared_charts')
-        .where('expires_at', '<=', new Date())
-        .delete();
+      const result = await this.db('shared_charts').where('expires_at', '<=', new Date()).delete();
 
       return result;
     }
@@ -427,7 +429,10 @@ export class ChartSharingService {
     }
 
     const now = new Date();
-    const daysRemaining = Math.max(0, Math.ceil((share.expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+    const daysRemaining = Math.max(
+      0,
+      Math.ceil((share.expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+    );
 
     return {
       accessCount: share.accessCount,

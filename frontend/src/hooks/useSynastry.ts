@@ -41,7 +41,7 @@ export const useSynastry = () => {
       try {
         await compare(chart1Id, chart2Id);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },
@@ -54,7 +54,7 @@ export const useSynastry = () => {
       try {
         await getCompatibility(chart1Id, chart2Id);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },
@@ -67,7 +67,7 @@ export const useSynastry = () => {
       try {
         await generateFullReport(chart1Id, chart2Id);
         return true;
-      } catch (error: unknown) {
+      } catch {
         return false;
       }
     },

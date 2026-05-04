@@ -13,10 +13,7 @@ import jwt from 'jsonwebtoken';
  * @param expiresIn - Token expiration time (default: '1h')
  * @returns Mock JWT token
  */
-export function generateMockToken(
-  userId: number,
-  expiresIn: string = '1h'
-): string {
+export function generateMockToken(userId: number, expiresIn: string = '1h'): string {
   const secret = process.env.JWT_SECRET || 'test-secret-key';
 
   return jwt.sign(
@@ -25,7 +22,7 @@ export function generateMockToken(
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn: expiresIn as any }
+    { expiresIn: expiresIn as any },
   );
 }
 
@@ -53,7 +50,7 @@ export function generateExpiredToken(userId: number): string {
       email: `user${userId}@example.com`,
     },
     secret,
-    { expiresIn: '-1h' as any } // Expired 1 hour ago
+    { expiresIn: '-1h' as any }, // Expired 1 hour ago
   );
 }
 
@@ -76,7 +73,7 @@ export function extractUserIdFromToken(token: string): number {
   try {
     const decoded = jwt.verify(token, secret) as any;
     return decoded.userId;
-  } catch (error) {
+  } catch {
     throw new Error('Invalid token');
   }
 }

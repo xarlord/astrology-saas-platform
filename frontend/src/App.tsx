@@ -61,175 +61,175 @@ function App() {
             <ServiceWorkerUpdateBanner />
             <Suspense fallback={<LoadingSpinner fullScreen />}>
               <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+                {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-              {/* Protected Routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/calendar"
-                element={
-                  <ProtectedRoute>
-                    <CalendarPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/synastry"
-                element={
-                  <ProtectedRoute>
-                    <SynastryPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/transits"
-                element={
-                  <ProtectedRoute>
-                    <TransitForecastPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <ProfileSettingsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/lunar-returns"
-                element={
-                  <ProtectedRoute>
-                    <LunarReturnsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/solar-returns"
-                element={
-                  <ProtectedRoute>
-                    <SolarReturnsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/solar-returns/:year"
-                element={
-                  <ProtectedRoute>
-                    <SolarReturnsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/charts/new"
-                element={
-                  <ProtectedRoute>
-                    <ChartCreatePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/charts/create"
-                element={
-                  <ProtectedRoute>
-                    <ChartCreationWizardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/charts"
-                element={
-                  <ProtectedRoute>
-                    <SavedChartsGalleryPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/charts/:id"
-                element={
-                  <ProtectedRoute>
-                    <NatalChartDetailPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/analysis/:chartId"
-                element={
-                  <ProtectedRoute>
-                    <AnalysisPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/learning"
-                element={
-                  <ProtectedRoute>
-                    <LearningCenterPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/learning/courses/:id"
-                element={
-                  <ProtectedRoute>
-                    <CourseDetailPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/reports/natal/:chartId"
-                element={
-                  <ProtectedRoute>
-                    <DetailedNatalReportPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/daily-briefing"
-                element={
-                  <ProtectedRoute>
-                    <DailyBriefingPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/subscription" element={<SubscriptionPage />} />
-              <Route path="/share/:shareToken" element={<ShareCardPage />} />
-              <Route path="/shared/cards/:id" element={<SharedCardPage />} />
-              <Route
-                path="/reports/solar-return/:id"
-                element={
-                  <ProtectedRoute>
-                    <SolarReturnAnnualReportPage />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Protected Routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/calendar"
+                  element={
+                    <ProtectedRoute>
+                      <CalendarPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/synastry"
+                  element={
+                    <ProtectedRoute>
+                      <SynastryPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/transits"
+                  element={
+                    <ProtectedRoute>
+                      <TransitForecastPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <ProfileSettingsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/lunar-returns"
+                  element={
+                    <ProtectedRoute>
+                      <LunarReturnsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/solar-returns"
+                  element={
+                    <ProtectedRoute>
+                      <SolarReturnsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/solar-returns/:year"
+                  element={
+                    <ProtectedRoute>
+                      <SolarReturnsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/charts/new"
+                  element={
+                    <ProtectedRoute>
+                      <ChartCreatePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/charts/create"
+                  element={
+                    <ProtectedRoute>
+                      <ChartCreationWizardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/charts"
+                  element={
+                    <ProtectedRoute>
+                      <SavedChartsGalleryPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/charts/:id"
+                  element={
+                    <ProtectedRoute>
+                      <NatalChartDetailPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/analysis/:chartId"
+                  element={
+                    <ProtectedRoute>
+                      <AnalysisPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/learning"
+                  element={
+                    <ProtectedRoute>
+                      <LearningCenterPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/learning/courses/:id"
+                  element={
+                    <ProtectedRoute>
+                      <CourseDetailPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/reports/natal/:chartId"
+                  element={
+                    <ProtectedRoute>
+                      <DetailedNatalReportPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/daily-briefing"
+                  element={
+                    <ProtectedRoute>
+                      <DailyBriefingPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/subscription" element={<SubscriptionPage />} />
+                <Route path="/share/:shareToken" element={<ShareCardPage />} />
+                <Route path="/shared/cards/:id" element={<SharedCardPage />} />
+                <Route
+                  path="/reports/solar-return/:id"
+                  element={
+                    <ProtectedRoute>
+                      <SolarReturnAnnualReportPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* 404 - Must be last */}
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-        </div>
-      </ErrorBoundary>
+                {/* 404 - Must be last */}
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Suspense>
+          </div>
+        </ErrorBoundary>
       </HelmetProvider>
     </QueryClientProvider>
   );

@@ -334,7 +334,12 @@ export const VideoModal: React.FC<VideoModalProps> = ({
               >
                 {!isPlaying && (
                   <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                    <span className="material-symbols-outlined text-[40px] text-white ml-1" style={{ fontVariationSettings: '"FILL" 1' }}>play_arrow</span>
+                    <span
+                      className="material-symbols-outlined text-[40px] text-white ml-1"
+                      style={{ fontVariationSettings: '"FILL" 1' }}
+                    >
+                      play_arrow
+                    </span>
                   </div>
                 )}
               </button>
@@ -389,7 +394,11 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                     className="p-2 text-white hover:text-purple-400 transition-colors"
                     aria-label={isPlaying ? 'Pause' : 'Play'}
                   >
-                    {isPlaying ? <span className="material-symbols-outlined text-[24px]">pause</span> : <span className="material-symbols-outlined text-[24px]">play_arrow</span>}
+                    {isPlaying ? (
+                      <span className="material-symbols-outlined text-[24px]">pause</span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[24px]">play_arrow</span>
+                    )}
                   </button>
 
                   {/* Volume */}
@@ -399,7 +408,11 @@ export const VideoModal: React.FC<VideoModalProps> = ({
                       className="p-2 text-white hover:text-purple-400 transition-colors"
                       aria-label={isMuted ? 'Unmute' : 'Mute'}
                     >
-                      {isMuted ? <span className="material-symbols-outlined text-[20px]">volume_off</span> : <span className="material-symbols-outlined text-[20px]">volume_up</span>}
+                      {isMuted ? (
+                        <span className="material-symbols-outlined text-[20px]">volume_off</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[20px]">volume_up</span>
+                      )}
                     </button>
                     <input
                       type="range"

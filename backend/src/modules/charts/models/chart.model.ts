@@ -56,10 +56,7 @@ class ChartModel {
    * Find chart by ID
    */
   async findById(id: string): Promise<Chart | null> {
-    const chart = await knex(this.tableName)
-      .where({ id })
-      .whereNull('deleted_at')
-      .first();
+    const chart = await knex(this.tableName).where({ id }).whereNull('deleted_at').first();
 
     return chart || null;
   }
@@ -79,11 +76,7 @@ class ChartModel {
   /**
    * Get all charts for a user
    */
-  async findByUserId(
-    userId: string,
-    limit = 20,
-    offset = 0
-  ): Promise<Chart[]> {
+  async findByUserId(userId: string, limit = 20, offset = 0): Promise<Chart[]> {
     return knex(this.tableName)
       .where({ user_id: userId })
       .whereNull('deleted_at')
@@ -128,7 +121,11 @@ class ChartModel {
   /**
    * Update calculated data
    */
-  async updateCalculatedData(id: string, userId: string, calculatedData: Record<string, unknown>): Promise<Chart | null> {
+  async updateCalculatedData(
+    id: string,
+    userId: string,
+    calculatedData: Record<string, unknown>,
+  ): Promise<Chart | null> {
     const [chart] = await knex(this.tableName)
       .where({ id, user_id: userId })
       .whereNull('deleted_at')
@@ -145,12 +142,10 @@ class ChartModel {
    * Soft delete chart
    */
   async softDelete(id: string, userId: string): Promise<boolean> {
-    const count = await knex(this.tableName)
-      .where({ id, user_id: userId })
-      .update({
-        deleted_at: new Date(),
-        updated_at: new Date(),
-      });
+    const count = await knex(this.tableName).where({ id, user_id: userId }).update({
+      deleted_at: new Date(),
+      updated_at: new Date(),
+    });
 
     return count > 0;
   }
@@ -159,9 +154,7 @@ class ChartModel {
    * Permanently delete chart
    */
   async delete(id: string, userId: string): Promise<boolean> {
-    const count = await knex(this.tableName)
-      .where({ id, user_id: userId })
-      .del();
+    const count = await knex(this.tableName).where({ id, user_id: userId }).del();
 
     return count > 0;
   }

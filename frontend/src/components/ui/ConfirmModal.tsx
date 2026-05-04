@@ -248,7 +248,14 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
               {/* Additional warning */}
               <div className="flex items-start space-x-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                <span className={clsx('material-symbols-outlined text-[20px] mt-0.5 flex-shrink-0', styles.iconColor)}>warning</span>
+                <span
+                  className={clsx(
+                    'material-symbols-outlined text-[20px] mt-0.5 flex-shrink-0',
+                    styles.iconColor,
+                  )}
+                >
+                  warning
+                </span>
                 <p className="text-sm text-red-300">
                   This action cannot be undone. All associated data will be permanently removed.
                 </p>

@@ -7,12 +7,7 @@
  * Run: npx jest --testPathPattern="lunar-returns.live" --forceExit --verbose
  */
 
-import {
-  authed,
-  getCsrf,
-  setupUserWithChart,
-  checkServerRunning,
-} from './helpers';
+import { authed, getCsrf, setupUserWithChart, checkServerRunning } from './helpers';
 
 describe('Lunar Return Controller - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -39,7 +34,7 @@ describe('Lunar Return Controller - LIVE SYSTEM', () => {
         `/lunar-return/next?chartId=${chartId}`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect(res.status).toBe(200);
@@ -99,7 +94,7 @@ describe('Lunar Return Controller - LIVE SYSTEM', () => {
         `/lunar-return/history?chartId=${chartId}`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect(res.status).toBe(200);

@@ -12,11 +12,7 @@ declare module 'web-push' {
     privateKey: string;
   }
 
-  export function setVapidDetails(
-    subject: string,
-    publicKey: string,
-    privateKey: string
-  ): void;
+  export function setVapidDetails(subject: string, publicKey: string, privateKey: string): void;
 
   export function generateVAPIDKeys(): VapidKeys;
 
@@ -34,13 +30,13 @@ declare module 'web-push' {
   export function sendNotification(
     subscription: PushSubscription,
     payload?: string | Buffer,
-    options?: EncryptOptions
+    options?: EncryptOptions,
   ): Promise<SendResult>;
 
   export function encrypt(
     userPublicKey: string,
     userAuth: string,
     payload: string | Buffer,
-    options?: EncryptOptions
+    options?: EncryptOptions,
   ): { ciphertext: Buffer; salt: Buffer; serverPublicKey: Buffer };
 }

@@ -7,12 +7,7 @@
  * Run: npx jest --testPathPattern="transits.live" --forceExit --verbose
  */
 
-import {
-  authed,
-  getCsrf,
-  setupUserWithChart,
-  checkServerRunning,
-} from './helpers';
+import { authed, getCsrf, setupUserWithChart, checkServerRunning } from './helpers';
 
 describe('Transit Controller - LIVE SYSTEM', () => {
   let accessToken = '';
@@ -92,7 +87,7 @@ describe('Transit Controller - LIVE SYSTEM', () => {
         `/transits/today?chartId=${chartId}`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       // Accept success or expected errors
@@ -121,7 +116,7 @@ describe('Transit Controller - LIVE SYSTEM', () => {
         `/transits/calendar?chartId=${chartId}&year=2026&month=3`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect([200, 400, 404]).toContain(res.status);
@@ -142,7 +137,7 @@ describe('Transit Controller - LIVE SYSTEM', () => {
         `/transits/forecast?chartId=${chartId}&months=3`,
         accessToken,
         cookies,
-        ''
+        '',
       );
 
       expect([200, 400, 404]).toContain(res.status);

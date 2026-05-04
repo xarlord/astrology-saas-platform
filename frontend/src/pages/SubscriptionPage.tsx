@@ -283,7 +283,9 @@ export default function SubscriptionPage() {
                       <span
                         className="material-symbols-outlined text-[16px] mt-0.5 text-green-500 flex-shrink-0"
                         aria-hidden="true"
-                      >check</span>
+                      >
+                        check
+                      </span>
                       {feature}
                     </li>
                   ))}

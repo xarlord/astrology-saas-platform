@@ -23,10 +23,7 @@ import { sendSubscriptionConfirmationEmail } from '../../../services/email.servi
  * POST /api/v1/billing/checkout
  * Create a Stripe Checkout session
  */
-export async function createCheckout(
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> {
+export async function createCheckout(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
 
   const { priceId, successUrl, cancelUrl } = req.body;
@@ -38,13 +35,7 @@ export async function createCheckout(
   const success = successUrl || `${config.frontendUrl}/subscription?status=success`;
   const cancel = cancelUrl || `${config.frontendUrl}/subscription?status=cancel`;
 
-  const session = await createCheckoutSession(
-    user.id,
-    user.email,
-    priceId,
-    success,
-    cancel
-  );
+  const session = await createCheckoutSession(user.id, user.email, priceId, success, cancel);
 
   res.status(200).json({
     success: true,
@@ -59,10 +50,7 @@ export async function createCheckout(
  * POST /api/v1/billing/portal
  * Create a Stripe Customer Portal session
  */
-export async function createPortal(
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> {
+export async function createPortal(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
 
   const { returnUrl } = req.body;
@@ -90,10 +78,7 @@ export async function createPortal(
  * GET /api/v1/billing/subscription
  * Get current user's subscription info
  */
-export async function getSubscription(
-  req: AuthenticatedRequest,
-  res: Response
-): Promise<void> {
+export async function getSubscription(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
 
   const user = await UserModel.findById(req.user.id);
@@ -114,10 +99,7 @@ export async function getSubscription(
  * GET /api/v1/billing/plans
  * Get available subscription plans
  */
-export async function getPlanList(
-  _req: Request,
-  res: Response
-): Promise<void> {
+export async function getPlanList(_req: Request, res: Response): Promise<void> {
   const plans = getPlans();
 
   res.status(200).json({
@@ -130,10 +112,7 @@ export async function getPlanList(
  * POST /api/v1/billing/webhook
  * Handle Stripe webhook events
  */
-export async function handleWebhook(
-  req: Request,
-  res: Response
-): Promise<void> {
+export async function handleWebhook(req: Request, res: Response): Promise<void> {
   const signature = req.headers['stripe-signature'] as string;
   if (!signature) {
     throw new AppError('Missing stripe-signature header', 400);

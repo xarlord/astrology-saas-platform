@@ -95,7 +95,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       const handleKeyPress = (e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           const activeElement = document.activeElement;
-          if (activeElement && activeElement.getAttribute('role') === 'switch') {
+          if (activeElement?.getAttribute('role') === 'switch') {
             e.preventDefault();
             handleChange();
           }
@@ -118,10 +118,10 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
     const switchClass = clsx(
       'relative inline-flex flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent',
       'transition-colors duration-200 ease-in-out',
-      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       toggleSizeStyles[size].track,
-      isChecked ? 'bg-indigo-600 dark:bg-indigo-500' : 'bg-gray-200 dark:bg-gray-700',
+      isChecked ? 'bg-purple-600 dark:bg-purple-500' : 'bg-gray-200 dark:bg-gray-700',
       error && !isChecked && 'border-red-500',
     );
 

@@ -112,7 +112,7 @@ describe('Application Configuration', () => {
       // Mock dotenv to not reload .env
       jest.doMock('dotenv', () => ({ config: jest.fn() }));
       // Clear require cache to get fresh config
-      Object.keys(require.cache).forEach(key => {
+      Object.keys(require.cache).forEach((key) => {
         if (key.includes('config')) delete require.cache[key];
       });
 
@@ -521,7 +521,9 @@ describe('Application Configuration', () => {
 
       expect(config.pagination.defaultPageSize).toBeGreaterThan(0);
       expect(config.pagination.maxPageSize).toBeGreaterThan(0);
-      expect(config.pagination.maxPageSize).toBeGreaterThanOrEqual(config.pagination.defaultPageSize);
+      expect(config.pagination.maxPageSize).toBeGreaterThanOrEqual(
+        config.pagination.defaultPageSize,
+      );
     });
   });
 });

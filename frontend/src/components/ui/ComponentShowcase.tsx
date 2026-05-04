@@ -269,7 +269,9 @@ const ComponentShowcase: React.FC = () => {
               showProgress
               action={{
                 label: 'Undo',
-                onClick: () => { /* undo action */ },
+                onClick: () => {
+                  /* undo action */
+                },
               }}
             />
           </div>

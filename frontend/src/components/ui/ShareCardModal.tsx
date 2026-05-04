@@ -130,12 +130,8 @@ function TemplatePreview({
 
       {/* Label */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5">
-        <div className="text-[10px] font-medium text-white text-center">
-          {template.label}
-        </div>
-        <div className="text-[8px] text-gray-400 text-center">
-          {template.dimensions}
-        </div>
+        <div className="text-[10px] font-medium text-white text-center">{template.label}</div>
+        <div className="text-[8px] text-gray-400 text-center">{template.dimensions}</div>
       </div>
 
       {/* Selection indicator */}
@@ -291,7 +287,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   };
 
   const [selectedTemplate, setSelectedTemplate] = useState<CardTemplate>(getInitialTemplate);
-  const [exportState, setExportState] = useState<'idle' | 'rendering' | 'success' | 'error'>('idle');
+  const [exportState, setExportState] = useState<'idle' | 'rendering' | 'success' | 'error'>(
+    'idle',
+  );
   const [shareState, setShareState] = useState<'idle' | 'rendering' | 'error'>('idle');
 
   const trapRef = useFocusTrap<HTMLDivElement>({
@@ -301,7 +299,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   });
 
   const previewRef = useRef<HTMLDivElement>(null);
-  const hiddenCardRef = useRef<HTMLDivElement>(null);
+  const _hiddenCardRef = useRef<HTMLDivElement>(null);
 
   // Check for Web Share API support
   const hasShareAPI = typeof navigator !== 'undefined' && 'share' in navigator;
@@ -395,11 +393,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
         canvas.toBlob((b) => resolve(b!), 'image/png');
       });
 
-      const file = new File(
-        [blob],
-        `astroverse-${chartData.name}-${selectedTemplate}.png`,
-        { type: 'image/png' },
-      );
+      const file = new File([blob], `astroverse-${chartData.name}-${selectedTemplate}.png`, {
+        type: 'image/png',
+      });
 
       await navigator.share({
         title: `${chartData.name}'s Birth Chart`,
@@ -585,13 +581,17 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
                   </button>
                   <ShareButton
                     state={shareState}
-                    onClick={handleShare}
+                    onClick={() => {
+                      void handleShare();
+                    }}
                     disabled={exportState === 'rendering'}
                     hasShareAPI={hasShareAPI}
                   />
                   <DownloadButton
                     state={exportState}
-                    onClick={handleDownload}
+                    onClick={() => {
+                      void handleDownload();
+                    }}
                     disabled={shareState === 'rendering'}
                   />
                 </div>

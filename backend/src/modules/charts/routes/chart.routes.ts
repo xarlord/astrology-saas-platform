@@ -7,6 +7,11 @@ import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceChartLimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
+import { validateRequest } from '../../../middleware/validateRequest';
+import {
+  CreateNatalChartSchema,
+  UpdateChartSchema,
+} from '../../../shared/schemas/chart.validation';
 import * as ChartController from '../controllers/chart.controller';
 
 const router = Router();
@@ -34,9 +39,15 @@ router.use(authenticate);
  *       403:
  *         description: Plan limit reached
  */
-router.post('/', chartCreationRateLimiter, enforceChartLimit as RequestHandler, asyncHandler(async (req, res) => {
-  await ChartController.createChart(req as AuthenticatedRequest, res);
-}) as RequestHandler);
+router.post(
+  '/',
+  chartCreationRateLimiter,
+  validateRequest(CreateNatalChartSchema),
+  enforceChartLimit as RequestHandler,
+  asyncHandler(async (req, res) => {
+    await ChartController.createChart(req as AuthenticatedRequest, res);
+  }) as RequestHandler,
+);
 
 /**
  * @route   GET /api/charts
@@ -56,9 +67,12 @@ router.post('/', chartCreationRateLimiter, enforceChartLimit as RequestHandler, 
  *       401:
  *         description: Unauthorized
  */
-router.get('/', asyncHandler(async (req, res) => {
-  await ChartController.getUserCharts(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/',
+  asyncHandler(async (req, res) => {
+    await ChartController.getUserCharts(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   GET /api/charts/:id
@@ -80,9 +94,12 @@ router.get('/', asyncHandler(async (req, res) => {
  *       404:
  *         description: Chart not found
  */
-router.get('/:id', asyncHandler(async (req, res) => {
-  await ChartController.getChart(req as AuthenticatedRequest, res);
-}));
+router.get(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    await ChartController.getChart(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   PUT /api/charts/:id
@@ -104,9 +121,13 @@ router.get('/:id', asyncHandler(async (req, res) => {
  *       404:
  *         description: Chart not found
  */
-router.put('/:id', asyncHandler(async (req, res) => {
-  await ChartController.updateChart(req as AuthenticatedRequest, res);
-}));
+router.put(
+  '/:id',
+  validateRequest(UpdateChartSchema),
+  asyncHandler(async (req, res) => {
+    await ChartController.updateChart(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   DELETE /api/charts/:id
@@ -128,9 +149,12 @@ router.put('/:id', asyncHandler(async (req, res) => {
  *       404:
  *         description: Chart not found
  */
-router.delete('/:id', asyncHandler(async (req, res) => {
-  await ChartController.deleteChart(req as AuthenticatedRequest, res);
-}));
+router.delete(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    await ChartController.deleteChart(req as AuthenticatedRequest, res);
+  }),
+);
 
 /**
  * @route   POST /api/charts/:id/calculate
@@ -152,8 +176,11 @@ router.delete('/:id', asyncHandler(async (req, res) => {
  *       404:
  *         description: Chart not found
  */
-router.post('/:id/calculate', asyncHandler(async (req, res) => {
-  await ChartController.calculateChart(req as AuthenticatedRequest, res);
-}));
+router.post(
+  '/:id/calculate',
+  asyncHandler(async (req, res) => {
+    await ChartController.calculateChart(req as AuthenticatedRequest, res);
+  }),
+);
 
 export { router };

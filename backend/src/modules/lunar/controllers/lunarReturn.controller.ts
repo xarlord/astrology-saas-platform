@@ -30,9 +30,7 @@ export async function getNextLunarReturn(req: Request, res: Response, next: Next
     }
 
     // Get user's natal chart from database
-    const userCharts = await knex('charts')
-      .where({ userId, isBirthChart: true })
-      .first();
+    const userCharts = await knex('charts').where({ userId, isBirthChart: true }).first();
 
     if (!userCharts) {
       res.status(404).json({
@@ -132,9 +130,7 @@ export async function getLunarReturnChart(req: Request, res: Response, next: Nex
     }
 
     // Get user's natal chart from database
-    const userCharts = await knex('charts')
-      .where({ userId, isBirthChart: true })
-      .first();
+    const userCharts = await knex('charts').where({ userId, isBirthChart: true }).first();
 
     if (!userCharts) {
       res.status(404).json({
@@ -197,9 +193,7 @@ export async function getLunarMonthForecast(req: Request, res: Response, next: N
     }
 
     // Get user's natal chart from database
-    const userCharts = await knex('charts')
-      .where({ userId, isBirthChart: true })
-      .first();
+    const userCharts = await knex('charts').where({ userId, isBirthChart: true }).first();
 
     if (!userCharts) {
       res.status(404).json({
@@ -292,10 +286,7 @@ export async function getLunarReturnHistory(req: Request, res: Response, next: N
       .limit(limit)
       .offset(offset);
 
-    const total = await knex('lunar_returns')
-      .where({ userId })
-      .count('* as count')
-      .first();
+    const total = await knex('lunar_returns').where({ userId }).count('* as count').first();
 
     res.json({
       success: true,
@@ -344,9 +335,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
     }
 
     // Check if lunar return exists and belongs to user
-    const lunarReturn = await knex('lunar_returns')
-      .where({ id, userId })
-      .first();
+    const lunarReturn = await knex('lunar_returns').where({ id, userId }).first();
 
     if (!lunarReturn) {
       res.status(404).json({
@@ -356,9 +345,7 @@ export async function deleteLunarReturn(req: Request, res: Response, next: NextF
       return;
     }
 
-    await knex('lunar_returns')
-      .where({ id, userId })
-      .del();
+    await knex('lunar_returns').where({ id, userId }).del();
 
     res.json({
       success: true,
@@ -405,9 +392,7 @@ export async function calculateCustomLunarReturn(req: Request, res: Response, ne
     }
 
     // Get user's natal chart from database
-    const userCharts = await knex('charts')
-      .where({ userId, isBirthChart: true })
-      .first();
+    const userCharts = await knex('charts').where({ userId, isBirthChart: true }).first();
 
     if (!userCharts) {
       res.status(404).json({

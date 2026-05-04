@@ -17,7 +17,11 @@ export interface PasswordResetToken {
 /**
  * Create a password reset token
  */
-export async function createResetToken(userId: string, token: string, expiresAt: Date): Promise<PasswordResetToken> {
+export async function createResetToken(
+  userId: string,
+  token: string,
+  expiresAt: Date,
+): Promise<PasswordResetToken> {
   const [record] = await db('password_reset_tokens')
     .insert({
       user_id: userId,
@@ -33,9 +37,7 @@ export async function createResetToken(userId: string, token: string, expiresAt:
  * Find a reset token by token value
  */
 export async function findResetToken(token: string): Promise<PasswordResetToken | null> {
-  const record = await db('password_reset_tokens')
-    .where({ token })
-    .first();
+  const record = await db('password_reset_tokens').where({ token }).first();
 
   return record || null;
 }
@@ -44,12 +46,10 @@ export async function findResetToken(token: string): Promise<PasswordResetToken 
  * Mark a reset token as used
  */
 export async function markTokenUsed(tokenId: string): Promise<void> {
-  await db('password_reset_tokens')
-    .where({ id: tokenId })
-    .update({
-      used: true,
-      used_at: new Date(),
-    });
+  await db('password_reset_tokens').where({ id: tokenId }).update({
+    used: true,
+    used_at: new Date(),
+  });
 }
 
 /**
@@ -68,7 +68,5 @@ export async function invalidateUserTokens(userId: string): Promise<number> {
  * Delete expired reset tokens (cleanup)
  */
 export async function deleteExpiredTokens(): Promise<number> {
-  return db('password_reset_tokens')
-    .where('expires_at', '<', new Date())
-    .delete();
+  return db('password_reset_tokens').where('expires_at', '<', new Date()).delete();
 }

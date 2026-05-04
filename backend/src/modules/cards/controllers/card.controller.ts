@@ -15,7 +15,8 @@ import { cardService } from '../services/card.service';
  * @access  Private
  */
 export const generateCard = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const { chart_id, template, planet_placements, show_insight, insight_text, referral_code } = req.body;
+  const { chart_id, template, planet_placements, show_insight, insight_text, referral_code } =
+    req.body;
 
   if (!chart_id) {
     throw new AppError('chart_id is required', 400);

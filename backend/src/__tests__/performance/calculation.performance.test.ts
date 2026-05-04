@@ -72,7 +72,7 @@ describe('Calculation Engine Performance Tests', () => {
       const test = new PerformanceTest(
         'Julian Day Conversion',
         1000,
-        1000 // 1000 iterations in under 1 second = 1ms each
+        1000, // 1000 iterations in under 1 second = 1ms each
       );
 
       const result = await test.run(() => {
@@ -110,11 +110,22 @@ describe('Calculation Engine Performance Tests', () => {
 
     it('should calculate all 10 planets in under 100ms', async () => {
       const jd = swissEphemerisService.toJulianDay(new Date(1990, 0, 15, 12, 0, 0));
-      const planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+      const planets = [
+        'sun',
+        'moon',
+        'mercury',
+        'venus',
+        'mars',
+        'jupiter',
+        'saturn',
+        'uranus',
+        'neptune',
+        'pluto',
+      ];
       const test = new PerformanceTest('All 10 Planets', 50, 5000);
 
       const result = await test.run(() => {
-        planets.forEach(planet => {
+        planets.forEach((planet) => {
           swissEphemerisService.calculatePlanetPosition(jd, planet);
         });
       });
@@ -135,7 +146,7 @@ describe('Calculation Engine Performance Tests', () => {
       const test = new PerformanceTest('Placidus Houses', 100, 5000);
 
       const result = await test.run(() => {
-        swissEphemerisService.calculateHouses(jd, 40.7128, -74.0060, 'placidus');
+        swissEphemerisService.calculateHouses(jd, 40.7128, -74.006, 'placidus');
       });
 
       console.log(`\n${result.name}:`);
@@ -152,7 +163,7 @@ describe('Calculation Engine Performance Tests', () => {
       const test = new PerformanceTest('Whole Sign Houses', 100, 1000);
 
       const result = await test.run(() => {
-        swissEphemerisService.calculateHouses(jd, 40.7128, -74.0060, 'whole_sign');
+        swissEphemerisService.calculateHouses(jd, 40.7128, -74.006, 'whole_sign');
       });
 
       console.log(`\n${result.name}:`);
@@ -200,7 +211,7 @@ describe('Calculation Engine Performance Tests', () => {
       const birthData = {
         date: new Date(1990, 0, 15, 14, 30, 0),
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'placidus',
         zodiacType: 'tropical',
       };
@@ -224,7 +235,7 @@ describe('Calculation Engine Performance Tests', () => {
       const birthData = {
         date: new Date(1990, 0, 15, 14, 30, 0),
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'placidus',
         zodiacType: 'tropical',
       };
@@ -233,13 +244,15 @@ describe('Calculation Engine Performance Tests', () => {
       const startMemory = process.memoryUsage().heapUsed;
 
       // Run 100 concurrent calculations
-      const promises = Array(100).fill(null).map((_, i) => {
-        const offsetDate = new Date(birthData.date.getTime() + i * 86400000);
-        return swissEphemerisService.calculateNatalChart({
-          ...birthData,
-          date: offsetDate,
+      const promises = Array(100)
+        .fill(null)
+        .map((_, i) => {
+          const offsetDate = new Date(birthData.date.getTime() + i * 86400000);
+          return swissEphemerisService.calculateNatalChart({
+            ...birthData,
+            date: offsetDate,
+          });
         });
-      });
 
       const results = await Promise.all(promises);
 
@@ -270,11 +283,7 @@ describe('Calculation Engine Performance Tests', () => {
       const test = new PerformanceTest('7-Day Transit Calculation', 20, 10000);
 
       const result = await test.run(() => {
-        return swissEphemerisService.calculateTransits(
-          natalChart,
-          startDate,
-          endDate
-        );
+        return swissEphemerisService.calculateTransits(natalChart, startDate, endDate);
       });
 
       console.log(`\n${result.name}:`);
@@ -293,11 +302,7 @@ describe('Calculation Engine Performance Tests', () => {
       const test = new PerformanceTest('30-Day Transit Calculation', 10, 20000);
 
       const result = await test.run(() => {
-        return swissEphemerisService.calculateTransits(
-          natalChart,
-          startDate,
-          endDate
-        );
+        return swissEphemerisService.calculateTransits(natalChart, startDate, endDate);
       });
 
       console.log(`\n${result.name}:`);
@@ -315,7 +320,7 @@ describe('Calculation Engine Performance Tests', () => {
       const birthData = {
         date: new Date(1990, 0, 15, 14, 30, 0),
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'placidus',
         zodiacType: 'tropical',
       };
@@ -350,7 +355,7 @@ describe('Calculation Engine Performance Tests', () => {
       const birthData = {
         date: new Date(1990, 0, 15, 14, 30, 0),
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         houseSystem: 'placidus',
         zodiacType: 'tropical',
       };

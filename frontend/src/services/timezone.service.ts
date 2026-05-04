@@ -104,7 +104,7 @@ class TimezoneServiceClass {
         },
       );
       return response.data.data.timezones;
-    } catch (error) {
+    } catch {
       // Fallback to local search
       return this.localSearchTimezones(query);
     }
@@ -148,7 +148,7 @@ class TimezoneServiceClass {
         params: { lat: latitude, lng: longitude },
       });
       return response.data.data.info;
-    } catch (error) {
+    } catch {
       // Fallback to local detection
       const timezone = this.localDetectTimezone(latitude, longitude);
       if (timezone) {

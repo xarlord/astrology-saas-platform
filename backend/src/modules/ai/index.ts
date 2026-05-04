@@ -6,6 +6,7 @@
 export { default as openaiService } from './services/openai.service';
 export { default as aiCacheService } from './services/aiCache.service';
 export { default as aiInterpretationService } from './services/aiInterpretation.service';
+export { default as fluxImageGenerationService } from './services/fluxImageGeneration.service';
 export type {
   ChartData,
   TransitEvent,
@@ -19,4 +20,5 @@ export type {
   SynastryInput,
   InterpretationResult as OpenAIInterpretationResult,
 } from './services/openai.service';
+export type { FluxImageOptions, FluxImageResult } from './services/fluxImageGeneration.service';
 export type { PlanetPosition, HouseCusp, Aspect } from '../../types/chart';

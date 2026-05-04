@@ -159,9 +159,7 @@ function DateSelector({
                 }
               `}
           >
-            <span className="material-symbols-outlined text-[18px]">
-              {mode.icon}
-            </span>
+            <span className="material-symbols-outlined text-[18px]">{mode.icon}</span>
             {mode.label}
           </button>
         ))}
@@ -177,7 +175,9 @@ function DateSelector({
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           aria-label="Previous day"
         >
-          <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_left</span>
+          <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">
+            chevron_left
+          </span>
         </button>
         <input
           type="date"
@@ -195,7 +195,9 @@ function DateSelector({
           className="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
           aria-label="Next day"
         >
-          <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">chevron_right</span>
+          <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-400">
+            chevron_right
+          </span>
         </button>
       </div>
     </div>

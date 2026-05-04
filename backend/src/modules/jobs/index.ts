@@ -13,7 +13,14 @@ export type {
   JobResult,
 } from './job.types';
 
-export { getQueue, enqueueJob, getQueueHealth, getAllQueuesHealth, isQueueReady, shutdownQueues } from './queue.service';
+export {
+  getQueue,
+  enqueueJob,
+  getQueueHealth,
+  getAllQueuesHealth,
+  isQueueReady,
+  shutdownQueues,
+} from './queue.service';
 export {
   scheduleDailyBriefing,
   scheduleMonthlyReport,

@@ -29,9 +29,12 @@ jest.mock('../../config/database', () => {
 });
 
 jest.mock('../../modules/lunar/services/lunarReturn.service', () => ({
-  calculateNextLunarReturn: (...args: any[]) => (mockRegistry.calculateNextLunarReturn as any)(...args),
-  calculateLunarReturnChart: (...args: any[]) => (mockRegistry.calculateLunarReturnChart as any)(...args),
-  generateLunarMonthForecast: (...args: any[]) => (mockRegistry.generateLunarMonthForecast as any)(...args),
+  calculateNextLunarReturn: (...args: any[]) =>
+    (mockRegistry.calculateNextLunarReturn as any)(...args),
+  calculateLunarReturnChart: (...args: any[]) =>
+    (mockRegistry.calculateLunarReturnChart as any)(...args),
+  generateLunarMonthForecast: (...args: any[]) =>
+    (mockRegistry.generateLunarMonthForecast as any)(...args),
   getCurrentLunarReturn: (...args: any[]) => (mockRegistry.getCurrentLunarReturn as any)(...args),
 }));
 

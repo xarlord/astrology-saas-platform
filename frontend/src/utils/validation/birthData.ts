@@ -195,7 +195,7 @@ export function normalizeBirthTime(time: string): string {
   }
 
   // Handle seconds (remove them)
-  const secondsMatch = trimmed.match(/^(\d{1,2}):([0-5]\d):[0-5]\d$/);
+  const secondsMatch = /^(\d{1,2}):([0-5]\d):[0-5]\d$/.exec(trimmed);
   if (secondsMatch) {
     const hours = secondsMatch[1].padStart(2, '0');
     return `${hours}:${secondsMatch[2]}`;

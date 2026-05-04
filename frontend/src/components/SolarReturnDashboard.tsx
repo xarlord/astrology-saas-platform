@@ -329,7 +329,9 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
       {solarReturns.length === 0 && !loading && (
         <div className="text-center py-16">
-          <span className="material-symbols-outlined text-[48px] mx-auto text-gray-300 dark:text-gray-600 mb-4">calendar_month</span>
+          <span className="material-symbols-outlined text-[48px] mx-auto text-gray-300 dark:text-gray-600 mb-4">
+            calendar_month
+          </span>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             No Solar Returns Yet
           </h3>

@@ -36,7 +36,7 @@ export default function LoginPageNew() {
       } else {
         navigate(from, { replace: true });
       }
-    } catch (err) {
+    } catch {
       // Error is handled by the hook
     }
   };
@@ -76,7 +76,9 @@ export default function LoginPageNew() {
               {/* Logo Area */}
               <Link to="/" className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm border border-white/10">
-                  <span className="material-symbols-outlined text-[24px] text-amber-400">auto_awesome</span>
+                  <span className="material-symbols-outlined text-[24px] text-amber-400">
+                    auto_awesome
+                  </span>
                 </div>
                 <span className="text-2xl font-bold tracking-tight text-white">AstroVerse</span>
               </Link>
@@ -260,7 +262,9 @@ export default function LoginPageNew() {
                         data-testid="password-visibility-toggle"
                       >
                         {showPassword ? (
-                          <span className="material-symbols-outlined text-[20px]">visibility_off</span>
+                          <span className="material-symbols-outlined text-[20px]">
+                            visibility_off
+                          </span>
                         ) : (
                           <span className="material-symbols-outlined text-[20px]">visibility</span>
                         )}
@@ -305,7 +309,9 @@ export default function LoginPageNew() {
                       disabled={isLoading}
                     >
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        {isLoading && <span className="material-symbols-outlined text-[24px]">sync</span>}
+                        {isLoading && (
+                          <span className="material-symbols-outlined text-[24px]">sync</span>
+                        )}
                       </span>
                       {isLoading ? 'Signing in...' : 'Sign In'}
                       <span className="material-symbols-outlined text-[24px]">arrow_forward</span>

@@ -197,7 +197,9 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 />
                 <span className="flex-1 text-sm text-gray-700">{option.label}</span>
                 {formData.reminderAdvanceHours.includes(option.value) && (
-                  <span className="material-symbols-outlined text-[16px] text-emerald-500 shrink-0">check</span>
+                  <span className="material-symbols-outlined text-[16px] text-emerald-500 shrink-0">
+                    check
+                  </span>
                 )}
               </label>
             ))}

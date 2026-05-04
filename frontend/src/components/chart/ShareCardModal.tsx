@@ -10,7 +10,13 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { clsx } from 'clsx';
 import { Modal } from '../ui/Modal';
 import { cardService } from '@/services/card.service';
-import type { CardTemplate, CardPlanet, GeneratedCard, CardStyle, CardColorTheme } from '@/types/card.types';
+import type {
+  CardTemplate,
+  CardPlanet,
+  GeneratedCard,
+  CardStyle,
+  CardColorTheme,
+} from '@/types/card.types';
 import { CARD_TEMPLATES, CARD_STYLES, CARD_COLOR_THEMES } from '@/types/card.types';
 
 interface ShareCardModalProps {
@@ -60,12 +66,18 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   const [selectedColorTheme, setSelectedColorTheme] = useState<CardColorTheme>('midnight_purple');
 
   // Rate limiting state
-  const [rateLimit, setRateLimit] = useState<{ count: number; limit: number; remaining: number; resetAt: string } | null>(null);
+  const [rateLimit, setRateLimit] = useState<{
+    count: number;
+    limit: number;
+    remaining: number;
+    resetAt: string;
+  } | null>(null);
 
   // Load rate limit status when modal opens
   useEffect(() => {
     if (isOpen) {
-      cardService.getRateLimitStatus()
+      cardService
+        .getRateLimitStatus()
         .then(setRateLimit)
         .catch(() => {
           // If rate limit endpoint doesn't exist yet, set default
@@ -110,7 +122,16 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       setError(message);
       setStep('configure');
     }
-  }, [chartId, template, selectedStyle, selectedColorTheme, selectedPlanets, showInsight, insightText, rateLimit]);
+  }, [
+    chartId,
+    template,
+    selectedStyle,
+    selectedColorTheme,
+    selectedPlanets,
+    showInsight,
+    insightText,
+    rateLimit,
+  ]);
 
   const handleCopyLink = useCallback(async () => {
     if (!generatedCard) return;
@@ -148,19 +169,35 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 
   const handleTwitterShare = useCallback(() => {
     const text = encodeURIComponent(generatedCard?.og_title ?? 'My Astrology Chart');
-    const currentShareUrl = generatedCard ? `${window.location.origin}/share/${generatedCard.share_token}` : '';
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(currentShareUrl)}`, '_blank', 'noopener');
+    const currentShareUrl = generatedCard
+      ? `${window.location.origin}/share/${generatedCard.share_token}`
+      : '';
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(currentShareUrl)}`,
+      '_blank',
+      'noopener',
+    );
   }, [generatedCard]);
 
   const handleWhatsAppShare = useCallback(() => {
-    const currentShareUrl = generatedCard ? `${window.location.origin}/share/${generatedCard.share_token}` : '';
-    const text = encodeURIComponent(`${generatedCard?.og_title ?? 'My Astrology Chart'} ${currentShareUrl}`);
+    const currentShareUrl = generatedCard
+      ? `${window.location.origin}/share/${generatedCard.share_token}`
+      : '';
+    const text = encodeURIComponent(
+      `${generatedCard?.og_title ?? 'My Astrology Chart'} ${currentShareUrl}`,
+    );
     window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener');
   }, [generatedCard]);
 
   const handleFacebookShare = useCallback(() => {
-    const currentShareUrl = generatedCard ? `${window.location.origin}/share/${generatedCard.share_token}` : '';
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentShareUrl)}`, '_blank', 'noopener');
+    const currentShareUrl = generatedCard
+      ? `${window.location.origin}/share/${generatedCard.share_token}`
+      : '';
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentShareUrl)}`,
+      '_blank',
+      'noopener',
+    );
   }, [generatedCard]);
 
   const handleInstagramShare = useCallback(() => {
@@ -170,7 +207,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       handleDownload();
       alert('Image downloaded! Open Instagram and share this image from your gallery.');
     } else {
-      alert('Please wait for the card image to be generated, then download and share to Instagram.');
+      alert(
+        'Please wait for the card image to be generated, then download and share to Instagram.',
+      );
     }
   }, [generatedCard, handleDownload]);
 
@@ -227,7 +266,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
             <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[16px]">speed</span>
-                <span>Daily generations: {rateLimit.count}/{rateLimit.limit}</span>
+                <span>
+                  Daily generations: {rateLimit.count}/{rateLimit.limit}
+                </span>
               </div>
               <div className="text-xs text-blue-500 dark:text-blue-400">
                 {rateLimit.remaining} remaining today
@@ -257,9 +298,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                     {style.label}
                   </span>
-                  <span className="text-[10px] text-gray-500 mt-1">
-                    {style.description}
-                  </span>
+                  <span className="text-[10px] text-gray-500 mt-1">{style.description}</span>
                 </button>
               ))}
             </div>
@@ -290,9 +329,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                     {theme.label}
                   </span>
-                  <span className="text-[10px] text-gray-500">
-                    {theme.icon}
-                  </span>
+                  <span className="text-[10px] text-gray-500">{theme.icon}</span>
                 </button>
               ))}
             </div>
@@ -386,7 +423,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 
       {step === 'generating' && (
         <div className="flex flex-col items-center justify-center py-12">
-          <span className="material-symbols-outlined text-[48px] text-purple-500 animate-spin mb-4">progress_activity</span>
+          <span className="material-symbols-outlined text-[48px] text-purple-500 animate-spin mb-4">
+            progress_activity
+          </span>
           <p className="text-gray-600 dark:text-gray-400">Generating your card...</p>
           <p className="text-xs text-gray-500 mt-1">This may take a few seconds</p>
         </div>
@@ -437,7 +476,9 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <span className="material-symbols-outlined text-[16px] mr-1.5">content_copy</span>
+                    <span className="material-symbols-outlined text-[16px] mr-1.5">
+                      content_copy
+                    </span>
                     Copy
                   </>
                 )}

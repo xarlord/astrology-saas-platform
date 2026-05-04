@@ -34,7 +34,9 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
       const interpretation = await generateNatal(chartData);
 
       if (onInterpretationGenerated) {
-        onInterpretationGenerated(interpretation as { interpretation: string; ai: boolean; source: string });
+        onInterpretationGenerated(
+          interpretation as { interpretation: string; ai: boolean; source: string },
+        );
       }
     } catch (err) {
       console.error('AI generation failed:', err);

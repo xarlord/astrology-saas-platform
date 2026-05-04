@@ -193,11 +193,7 @@ export function sendPasswordResetEmail(params: SendResetEmailParams): void {
   const name = params.userName || 'there';
 
   enqueue(() =>
-    sendEmail(
-      params.to,
-      'Reset your AstroVerse password',
-      passwordResetHtml(resetUrl, name),
-    ),
+    sendEmail(params.to, 'Reset your AstroVerse password', passwordResetHtml(resetUrl, name)),
   );
 }
 
@@ -205,9 +201,7 @@ export function sendPasswordResetEmail(params: SendResetEmailParams): void {
  * Send a welcome email after registration (transactional — always sent)
  */
 export function sendWelcomeEmail(to: string, userName: string): void {
-  enqueue(() =>
-    sendEmail(to, 'Welcome to AstroVerse!', welcomeHtml(userName)),
-  );
+  enqueue(() => sendEmail(to, 'Welcome to AstroVerse!', welcomeHtml(userName)));
 }
 
 /**
@@ -237,8 +231,21 @@ export function sendMonthlyReportEmail(
   month: string,
   year: number,
 ): void {
-  const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthNames = [
+    '',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const monthName = monthNames[parseInt(month)] || month;
   const dashboardUrl = `${frontendUrl}/dashboard/monthly-report?month=${month}&year=${year}`;
 
@@ -264,11 +271,5 @@ export function sendMonthlyReportEmail(
     </body></html>
   `;
 
-  enqueue(() =>
-    sendEmail(
-      to,
-      `Your ${monthName} ${year} Transit Report is Ready`,
-      html,
-    ),
-  );
+  enqueue(() => sendEmail(to, `Your ${monthName} ${year} Transit Report is Ready`, html));
 }

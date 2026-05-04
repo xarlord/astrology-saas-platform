@@ -24,7 +24,7 @@ export const mockChart = {
     place: {
       name: 'New York, NY',
       latitude: 40.7128,
-      longitude: -74.0060,
+      longitude: -74.006,
       timezone: 'America/New_York',
     },
     timeUnknown: false,
@@ -313,14 +313,16 @@ interface TestUserData {
  */
 export async function createTestUser(db: Database, userData: TestUserData = {}) {
   const hashedPassword = await bcrypt.hash('password123', 10);
-  const [user] = await db('users').insert({
-    email: userData.email || 'test@example.com',
-    password: hashedPassword,
-    name: userData.name || 'Test User',
-    timezone: userData.timezone || 'UTC',
-    created_at: new Date(),
-    updated_at: new Date(),
-  }).returning('*');
+  const [user] = await db('users')
+    .insert({
+      email: userData.email || 'test@example.com',
+      password: hashedPassword,
+      name: userData.name || 'Test User',
+      timezone: userData.timezone || 'UTC',
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    .returning('*');
 
   return user;
 }
@@ -347,23 +349,25 @@ interface TestChartData {
  * Create a test chart in the database
  */
 export async function createTestChart(db: Database, userId: string, chartData: TestChartData = {}) {
-  const [chart] = await db('charts').insert({
-    user_id: userId,
-    name: chartData.name || 'Test Chart',
-    type: chartData.type || 'natal',
-    birth_date: chartData.birth_date || new Date('1990-01-01'),
-    birth_time: chartData.birth_time || '12:00',
-    birth_place: chartData.birth_place || 'New York',
-    latitude: chartData.latitude || 40.7128,
-    longitude: chartData.longitude || -74.0060,
-    timezone: chartData.timezone || 'America/New_York',
-    time_unknown: chartData.time_unknown || false,
-    house_system: chartData.house_system || 'placidus',
-    zodiac: chartData.zodiac || 'tropical',
-    calculated_data: chartData.calculated_data || {},
-    created_at: new Date(),
-    updated_at: new Date(),
-  }).returning('*');
+  const [chart] = await db('charts')
+    .insert({
+      user_id: userId,
+      name: chartData.name || 'Test Chart',
+      type: chartData.type || 'natal',
+      birth_date: chartData.birth_date || new Date('1990-01-01'),
+      birth_time: chartData.birth_time || '12:00',
+      birth_place: chartData.birth_place || 'New York',
+      latitude: chartData.latitude || 40.7128,
+      longitude: chartData.longitude || -74.006,
+      timezone: chartData.timezone || 'America/New_York',
+      time_unknown: chartData.time_unknown || false,
+      house_system: chartData.house_system || 'placidus',
+      zodiac: chartData.zodiac || 'tropical',
+      calculated_data: chartData.calculated_data || {},
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+    .returning('*');
 
   return chart;
 }
@@ -385,8 +389,8 @@ export function toJulianDay(date: Date): number {
 
   return (
     367 * year -
-    Math.floor(7 * (year + Math.floor((month + 9) / 12)) / 4) +
-    Math.floor(275 * month / 9) +
+    Math.floor((7 * (year + Math.floor((month + 9) / 12))) / 4) +
+    Math.floor((275 * month) / 9) +
     day +
     (hour + minute / 60 + second / 3600) / 24 -
     730531.5
@@ -467,8 +471,12 @@ export function assertPlanetPosition(planet: unknown): asserts planet is PlanetP
   expect(planet).toHaveProperty('minute');
   expect(planet).toHaveProperty('second');
   expect(planet).toHaveProperty('house');
-  expect((planet as PlanetPosition).planet).toMatch(/^(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/);
-  expect((planet as PlanetPosition).sign).toMatch(/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/);
+  expect((planet as PlanetPosition).planet).toMatch(
+    /^(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/,
+  );
+  expect((planet as PlanetPosition).sign).toMatch(
+    /^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/,
+  );
   expect((planet as PlanetPosition).degree).toBeGreaterThanOrEqual(0);
   expect((planet as PlanetPosition).degree).toBeLessThan(360);
   expect((planet as PlanetPosition).minute).toBeGreaterThanOrEqual(0);
@@ -485,7 +493,9 @@ export function assertAspect(aspect: unknown): asserts aspect is Aspect {
   expect(aspect).toHaveProperty('planet2');
   expect(aspect).toHaveProperty('type');
   expect(aspect).toHaveProperty('orb');
-  expect((aspect as Aspect).type).toMatch(/^(conjunction|opposition|trine|square|sextile|quincunx|semi-sextile)$/);
+  expect((aspect as Aspect).type).toMatch(
+    /^(conjunction|opposition|trine|square|sextile|quincunx|semi-sextile)$/,
+  );
   expect((aspect as Aspect).orb).toBeGreaterThanOrEqual(0);
 }
 
@@ -498,7 +508,9 @@ export function assertHouseCusp(house: unknown): asserts house is HouseCusp {
   expect(house).toHaveProperty('degree');
   expect((house as HouseCusp).house).toBeGreaterThanOrEqual(1);
   expect((house as HouseCusp).house).toBeLessThanOrEqual(12);
-  expect((house as HouseCusp).sign).toMatch(/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/);
+  expect((house as HouseCusp).sign).toMatch(
+    /^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/,
+  );
   expect((house as HouseCusp).degree).toBeGreaterThanOrEqual(0);
   expect((house as HouseCusp).degree).toBeLessThan(360);
 }

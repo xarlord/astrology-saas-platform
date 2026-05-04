@@ -41,10 +41,7 @@ class UserModel {
    * Find user by ID
    */
   async findById(id: string): Promise<User | null> {
-    const user = await knex(this.tableName)
-      .where({ id })
-      .whereNull('deleted_at')
-      .first();
+    const user = await knex(this.tableName).where({ id }).whereNull('deleted_at').first();
 
     return user || null;
   }
@@ -53,10 +50,7 @@ class UserModel {
    * Find user by email
    */
   async findByEmail(email: string): Promise<User | null> {
-    const user = await knex(this.tableName)
-      .where({ email })
-      .whereNull('deleted_at')
-      .first();
+    const user = await knex(this.tableName).where({ email }).whereNull('deleted_at').first();
 
     return user || null;
   }
@@ -98,12 +92,10 @@ class UserModel {
    * Soft delete user
    */
   async softDelete(id: string): Promise<boolean> {
-    const count = await knex(this.tableName)
-      .where({ id })
-      .update({
-        deleted_at: new Date(),
-        updated_at: new Date(),
-      });
+    const count = await knex(this.tableName).where({ id }).update({
+      deleted_at: new Date(),
+      updated_at: new Date(),
+    });
 
     return count > 0;
   }
@@ -115,7 +107,7 @@ class UserModel {
     id: string,
     plan: 'free' | 'pro' | 'premium',
     status: 'active' | 'canceled' | 'expired' = 'active',
-    renewsAt?: Date
+    renewsAt?: Date,
   ): Promise<User | null> {
     const [user] = await knex(this.tableName)
       .where({ id })
@@ -167,13 +159,10 @@ class UserModel {
    * Update user password directly
    */
   async updatePassword(id: string, passwordHash: string): Promise<boolean> {
-    const count = await knex(this.tableName)
-      .where({ id })
-      .whereNull('deleted_at')
-      .update({
-        password_hash: passwordHash,
-        updated_at: new Date(),
-      });
+    const count = await knex(this.tableName).where({ id }).whereNull('deleted_at').update({
+      password_hash: passwordHash,
+      updated_at: new Date(),
+    });
 
     return count > 0;
   }

@@ -50,13 +50,12 @@ export class TimezoneService {
     const { year, month, day, hour, minute, timezone } = params;
 
     // Create DateTime in the specified timezone
-    const localDate = DateTime.fromObject(
-      { year, month, day, hour, minute },
-      { zone: timezone }
-    );
+    const localDate = DateTime.fromObject({ year, month, day, hour, minute }, { zone: timezone });
 
     if (!localDate.isValid) {
-      throw new Error(`Invalid date/time for timezone ${timezone}: ${localDate.invalidExplanation}`);
+      throw new Error(
+        `Invalid date/time for timezone ${timezone}: ${localDate.invalidExplanation}`,
+      );
     }
 
     // Get UTC date
@@ -182,20 +181,24 @@ export class TimezoneService {
    */
   getCommonTimezones(region?: string): TimezoneSearchResult[] {
     const commonZones: Record<string, string[]> = {
-      'US': ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'America/Anchorage', 'Pacific/Honolulu'],
-      'EU': ['Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Moscow', 'Europe/Athens'],
-      'ASIA': ['Asia/Tokyo', 'Asia/Shanghai', 'Asia/Singapore', 'Asia/Dubai', 'Asia/Kolkata'],
-      'AU': ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Perth', 'Australia/Brisbane'],
+      US: [
+        'America/New_York',
+        'America/Chicago',
+        'America/Denver',
+        'America/Los_Angeles',
+        'America/Anchorage',
+        'Pacific/Honolulu',
+      ],
+      EU: ['Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Moscow', 'Europe/Athens'],
+      ASIA: ['Asia/Tokyo', 'Asia/Shanghai', 'Asia/Singapore', 'Asia/Dubai', 'Asia/Kolkata'],
+      AU: ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Perth', 'Australia/Brisbane'],
     };
 
-    const zones = region ? (commonZones[region.toUpperCase()] || []) : [
-      ...commonZones.US,
-      ...commonZones.EU,
-      ...commonZones.ASIA,
-      ...commonZones.AU,
-    ];
+    const zones = region
+      ? commonZones[region.toUpperCase()] || []
+      : [...commonZones.US, ...commonZones.EU, ...commonZones.ASIA, ...commonZones.AU];
 
-    return zones.map(zone => {
+    return zones.map((zone) => {
       const info = this.getTimezoneInfo(zone);
       return {
         id: zone,
@@ -304,7 +307,7 @@ export class TimezoneService {
       'Asia/Tokyo': 'Japan Standard Time',
       'Asia/Shanghai': 'China Standard Time',
       'Asia/Kolkata': 'India Standard Time',
-      'UTC': 'Coordinated Universal Time',
+      UTC: 'Coordinated Universal Time',
     };
 
     return friendlyNames[zoneName] || zoneName.replace(/_/g, ' ');
@@ -331,7 +334,14 @@ export class TimezoneService {
     const m2 = m + 12 * a - 3;
 
     // Julian Day
-    let jd = d + Math.floor((153 * m2 + 2) / 5) + 365 * y2 + Math.floor(y2 / 4) - Math.floor(y2 / 100) + Math.floor(y2 / 400) - 32045;
+    let jd =
+      d +
+      Math.floor((153 * m2 + 2) / 5) +
+      365 * y2 +
+      Math.floor(y2 / 4) -
+      Math.floor(y2 / 100) +
+      Math.floor(y2 / 400) -
+      32045;
 
     // Add fractional day
     jd += (h - 12) / 24;

@@ -76,10 +76,7 @@ class AICacheService {
    * Creates consistent hash for identical inputs
    */
   generateKey(data: unknown): string {
-    const hash = crypto
-      .createHash('sha256')
-      .update(JSON.stringify(data))
-      .digest('hex');
+    const hash = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
 
     return `ai:${hash}`;
   }
@@ -91,7 +88,7 @@ class AICacheService {
   async getOrGenerate(
     key: string,
     generator: () => Promise<unknown>,
-    options?: CacheOptions
+    options?: CacheOptions,
   ): Promise<unknown> {
     // Try to get from cache
     const cached = await this.get(key);

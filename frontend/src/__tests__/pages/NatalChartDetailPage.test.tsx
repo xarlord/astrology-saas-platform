@@ -76,7 +76,7 @@ vi.mock('../../components/ui/ShareCardModal', () => ({
         <button onClick={onClose}>Close</button>
       </div>
     ) : null,
-  }));
+}));
 
 // Import after mocks
 import { NatalChartDetailPage } from '../../pages/NatalChartDetailPage';

@@ -60,9 +60,7 @@ jest.mock('../../modules/solar/models/solarReturn.model', () => ({
 
 // Mock interpretations
 jest.mock('../../data/solarReturnInterpretations', () => ({
-  generateSolarReturnInterpretation: jest
-    .fn()
-    .mockReturnValue({ summary: 'test interpretation' }),
+  generateSolarReturnInterpretation: jest.fn().mockReturnValue({ summary: 'test interpretation' }),
 }));
 
 // Mock errorHandler -- asyncHandler just calls the handler directly so thrown
@@ -80,7 +78,15 @@ const currentYear = new Date().getFullYear();
 /** Minimal, valid chart data that satisfies the controller */
 const mockChartData = {
   planets: [
-    { planet: 'sun', sign: 'capricorn', degree: 10, minute: 30, second: 0, house: 1, retrograde: false },
+    {
+      planet: 'sun',
+      sign: 'capricorn',
+      degree: 10,
+      minute: 30,
+      second: 0,
+      house: 1,
+      retrograde: false,
+    },
   ],
   houses: [],
   aspects: [],
@@ -95,7 +101,12 @@ const mockSolarReturn = {
   chartId: 'chart-abc',
   year: currentYear,
   returnDate: new Date(`${currentYear}-01-15T12:00:00Z`),
-  returnLocation: { name: 'New York', latitude: 40.7128, longitude: -74.006, timezone: 'America/New_York' },
+  returnLocation: {
+    name: 'New York',
+    latitude: 40.7128,
+    longitude: -74.006,
+    timezone: 'America/New_York',
+  },
   calculatedData: mockChartData,
   interpretation: { summary: 'test interpretation', luckyDays: [], themes: ['Self-discovery'] },
   isRelocated: false,
@@ -211,7 +222,7 @@ describe('SolarReturnController', () => {
       } catch (err) {
         expect(err).toBeInstanceOf(ConflictError);
         expect((err as ConflictError).message).toBe(
-          `Solar return for ${currentYear} already exists. Use recalculate to update.`
+          `Solar return for ${currentYear} already exists. Use recalculate to update.`,
         );
       }
     });
@@ -233,14 +244,17 @@ describe('SolarReturnController', () => {
       (solarReturnService.calculateLuckyDays as jest.Mock).mockReturnValue([
         { date: `${currentYear}-06-15`, reason: 'Jupiter trine', intensity: 8 },
       ]);
-      (solarReturnService.generateYearlyThemes as jest.Mock).mockReturnValue(['Self-discovery', 'New beginnings']);
+      (solarReturnService.generateYearlyThemes as jest.Mock).mockReturnValue([
+        'Self-discovery',
+        'New beginnings',
+      ]);
       (solarReturnModel.create as jest.Mock).mockResolvedValue(mockSolarReturn);
 
       await calculateSolarReturn(req, res as Response, {} as NextFunction);
 
       expect(solarReturnModel.findByUserAndYear).toHaveBeenCalledWith('user-123', currentYear);
       expect(solarReturnService.calculateSolarReturn).toHaveBeenCalledWith(
-        expect.objectContaining({ natalChartId: 'chart-abc', year: currentYear })
+        expect.objectContaining({ natalChartId: 'chart-abc', year: currentYear }),
       );
       expect(solarReturnModel.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -248,11 +262,11 @@ describe('SolarReturnController', () => {
           chartId: 'chart-abc',
           year: currentYear,
           isRelocated: true,
-        })
+        }),
       );
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ success: true, data: mockSolarReturn })
+        expect.objectContaining({ success: true, data: mockSolarReturn }),
       );
     });
 
@@ -274,7 +288,7 @@ describe('SolarReturnController', () => {
         expect.objectContaining({
           houseSystem: 'placidus',
           zodiacType: 'tropical',
-        })
+        }),
       );
     });
 
@@ -293,7 +307,7 @@ describe('SolarReturnController', () => {
       await calculateSolarReturn(req, res as Response, {} as NextFunction);
 
       expect(solarReturnModel.create).toHaveBeenCalledWith(
-        expect.objectContaining({ isRelocated: false })
+        expect.objectContaining({ isRelocated: false }),
       );
     });
   });
@@ -349,7 +363,7 @@ describe('SolarReturnController', () => {
       expect(solarReturnModel.findByUserAndYear).toHaveBeenCalledWith('user-123', currentYear);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ success: true, data: mockSolarReturn })
+        expect.objectContaining({ success: true, data: mockSolarReturn }),
       );
     });
   });
@@ -407,7 +421,7 @@ describe('SolarReturnController', () => {
       expect(solarReturnModel.findById).toHaveBeenCalledWith('sr-1');
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ success: true, data: mockSolarReturn })
+        expect.objectContaining({ success: true, data: mockSolarReturn }),
       );
     });
   });
@@ -443,7 +457,7 @@ describe('SolarReturnController', () => {
           success: true,
           data: mockHistory,
           count: mockHistory.length,
-        })
+        }),
       );
     });
 
@@ -470,7 +484,7 @@ describe('SolarReturnController', () => {
           success: true,
           data: mockHistory,
           count: mockHistory.length,
-        })
+        }),
       );
     });
   });
@@ -479,7 +493,12 @@ describe('SolarReturnController', () => {
   // 5. recalculateSolarReturn
   // =========================================================================
   describe('recalculateSolarReturn', () => {
-    const newLocation = { name: 'London', latitude: 51.5, longitude: -0.12, timezone: 'Europe/London' };
+    const newLocation = {
+      name: 'London',
+      latitude: 51.5,
+      longitude: -0.12,
+      timezone: 'Europe/London',
+    };
 
     it('should throw UnauthorizedError when no user is authenticated', async () => {
       req.user = undefined;
@@ -540,7 +559,11 @@ describe('SolarReturnController', () => {
       req.params = { id: 'sr-1' };
       req.body = { location: newLocation, houseSystem: 'koch', zodiacType: 'sidereal' };
 
-      const updatedSolarReturn = { ...mockSolarReturn, isRelocated: true, returnLocation: newLocation };
+      const updatedSolarReturn = {
+        ...mockSolarReturn,
+        isRelocated: true,
+        returnLocation: newLocation,
+      };
 
       (solarReturnModel.findById as jest.Mock).mockResolvedValue(mockSolarReturn);
       (solarReturnService.calculateSolarReturn as jest.Mock).mockResolvedValue({
@@ -548,7 +571,10 @@ describe('SolarReturnController', () => {
         chartData: mockChartData,
       });
       (solarReturnService.calculateLuckyDays as jest.Mock).mockReturnValue([]);
-      (solarReturnService.generateYearlyThemes as jest.Mock).mockReturnValue(['Career', 'Ambition']);
+      (solarReturnService.generateYearlyThemes as jest.Mock).mockReturnValue([
+        'Career',
+        'Ambition',
+      ]);
       (solarReturnModel.update as jest.Mock).mockResolvedValue(updatedSolarReturn);
 
       await recalculateSolarReturn(req, res as Response, {} as NextFunction);
@@ -560,11 +586,11 @@ describe('SolarReturnController', () => {
           location: newLocation,
           houseSystem: 'koch',
           zodiacType: 'sidereal',
-        })
+        }),
       );
       expect(solarReturnModel.update).toHaveBeenCalledWith(
         'sr-1',
-        expect.objectContaining({ isRelocated: true, returnLocation: newLocation })
+        expect.objectContaining({ isRelocated: true, returnLocation: newLocation }),
       );
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(
@@ -572,7 +598,7 @@ describe('SolarReturnController', () => {
           success: true,
           data: updatedSolarReturn,
           message: 'Solar return recalculated with new location',
-        })
+        }),
       );
     });
 
@@ -595,7 +621,7 @@ describe('SolarReturnController', () => {
         expect.objectContaining({
           houseSystem: 'placidus',
           zodiacType: 'tropical',
-        })
+        }),
       );
     });
   });
@@ -604,7 +630,11 @@ describe('SolarReturnController', () => {
   // 6. getSolarReturnStats
   // =========================================================================
   describe('getSolarReturnStats', () => {
-    const mockStats = { total: 5, relocated: 2, byYear: { [currentYear]: 1, [currentYear - 1]: 1 } };
+    const mockStats = {
+      total: 5,
+      relocated: 2,
+      byYear: { [currentYear]: 1, [currentYear - 1]: 1 },
+    };
 
     it('should throw UnauthorizedError when no user is authenticated', async () => {
       req.user = undefined;
@@ -626,7 +656,7 @@ describe('SolarReturnController', () => {
       expect(solarReturnModel.getStats).toHaveBeenCalledWith('user-123');
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ success: true, data: mockStats })
+        expect.objectContaining({ success: true, data: mockStats }),
       );
     });
   });
@@ -689,7 +719,7 @@ describe('SolarReturnController', () => {
         expect.objectContaining({
           success: true,
           message: 'Solar return deleted successfully',
-        })
+        }),
       );
     });
   });
@@ -727,7 +757,7 @@ describe('SolarReturnController', () => {
         expect.objectContaining({
           success: true,
           data: [currentYear, currentYear - 1, currentYear - 2],
-        })
+        }),
       );
     });
 
@@ -736,9 +766,7 @@ describe('SolarReturnController', () => {
 
       await getAvailableYears(req, res as Response, {} as NextFunction);
 
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ success: true, data: [] })
-      );
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, data: [] }));
     });
   });
 });

@@ -103,9 +103,28 @@ function makeNatalChartData(overrides: Partial<NatalChartData> = {}): NatalChart
     birthTime: '14:30',
     birthLocation: 'New York, NY',
     planets: {
-      Sun: makePlanetPosition({ name: 'Sun', symbol: 'Sun', sign: 'capricorn', degree: 25, house: 9 }),
-      Moon: makePlanetPosition({ name: 'Moon', symbol: 'Moon', sign: 'pisces', degree: 10, house: 11 }),
-      Mercury: makePlanetPosition({ name: 'Mercury', symbol: 'Mercury', sign: 'sagittarius', degree: 5, house: 8, retrograde: true }),
+      Sun: makePlanetPosition({
+        name: 'Sun',
+        symbol: 'Sun',
+        sign: 'capricorn',
+        degree: 25,
+        house: 9,
+      }),
+      Moon: makePlanetPosition({
+        name: 'Moon',
+        symbol: 'Moon',
+        sign: 'pisces',
+        degree: 10,
+        house: 11,
+      }),
+      Mercury: makePlanetPosition({
+        name: 'Mercury',
+        symbol: 'Mercury',
+        sign: 'sagittarius',
+        degree: 5,
+        house: 8,
+        retrograde: true,
+      }),
     },
     houses: [
       makeHouseCusp({ number: 1, sign: 'aries', degree: 0 }),
@@ -130,16 +149,16 @@ function makeSynastryChartData(overrides: Partial<SynastryChartData> = {}): Syna
     communicationScore: 70,
     emotionalScore: 75,
     valuesScore: 65,
-    aspects: [
-      makeAspectData({ planet1: 'Venus', planet2: 'Mars', type: 'opposition', orb: 4.0 }),
-    ],
+    aspects: [makeAspectData({ planet1: 'Venus', planet2: 'Mars', type: 'opposition', orb: 4.0 })],
     strengths: ['Strong emotional bond', 'Good communication'],
     challenges: ['Different values on money'],
     ...overrides,
   };
 }
 
-function makeSolarReturnChartData(overrides: Partial<SolarReturnChartData> = {}): SolarReturnChartData {
+function makeSolarReturnChartData(
+  overrides: Partial<SolarReturnChartData> = {},
+): SolarReturnChartData {
   return {
     name: 'Jane Smith',
     birthDate: '1985-03-20',
@@ -393,8 +412,11 @@ describe('PDFGenerationService', () => {
         data: makeNatalChartData({
           planets: {
             Mercury: makePlanetPosition({
-              name: 'Mercury', symbol: 'Mercury', sign: 'sagittarius',
-              degree: 5, retrograde: true,
+              name: 'Mercury',
+              symbol: 'Mercury',
+              sign: 'sagittarius',
+              degree: 5,
+              retrograde: true,
             }),
           },
         }),
@@ -648,7 +670,14 @@ describe('PDFGenerationService', () => {
         generatedAt: new Date(),
         data: makeSynastryChartData({
           aspects: [
-            { planet1: 'Venus', planet2: 'Mars', type: 'opposition', angle: 180, orb: 4.0, harmonious: false } as any,
+            {
+              planet1: 'Venus',
+              planet2: 'Mars',
+              type: 'opposition',
+              angle: 180,
+              orb: 4.0,
+              harmonious: false,
+            } as any,
           ],
         }),
       };
@@ -1195,10 +1224,10 @@ describe('PDFGenerationService', () => {
       const chartData = makeNatalChart();
       await service.generateChartPDF(chartData);
 
-      expect(mockPage.setContent).toHaveBeenCalledWith(
-        expect.any(String),
-        { waitUntil: 'networkidle0', timeout: 30000 },
-      );
+      expect(mockPage.setContent).toHaveBeenCalledWith(expect.any(String), {
+        waitUntil: 'networkidle0',
+        timeout: 30000,
+      });
     });
 
     it('should use A4 format by default', async () => {
