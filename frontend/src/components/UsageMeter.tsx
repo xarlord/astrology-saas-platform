@@ -85,27 +85,17 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
   const isAtWarning = warningLevel === 'warning';
 
   return (
-    <div
-      className={`bg-white/5 dark:bg-black/20 rounded-xl p-5 border border-white/10 ${className}`}
-    >
+    <div className={`bg-white/15 rounded-xl p-5 border border-white/15 ${className}`}>
       {/* Header */}
       <div className="flex justify-between items-center mb-4 sm:flex-row flex-col sm:items-start gap-2">
         <div className="flex items-center gap-2">
-          <span
-            className="material-symbols-outlined text-[16px]"
-            style={{ color: tierConfig.color }}
-            aria-hidden="true"
-          >
-            emoji_events
-          </span>
+          <span className="material-symbols-outlined" style={{ fontSize: '16px', color: tierConfig.color }} aria-hidden="true">workspace_premium</span>
           <span className="font-semibold text-sm" style={{ color: tierConfig.color }}>
             {tierConfig.name} Plan
           </span>
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-white/70">
-          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
-            bar_chart
-          </span>
+        <div className="flex items-center gap-1.5 text-sm text-slate-200">
+          <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">bar_chart</span>
           <span>
             {currentCount} / {limit} charts
           </span>
@@ -121,7 +111,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
         aria-valuemax={100}
         aria-label={`Storage usage: ${percentage}%`}
       >
-        <div className="flex-1 h-2 bg-white/10 rounded overflow-hidden">
+        <div className="flex-1 h-2 bg-white/15 rounded overflow-hidden">
           <div
             className="h-full rounded transition-all duration-300"
             style={{
@@ -130,27 +120,19 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
             }}
           />
         </div>
-        <span
-          className="text-sm font-semibold min-w-[40px] sm:text-right text-left"
-          style={{ color: progressColor }}
-        >
+        <span className="text-sm font-semibold min-w-[40px] sm:text-right text-left" style={{ color: progressColor }}>
           {percentage}%
         </span>
       </div>
 
       {/* Warning/Limit Messages */}
       {isAtWarning && (
-        <div
-          className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-wrap"
-          role="alert"
-        >
-          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
-            warning
-          </span>
+        <div className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-wrap" role="alert">
+          <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">warning</span>
           <span>Approaching storage limit</span>
           {onUpgradeClick && (
             <button
-              className="ml-auto sm:ml-auto ml-0 mt-0 sm:mt-0 bg-transparent border-none text-inherit underline cursor-pointer p-0 hover:opacity-80 sm:w-auto w-full sm:text-left text-center sm:bg-transparent bg-white/10 sm:py-0 py-1.5 sm:px-0 px-3 sm:rounded-none rounded sm:no-underline underline"
+              className="ml-auto text-sm text-amber-300 hover:text-white underline hover:opacity-80 transition-opacity cursor-pointer"
               onClick={onUpgradeClick}
               aria-label="Upgrade plan for more storage"
             >
@@ -161,17 +143,12 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       )}
 
       {isAtLimit && (
-        <div
-          className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-red-500/15 text-red-400 border border-red-500/30 flex-wrap"
-          role="alert"
-        >
-          <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
-            warning
-          </span>
+        <div className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-red-500/15 text-red-400 border border-red-500/30 flex-wrap" role="alert">
+          <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">warning</span>
           <span>Storage limit reached</span>
           {onUpgradeClick && (
             <button
-              className="ml-auto sm:ml-auto ml-0 mt-0 sm:mt-0 bg-transparent border-none text-inherit underline cursor-pointer p-0 hover:opacity-80 sm:w-auto w-full sm:text-left text-center sm:bg-transparent bg-white/10 sm:py-0 py-1.5 sm:px-0 px-3 sm:rounded-none rounded sm:no-underline underline"
+              className="ml-auto text-sm text-red-300 hover:text-white underline hover:opacity-80 transition-opacity cursor-pointer"
               onClick={onUpgradeClick}
               aria-label="Upgrade plan to create more charts"
             >
@@ -183,15 +160,10 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
 
       {/* Tier Features */}
       <div className="pt-3 border-t border-white/[0.08]">
-        <span className="text-xs text-white/50 block mb-2">Plan includes:</span>
+        <span className="text-xs text-slate-200 block mb-2">Plan includes:</span>
         <ul className="list-none p-0 m-0 flex flex-wrap gap-1.5 gap-x-3">
           {tierConfig.features.map((feature, index) => (
-            <li
-              key={index}
-              className="text-xs text-white/70 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500"
-            >
-              {feature}
-            </li>
+            <li key={index} className="text-xs text-slate-200 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500">{feature}</li>
           ))}
         </ul>
       </div>

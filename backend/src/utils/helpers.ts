@@ -2,7 +2,6 @@
  * Utilities
  */
 
-import * as crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 
 /**
@@ -60,16 +59,17 @@ export function validatePassword(password: string): {
 }
 
 /**
- * Generate cryptographically secure random token
+ * Generate random token
  */
 export function generateToken(): string {
-  return crypto.randomBytes(32).toString('hex');
+  return Math.random().toString(36).substring(2, 15) +
+         Math.random().toString(36).substring(2, 15);
 }
 
 /**
  * Sanitize user object (remove sensitive data)
  */
-export function sanitizeUser<T extends Record<string, unknown>>(user: T): Omit<T, 'password_hash'> {
+export function sanitizeUser<T extends { password_hash?: unknown }>(user: T): Omit<T, 'password_hash'> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password_hash, ...sanitized } = user;
   return sanitized;

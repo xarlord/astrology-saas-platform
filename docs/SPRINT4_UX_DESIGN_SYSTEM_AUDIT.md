@@ -1,237 +1,223 @@
-# Sprint 4: UX Design System Audit
+# Sprint 4: Design System Consistency Audit
 
 **Date:** 2026-04-04
 **Auditor:** UX Designer 2
-**Scope:** All new pages added after Sprint 3 audit resolution
-**Status:** MOSTLY RESOLVED — 1 minor remaining item
+**Scope:** All pages created after Sprint 3 audit resolution
+**Status:** OPEN
 
 ---
 
 ## Executive Summary
 
-After Sprint 3 resolved all 10 UX audit items, new pages were added that bypass the AstroVerse cosmic design system. Two pages (SubscriptionPage, SolarReturnsPage) use entirely generic Tailwind patterns with wrong icon libraries. Three otherwise-compliant pages use emoji where Material Symbols icons should appear. The fix scope is concentrated: **2 pages need full retheme, 3 pages need emoji-to-icon swaps**.
+The Sprint 3 UX audit resolved all 10 original findings and established a consistent cosmic dark theme across the core pages. However, **11 new pages** added during the "Add All Missing Pages" initiative were built using generic Tailwind utility classes instead of the AstroVerse design system tokens. This creates a jarring visual split — users see a cosmic astrology app on core pages but a generic SaaS dashboard on new pages.
+
+**Severity:** HIGH — design system fragmentation directly impacts brand perception and user trust.
 
 ---
 
-## Pages Audited
+## Audit Findings
 
-| Page | File | Verdict |
-|------|------|---------|
-| SubscriptionPage | `pages/SubscriptionPage.tsx` | **FAIL — full retheme needed** |
-| SolarReturnsPage | `pages/SolarReturnsPage.tsx` | **FAIL — full retheme needed** |
-| ProfileSettingsPage | `pages/ProfileSettingsPage.tsx` | PASS (1 emoji issue) |
-| LearningCenterPage | `pages/LearningCenterPage.tsx` | PASS |
-| LunarReturnsPage | `pages/LunarReturnsPage.tsx` | PASS |
-| DailyBriefingPage | `pages/DailyBriefingPage.tsx` | PASS (3 emoji issues) |
-| DashboardPage | `pages/DashboardPage.tsx` | PASS (1 emoji issue) |
-| CourseDetailPage | `pages/CourseDetailPage.tsx` | Not audited (defer to implementation) |
-| SolarReturnAnnualReportPage | `pages/SolarReturnAnnualReportPage.tsx` | Not audited (defer to implementation) |
+### C1: Cosmic Theme Not Applied to New Pages [CRITICAL]
 
----
+**Pages affected:** SettingsPage, SubscriptionPage, EphemerisPage, LearnPage, RetrogradePage, StaticPage, MoonCalendarPage, TodayTransitsPage
 
-## Findings
+**Issue:** All new pages use standard Tailwind dark mode classes instead of AstroVerse cosmic tokens.
 
-### C1 — CRITICAL: SubscriptionPage — complete design system bypass
+| Element | Design System Token | New Pages Use |
+|---------|-------------------|---------------|
+| Card background | `bg-[#141627]/70 backdrop-blur-md` | `bg-white dark:bg-gray-800` |
+| Card border | `border-[#2f2645]` | `border-gray-200 dark:border-gray-700` |
+| Page background | `bg-[#0B0D17]` | `bg-gray-50 dark:bg-gray-900` |
+| Primary text | `text-white` (on dark bg) | `text-gray-900 dark:text-white` |
+| Secondary text | `text-slate-300` | `text-gray-600 dark:text-gray-400` |
+| Primary button | `bg-primary` (#6b3de1) | `bg-indigo-600` |
+| Hover state | `hover:bg-white/5` | `hover:bg-gray-50 dark:hover:bg-gray-700` |
+| Divider | `border-white/[0.08]` | `border-gray-200 dark:border-gray-700` |
 
-**File:** `pages/SubscriptionPage.tsx`
-
-The SubscriptionPage was built as a generic SaaS pricing page with no cosmic theme applied.
-
-**Issues:**
-1. **Icon library:** Imports `@heroicons/react/24/outline` (CheckIcon, StarIcon, SparklesIcon, ArrowLeftIcon) instead of Material Symbols Outlined
-2. **Color tokens:** Uses generic `text-gray-900 dark:text-white`, `text-gray-600 dark:text-gray-400`, `bg-white dark:bg-gray-800` — no cosmic dark theme
-3. **Card backgrounds:** `bg-white dark:bg-gray-800` + `border-gray-200 dark:border-gray-700` instead of `bg-[#141627]/70 backdrop-blur-md border border-white/10`
-4. **Button colors:** `bg-indigo-600 hover:bg-indigo-700` for highlighted tier CTA instead of `bg-primary`
-5. **Ring/border accents:** `border-indigo-500 ring-indigo-500/20` instead of `border-primary ring-primary/20`
-6. **Back link:** `text-gray-500 dark:text-gray-400` with heroicon ArrowLeftIcon
-7. **Status banners:** Generic `bg-green-50 dark:bg-green-900/20` etc. — no cosmic styling
-8. **No cosmic page structure:** Missing the dark gradient background, no ambient glow effects
-
-**Impact:** Page feels completely disconnected from the rest of the app. Users coming from the cosmic-themed dashboard will experience a jarring visual break.
+**Fix:** Replace all generic Tailwind classes with cosmic theme tokens per the design system.
 
 ---
 
-### C2 — CRITICAL: SolarReturnsPage — icon library fragmentation + generic theming
+### C2: Icon Library Fragmentation [CRITICAL]
 
-**File:** `pages/SolarReturnsPage.tsx`
+**Issue:** Three different icon libraries are in use across the frontend.
 
-The SolarReturnsPage uses the wrong icon library and generic gray/indigo color scheme.
+| Page/Component | Icon Library | Design System Spec |
+|---------------|-------------|-------------------|
+| SettingsPage | `@heroicons/react` | Material Symbols Outlined |
+| LearnPage | `@heroicons/react` | Material Symbols Outlined |
+| EphemerisPage | `lucide-react` | Material Symbols Outlined |
+| SubscriptionPage | `lucide-react` | Material Symbols Outlined |
+| UsageMeter | `lucide-react` | Material Symbols Outlined |
+| AppLayout | Material Symbols Outlined | Material Symbols Outlined |
+| DashboardPage | Emoji (➕📅📍) | Material Symbols Outlined |
+| EmptyState | Emoji (⚠️🌙🌌) | Material Symbols Outlined |
 
-**Issues:**
-1. **Icon library:** Imports `lucide-react` (Calendar, Settings, Share2, ArrowLeft) instead of Material Symbols Outlined
-2. **Color tokens:** Uses `text-indigo-600`, `text-gray-500`, `text-gray-700 dark:text-gray-300` — no cosmic dark palette
-3. **Active tab button:** `bg-indigo-600 text-white` instead of `bg-primary text-white`
-4. **Breadcrumbs:** `text-indigo-600 hover:text-indigo-500 dark:text-indigo-400` — indigo on dark fails WCAG AA for small text
-5. **Spinner:** `border-indigo-600` instead of `border-primary`
-6. **Tab bar border:** `border-gray-200 dark:border-gray-700` instead of `border-white/10`
-7. **Error banner:** Generic `bg-red-100 dark:bg-red-900` styling
-8. **Page header:** `text-gray-600 dark:text-gray-400` subtitle — should be `text-slate-400`
-9. **No cosmic card styling:** Content is rendered by sub-components but the page shell uses generic gray
-
-**Impact:** Visual inconsistency with every other page. Wrong icons create UX confusion (lucide Calendar icon vs Material calendar_month).
+**Fix:** Migrate all new pages to `material-symbols-outlined` at sizes `[18px]` buttons, `[20px]` sidebar, `[22px]` mobile nav.
 
 ---
 
-### H1 — HIGH: Button CTA colors use indigo instead of primary
+### H1: Button Color Inconsistency [HIGH]
 
-**Files:** SubscriptionPage, SolarReturnsPage
+**Pages affected:** SettingsPage, SubscriptionPage, StaticPage
 
-Both pages use `bg-indigo-600` for primary action buttons and active states:
-- SubscriptionPage highlighted tier: `bg-indigo-600 text-white hover:bg-indigo-700`
-- SolarReturnsPage active tab: `bg-indigo-600 text-white`
-- SolarReturnsPage spinner: `border-indigo-600 border-t-transparent`
+**Issue:** Primary action buttons use `bg-indigo-600` (#4f46e5) instead of the brand primary `bg-primary` (#6b3de1). This creates two different purple shades across the app.
 
-**Should be:** `bg-primary` (maps to `#6b3de1` via Tailwind config)
+**Occurrences:**
+- `SettingsPage.tsx:209` — Save Settings button
+- `SubscriptionPage.tsx:107` — Pro tier CTA button
+- `StaticPage.tsx:25` — "Go Home" button
+- `StaticPage.tsx:63` — Back to Home link uses `text-indigo-600`
 
----
-
-### H2 — HIGH: Breadcrumb/link colors fail WCAG contrast on dark backgrounds
-
-**File:** SolarReturnsPage.tsx
-
-Breadcrumb uses `text-indigo-600 hover:text-indigo-500 dark:text-indigo-400`:
-- Indigo-400 (#818cf8) on dark bg has ~3.8:1 contrast — fails WCAG AA for normal text (requires 4.5:1)
-- Design system specifies `text-violet-300` for links on dark backgrounds
-
-**Should be:** `text-violet-300 hover:text-violet-200` for WCAG AA compliance
+**Fix:** Replace all `bg-indigo-600` with `bg-primary`, all `hover:bg-indigo-700` with `hover:bg-primary-dark` (or `hover:bg-primary/90`).
 
 ---
 
-### H3 — HIGH: Card styling inconsistent with design system
+### H2: Link Color Fails Contrast on Dark Backgrounds [HIGH]
 
-**Files:** SubscriptionPage, SolarReturnsPage
+**Pages affected:** StaticPage, SettingsPage
 
-SubscriptionPage cards: `bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-2xl`
-SolarReturnsPage tab bar: `border-gray-200 dark:border-gray-700`
-SolarReturnsPage error: `bg-red-100 dark:bg-red-900 border-red-200 dark:border-red-800`
+**Issue:** Links use `text-indigo-600 dark:text-indigo-400` which fails WCAG contrast on dark backgrounds. The design system specifies `text-violet-300` for links on dark backgrounds.
 
-**Should be:**
-- Card: `bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl`
-- Error: `bg-red-500/10 border border-red-500/30 rounded-lg text-red-400`
+**Fix:** Replace link colors with `text-violet-300 hover:text-violet-200` per design tokens.
 
 ---
 
-### M1 — MEDIUM: Emoji used instead of Material Symbols icons
+### H3: Card Component Inconsistency [HIGH]
 
-**Files:** DashboardPage.tsx, DailyBriefingPage.tsx, ProfileSettingsPage.tsx
+**Issue:** New pages define card styles inline with `bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm` instead of using the `.card` class established in the design system.
 
-| Location | Current | Should be |
-|----------|---------|-----------|
-| DashboardPage welcome: `Welcome back, {name} ✨` | `✨` emoji | Remove emoji, or use `<span className="material-symbols-outlined">auto_awesome</span>` |
-| DailyBriefingPage moon phase: `icon: '🌙'` | `🌙` emoji | Use SVG moon phase or `dark_mode` icon |
-| DailyBriefingPage transit: `emoji: '⭐'` | `⭐` emoji | `star` Material icon |
-| DailyBriefingPage transit: `emoji: '⚡'` | `⚡` emoji | `bolt` Material icon |
-| DailyBriefingPage transit: `emoji: '🌊'` | `🌊` emoji | `water` Material icon |
-| ProfileSettingsPage: `Pro Plan ✨` | `✨` emoji | Remove or use `auto_awesome` icon |
+**Pages affected:** LearnPage (ExpandableCard), SettingsPage (SettingsSection), EphemerisPage (TransitTable), SubscriptionPage (PricingTierCard)
 
-**Impact:** Emoji render differently across OS/browsers, breaking visual consistency. Some emoji fail accessibility (screen readers announce literal emoji descriptions).
+**Fix:** Either:
+- (a) Use the `.card` class from the design system, or
+- (b) Create cosmic-themed card variants that match the design tokens
 
 ---
 
-### M2 — MEDIUM: SubscriptionPage pricing accent inconsistent
+### M1: ExpandableCard Not Part of Design System [MEDIUM]
 
-**File:** SubscriptionPage.tsx
+**Issue:** LearnPage defines a local `ExpandableCard` component that should be promoted to the design system for reuse. Currently it uses generic styling.
 
-The "Most Popular" badge and highlighted tier border use indigo:
-- Badge: `bg-indigo-600`
-- Border: `border-indigo-500 ring-indigo-500/20`
-- "Current plan" badge: `bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300`
-
-**Should use primary token:** `bg-primary`, `border-primary ring-primary/20`
+**Fix:** Create a shared `ExpandableCard` component in `components/` with cosmic theme tokens.
 
 ---
 
-### M3 — MEDIUM: Error/loading state styling inconsistency
+### M2: SettingsSection Not Part of Design System [MEDIUM]
 
-**Files:** SubscriptionPage.tsx, SolarReturnsPage.tsx
+**Issue:** SettingsPage defines a local `SettingsSection` component that should be promoted to the design system for reuse.
 
-Both pages use generic Tailwind error styling patterns:
+**Fix:** Create a shared `SettingsSection` component in `components/` with cosmic theme tokens.
+
+---
+
+### M3: ToggleSwitch Not Part of Design System [MEDIUM]
+
+**Issue:** SettingsPage defines a local `ToggleSwitch` component that should be promoted to the design system for reuse.
+
+**Fix:** Create a shared `ToggleSwitch` component in `components/` with cosmic theme tokens.
+
+---
+
+### M4: Emoji Usage Instead of Icons [MEDIUM]
+
+**Issue:** Several pages and components use emoji characters for icons instead of the design system's Material Symbols Outlined icon font.
+
+**Occurrences:**
+- `DashboardPage.tsx:77` — ➕ (add chart)
+- `DashboardPage.tsx:53` — 📅 (date), 📍 (location)
+- `EmptyState` component — ⚠️, 🌙, 🌌 (various empty states)
+- `TodayTransitsPage` — same EmptyState emoji usage
+
+**Fix:** Replace with Material Symbols Outlined equivalents:
+- ➕ → `add_circle` icon
+- 📅 → `calendar_today` icon
+- 📍 → `location_on` icon
+- ⚠️ → `warning` icon
+- 🌙 → `dark_mode` icon
+- 🌌 → `nights_stay` icon
+
+---
+
+### DS1: PricingTierCard Color Mismatch [MINOR]
+
+**Issue:** SubscriptionPage pricing cards use `border-indigo-500` for "popular" tier and `border-green-500` for "current" tier. The design system uses `bg-primary` as the primary accent.
+
+**Fix:** Use `border-primary` for "popular" tier highlight.
+
+---
+
+### DS2: SubscriptionPage Tier Logic Bug [MINOR]
+
+**Issue:** `SubscriptionPage.tsx:190` has dead logic:
+```typescript
+const currentTier = (charts.length > 0 ? 'free' : 'free') as Tier;
 ```
-bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300
+Both branches return `'free'`, so the user is always shown as "Free" tier regardless of actual subscription.
+
+**Fix:** Fetch tier from user profile/API instead of deriving from chart count.
+
+---
+
+## Summary Table
+
+| ID | Severity | Component | Issue |
+|----|----------|-----------|-------|
+| C1 | CRITICAL | 8 pages | Cosmic theme tokens not applied |
+| C2 | CRITICAL | 6 pages | Icon library fragmentation |
+| H1 | HIGH | 3 pages | Button color: indigo vs primary |
+| H2 | HIGH | 2 pages | Link contrast fails WCAG on dark bg |
+| H3 | HIGH | 4 pages | Card styling inconsistent |
+| M1 | MEDIUM | LearnPage | ExpandableCard not shared |
+| M2 | MEDIUM | SettingsPage | SettingsSection not shared |
+| M3 | MEDIUM | SettingsPage | ToggleSwitch not shared |
+| M4 | MEDIUM | 3 pages | Emoji instead of icons |
+| DS1 | MINOR | SubscriptionPage | Popular tier border color |
+| DS2 | MINOR | SubscriptionPage | Tier logic always returns 'free' |
+
+**Total: 11 findings** (2 CRITICAL, 3 HIGH, 4 MEDIUM, 2 MINOR)
+
+---
+
+## Design System Reference
+
+### Cosmic Dark Theme Tokens (Quick Reference)
+
+```
+Backgrounds:
+  Page:        bg-[#0B0D17]
+  Card/Panel:  bg-[#141627]/70 backdrop-blur-md
+  Hover:       hover:bg-white/5
+  Active:      bg-white/10
+
+Borders:
+  Standard:    border-[#2f2645]
+  Subtle:      border-white/10
+
+Text:
+  Primary:     text-white
+  Secondary:   text-slate-300
+  Body:        text-slate-400
+  Links:       text-violet-300
+
+Accent:
+  Primary:     bg-primary (#6b3de1)
+  Glow:        shadow-primary/25
+
+Icons:
+  Library:     material-symbols-outlined
+  Sizes:       [20px] sidebar, [18px] buttons, [22px] mobile nav
 ```
 
-The rest of the app uses the cosmic pattern established in LunarReturnsPage:
-```
-bg-red-500/10 border border-red-500/30 rounded-lg text-red-400
-```
-
 ---
 
-### DS1 — MINOR: Subscription pricing data inconsistency
+## Recommended Fix Order
 
-**Files:** SubscriptionPage.tsx, ProfileSettingsPage.tsx
-
-- SubscriptionPage FALLBACK_PLANS: Pro at $9.99/month
-- ProfileSettingsPage subscription tab: Shows "Pro Plan" at "$12/mo"
-
-These should show the same price. Backend plans endpoint should be the source of truth.
-
----
-
-### DS2 — MINOR: Current tier mapping fragility
-
-**File:** SubscriptionPage.tsx
-
-```tsx
-const rawTier = user?.plan ?? 'free';
-const currentTier: string = rawTier === 'basic' ? 'pro' : rawTier;
-```
-
-Hard-coded `'basic' → 'pro'` mapping is fragile. If backend changes plan naming, this silently breaks.
-
----
-
-## Severity Summary
-
-| Severity | Count | Pages Affected |
-|----------|-------|----------------|
-| CRITICAL | 2 | SubscriptionPage, SolarReturnsPage |
-| HIGH | 3 | SubscriptionPage, SolarReturnsPage |
-| MEDIUM | 3 | DashboardPage, DailyBriefingPage, ProfileSettingsPage, SubscriptionPage |
-| MINOR | 2 | SubscriptionPage, ProfileSettingsPage |
-
----
-
-## Priority Fix Order
-
-1. **C1 + C2 + H1 + H2 + H3 + M2 + M3** — Full retheme of SubscriptionPage and SolarReturnsPage (single PR, all related)
-2. **M1** — Emoji-to-icon migration across DashboardPage, DailyBriefingPage, ProfileSettingsPage (small PR)
-3. **DS1 + DS2** — Data fixes (coordinate with backend team)
-
----
-
-## Deferred Page Audit (2026-04-04)
-
-The following pages were deferred from the initial audit. Reviewed after Sprint 4 fixes were applied:
-
-### CourseDetailPage.tsx — PASS (minor)
-
-Cards at 3 locations use `bg-[#141627]` (fully opaque) instead of `bg-[#141627]/70 backdrop-blur-md`. Hex color is correct; opacity and blur are missing. Low priority — visual difference is subtle.
-
-### SolarReturnAnnualReportPage.tsx — FAIL (minor)
-
-9 card containers use `bg-white/5 backdrop-blur-sm` instead of `bg-[#141627]/70 backdrop-blur-md`:
-- Lines 165, 224, 253, 282, 297, 312, 335, 351, 385
-
-All other tokens (icons, text colors, buttons, brand) are correct. The fix is a single find-replace across the file.
-
----
-
-## Feature Spec UX Readiness Assessment (2026-04-04)
-
-All 4 feature specs in `docs/features/` score **2/5 UX readiness** — backend-first specs with no visual guidance.
-
-**Priority order for UX design work:**
-1. **Birthday Gift Sharing** — Most UI surfaces (4-step wizard, claim page, email), highest business impact
-2. **Biometric Auth** — Security-sensitive login flow, platform-specific behavior
-3. **Google Calendar Export** — OAuth UX, export panel with multiple controls
-4. **Synastry Comparison Types** — Smallest scope, extends existing component
-
----
-
-## Reference
-
-- Design tokens: `docs/design/DESIGN_SPECIFICATIONS.md`
-- Sprint 3 audit (all resolved): `docs/SPRINT3_UX_AUDIT_REPORT.md`
-- Sprint 3 layout spec: `docs/SPRINT3_LAYOUT_DESIGN_SPEC.md`
-- Theme fix spec (companion doc): `docs/SPRINT4_THEME_FIX_SPEC.md`
+1. **C1** — Apply cosmic tokens to all new pages (highest visual impact)
+2. **C2** — Migrate icon libraries to Material Symbols Outlined
+3. **H1** — Fix button colors to use `bg-primary`
+4. **H2** — Fix link colors to use `text-violet-300`
+5. **H3** — Standardize card components
+6. **M1-M3** — Promote local components to shared design system
+7. **M4** — Replace emoji with proper icons
+8. **DS1-DS2** — Minor fixes

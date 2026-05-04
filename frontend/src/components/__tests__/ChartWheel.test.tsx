@@ -155,8 +155,8 @@ describe('ChartWheel Component', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
       // With only 3 houses, house 3 won't have a nextHouse, so only 2 numbers render
-      const houseNumbers = Array.from(container.querySelectorAll('text')).filter((text) =>
-        text.textContent?.match(/^[1-3]$/),
+      const houseNumbers = Array.from(container.querySelectorAll('text')).filter(
+        text => text.textContent?.match(/^[1-3]$/)
       );
       expect(houseNumbers.length).toBe(2);
     });
@@ -174,7 +174,7 @@ describe('ChartWheel Component', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
       const retrogradeTexts = Array.from(container.querySelectorAll('text')).filter(
-        (text) => text.textContent === 'Rx',
+        text => text.textContent === 'Rx'
       );
       expect(retrogradeTexts.length).toBe(1); // Only Mercury is retrograde
     });
@@ -183,7 +183,7 @@ describe('ChartWheel Component', () => {
       render(<ChartWheel data={mockChartData as any} />);
 
       // Sun and Moon should not have Rx
-      const planetsWithoutRetrograde = mockChartData.planets.filter((p) => !p.retrograde);
+      const planetsWithoutRetrograde = (mockChartData.planets as any[]).filter(p => !p.retrograde);
       expect(planetsWithoutRetrograde.length).toBe(2);
     });
 
@@ -198,12 +198,11 @@ describe('ChartWheel Component', () => {
       expect(planetCircles.length).toBeGreaterThan(0);
 
       // Check that planet circles have fill colors (not 'none')
-      planetCircles.forEach((circle) => {
+      planetCircles.forEach(circle => {
         expect(circle).toHaveAttribute('fill');
         const fill = circle.getAttribute('fill');
         // Planet circles should have actual colors, center/background can have 'none'
-        if (fill && fill !== '#6366F1') {
-          // Exclude center circle
+        if (fill && fill !== '#6366F1') { // Exclude center circle
           expect(fill).not.toBe('none');
         }
       });
@@ -216,7 +215,7 @@ describe('ChartWheel Component', () => {
 
       const aspectLines = container.querySelectorAll('line');
 
-      aspectLines.forEach((line) => {
+      aspectLines.forEach(line => {
         expect(line).toHaveAttribute('stroke');
         const color = line.getAttribute('stroke');
         expect(color).toMatch(/^#[0-9A-Fa-f]{6}$/); // Valid hex color
@@ -228,10 +227,10 @@ describe('ChartWheel Component', () => {
 
       const lines = container.querySelectorAll('line');
       const solidLines = Array.from(lines).filter(
-        (line) => line.getAttribute('stroke-dasharray') === 'none',
+        line => line.getAttribute('stroke-dasharray') === 'none'
       );
       const dashedLines = Array.from(lines).filter(
-        (line) => line.getAttribute('stroke-dasharray') === '4,2',
+        line => line.getAttribute('stroke-dasharray') === '4,2'
       );
 
       // Quincunx should be dashed
@@ -243,7 +242,7 @@ describe('ChartWheel Component', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
       const conjunctionLines = Array.from(container.querySelectorAll('line')).filter(
-        (line) => line.getAttribute('stroke-width') === '2',
+        line => line.getAttribute('stroke-width') === '2'
       );
 
       expect(conjunctionLines.length).toBeGreaterThan(0);
@@ -263,9 +262,7 @@ describe('ChartWheel Component', () => {
 
       const segments = container.querySelectorAll('path');
       const colors = new Set(
-        Array.from(segments)
-          .map((seg) => seg.getAttribute('fill'))
-          .filter(Boolean),
+        Array.from(segments).map(seg => seg.getAttribute('fill')).filter(Boolean)
       );
 
       expect(colors.size).toBeGreaterThan(0);
@@ -276,12 +273,12 @@ describe('ChartWheel Component', () => {
     it('should call onPlanetClick when planet is clicked', () => {
       const onPlanetClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} onPlanetClick={onPlanetClick} interactive={true} />,
+        <ChartWheel data={mockChartData} onPlanetClick={onPlanetClick} interactive={true} />
       );
 
       // Find a planet group and click it
       const planetGroups = container.querySelectorAll('g');
-      planetGroups.forEach((group) => {
+      planetGroups.forEach(group => {
         const circle = group.querySelector('circle');
         if (circle && group.parentElement?.querySelector('text')) {
           fireEvent.click(group);
@@ -295,12 +292,12 @@ describe('ChartWheel Component', () => {
     it('should call onAspectClick when aspect is clicked', () => {
       const onAspectClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} onAspectClick={onAspectClick} interactive={true} />,
+        <ChartWheel data={mockChartData} onAspectClick={onAspectClick} interactive={true} />
       );
 
       // Find an aspect group and click it
       const aspectGroups = container.querySelectorAll('g');
-      aspectGroups.forEach((group) => {
+      aspectGroups.forEach(group => {
         if (group.classList.contains('cursor-pointer')) {
           fireEvent.click(group);
         }
@@ -313,17 +310,19 @@ describe('ChartWheel Component', () => {
     it('should not be interactive when interactive prop is false', () => {
       const onPlanetClick = vi.fn();
       const { container } = render(
-        <ChartWheel data={mockChartData} onPlanetClick={onPlanetClick} interactive={false} />,
+        <ChartWheel data={mockChartData} onPlanetClick={onPlanetClick} interactive={false} />
       );
 
       const planetGroups = container.querySelectorAll('g');
-      planetGroups.forEach((group) => {
+      planetGroups.forEach(group => {
         expect(group.classList.contains('cursor-pointer')).toBe(false);
       });
     });
 
     it('should have correct cursor style when interactive', () => {
-      const { container } = render(<ChartWheel data={mockChartData} interactive={true} />);
+      const { container } = render(
+        <ChartWheel data={mockChartData} interactive={true} />
+      );
 
       const interactiveElements = container.querySelectorAll('.cursor-pointer');
       expect(interactiveElements.length).toBeGreaterThan(0);
@@ -445,7 +444,7 @@ describe('ChartWheel Component', () => {
       const { container } = render(<ChartWheelLegend />);
 
       const signs = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
-      signs.forEach((sign) => {
+      signs.forEach(sign => {
         expect(container.textContent).toContain(sign);
       });
     });

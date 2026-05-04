@@ -12,7 +12,7 @@ import rateLimit from 'express-rate-limit';
  */
 export const pdfRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 PDFs per 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 100 : 10,
   message: {
     success: false,
     error: 'Too many PDF requests. Please try again later.',
@@ -35,7 +35,7 @@ export const pdfRateLimiter = rateLimit({
  */
 export const shareRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 20, // 20 requests per minute
+  max: process.env.NODE_ENV !== 'production' ? 100 : 20,
   message: {
     success: false,
     error: 'Too many requests to shared charts. Please try again later.',
@@ -52,7 +52,7 @@ export const shareRateLimiter = rateLimit({
  */
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 100 : 5, // 100 in dev, 5 in prod
+  max: process.env.NODE_ENV !== 'production' ? 500 : 5,
   message: {
     success: false,
     error: 'Too many authentication attempts. Please try again later.',
@@ -70,7 +70,7 @@ export const authRateLimiter = rateLimit({
  */
 export const chartCreationRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 20, // 20 charts per hour
+  max: process.env.NODE_ENV !== 'production' ? 200 : 20,
   message: {
     success: false,
     error: 'Chart creation limit reached. Please try again later.',
@@ -95,7 +95,7 @@ export const chartCreationRateLimiter = rateLimit({
  */
 export const passwordResetRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 requests per hour
+  max: process.env.NODE_ENV !== 'production' ? 50 : 3,
   message: {
     success: false,
     error: 'Too many password reset requests. Please check your email or try again later.',

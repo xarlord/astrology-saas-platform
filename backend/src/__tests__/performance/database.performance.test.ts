@@ -82,7 +82,7 @@ describe('Database Performance Tests', () => {
   });
 
   describe('Chart Query Performance', () => {
-    let testUser: any;
+    let testUser: { id: number; [key: string]: unknown };
 
     beforeEach(async () => {
       testUser = await createTestUser(db);
@@ -197,7 +197,7 @@ describe('Database Performance Tests', () => {
   });
 
   describe('Refresh Token Query Performance', () => {
-    let testUser: any;
+    let testUser: { id: number; [key: string]: unknown };
 
     beforeEach(async () => {
       testUser = await createTestUser(db);
@@ -258,7 +258,7 @@ describe('Database Performance Tests', () => {
   });
 
   describe('Analysis Cache Performance', () => {
-    let testChart: any;
+    let testChart: { id: number; [key: string]: unknown };
 
     beforeEach(async () => {
       const testUser = await createTestUser(db);

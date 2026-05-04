@@ -1,26 +1,31 @@
 /**
- * Chart Create Page Component
- * Redirects to the full Chart Creation Wizard
+ * Chart Create Page
+ *
+ * Renders the BirthDataForm inside AppLayout. On successful chart creation
+ * the user is navigated to the chart detail view.
  */
 
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppLayout } from '../components';
-import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { AppLayout, BirthDataForm } from '../components';
 
 export default function ChartCreatePage() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Redirect to the full chart creation wizard
-    navigate('/charts/create', { replace: true });
-  }, [navigate]);
+  const handleSuccess = (chartId: string) => {
+    void navigate(`/charts/${chartId}`);
+  };
 
   return (
     <AppLayout>
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <LoadingSpinner size="lg" />
-        <span className="ml-3 text-slate-400">Redirecting to chart creation...</span>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2 gradient-text">Create Natal Chart</h1>
+        <p className="text-slate-200">
+          Enter your birth information to generate a detailed natal chart.
+        </p>
+      </div>
+
+      <div className="max-w-2xl mx-auto glass-panel rounded-2xl p-6">
+        <BirthDataForm onSuccess={handleSuccess} />
       </div>
     </AppLayout>
   );

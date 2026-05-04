@@ -37,7 +37,11 @@ export interface AuthenticatedRequest extends Request {
 /**
  * Verify JWT token and attach user to request
  */
-export const authenticate = (req: Request, _res: Response, next: NextFunction): void => {
+export const authenticate = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void => {
   try {
     // Get token from header
     const authHeader = req.headers.authorization;
@@ -69,7 +73,11 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction): 
 /**
  * Optional authentication - doesn't throw if no token
  */
-export const optionalAuthenticate = (req: Request, _res: Response, next: NextFunction): void => {
+export const optionalAuthenticate = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -80,7 +88,7 @@ export const optionalAuthenticate = (req: Request, _res: Response, next: NextFun
     }
 
     next();
-  } catch {
+  } catch (error) {
     // Silently fail for optional auth
     next();
   }
@@ -91,8 +99,8 @@ export const optionalAuthenticate = (req: Request, _res: Response, next: NextFun
  */
 export const generateToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
   return jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn as string | number,
-  } as jwt.SignOptions);
+    expiresIn: config.jwt.expiresIn as unknown as number,
+  });
 };
 
 /**

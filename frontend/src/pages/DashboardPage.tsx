@@ -1,724 +1,396 @@
 /**
- * Dashboard Page Component
- *
- * Main dashboard with energy meters, moon phase, recent charts, and transits
- * Reference: stitch-UI/desktop/04-dashboard.html
+ * Dashboard Page — Stitch UI Design
+ * Rich dashboard: welcome header, cosmic energy meter, transit highlights,
+ * planetary positions, upcoming transits, chart cards, quick actions
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks';
+import { useCharts, useTodayTransits } from '../hooks';
+import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
 
-// Hooks
-import { useAuth } from '../hooks/useAuth';
-import { useCharts } from '../hooks/useCharts';
-import { useTransits } from '../hooks/useTransits';
+const PLANET_META: Record<string, { icon: string; color: string }> = {
+  Sun: { icon: 'sunny', color: 'text-gold' },
+  Moon: { icon: 'bedtime', color: 'text-cosmic-blue' },
+  Mercury: { icon: 'public', color: 'text-purple-400' },
+  Venus: { icon: 'favorite', color: 'text-pink-400' },
+  Mars: { icon: 'local_fire_department', color: 'text-red-400' },
+  Jupiter: { icon: 'expansion', color: 'text-amber-400' },
+  Saturn: { icon: 'hourglass_top', color: 'text-slate-200' },
+  Uranus: { icon: 'bolt', color: 'text-cyan-400' },
+  Neptune: { icon: 'water', color: 'text-blue-400' },
+  Pluto: { icon: 'change_history', color: 'text-rose-400' },
+};
 
-// Components
-import EnergyMeter from '../components/astrology/EnergyMeter';
-import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
-import { TransitReportCard, TransitReportHistory } from '../components/report';
-import { Button } from '../components/ui/Button';
-import { InstallButton } from '../components/ui';
-import { AppLayout } from '../components';
+function getMoonPhaseInfo() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-// Mock daily quote data
-const DAILY_QUOTES = [
-  {
-    text: "The stars don't dictate your fate, they illuminate the path you choose.",
-    author: 'Cosmic Wisdom',
-  },
-  {
-    text: "Today's cosmic energy supports new beginnings and bold decisions.",
-    author: 'AstroGuide',
-  },
-  {
-    text: "Trust your intuition - the Moon's position enhances your inner knowing.",
-    author: 'Lunar Insight',
-  },
-  {
-    text: "Mercury's alignment brings clarity to communication and thought.",
-    author: 'Mercury Messenger',
-  },
+  // Simple moon phase approximation
+  const synodicMonth = 29.53059;
+  const knownNewMoon = new Date(2000, 0, 6, 18, 14).getTime();
+  const diff = (now.getTime() - knownNewMoon) / 86400000;
+  const phase = ((diff % synodicMonth) + synodicMonth) % synodicMonth;
+
+  let phaseName = 'New Moon';
+  let sign = 'Aries';
+  const signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+  sign = signs[Math.floor((now.getDate() * 1.3 + now.getMonth() * 2.7) % 12)];
+
+  if (phase < 1.85) phaseName = 'New Moon';
+  else if (phase < 7.38) phaseName = 'Waxing Crescent';
+  else if (phase < 9.23) phaseName = 'First Quarter';
+  else if (phase < 14.77) phaseName = 'Waxing Gibbous';
+  else if (phase < 16.61) phaseName = 'Full Moon';
+  else if (phase < 22.15) phaseName = 'Waning Gibbous';
+  else if (phase < 23.99) phaseName = 'Last Quarter';
+  else if (phase < 29.53) phaseName = 'Waning Crescent';
+
+  return { phaseName, sign, dateStr };
+}
+
+function getInitials(name: string) {
+  return name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+const GRADIENT_PAIRS = [
+  'from-indigo-500 to-purple-600',
+  'from-blue-500 to-cyan-600',
+  'from-pink-500 to-rose-600',
+  'from-emerald-500 to-teal-600',
+  'from-amber-500 to-orange-600',
 ];
 
-const getZodiacSymbol = (sign: string): string => {
-  const symbols: Record<string, string> = {
-    Aries: 'sunny',
-    Taurus: 'dark_mode',
-    Gemini: 'bedtime',
-    Cancer: 'water_drop',
-    Leo: 'whatshot',
-    Virgo: 'spa',
-    Libra: 'balance',
-    Scorpio: 'scorpion',
-    Sagittarius: 'explore',
-    Capricorn: 'terrain',
-    Aquarius: 'air',
-    Pisces: 'waves',
-  };
-  return symbols[sign] ?? 'circle';
-};
-
-// Energy level calculation helper
-const calculateEnergyLevels = (
-  transitsCount: number,
-): {
-  physical: number;
-  emotional: number;
-  mental: number;
-  spiritual: number;
-} => {
-  // Simplified calculation - in production, use actual astrology algorithms
-  const baseEnergy = 50;
-  const transitBonus = transitsCount * 5;
-
-  return {
-    physical: Math.min(100, baseEnergy + transitBonus + Math.floor(Math.random() * 20)),
-    emotional: Math.min(100, baseEnergy + transitBonus + Math.floor(Math.random() * 20)),
-    mental: Math.min(100, baseEnergy + transitBonus + Math.floor(Math.random() * 20)),
-    spiritual: Math.min(100, baseEnergy + transitBonus + Math.floor(Math.random() * 20)),
-  };
-};
-
-// Planet display configuration
-const PLANET_CONFIG: Record<string, { icon: string; color: string; bgColor: string }> = {
-  Sun: { icon: 'sunny', color: 'text-orange-400', bgColor: 'bg-orange-500/10' },
-  Moon: { icon: 'dark_mode', color: 'text-blue-400', bgColor: 'bg-blue-500/10' },
-  Mercury: { icon: 'public', color: 'text-slate-400', bgColor: 'bg-slate-500/10' },
-  Venus: { icon: 'favorite', color: 'text-pink-400', bgColor: 'bg-pink-500/10' },
-  Mars: { icon: 'local_fire_department', color: 'text-red-400', bgColor: 'bg-red-500/10' },
-  Jupiter: { icon: 'bolt', color: 'text-purple-400', bgColor: 'bg-purple-500/10' },
-  Saturn: { icon: 'circle', color: 'text-yellow-400', bgColor: 'bg-yellow-500/10' },
-  Uranus: { icon: 'explore', color: 'text-cyan-400', bgColor: 'bg-cyan-500/10' },
-  Neptune: { icon: 'water_drop', color: 'text-indigo-400', bgColor: 'bg-indigo-500/10' },
-  Pluto: { icon: 'trip_origin', color: 'text-rose-400', bgColor: 'bg-rose-500/10' },
-};
-
-// Zodiac signs
-const ZODIAC_SIGNS = [
-  'Aries',
-  'Taurus',
-  'Gemini',
-  'Cancer',
-  'Leo',
-  'Virgo',
-  'Libra',
-  'Scorpio',
-  'Sagittarius',
-  'Capricorn',
-  'Aquarius',
-  'Pisces',
-];
-
-// Get zodiac sign from longitude
-const getZodiacSign = (longitude: number): string => {
-  const signIndex = Math.floor(longitude / 30) % 12;
-  return ZODIAC_SIGNS[signIndex];
-};
-
-// Get zodiac degree
-const getZodiacDegree = (longitude: number): number => {
-  return Math.round(longitude % 30);
-};
-
-// Dashboard Page Component
-const DashboardPage: React.FC = () => {
+export default function DashboardPage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const { charts, isLoading: chartsLoading } = useCharts();
-  const { transits, loadTodayTransits, isLoading: transitsLoading } = useTransits();
-
-  const [energyLevels, setEnergyLevels] = useState({
-    physical: 72,
-    emotional: 65,
-    mental: 80,
-    spiritual: 58,
-  });
-
-  const [dailyQuote] = useState(
-    () => DAILY_QUOTES[Math.floor(Math.random() * DAILY_QUOTES.length)],
-  );
-
-  const [moonPhase] = useState({
-    phase: 'waxing-gibbous' as const,
-    illumination: 72,
-    sign: 'Taurus',
-  });
-
-  // Current planetary positions
-  const [planetaryPositions, setPlanetaryPositions] = useState<
-    {
-      name: string;
-      longitude: number;
-      sign: string;
-      degree: number;
-      retrograde: boolean;
-    }[]
-  >([]);
+  const { user, isAuthenticated } = useAuth();
+  const { charts, fetchCharts, isLoading } = useCharts();
+  const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits();
+  const transitsLoading = transitsFetching && !todayTransits;
 
   useEffect(() => {
-    // Load today's transits
-    void loadTodayTransits();
-  }, [loadTodayTransits]);
+    if (!isAuthenticated) return;
+    void fetchCharts();
+  }, [isAuthenticated, fetchCharts]);
 
-  // Fetch current planetary positions
-  useEffect(() => {
-    const fetchPositions = async () => {
-      try {
-        const response = await fetch('/api/v1/transits/today');
-        if (response.ok) {
-          const data = (await response.json()) as {
-            data?: {
-              transitPlanets?: Record<
-                string,
-                {
-                  longitude: number;
-                  retrograde?: boolean;
-                }
-              >;
-            };
-          };
-          if (data.data?.transitPlanets) {
-            const positions = Object.entries(data.data.transitPlanets)
-              .filter(([key]) => ['sun', 'moon', 'mercury', 'venus', 'mars'].includes(key))
-              .map(([name, pos]) => ({
-                name: name.charAt(0).toUpperCase() + name.slice(1),
-                longitude: pos.longitude,
-                sign: getZodiacSign(pos.longitude),
-                degree: getZodiacDegree(pos.longitude),
-                retrograde: pos.retrograde ?? false,
-              }));
-            setPlanetaryPositions(positions);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch planetary positions:', error);
-        // Use fallback data
-        setPlanetaryPositions([
-          { name: 'Sun', longitude: 330, sign: 'Pisces', degree: 0, retrograde: false },
-          { name: 'Moon', longitude: 45, sign: 'Taurus', degree: 15, retrograde: false },
-          { name: 'Mercury', longitude: 300, sign: 'Aquarius', degree: 0, retrograde: false },
-          { name: 'Venus', longitude: 350, sign: 'Pisces', degree: 20, retrograde: false },
-          { name: 'Mars', longitude: 120, sign: 'Leo', degree: 0, retrograde: false },
-        ]);
-      }
-    };
-    void fetchPositions();
-  }, []);
+  const moon = getMoonPhaseInfo();
+  const transitPlanets = todayTransits?.transitPlanets;
+  const planetEntries: [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][] = transitPlanets
+    ? Object.entries(transitPlanets).slice(0, 4) as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][]
+    : [
+        ['Sun', { sign: 'Scorpio', degree: 2.24, longitude: 212, speed: 1, retrograde: false }],
+        ['Moon', { sign: 'Taurus', degree: 14.09, longitude: 44, speed: 13, retrograde: false }],
+        ['Mercury', { sign: 'Libra', degree: 28.55, longitude: 208, speed: 1, retrograde: false }],
+        ['Venus', { sign: 'Virgo', degree: 5.21, longitude: 175, speed: 1, retrograde: false }],
+      ];
 
-  // Calculate energy levels based on transits
-  useEffect(() => {
-    const levels = calculateEnergyLevels(transits.length);
-    setEnergyLevels(levels);
-  }, [transits.length]);
-
-  // Get recent charts (first 3)
-  const recentCharts = useMemo(() => charts.slice(0, 3), [charts]);
-
-  // Get upcoming transits (first 5)
-  const upcomingTransits = useMemo(() => transits.slice(0, 5), [transits]);
-
-  // Get moon sign from first chart
-  const moonSign = useMemo(() => {
-    if (recentCharts[0]?.calculated_data?.planets) {
-      const moon = recentCharts[0].calculated_data.planets.find(
-        (p: { name: string }) => p.name === 'Moon',
-      );
-      return moon?.sign ?? 'Taurus';
-    }
-    return 'Taurus';
-  }, [recentCharts]);
-
-  const handleCreateChart = () => navigate('/charts/new');
-  const handleViewCalendar = () => navigate('/calendar');
-  const handleSynastry = () => navigate('/synastry');
-  const handleChartClick = (chartId: string) => navigate(`/charts/${chartId}`);
-
-  const _handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  const getInitials = (name: string): string => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const getAvatarGradient = (index: number): string => {
-    const gradients = [
-      'from-indigo-500 to-purple-600',
-      'from-slate-700 to-slate-800',
-      'from-emerald-500 to-teal-600',
-      'from-orange-500 to-red-600',
-    ];
-    return gradients[index % gradients.length];
-  };
+  const energyScore = 72; // Placeholder — could derive from transit data
 
   return (
     <AppLayout>
-      {/* Main Content */}
-      <main className="max-w-[1400px] mx-auto px-6 py-8 pb-20">
-        {/* Welcome Section */}
-        <motion.header
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+      <div data-testid="dashboard" className="relative pb-8">
+        {/* ===== Welcome Section ===== */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-primary text-sm font-medium tracking-wider uppercase mb-1">
-              <span className="material-symbols-outlined text-[16px]">wb_twilight</span>
+              <span className="material-symbols-outlined text-base" aria-hidden="true">wb_twilight</span>
               Daily Insights
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              Welcome back, {user?.name ?? 'Stargazer'} <span aria-hidden="true">✨</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight gradient-text">
+              Welcome back, {user?.name?.split(' ')[0] ?? 'Traveler'}
             </h1>
-            <p className="text-slate-400 text-lg max-w-2xl">{dailyQuote.text}</p>
-            {dailyQuote.author && (
-              <p className="text-sm text-slate-500 italic">— {dailyQuote.author}</p>
-            )}
+            <p className="text-slate-200 text-lg max-w-2xl">
+              Cosmic Overview: Highly Creative Energy today. The Moon trines Neptune, boosting your intuition.
+            </p>
           </div>
 
-          {/* Moon Phase Display */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 bg-[#141627] border border-white/10 p-2 pr-5 rounded-2xl">
-              <div className="bg-[#1e2136] p-2.5 rounded-xl text-yellow-100">
-                <span className="material-symbols-outlined">dark_mode</span>
+          {/* Moon Phase Card */}
+          <div className="flex items-center gap-3 bg-cosmic-card-solid border border-white/15 p-2 pr-5 rounded-2xl shrink-0">
+            <div className="bg-surface-light p-2.5 rounded-xl text-yellow-100">
+              <span className="material-symbols-outlined" aria-hidden="true">dark_mode</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-slate-200 font-medium uppercase tracking-wide">{moon.dateStr}</span>
+              <span className="text-sm font-bold text-white">{moon.phaseName} in {moon.sign}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* ===== Dashboard Grid ===== */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* LEFT COLUMN — Cosmic Weather (8 cols) */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
+            {/* Today's Highlights Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Energy Meter */}
+              {transitsLoading ? (
+                <div className="glass-panel p-6 rounded-2xl">
+                  <SkeletonLoader variant="card" />
+                </div>
+              ) : (
+              <div className="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
+                <h3 className="text-slate-200 text-sm font-medium mb-2 z-10">Cosmic Energy</h3>
+                <div className="relative size-32 z-10">
+                  <svg className="text-primary" viewBox="0 0 36 36" aria-hidden="true">
+                    <path
+                      className="fill-none stroke-white/5"
+                      strokeWidth="2.5"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                      className="fill-none stroke-current animate-progress"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeDasharray={`${energyScore}, 100`}
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center flex-col">
+                    <span className="text-3xl font-bold text-white">{energyScore}</span>
+                    <span className="text-[10px] uppercase tracking-widest text-slate-200">/100</span>
+                  </div>
+                </div>
+                <p className="text-xs text-emerald-400 mt-2 flex items-center gap-1 z-10">
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">trending_up</span>
+                  High Vitality
+                </p>
               </div>
-              <div className="flex flex-col">
-                <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">
-                  {new Date().toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </span>
-                <span className="text-sm font-bold text-white">
-                  {moonPhase.phase.replace('-', ' ')} in {moonSign}
-                </span>
+              )}
+              <div className="md:col-span-2 relative rounded-2xl overflow-hidden p-6 flex flex-col justify-between min-h-[220px]">
+                <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/20 via-cosmic-blue/10 to-transparent" />
+                <div className="absolute inset-0 z-0 bg-gradient-to-t from-cosmic-page via-cosmic-page/80 to-transparent" />
+                <div className="relative z-10 flex justify-between items-start">
+                  <div className="bg-primary/30 backdrop-blur-md px-3 py-1 rounded-lg border border-primary/40 text-xs font-bold text-white uppercase tracking-wider">
+                    Major Transit
+                  </div>
+                </div>
+                <div className="relative z-10 mt-auto">
+                  <h3 className="text-2xl font-bold text-white mb-1">Venus enters Pisces</h3>
+                  <p className="text-slate-200 text-sm mb-4 line-clamp-2">
+                    A time of heightened sensitivity and romantic idealism. Creativity flows effortlessly under this transit.
+                  </p>
+                  <Link
+                    to="/transits"
+                    className="flex items-center gap-2 text-white text-sm font-semibold hover:gap-3 transition-all group"
+                  >
+                    Read Forecast
+                    <span className="material-symbols-outlined text-lg group-hover:text-primary transition-colors" aria-hidden="true">arrow_forward</span>
+                  </Link>
+                </div>
               </div>
             </div>
-            <InstallButton variant="compact" />
-          </div>
-        </motion.header>
 
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* LEFT COLUMN: Cosmic Weather (8 cols) */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            {/* Energy Meters Row */}
-            <motion.div
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              {[
-                {
-                  key: 'physical',
-                  label: 'Physical',
-                  value: energyLevels.physical,
-                  color: '#22c55e',
-                },
-                {
-                  key: 'emotional',
-                  label: 'Emotional',
-                  value: energyLevels.emotional,
-                  color: '#3b82f6',
-                },
-                { key: 'mental', label: 'Mental', value: energyLevels.mental, color: '#fbbf24' },
-                {
-                  key: 'spiritual',
-                  label: 'Spiritual',
-                  value: energyLevels.spiritual,
-                  color: '#a855f7',
-                },
-              ].map((energy) => (
-                <div
-                  key={energy.key}
-                  className="bg-[#141627]/70 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group hover:bg-[#1e2136]/70 transition-colors"
-                >
-                  <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
-                  <h3 className="text-slate-300 text-xs font-medium mb-2 z-10">{energy.label}</h3>
-                  <div className="relative z-10">
-                    <EnergyMeter
-                      value={energy.value}
-                      size="sm"
-                      label={energy.label}
-                      showValue={true}
-                      aria-label={`${energy.label} energy: ${energy.value}%`}
-                    />
-                  </div>
-                  <p
-                    className={`text-xs mt-2 flex items-center gap-1 z-10 ${
-                      energy.value >= 70
-                        ? 'text-emerald-400'
-                        : energy.value >= 40
-                          ? 'text-yellow-400'
-                          : 'text-red-400'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[14px]">
-                      {energy.value >= 70
-                        ? 'trending_up'
-                        : energy.value >= 40
-                          ? 'remove'
-                          : 'trending_down'}
-                    </span>
-                    {energy.value >= 70 ? 'High' : energy.value >= 40 ? 'Moderate' : 'Low'}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Current Planetary Positions */}
-            <motion.div
-              className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="material-symbols-outlined text-primary">planet</span>
-                  Current Positions
-                </h3>
-                <button
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
-                  onClick={() => navigate('/transits')}
-                >
-                  View Ephemeris
-                </button>
+            {/* Planetary Positions Grid */}
+            {transitsLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[0, 1, 2, 3].map((i) => <SkeletonLoader key={i} variant="card" />)}
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {planetaryPositions.map((planet) => {
-                  const config = PLANET_CONFIG[planet.name] || PLANET_CONFIG.Sun;
+            ) : (
+            <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-bold text-white">Current Positions</h3>
+                <Link to="/ephemeris" className="text-xs font-medium text-primary hover:text-lavender transition-colors">
+                  View Ephemeris
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {planetEntries.map(([name, pData]) => {
+                  const meta = PLANET_META[name] ?? { icon: 'circle', color: 'text-slate-200' };
                   return (
                     <div
-                      key={planet.name}
-                      className="bg-[#0B0D17] p-3 rounded-xl border border-white/5 hover:border-primary/50 transition-all text-center"
+                      key={name}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${name} in ${pData.sign ?? 'unknown'} at ${pData.degree != null ? pData.degree.toFixed(2) : (pData.longitude ?? 0).toFixed(2)} degrees`}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/ephemeris'); } }}
+                      className="bg-cosmic-page/50 border border-white/15 p-4 rounded-xl flex flex-col gap-3 group hover:border-primary/30 transition-colors cursor-pointer"
                     >
-                      <div
-                        className={`w-10 h-10 rounded-full ${config.bgColor} ${config.color} flex items-center justify-center mx-auto mb-2`}
-                      >
-                        <span className="material-symbols-outlined text-[20px]">{config.icon}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-200 text-sm font-medium">{name}</span>
+                        <span className={`material-symbols-outlined ${meta.color}`} aria-hidden="true">{meta.icon}</span>
                       </div>
-                      <p className="text-white text-sm font-medium">{planet.name}</p>
-                      <p className="text-slate-400 text-xs">{planet.sign}</p>
-                      <p className="text-slate-500 text-[10px]">{planet.degree}°</p>
-                      {planet.retrograde && (
-                        <span className="text-[9px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded mt-1 inline-block">
-                          Retro
-                        </span>
-                      )}
+                      <div>
+                        <div className="text-xl font-bold text-white">{pData.sign ?? '—'}</div>
+                        <div className="text-xs text-slate-200 font-mono">
+                          {pData.degree != null
+                            ? `${pData.degree.toFixed(2)}°`
+                            : `${(pData.longitude ?? 0).toFixed(2)}°`}
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
               </div>
-            </motion.div>
-
-            {/* Highlight Card - Major Transit */}
-            <motion.div
-              className="relative rounded-2xl overflow-hidden p-6 flex flex-col justify-between min-h-[220px]"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              data-testid="major-transit-card"
-            >
-              <div
-                className="absolute inset-0 z-0 bg-cover bg-center opacity-40"
-                style={{
-                  backgroundImage:
-                    'url("https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=1200&q=80")',
-                }}
-              ></div>
-              <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0B0D17] via-[#0B0D17]/80 to-transparent"></div>
-
-              <div className="relative z-10 flex justify-between items-start">
-                <div className="bg-primary/30 backdrop-blur-md px-3 py-1 rounded-lg border border-primary/40 text-xs font-bold text-white uppercase tracking-wider">
-                  Major Transit
-                </div>
-              </div>
-
-              <div className="relative z-10 mt-auto">
-                <h3 className="text-2xl font-bold text-white mb-1">
-                  {upcomingTransits[0]?.title ?? 'Venus enters Pisces'}
-                </h3>
-                <p className="text-slate-300 text-sm mb-4 line-clamp-2">
-                  {upcomingTransits[0]?.description ??
-                    'A time of heightened sensitivity and romantic idealism. Creativity flows effortlessly under this transit.'}
-                </p>
-                <button className="flex items-center gap-2 text-white text-sm font-semibold hover:gap-3 transition-all group">
-                  Read Forecast
-                  <span className="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors">
-                    arrow_forward
-                  </span>
-                </button>
-              </div>
-            </motion.div>
-
-            {/* Upcoming Transits */}
-            <motion.div
-              className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            </div>
+            )}
+            <div className="glass-panel rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Upcoming Transits</h3>
-                <button
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
-                  onClick={() => navigate('/transits')}
-                  data-testid="view-all-transits-button"
-                >
+                <Link to="/transits" className="text-sm text-slate-200 hover:text-white transition-colors">
                   View All Transits
-                </button>
+                </Link>
               </div>
-
-              <div className="space-y-4" aria-live="polite" aria-busy={transitsLoading}>
-                {transitsLoading ? (
-                  <div className="text-center py-8 text-slate-400" role="status">
-                    Loading transits...
+              {transitsLoading ? (
+                <div className="space-y-4">
+                  {[0, 1, 2].map((i) => <SkeletonLoader key={i} variant="list" />)}
+                </div>
+              ) : (
+              <div className="space-y-4">
+                {[
+                  {
+                    month: 'May', day: '05', name: 'Sun Trine Saturn', desc: 'Stability, long-term planning, and recognition.',
+                    icon: 'check_circle', iconColor: 'text-emerald-400', badge: 'Favorable', badgeBg: 'bg-emerald-500/10', badgeText: 'text-emerald-400', badgeBorder: 'border-emerald-500/20',
+                  },
+                  {
+                    month: 'May', day: '08', name: 'Mars Square Pluto', desc: 'Power struggles, intensity, transformative friction.',
+                    icon: 'warning', iconColor: 'text-rose-400', badge: 'Challenging', badgeBg: 'bg-rose-500/10', badgeText: 'text-rose-400', badgeBorder: 'border-rose-500/20',
+                  },
+                  {
+                    month: 'May', day: '12', name: 'Full Moon in Scorpio', desc: 'Culmination, deep transformation, emotional release.',
+                    icon: 'info', iconColor: 'text-blue-400', badge: 'Neutral', badgeBg: 'bg-blue-500/10', badgeText: 'text-blue-400', badgeBorder: 'border-blue-500/20',
+                  },
+                ].map((transit) => (
+                  <div
+                    key={transit.name}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${transit.name}: ${transit.desc}`}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/transits'); } }}
+                    className="flex items-center gap-4 p-3 hover:bg-white/15 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-white/15"
+                  >
+                    <div className="flex flex-col items-center justify-center min-w-[50px] text-center">
+                      <span className="text-xs font-bold text-slate-200 uppercase">{transit.month}</span>
+                      <span className="text-lg font-bold text-white">{transit.day}</span>
+                    </div>
+                    <div className="size-10 rounded-full bg-cosmic-card-solid flex items-center justify-center border border-white/15">
+                      <span className={`material-symbols-outlined text-xl ${transit.iconColor}`} aria-hidden="true">{transit.icon}</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-white font-semibold text-sm">{transit.name}</h4>
+                      <p className="text-slate-200 text-xs">{transit.desc}</p>
+                    </div>
+                    <span className={`px-2 py-1 ${transit.badgeBg} ${transit.badgeText} text-[10px] font-bold uppercase tracking-wide rounded border ${transit.badgeBorder}`}>
+                      {transit.badge}
+                    </span>
                   </div>
-                ) : upcomingTransits.length === 0 ? (
-                  <div className="text-center py-8 text-slate-400" role="status">
-                    No upcoming transits
-                  </div>
-                ) : (
-                  upcomingTransits.map((transit, index) => (
-                    <TransitTimelineCard
-                      key={transit.id ?? index}
-                      time={
-                        transit.start_date
-                          ? new Date(transit.start_date).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                            })
-                          : 'Today'
-                      }
-                      date={transit.start_date}
-                      title={transit.title ?? 'Transit Event'}
-                      description={transit.description ?? ''}
-                      type={
-                        transit.type === 'major'
-                          ? 'major'
-                          : transit.impact === 'positive'
-                            ? 'favorable'
-                            : transit.impact === 'negative'
-                              ? 'challenging'
-                              : 'neutral'
-                      }
-                      onClick={() => navigate('/transits')}
-                    />
-                  ))
-                )}
+                ))}
               </div>
-            </motion.div>
+              )}
+            </div>
           </div>
 
-          {/* RIGHT COLUMN: Charts & Quick Actions (4 cols) */}
+          {/* RIGHT COLUMN — Charts & Quick Actions (4 cols) */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             {/* Your Charts Section */}
-            <motion.div
-              className="bg-[#141627] border border-white/10 rounded-2xl p-6 flex flex-col h-full"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
+            <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6 flex flex-col h-full">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-white">Your Charts</h3>
-                <button
-                  aria-label="Search charts"
-                  className="size-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                <Link
+                  to="/charts/new"
+                  className="size-8 rounded-lg bg-white/15 flex items-center justify-center text-slate-200 hover:text-white hover:bg-white/15 transition-all"
                 >
-                  <span className="material-symbols-outlined text-[18px]">search</span>
-                </button>
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
+                </Link>
               </div>
 
-              <div className="space-y-4 flex-1" data-testid="chart-list">
-                {chartsLoading ? (
-                  <div className="text-center py-8 text-slate-400">Loading charts...</div>
-                ) : recentCharts.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-slate-400 mb-4">No charts yet</p>
-                    <Button
-                      variant="primary"
-                      onClick={handleCreateChart}
-                      fullWidth
-                      data-testid="create-first-chart-button"
-                    >
-                      Create Your First Chart
-                    </Button>
-                  </div>
+              <div className="space-y-4 flex-1">
+                {isLoading ? (
+                  <SkeletonGrid count={2} />
+                ) : charts.length === 0 ? (
+                  <EmptyStates.NoCharts onAction={() => navigate('/charts/new')} />
                 ) : (
                   <>
-                    {recentCharts.map((chart, index) => (
-                      <button
+                    {charts.slice(0, 3).map((chart, i) => (
+                      <div
                         key={chart.id}
-                        type="button"
-                        onClick={() => handleChartClick(chart.id)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handleChartClick(chart.id);
-                          }
-                        }}
-                        aria-label={`View ${chart.name} chart`}
-                        data-testid={`chart-card-${chart.id}`}
-                        className="bg-[#0B0D17] p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-all cursor-pointer group relative overflow-hidden text-left w-full"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate(`/charts/${chart.id}`)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/charts/${chart.id}`); } }}
+                        aria-label={`View chart: ${chart.name}`}
+                        data-testid="chart-card"
+                        className="bg-cosmic-page p-4 rounded-xl border border-white/15 hover:border-primary/50 transition-all cursor-pointer group relative overflow-hidden"
                       >
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-3xl"></div>
-
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-3xl" />
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex items-center gap-3">
-                            <div
-                              className={`size-10 rounded-full bg-gradient-to-br ${getAvatarGradient(index)} flex items-center justify-center text-white text-xs font-bold shadow-lg`}
-                            >
+                            <div className={`size-10 rounded-full bg-gradient-to-br ${GRADIENT_PAIRS[i % GRADIENT_PAIRS.length]} flex items-center justify-center text-white text-xs font-bold shadow-lg`}>
                               {getInitials(chart.name)}
                             </div>
                             <div>
-                              <span
-                                className="text-white font-bold text-sm block"
-                                data-testid={`chart-name-${chart.id}`}
-                              >
-                                {chart.name}
-                              </span>
-                              <span
-                                className="text-[10px] uppercase text-primary font-bold tracking-wide"
-                                data-testid={`chart-type-${chart.id}`}
-                              >
+                              <h4 className="text-white font-bold text-sm">{chart.name}</h4>
+                              <span className="text-[10px] uppercase text-primary font-bold tracking-wide">
                                 {chart.type ?? 'Birth Chart'}
                               </span>
                             </div>
                           </div>
-                          <span
-                            className="text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                            data-testid={`edit-chart-${chart.id}`}
-                            aria-hidden="true"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">edit</span>
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          <span className="bg-surface-light px-2 py-1 rounded text-[10px] text-gold font-medium border border-white/15 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[10px]" aria-hidden="true">sunny</span>
+                            {chart.type ?? 'Natal'}
+                          </span>
+                          <span className="bg-surface-light px-2 py-1 rounded text-[10px] text-slate-200 font-medium border border-white/15 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[10px]" aria-hidden="true">calendar_today</span>
+                            {new Date(chart.birth_date).toLocaleDateString()}
                           </span>
                         </div>
-
-                        <div className="flex gap-2 flex-wrap">
-                          {chart.calculated_data?.planets
-                            ?.slice(0, 3)
-                            .map((planet: { sign: string; name: string }) => (
-                              <span
-                                key={planet.name}
-                                className="bg-[#1e2136] px-2 py-1 rounded text-[10px] text-slate-300 font-medium border border-white/5 flex items-center gap-1"
-                              >
-                                <span className="material-symbols-outlined text-[10px]">
-                                  {getZodiacSymbol(planet.sign)}
-                                </span>
-                                {planet.sign}
-                              </span>
-                            ))}
-                        </div>
-                      </button>
+                      </div>
                     ))}
 
-                    {/* Create New Card */}
-                    <button
-                      onClick={handleCreateChart}
-                      data-testid="create-new-chart-button"
-                      className="w-full border border-dashed border-white/20 rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-white/5 hover:border-primary/50 transition-all group h-[110px]"
-                    >
-                      <div className="size-8 rounded-full bg-[#1e2136] flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-slate-400">
-                        <span className="material-symbols-outlined text-[20px]">add</span>
-                      </div>
-                      <span className="text-sm font-medium text-slate-400 group-hover:text-white">
-                        Create New Chart
-                      </span>
-                    </button>
+                    {/* Create New Chart Card */}
+                    {charts.length > 0 && (
+                      <Link
+                        to="/charts/new"
+                        className="w-full border border-dashed border-white/20 rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-white/15 hover:border-primary/50 transition-all group h-[110px]"
+                      >
+                        <div className="size-8 rounded-full bg-surface-light flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-slate-200">
+                          <span className="material-symbols-outlined text-xl" aria-hidden="true">add</span>
+                        </div>
+                        <span className="text-sm font-medium text-slate-200 group-hover:text-white">Create New Chart</span>
+                      </Link>
+                    )}
                   </>
                 )}
               </div>
-            </motion.div>
+            </div>
 
             {/* Quick Actions Grid */}
-            <motion.div
-              className="grid grid-cols-2 gap-4"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <button
-                onClick={handleViewCalendar}
-                data-testid="calendar-quick-action"
-                className="bg-[#141627]/70 backdrop-blur-md p-4 rounded-xl flex flex-col gap-3 hover:bg-white/10 transition-all group border border-white/5"
-              >
-                <div className="size-10 rounded-lg bg-primary-500/20 flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform duration-300">
-                  <span className="material-symbols-outlined">calendar_month</span>
-                </div>
-                <div className="text-left">
-                  <h4 className="text-white font-bold text-sm">Calendar</h4>
-                  <p className="text-slate-500 text-xs">Events & Phases</p>
-                </div>
-              </button>
-
-              <button
-                onClick={handleSynastry}
-                data-testid="synastry-quick-action"
-                className="bg-[#141627]/70 backdrop-blur-md p-4 rounded-xl flex flex-col gap-3 hover:bg-white/10 transition-all group border border-white/5"
-              >
-                <div className="size-10 rounded-lg bg-pink-500/20 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform duration-300">
-                  <span className="material-symbols-outlined">favorite_border</span>
-                </div>
-                <div className="text-left">
-                  <h4 className="text-white font-bold text-sm">Synastry</h4>
-                  <p className="text-slate-500 text-xs">Compatibility</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => navigate('/lunar-returns')}
-                data-testid="lunar-returns-quick-action"
-                className="bg-[#141627]/70 backdrop-blur-md p-4 rounded-xl flex flex-col gap-3 hover:bg-white/10 transition-all group border border-white/5"
-              >
-                <div className="size-10 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform duration-300">
-                  <span className="material-symbols-outlined">refresh</span>
-                </div>
-                <div className="text-left">
-                  <h4 className="text-white font-bold text-sm">Lunar Returns</h4>
-                  <p className="text-slate-500 text-xs">Monthly Forecast</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => navigate('/solar-returns')}
-                data-testid="solar-returns-quick-action"
-                className="bg-[#141627]/70 backdrop-blur-md p-4 rounded-xl flex flex-col gap-3 hover:bg-white/10 transition-all group border border-white/5"
-              >
-                <div className="size-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform duration-300">
-                  <span className="material-symbols-outlined">light_mode</span>
-                </div>
-                <div className="text-left">
-                  <h4 className="text-white font-bold text-sm">Solar Returns</h4>
-                  <p className="text-slate-500 text-xs">Yearly Outlook</p>
-                </div>
-              </button>
-            </motion.div>
-
-            {/* Monthly Transit Report Card */}
-            <TransitReportCard />
-
-            {/* Report History */}
-            <TransitReportHistory recentLimit={6} />
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { to: '/calendar', icon: 'calendar_month', color: 'bg-indigo-500/20 text-indigo-400', title: 'Calendar', desc: 'Events & Phases' },
+                { to: '/synastry', icon: 'favorite_border', color: 'bg-pink-500/20 text-pink-400', title: 'Synastry', desc: 'Compatibility' },
+                { to: '/lunar-returns', icon: 'refresh', color: 'bg-cyan-500/20 text-cyan-400', title: 'Lunar Returns', desc: 'Monthly Forecast' },
+                { to: '/solar-returns', icon: 'light_mode', color: 'bg-amber-500/20 text-amber-400', title: 'Solar Returns', desc: 'Yearly Outlook' },
+              ].map((action) => (
+                <Link
+                  key={action.to}
+                  to={action.to}
+                  className="glass-panel p-4 rounded-xl flex flex-col gap-3 hover:bg-white/15 transition-all group border border-white/15"
+                >
+                  <div className={`size-10 rounded-lg ${action.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    <span className="material-symbols-outlined" aria-hidden="true">{action.icon}</span>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold text-sm">{action.title}</h4>
+                    <p className="text-slate-200 text-xs">{action.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-      </main>
+      </div>
     </AppLayout>
   );
-};
-
-export default DashboardPage;
+}

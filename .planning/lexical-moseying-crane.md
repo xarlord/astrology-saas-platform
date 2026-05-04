@@ -1,150 +1,207 @@
-# QA Remediation Plan: Warnings, Mocks, Skipped Tests & Missing Packages
+# Plan: Add All Missing Pages
 
 ## Context
-Full QA pass achieved 0 errors but left 344 warnings, 9 skipped tests, hand-written type declarations for missing packages, and a mocked astronomy-engine. This plan resolves all 5 user requests: eliminate warnings, install real packages, fix skipped tests, resolve luxon issues, and replace the astronomy-engine mock with the real npm package.
+Navigation links in `AppLayout.tsx` point to 20+ URLs that have no corresponding routes in `App.tsx`, showing "Page not found". The user wants every navigation link to resolve to a real page. This plan creates all missing page components and wires up all routes.
 
 ---
 
-## Phase 1: Install Real Packages & Remove Stubs
+## Dead-End Links Inventory
 
-**Goal**: Install all missing npm packages and delete hand-written type declarations.
+### Sidebar (AppLayout.tsx)
+| Line | URL | Status |
+|------|-----|--------|
+| 211 | `/transits/today` | No route |
+| 227 | `/charts/natal` | No route (should redirect to `/charts/new`) |
+| 234 | `/compatibility` | No route (SynastryPage exists at `/synastry`) |
+| 259 | `/ephemeris` | No route |
+| 266 | `/moon-calendar` | No route |
+| 273 | `/retrograde` | No route |
+| 293 | `/subscription` | No route |
 
-1. Install in `backend/`:
-   - `npm install astronomy-engine luxon puppeteer`
-   - `npm install -D @types/luxon @types/puppeteer`
-2. Run `npm install` in `frontend/` (luxon + @types/luxon already in package.json)
-3. Delete hand-written type declarations:
-   - `backend/src/types/astronomy-engine.d.ts`
-   - `backend/src/types/luxon.d.ts`
-   - `backend/src/types/puppeteer.d.ts`
-4. Verify: `cd backend && npx tsc --noEmit` passes with real packages
+### TopNav (AppLayout.tsx)
+| Line | URL | Status |
+|------|-----|--------|
+| 144 | `/settings` | No route |
 
-**Files**: `backend/package.json`, `frontend/package.json`, 3 `.d.ts` files to delete
+### navItems / mobileNavItems (lines 558-569)
+| URL | Status |
+|-----|--------|
+| `/charts` | No route (DashboardPage has chart grid at `/dashboard`) |
+| `/forecast` | No route |
+| `/learn` | No route |
 
----
-
-## Phase 2: Replace Astronomy-Engine Mock with Real Package
-
-**Goal**: Remove the manual mock so tests use real astronomical calculations.
-
-1. Delete `backend/src/__mocks__/astronomy-engine.ts`
-2. Update `backend/src/__tests__/services/astronomyEngine.service.test.ts`:
-   - Replace `positions.get('Sun')!` non-null assertions with proper Map handling (6 instances)
-   - Adjust test expectations to match real astronomical data (positions will differ from mock values)
-   - The service code in `astronomyEngine.service.ts` uses `astronomy.Body.Sun` etc. — works with real package's numeric enum
-3. Verify: `cd backend && npx jest --testPathPattern=astronomyEngine` passes with real calculations
-4. Run `cd backend && npx jest --testPathPattern=lunarReturn` to confirm lunar return tests still pass
-
-**Files**: `backend/src/__mocks__/astronomy-engine.ts` (delete), `backend/src/__tests__/services/astronomyEngine.service.test.ts`
-
----
-
-## Phase 3: Fix 330 `no-explicit-any` Warnings
-
-**Goal**: Replace every `any` type with proper TypeScript types across 71 files.
-
-**Strategy**: Process files by warning count (highest first). Group by module for consistency.
-
-### High-impact files (>10 warnings each):
-| File | Count | Approach |
-|------|-------|----------|
-| `modules/analysis/controllers/analysis.controller.ts` | 29 | Define `CalculatedPlanetData`, `CalculatedHouseData` interfaces |
-| `__tests__/models/user.model.test.ts` | 18 | Type mock objects and test data |
-| `__tests__/controllers/synastry.controller.test.ts` | 15 | Type mock request/response objects |
-| `modules/ai/services/aiInterpretation.service.ts` | 14 | Define `InterpretationResult`, `AIResponse` interfaces |
-| `modules/ai/services/openai.service.ts` | 13 | Type cache, error handling, response parsing |
-| `modules/charts/controllers/chart.controller.ts` | 13 | Type chart calculation results |
-| `__tests__/models/chart.model.test.ts` | 15 | Type mock data |
-| `modules/synastry/controllers/synastry.controller.ts` | 15 | Type synastry calculation inputs/outputs |
-
-### Remaining files (1-9 warnings each):
-- `modules/users/controllers/user.controller.ts` — type req.body/user params
-- `modules/auth/controllers/auth.controller.ts` — type refresh token flow
-- `middleware/csrf.ts` — type CSRF token response
-- `modules/calendar/controllers/calendar.controller.ts` — type calendar event data
-- `modules/shared/services/chartSharing.service.ts` — type share data
-- `modules/shared/services/pdfGeneration.service.ts` — type Puppeteer page ops
-- `modules/lunar/services/lunarReturn.service.ts` — type forecast data
-- `modules/charts/services/chart.service.ts` — type chart data
-- `modules/shared/services/natalChart.service.ts` — type natal chart calculations
-- Test files (~40 files) — type mock objects, jest.fn() args, test data
-
-### Reusable patterns:
-- `catch (error: any)` → `catch (error: unknown)` with `error instanceof Error` guard
-- `(req as any).user` → use `AuthenticatedRequest` from `middleware/auth.ts`
-- `Record<string, unknown>` for generic objects
-- Define inline interfaces for API response shapes
-
-**Files**: ~71 files across `backend/src/`
+### Footer (lines 442-518)
+| URLs | Status |
+|------|--------|
+| `/features`, `/pricing`, `/api`, `/blog`, `/support` | No routes |
+| `/about`, `/careers`, `/contact` | No routes |
+| `/privacy`, `/terms`, `/cookies` | No routes |
 
 ---
 
-## Phase 4: Fix 15 `no-non-null-assertion` Warnings
+## Phase 1: Redirects & Aliases (3 routes, no new pages)
 
-**Goal**: Replace `!` non-null assertions with proper null checks.
+**Goal**: Fix links that should point to existing pages.
 
-Files to fix:
-1. `backend/src/__tests__/services/astronomyEngine.service.test.ts` — 6 instances of `positions.get('X')!`
-   - Fix: `const pos = positions.get('Sun'); expect(pos).toBeDefined(); if (!pos) return;`
-2. `backend/src/__tests__/services/natalChart.service.test.ts` — use `.toBeDefined()` + guard
-3. `backend/src/__tests__/services/synastry.service.test.ts` — same pattern
-4. `backend/src/modules/shared/services/pdfGeneration.service.ts` — null check browser/page
+1. Add to `App.tsx`:
+   - `<Route path="/charts" element={<Navigate to="/dashboard" replace />} />`
+   - `<Route path="/charts/natal" element={<Navigate to="/charts/new" replace />} />`
+   - `<Route path="/compatibility" element={<Navigate to="/synastry" replace />} />`
+2. Import `Navigate` from `react-router-dom`
 
-**Files**: 4 files
-
----
-
-## Phase 5: Fix Skipped Tests
-
-**Goal**: Enable all 9 skipped tests and make them pass.
-
-1. **7 OpenAI tests** in `backend/src/__tests__/ai/openai.service.test.ts`:
-   - Change `it.skip(` → `it(` on all 7 tests
-   - Verify existing mocks at lines 36-53 are sufficient
-2. **1 TTL cache test** in `backend/src/__tests__/ai/aiCache.service.test.ts`:
-   - Remove `afterEach` cleanup (redundant; `beforeEach` already truncates)
-   - This prevents premature table cleanup before TTL check completes
-3. **1 debug suite** in `backend/src/__tests__/ai/openai.debug.test.ts`:
-   - Delete the entire file (debug utility, not needed for production tests)
-
-**Files**: `openai.service.test.ts`, `aiCache.service.test.ts`, `openai.debug.test.ts` (delete)
+**Files**: `frontend/src/App.tsx`
 
 ---
 
-## Phase 6: Fix Frontend Luxon & Eslint-Disable Issues
+## Phase 2: Feature Pages — Reuse Existing Components (5 pages)
 
-**Goal**: Remove all eslint-disable comments and use proper types.
+**Goal**: Create thin page wrappers around existing components that already have full functionality.
 
-1. `frontend/src/services/timezone.service.ts`:
-   - Remove 5 file-level `eslint-disable` comments for `no-unsafe-*` rules
-   - Replace `Info.listZones()` (removed in Luxon 3.x) with `Intl.supportedValuesOf?.('timeZone')`
-   - Add proper type annotations now that `@types/luxon` is installed
-2. `frontend/src/pages/AnalysisPage.tsx`:
-   - Remove 3 file-level `eslint-disable` comments for `no-unsafe-*` rules
-   - Add proper types for analysis data mapping (lines 100-125)
+### 2a. `/transits/today` — TodayTransitsPage
+- Wraps `TransitDashboard` component with `viewMode="today"`
+- Uses `useTodayTransits` hook (from `services/transit.service.ts`)
+- Pattern: `<AppLayout>` + React Query loading states
 
-**Files**: `frontend/src/services/timezone.service.ts`, `frontend/src/pages/AnalysisPage.tsx`
+### 2b. `/forecast` — ForecastPage
+- Wraps `TransitDashboard` component with `viewMode="highlights"`
+- Uses `useTransitForecast` hook
+- Pattern: same as TodayTransitsPage
+
+### 2c. `/moon-calendar` — MoonCalendarPage
+- Wraps `AstrologicalCalendar` component
+- Uses `useCalendarEvents` hook
+- Pattern: simple wrapper like CalendarPage
+
+### 2d. `/retrograde` — RetrogradePage
+- Wraps `TransitCalendar` component with `showRetrogrades={true}`
+- Uses `useTransitCalendar` hook
+- Shows retrograde-focused view with planet filters
+
+### 2e. `/learn` — LearnPage
+- Static educational content about astrology basics
+- Sections: Planets, Signs, Houses, Aspects
+- Uses `AppLayout` wrapper
+- Content sourced from `backend/src/data/interpretations.ts` patterns
+
+**Files to create**: 5 new files in `frontend/src/pages/`
+**Files to modify**: `frontend/src/App.tsx` (add routes + imports)
 
 ---
 
-## Phase 7: Full QA Verification
+## Phase 3: Feature Pages — New Content (3 pages)
 
-**Goal**: Confirm 0 errors, 0 warnings, 0 skipped tests.
+### 3a. `/ephemeris` — EphemerisPage
+- Shows current planetary positions table
+- Uses `useTodayTransits` for real-time positions
+- Table columns: Planet, Sign, Degree, House, Retrograde status
+- Optional: simple chart visualization
 
-1. `cd backend && npx eslint src --ext .ts` — expect 0 warnings, 0 errors
-2. `cd backend && npx tsc --noEmit` — expect 0 errors
-3. `cd backend && npx jest --coverage` — expect all tests pass, 0 skipped
-4. `cd frontend && npx eslint . --ext ts,tsx` — expect 0 warnings
-5. `cd frontend && npx tsc --noEmit` — expect 0 errors
-6. `cd frontend && npx vitest run` — expect all tests pass
+### 3b. `/settings` — SettingsPage
+- Uses `AppLayout` wrapper
+- Sections: Profile settings, Notification preferences, Display preferences (dark mode)
+- Reuses existing `UserProfile` component patterns
+- Saves to user profile via existing API
+
+### 3c. `/subscription` — SubscriptionPage
+- Uses `AppLayout` wrapper
+- Shows current plan, usage stats, upgrade options
+- Reuses `UsageMeter` component
+- Static pricing tiers for now
+
+**Files to create**: 3 new files in `frontend/src/pages/`
+**Files to modify**: `frontend/src/App.tsx`
+
+---
+
+## Phase 4: Static Footer Pages (1 reusable component + routes)
+
+**Goal**: Create a generic `StaticPage` component and wire up all footer links.
+
+Create `frontend/src/pages/StaticPage.tsx`:
+- Accepts a `pageKey` prop
+- Maps to title + markdown content from a `content/` data file
+- Uses `AppLayout` wrapper
+- Responsive layout with proper heading hierarchy
+
+Create `frontend/src/data/staticPages.ts`:
+- Content map for each footer page key
+- Pages: `features`, `pricing`, `api`, `blog`, `support`, `about`, `careers`, `contact`, `privacy`, `terms`, `cookies`
+
+Routes in `App.tsx`:
+```
+<Route path="/about" element={<StaticPage pageKey="about" />} />
+<Route path="/features" element={<StaticPage pageKey="features" />} />
+... (11 routes total)
+```
+
+**Files to create**: `frontend/src/pages/StaticPage.tsx`, `frontend/src/data/staticPages.ts`
+**Files to modify**: `frontend/src/App.tsx`
+
+---
+
+## Phase 5: Wire Up All Routes in App.tsx
+
+Final `App.tsx` route list (all new routes marked with NEW/REDIRECT):
+
+```
+/                          → HomePage
+/login                     → LoginPage
+/register                  → RegisterPage
+/dashboard                 → DashboardPage (protected)
+/charts                    → REDIRECT to /dashboard (NEW)
+/charts/new                → ChartCreatePage (protected)
+/charts/natal              → REDIRECT to /charts/new (NEW)
+/charts/:id                → ChartViewPage (protected)
+/analysis/:chartId         → AnalysisPage (protected)
+/transits                  → TransitPage (protected)
+/transits/today            → TodayTransitsPage (protected) (NEW)
+/forecast                  → ForecastPage (protected) (NEW)
+/compatibility             → REDIRECT to /synastry (NEW)
+/synastry                  → SynastryPageWrapper (protected)
+/moon-calendar             → MoonCalendarPage (protected) (NEW)
+/retrograde                → RetrogradePage (protected) (NEW)
+/ephemeris                 → EphemerisPage (protected) (NEW)
+/learn                     → LearnPage (protected) (NEW)
+/settings                  → SettingsPage (protected) (NEW)
+/subscription              → SubscriptionPage (protected) (NEW)
+/profile                   → ProfilePage (protected)
+/solar-returns             → SolarReturnsPage (protected)
+/solar-returns/:year       → SolarReturnsPage (protected)
+/calendar                  → CalendarPage (protected)
+/lunar-returns             → LunarReturnsPage (protected)
+/about                     → StaticPage (NEW)
+/features                  → StaticPage (NEW)
+/pricing                   → StaticPage (NEW)
+/api                       → StaticPage (NEW)
+/blog                      → StaticPage (NEW)
+/support                   → StaticPage (NEW)
+/careers                   → StaticPage (NEW)
+/contact                   → StaticPage (NEW)
+/privacy                   → StaticPage (NEW)
+/terms                     → StaticPage (NEW)
+/cookies                   → StaticPage (NEW)
+*                          → 404
+```
+
+---
+
+## Phase 6: Verify
+
+1. `cd frontend && npx tsc --noEmit` — type check passes
+2. `cd frontend && npx eslint src --ext ts,tsx` — no new warnings
+3. `cd frontend && npx vitest run` — all existing tests pass
+4. Manual: click every link in sidebar, nav, mobile nav, footer — all resolve to pages
+5. Verify redirects: `/charts` → `/dashboard`, `/charts/natal` → `/charts/new`, `/compatibility` → `/synastry`
 
 ---
 
 ## Execution Order
 
-Phases 1-2 are sequential (must install packages before removing mock).
-Phase 3 (any warnings) is the largest — can be split into batches per module.
-Phases 4-6 can run in any order after Phase 1.
-Phase 7 runs last.
+1. Phase 1 (redirects) — 5 min, just App.tsx changes
+2. Phase 2 (5 reuse pages) — can be parallelized (independent page files)
+3. Phase 3 (3 new pages) — can be parallelized
+4. Phase 4 (static pages) — independent
+5. Phase 5 (final App.tsx wiring) — depends on 1-4
+6. Phase 6 (verify) — depends on all
 
-**Estimated scope**: ~75 files modified, 5 files deleted, 4 packages installed
+**Total scope**: 11 new page files, 1 data file, 1 modified App.tsx

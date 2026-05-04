@@ -13,12 +13,9 @@
  */
 
 import openaiService from './openai.service';
+import type { ParsedInterpretation } from './openai.service';
 import aiCacheService from './aiCache.service';
-import {
-  generateCompletePersonalityAnalysis,
-  type PersonalityAnalysisResponse,
-  type AspectPattern,
-} from '../../analysis/services/interpretation.service';
+import { generateCompletePersonalityAnalysis } from '../../analysis/services/interpretation.service';
 import logger from '../../../utils/logger';
 import { PlanetPosition, HouseCusp, Aspect } from '../../../types/chart';
 
@@ -63,16 +60,16 @@ export interface InterpretationResult {
   generatedAt?: string;
 
   // Natal chart fields
-  overview?: PersonalityAnalysisResponse['overview'] | null;
-  planetsInSigns?: PersonalityAnalysisResponse['planetsInSigns'];
-  houses?: PersonalityAnalysisResponse['houses'];
-  aspects?: PersonalityAnalysisResponse['aspects'];
-  patterns?: AspectPattern[];
+  overview?: Record<string, unknown> | null;
+  planetsInSigns?: unknown[];
+  houses?: unknown[];
+  aspects?: unknown[];
+  patterns?: unknown[];
 
   // Enhancement fields
-  enhanced?: Record<string, unknown>;
-  interpretation?: Record<string, unknown> | string;
-  forecast?: Record<string, unknown> | string;
+  enhanced?: ParsedInterpretation | Record<string, unknown> | null;
+  interpretation?: ParsedInterpretation | Record<string, unknown> | string | null;
+  forecast?: ParsedInterpretation | Record<string, unknown> | string | null;
   compatibility?: number;
   analysis?: string;
   insights?: string[];
@@ -141,14 +138,14 @@ class AIInterpretationService {
             ...ruleBased,
             enhanced: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
-        { ttl: this.CACHE_TTL.NATAL },
+        { ttl: this.CACHE_TTL.NATAL }
       );
 
-      return result as InterpretationResult;
+      return result;
     } catch (error: unknown) {
       logger.error('AI interpretation failed, falling back to rule-based:', error);
 
@@ -182,14 +179,14 @@ class AIInterpretationService {
           return {
             forecast: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
-        { ttl: this.CACHE_TTL.TRANSIT },
+        { ttl: this.CACHE_TTL.TRANSIT }
       );
 
-      return result as InterpretationResult;
+      return result;
     } catch (error: unknown) {
       logger.error('AI transit forecast failed:', error);
       return this.getRuleBasedTransit();
@@ -221,14 +218,14 @@ class AIInterpretationService {
           return {
             ...aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
-        { ttl: this.CACHE_TTL.COMPATIBILITY },
+        { ttl: this.CACHE_TTL.COMPATIBILITY }
       );
 
-      return result as InterpretationResult;
+      return result;
     } catch (error: unknown) {
       logger.error('AI compatibility analysis failed:', error);
       return this.getRuleBasedCompatibility();
@@ -264,14 +261,14 @@ class AIInterpretationService {
           return {
             interpretation: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
-        { ttl: this.CACHE_TTL.LUNAR_RETURN },
+        { ttl: this.CACHE_TTL.LUNAR_RETURN }
       );
 
-      return result as InterpretationResult;
+      return result;
     } catch (error: unknown) {
       logger.error('AI lunar return interpretation failed:', error);
       return {
@@ -311,14 +308,14 @@ class AIInterpretationService {
           return {
             interpretation: aiResult.interpretation,
             ai: true,
-            source: 'ai-enhanced',
+            source: 'ai-enhanced' as const,
             generatedAt: new Date().toISOString(),
-          };
+          } satisfies InterpretationResult;
         },
-        { ttl: this.CACHE_TTL.SOLAR_RETURN },
+        { ttl: this.CACHE_TTL.SOLAR_RETURN }
       );
 
-      return result as InterpretationResult;
+      return result;
     } catch (error: unknown) {
       logger.error('AI solar return interpretation failed:', error);
       return {
@@ -343,7 +340,9 @@ class AIInterpretationService {
   > {
     logger.info(`Batch generating ${charts.length} natal interpretations`);
 
-    const results = await Promise.allSettled(charts.map((chart) => this.generateNatal(chart)));
+    const results = await Promise.allSettled(
+      charts.map((chart) => this.generateNatal(chart))
+    );
 
     return results.map((result, index) => ({
       chartIndex: index,
@@ -367,7 +366,7 @@ class AIInterpretationService {
     logger.info(`Batch generating ${transits.length} transit forecasts`);
 
     const results = await Promise.allSettled(
-      transits.map((transit) => this.generateTransit(transit)),
+      transits.map((transit) => this.generateTransit(transit))
     );
 
     return results.map((result, index) => ({

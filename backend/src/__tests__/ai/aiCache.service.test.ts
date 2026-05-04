@@ -1,128 +1,29 @@
 /**
  * AI Cache Service Tests
  * Tests for PostgreSQL-based caching system with SHA-256 key generation
- *
- * Uses an in-memory Map to mock the database-backed aiCacheModel,
- * so tests exercise the service logic without requiring PostgreSQL.
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-
-// In-memory store to simulate the database-backed model
-const memoryStore = new Map<string, { data: Record<string, unknown>; expiresAt: number | null }>();
-
-// Shared mutable logger mock object -- same reference used by both the mock factory and the service
-const loggerMock = {
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
-  debug: jest.fn(),
-};
-
-// Shared mutable model mock object -- same reference used by the mock factory and the service
-const modelMock: Record<string, ReturnType<typeof jest.fn>> = {
-  get: jest.fn(),
-  set: jest.fn(),
-  delete: jest.fn(),
-  clear: jest.fn(),
-  clearExpired: jest.fn(),
-  getStats: jest.fn(),
-};
-
-// Re-apply implementations on the shared mock objects
-function applyMocks() {
-  memoryStore.clear();
-
-  modelMock.get = jest.fn((key: string) => {
-    const entry = memoryStore.get(key);
-    if (!entry) return Promise.resolve(null);
-    if (entry.expiresAt && entry.expiresAt < Date.now()) {
-      memoryStore.delete(key);
-      return Promise.resolve(null);
-    }
-    return Promise.resolve(entry.data);
-  });
-
-  modelMock.set = jest.fn((_key: string, data: Record<string, unknown>, ttlSeconds?: number) => {
-    const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : null;
-    memoryStore.set(_key, { data, expiresAt });
-    return Promise.resolve({
-      cache_key: _key,
-      data,
-      expires_at: expiresAt ? new Date(expiresAt) : null,
-    });
-  });
-
-  modelMock.delete = jest.fn((key: string) => {
-    return Promise.resolve(memoryStore.delete(key));
-  });
-
-  modelMock.clear = jest.fn(() => {
-    memoryStore.clear();
-    return Promise.resolve();
-  });
-
-  modelMock.clearExpired = jest.fn(() => {
-    let count = 0;
-    for (const [key, entry] of memoryStore.entries()) {
-      if (entry.expiresAt && entry.expiresAt < Date.now()) {
-        memoryStore.delete(key);
-        count++;
-      }
-    }
-    return Promise.resolve(count);
-  });
-
-  modelMock.getStats = jest.fn(() => {
-    let expired = 0;
-    let active = 0;
-    for (const entry of memoryStore.values()) {
-      if (entry.expiresAt && entry.expiresAt < Date.now()) {
-        expired++;
-      } else {
-        active++;
-      }
-    }
-    return Promise.resolve({
-      totalEntries: memoryStore.size,
-      expiredEntries: expired,
-      activeEntries: active,
-    });
-  });
-
-  // Reset logger mock call counts (but keep the same object reference)
-  loggerMock.info = jest.fn();
-  loggerMock.warn = jest.fn();
-  loggerMock.error = jest.fn();
-  loggerMock.debug = jest.fn();
-}
-
-// Mock the model using the shared object so the service always references the same object
-jest.mock('../../modules/ai/models/aiCache.model', () => ({
-  __esModule: true,
-  default: modelMock,
-}));
-
-// Mock database to prevent real connections
-jest.mock('../../config/database', () => ({
-  __esModule: true,
-  default: {
-    destroy: jest.fn(() => Promise.resolve()),
-  },
-}));
-
-// Mock logger using the shared object so the service always references the same object
-jest.mock('../../utils/logger', () => ({
-  __esModule: true,
-  default: loggerMock,
-}));
-
-// Import service AFTER mocks are set up
+import { describe, it, expect, beforeEach, afterAll } from '@jest/globals';
 import aiCacheService from '../../modules/ai/services/aiCache.service';
+import db from '../../config/database';
 
 describe('AI Cache Service', () => {
-  beforeEach(() => {
-    applyMocks();
+  beforeEach(async () => {
+    // Clear cache before each test
+    try {
+      await db('ai_cache').truncate();
+    } catch (error) {
+      // Table might not exist yet, ignore
+    }
+  });
+
+  afterAll(async () => {
+    // Close database connection to prevent hanging workers
+    try {
+      await db.destroy();
+    } catch (error) {
+      // Connection might already be closed
+    }
   });
 
   describe('Cache Operations', () => {
@@ -149,7 +50,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key, data, { ttl: 1 }); // 1 second TTL
 
       // Wait for expiration
-      await new Promise((resolve) => setTimeout(resolve, 1100));
+      await new Promise(resolve => setTimeout(resolve, 1100));
 
       const cached = await aiCacheService.get(key);
       expect(cached).toBeNull();
@@ -162,7 +63,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key, data, { ttl: 60 }); // 60 seconds TTL
 
       // Should still be cached after short delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const cached = await aiCacheService.get(key);
       expect(cached).toEqual(data);
 
@@ -203,7 +104,9 @@ describe('AI Cache Service', () => {
   describe('Key Generation', () => {
     it('should generate cache key from chart data', async () => {
       const chartData = {
-        planets: [{ planet: 'sun', sign: 'aries', degree: 15 }],
+        planets: [
+          { planet: 'sun', sign: 'aries', degree: 15 },
+        ],
       };
 
       const key = aiCacheService.generateKey(chartData);
@@ -215,7 +118,9 @@ describe('AI Cache Service', () => {
 
     it('should generate consistent keys for identical data', () => {
       const chartData = {
-        planets: [{ planet: 'sun', sign: 'aries', degree: 15 }],
+        planets: [
+          { planet: 'sun', sign: 'aries', degree: 15 },
+        ],
       };
 
       const key1 = aiCacheService.generateKey(chartData);
@@ -284,7 +189,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.getOrGenerate(key, generator, { ttl: 1 });
 
       // Wait for expiration
-      await new Promise((resolve) => setTimeout(resolve, 1100));
+      await new Promise(resolve => setTimeout(resolve, 1100));
 
       const cached = await aiCacheService.get(key);
       expect(cached).toBeNull();
@@ -319,7 +224,7 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key2, { data: '2' }, { ttl: 10 });
 
       // Wait for first entry to expire
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const deletedCount = await aiCacheService.clearExpired();
 

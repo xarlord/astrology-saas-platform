@@ -59,9 +59,7 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       expect(screen.getByText('Event Reminders')).toBeInTheDocument();
-      expect(
-        screen.getByText(/get notified about important astrological events/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/get notified about important astrological events/i)).toBeInTheDocument();
     });
 
     it('should render event type selection options', () => {
@@ -169,7 +167,7 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
@@ -181,11 +179,11 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneHourCheckbox = checkboxes.find((cb) => {
+      const oneHourCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 hour before');
       });
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
@@ -202,7 +200,7 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
@@ -218,11 +216,11 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings existingReminder={mockExistingReminder} />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
-      const threeDayCheckbox = checkboxes.find((cb) => {
+      const threeDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('3 days before');
       });
@@ -243,7 +241,7 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const toggle = checkboxes.find((cb) => {
+      const toggle = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('Enable reminders');
       });
@@ -257,7 +255,7 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const toggle = checkboxes.find((cb) => {
+      const toggle = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('Enable reminders');
       });
@@ -273,7 +271,7 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings existingReminder={inactiveReminder} />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const toggle = checkboxes.find((cb) => {
+      const toggle = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('Enable reminders');
       });
@@ -291,12 +289,9 @@ describe('ReminderSettings Component', () => {
       const submitButton = screen.getByRole('button', { name: /save settings/i });
       await user.click(submitButton);
 
-      await waitFor(
-        () => {
-          expect(screen.getByText(/reminder settings saved successfully/i)).toBeInTheDocument();
-        },
-        { timeout: 3500 },
-      );
+      await waitFor(() => {
+        expect(screen.getByText(/reminder settings saved successfully/i)).toBeInTheDocument();
+      }, { timeout: 3500 });
     });
 
     it('should call onSave callback when provided', async () => {
@@ -317,7 +312,7 @@ describe('ReminderSettings Component', () => {
 
       const allEventsRadio = screen.getByDisplayValue('all');
       const allEventsLabel = allEventsRadio.closest('label');
-      expect(allEventsLabel?.className).toContain('border-indigo-500');
+      expect(allEventsLabel?.className).toContain('!border-primary');
     });
 
     it('should highlight selected reminder type', () => {
@@ -325,14 +320,14 @@ describe('ReminderSettings Component', () => {
 
       const emailRadio = screen.getByDisplayValue('email');
       const emailLabel = emailRadio.closest('label');
-      expect(emailLabel?.className).toContain('border-indigo-500');
+      expect(emailLabel?.className).toContain('!border-primary');
     });
 
     it('should show checkmark on selected timing options', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
@@ -388,15 +383,15 @@ describe('ReminderSettings Component', () => {
       render(<ReminderSettings />);
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneHourCheckbox = checkboxes.find((cb) => {
+      const oneHourCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 hour before');
       });
-      const threeDayCheckbox = checkboxes.find((cb) => {
+      const threeDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('3 days before');
       });
-      const oneWeekCheckbox = checkboxes.find((cb) => {
+      const oneWeekCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 week before');
       });
@@ -407,7 +402,7 @@ describe('ReminderSettings Component', () => {
 
       if (oneHourCheckbox) expect(oneHourCheckbox).toBeChecked();
 
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
@@ -421,35 +416,25 @@ describe('ReminderSettings Component', () => {
     it('should render bell icon in header', () => {
       const { container } = render(<ReminderSettings />);
 
-      // Bell icon container has bg-blue-50 text-blue-500 class
-      const bellContainer = container.querySelector('.bg-blue-50');
+      // Bell icon container has bg-primary/15 text-primary class
+      const bellContainer = container.querySelector('[class*="bg-primary"]');
       expect(bellContainer).toBeInTheDocument();
     });
 
     it('should render mail icon for email option', () => {
       render(<ReminderSettings />);
 
-      const radios = screen.getAllByRole('radio');
-      const emailRadio = radios.find((radio) => {
-        const label = radio.closest('label');
-        return label?.textContent?.includes('Email');
-      });
-      expect(
-        emailRadio?.closest('label')?.querySelector('.material-symbols-outlined'),
-      ).toBeInTheDocument();
+      const emailSpan = screen.getByText('Email');
+      const emailLabel = emailSpan.closest('label');
+      expect(emailLabel?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
 
     it('should render smartphone icon for push option', () => {
       render(<ReminderSettings />);
 
-      const radios = screen.getAllByRole('radio');
-      const pushRadio = radios.find((radio) => {
-        const label = radio.closest('label');
-        return label?.textContent?.includes('Push Notification');
-      });
-      expect(
-        pushRadio?.closest('label')?.querySelector('.material-symbols-outlined'),
-      ).toBeInTheDocument();
+      const pushSpan = screen.getByText('Push Notification');
+      const pushLabel = pushSpan.closest('label');
+      expect(pushLabel?.querySelector('.material-symbols-outlined')).toBeInTheDocument();
     });
   });
 
@@ -474,9 +459,7 @@ describe('ReminderSettings Component', () => {
       const user = userEvent.setup();
 
       // Mock console.error to avoid noise in test output
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-        /* intentional empty */
-      });
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { /* intentional empty */ });
 
       render(<ReminderSettings />);
 
@@ -501,11 +484,11 @@ describe('ReminderSettings Component', () => {
       expect(screen.getByDisplayValue('email')).toBeChecked();
 
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneDayCheckbox = checkboxes.find((cb) => {
+      const oneDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('1 day before');
       });
-      const threeDayCheckbox = checkboxes.find((cb) => {
+      const threeDayCheckbox = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('3 days before');
       });
@@ -513,7 +496,7 @@ describe('ReminderSettings Component', () => {
       expect(oneDayCheckbox).toBeChecked();
       expect(threeDayCheckbox).toBeChecked();
 
-      const toggle = checkboxes.find((cb) => {
+      const toggle = checkboxes.find(cb => {
         const label = cb.closest('label');
         return label?.textContent?.includes('Enable reminders');
       });
@@ -534,16 +517,10 @@ describe('ReminderSettings Component', () => {
       const user = userEvent.setup();
       render(<ReminderSettings />);
 
-      // Deselect default option using the working pattern from other tests
+      // Deselect default option — find checkbox by parent label text
       const checkboxes = screen.getAllByRole('checkbox');
-      const oneDayCheckbox = checkboxes.find((cb) => {
-        const label = cb.closest('label');
-        return label?.textContent?.includes('1 day before');
-      });
-
-      if (oneDayCheckbox) {
-        await user.click(oneDayCheckbox);
-      }
+      const oneDayCheckbox = checkboxes.find(cb => cb.closest('label')?.textContent?.includes('1 day before'));
+      await user.click(oneDayCheckbox!);
 
       const submitButton = screen.getByRole('button', { name: /save settings/i });
       await user.click(submitButton);

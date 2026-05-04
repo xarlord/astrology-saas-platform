@@ -17,7 +17,7 @@ export class DashboardPage {
   constructor(page: Page) {
     this.page = page;
     this.chartList = page.locator('[data-testid="chart-list"]');
-    this.chartCards = page.locator('[data-testid="chart-card"], .chart-card');
+    this.chartCards = page.locator('[data-testid="chart-card"], .chart-card, [data-testid^="chart-card-"]');
     this.newChartButton = page.locator(
       '[data-testid="new-chart-button"], a[href="/charts/new"], a[href="/charts/create"], button:has-text("New Chart"), a:has-text("New Chart")',
     );

@@ -74,7 +74,7 @@ const logger = winston.createLogger({
   format: combine(
     errors({ stack: true }),
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] }),
+    metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] })
   ),
   defaultMeta: {
     service: 'mooncalender-api',
@@ -83,7 +83,10 @@ const logger = winston.createLogger({
   transports: [
     // Console transport (always present)
     new winston.transports.Console({
-      format: combine(colorize({ all: true }), contextFormat),
+      format: combine(
+        colorize({ all: true }),
+        contextFormat
+      ),
     }),
 
     // Daily rotating file for all logs
@@ -93,7 +96,10 @@ const logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       maxSize: '20m',
       maxFiles: '14d', // Keep logs for 14 days
-      format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), contextFormat),
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        contextFormat
+      ),
     }),
 
     // Daily rotating file for errors
@@ -104,7 +110,10 @@ const logger = winston.createLogger({
       level: 'error',
       maxSize: '20m',
       maxFiles: '30d', // Keep error logs for 30 days
-      format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), contextFormat),
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        contextFormat
+      ),
     }),
 
     // Daily rotating file for HTTP requests
@@ -115,22 +124,27 @@ const logger = winston.createLogger({
       level: 'http',
       maxSize: '20m',
       maxFiles: '7d', // Keep HTTP logs for 7 days
-      format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), contextFormat),
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        contextFormat
+      ),
     }),
 
     // JSON format for production (useful for log aggregation)
-    ...(config.nodeEnv === 'production'
-      ? [
-          new winstonDailyRotateFile({
-            dirname: logsDir,
-            filename: 'json-%DATE%.log',
-            datePattern: 'YYYY-MM-DD',
-            maxSize: '20m',
-            maxFiles: '30d',
-            format: combine(timestamp(), errors({ stack: true }), json()),
-          }),
-        ]
-      : []),
+    ...(config.nodeEnv === 'production' ? [
+      new winstonDailyRotateFile({
+        dirname: logsDir,
+        filename: 'json-%DATE%.log',
+        datePattern: 'YYYY-MM-DD',
+        maxSize: '20m',
+        maxFiles: '30d',
+        format: combine(
+          timestamp(),
+          errors({ stack: true }),
+          json()
+        ),
+      })
+    ] : []),
   ],
 
   // Handle exceptions and rejections
@@ -178,11 +192,7 @@ interface HttpRequestWithExtras extends Request {
   startTime?: number;
 }
 
-export const logHttpRequest = (
-  req: HttpRequestWithExtras,
-  _res: Response,
-  responseTime: number,
-) => {
+export const logHttpRequest = (req: HttpRequestWithExtras, _res: Response, responseTime: number) => {
   const { method, originalUrl, statusCode } = req;
   const userId = req.user?.id;
   const requestId = req.id;
@@ -212,11 +222,7 @@ export const winstonStream = {
 /**
  * Request context middleware
  */
-export const addRequestContext = (
-  req: HttpRequestWithExtras,
-  res: Response,
-  next: NextFunction,
-) => {
+export const addRequestContext = (req: HttpRequestWithExtras, res: Response, next: NextFunction) => {
   // Add request ID if not present
   if (!req.id) {
     req.id = Math.random().toString(36).substring(2, 15);
@@ -227,7 +233,7 @@ export const addRequestContext = (
 
   // Add response listener
   res.on('finish', () => {
-    const responseTime = Date.now() - (req.startTime ?? Date.now());
+    const responseTime = req.startTime ? Date.now() - req.startTime : 0;
 
     // Log request completion
     logger.http('Request completed', {
@@ -251,7 +257,10 @@ export const addRequestContext = (
 export const queryLogger = winston.createLogger({
   levels: customLevels,
   level: 'debug',
-  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), json()),
+  format: combine(
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    json()
+  ),
   defaultMeta: { service: 'mooncalender-database' },
   transports: [
     new winstonDailyRotateFile({
@@ -261,18 +270,16 @@ export const queryLogger = winston.createLogger({
       maxSize: '20m',
       maxFiles: '7d',
     }),
-    ...(config.nodeEnv !== 'production'
-      ? [
-          new winston.transports.Console({
-            format: combine(
-              colorize(),
-              printf(({ message, timestamp, level }) => {
-                return `${timestamp} [${level}]: ${message}`;
-              }),
-            ),
-          }),
-        ]
-      : []),
+    ...(config.nodeEnv !== 'production' ? [
+      new winston.transports.Console({
+        format: combine(
+          colorize(),
+          printf(({ message, timestamp, level }) => {
+            return `${timestamp} [${level}]: ${message}`;
+          })
+        ),
+      })
+    ] : []),
   ],
 });
 
@@ -282,7 +289,10 @@ export const queryLogger = winston.createLogger({
 export const securityLogger = winston.createLogger({
   levels: customLevels,
   level: 'info',
-  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), json()),
+  format: combine(
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    json()
+  ),
   defaultMeta: { service: 'mooncalender-security' },
   transports: [
     new winstonDailyRotateFile({
@@ -297,7 +307,7 @@ export const securityLogger = winston.createLogger({
         colorize(),
         printf(({ message, timestamp, level }) => {
           return `${timestamp} [SECURITY ${level}]: ${message}`;
-        }),
+        })
       ),
     }),
   ],
@@ -309,7 +319,10 @@ export const securityLogger = winston.createLogger({
 export const performanceLogger = winston.createLogger({
   levels: customLevels,
   level: 'info',
-  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), json()),
+  format: combine(
+    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    json()
+  ),
   defaultMeta: { service: 'mooncalender-performance' },
   transports: [
     new winstonDailyRotateFile({

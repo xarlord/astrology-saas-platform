@@ -205,8 +205,7 @@ describe('Helper Utilities', () => {
     });
 
     it('should work with empty object', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const user = {} as any;
+      const user = {} as { password_hash?: unknown };
       const sanitized = sanitizeUser(user);
 
       expect(sanitized).toEqual({});

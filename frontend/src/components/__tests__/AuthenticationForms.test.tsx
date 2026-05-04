@@ -17,8 +17,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { LoginForm, RegisterForm } from '../AuthenticationForms';
 
-// Mock the useAuth hook - create the mock functions outside the mock
-const mockAuthHook = {
+// Wrap render with MemoryRouter since Link requires router context
+function renderWithRouter(ui: React.ReactElement) {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+}
+
+// Mock the useAuthStore - create the mock functions outside the mock
+const mockAuthStore = {
   login: vi.fn(),
   register: vi.fn(),
   isLoading: false,
@@ -26,22 +31,18 @@ const mockAuthHook = {
   isAuthenticated: false,
 };
 
-vi.mock('../../hooks', () => ({
-  useAuth: () => mockAuthHook,
+vi.mock('../../store', () => ({
+  useAuthStore: () => mockAuthStore,
 }));
-
-function renderWithRouter(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
-}
 
 describe('AuthenticationForms - LoginForm', () => {
   beforeEach(() => {
     // Reset mock calls
-    mockAuthHook.login.mockReset();
-    mockAuthHook.register.mockReset();
+    mockAuthStore.login.mockReset();
+    mockAuthStore.register.mockReset();
     // Set default successful behavior
-    mockAuthHook.login.mockResolvedValue({ success: true });
-    mockAuthHook.register.mockResolvedValue({ success: true });
+    mockAuthStore.login.mockResolvedValue({ success: true });
+    mockAuthStore.register.mockResolvedValue({ success: true });
   });
 
   describe('Rendering', () => {
@@ -49,7 +50,7 @@ describe('AuthenticationForms - LoginForm', () => {
       renderWithRouter(<LoginForm />);
 
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
-      expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     });
 
@@ -87,7 +88,7 @@ describe('AuthenticationForms - LoginForm', () => {
       renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       expect(emailInput).toHaveAttribute('id', 'email');
@@ -143,7 +144,7 @@ describe('AuthenticationForms - LoginForm', () => {
       renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       await user.type(emailInput, 'test@example.com');
       await user.type(passwordInput, 'short');
@@ -172,7 +173,7 @@ describe('AuthenticationForms - LoginForm', () => {
       renderWithRouter(<LoginForm onSuccess={onSuccess} />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       // Use fireEvent.change for immediate state updates
@@ -196,12 +197,12 @@ describe('AuthenticationForms - LoginForm', () => {
   describe('Error Handling', () => {
     it('should display API error message on login failure', async () => {
       const errorMessage = 'Invalid credentials';
-      mockAuthHook.login.mockRejectedValue(new Error(errorMessage));
+      mockAuthStore.login.mockRejectedValue(new Error(errorMessage));
 
       renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -209,22 +210,18 @@ describe('AuthenticationForms - LoginForm', () => {
 
       await userEvent.click(submitButton);
 
-      await waitFor(
-        () => {
-          expect(screen.getByText(errorMessage)).toBeInTheDocument();
-        },
-        { timeout: 5000 },
-      );
+      await waitFor(() => {
+        expect(screen.getByText(errorMessage)).toBeInTheDocument();
+      }, { timeout: 5000 });
     });
 
     it('should show generic error message when no error message provided', async () => {
-      // Pass undefined to trigger fallback message
-      mockAuthHook.login.mockRejectedValue({});
+      mockAuthStore.login.mockRejectedValue({});
 
       renderWithRouter(<LoginForm />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -233,9 +230,7 @@ describe('AuthenticationForms - LoginForm', () => {
       await userEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(
-          screen.getByText('Login failed. Please check your credentials.'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Login failed. Please check your credentials.')).toBeInTheDocument();
       });
     });
   });
@@ -244,12 +239,12 @@ describe('AuthenticationForms - LoginForm', () => {
     it('should call onSuccess callback after successful login', async () => {
       const user = userEvent.setup();
       const onSuccess = vi.fn();
-      mockAuthHook.login.mockResolvedValue({ success: true });
+      mockAuthStore.login.mockResolvedValue({ success: true });
 
       renderWithRouter(<LoginForm onSuccess={onSuccess} />);
 
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       await user.type(emailInput, 'test@example.com');
       await user.type(passwordInput, 'password123');
@@ -268,8 +263,7 @@ describe('AuthenticationForms - LoginForm', () => {
       const user = userEvent.setup();
       renderWithRouter(<LoginForm />);
 
-      const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-      const toggleButton = screen.getByTestId('password-visibility-toggle');
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       expect(passwordInput).toHaveAttribute('type', 'password');
 
@@ -296,11 +290,11 @@ describe('AuthenticationForms - LoginForm', () => {
 describe('AuthenticationForms - RegisterForm', () => {
   beforeEach(() => {
     // Reset mock calls
-    mockAuthHook.login.mockReset();
-    mockAuthHook.register.mockReset();
+    mockAuthStore.login.mockReset();
+    mockAuthStore.register.mockReset();
     // Set default successful behavior
-    mockAuthHook.login.mockResolvedValue({ success: true });
-    mockAuthHook.register.mockResolvedValue({ success: true });
+    mockAuthStore.login.mockResolvedValue({ success: true });
+    mockAuthStore.register.mockResolvedValue({ success: true });
   });
   beforeEach(() => {
     vi.clearAllMocks();
@@ -312,8 +306,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
-      expect(screen.getByPlaceholderText(/create a password/i)).toBeInTheDocument();
-      expect(screen.getByPlaceholderText(/confirm your password/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
     });
 
@@ -335,7 +329,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
 
       expect(nameInput).toHaveAttribute('autoComplete', 'name');
       expect(emailInput).toHaveAttribute('autoComplete', 'email');
@@ -377,8 +371,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
-      const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
@@ -397,8 +391,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
-      const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
@@ -414,13 +408,13 @@ describe('AuthenticationForms - RegisterForm', () => {
     it('should pass all validations with correct inputs', async () => {
       const user = userEvent.setup();
       const onSuccess = vi.fn();
-      mockAuthHook.register.mockResolvedValue({ success: true });
+      mockAuthStore.register.mockResolvedValue({ success: true });
       renderWithRouter(<RegisterForm onSuccess={onSuccess} />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
-      const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
       const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
       const submitButton = screen.getByRole('button', { name: /create account/i });
 
@@ -444,20 +438,20 @@ describe('AuthenticationForms - RegisterForm', () => {
       const user = userEvent.setup();
       renderWithRouter(<RegisterForm />);
 
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
-      const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
 
       expect(passwordInput).toHaveAttribute('type', 'password');
       expect(confirmPasswordInput).toHaveAttribute('type', 'password');
 
-      // Find password visibility toggle buttons by aria-label (same pattern as LoginForm test)
-      const showPasswordButton = screen.getAllByLabelText(/show password/i);
+      const buttons = screen.getAllByRole('button');
+      const eyeButtons = buttons.filter(btn => btn.querySelector('.material-symbols-outlined'));
 
-      if (showPasswordButton.length >= 2) {
-        await user.click(showPasswordButton[0]);
+      if (eyeButtons.length >= 2) {
+        await user.click(eyeButtons[0]);
         expect(passwordInput).toHaveAttribute('type', 'text');
 
-        await user.click(showPasswordButton[1]);
+        await user.click(eyeButtons[1]);
         expect(confirmPasswordInput).toHaveAttribute('type', 'text');
       }
     });
@@ -467,14 +461,14 @@ describe('AuthenticationForms - RegisterForm', () => {
     it('should call onSuccess callback after successful registration', async () => {
       const user = userEvent.setup();
       const onSuccess = vi.fn();
-      mockAuthHook.register.mockResolvedValue({ success: true });
+      mockAuthStore.register.mockResolvedValue({ success: true });
 
       renderWithRouter(<RegisterForm onSuccess={onSuccess} />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
-      const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
       const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
       const submitButton = screen.getByRole('button', { name: /create account/i });
 
@@ -496,14 +490,14 @@ describe('AuthenticationForms - RegisterForm', () => {
     it('should display API error message on registration failure', async () => {
       const user = userEvent.setup();
       const errorMessage = 'Email already exists';
-      mockAuthHook.register.mockRejectedValue(new Error(errorMessage));
+      mockAuthStore.register.mockRejectedValue(new Error(errorMessage));
 
       renderWithRouter(<RegisterForm />);
 
       const nameInput = screen.getByLabelText(/full name/i);
       const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByPlaceholderText(/create a password/i);
-      const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
+      const passwordInput = screen.getByLabelText(/^password$/i);
+      const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
       const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
       const submitButton = screen.getByRole('button', { name: /create account/i });
 

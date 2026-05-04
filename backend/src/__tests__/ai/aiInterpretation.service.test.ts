@@ -28,9 +28,9 @@ jest.mock('../../modules/analysis/services/interpretation.service', () => ({
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
 describe('AI Interpretation Service - Basic Functionality', () => {
-  let aiInterpretationService: any;
-  let openaiService: any;
-  let aiCacheService: any;
+  let aiInterpretationService: Record<string, (...args: unknown[]) => unknown>;
+  let openaiService: Record<string, (...args: unknown[]) => unknown>;
+  let aiCacheService: Record<string, (...args: unknown[]) => unknown>;
 
   beforeAll(() => {
     // Import after mocks are set up

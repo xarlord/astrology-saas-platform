@@ -85,15 +85,19 @@ export function ElementMeter({
                 <span className="text-xl" role="img" aria-label={`${info.name} element`}>
                   {info.symbol}
                 </span>
-                <span className="font-medium text-gray-900 dark:text-white">{info.name}</span>
+                <span className="font-medium text-white">
+                  {info.name}
+                </span>
               </div>
               {showPercentages && (
-                <span className="text-sm text-gray-600 dark:text-gray-400">{percentage}%</span>
+                <span className="text-sm text-slate-200">
+                  {percentage}%
+                </span>
               )}
             </div>
 
             {/* Progress Bar */}
-            <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div className="relative h-3 bg-white/15 rounded-full overflow-hidden">
               <div
                 className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out"
                 style={{
@@ -109,12 +113,12 @@ export function ElementMeter({
             </div>
 
             {/* Planet Count */}
-            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-center">
+            <div className="mt-1 text-xs text-slate-200 text-center">
               {count} {count === 1 ? 'planet' : 'planets'}
             </div>
 
             {/* Signs (shown on hover/focus) */}
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
+            <div className="mt-2 text-xs text-slate-200 text-center opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
               {info.signs.join(' • ')}
             </div>
           </div>
@@ -127,13 +131,7 @@ export function ElementMeter({
 /**
  * Compact Element Meter for inline display
  */
-export function ElementMeterCompact({
-  elements,
-  total,
-}: {
-  elements: ElementCount;
-  total: number;
-}) {
+export function ElementMeterCompact({ elements, total }: { elements: ElementCount; total: number }) {
   return (
     <div className="flex items-center gap-1" role="img" aria-label="Element distribution">
       {Object.entries(ELEMENT_INFO).map(([key, info]) => {
@@ -155,7 +153,9 @@ export function ElementMeterCompact({
               {info.symbol}
             </span>
             {percentage > 0 && (
-              <span className="text-xs ml-0.5 text-gray-600 dark:text-gray-400">{percentage}%</span>
+              <span className="text-xs ml-0.5 text-slate-200">
+                {percentage}%
+              </span>
             )}
           </div>
         );
@@ -168,7 +168,9 @@ export function ElementMeterCompact({
  * Calculate element distribution from planet positions
  */
 // eslint-disable-next-line react-refresh/only-export-components
-export function calculateElementDistribution(planets: { sign: string }[]): ElementCount {
+export function calculateElementDistribution(
+  planets: { sign: string }[]
+): ElementCount {
   const elements: ElementCount = { fire: 0, earth: 0, air: 0, water: 0 };
 
   planets.forEach((planet) => {

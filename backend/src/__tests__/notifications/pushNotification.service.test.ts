@@ -176,7 +176,7 @@ describe('Push Notification Service', () => {
     ];
 
     mockPushSubscriptionModel.findByUserId.mockResolvedValue(subscriptions);
-    mockWebpush.sendNotification.mockResolvedValue({} as any);
+    mockWebpush.sendNotification.mockResolvedValue({} as Record<string, unknown>);
 
     const notification = {
       title: 'Test Notification',
@@ -282,7 +282,7 @@ describe('Push Notification Service', () => {
     mockPushSubscriptionModel.findByUserId
       .mockResolvedValueOnce(user1Subscriptions)
       .mockResolvedValueOnce(user2Subscriptions);
-    mockWebpush.sendNotification.mockResolvedValue({} as any);
+    mockWebpush.sendNotification.mockResolvedValue({} as Record<string, unknown>);
 
     const notification = {
       title: 'Broadcast Test',
@@ -328,8 +328,8 @@ describe('Push Notification Service', () => {
 
     mockPushSubscriptionModel.findByUserId.mockResolvedValue([subscription]);
 
-    const error: any = new Error('Subscription expired');
-    error.statusCode = 404;
+    const error: unknown & { statusCode?: number } = new Error('Subscription expired');
+    (error as unknown as { statusCode: number }).statusCode = 404;
     mockWebpush.sendNotification.mockRejectedValue(error);
     mockPushSubscriptionModel.delete.mockResolvedValue(true);
 
@@ -358,8 +358,8 @@ describe('Push Notification Service', () => {
 
     mockPushSubscriptionModel.findByUserId.mockResolvedValue([subscription]);
 
-    const error: any = new Error('Gone');
-    error.statusCode = 410;
+    const error: unknown & { statusCode?: number } = new Error('Gone');
+    (error as unknown as { statusCode: number }).statusCode = 410;
     mockWebpush.sendNotification.mockRejectedValue(error);
     mockPushSubscriptionModel.delete.mockResolvedValue(true);
 

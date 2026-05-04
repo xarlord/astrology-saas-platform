@@ -8,19 +8,6 @@
 
 import puppeteer, { Browser, PDFOptions } from 'puppeteer';
 
-/**
- * HTML-escape user-controlled strings to prevent XSS in PDF generation.
- * Covers: & < > " '
- */
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 // Planet position interface
 export interface PlanetPosition {
   name: string;
@@ -29,7 +16,6 @@ export interface PlanetPosition {
   latitude?: number;
   sign: string;
   degree: number;
-  minute?: number;
   retrograde?: boolean;
   house?: number;
 }
@@ -50,15 +36,6 @@ export interface AspectData {
   angle: number;
   orb: number;
   applying?: boolean;
-  harmonious?: boolean;
-}
-
-// Synastry aspect can have planet as string or object with .planet property
-export interface SynastryAspectData {
-  planet1: string | { planet: string };
-  planet2: string | { planet: string };
-  type: string;
-  harmonious?: boolean;
 }
 
 // Elemental distribution
@@ -160,45 +137,22 @@ export interface PDFGenerationOptions {
 
 // Planet symbols
 const PLANET_SYMBOLS: Record<string, string> = {
-  Sun: '☉',
-  Moon: '☽',
-  Mercury: '☿',
-  Venus: '♀',
-  Mars: '♂',
-  Jupiter: '♃',
-  Saturn: '♄',
-  Uranus: '♅',
-  Neptune: '♆',
-  Pluto: '♇',
-  Chiron: '⚷',
-  NorthNode: '☊',
-  SouthNode: '☋',
+  Sun: '☉', Moon: '☽', Mercury: '☿', Venus: '♀', Mars: '♂',
+  Jupiter: '♃', Saturn: '♄', Uranus: '♅', Neptune: '♆', Pluto: '♇',
+  Chiron: '⚷', NorthNode: '☊', SouthNode: '☋',
 };
 
 // Zodiac symbols
 const ZODIAC_SYMBOLS: Record<string, string> = {
-  aries: '♈',
-  taurus: '♉',
-  gemini: '♊',
-  cancer: '♋',
-  leo: '♌',
-  virgo: '♍',
-  libra: '♎',
-  scorpio: '♏',
-  sagittarius: '♐',
-  capricorn: '♑',
-  aquarius: '♒',
-  pisces: '♓',
+  aries: '♈', taurus: '♉', gemini: '♊', cancer: '♋',
+  leo: '♌', virgo: '♍', libra: '♎', scorpio: '♏',
+  sagittarius: '♐', capricorn: '♑', aquarius: '♒', pisces: '♓',
 };
 
 // Aspect symbols
 const ASPECT_SYMBOLS: Record<string, string> = {
-  conjunction: '☌',
-  opposition: '☍',
-  trine: '△',
-  square: '□',
-  sextile: '⚹',
-  quincunx: '⚻',
+  conjunction: '☌', opposition: '☍', trine: '△',
+  square: '□', sextile: '⚹', quincunx: '⚻',
 };
 
 export class PDFGenerationService {
@@ -230,17 +184,24 @@ export class PDFGenerationService {
 
     // Determine if sandbox should be disabled
     // Disable in Docker or production environments by default, unless explicitly enabled
-    const shouldDisableSandbox =
-      noSandbox || (isProduction && process.env.PUPPETEER_NO_SANDBOX !== 'false');
+    const shouldDisableSandbox = noSandbox || (isProduction && process.env.PUPPETEER_NO_SANDBOX !== 'false');
 
     const browserArgs: string[] = [];
 
     if (shouldDisableSandbox) {
-      browserArgs.push('--no-sandbox', '--disable-setuid-sandbox');
+      browserArgs.push(
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      );
     }
 
     // Common args for stability
-    browserArgs.push('--disable-dev-shm-usage', '--disable-gpu', '--no-first-run', '--no-zygote');
+    browserArgs.push(
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--no-first-run',
+      '--no-zygote'
+    );
 
     // Single process only in containerized environments
     if (isDocker || shouldDisableSandbox) {
@@ -255,9 +216,7 @@ export class PDFGenerationService {
     });
 
     this.browser = await this.browserPromise;
-    if (!this.browser) {
-      throw new Error('Failed to launch browser');
-    }
+    if (!this.browser) throw new Error('Failed to launch browser');
     return this.browser;
   }
 
@@ -266,7 +225,7 @@ export class PDFGenerationService {
    */
   async generateChartPDF(
     chartData: ChartData,
-    options: PDFGenerationOptions = {},
+    options: PDFGenerationOptions = {}
   ): Promise<Buffer> {
     const browser = await this.getBrowser();
     const page = await browser.newPage();
@@ -340,17 +299,17 @@ export class PDFGenerationService {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Natal Chart - ${escapeHtml(chart.name)}</title>
+  <title>Natal Chart - ${chart.name}</title>
   <style>${styles}</style>
 </head>
 <body>
   <div class="document">
     <header class="chart-header">
       <h1>Natal Chart Report</h1>
-      <h2>${escapeHtml(chart.name)}</h2>
+      <h2>${chart.name}</h2>
       <p class="birth-info">
-        Born: ${escapeHtml(chart.birthDate)} at ${escapeHtml(chart.birthTime)}<br>
-        Location: ${escapeHtml(chart.birthLocation)}
+        Born: ${chart.birthDate} at ${chart.birthTime}<br>
+        Location: ${chart.birthLocation}
       </p>
     </header>
 
@@ -367,19 +326,15 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${planets
-            .map(
-              ([name, pos]: [string, PlanetPosition]) => `
+          ${planets.map(([name, pos]: [string, PlanetPosition]) => `
             <tr>
-              <td><span class="symbol">${PLANET_SYMBOLS[name] || ''}</span> ${escapeHtml(name)}</td>
-              <td><span class="symbol">${ZODIAC_SYMBOLS[pos.sign] || ''}</span> ${escapeHtml(this.capitalize(pos.sign))}</td>
-              <td>${pos.degree}° ${pos.minute || 0}'</td>
+              <td><span class="symbol">${PLANET_SYMBOLS[name] || ''}</span> ${name}</td>
+              <td><span class="symbol">${ZODIAC_SYMBOLS[pos.sign] || ''}</span> ${this.capitalize(pos.sign)}</td>
+              <td>${pos.degree}° ${0}'</td>
               <td>${pos.house || '-'}</td>
               <td>${pos.retrograde ? 'R' : ''}</td>
             </tr>
-          `,
-            )
-            .join('')}
+          `).join('')}
         </tbody>
       </table>
     </section>
@@ -410,9 +365,7 @@ export class PDFGenerationService {
       </div>
     </section>
 
-    ${
-      chart.aspects.length > 0
-        ? `
+    ${chart.aspects.length > 0 ? `
     <section class="section">
       <h3>Major Aspects</h3>
       <table class="aspect-table">
@@ -425,27 +378,19 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${chart.aspects
-            .slice(0, 15)
-            .map(
-              (aspect: AspectData) => `
+          ${chart.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => `
             <tr>
-              <td>${escapeHtml(this.capitalize(aspect.planet1))}</td>
+              <td>${this.capitalize(aspect.planet1)}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
-                ${ASPECT_SYMBOLS[aspect.type] || ''} ${escapeHtml(this.capitalize(aspect.type))}
+                ${ASPECT_SYMBOLS[aspect.type] || aspect.type} ${this.capitalize(aspect.type)}
               </td>
-              <td>${escapeHtml(this.capitalize(aspect.planet2))}</td>
+              <td>${this.capitalize(aspect.planet2)}</td>
               <td>${aspect.orb.toFixed(1)}°</td>
             </tr>
-          `,
-            )
-            .join('')}
-        </tbody>
+          `).join('')}        </tbody>
       </table>
     </section>
-    `
-        : ''
-    }
+    ` : ''}
 
     <footer class="chart-footer">
       <p>Generated by AstroVerse on ${new Date().toLocaleDateString()}</p>
@@ -475,10 +420,10 @@ export class PDFGenerationService {
   <div class="document">
     <header class="chart-header">
       <h1>Synastry Report</h1>
-      <h2>${escapeHtml(synastry.person1.name)} & ${escapeHtml(synastry.person2.name)}</h2>
+      <h2>${synastry.person1.name} & ${synastry.person2.name}</h2>
       <p class="birth-info">
-        ${escapeHtml(synastry.person1.name)}: ${escapeHtml(synastry.person1.birthDate)}<br>
-        ${escapeHtml(synastry.person2.name)}: ${escapeHtml(synastry.person2.birthDate)}
+        ${synastry.person1.name}: ${synastry.person1.birthDate}<br>
+        ${synastry.person2.name}: ${synastry.person2.birthDate}
       </p>
     </header>
 
@@ -521,20 +466,18 @@ export class PDFGenerationService {
     <section class="section">
       <h3>Relationship Strengths</h3>
       <ul class="strengths-list">
-        ${synastry.strengths.map((s: string) => `<li>✓ ${escapeHtml(s)}</li>`).join('')}
+        ${synastry.strengths.map((s: string) => `<li>✓ ${s}</li>`).join('')}
       </ul>
     </section>
 
     <section class="section">
       <h3>Areas for Growth</h3>
       <ul class="challenges-list">
-        ${synastry.challenges.map((c: string) => `<li>• ${escapeHtml(c)}</li>`).join('')}
+        ${synastry.challenges.map((c: string) => `<li>• ${c}</li>`).join('')}
       </ul>
     </section>
 
-    ${
-      synastry.aspects.length > 0
-        ? `
+    ${synastry.aspects.length > 0 ? `
     <section class="section">
       <h3>Key Synastry Aspects</h3>
       <table class="aspect-table">
@@ -547,27 +490,20 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${synastry.aspects
-            .slice(0, 15)
-            .map(
-              (aspect: SynastryAspectData) => `
+          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => `
             <tr>
-              <td>${escapeHtml(this.capitalize(typeof aspect.planet1 === 'object' ? aspect.planet1.planet : aspect.planet1))}</td>
+              <td>${this.capitalize((typeof aspect.planet1 === 'string' ? aspect.planet1 : String(aspect.planet1)))}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
-                ${ASPECT_SYMBOLS[aspect.type] || ''} ${escapeHtml(this.capitalize(aspect.type))}
+                ${ASPECT_SYMBOLS[aspect.type] || aspect.type} ${this.capitalize(aspect.type)}
               </td>
-              <td>${escapeHtml(this.capitalize(typeof aspect.planet2 === 'object' ? aspect.planet2.planet : aspect.planet2))}</td>
+              <td>${this.capitalize((typeof aspect.planet2 === 'string' ? aspect.planet2 : String(aspect.planet2)))}</td>
               <td>${aspect.harmonious ? '✓' : ''}</td>
             </tr>
-          `,
-            )
-            .join('')}
+          `).join('')}
         </tbody>
       </table>
     </section>
-    `
-        : ''
-    }
+    ` : ''}
 
     <footer class="chart-footer">
       <p>Generated by AstroVerse on ${new Date().toLocaleDateString()}</p>
@@ -599,16 +535,16 @@ export class PDFGenerationService {
       <h1>Solar Return Report</h1>
       <h2>${solar.returnYear}</h2>
       <p class="birth-info">
-        For: ${escapeHtml(solar.name)}<br>
-        Birth Date: ${escapeHtml(solar.birthDate)}<br>
-        Return Date: ${escapeHtml(solar.returnDate)}
+        For: ${solar.name}<br>
+        Birth Date: ${solar.birthDate}<br>
+        Return Date: ${solar.returnDate}
       </p>
     </header>
 
     <section class="section">
       <h3>Yearly Themes</h3>
       <ul class="themes-list">
-        ${solar.themes.map((t: string) => `<li>★ ${escapeHtml(t)}</li>`).join('')}
+        ${solar.themes.map((t: string) => `<li>★ ${t}</li>`).join('')}
       </ul>
     </section>
 
@@ -622,16 +558,12 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${solar.keyDates
-            .map(
-              (kd: { date: string; event: string }) => `
+          ${solar.keyDates.map((kd: { date: string; event: string }) => `
             <tr>
-              <td>${escapeHtml(kd.date)}</td>
-              <td>${escapeHtml(kd.event)}</td>
+              <td>${kd.date}</td>
+              <td>${kd.event}</td>
             </tr>
-          `,
-            )
-            .join('')}
+          `).join('')}
         </tbody>
       </table>
     </section>
@@ -655,18 +587,18 @@ export class PDFGenerationService {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHtml(data.title)}</title>
+  <title>${data.title}</title>
   <style>${styles}</style>
 </head>
 <body>
   <div class="document">
     <header class="chart-header">
-      <h1>${escapeHtml(data.title)}</h1>
+      <h1>${data.title}</h1>
       <p class="birth-info">Generated: ${data.generatedAt.toLocaleString()}</p>
     </header>
 
     <section class="section">
-      <pre>${escapeHtml(JSON.stringify(data.data, null, 2))}</pre>
+      <pre>${JSON.stringify(data.data, null, 2)}</pre>
     </section>
 
     <footer class="chart-footer">
@@ -883,7 +815,7 @@ export class PDFGenerationService {
   private getDefaultHeader(chartData: ChartData): string {
     return `
       <div style="font-size: 9px; padding: 5px 20px; width: 100%; text-align: center; color: #666;">
-        <span>AstroVerse - ${escapeHtml(chartData.title)}</span>
+        <span>AstroVerse - ${chartData.title}</span>
       </div>
     `;
   }

@@ -1,192 +1,165 @@
 /**
  * Transit Service
- * Handles all transit calculation and forecast API calls
- * Includes timeout management and error recovery
  */
 
 import api from './api';
-import type { Transit, TransitChart } from './api.types';
-
-// Error class for transit-specific errors
-export class TransitServiceError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-    public statusCode?: number,
-  ) {
-    super(message);
-    this.name = 'TransitServiceError';
-  }
-}
 
 export interface TransitReading {
   date: string;
-  transits: {
+  transits?: {
     transitPlanet: string;
     natalPlanet: string;
     aspect: string;
     orb: number;
   }[];
-  housePositions: Record<string, number>;
+  majorAspects?: {
+    planet1: string;
+    planet2: string;
+    type: string;
+    orb: number;
+    applying?: boolean;
+  }[];
+  housePositions?: Record<string, number>;
+  moonPhase?: {
+    phase: string;
+    degrees: number;
+    illumination: number;
+  };
+  transitPlanets?: Record<string, {
+    longitude: number;
+    latitude?: number;
+    speed: number;
+    retrograde: boolean;
+    sign: string;
+    degree: number;
+  }>;
 }
 
-export interface TransitCalculationResponse {
-  transits: Transit[];
-  energyLevel: number;
-  dateRange: { start: string; end: string };
+interface TransitsResponse {
+  data: TransitReading;
 }
 
-export interface TransitCalendarResponse {
-  transits: Transit[];
-  month: number;
-  year: number;
+interface TodayTransitsResponse {
+  data: TransitReading;
 }
 
-export interface TransitForecastResponse {
-  transits: Transit[];
-  energyLevel: number;
-  duration: string;
+interface TransitCalendarResponse {
+  data: {
+    month: number;
+    year: number;
+    calendarData: Array<{
+      date: string;
+      day: number;
+      aspects: Array<{ planet1: string; planet2: string; type: string; orb: number; applying?: boolean }>;
+      moonPhase?: { phase: string; degrees: number; illumination: number };
+      retrogrades?: string[];
+    }>;
+  };
 }
 
-// Configuration
-const TRANSIT_TIMEOUT = 45000; // 45 seconds for transit calculations
-const FORECAST_TIMEOUT = 30000; // 30 seconds for forecasts
+interface TransitForecastResponse {
+  data: {
+    chart: { id: string; name: string };
+    duration: string;
+    startDate: string;
+    endDate: string;
+    groupedByType: Record<string, Array<{ type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }>>;
+    forecast: Array<{ type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }>;
+  };
+}
+
+interface TransitDetailsResponse {
+  data: TransitReading;
+}
+
+export interface NormalizedTransit {
+  transitPlanet: string;
+  natalPlanet: string;
+  aspect: string;
+  orb: number;
+}
+
+export function normalizeTransits(reading: TransitReading | null | undefined): NormalizedTransit[] {
+  if (!reading) return [];
+  if (reading.transits && Array.isArray(reading.transits)) return reading.transits;
+  if (reading.majorAspects && Array.isArray(reading.majorAspects)) {
+    return reading.majorAspects.map((a) => ({
+      transitPlanet: a.planet1,
+      natalPlanet: a.planet2,
+      aspect: a.type,
+      orb: a.orb,
+    }));
+  }
+  return [];
+}
+
+function normalizeReading(reading: TransitReading): TransitReading {
+  return {
+    ...reading,
+    transits: normalizeTransits(reading),
+  };
+}
 
 export const transitService = {
   /**
    * Calculate transits for date range
-   * @throws TransitServiceError on failure
    */
-  async calculateTransits(
-    chartId: string,
-    startDate: string,
-    endDate: string,
-  ): Promise<TransitChart> {
-    try {
-      const response = await api.post<{ data: TransitChart }>(
-        '/transits/calculate',
-        { chartId, startDate, endDate },
-        { timeout: TRANSIT_TIMEOUT },
-      );
-
-      if (!response.data?.data) {
-        throw new TransitServiceError('No data received from transit calculation', 'NO_DATA');
-      }
-
-      return response.data.data;
-    } catch (error) {
-      if (error instanceof TransitServiceError) throw error;
-
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new TransitServiceError(`Failed to calculate transits: ${message}`, 'CALCULATE_FAILED');
-    }
+  async calculateTransits(chartId: string, startDate: string, endDate: string): Promise<TransitReading> {
+    const { data } = await api.post<TransitsResponse>('/transits/calculate', {
+      chartId,
+      startDate,
+      endDate,
+    });
+    return normalizeReading(data.data);
   },
 
   /**
    * Get today's transits
-   * @throws TransitServiceError on failure
    */
-  async getTodayTransits(): Promise<TransitCalculationResponse> {
-    try {
-      const response = await api.get<{ data: TransitCalculationResponse }>('/transits/today', {
-        timeout: TRANSIT_TIMEOUT,
-      });
-
-      if (!response.data?.data) {
-        throw new TransitServiceError("No data received for today's transits", 'NO_DATA');
-      }
-
-      return response.data.data;
-    } catch (error) {
-      if (error instanceof TransitServiceError) throw error;
-
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new TransitServiceError(
-        `Failed to get today's transits: ${message}`,
-        'GET_TODAY_FAILED',
-      );
-    }
+  async getTodayTransits(): Promise<TransitReading> {
+    const { data } = await api.get<TodayTransitsResponse>('/transits/today');
+    return normalizeReading(data.data);
   },
 
   /**
    * Get transit calendar
-   * @throws TransitServiceError on failure
    */
-  async getTransitCalendar(month: number, year: number): Promise<TransitCalendarResponse> {
-    try {
-      const response = await api.get<{ data: TransitCalendarResponse }>('/transits/calendar', {
-        params: { month, year },
-        timeout: TRANSIT_TIMEOUT,
-      });
-
-      if (!response.data?.data) {
-        throw new TransitServiceError('No data received for transit calendar', 'NO_DATA');
-      }
-
-      return response.data.data;
-    } catch (error) {
-      if (error instanceof TransitServiceError) throw error;
-
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new TransitServiceError(
-        `Failed to get transit calendar: ${message}`,
-        'GET_CALENDAR_FAILED',
-      );
-    }
+  async getTransitCalendar(month: number, year: number): Promise<TransitReading[]> {
+    const { data } = await api.get<TransitCalendarResponse>('/transits/calendar', {
+      params: { month, year },
+    });
+    return data.data.calendarData.map((day) =>
+      normalizeReading({
+        date: day.date,
+        majorAspects: day.aspects,
+        moonPhase: day.moonPhase,
+      })
+    );
   },
 
   /**
    * Get transit forecast
-   * @throws TransitServiceError on failure
    */
-  async getTransitForecast(
-    duration: 'week' | 'month' | 'quarter' | 'year' = 'month',
-  ): Promise<TransitForecastResponse> {
-    try {
-      const response = await api.get<{ data: TransitForecastResponse }>('/transits/forecast', {
-        params: { duration },
-        timeout: FORECAST_TIMEOUT,
-      });
-
-      if (!response.data?.data) {
-        throw new TransitServiceError('No data received for transit forecast', 'NO_DATA');
-      }
-
-      return response.data.data;
-    } catch (error) {
-      if (error instanceof TransitServiceError) throw error;
-
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new TransitServiceError(
-        `Failed to get transit forecast: ${message}`,
-        'GET_FORECAST_FAILED',
-      );
-    }
+  async getTransitForecast(duration: 'week' | 'month' | 'quarter' | 'year' = 'month'): Promise<TransitReading[]> {
+    const { data } = await api.get<TransitForecastResponse>('/transits/forecast', {
+      params: { duration },
+    });
+    return data.data.forecast.map((aspect) => ({
+      date: aspect.date,
+      transits: [{
+        transitPlanet: aspect.planet1,
+        natalPlanet: aspect.planet2,
+        aspect: aspect.type,
+        orb: aspect.orb,
+      }],
+    }));
   },
 
   /**
    * Get transit details
-   * @throws TransitServiceError on failure
    */
-  async getTransitDetails(id: string): Promise<Transit> {
-    try {
-      const response = await api.get<{ data: Transit }>(`/transits/${id}`, {
-        timeout: TRANSIT_TIMEOUT,
-      });
-
-      if (!response.data?.data) {
-        throw new TransitServiceError('No data received for transit details', 'NO_DATA');
-      }
-
-      return response.data.data;
-    } catch (error) {
-      if (error instanceof TransitServiceError) throw error;
-
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new TransitServiceError(
-        `Failed to get transit details: ${message}`,
-        'GET_DETAILS_FAILED',
-      );
-    }
+  async getTransitDetails(id: string): Promise<TransitReading> {
+    const { data } = await api.get<TransitDetailsResponse>(`/transits/${id}`);
+    return normalizeReading(data.data);
   },
 };

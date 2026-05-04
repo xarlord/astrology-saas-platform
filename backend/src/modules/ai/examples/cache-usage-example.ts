@@ -8,7 +8,8 @@
 /* eslint-disable no-console */
 
 import aiCacheService from '../services/aiCache.service';
-import openaiService, { type NatalChartInput } from '../services/openai.service';
+import openaiService from '../services/openai.service';
+import type { NatalChartInput } from '../services/openai.service';
 
 /**
  * Example 1: Basic caching of natal chart interpretation
@@ -25,7 +26,7 @@ export async function getCachedNatalInterpretation(chartData: NatalChartInput) {
       // This function only runs on cache miss
       return await openaiService.generateNatalInterpretation(chartData);
     },
-    { ttl: 3600 }, // Cache for 1 hour
+    { ttl: 3600 } // Cache for 1 hour
   );
 
   return interpretation;
@@ -36,7 +37,7 @@ export async function getCachedNatalInterpretation(chartData: NatalChartInput) {
  */
 export async function getCachedInterpretation(
   chartData: NatalChartInput,
-  complexity: 'simple' | 'medium' | 'complex',
+  complexity: 'simple' | 'medium' | 'complex'
 ) {
   const cacheKey = aiCacheService.generateKey({
     type: 'interpretation',
@@ -46,15 +47,15 @@ export async function getCachedInterpretation(
 
   // Simple charts cached longer, complex charts shorter
   const ttlMap = {
-    simple: 7200, // 2 hours
-    medium: 3600, // 1 hour
-    complex: 1800, // 30 minutes
+    simple: 7200,   // 2 hours
+    medium: 3600,   // 1 hour
+    complex: 1800,  // 30 minutes
   };
 
   return aiCacheService.getOrGenerate(
     cacheKey,
     () => openaiService.generateNatalInterpretation(chartData),
-    { ttl: ttlMap[complexity] },
+    { ttl: ttlMap[complexity] }
   );
 }
 
@@ -133,9 +134,9 @@ export async function getInterpretationWithFallback(chartData: NatalChartInput) 
           return await getRuleBasedInterpretation(chartData);
         }
       },
-      { ttl: 3600 },
+      { ttl: 3600 }
     );
-  } catch {
+  } catch (error) {
     // Final fallback if cache fails
     return await getRuleBasedInterpretation(chartData);
   }

@@ -19,6 +19,11 @@ export function useServiceWorkerUpdate(): UseServiceWorkerUpdateResult {
   const [controls, setControls] = useState<ServiceWorkerControls | null>(null);
 
   useEffect(() => {
+    // Skip SW registration in development — PWA is only for production
+    if (!import.meta.env.PROD) {
+      return;
+    }
+
     let mounted = true;
 
     void registerSW({

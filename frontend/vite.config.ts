@@ -14,11 +14,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'AstroVerse',
-        short_name: 'AstroVerse',
+        name: 'Astrology SaaS Platform',
+        short_name: 'Astrology',
         description: 'Natal chart generation, personality analysis, and forecasting',
-        theme_color: '#6b3de1',
-        background_color: '#0B0D17',
+        theme_color: '#6366F1',
+        background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
@@ -56,7 +56,9 @@ export default defineConfig({
           },
         ],
       },
-      // Use custom service worker with injectManifest strategy
+      // Disable in dev — prevents __DEFINES__ error from injectManifest
+      // and avoids stale SW caching during development
+      disable: process.env.NODE_ENV !== 'production',
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.ts',
@@ -71,10 +73,15 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
       '@types': path.resolve(__dirname, './src/types'),
     },
+    dedupe: ['react', 'react-dom'],
   },
   server: {
-    port: 5173,
-    allowedHosts: ['host.docker.internal'],
+    port: 3000,
+    allowedHosts: ['host.docker.internal', 'localhost'],
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3001',

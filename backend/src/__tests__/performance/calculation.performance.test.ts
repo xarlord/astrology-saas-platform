@@ -23,7 +23,7 @@ class PerformanceTest {
     this.maxDuration = maxDuration;
   }
 
-  async run(fn: () => Promise<any> | any): Promise<PerformanceResult> {
+  async run(fn: () => Promise<void> | void): Promise<PerformanceResult> {
     const startTime = performance.now();
     const startMemory = process.memoryUsage().heapUsed;
 
