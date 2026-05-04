@@ -165,7 +165,6 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
-            // @ts-expect-error recharts DotType doesn't support custom props but runtime works fine
             dot={(props: DotProps) => {
               const index =
                 'payload' in props &&

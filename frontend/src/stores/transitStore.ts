@@ -7,7 +7,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { transitService } from '../services';
-import type { Transit, TransitChart } from '../services/api.types';
+import type { TransitReading, NormalizedTransit } from '../services/transit.service';
 
 interface TransitState {
   // State
@@ -15,8 +15,8 @@ interface TransitState {
     start: string;
     end: string;
   } | null;
-  transits: Transit[];
-  transitChart: TransitChart | null;
+  transits: NormalizedTransit[];
+  transitChart: TransitReading | null;
   energyLevel: number; // 0-100
   isLoading: boolean;
   error: string | null;
@@ -57,7 +57,7 @@ export const useTransitStore = create<TransitState>()(
             set({
               transits: response.transits ?? [],
               dateRange: { start: startDate, end: endDate },
-              energyLevel: response.energy_level ?? 50,
+              energyLevel: 50,
               transitChart: response,
               isLoading: false,
             });
@@ -79,7 +79,7 @@ export const useTransitStore = create<TransitState>()(
 
             set({
               transits: response.transits ?? [],
-              energyLevel: response.energyLevel ?? 50,
+              energyLevel: 50,
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -99,8 +99,11 @@ export const useTransitStore = create<TransitState>()(
           try {
             const response = await transitService.getTransitCalendar(month, year);
 
+            // response is TransitReading[] — collect transits from all days
+            const allTransits = response.flatMap((reading) => reading.transits ?? []);
+
             set({
-              transits: response.transits ?? [],
+              transits: allTransits,
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -120,9 +123,12 @@ export const useTransitStore = create<TransitState>()(
           try {
             const response = await transitService.getTransitForecast(duration);
 
+            // response is TransitReading[] — collect transits from all forecast entries
+            const allTransits = response.flatMap((reading) => reading.transits ?? []);
+
             set({
-              transits: response.transits ?? [],
-              energyLevel: response.energyLevel ?? 50,
+              transits: allTransits,
+              energyLevel: 50,
               isLoading: false,
             });
           } catch (error: unknown) {

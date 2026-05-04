@@ -19,7 +19,6 @@ interface SolarReturnData {
   interpretation: SolarReturnInterpretation;
 }
 
-// @ts-expect-error - SharedLink interface reserved for future use
 interface _SharedLink {
   id: string;
   url: string;
