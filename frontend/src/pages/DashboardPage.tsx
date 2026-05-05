@@ -123,7 +123,7 @@ export default function DashboardPage() {
   const cosmicOverview = useMemo(() => {
     if (highlights.length > 0) {
       const top = highlights[0];
-      const intensityWord = top.intensity >= 7 ? 'Intense' : top.intensity >= 4 ? 'Dynamic' : 'Gentle';
+      const intensityWord = (top.intensity ?? 5) >= 7 ? 'Intense' : (top.intensity ?? 5) >= 4 ? 'Dynamic' : 'Gentle';
       return `Cosmic Overview: ${intensityWord} energy today. ${top.title} — ${top.description}.`;
     }
     const phase = todayTransits?.moonPhase?.phase;
@@ -146,8 +146,21 @@ export default function DashboardPage() {
 
   /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
   const forecastItems: ForecastItem[] = useMemo(() => {
-    const entries = forecastData?.forecast;
-    if (!entries || entries.length === 0) return [];
+    if (!forecastData || !Array.isArray(forecastData) || forecastData.length === 0) return [];
+
+    // Flatten TransitReading[] into individual transit entries with date info
+    const entries = forecastData.flatMap((reading) =>
+      (reading.transits ?? []).map((t) => ({
+        date: reading.date,
+        type: t.aspect,
+        planet1: t.transitPlanet,
+        planet2: t.natalPlanet,
+        orb: t.orb,
+        intensity: Math.max(1, Math.round(10 - Math.abs(t.orb))),
+      }))
+    );
+
+    if (entries.length === 0) return [];
 
     const classifyAspect = (type: string) => {
       const t = type.toLowerCase();
@@ -165,17 +178,17 @@ export default function DashboardPage() {
       };
     };
 
-    return entries.slice(0, 4).map((entry: Record<string, unknown>) => {
-      const d = new Date(entry.date as string);
+    return entries.slice(0, 4).map((entry) => {
+      const d = new Date(entry.date);
       const monthStr = d.toLocaleString('en', { month: 'short' });
       const dayStr = String(d.getDate()).padStart(2, '0');
-      const classification = classifyAspect(entry.type as string);
+      const classification = classifyAspect(entry.type);
       return {
         ...classification,
         month: monthStr,
         day: dayStr,
-        name: `${entry.planet1 as string} ${entry.type as string} ${entry.planet2 as string}`,
-        desc: `Orb: ${(entry.orb as number).toFixed(1)}° · Intensity: ${(entry.intensity as number)}/10`,
+        name: `${entry.planet1} ${entry.type} ${entry.planet2}`,
+        desc: `Orb: ${entry.orb.toFixed(1)}° · Intensity: ${entry.intensity}/10`,
       };
     });
   }, [forecastData]);

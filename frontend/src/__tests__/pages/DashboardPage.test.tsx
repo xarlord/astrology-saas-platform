@@ -118,14 +118,12 @@ vi.mock('../../services', () => ({
       }),
     ),
     getTransitForecast: vi.fn(() =>
-      Promise.resolve({
-        forecast: [
-          { date: '2026-05-06', planet1: 'Venus', planet2: 'Neptune', type: 'trine', orb: 1.2, intensity: 7 },
-          { date: '2026-05-08', planet1: 'Mars', planet2: 'Jupiter', type: 'square', orb: 2.5, intensity: 5 },
-          { date: '2026-05-10', planet1: 'Sun', planet2: 'Pluto', type: 'opposition', orb: 0.8, intensity: 9 },
-          { date: '2026-05-12', planet1: 'Mercury', planet2: 'Uranus', type: 'conjunction', orb: 1.0, intensity: 6 },
-        ],
-      }),
+      Promise.resolve([
+        { date: '2026-05-06', transits: [{ transitPlanet: 'Venus', natalPlanet: 'Neptune', aspect: 'trine', orb: 1.2 }] },
+        { date: '2026-05-08', transits: [{ transitPlanet: 'Mars', natalPlanet: 'Jupiter', aspect: 'square', orb: 2.5 }] },
+        { date: '2026-05-10', transits: [{ transitPlanet: 'Sun', natalPlanet: 'Pluto', aspect: 'opposition', orb: 0.8 }] },
+        { date: '2026-05-12', transits: [{ transitPlanet: 'Mercury', natalPlanet: 'Uranus', aspect: 'conjunction', orb: 1.0 }] },
+      ]),
     ),
     getTransitCalendar: vi.fn(() => Promise.resolve([])),
   },

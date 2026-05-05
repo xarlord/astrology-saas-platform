@@ -14,6 +14,11 @@ interface AIInterpretationToggleProps {
   chartData?: Record<string, unknown>;
 }
 
+interface NatalChartData {
+  chartId: string;
+  birthData: unknown;
+}
+
 export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   onInterpretationGenerated,
   chartData,
@@ -30,7 +35,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
     if (!enabled || !chartData) return;
 
     try {
-      const interpretation = await generateNatal(chartData);
+      const interpretation = await generateNatal(chartData as unknown as NatalChartData);
 
       if (onInterpretationGenerated) {
         onInterpretationGenerated(interpretation as unknown as Record<string, unknown>);

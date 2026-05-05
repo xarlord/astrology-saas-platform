@@ -165,7 +165,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
-            dot={(props: DotProps) => {
+            dot={(props: any) => {
               const index =
                 'payload' in props &&
                 props.payload &&

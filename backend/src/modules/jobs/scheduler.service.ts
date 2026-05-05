@@ -143,7 +143,7 @@ export async function getUserScheduledJobs(userId: string) {
     const repeatable = await queue.getRepeatableJobs();
     for (const job of repeatable) {
       if (job.key.includes(userId)) {
-        result.push({ type, key: job.key, nextRun: job.next });
+        result.push({ type, key: job.key, nextRun: job.next as number | undefined });
       }
     }
   }

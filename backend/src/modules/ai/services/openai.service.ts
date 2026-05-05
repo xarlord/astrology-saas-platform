@@ -727,6 +727,29 @@ class OpenAIService {
       },
     };
   }
+
+  /**
+   * Generate a short AI insight for a card's planet placements.
+   * Lightweight call — single sentence summary.
+   */
+  async generateCardInsight(placements: string[], _userId?: string): Promise<string | null> {
+    try {
+      const client = getOpenAIClient();
+      const completion = await client.chat.completions.create({
+        model: openaiConfig.model,
+        messages: [
+          { role: 'system', content: 'You are an astrology expert. Respond with a single insightful sentence.' },
+          { role: 'user', content: `Write a short astrology insight for these placements: ${placements.join(', ')}.` },
+        ],
+        max_tokens: 60,
+        temperature: 0.7,
+      });
+      return completion.choices[0]?.message?.content?.trim() ?? null;
+    } catch {
+      logger.warn('Failed to generate card insight');
+      return null;
+    }
+  }
 }
 
 export default new OpenAIService();

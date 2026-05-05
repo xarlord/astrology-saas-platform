@@ -3,7 +3,7 @@
  * Handles lunar return calculations and forecasts
  */
 
-export { LunarReturnRoutes as lunarReturnRoutes } from './routes/lunarReturn.routes';
+export { router as lunarReturnRoutes } from './routes/lunarReturn.routes';
 export * from './models/lunarReturn.model';
 export {
   calculateNextLunarReturn,

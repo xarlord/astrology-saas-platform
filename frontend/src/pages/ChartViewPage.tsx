@@ -45,7 +45,7 @@ export default function ChartViewPage() {
   // Extract and convert ChartData from the chart's calculated_data
   const { chartData, planetList } = (() => {
     if (!currentChart?.calculated_data) return { chartData: null as ChartData | null, planetList: [] as PlanetPosition[] };
-    const calc = currentChart.calculated_data as Record<string, unknown>;
+    const calc = currentChart.calculated_data as unknown as Record<string, unknown>;
     const hasPlanets = calc.planets !== undefined && calc.planets !== null;
     const hasHouses = Array.isArray(calc.houses);
     const hasAspects = Array.isArray(calc.aspects);
@@ -127,8 +127,8 @@ export default function ChartViewPage() {
         </h1>
         {currentChart && (
           <p className="text-slate-200">
-            {currentChart.birth_date} &middot; {currentChart.birth_time} &middot;{' '}
-            {currentChart.birth_place_name}
+            {currentChart.birth_data?.birth_date ?? currentChart.created_at} &middot; {currentChart.birth_data?.birth_time ?? ''} &middot;{' '}
+            {currentChart.birth_data?.birth_place_name ?? ''}
           </p>
         )}
       </div>
