@@ -97,11 +97,11 @@ jobs:
 
     env:
       NODE_ENV: test
-      DB_HOST: localhost
-      DB_PORT: 5434
-      DB_NAME: astrology_saas
-      DB_USER: postgres
-      DB_PASSWORD: postgres
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5434
+      DATABASE_NAME: astrology_saas
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
       RATE_LIMIT_MAX_REQUESTS: 10000
       JWT_SECRET: test-jwt-secret-for-ci
 
