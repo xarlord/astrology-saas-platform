@@ -42,7 +42,7 @@ jest.mock('../../modules/ai/models/aiCache.model', () => ({
       return count;
     }),
     getStats: jest.fn(async () => {
-      let totalEntries = store.size;
+      const totalEntries = store.size;
       let expiredEntries = 0;
       let activeEntries = 0;
       for (const [, entry] of store) {
@@ -100,7 +100,7 @@ function applyStoreImplementations() {
     return count;
   });
   (aiCacheModel.getStats as jest.Mock).mockImplementation(async () => {
-    let totalEntries = store.size;
+    const totalEntries = store.size;
     let expiredEntries = 0;
     let activeEntries = 0;
     for (const [, entry] of store) {

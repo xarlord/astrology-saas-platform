@@ -277,8 +277,8 @@ function getZodiacSign(longitude: number): ZodiacSign {
  */
 export function juldayToDate(jd: number): Date {
   // Julian Day to Gregorian calendar conversion
-  let z = Math.floor(jd + 0.5);
-  let f = jd + 0.5 - z;
+  const z = Math.floor(jd + 0.5);
+  const f = jd + 0.5 - z;
 
   let a: number;
   if (z < 2299161) {

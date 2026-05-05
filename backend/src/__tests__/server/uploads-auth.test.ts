@@ -3,7 +3,7 @@
  * TDD: RED phase - tests must fail before implementation
  */
 
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import request from 'supertest';
 import { authenticate } from '../../middleware/auth';
 import { errorHandler } from '../../middleware/errorHandler';
