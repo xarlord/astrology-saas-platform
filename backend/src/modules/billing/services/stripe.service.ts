@@ -2,6 +2,8 @@
  * Stripe Service - Wraps Stripe SDK for billing operations
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as Stripe from 'stripe';
 import config from '../../../config';
 

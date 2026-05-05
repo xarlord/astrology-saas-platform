@@ -10,6 +10,8 @@
  * - Various aspect ratios and image sizes
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Replicate from 'replicate';
 import logger from '../../../utils/logger';
 

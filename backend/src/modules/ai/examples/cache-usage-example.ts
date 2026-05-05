@@ -5,8 +5,6 @@
  * NOTE: Console statements are intentional for demonstration purposes
  */
 
-/* eslint-disable no-console */
-
 import aiCacheService from '../services/aiCache.service';
 import openaiService from '../services/openai.service';
 import type { NatalChartInput } from '../services/openai.service';

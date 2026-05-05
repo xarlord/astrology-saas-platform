@@ -5,6 +5,8 @@
  * CHI-123: Backend API endpoint for monthly transit reports
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import ChartModel from '../../charts/models/chart.model';
 

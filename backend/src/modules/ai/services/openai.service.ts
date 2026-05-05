@@ -714,6 +714,36 @@ class OpenAIService {
   }
 
   /**
+   * Generate a brief astrological insight for shareable card
+   */
+  async generateCardInsight(
+    placements: string[],
+    userId?: string,
+  ): Promise<string | null> {
+    try {
+      const prompt = this.formatPrompt(PROMPT_TEMPLATES.cardInsight, {
+        placements: placements.join(', '),
+      });
+
+      const client = getOpenAIClient();
+      const completion = await client.chat.completions.create({
+        model: openaiConfig.model,
+        messages: [
+          { role: 'system', content: PROMPT_TEMPLATES.cardInsight },
+          { role: 'user', content: prompt },
+        ],
+        max_tokens: INTERPRETATION_PARAMS.cardInsight.maxTokens,
+        temperature: INTERPRETATION_PARAMS.cardInsight.temperature,
+      }, { headers: { 'X-User-ID': userId ?? 'anonymous' } });
+
+      return completion.choices[0]?.message?.content ?? null;
+    } catch (error) {
+      logger.error('Error generating card insight:', error);
+      return null;
+    }
+  }
+
+  /**
    * Get usage statistics (placeholder for future implementation)
    */
   async getUsageStats(): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
