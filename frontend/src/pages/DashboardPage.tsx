@@ -342,7 +342,7 @@ export default function DashboardPage() {
                           </span>
                           <span className="bg-surface-light px-2 py-1 rounded text-[10px] text-slate-200 font-medium border border-white/15 flex items-center gap-1">
                             <span className="material-symbols-outlined text-[10px]" aria-hidden="true">calendar_today</span>
-                            {new Date(chart.birth_date).toLocaleDateString()}
+                            {new Date(chart.birth_data?.birth_date ?? chart.birthData?.birthDate ?? '').toLocaleDateString()}
                           </span>
                         </div>
                       </div>

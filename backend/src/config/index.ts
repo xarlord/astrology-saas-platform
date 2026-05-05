@@ -3,6 +3,7 @@
  */
 
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -100,9 +101,6 @@ const config: Config = {
           throw new Error('JWT_SECRET must be set in production');
         }
         // Generate a random dev secret on startup to avoid predictable secrets
-        // Import crypto dynamically to avoid issues in environments where it's not available
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const crypto = require('crypto');
         return crypto.randomBytes(32).toString('hex');
       })(),
     expiresIn: process.env.JWT_EXPIRES_IN || '1h', // Changed from 7d to 1h for security

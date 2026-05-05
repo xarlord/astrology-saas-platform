@@ -125,7 +125,7 @@ export function ChartWheel({
       })
       .join('; ');
 
-    return `Astrological chart wheel showing ${data.planets.length} planets and ${data.aspects.length} aspects. ${planetDescriptions}. Aspects: ${aspectDescriptions}`;
+    return `Astrological chart wheel showing ${planets.length} planets and ${data.aspects.length} aspects. ${planetDescriptions}. Aspects: ${aspectDescriptions}`;
   };
 
   return (
@@ -170,7 +170,7 @@ export function ChartWheel({
 
       <svg
         role="img"
-        aria-label={`Astrological chart wheel with ${data.planets.length} planets`}
+        aria-label={`Astrological chart wheel with ${planets.length} planets`}
         aria-describedby={interactive ? 'chart-description' : undefined}
         data-testid="chart-wheel"
         width={size}

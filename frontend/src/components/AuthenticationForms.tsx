@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import React, { useState } from 'react';
@@ -68,7 +66,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     if (!validate()) return;
 
     try {
-      await login(formData.email, formData.password);
+      await login({ email: formData.email, password: formData.password });
       onSuccess?.();
     } catch (error: unknown) {
       const err = error as { message?: string };
@@ -368,7 +366,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     if (!validate()) return;
 
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register({ name: formData.name, email: formData.email, password: formData.password });
       onSuccess?.();
     } catch (error: unknown) {
       const err = error as { message?: string };

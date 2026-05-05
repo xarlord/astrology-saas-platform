@@ -224,7 +224,6 @@ export function BirthDataForm({
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -232,7 +231,6 @@ export function BirthDataForm({
 
     // Clear error when user starts typing
     if (errors[name as keyof BirthData]) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };

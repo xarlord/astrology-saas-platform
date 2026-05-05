@@ -54,25 +54,33 @@ export function AnalysisPage() {
 
     return {
       overview: {
-        sunSign: toPlanetSignInterpretation('sun', analysis.overview.sunSign),
-        moonSign: toPlanetSignInterpretation('moon', analysis.overview.moonSign),
-        ascendantSign: toPlanetSignInterpretation('ascendant', analysis.overview.ascendant),
+        sunSign: analysis.overview.sunSign ?? toPlanetSignInterpretation('sun', { sign: 'Unknown', degree: 0 }),
+        moonSign: analysis.overview.moonSign ?? toPlanetSignInterpretation('moon', { sign: 'Unknown', degree: 0 }),
+        ascendantSign: analysis.overview.ascendantSign ?? toPlanetSignInterpretation('ascendant', { sign: 'Unknown', degree: 0 }),
       },
-      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => toPlanetSignInterpretation(p.planet, p)),
+      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => ({
+        planet: p.planet,
+        sign: p.sign,
+        keywords: p.interpretation?.keywords ?? [],
+        general: p.interpretation?.general ?? `${p.planet} in ${p.sign}`,
+        strengths: p.interpretation?.strengths ?? [],
+        challenges: p.interpretation?.challenges ?? [],
+        advice: p.interpretation?.advice ?? [],
+      })),
       houses: [],
-      aspects: (analysis.majorAspects ?? []).map((a) => ({
+      aspects: (analysis.aspects ?? []).map((a) => ({
         planet1: a.planet1,
         planet2: a.planet2,
         aspect: a.aspect,
         orb: a.orb,
-        harmonious: false,
-        keywords: [],
-        interpretation: `${a.planet1} ${a.aspect} ${a.planet2}`,
-        expression: '',
-        advice: [],
+        harmonious: a.harmonious ?? false,
+        keywords: a.keywords,
+        interpretation: a.interpretation,
+        expression: a.expression,
+        advice: a.advice,
       })),
-      patterns: analysis.chartPattern
-        ? [{ type: analysis.chartPattern.name, description: analysis.chartPattern.description, planets: [] }]
+      patterns: (analysis.patterns?.length ?? 0) > 0
+        ? analysis.patterns.map((p) => ({ type: p.type, description: p.description, planets: p.planets }))
         : undefined,
     };
   };
