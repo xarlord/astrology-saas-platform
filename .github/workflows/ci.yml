@@ -119,7 +119,7 @@ jobs:
         run: npm ci
 
       - name: Run database migrations
-        run: npx tsx node_modules/knex/bin/cli.js migrate:latest
+        run: npx tsx ../node_modules/knex/bin/cli.js migrate:latest
 
       - name: Start backend server
         run: npx tsx src/server.ts &
@@ -389,7 +389,7 @@ jobs:
 
       - name: Setup test database
         working-directory: backend
-        run: npx tsx node_modules/knex/bin/cli.js migrate:latest
+        run: npx tsx ../node_modules/knex/bin/cli.js migrate:latest
         env:
           NODE_ENV: test
           DB_HOST: localhost
