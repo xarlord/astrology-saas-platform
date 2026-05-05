@@ -54,7 +54,7 @@ function formatAspectLabel(aspect: string): string {
 }
 
 function TransitTable({ data }: { data: TransitReading }) {
-  const transits = Array.isArray(data.transits) ? data.transits : [];
+  const transits = useMemo(() => Array.isArray(data.transits) ? data.transits : [], [data.transits]);
   const grouped = useMemo(() => groupByPlanet(transits), [transits]);
 
   if (transits.length === 0) {

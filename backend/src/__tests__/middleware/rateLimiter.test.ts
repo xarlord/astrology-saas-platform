@@ -18,6 +18,7 @@ describe('Rate Limiter Middleware', () => {
 
   beforeAll(() => {
     // Load the module once to capture all configurations
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('../../middleware/rateLimiter');
     configs = (rateLimit as jest.MockedFunction<typeof rateLimit>).mock.calls.map(
       (call) => call[0],
@@ -174,6 +175,7 @@ describe('Rate Limiter Middleware', () => {
 
   describe('Default Export', () => {
     it('should export all rate limiters with correct names', () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const rateLimiters = require('../../middleware/rateLimiter');
       const { default: defaultExport } = rateLimiters;
 
@@ -186,6 +188,7 @@ describe('Rate Limiter Middleware', () => {
     });
 
     it('should export rate limiters that match named exports', () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const rateLimiters = require('../../middleware/rateLimiter');
       const { default: defaultExport, pdfRateLimiter, shareRateLimiter } = rateLimiters;
 

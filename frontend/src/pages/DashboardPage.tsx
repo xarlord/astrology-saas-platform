@@ -131,7 +131,21 @@ export default function DashboardPage() {
     return `Cosmic Overview: ${moon.phaseName} in ${moon.sign}. Set intentions aligned with the current lunar energy.`;
   }, [highlights, todayTransits, moon]);
 
-  const forecastItems = useMemo(() => {
+  interface ForecastItem {
+    badge: string;
+    icon: string;
+    iconColor: string;
+    badgeBg: string;
+    badgeText: string;
+    badgeBorder: string;
+    month: string;
+    day: string;
+    name: string;
+    desc: string;
+  }
+
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
+  const forecastItems: ForecastItem[] = useMemo(() => {
     const entries = forecastData?.forecast;
     if (!entries || entries.length === 0) return [];
 
@@ -151,22 +165,23 @@ export default function DashboardPage() {
       };
     };
 
-    return entries.slice(0, 4).map((entry) => {
-      const d = new Date(entry.date);
+    return entries.slice(0, 4).map((entry: Record<string, unknown>) => {
+      const d = new Date(entry.date as string);
       const monthStr = d.toLocaleString('en', { month: 'short' });
       const dayStr = String(d.getDate()).padStart(2, '0');
-      const classification = classifyAspect(entry.type);
+      const classification = classifyAspect(entry.type as string);
       return {
         ...classification,
         month: monthStr,
         day: dayStr,
-        name: `${entry.planet1} ${entry.type} ${entry.planet2}`,
-        desc: `Orb: ${entry.orb.toFixed(1)}° · Intensity: ${entry.intensity}/10`,
+        name: `${entry.planet1 as string} ${entry.type as string} ${entry.planet2 as string}`,
+        desc: `Orb: ${(entry.orb as number).toFixed(1)}° · Intensity: ${(entry.intensity as number)}/10`,
       };
     });
   }, [forecastData]);
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
 
-  const majorTransit = forecastItems.length > 0 ? forecastItems[0] : null;
+  const majorTransit: ForecastItem | null = forecastItems.length > 0 ? forecastItems[0] : null;
 
   return (
     <AppLayout>

@@ -84,7 +84,7 @@ export default function SettingsPage() {
   // Initialize notification preferences from user data if available
   useEffect(() => {
     if (user?.preferences) {
-      const prefs = user.preferences;
+      const prefs = user.preferences as Record<string, unknown>;
       if (typeof prefs.pushNotifications === 'boolean') {
         setPushNotifications(prefs.pushNotifications);
       }

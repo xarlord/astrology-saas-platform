@@ -3,7 +3,6 @@
  * Allows users to enable/disable AI enhancements
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
 import React, { useState } from 'react';

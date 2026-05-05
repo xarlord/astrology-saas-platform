@@ -101,7 +101,7 @@ const config: Config = {
         }
         // Generate a random dev secret on startup to avoid predictable secrets
         // Import crypto dynamically to avoid issues in environments where it's not available
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const crypto = require('crypto');
         return crypto.randomBytes(32).toString('hex');
       })(),

@@ -507,6 +507,7 @@ describe('Lunar Return Service', () => {
 
     beforeEach(() => {
       // Import the mocked knex
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const knexModule = require('../../config/database');
       mockKnex = knexModule.default;
       // The mock returns an object with `where` which returns an object with `first`

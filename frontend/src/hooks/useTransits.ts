@@ -97,7 +97,7 @@ export const useTransits = () => {
   // Get active transits for date
   const getActiveTransitsForDate = useCallback(
     (date: Date): Transit[] => {
-      return transits.filter((t) => {
+      return transits.filter((t: Transit) => {
         const start = new Date(t.start_date);
         const end = new Date(t.end_date);
         return date >= start && date <= end;

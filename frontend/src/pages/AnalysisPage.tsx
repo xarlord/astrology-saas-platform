@@ -49,6 +49,7 @@ export function AnalysisPage() {
    * Transform the raw API PersonalityAnalysis into the shape expected
    * by the PersonalityAnalysis display component (PersonalityAnalysisData).
    */
+  /* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
   const buildComponentData = (): PersonalityAnalysisData | null => {
     if (!analysis) return null;
 
@@ -76,6 +77,7 @@ export function AnalysisPage() {
         : undefined,
     };
   };
+  /* eslint-enable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 
   const componentData = analysis ? buildComponentData() : null;
 

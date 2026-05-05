@@ -3,8 +3,6 @@
  * Displays monthly astrological calendar with event badges
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { useState, useEffect, useCallback } from 'react';

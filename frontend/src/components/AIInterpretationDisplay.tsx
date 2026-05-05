@@ -3,9 +3,6 @@
  * Shows AI-enhanced interpretations with special formatting
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-
-import React from 'react';
 import { TextGenerateEffect } from './effects';
 
 interface AIInterpretationDisplayProps {
