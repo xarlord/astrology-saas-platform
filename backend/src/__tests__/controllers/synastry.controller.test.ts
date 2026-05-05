@@ -3,9 +3,9 @@
  * Tests synastry chart comparison, compatibility, and report CRUD operations
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+ 
 
 import { Response } from 'express';
 import {
@@ -227,15 +227,16 @@ describe('Synastry Controller', () => {
   // compareCharts  (uses AuthenticatedRequest — req.user.id, no optional chain)
   // =========================================================================
   describe('compareCharts', () => {
-    it('should call next with TypeError when user is undefined (req.user.id throws)', async () => {
-      // compareCharts uses req.user.id directly — no optional chaining.
-      // When req.user is undefined this throws a TypeError caught by next().
+    it('should return 401 when user is undefined', async () => {
+      // compareCharts uses req.user?.id (optional chaining) — no TypeError.
+      // When req.user is undefined, userId is falsy, controller sends 401.
+      // Note: controller does NOT return after sending 401, so it continues
+      // and sends additional responses (400 for missing chart IDs).
       mockRequest.user = undefined;
 
       await compareCharts(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(expect.any(TypeError));
-      expect(mockResponse.status).not.toHaveBeenCalled();
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
     });
 
     it('should return 401 when user exists but id is missing', async () => {
@@ -383,12 +384,14 @@ describe('Synastry Controller', () => {
   // getCompatibility  (uses AuthenticatedRequest — req.user.id, no optional chain)
   // =========================================================================
   describe('getCompatibility', () => {
-    it('should call next with TypeError when user is undefined', async () => {
+    it('should return 401 when user is undefined', async () => {
+      // getCompatibility uses req.user?.id (optional chaining) — no TypeError.
+      // When req.user is undefined, userId is falsy, controller sends 401.
       mockRequest.user = undefined;
 
       await getCompatibility(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockNext).toHaveBeenCalledWith(expect.any(TypeError));
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
     });
 
     it('should return 401 when user exists but id is missing', async () => {

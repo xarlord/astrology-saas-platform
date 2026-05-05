@@ -3,7 +3,7 @@
  * Tests in-memory caching with TTL expiration, stats, and cleanup
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { TransitCacheService } from '../../modules/shared/services/transitCache.service';
@@ -35,13 +35,6 @@ describe('TransitCacheService', () => {
     generatedAt: new Date('2024-06-15T00:00:00Z'),
   };
 
-  // RedisCache uses JSON.stringify/parse which serializes Date to string.
-  // This is the expected shape after a cache round-trip.
-  const roundTripData = {
-    ...mockTransitData,
-    generatedAt: mockTransitData.generatedAt.toISOString(),
-  };
-
   beforeEach(() => {
     service = new TransitCacheService();
   });
@@ -59,7 +52,7 @@ describe('TransitCacheService', () => {
       await service.setTransits(date, mockTransitData);
 
       const result = await service.getTransits(date);
-      expect(result).toEqual(roundTripData);
+      expect(result).toEqual(mockTransitData);
     });
 
     it('should track hits and misses', async () => {
@@ -104,7 +97,7 @@ describe('TransitCacheService', () => {
       expect(cleaned).toBe(0); // Nothing expired yet
 
       const result = await service.getTransits(date);
-      expect(result).toEqual(roundTripData);
+      expect(result).toEqual(mockTransitData);
     });
   });
 
@@ -161,7 +154,7 @@ describe('TransitCacheService', () => {
 
       // Verify it's cached (round-tripped through JSON serialization)
       const cached = await service.getTransits(date);
-      expect(cached).toEqual(roundTripData);
+      expect(cached).toEqual(mockTransitData);
     });
 
     it('should return cached data without recalculating on hit', async () => {
@@ -171,7 +164,7 @@ describe('TransitCacheService', () => {
       const calculator = jest.fn().mockResolvedValue({ ...mockTransitData, date: 'different' });
       const result = await service.warmCache(date, calculator);
 
-      expect(result).toEqual(roundTripData);
+      expect(result).toEqual(mockTransitData);
       expect(calculator).not.toHaveBeenCalled();
     });
   });
@@ -248,13 +241,10 @@ describe('TransitCacheService', () => {
     });
 
     it('should track total entries', async () => {
-      // Note: totalEntries is hardcoded to 0 in the implementation
-      // because accurate count requires Redis SCAN (performance concern).
-      // We verify the stat field exists and returns 0.
       const date1 = new Date('2024-06-15');
 
       await service.setTransits(date1, mockTransitData);
-      expect(service.getStats().totalEntries).toBe(0); // hardcoded — Redis SCAN avoided
+      expect(service.getStats().totalEntries).toBe(1);
     });
 
     it('should return 0 hit rate when no operations', () => {
@@ -297,7 +287,7 @@ describe('TransitCacheService', () => {
       const moon = await service.getMoonPhase(date);
       const retro = await service.getRetrogrades(date);
 
-      expect(transits).toEqual(roundTripData);
+      expect(transits).toEqual(mockTransitData);
       expect(moon).toEqual({ phase: 'new', illumination: 0 });
       expect(retro).toEqual(['pluto']);
     });

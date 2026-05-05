@@ -3,7 +3,7 @@
  * Tests all 7 controller functions
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
@@ -57,6 +57,8 @@ import {
 // Mock knex chain
 const mockKnexChain = {
   where: jest.fn().mockReturnThis(),
+  whereNull: jest.fn().mockReturnThis(),
+  whereNotNull: jest.fn().mockReturnThis(),
   first: jest.fn(),
   insert: jest.fn().mockReturnThis(),
   orderBy: jest.fn().mockReturnThis(),
@@ -82,6 +84,8 @@ function resetKnexChain() {
   // Must re-wire mockKnex to return the chain object -- clearAllMocks wipes this.
   mockKnex.mockReturnValue(mockKnexChain);
   mockKnexChain.where.mockReturnThis();
+  mockKnexChain.whereNull.mockReturnThis();
+  mockKnexChain.whereNotNull.mockReturnThis();
   mockKnexChain.first.mockResolvedValue(undefined);
   mockKnexChain.insert.mockReturnThis();
   mockKnexChain.orderBy.mockReturnThis();
@@ -94,10 +98,16 @@ function resetKnexChain() {
 const natalChartRow = {
   id: 'chart-1',
   userId: 'user-123',
-  moonSign: 'taurus',
-  moonDegree: 15,
-  moonMinute: 30,
-  moonSecond: 0,
+  calculated_data: {
+    planets: {
+      moon: {
+        sign: 'taurus',
+        degree: 15,
+        minute: 30,
+        second: 0,
+      },
+    },
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -432,12 +442,16 @@ describe('Lunar Return Controller', () => {
       expect(mockKnex).toHaveBeenCalledWith('lunar_returns');
       expect(mockKnexChain.insert).toHaveBeenCalledWith(
         expect.objectContaining({
-          userId: 'user-123',
-          theme: 'Renewal',
-          intensity: 'high',
-          emotionalTheme: 'Hopeful',
+          user_id: 'user-123',
+          natal_chart_id: 'chart-1',
         }),
       );
+      // The controller serializes forecast data into forecast_data JSON string
+      const insertCall = mockKnexChain.insert.mock.calls[0][0];
+      const forecastData = JSON.parse(insertCall.forecast_data);
+      expect(forecastData.theme).toBe('Renewal');
+      expect(forecastData.intensity).toBe('high');
+      expect(forecastData.emotionalTheme).toBe('Hopeful');
     });
 
     it('should skip save when forecast already exists', async () => {
@@ -485,16 +499,18 @@ describe('Lunar Return Controller', () => {
       const dbReturns = [
         {
           id: 'lr-1',
-          returnDate: '2026-04-01',
-          theme: 'Growth',
-          intensity: 'medium',
-          emotionalTheme: 'Calm',
-          actionAdvice: '[{"action":"Rest"}]',
-          keyDates: '[{"date":"2026-04-15"}]',
-          predictions: '[{"text":"Progress"}]',
-          rituals: '[{"name":"Meditation"}]',
-          journalPrompts: '[{"prompt":"Reflect"}]',
-          createdAt: '2026-04-01T00:00:00Z',
+          return_date: '2026-04-01',
+          forecast_data: JSON.stringify({
+            theme: 'Growth',
+            intensity: 'medium',
+            emotionalTheme: 'Calm',
+            actionAdvice: [{ action: 'Rest' }],
+            keyDates: [{ date: '2026-04-15' }],
+            predictions: [{ text: 'Progress' }],
+            rituals: [{ name: 'Meditation' }],
+            journalPrompts: [{ prompt: 'Reflect' }],
+          }),
+          created_at: '2026-04-01T00:00:00Z',
         },
       ];
 
@@ -547,7 +563,7 @@ describe('Lunar Return Controller', () => {
             page: 2,
             limit: 5,
             total: 12,
-            totalPages: 3, // ceil(12/5)
+            totalPages: 3,
           },
         },
       });

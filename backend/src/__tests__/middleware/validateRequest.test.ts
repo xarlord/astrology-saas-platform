@@ -66,6 +66,7 @@ describe('validateRequest middleware', () => {
 
       middleware(req, res, mockNext);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((req as any).validated).toEqual({
         name: 'John Doe',
         email: 'john@example.com',
@@ -141,6 +142,7 @@ describe('validateRequest middleware', () => {
 
       middleware(req, res, mockNext);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((req as any).validated).toBeUndefined();
     });
   });

@@ -3,7 +3,7 @@
  * Tests CardService business logic in isolation
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { CardService } from './card.service';
@@ -14,7 +14,13 @@ import { AppError } from '../../../utils/appError';
 
 // Mock dependencies
 jest.mock('../models/card.model');
-jest.mock('../../ai/services/openai.service');
+jest.mock('../../ai/services/openai.service', () => ({
+  __esModule: true,
+  default: {
+    generateInterpretation: jest.fn(),
+    generateCardInsight: jest.fn(),
+  },
+}));
 jest.mock('./card-image.service');
 jest.mock('../../../utils/logger');
 

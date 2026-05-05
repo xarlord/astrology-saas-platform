@@ -3,7 +3,7 @@
  * Comprehensive test suite for AI-powered astrological interpretations
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Set test environment before importing anything

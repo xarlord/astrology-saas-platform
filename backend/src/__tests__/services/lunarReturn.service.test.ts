@@ -3,7 +3,7 @@
  * Testing lunar return calculations, chart generation, and monthly forecasts
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Mock the database before importing the service
@@ -28,7 +28,7 @@ import {
 
 import { MoonPhase, ZodiacSign } from '../../models/calendar.model';
 
-import { MoonPhase, ZodiacSign } from '../../models/calendar.model';
+import db from '../../config/database';
 
 describe('Lunar Return Service', () => {
   describe('calculateNextLunarReturn', () => {
@@ -506,9 +506,8 @@ describe('Lunar Return Service', () => {
     let mockFirst: jest.Mock;
 
     beforeEach(() => {
-      // Import the mocked knex
-      const knexModule = require('../../config/database');
-      mockKnex = knexModule.default;
+      // Use the mocked knex
+      mockKnex = db as unknown as jest.Mock;
       // The mock returns an object with `where` which returns an object with `first`
       // We need to track calls through the chain
       mockFirst = jest.fn();

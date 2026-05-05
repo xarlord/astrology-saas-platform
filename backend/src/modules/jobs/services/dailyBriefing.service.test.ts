@@ -68,6 +68,7 @@ describe('DailyBriefing Service', () => {
       merge: jest.fn().mockResolvedValue(undefined),
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (knex as jest.MockedFunction<typeof knex>).mockImplementation(() => mockQueryBuilder as any);
   });
 
@@ -204,9 +205,11 @@ describe('DailyBriefing Service', () => {
       const mockOnConflict = jest.fn().mockReturnValue({ merge: mockMerge });
       const mockInsert = jest.fn().mockReturnValue({ onConflict: mockOnConflict });
 
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       (knex as jest.MockedFunction<typeof knex>).mockReturnValue({
         insert: mockInsert as any,
       } as any);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // When
       await saveBriefing(mockBriefing);
@@ -226,9 +229,11 @@ describe('DailyBriefing Service', () => {
       const mockOnConflict = jest.fn().mockReturnValue({ merge: mockMerge });
       const mockInsert = jest.fn().mockReturnValue({ onConflict: mockOnConflict });
 
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       (knex as jest.MockedFunction<typeof knex>).mockReturnValue({
         insert: mockInsert as any,
       } as any);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // When
       await saveBriefing(mockBriefing);
@@ -249,9 +254,11 @@ describe('DailyBriefing Service', () => {
       const mockOnConflict = jest.fn().mockReturnValue({ merge: mockMerge });
       const mockInsert = jest.fn().mockReturnValue({ onConflict: mockOnConflict });
 
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       (knex as jest.MockedFunction<typeof knex>).mockReturnValue({
         insert: mockInsert as any,
       } as any);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // When
       await saveBriefing(mockBriefing);
@@ -268,9 +275,11 @@ describe('DailyBriefing Service', () => {
       const mockOnConflict = jest.fn().mockReturnValue({ merge: mockMerge });
       const mockInsert = jest.fn().mockReturnValue({ onConflict: mockOnConflict });
 
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       (knex as jest.MockedFunction<typeof knex>).mockReturnValue({
         insert: mockInsert as any,
       } as any);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // When
       await saveBriefing(mockBriefing);
@@ -296,7 +305,7 @@ describe('DailyBriefing Service', () => {
         affirmation: mockBriefing.affirmation,
         planetary_highlight: JSON.stringify(mockBriefing.planetaryHighlight),
       };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(mockRow);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -315,7 +324,7 @@ describe('DailyBriefing Service', () => {
 
     it('should return null when no briefing found', async () => {
       // Given
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(null);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -330,7 +339,7 @@ describe('DailyBriefing Service', () => {
 
     it('should order briefings by date descending', async () => {
       // Given
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(null);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -356,7 +365,7 @@ describe('DailyBriefing Service', () => {
         affirmation: mockBriefing.affirmation,
         planetary_highlight: JSON.stringify(mockBriefing.planetaryHighlight),
       };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(mockRow);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -494,7 +503,7 @@ describe('DailyBriefing Service', () => {
   describe('Database Integration', () => {
     it('should query daily_briefings table', async () => {
       // Given
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(null);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -513,9 +522,11 @@ describe('DailyBriefing Service', () => {
       const mockOnConflict = jest.fn().mockReturnValue({ merge: mockMerge });
       const mockInsert = jest.fn().mockReturnValue({ onConflict: mockOnConflict });
 
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       (knex as jest.MockedFunction<typeof knex>).mockReturnValue({
         insert: mockInsert as any,
       } as any);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // When
       await saveBriefing(mockBriefing);
@@ -526,7 +537,7 @@ describe('DailyBriefing Service', () => {
 
     it('should filter by user_id', async () => {
       // Given
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(null);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -545,7 +556,7 @@ describe('DailyBriefing Service', () => {
   describe('Error Handling', () => {
     it('should propagate database errors from getLatestBriefing', async () => {
       // Given
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockRejectedValue(new Error('Database error'));
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>
@@ -563,9 +574,11 @@ describe('DailyBriefing Service', () => {
         }),
       });
 
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       (knex as jest.MockedFunction<typeof knex>).mockReturnValue({
         insert: mockInsert as any,
       } as any);
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // When & Then
       await expect(saveBriefing(mockBriefing)).rejects.toThrow('Insert failed');
@@ -582,7 +595,7 @@ describe('DailyBriefing Service', () => {
         affirmation: mockBriefing.affirmation,
         planetary_highlight: 'invalid json',
       };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const mockFirst = jest.fn().mockResolvedValue(mockRow);
       (
         knex('daily_briefings').where().orderBy().first as jest.MockedFunction<typeof mockFirst>

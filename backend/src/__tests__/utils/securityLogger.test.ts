@@ -21,7 +21,7 @@ jest.mock('../../utils/logger', () => ({
   info: jest.fn(),
 }));
 
-const logger = require('../../utils/logger');
+import logger from '../../utils/logger';
 
 describe('Security Logger', () => {
   let mockRequest: Partial<Request>;

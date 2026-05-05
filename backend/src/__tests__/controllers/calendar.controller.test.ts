@@ -4,7 +4,7 @@
  * Also exercises the internal generateGlobalEvents helper and capitalize utility.
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 

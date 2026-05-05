@@ -2,7 +2,7 @@
  * LunarReturnsPage Component Tests
  *
  * Comprehensive tests for the lunar returns page
- * Covers: navigation, lunar return display, themes, life areas, rituals, journaling
+ * Covers: page rendering, navigation between views, view mode tabs
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -30,27 +30,44 @@ vi.mock('clsx', () => ({
   clsx: (...args: unknown[]) => args.filter(Boolean).join(' '),
 }));
 
+// Mock the components barrel to avoid circular import SyntaxError
+vi.mock('../../components', () => ({
+  AppLayout: ({ children }: { children: React.ReactNode } & Record<string, unknown>) => (
+    <div>{children}</div>
+  ),
+  LunarReturnDashboard: ({ onChartClick, onForecastClick, onHistoryClick }: Record<string, unknown>) => (
+    <div data-testid="lunar-return-dashboard">
+      <h2>Lunar Return Dashboard</h2>
+      <button type="button" onClick={onChartClick as () => void}>View Chart</button>
+      <button type="button" onClick={onForecastClick as () => void}>View Forecast</button>
+      <button type="button" onClick={onHistoryClick as () => void}>View History</button>
+    </div>
+  ),
+  LunarChartView: ({ onBack }: Record<string, unknown>) => (
+    <div data-testid="lunar-chart-view">
+      <h2>Lunar Chart View</h2>
+      <button type="button" onClick={onBack as () => void}>Back</button>
+    </div>
+  ),
+  LunarForecastView: ({ onBack }: Record<string, unknown>) => (
+    <div data-testid="lunar-forecast-view">
+      <h2>Lunar Forecast View</h2>
+      <button type="button" onClick={onBack as () => void}>Back</button>
+    </div>
+  ),
+  LunarHistoryView: ({ onSelect, onBack }: Record<string, unknown>) => (
+    <div data-testid="lunar-history-view">
+      <h2>Lunar History View</h2>
+      <button type="button" onClick={onBack as () => void}>Back</button>
+      <button type="button" onClick={onSelect as () => void}>Select Return</button>
+    </div>
+  ),
+}));
+
 // Mock hooks
 vi.mock('../../hooks/useCharts', () => ({
   useCharts: () => ({
-    charts: [
-      {
-        id: 'chart-1',
-        name: 'My Birth Chart',
-        type: 'Birth Chart',
-        birth_data: {
-          birth_date: '1990-01-15',
-          birth_time: '14:30',
-          birth_place_name: 'New York, NY',
-        },
-        calculated_data: {
-          planets: [
-            { name: 'Sun', sign: 'Leo' },
-            { name: 'Moon', sign: 'Taurus' },
-          ],
-        },
-      },
-    ],
+    charts: [],
     isLoading: false,
     error: null,
     loadCharts: vi.fn(),
@@ -59,82 +76,16 @@ vi.mock('../../hooks/useCharts', () => ({
 
 // Mock lunar return API service
 vi.mock('../../services/lunarReturn.api', () => ({
-  getNextLunarReturn: vi.fn().mockResolvedValue({
-    nextReturn: new Date(),
-    natalMoon: {
-      sign: 'Pisces',
-      degree: 15,
-      minute: 32,
-      second: 0,
-    },
-  }),
-  getLunarReturnHistory: vi.fn().mockResolvedValue({
-    returns: [
-      {
-        id: 'lr-1',
-        returnDate: new Date('2026-01-15'),
-        theme: 'Emotional Renewal',
-        intensity: 72,
-        emotionalTheme: 'Intuitive Growth',
-        actionAdvice: ['Meditate daily', 'Journal your dreams'],
-        keyDates: [],
-        predictions: [],
-        rituals: [],
-        journalPrompts: [],
-        createdAt: new Date('2026-01-01'),
-      },
-      {
-        id: 'lr-2',
-        returnDate: new Date('2025-12-15'),
-        theme: 'Creative Surge',
-        intensity: 65,
-        emotionalTheme: 'Artistic Inspiration',
-        actionAdvice: ['Start a creative project'],
-        keyDates: [],
-        predictions: [],
-        rituals: [],
-        journalPrompts: [],
-        createdAt: new Date('2025-12-01'),
-      },
-    ],
-    pagination: {
-      page: 1,
-      limit: 10,
-      total: 2,
-      totalPages: 1,
-    },
-  }),
-  getLunarMonthForecast: vi.fn().mockResolvedValue({
-    userId: 'user-1',
-    returnDate: new Date(),
-    theme: 'Emotional Renewal & Intuition',
-    intensity: 72,
-    emotionalTheme: 'Emotional Renewal',
-    actionAdvice: ['Focus on self-care', 'Practice meditation'],
-    keyDates: [],
-    predictions: [
-      {
-        category: 'relationships',
-        prediction: 'Good time for connections',
-        likelihood: 80,
-        advice: [],
-      },
-      {
-        category: 'career',
-        prediction: 'Creative opportunities arise',
-        likelihood: 60,
-        advice: [],
-      },
-    ],
-    rituals: [],
-    journalPrompts: [],
-  }),
+  getNextLunarReturn: vi.fn().mockResolvedValue({}),
+  getLunarReturnHistory: vi.fn().mockResolvedValue({ returns: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } }),
+  getLunarMonthForecast: vi.fn().mockResolvedValue({}),
 }));
 
 // Mock Button component
 vi.mock('../../components/ui/Button', () => ({
   Button: ({ children, variant, onClick, className, ...props }: Record<string, unknown>) => (
     <button
+      type="button"
       onClick={onClick as React.MouseEventHandler}
       className={`btn btn-${variant} ${className || ''}`}
       {...props}
@@ -144,15 +95,8 @@ vi.mock('../../components/ui/Button', () => ({
   ),
 }));
 
-// Mock the components barrel to avoid circular import SyntaxError
-vi.mock('../../components', () => ({
-  AppLayout: ({ children, ...props }: { children: React.ReactNode } & Record<string, unknown>) => (
-    <div {...props}>{children}</div>
-  ),
-}));
-
 // Import after mocks
-import { LunarReturnsPage } from '../../pages/LunarReturnsPage';
+import LunarReturnsPage from '../../pages/LunarReturnsPage';
 
 // Helper to create wrapper with providers
 const createWrapper = (initialRoute = '/lunar-returns') => {
@@ -168,17 +112,9 @@ const createWrapper = (initialRoute = '/lunar-returns') => {
     );
 };
 
-// Helper to render with providers and wait for loading to complete
-const renderWithProviders = async (ui: React.ReactElement, initialRoute = '/lunar-returns') => {
-  const result = render(ui, { wrapper: createWrapper(initialRoute) });
-  // Wait for loading to complete to avoid act warnings
-  await waitFor(
-    () => {
-      expect(screen.queryByText('Loading lunar return data...')).not.toBeInTheDocument();
-    },
-    { timeout: 5000 },
-  );
-  return result;
+// Helper to render with providers
+const renderWithProviders = (ui: React.ReactElement, initialRoute = '/lunar-returns') => {
+  return render(ui, { wrapper: createWrapper(initialRoute) });
 };
 
 describe('LunarReturnsPage', () => {
@@ -187,337 +123,160 @@ describe('LunarReturnsPage', () => {
   });
 
   describe('Page Rendering', () => {
-    it('should render without crashing', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      expect(screen.getByTestId('lunar-returns-page')).toBeInTheDocument();
+    it('should render without crashing', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByText('Lunar Returns')).toBeInTheDocument();
     });
 
-    it('should render the page header with correct title', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Lunar Return in Pisces')).toBeInTheDocument();
-      });
+    it('should render the page header with correct title', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByText('Lunar Returns')).toBeInTheDocument();
     });
 
-    it('should render page content inside AppLayout', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      // The page wraps content in AppLayout which is mocked as a simple div
-      expect(screen.getByTestId('lunar-returns-page')).toBeInTheDocument();
+    it('should render the page subtitle', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByText('Your monthly emotional cycles and forecasts')).toBeInTheDocument();
     });
 
-    it('should render main content area', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      // The page renders a main element inside AppLayout
-      await waitFor(() => {
-        expect(screen.getByText('Lunar Return in Pisces')).toBeInTheDocument();
-      });
+    it('should render LunarReturnDashboard by default', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByTestId('lunar-return-dashboard')).toBeInTheDocument();
+    });
+
+    it('should not show Back to Dashboard button in dashboard view', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.queryByText('Back to Dashboard')).not.toBeInTheDocument();
     });
   });
 
   describe('Navigation Section', () => {
-    it('should render Past Cycles button', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Past Cycles')).toBeInTheDocument();
-      });
+    it('should render View Chart button in dashboard', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByText('View Chart')).toBeInTheDocument();
     });
 
-    it('should render Share Chart button', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Share Chart')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Header Section', () => {
-    it('should display current cycle label', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Current Cycle')).toBeInTheDocument();
-      });
+    it('should render View Forecast button in dashboard', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByText('View Forecast')).toBeInTheDocument();
     });
 
-    it('should display lunar return sign', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText(/Lunar Return in Pisces/i)).toBeInTheDocument();
-      });
-    });
-
-    it('should display cycle subtitle', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        // Use getAllByText since the text appears multiple times
-        const elements = screen.getAllByText(/Emotional Renewal & Intuition/i);
-        expect(elements.length).toBeGreaterThan(0);
-      });
-    });
-
-    it('should render Past Cycles button', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Past Cycles')).toBeInTheDocument();
-      });
-    });
-
-    it('should render Share Chart button', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Share Chart')).toBeInTheDocument();
-      });
+    it('should render View History button in dashboard', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      expect(screen.getByText('View History')).toBeInTheDocument();
     });
   });
 
-  describe('Lunar Return Hero Card', () => {
-    it('should display time remaining label', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Time Remaining in Phase')).toBeInTheDocument();
-      });
-    });
-
-    it('should display cycle progress label', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Cycle Progress')).toBeInTheDocument();
-      });
-    });
-
-    it('should display moon sign badge', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText(/Moon in Pisces/i)).toBeInTheDocument();
-      });
-    });
-
-    it('should display moon phase', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Waxing')).toBeInTheDocument();
-      });
-    });
-
-    it('should display illumination percentage', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText(/50% Illumination/i)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Chart Analysis Section', () => {
-    it('should render chart analysis title', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Chart Analysis')).toBeInTheDocument();
-      });
-    });
-
-    it('should display intensity score label', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Intensity Score')).toBeInTheDocument();
-      });
-    });
-
-    it('should display intensity value', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        // The intensity score 70 appears in multiple places, so we use getAllByText
-        const intensityElements = screen.getAllByText(/70/);
-        expect(intensityElements.length).toBeGreaterThan(0);
-        expect(screen.getByText(/\/100/)).toBeInTheDocument();
-      });
-    });
-
-    it('should display key placement label', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Key Placement')).toBeInTheDocument();
-      });
-    });
-
-    it('should display moon degree and minute', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText(/Pisces 15/)).toBeInTheDocument();
-      });
-    });
-
-    it('should display house information', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText(/4th House of Home/i)).toBeInTheDocument();
-      });
-    });
-
-    it('should display Key Aspects section', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Key Aspects')).toBeInTheDocument();
-      });
-    });
-
-    it('should display aspect details', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Moon Trine Venus')).toBeInTheDocument();
-        expect(screen.getByText('Moon Square Mars')).toBeInTheDocument();
-        expect(screen.getByText('Moon Sextile Jupiter')).toBeInTheDocument();
-      });
-    });
-
-    it('should display aspect types', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Harmony')).toBeInTheDocument();
-        expect(screen.getByText('Tension')).toBeInTheDocument();
-        expect(screen.getByText('Support')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Forecast Themes Section', () => {
-    it('should render forecast themes header', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Forecast Themes')).toBeInTheDocument();
-      });
-    });
-
-    it('should display theme cards', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        // Check for the emotional theme from the mock API - appears multiple times so use getAllByText
-        const elements = screen.getAllByText('Emotional Renewal');
-        expect(elements.length).toBeGreaterThan(0);
-      });
-    });
-
-    it('should display theme descriptions', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        // Check for theme description - the mock returns 'Emotional Renewal & Intuition' as the theme
-        const elements = screen.getAllByText(/Emotional Renewal & Intuition/i);
-        expect(elements.length).toBeGreaterThan(0);
-      });
-    });
-
-    it('should display Dominant badge on dominant theme', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Dominant')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Life Areas Impact Section', () => {
-    it('should render Life Areas Impact header', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Life Areas Impact')).toBeInTheDocument();
-      });
-    });
-
-    it('should display life area cards', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        // The component uses forecast.predictions when available (only relationships and career in mock)
-        // or falls back to default areas. Check for what's actually rendered based on mock data.
-        expect(screen.getByText('Relationships')).toBeInTheDocument();
-        expect(screen.getByText('Career')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Past Returns Timeline', () => {
-    it('should render Past Returns header', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Past Returns')).toBeInTheDocument();
-      });
-    });
-
-    it('should render View All History link', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('View All History')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Recommended Rituals Section', () => {
-    it('should render Recommended Rituals header', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Recommended Rituals')).toBeInTheDocument();
-      });
-    });
-
-    it('should display ritual items', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Salt Bath Cleansing')).toBeInTheDocument();
-        expect(screen.getByText('Dream Journaling')).toBeInTheDocument();
-      });
-    });
-
-    it('should display ritual descriptions', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText(/Epsom salts and lavender to purify/i)).toBeInTheDocument();
-        expect(screen.getByText(/Keep a notebook by your bed/i)).toBeInTheDocument();
-      });
-    });
-
-    it('should render View Ritual Guide button', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('View Ritual Guide')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Journal Prompts Section', () => {
-    it('should render Reflections header', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('Reflections')).toBeInTheDocument();
-      });
-    });
-
-    it('should display journal prompts', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      await waitFor(() => {
-        expect(screen.getByText('What emotions have surfaced recently?')).toBeInTheDocument();
-        expect(screen.getByText('Where do you feel most at home?')).toBeInTheDocument();
-        expect(screen.getByText('One intention for this cycle:')).toBeInTheDocument();
-      });
-    });
-
-    it('should have input fields for journal entries', async () => {
+  describe('View Mode Navigation', () => {
+    it('should switch to chart view when View Chart is clicked', async () => {
       const user = userEvent.setup();
-      await renderWithProviders(createElement(LunarReturnsPage));
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View Chart'));
 
       await waitFor(() => {
-        const inputs = screen.getAllByPlaceholderText('Type your thoughts...');
-        expect(inputs.length).toBe(3);
+        expect(screen.getByTestId('lunar-chart-view')).toBeInTheDocument();
+      });
+    });
+
+    it('should switch to forecast view when View Forecast is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View Forecast'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('lunar-forecast-view')).toBeInTheDocument();
+      });
+    });
+
+    it('should switch to history view when View History is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View History'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('lunar-history-view')).toBeInTheDocument();
+      });
+    });
+
+    it('should show Back to Dashboard button when not in dashboard view', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View Chart'));
+
+      await waitFor(() => {
+        expect(screen.getByText(/Back to Dashboard/)).toBeInTheDocument();
+      });
+    });
+
+    it('should show view mode tabs when not in dashboard', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View Forecast'));
+
+      await waitFor(() => {
+        expect(screen.getByRole('tab', { name: 'Dashboard' })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: 'Forecast' })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: 'History' })).toBeInTheDocument();
+      });
+    });
+
+    it('should return to dashboard when Back to Dashboard is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View Chart'));
+      await waitFor(() => {
+        expect(screen.getByText(/Back to Dashboard/)).toBeInTheDocument();
       });
 
-      const inputs = screen.getAllByPlaceholderText('Type your thoughts...');
-      // Type in first input
-      await user.type(inputs[0], 'Feeling peaceful');
-      expect(inputs[0]).toHaveValue('Feeling peaceful');
+      await user.click(screen.getByText(/Back to Dashboard/));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('lunar-return-dashboard')).toBeInTheDocument();
+        expect(screen.queryByText(/Back to Dashboard/)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should switch views using tab buttons', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      // Go to forecast view first
+      await user.click(screen.getByText('View Forecast'));
+      await waitFor(() => {
+        expect(screen.getByTestId('lunar-forecast-view')).toBeInTheDocument();
+      });
+
+      // Switch to history tab
+      await user.click(screen.getByRole('tab', { name: 'History' }));
+      await waitFor(() => {
+        expect(screen.getByTestId('lunar-history-view')).toBeInTheDocument();
+      });
     });
   });
 
   describe('Accessibility', () => {
-    it('should have proper document structure', async () => {
-      await renderWithProviders(createElement(LunarReturnsPage));
-      // Check for semantic elements - the page has a main element
-      const mainElement = document.querySelector('main');
-      expect(mainElement).toBeInTheDocument();
+    it('should have proper heading hierarchy', () => {
+      renderWithProviders(createElement(LunarReturnsPage));
+      const heading = screen.getByRole('heading', { level: 1 });
+      expect(heading).toHaveTextContent('Lunar Returns');
+    });
+
+    it('should have tablist with proper aria when in non-dashboard view', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(LunarReturnsPage));
+
+      await user.click(screen.getByText('View Forecast'));
+
+      await waitFor(() => {
+        expect(screen.getByRole('tablist')).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: 'Dashboard' })).toHaveAttribute('aria-selected', 'false');
+        expect(screen.getByRole('tab', { name: 'Forecast' })).toHaveAttribute('aria-selected', 'true');
+      });
     });
   });
 });

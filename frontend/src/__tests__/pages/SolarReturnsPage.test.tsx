@@ -262,8 +262,8 @@ describe('SolarReturnsPage', () => {
   describe('Accessibility', () => {
     it('should have proper heading hierarchy', () => {
       renderWithProviders(createElement(SolarReturnsPage));
-      // The page uses h2 for the main title
-      const heading = screen.getByRole('heading', { level: 2, name: 'Solar Returns' });
+      // The page uses h1 for the main title
+      const heading = screen.getByRole('heading', { level: 1, name: 'Solar Returns' });
       expect(heading).toBeInTheDocument();
     });
 

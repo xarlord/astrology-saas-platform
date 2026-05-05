@@ -8,8 +8,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { createElement } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Mock the charts store
+vi.mock('../../store/chartsStore', () => ({
+  useChartsStore: () => ({
+    currentChart: null,
+    isLoading: true,
+    error: null,
+    fetchChart: vi.fn(),
+  }),
+}));
 
 // Mock child components synchronously
 vi.mock('../../components/SkeletonLoader', () => ({
@@ -58,14 +68,11 @@ vi.mock('../../components/ChartWheel', () => ({
       </span>
     </div>
   ),
-}));
-
-// Mock chartService - return never-resolving promise for loading state tests
-vi.mock('../../services', () => ({
-  chartService: {
-    getChart: () => new Promise(() => {}), // Never resolves - keeps loading state
-    calculateChart: () => Promise.resolve({}),
-  },
+  ChartWheelLegend: () => (
+    <div data-testid="chart-wheel-legend">
+      <span>Legend</span>
+    </div>
+  ),
 }));
 
 // Mock the components barrel to avoid circular import SyntaxError
@@ -110,12 +117,17 @@ vi.mock('../../components', () => ({
       </span>
     </div>
   ),
+  ChartWheelLegend: () => (
+    <div data-testid="chart-wheel-legend">
+      <span>Legend</span>
+    </div>
+  ),
 }));
 
 // Import after mocks
 import ChartViewPage from '../../pages/ChartViewPage';
 
-// Helper to create wrapper with providers
+// Helper to create wrapper with providers and routes
 const createWrapper = (initialRoute = '/charts/chart-1') => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -125,7 +137,16 @@ const createWrapper = (initialRoute = '/charts/chart-1') => {
     createElement(
       QueryClientProvider,
       { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
+      createElement(
+        MemoryRouter,
+        { initialEntries: [initialRoute] },
+        createElement(
+          Routes,
+          null,
+          createElement(Route, { path: '/charts/:id', element: children }),
+          createElement(Route, { path: '/charts', element: children }),
+        ),
+      ),
     );
 };
 
@@ -172,11 +193,11 @@ describe('ChartViewPage', () => {
   });
 
   describe('Header Structure', () => {
-    it('should display Natal Chart title as h2', () => {
+    it('should display Natal Chart title', () => {
       renderWithProviders(createElement(ChartViewPage));
       const heading = screen.getByText('Natal Chart');
       expect(heading).toBeInTheDocument();
-      expect(heading.tagName).toBe('H2');
+      expect(heading.tagName).toBe('H1');
     });
 
     it('should have heading in mb-8 container', () => {
@@ -218,19 +239,17 @@ describe('ChartViewPage', () => {
 
     it('should have heading visible during loading state', () => {
       renderWithProviders(createElement(ChartViewPage));
-      // The h2 "Natal Chart" is rendered even during loading
       const heading = screen.getByText('Natal Chart');
-      expect(heading.tagName).toBe('H2');
+      expect(heading.tagName).toBe('H1');
     });
   });
 
   describe('Edge Cases', () => {
     it('should handle missing chartId in URL params', () => {
-      // Render with route that has no chartId
+      // Render with route that has no chartId - shows empty state
       renderWithProviders(createElement(ChartViewPage), '/charts');
 
-      // Should still render but show loading state
-      expect(screen.getByTestId('skeleton-loader')).toBeInTheDocument();
+      expect(screen.getByTestId('empty-state')).toBeInTheDocument();
     });
 
     it('should handle routes with different chartId patterns', () => {

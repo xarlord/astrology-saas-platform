@@ -3,7 +3,7 @@
  * Tests hybrid AI/rule-based interpretation service
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 process.env.NODE_ENV = 'test';
 

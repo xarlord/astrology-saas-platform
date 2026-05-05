@@ -1,8 +1,8 @@
 /**
  * ChartCreatePage Component Tests
  *
- * Tests for the chart creation redirect page
- * Note: ChartCreatePage is a simple redirect component that navigates to /charts/create
+ * Tests for the chart creation page
+ * Renders BirthDataForm inside AppLayout with a header
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -14,6 +14,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  BirthDataForm: ({ onSuccess }: { onSuccess: (chartId: string) => void }) => (
+    <div data-testid="birth-data-form">
+      <p>Birth Data Form</p>
+      <button type="button" onClick={() => onSuccess('new-chart-1')}>Submit</button>
+    </div>
+  ),
 }));
 
 // Import after mocks
@@ -46,38 +52,50 @@ describe('ChartCreatePage', () => {
   describe('Page Rendering', () => {
     it('should render without crashing', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The component shows a loading spinner and redirect message
-      expect(screen.getByText(/redirecting to chart creation/i)).toBeInTheDocument();
+      expect(screen.getByText('Create Natal Chart')).toBeInTheDocument();
     });
 
-    it('should show loading spinner', () => {
+    it('should render the page title', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // Check for the loading spinner by looking for the container
-      const container = screen.getByText(/redirecting to chart creation/i).closest('div');
-      expect(container).toBeInTheDocument();
+      expect(screen.getByText('Create Natal Chart')).toBeInTheDocument();
     });
 
-    it('should have proper container styling', () => {
+    it('should render the page description', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The component renders a centered container
-      const container = screen.getByText(/redirecting to chart creation/i).closest('div');
-      expect(container).toHaveClass('flex');
+      expect(screen.getByText(/Enter your birth information to generate a detailed natal chart/i)).toBeInTheDocument();
+    });
+
+    it('should render the BirthDataForm', () => {
+      renderWithProviders(createElement(ChartCreatePage));
+      expect(screen.getByTestId('birth-data-form')).toBeInTheDocument();
     });
   });
 
-  describe('Redirect Behavior', () => {
-    it('should display redirect message', () => {
+  describe('Layout', () => {
+    it('should render content inside a glass-panel container', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      expect(screen.getByText(/redirecting to chart creation/i)).toBeInTheDocument();
+      const form = screen.getByTestId('birth-data-form');
+      const panel = form.closest('.glass-panel');
+      expect(panel).toBeInTheDocument();
+    });
+
+    it('should render inside AppLayout', () => {
+      renderWithProviders(createElement(ChartCreatePage));
+      // AppLayout is mocked as a div wrapping children
+      expect(screen.getByText('Create Natal Chart')).toBeInTheDocument();
     });
   });
 
   describe('Accessibility', () => {
+    it('should have a heading for the page title', () => {
+      renderWithProviders(createElement(ChartCreatePage));
+      const heading = screen.getByRole('heading', { name: /Create Natal Chart/i });
+      expect(heading).toBeInTheDocument();
+    });
+
     it('should be accessible with readable text', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      // The redirect message should be visible
-      const message = screen.getByText(/redirecting to chart creation/i);
-      expect(message).toBeVisible();
+      expect(screen.getByText('Create Natal Chart')).toBeVisible();
     });
   });
 });

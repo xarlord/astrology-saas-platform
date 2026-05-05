@@ -9,7 +9,7 @@
  * - Revisit after Phase 14 (AI Integration)
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 
 describe('AI Integration Tests', () => {
   it('should have AI integration tests skipped', () => {

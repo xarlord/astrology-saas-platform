@@ -7,19 +7,10 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 
 import { Response, NextFunction } from 'express';
-import {
-  calculateSolarReturn,
-  getSolarReturnByYear,
-  getSolarReturnById,
-  getSolarReturnHistory,
-  recalculateSolarReturn,
-  getSolarReturnStats,
-  deleteSolarReturn,
-  getAvailableYears,
-} from '../../modules/solar/controllers/solarReturn.controller';
+import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
 import solarReturnService from '../../modules/solar/services/solarReturn.service';
 import solarReturnModel from '../../modules/solar/models/solarReturn.model';
 import {
@@ -28,6 +19,17 @@ import {
   NotFoundError,
   ConflictError,
 } from '../../utils/appError';
+
+const {
+  calculateSolarReturn,
+  getSolarReturnByYear,
+  getSolarReturnById,
+  getSolarReturnHistory,
+  recalculateSolarReturn,
+  getSolarReturnStats,
+  deleteSolarReturn,
+  getAvailableYears,
+} = solarReturnController;
 
 // ---------------------------------------------------------------------------
 // Mocks

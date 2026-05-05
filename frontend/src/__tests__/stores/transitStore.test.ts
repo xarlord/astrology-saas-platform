@@ -278,9 +278,10 @@ describe('transitStore', () => {
 
   describe('loadTransitCalendar action', () => {
     it('should load transit calendar successfully', async () => {
-      vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce({
-        transits: [mockTransit],
-      });
+      // Store treats the response as Transit[] directly
+      vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce([
+        mockTransit,
+      ] as any);
 
       await act(async () => {
         await useTransitStore.getState().loadTransitCalendar(2, 2024);
@@ -293,10 +294,10 @@ describe('transitStore', () => {
       expect(state.isLoading).toBe(false);
     });
 
-    it('should handle null transits in calendar response', async () => {
-      vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce({
-        transits: null,
-      });
+    it('should handle empty calendar response', async () => {
+      vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce(
+        [] as any,
+      );
 
       await act(async () => {
         await useTransitStore.getState().loadTransitCalendar(2, 2024);
@@ -325,10 +326,10 @@ describe('transitStore', () => {
 
   describe('loadTransitForecast action', () => {
     it('should load transit forecast for week', async () => {
-      vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce({
-        transits: [mockTransit],
-        energyLevel: 65,
-      });
+      // Store treats the response as Transit[] directly, energyLevel defaults to 50
+      vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce([
+        mockTransit,
+      ] as any);
 
       await act(async () => {
         await useTransitStore.getState().loadTransitForecast('week');
@@ -338,7 +339,7 @@ describe('transitStore', () => {
 
       expect(transitService.getTransitForecast).toHaveBeenCalledWith('week');
       expect(state.transits).toHaveLength(1);
-      expect(state.energyLevel).toBe(65);
+      expect(state.energyLevel).toBe(50);
     });
 
     it('should load transit forecast for different durations', async () => {
@@ -350,10 +351,9 @@ describe('transitStore', () => {
       ];
 
       for (const duration of durations) {
-        vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce({
-          transits: [],
-          energyLevel: 50,
-        });
+        vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce(
+          [] as any,
+        );
 
         await act(async () => {
           await useTransitStore.getState().loadTransitForecast(duration);

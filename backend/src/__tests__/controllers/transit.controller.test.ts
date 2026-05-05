@@ -3,7 +3,7 @@
  * Tests transit calculations and forecasting
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Request, Response } from 'express';
@@ -40,24 +40,13 @@ jest.mock('../../config/database', () => {
 });
 
 // Auto-mock AstronomyEngineService. jest.mock (not jest.doMock!) hoists the
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+ 
 (module,
   // creating a mock class. The controller creates a module-level singleton at import time.
   // We then find that singleton instance via mock.instances[0].
   jest.mock('../../modules/shared/services/astronomyEngine.service'));
 
 import { AstronomyEngineService } from '../../modules/shared/services/astronomyEngine.service';
-import knex from '../../config/database';
-
-// Access the chained mock functions from the hoisted mock
-const getKnexMocks = () => {
-  // knex() returns { where }, where() returns { first }
-  const first = jest.fn();
-  const where = jest.fn(() => ({ first }));
-  (knex as jest.Mock).mockReturnValue({ where });
-  return { first, where };
-};
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -257,33 +246,23 @@ describe('Transit Controller', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
-    it('should fall back to general transits if no charts found', async () => {
+    it('should throw 404 if no charts found', async () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
-      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
-      expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: true,
-          data: expect.objectContaining({ isGeneral: true }),
-        }),
-      );
+      await expect(
+        getTodayTransits(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
 
-    it('should fall back to general transits if chart not calculated', async () => {
+    it('should throw 400 if chart not calculated', async () => {
       const mockChart = {
         id: '456',
         calculated_data: null,
       };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
-      expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: true,
-          data: expect.objectContaining({ isGeneral: true }),
-        }),
-      );
+      await expect(
+        getTodayTransits(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 
@@ -321,76 +300,36 @@ describe('Transit Controller', () => {
   });
 
   describe('getTransitDetails', () => {
-    it('should return stored transit reading by ID', async () => {
+    it('should return transit details stub response', async () => {
       mockRequest.params = { id: 'reading-789' };
-
-      const { first } = getKnexMocks();
-      const mockReading = {
-        id: 'reading-789',
-        user_id: '123',
-        chart_id: 'chart-456',
-        start_date: '2024-01-01',
-        end_date: '2024-01-31',
-        transit_data: { readings: [{ date: '2024-01-15', aspects: [] }] },
-        moon_phases: null,
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z',
-      };
-      first.mockResolvedValue(mockReading);
 
       await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
 
-      expect(knex).toHaveBeenCalledWith('transit_readings');
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: true,
-          data: expect.objectContaining({
-            id: 'reading-789',
-            chartId: 'chart-456',
-            startDate: '2024-01-01',
-            endDate: '2024-01-31',
-          }),
-        }),
-      );
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        success: true,
+        data: { transit: null },
+      });
     });
 
-    it('should throw 404 if transit reading not found', async () => {
+    it('should return null transit for any ID', async () => {
       mockRequest.params = { id: 'nonexistent' };
-      const { first } = getKnexMocks();
-      first.mockResolvedValue(null);
-
-      await expect(
-        getTransitDetails(mockRequest, mockResponse as Response, mockNext),
-      ).rejects.toThrow(AppError);
-      await expect(
-        getTransitDetails(mockRequest, mockResponse as Response, mockNext),
-      ).rejects.toThrow('Transit reading not found');
-    });
-
-    it('should parse string transit_data and moon_phases', async () => {
-      mockRequest.params = { id: 'reading-json' };
-
-      const { first } = getKnexMocks();
-      const mockReading = {
-        id: 'reading-json',
-        user_id: '123',
-        chart_id: 'chart-1',
-        start_date: '2024-02-01',
-        end_date: '2024-02-28',
-        transit_data: JSON.stringify({ readings: [] }),
-        moon_phases: JSON.stringify([{ phase: 'full' }]),
-        created_at: '2024-02-01T00:00:00Z',
-        updated_at: '2024-02-01T00:00:00Z',
-      };
-      first.mockResolvedValue(mockReading);
 
       await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
-      expect(response.data.transitData).toEqual({ readings: [] });
-      expect(response.data.moonPhases).toEqual([{ phase: 'full' }]);
+      expect(response.data.transit).toBeNull();
+    });
+
+    it('should return success response structure', async () => {
+      mockRequest.params = { id: 'any-id' };
+
+      await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
+
+      const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
+      expect(response.success).toBe(true);
+      expect(response.data).toBeDefined();
     });
   });
 

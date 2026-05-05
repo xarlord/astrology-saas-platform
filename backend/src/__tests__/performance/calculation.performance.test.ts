@@ -3,7 +3,7 @@
  * Tests calculation speed, memory usage, and throughput
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import { performance } from 'perf_hooks';
 import { swissEphemerisService } from '../../modules/shared/services/swissEphemeris.service';

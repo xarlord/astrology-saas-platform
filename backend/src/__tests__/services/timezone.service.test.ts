@@ -3,7 +3,7 @@
  * Tests timezone conversion, validation, search, and coordinate detection
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 
 import { TimezoneService } from '../../modules/shared/services/timezone.service';
 

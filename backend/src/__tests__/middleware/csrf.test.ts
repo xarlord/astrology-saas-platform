@@ -8,10 +8,18 @@ import { getCsrfToken, csrfMiddleware } from '../../middleware/csrf';
 
 // Mock the logger
 jest.mock('../../utils/logger', () => ({
+  __esModule: true,
+  default: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  },
   logger: {
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
+    debug: jest.fn(),
   },
 }));
 

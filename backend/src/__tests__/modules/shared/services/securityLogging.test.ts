@@ -3,7 +3,7 @@
  * Comprehensive unit tests for security event logging
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import * as SecurityLoggingService from '../../../../modules/shared/services/securityLogging.service';
 import db from '../../../../config/database';

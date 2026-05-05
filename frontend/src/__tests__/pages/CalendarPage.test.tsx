@@ -117,6 +117,53 @@ vi.mock('../../components/ui/Button', () => ({
   ),
 }));
 
+// Mock CalendarPageShell since CalendarPage imports it directly (not from barrel)
+vi.mock('../../components/CalendarPageShell', () => ({
+  CalendarPageShell: ({ title, description }: { title: string; description: string }) => (
+    <div data-testid="calendar-page-shell">
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <div data-testid="calendar-grid" />
+      <button data-testid="calendar-today-button" aria-label="Go to today">Today</button>
+      <button data-testid="calendar-prev-month" aria-label="Previous month">Prev</button>
+      <button data-testid="calendar-next-month" aria-label="Next month">Next</button>
+      <div data-testid="calendar-current-month">February 2026</div>
+      <div data-testid="calendar-view-modes">
+        <button data-testid="calendar-view-month" className="bg-primary">Month</button>
+        <button data-testid="calendar-view-week">Week</button>
+        <button data-testid="calendar-view-list">List</button>
+      </div>
+      <div data-testid="calendar-weekdays">
+        <div data-testid="weekday-sun">Sun</div>
+        <div data-testid="weekday-mon">Mon</div>
+        <div data-testid="weekday-tue">Tue</div>
+        <div data-testid="weekday-wed">Wed</div>
+        <div data-testid="weekday-thu">Thu</div>
+        <div data-testid="weekday-fri">Fri</div>
+        <div data-testid="weekday-sat">Sat</div>
+      </div>
+      {Array.from({ length: 28 }, (_, i) => (
+        <button key={i} data-testid={`calendar-cell-${i + 1}`} className="calendar-cell" onClick={() => {}}>
+          {i + 1}
+        </button>
+      ))}
+      <div>
+        <h2>Event Filters</h2>
+        <label><input type="checkbox" />Moon Phases</label>
+        <label><input type="checkbox" />Transits</label>
+        <label><input type="checkbox" />Retrogrades</label>
+        <label><input type="checkbox" />Eclipses</label>
+        <label><input type="checkbox" />Custom Events</label>
+      </div>
+      <div>
+        <h2>Upcoming</h2>
+        <div>Venus enters Pisces</div>
+        <div>A time for romance and creativity</div>
+      </div>
+    </div>
+  ),
+}));
+
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,

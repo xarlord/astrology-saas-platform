@@ -69,6 +69,7 @@ describe('MonthlyTransitReport Service', () => {
       () => {
         return {
           calculatePlanetaryPositions: jest.fn(() => mockPositions),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any;
       },
     );
