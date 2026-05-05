@@ -20,12 +20,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AppLayout } from '../AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
-import { useAuthStore } from '../../store';
+import { useAuthStore } from '../../stores';
 
 // Mock the auth store
-vi.mock('../../store', () => ({
+vi.mock('../../stores', () => ({
   useAuthStore: vi.fn(),
-  useChartsStore: vi.fn(),
+  useChartStore: vi.fn(),
 }));
 
 const mockLogout = vi.fn();

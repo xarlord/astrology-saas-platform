@@ -31,7 +31,7 @@ const mockAuthStore = {
   isAuthenticated: false,
 };
 
-vi.mock('../../store', () => ({
+vi.mock('../../stores', () => ({
   useAuthStore: () => mockAuthStore,
 }));
 

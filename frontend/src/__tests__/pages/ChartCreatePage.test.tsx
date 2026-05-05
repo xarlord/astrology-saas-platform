@@ -51,7 +51,7 @@ describe('ChartCreatePage', () => {
   describe('Page Rendering', () => {
     it('should render without crashing', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      expect(screen.getByText('Create New Chart')).toBeInTheDocument();
+      expect(screen.getByText('Create Natal Chart')).toBeInTheDocument();
     });
 
     it('should render BirthDataForm', () => {
@@ -61,7 +61,7 @@ describe('ChartCreatePage', () => {
 
     it('should have proper heading', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Create New Chart');
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Create Natal Chart');
     });
   });
 
@@ -75,7 +75,7 @@ describe('ChartCreatePage', () => {
   describe('Accessibility', () => {
     it('should be accessible with readable heading', () => {
       renderWithProviders(createElement(ChartCreatePage));
-      const heading = screen.getByText('Create New Chart');
+      const heading = screen.getByText('Create Natal Chart');
       expect(heading).toBeVisible();
     });
   });
