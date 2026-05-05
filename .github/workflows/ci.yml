@@ -392,25 +392,43 @@ jobs:
         run: npx tsx ../node_modules/knex/bin/cli.js migrate:latest
         env:
           NODE_ENV: test
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_NAME: astrology_test
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: astrology_test
 
       - name: Build all packages
         working-directory: .
         run: npm run build --workspaces
 
+      - name: Start backend server
+        working-directory: backend
+        run: npx tsx src/server.ts &
+        env:
+          NODE_ENV: test
+          PORT: 3001
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: astrology_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-jwt-secret-for-ci
+          RATE_LIMIT_MAX_REQUESTS: 10000
+
+      - name: Wait for backend
+        run: npx wait-on http://localhost:3001/health --timeout 30000
+
       - name: Run integration tests
         run: npx playwright test --grep @integration
         env:
           CI: true
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_TEST_NAME: astrology_test
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: astrology_test
           REDIS_URL: redis://localhost:6379
 
       - name: Upload integration test reports
