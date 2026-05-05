@@ -209,7 +209,6 @@ describe('Rate Limiter Middleware', () => {
       const pdfConfig = configs[0];
       const mockReq = { connection: { remoteAddress: '10.0.0.1' } };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const generatedKey = pdfConfig.keyGenerator(mockReq as any);
       expect(generatedKey).toBe('10.0.0.1');
     });
@@ -217,7 +216,6 @@ describe('Rate Limiter Middleware', () => {
     it('should handle request with missing IP and connection', () => {
       const pdfConfig = configs[0];
       const mockReq = { connection: {} }; // Connection exists but no remoteAddress
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const generatedKey = pdfConfig.keyGenerator(mockReq as any);
       expect(generatedKey).toBe('unknown');

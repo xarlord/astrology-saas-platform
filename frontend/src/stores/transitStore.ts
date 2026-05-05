@@ -55,10 +55,10 @@ export const useTransitStore = create<TransitState>()(
             const response = await transitService.calculateTransits(chartId, startDate, endDate);
 
             set({
-              transits: response.transits ?? [],
+              transits: (response.transits ?? []) as unknown as Transit[],
               dateRange: { start: startDate, end: endDate },
-              energyLevel: response.energy_level ?? 50,
-              transitChart: response,
+              energyLevel: ((response as unknown as Record<string, unknown>).energy_level as number) ?? 50,
+              transitChart: response as unknown as TransitChart,
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -78,8 +78,8 @@ export const useTransitStore = create<TransitState>()(
             const response = await transitService.getTodayTransits();
 
             set({
-              transits: response.transits ?? [],
-              energyLevel: response.energyLevel ?? 50,
+              transits: (response.transits ?? []) as unknown as Transit[],
+              energyLevel: ((response as unknown as Record<string, unknown>).energyLevel as number) ?? 50,
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -100,7 +100,7 @@ export const useTransitStore = create<TransitState>()(
             const response = await transitService.getTransitCalendar(month, year);
 
             set({
-              transits: response.transits ?? [],
+              transits: response as unknown as Transit[],
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -121,8 +121,8 @@ export const useTransitStore = create<TransitState>()(
             const response = await transitService.getTransitForecast(duration);
 
             set({
-              transits: response.transits ?? [],
-              energyLevel: response.energyLevel ?? 50,
+              transits: response as unknown as Transit[],
+              energyLevel: 50,
               isLoading: false,
             });
           } catch (error: unknown) {

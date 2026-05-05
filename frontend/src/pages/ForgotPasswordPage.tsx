@@ -56,7 +56,7 @@ export function ForgotPasswordPage() {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-5">
+            <form onSubmit={(e) => { void handleSubmit(e); }} className="glass-card rounded-2xl p-8 space-y-5">
               {apiError && (
                 <div role="alert" className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
                   <span className="material-symbols-outlined text-lg" aria-hidden="true">error</span>

@@ -123,10 +123,10 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     name: chart.name,
     type: (chart.type ?? 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
     birthData: {
-      date: new Date(chart.birth_date ?? Date.now()),
-      time: chart.birth_time ?? '00:00',
+      date: new Date((chart.birthData?.birthDate ?? chart.birth_data?.birth_date) ?? Date.now()),
+      time: (chart.birthData?.birthTime ?? chart.birth_data?.birth_time) ?? '00:00',
       place: {
-        name: chart.birth_place_name ?? 'Unknown',
+        name: (chart.birthData?.birthPlace ?? chart.birth_data?.birth_place_name) ?? 'Unknown',
         latitude: 0,
         longitude: 0,
         timezone: 'UTC',
@@ -138,8 +138,8 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
       zodiac: 'tropical',
     },
     calculatedData: chart.calculated_data as Record<string, unknown> | undefined,
-    createdAt: new Date(chart.created_at ?? Date.now()),
-    updatedAt: new Date(chart.created_at ?? Date.now()),
+    createdAt: new Date((chart.created_at as string | number | Date) ?? Date.now()),
+    updatedAt: new Date((chart.created_at as string | number | Date) ?? Date.now()),
   }));
 
   const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');

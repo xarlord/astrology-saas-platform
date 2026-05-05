@@ -196,10 +196,10 @@ const TransitForecastPage: React.FC = () => {
       const data = await transitService.getTodayTransits();
 
       // Transform transits to current positions
-      const positions: CurrentTransit[] = data.transits.map((transit) => ({
-        planet: transit.planet,
+      const positions: CurrentTransit[] = (data.transits ?? []).map((transit) => ({
+        planet: transit.transitPlanet,
         sign: transit.aspect ?? '',
-        degree: transit.intensity ?? 0,
+        degree: transit.orb ?? 0,
         retrograde: false,
       }));
 
@@ -220,11 +220,11 @@ const TransitForecastPage: React.FC = () => {
       setError(null);
 
       // Fetch transit data from API
-      const data: TransitChartType = await transitService.calculateTransits(
+      const data = await transitService.calculateTransits(
         selectedChartId,
         startDate,
         endDate,
-      );
+      ) as unknown as TransitChartType;
 
       // Transform API Transit[] to component TransitEvent[]
       const transitEvents: TransitEvent[] = (data.transits || []).map(transformTransitToEvent);
