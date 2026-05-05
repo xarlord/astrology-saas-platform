@@ -101,6 +101,8 @@ describe('Authentication Controller', () => {
     mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
+      cookie: jest.fn().mockReturnThis(),
+      clearCookie: jest.fn().mockReturnThis(),
     };
 
     mockNext = jest.fn();
@@ -306,7 +308,7 @@ describe('Authentication Controller', () => {
   describe('refreshToken', () => {
     it('should generate new access token', async () => {
       const oldRefreshToken = 'old-refresh-token';
-      mockRequest.body = { refreshToken: oldRefreshToken };
+      mockRequest.cookies = { refreshToken: oldRefreshToken };
 
       const mockTokenRecord = {
         token: oldRefreshToken,

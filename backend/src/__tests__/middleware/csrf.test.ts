@@ -6,12 +6,37 @@ import { Request, Response } from 'express';
 import type { Socket } from 'net';
 import { getCsrfToken, csrfMiddleware } from '../../middleware/csrf';
 
-// Mock the logger
+// Mock the logger — must provide both default and named export
+// because securityLogger does `import logger from './logger'` (default)
+// while csrf.ts does `import { logger } from '../utils/logger'` (named)
 jest.mock('../../utils/logger', () => ({
+  __esModule: true,
+  default: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  },
   logger: {
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
+    debug: jest.fn(),
+  },
+}));
+
+// Mock securityLogger so logCSRFViolation does not blow up
+jest.mock('../../utils/securityLogger', () => ({
+  __esModule: true,
+  logCSRFViolation: jest.fn(),
+  logSecurityEvent: jest.fn(),
+  logAuthFailure: jest.fn(),
+  logRateLimitExceeded: jest.fn(),
+  logUnauthorizedAccess: jest.fn(),
+  logSuspiciousActivity: jest.fn(),
+  default: {
+    logCSRFViolation: jest.fn(),
+    logSecurityEvent: jest.fn(),
   },
 }));
 

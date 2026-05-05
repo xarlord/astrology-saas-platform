@@ -10,7 +10,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import { Response, NextFunction } from 'express';
-import {
+import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
+
+const {
   calculateSolarReturn,
   getSolarReturnByYear,
   getSolarReturnById,
@@ -19,7 +21,7 @@ import {
   getSolarReturnStats,
   deleteSolarReturn,
   getAvailableYears,
-} from '../../modules/solar/controllers/solarReturn.controller';
+} = solarReturnController;
 import solarReturnService from '../../modules/solar/services/solarReturn.service';
 import solarReturnModel from '../../modules/solar/models/solarReturn.model';
 import {

@@ -3,27 +3,124 @@
  * Tests for PostgreSQL-based caching system with SHA-256 key generation
  */
 
-import { describe, it, expect, beforeEach, afterAll } from '@jest/globals';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+// In-memory store to simulate the database for mock persistence
+const store = new Map<string, { data: Record<string, unknown>; expiresAt: Date | null }>();
+
+jest.mock('../../modules/ai/models/aiCache.model', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(async (key: string) => {
+      const entry = store.get(key);
+      if (!entry) return null;
+      if (entry.expiresAt && entry.expiresAt < new Date()) {
+        store.delete(key);
+        return null;
+      }
+      return entry.data;
+    }),
+    set: jest.fn(async (key: string, data: Record<string, unknown>, ttlSeconds?: number) => {
+      const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : null;
+      store.set(key, { data, expiresAt });
+      return { id: 'mock-id', cache_key: key, data, expires_at: expiresAt, created_at: new Date(), updated_at: new Date() };
+    }),
+    delete: jest.fn(async (key: string) => {
+      return store.delete(key);
+    }),
+    clear: jest.fn(async () => {
+      store.clear();
+    }),
+    clearExpired: jest.fn(async () => {
+      let count = 0;
+      for (const [key, entry] of store) {
+        if (entry.expiresAt && entry.expiresAt < new Date()) {
+          store.delete(key);
+          count++;
+        }
+      }
+      return count;
+    }),
+    getStats: jest.fn(async () => {
+      let totalEntries = store.size;
+      let expiredEntries = 0;
+      let activeEntries = 0;
+      for (const [, entry] of store) {
+        if (entry.expiresAt && entry.expiresAt < new Date()) {
+          expiredEntries++;
+        } else {
+          activeEntries++;
+        }
+      }
+      return { totalEntries, expiredEntries, activeEntries };
+    }),
+  },
+}));
+
+import { describe, it, expect, beforeEach } from '@jest/globals';
+
+// Re-import the mock module so we can re-apply implementations after resetMocks
+import aiCacheModel from '../../modules/ai/models/aiCache.model';
 import aiCacheService from '../../modules/ai/services/aiCache.service';
-import db from '../../config/database';
+
+/**
+ * Re-apply the in-memory store implementations to the mock model functions.
+ * This is necessary because jest.config.js has `resetMocks: true`, which
+ * strips all mock implementations before each test.
+ */
+function applyStoreImplementations() {
+  (aiCacheModel.get as jest.Mock).mockImplementation(async (key: string) => {
+    const entry = store.get(key);
+    if (!entry) return null;
+    if (entry.expiresAt && entry.expiresAt < new Date()) {
+      store.delete(key);
+      return null;
+    }
+    return entry.data;
+  });
+  (aiCacheModel.set as jest.Mock).mockImplementation(async (key: string, data: Record<string, unknown>, ttlSeconds?: number) => {
+    const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : null;
+    store.set(key, { data, expiresAt });
+    return { id: 'mock-id', cache_key: key, data, expires_at: expiresAt, created_at: new Date(), updated_at: new Date() };
+  });
+  (aiCacheModel.delete as jest.Mock).mockImplementation(async (key: string) => {
+    return store.delete(key);
+  });
+  (aiCacheModel.clear as jest.Mock).mockImplementation(async () => {
+    store.clear();
+  });
+  (aiCacheModel.clearExpired as jest.Mock).mockImplementation(async () => {
+    let count = 0;
+    for (const [key, entry] of store) {
+      if (entry.expiresAt && entry.expiresAt < new Date()) {
+        store.delete(key);
+        count++;
+      }
+    }
+    return count;
+  });
+  (aiCacheModel.getStats as jest.Mock).mockImplementation(async () => {
+    let totalEntries = store.size;
+    let expiredEntries = 0;
+    let activeEntries = 0;
+    for (const [, entry] of store) {
+      if (entry.expiresAt && entry.expiresAt < new Date()) {
+        expiredEntries++;
+      } else {
+        activeEntries++;
+      }
+    }
+    return { totalEntries, expiredEntries, activeEntries };
+  });
+}
 
 describe('AI Cache Service', () => {
-  beforeEach(async () => {
-    // Clear cache before each test
-    try {
-      await db('ai_cache').truncate();
-    } catch (error) {
-      // Table might not exist yet, ignore
-    }
-  });
-
-  afterAll(async () => {
-    // Close database connection to prevent hanging workers
-    try {
-      await db.destroy();
-    } catch (error) {
-      // Connection might already be closed
-    }
+  beforeEach(() => {
+    // Clear in-memory store before each test
+    store.clear();
+    // resetMocks (from jest.config) runs before beforeEach and strips
+    // all mock implementations. Re-apply them here.
+    applyStoreImplementations();
   });
 
   describe('Cache Operations', () => {

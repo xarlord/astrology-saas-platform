@@ -165,6 +165,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
+            /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
             dot={(props: any) => {
               const index =
                 'payload' in props &&
@@ -175,6 +176,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
                   : 0;
               return <CustomDot {...props} dataPoint={data[index]} onClick={onDataPointClick} />;
             }}
+            /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
             activeDot={{ r: 6, fill: color, stroke: '#fff', strokeWidth: 2 }}
             animationDuration={1000}
             animationBegin={0}

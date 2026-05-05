@@ -31,7 +31,8 @@ describe('Rate Limiter Middleware', () => {
     it('should configure rate limit with correct window and max requests', () => {
       const pdfConfig = configs[0];
       expect(pdfConfig.windowMs).toBe(15 * 60 * 1000);
-      expect(pdfConfig.max).toBe(10);
+      // Non-production env gets the higher limit
+      expect(pdfConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 100 : 10);
     });
 
     it('should use IP and user ID for rate limiting when authenticated', () => {
@@ -70,7 +71,8 @@ describe('Rate Limiter Middleware', () => {
     it('should configure rate limit with correct window and max requests', () => {
       const shareConfig = configs[1];
       expect(shareConfig.windowMs).toBe(60 * 1000);
-      expect(shareConfig.max).toBe(20);
+      // Non-production env gets the higher limit
+      expect(shareConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 100 : 20);
     });
 
     it('should return correct error message and code', () => {
@@ -96,7 +98,8 @@ describe('Rate Limiter Middleware', () => {
       const authConfig = configs[2];
       expect(authConfig.windowMs).toBe(15 * 60 * 1000);
       expect(authConfig.max).toBeGreaterThanOrEqual(5);
-      expect(authConfig.max).toBeLessThanOrEqual(100);
+      // Non-production env gets the higher limit
+      expect(authConfig.max).toBeLessThanOrEqual(process.env.NODE_ENV !== 'production' ? 500 : 100);
     });
 
     it('should return correct error message and code', () => {
@@ -120,7 +123,8 @@ describe('Rate Limiter Middleware', () => {
     it('should configure rate limit with correct window and max requests', () => {
       const chartConfig = configs[3];
       expect(chartConfig.windowMs).toBe(60 * 60 * 1000);
-      expect(chartConfig.max).toBe(20);
+      // Non-production env gets the higher limit
+      expect(chartConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 200 : 20);
     });
 
     it('should use user ID for rate limiting', () => {
@@ -152,7 +156,8 @@ describe('Rate Limiter Middleware', () => {
     it('should configure rate limit with correct window and max requests', () => {
       const passwordResetConfig = configs[4];
       expect(passwordResetConfig.windowMs).toBe(60 * 60 * 1000);
-      expect(passwordResetConfig.max).toBe(3);
+      // Non-production env gets the higher limit
+      expect(passwordResetConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 50 : 3);
     });
 
     it('should have very strict limits compared to other limiters', () => {

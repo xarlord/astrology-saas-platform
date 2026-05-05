@@ -144,7 +144,6 @@ export default function DashboardPage() {
     desc: string;
   }
 
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
   const forecastItems: ForecastItem[] = useMemo(() => {
     if (!forecastData || !Array.isArray(forecastData) || forecastData.length === 0) return [];
 
@@ -192,7 +191,6 @@ export default function DashboardPage() {
       };
     });
   }, [forecastData]);
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
 
   const majorTransit: ForecastItem | null = forecastItems.length > 0 ? forecastItems[0] : null;
 

@@ -273,12 +273,35 @@ function getZodiacSign(longitude: number): ZodiacSign {
 
 /**
  * Convert Julian day to date/time
+ * Uses the standard astronomical algorithm
  */
 export function juldayToDate(jd: number): Date {
-  const year = Math.floor(jd);
-  const month = Math.floor((jd - year) * 12) + 1;
-  const day = Math.floor((jd - year - (month - 1) / 12) * 30) + 1;
-  return new Date(year, month - 1, day);
+  // Julian Day to Gregorian calendar conversion
+  let z = Math.floor(jd + 0.5);
+  let f = jd + 0.5 - z;
+
+  let a: number;
+  if (z < 2299161) {
+    a = z;
+  } else {
+    const alpha = Math.floor((z - 1867216.25) / 36524.25);
+    a = z + 1 + alpha - Math.floor(alpha / 4);
+  }
+
+  const b = a + 1524;
+  const c = Math.floor((b - 122.1) / 365.25);
+  const d = Math.floor(365.25 * c);
+  const e = Math.floor((b - d) / 30.6001);
+
+  // Day including fractional part
+  const day = b - d - Math.floor(30.6001 * e) + f;
+  const month = e < 14 ? e - 1 : e - 13;
+  const year = month > 2 ? c - 4716 : c - 4715;
+
+  const dayInt = Math.floor(day);
+  const hours = Math.floor((day - dayInt) * 24);
+
+  return new Date(Date.UTC(year, month - 1, dayInt, hours, 0, 0));
 }
 
 /**
