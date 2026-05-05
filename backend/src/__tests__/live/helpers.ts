@@ -14,7 +14,7 @@ export const TEST_USER = {
 export const SAMPLE_CHART = {
   name: 'Test Natal Chart',
   birth_date: '1990-06-15',
-  birth_time: '14:30:00',
+  birth_time: '14:30',
   birth_place_name: 'New York, NY, USA',
   birth_latitude: 40.7128,
   birth_longitude: -74.006,
@@ -26,7 +26,7 @@ export const SAMPLE_CHART = {
 export const SECOND_CHART = {
   name: 'Partner Natal Chart',
   birth_date: '1988-03-22',
-  birth_time: '09:15:00',
+  birth_time: '09:15',
   birth_place_name: 'London, UK',
   birth_latitude: 51.5074,
   birth_longitude: -0.1278,
