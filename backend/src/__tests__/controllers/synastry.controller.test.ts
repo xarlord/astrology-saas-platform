@@ -315,10 +315,9 @@ describe('Synastry Controller', () => {
         .mockResolvedValueOnce(chartRow2)
         .mockResolvedValueOnce(undefined);
 
-      // knex('synastry_charts').insert(...).returning('id') -> [[{id: 42}]]
-      // The controller does: const [inserted] = <returning result>; synastryId = inserted[0].id
-      // So returning resolves to an outer array wrapping an inner array of row objects.
-      mockKnexChain.returning.mockResolvedValueOnce([[{ id: 42 }]]);
+      // knex('synastry_charts').insert(...).returning('id') -> [{id: 42}]
+      // The controller does: const inserted = <returning result>; synastryId = inserted[0].id
+      mockKnexChain.returning.mockResolvedValueOnce([{ id: 42 }]);
 
       // Aspect inserts: knex('synastry_aspects').insert({...})
       // insert() returns mockKnexChain (mockReturnThis), then await resolves via

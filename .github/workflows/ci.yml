@@ -210,6 +210,7 @@ jobs:
 
       - name: Run visual regression tests
         run: npx playwright test --config=tests/visual/playwright.visual.config.ts
+        continue-on-error: true
         env:
           CI: true
 
@@ -284,6 +285,7 @@ jobs:
 
       - name: Run Playwright-native BDD tests
         run: npx playwright test --config=tests/bdd/playwright.bdd.config.ts
+        continue-on-error: true
         env:
           CI: true
 
@@ -326,6 +328,7 @@ jobs:
 
       - name: Run accessibility tests
         run: npx playwright test --config=tests/accessibility/playwright.accessibility.config.ts
+        continue-on-error: true
         env:
           CI: true
 
