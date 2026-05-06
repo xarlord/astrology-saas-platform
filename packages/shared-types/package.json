@@ -2,5 +2,8 @@
   "name": "@astrology-saas/shared-types",
   "version": "1.0.0",
   "main": "index.ts",
-  "types": "index.ts"
+5  "types": "index.ts",
+  "scripts": {
+    "build": "echo 'No build step needed — consumed as .ts'"
+  }
 }
