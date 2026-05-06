@@ -223,7 +223,7 @@ export const compareCharts = asyncHandler(
 
     // Save to database if new
     if (!synastryId) {
-      const [inserted] = await knex('synastry_charts')
+      const inserted = await knex('synastry_charts')
         .insert({
           chart1_id: chart1Id,
           chart2_id: chart2Id,

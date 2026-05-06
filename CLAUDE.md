@@ -101,18 +101,28 @@ frontend/src/
 - **visual-tests.yml** — Standalone visual regression with Playwright screenshot comparison
 - **deploy.yml** — Production deployment
 
-### What Works
-- **backend-test**: lint + typecheck + 1375 Jest tests + coverage — PASS
-- **frontend-test**: lint + typecheck + 4493 Vitest tests + coverage — PASS
+### What Works (PASS)
+- **backend-test**: lint + typecheck + 1375 Jest tests + coverage upload — PASS
+- **frontend-test**: lint + typecheck + 4493 Vitest tests + coverage upload — PASS
 - **mutation-backend/frontend/summary**: Stryker mutation testing — PASS
-- **visual-tests** (standalone workflow): Playwright visual regression — PASS
-- **live-tests**: Requires PostgreSQL service + running server; tests full API flows — PASS
+- **CI infrastructure**: npm ci, cache paths, knex migration, backend server startup, Playwright install, build — ALL PASS
+
+### What Needs Work (FAIL — not infrastructure)
+- **live-tests**: 114/123 pass. 9 assertion failures — pre-existing test bugs (wrong expected HTTP status codes). Infrastructure (DB, server, migration) works fine.
+- **integration-tests**: "No tests found" — `npx playwright test --grep @integration` finds zero tests tagged with `@integration`. Need to either add the tag to existing tests or create integration-tagged tests.
+- **bdd-tests**: 59 Playwright BDD failures across 5 browser configs (chromium, firefox, webkit, mobile, tablet). Failures include: validation error checks, error page checks, calendar event visibility. These are real functional test failures, not infrastructure.
+- **accessibility-tests**: Real WCAG 2.1 AA violations in the UI (color contrast, ARIA labels, keyboard nav). Not infrastructure.
+- **visual-tests**: 165 failures — no baseline snapshots exist in repo + `ReferenceError: __dirname is not defined` in ESM context. Need to: (1) generate initial baseline snapshots, (2) fix `__dirname` usage in visual test config.
+- **e2e-tests**: SKIPPED because it depends on live-tests (which fails).
+- **verify-build**: SKIPPED — only runs on master/main branch.
 
 ### CI Infrastructure Notes (Gotchas)
 - **npm workspace monorepo**: Only root `package-lock.json` exists. All CI jobs must use `cache-dependency-path: package-lock.json` (NOT `frontend/package-lock.json`). Jobs with `defaults: run: working-directory: frontend` must override `npm ci` with `working-directory: .` to install from root.
 - **TypeScript knexfile**: `npx knex migrate:latest` fails because knex can't load `.ts` files. Use `npx tsx ../node_modules/knex/bin/cli.js migrate:latest` (tsx is a dev dependency; knex is hoisted to root `node_modules/`).
 - **Env var naming**: The knexfile reads `DATABASE_*` (not `DB_*`). CI env vars must use `DATABASE_PASSWORD`, `DATABASE_HOST`, etc.
-- **Missing optional deps**: `cookie-parser`, `ioredis`, `bullmq`, `stripe`, `replicate`, `resend`, `swagger-jsdoc` are imported at server startup but weren't declared in backend's package.json. All must be declared as dependencies for `npm ci` to install them — the services gracefully handle connection failures at runtime.
+- **Missing optional deps**: `cookie-parser`, `ioredis`, `bullmq`, `stripe`, `replicate`, `resend`, `swagger-jsdoc` are declared in backend's package.json. They may not have type declarations available in CI — services gracefully handle connection/import failures at runtime.
+- **Shared package.json format**: Write tool can inject line-number artifacts (e.g., `5  "types"` instead of `  "types"`). Always verify JSON is valid after editing with Write tool — `npm ci` will fail with EJSONPARSE on malformed JSON.
+- **Shared packages build**: `@astrology-saas/shared-types` and `shared-utils` have no-op build scripts (`echo 'No build step needed'`). They're consumed as raw `.ts`. Don't remove these scripts or `npm run build --workspaces` fails.
 - **Jest test:live script**: Must include `--testPathIgnorePatterns=[]` to override the default ignore patterns that exclude `live/` and `*.live.test.ts`.
 - **Live test fixtures**: `birth_time` must use `HH:MM` format (not `HH:MM:SS`) — the API validates this with regex.
 - **Jest virtual mocks**: `setup.ts` uses `{ virtual: true }` for modules not installed in CI test env (ioredis, bullmq, replicate, stripe, resend, swagger-jsdoc). Without this, Jest can't resolve them.
@@ -120,6 +130,7 @@ frontend/src/
 - **Coverage thresholds**: Adjusted to match actual coverage (branches: 58%, functions: 65%, lines: 73%, statements: 72%). Don't raise without verifying coverage first.
 - **Solar return controller**: Exports a class instance (`export default new SolarReturnController()`), not standalone functions. Tests must import the default and destructure methods.
 - **ESLint strict mode**: `--report-unused-disable-directives --max-warnings 0` means unused `/* eslint-disable */` blocks cause CI failure. Only disable specific rules where needed.
+- **Integration test backend**: integration-tests job now starts the backend server before running Playwright. Required env vars: `DATABASE_*`, `REDIS_URL`, `JWT_SECRET`, `RATE_LIMIT_MAX_REQUESTS`.
 
 ## Code Review Remediation
 - Plan: `docs/plans/2026-03-29-code-review-remediation.md` — 45 findings (8 CRITICAL, 19 IMPORTANT, 18 MINOR)

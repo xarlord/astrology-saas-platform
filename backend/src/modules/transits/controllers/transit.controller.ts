@@ -276,7 +276,10 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
  * Get today's transits
  */
 export async function getTodayTransits(req: AuthenticatedRequest, res: Response): Promise<void> {
-  const userId = req.user.id;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new AppError('Authentication required', 401);
+  }
   const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
   const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
