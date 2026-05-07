@@ -7,7 +7,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <h1 className="sr-only">Sign In</h1>
+      <h1 className="sr-only">Login to your account</h1>
       <AuthLayout
       leftPanel={
         <>
