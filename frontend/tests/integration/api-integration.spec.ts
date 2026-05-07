@@ -20,7 +20,7 @@ test.describe('Backend API Integration @integration', () => {
 
   test('csrf token endpoint returns token', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
-    const res = await context.get('/api/v1/csrf-token');
+    const res = await context.get('/api/v1/health/csrf-token');
     expect(res.ok()).toBe(true);
     const body = await res.json();
     expect(body.data?.token).toBeDefined();
@@ -56,7 +56,7 @@ test.describe('Backend API Integration @integration', () => {
     const context = await request.newContext({ baseURL: API_BASE });
 
     // Get CSRF token
-    const csrfRes = await context.get('/api/v1/csrf-token');
+    const csrfRes = await context.get('/api/v1/health/csrf-token');
     const csrfToken = (await csrfRes.json()).data?.token;
 
     // Register
@@ -83,7 +83,7 @@ test.describe('Backend API Integration @integration', () => {
     expect(chartsRes.status()).toBe(200);
 
     // Login with same credentials
-    const csrfRes2 = await context.get('/api/v1/csrf-token');
+    const csrfRes2 = await context.get('/api/v1/health/csrf-token');
     const csrfToken2 = (await csrfRes2.json()).data?.token;
 
     const loginRes = await context.post('/api/v1/auth/login', {
