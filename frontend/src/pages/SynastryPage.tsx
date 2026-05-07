@@ -37,7 +37,6 @@ const SynastryPageWrapper: React.FC = () => {
 
   if (loading) {
     return (
-      <h1 className="sr-only">Synastry Page</h1>
       <AppLayout>
         <SkeletonLoader variant="card" count={2} />
       </AppLayout>
@@ -47,6 +46,7 @@ const SynastryPageWrapper: React.FC = () => {
   if (error) {
     return (
       <AppLayout>
+        <h1 className="sr-only">Synastry Compatibility</h1>
         <EmptyState
           icon="⚠️"
           title="Unable to load charts"
