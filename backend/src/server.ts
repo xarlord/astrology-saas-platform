@@ -151,11 +151,11 @@ app.use(errorHandler);
 
 // Sentry error handler (must be after all other middleware)
 if (sentry.isEnabled) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const sentryModule = require('@sentry/node');
-  if (sentryModule.setupExpressErrorHandler) {
-    app.use(sentryModule.setupExpressErrorHandler());
-  }
+  void import('@sentry/node').then((sentryModule) => {
+    if (sentryModule.setupExpressErrorHandler) {
+      app.use(sentryModule.setupExpressErrorHandler());
+    }
+  });
 }
 
 // ============================================
