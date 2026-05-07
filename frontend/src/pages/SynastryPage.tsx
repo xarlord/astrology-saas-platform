@@ -37,6 +37,7 @@ const SynastryPageWrapper: React.FC = () => {
 
   if (loading) {
     return (
+      <h1 className="sr-only">Synastry Page</h1>
       <AppLayout>
         <SkeletonLoader variant="card" count={2} />
       </AppLayout>
