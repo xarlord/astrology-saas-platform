@@ -180,6 +180,7 @@ const CourseDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <AppLayout>
+        <h1 className="sr-only">Course Details</h1>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
@@ -257,7 +258,7 @@ const CourseDetailPage: React.FC = () => {
               <div className="p-6 border-t border-white/10">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h1 className="text-2xl font-bold text-white mb-2">{currentLesson?.title}</h1>
+                    <h3 className="text-2xl font-bold text-white mb-2">{currentLesson?.title}</h3>
                     <p className="text-slate-400">{currentLesson?.description}</p>
                   </div>
                   {currentLesson && (
