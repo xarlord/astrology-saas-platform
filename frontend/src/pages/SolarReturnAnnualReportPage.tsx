@@ -69,10 +69,10 @@ const DEFAULT_SOLAR_DATA: SolarReturnData = {
 function transformSolarReturn(apiData: Record<string, unknown>): SolarReturnData {
   const calculatedData = apiData.calculatedData as Record<string, unknown> | undefined;
   const interpretation = apiData.interpretation as Record<string, unknown> | undefined;
-  const positions = (calculatedData?.positions ?? []) as Array<{ planet: string; sign: string; house: number }>;
-  const aspects = (calculatedData?.aspects ?? []) as Array<{ planet1: string; planet2: string; type: string }>;
+  const positions = (calculatedData?.positions ?? []) as { planet: string; sign: string; house: number }[];
+  const aspects = (calculatedData?.aspects ?? []) as { planet1: string; planet2: string; type: string }[];
   const themes = interpretation?.themes as string[] | undefined;
-  const luckyDays = interpretation?.luckyDays as Array<{ date: string; description: string }> | undefined;
+  const luckyDays = interpretation?.luckyDays as { date: string; description: string }[] | undefined;
 
   const year = (apiData.year as number) ?? new Date().getFullYear();
   const sunPosition = positions.find((p) => p.planet === 'Sun');
@@ -133,8 +133,8 @@ const SolarReturnAnnualReportPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
-  const [isLoadingSolar, setIsLoadingSolar] = useState(false);
-  const [solarError, setSolarError] = useState<string | null>(null);
+  const [_isLoadingSolar, setIsLoadingSolar] = useState(false);
+  const [_solarError, setSolarError] = useState<string | null>(null);
   const [rawSolarReturn, setRawSolarReturn] = useState<Record<string, unknown> | null>(null);
 
   // PDF generation hook
