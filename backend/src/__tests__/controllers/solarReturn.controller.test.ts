@@ -8,6 +8,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-var */
 
 import { Response, NextFunction } from 'express';
 import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
