@@ -253,7 +253,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 </span>
                 <h1 className="text-4xl font-bold tracking-tight text-slate-100">
                   My Cosmic Library
-                </h2>
+                </h1>
               </div>
               <p className="text-slate-400 text-lg">
                 Manage and explore your collection of birth charts
