@@ -12,6 +12,7 @@ import {
 } from '../models/types';
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { NatalChartService } from '../../shared/services/natalChart.service';
+import knex from '../../../config/database';
 
 // Module-level singletons for the real calculation engines
 const astronomyEngine = new AstronomyEngineService();
@@ -315,17 +316,30 @@ export class SolarReturnService {
   }
 
   /**
-   * Get natal chart (placeholder - would fetch from database)
+   * Get natal chart from database
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async getNatalChart(_chartId: string): Promise<any> {
-    // This would fetch from the database in real implementation
+  private async getNatalChart(chartId: string): Promise<{
+    sunDegree: number;
+    birthLocation: { latitude: number; longitude: number; timezone: string };
+  }> {
+    const chart = await knex('charts').where({ id: chartId }).first();
+
+    if (!chart) {
+      throw new Error(`Natal chart not found: ${chartId}`);
+    }
+
+    const calculatedData = typeof chart.calculated_data === 'string'
+      ? JSON.parse(chart.calculated_data)
+      : chart.calculated_data;
+
+    const sunDegree = calculatedData?.planets?.sun?.longitude ?? 0;
+
     return {
-      sunDegree: 280.5, // Example: Capricorn 10d30'
+      sunDegree,
       birthLocation: {
-        latitude: 40.7128,
-        longitude: -74.006,
-        timezone: 'America/New_York',
+        latitude: Number(chart.birth_latitude),
+        longitude: Number(chart.birth_longitude),
+        timezone: chart.birth_timezone ?? 'UTC',
       },
     };
   }
