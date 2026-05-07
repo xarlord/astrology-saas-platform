@@ -714,18 +714,27 @@ class OpenAIService {
   }
 
   /**
-   * Get usage statistics (placeholder for future implementation)
+   * Get usage statistics from tracked AI usage data
    */
-  async getUsageStats(): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
-    // This would call OpenAI API to get usage/billing info
-    return {
-      available: true,
-      usage: {
-        totalRequests: 0,
-        totalTokens: 0,
-        totalCost: 0,
-      },
-    };
+  async getUsageStats(userId?: string): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
+    if (!userId) {
+      return { available: false, usage: { totalRequests: 0, totalTokens: 0, totalCost: 0 } };
+    }
+
+    try {
+      const stats = await aiUsageService.getUserStats(userId);
+      return {
+        available: true,
+        usage: {
+          totalRequests: Object.values(stats.byType).reduce((sum, count) => sum + count, 0),
+          totalTokens: stats.totalTokens,
+          totalCost: stats.totalCost,
+        },
+      };
+    } catch (error) {
+      logger.error('Failed to get usage stats:', error);
+      return { available: false, usage: { totalRequests: 0, totalTokens: 0, totalCost: 0 } };
+    }
   }
 
   /**
