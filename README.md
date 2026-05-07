@@ -120,6 +120,8 @@ Interactive Swagger UI at `/api/docs` when the backend is running. JSON spec at 
 | Doc | Description |
 |-----|-------------|
 | [Sprint 8 Plan](.planning/plans/SPRINT_8_PLAN.md) | Current sprint plan — UX, accessibility, deployment |
+| [Production Deployment](.env.production.example) | Production env template |
+| [Docker Compose](docker-compose.yml) | Production stack: PostgreSQL + Backend + Frontend |
 | [MVP Sprint Plan](.planning/mvp-scope-sprint-plan.md) | Full MVP scope & 4-sprint plan |
 | [GETTING_STARTED.md](docs/GETTING_STARTED.md) | New contributor guide |
 | [backend/README.md](backend/README.md) | Backend setup, architecture, env vars |
@@ -128,6 +130,40 @@ Interactive Swagger UI at `/api/docs` when the backend is running. JSON spec at 
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture overview |
 | [SECURITY_AUDIT.md](docs/SECURITY_AUDIT.md) | Security audit findings |
 | [TESTING_GUIDE.md](docs/TESTING_GUIDE.md) | Testing conventions |
+
+## Deployment
+
+### Production (Docker Compose)
+
+```bash
+# 1. Copy and fill production environment
+cp .env.production.example .env
+# Edit .env with real values (JWT_SECRET, DATABASE_PASSWORD, STRIPE keys, etc.)
+
+# 2. Build and start all services
+docker compose up -d --build
+
+# 3. Run database migrations
+docker compose exec backend npx tsx ../node_modules/knex/bin/cli.js migrate:latest
+
+# 4. Verify health
+curl http://localhost/health       # Frontend + Nginx
+curl http://localhost:3001/health   # Backend API
+```
+
+### CI/CD Pipeline
+
+All PRs must pass:
+- **backend-test**: lint + typecheck + 1375 Jest tests
+- **frontend-test**: lint + typecheck + 4493 Vitest tests
+- **live-tests**: Full API flow tests with PostgreSQL
+- **visual-tests**: Playwright screenshot comparison
+- **accessibility-tests**: WCAG 2.1 AA compliance (axe-core)
+- **mutation-tests**: Stryker mutation testing
+
+### Deploy to Staging/Production
+
+Trigger manually via GitHub Actions `Deploy` workflow — builds Docker images, pushes to GHCR, deploys via SSH.
 
 ## Contributing
 
