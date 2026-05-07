@@ -1,4 +1,4 @@
-import { CalendarPageShell } from '../components';
+import { CalendarPageShell } from '../components/CalendarPageShell';
 
 export default function CalendarPage() {
   return (
