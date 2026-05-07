@@ -85,11 +85,13 @@ export default function SettingsPage() {
   useEffect(() => {
     if (user?.preferences) {
       const prefs = user.preferences;
-      if (typeof prefs.pushNotifications === 'boolean') {
-        setPushNotifications(prefs.pushNotifications);
-      }
-      if (typeof prefs.emailNotifications === 'boolean') {
-        setEmailNotifications(prefs.emailNotifications);
+      if (prefs.notifications) {
+        if (typeof prefs.notifications.push === 'boolean') {
+          setPushNotifications(prefs.notifications.push);
+        }
+        if (typeof prefs.notifications.email === 'boolean') {
+          setEmailNotifications(prefs.notifications.email);
+        }
       }
     }
   }, [user?.preferences]);
@@ -106,9 +108,13 @@ export default function SettingsPage() {
   const handleSave = async () => {
     try {
       await updatePreferences({
-        darkMode,
-        pushNotifications,
-        emailNotifications,
+        theme: darkMode ? 'dark' : 'light',
+        notifications: {
+          email: emailNotifications,
+          push: pushNotifications,
+          transitAlerts: user?.preferences?.notifications?.transitAlerts ?? true,
+          lunarPhases: user?.preferences?.notifications?.lunarPhases ?? true,
+        },
       });
       setSaveMessage('Settings saved successfully');
       setTimeout(() => setSaveMessage(null), 3000);

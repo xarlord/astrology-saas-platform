@@ -312,7 +312,7 @@ export default function HomePage() {
               ].map((testimonial) => (
                 <div key={testimonial.name} className="glass-card rounded-2xl p-6">
                   <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
+                    {[...new Array<number>(5)].map((_, i) => (
                       <span key={i} className="text-gold text-sm" aria-hidden="true">star</span>
                     ))}
                     <span className="sr-only">5 out of 5 stars</span>

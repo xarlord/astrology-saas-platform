@@ -133,47 +133,14 @@ const mockCharts = [
   { id: 'chart-2', name: 'Partner Chart' },
 ];
 
-// Default mock transit data
+// Default mock transit data (NormalizedTransit format)
 const mockTransitData = {
+  date: '2026-02-20',
   transits: [
-    {
-      id: 'transit-1',
-      date: '2026-02-20',
-      time: '10:30 AM',
-      title: 'Venus enters Pisces',
-      description: 'A time of heightened sensitivity and romantic idealism',
-      type: 'favorable' as const,
-      impact: 'high' as const,
-      tags: ['venus', 'pisces'],
-    },
-    {
-      id: 'transit-2',
-      date: '2026-02-22',
-      time: '3:00 PM',
-      title: 'Mercury Square Mars',
-      description: 'Communication challenges and potential conflicts',
-      type: 'challenging' as const,
-      impact: 'moderate' as const,
-      tags: ['mercury', 'mars'],
-    },
-    {
-      id: 'transit-3',
-      date: '2026-02-25',
-      time: '9:00 AM',
-      title: 'Full Moon in Virgo',
-      description: 'Time for completion and harvest',
-      type: 'major' as const,
-      impact: 'high' as const,
-      tags: ['moon', 'virgo'],
-    },
+    { transitPlanet: 'Venus', natalPlanet: 'Neptune', aspect: 'conjunction', orb: 1.5 },
+    { transitPlanet: 'Mercury', natalPlanet: 'Mars', aspect: 'square', orb: 3.0 },
+    { transitPlanet: 'Moon', natalPlanet: 'Sun', aspect: 'opposition', orb: 0.5 },
   ],
-  energyLevels: [
-    { date: '2026-02-20', level: 75, description: 'High energy day' },
-    { date: '2026-02-21', level: 60, description: 'Moderate energy' },
-    { date: '2026-02-22', level: 45, description: 'Low energy - rest recommended' },
-  ],
-  bestDay: { date: '2026-02-20', score: 85 },
-  worstDay: { date: '2026-02-22', score: 35 },
 };
 
 describe('TransitForecastPage', () => {
@@ -188,9 +155,8 @@ describe('TransitForecastPage', () => {
     mockGetCharts.mockResolvedValue({ charts: mockCharts });
     mockCalculateTransits.mockResolvedValue(mockTransitData);
     mockGetTodayTransits.mockResolvedValue({
+      date: '2026-04-06',
       transits: [],
-      energyLevel: 5,
-      dateRange: { start: '2026-04-06', end: '2026-04-06' },
     });
   });
 
@@ -553,7 +519,7 @@ describe('TransitForecastPage', () => {
       renderWithProviders(createElement(TransitForecastPage));
 
       await waitFor(() => {
-        expect(screen.getByText('Venus enters Pisces')).toBeInTheDocument();
+        expect(screen.getByText('Venus conjunction Neptune')).toBeInTheDocument();
       });
     });
 

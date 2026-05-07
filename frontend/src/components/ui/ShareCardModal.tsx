@@ -349,7 +349,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 
       // Convert canvas to blob
       const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((b) => resolve(b!), 'image/png');
+        canvas.toBlob((b: Blob | null) => resolve(b!), 'image/png');
       });
 
       // Create download link
@@ -390,7 +390,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       });
 
       const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((b) => resolve(b!), 'image/png');
+        canvas.toBlob((b: Blob | null) => resolve(b!), 'image/png');
       });
 
       const file = new File([blob], `astroverse-${chartData.name}-${selectedTemplate}.png`, {

@@ -1,120 +1,100 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * ForgotPasswordPage Component Tests
  *
  * Tests for the Forgot Password page component covering:
  * - Component rendering
- * - Form validation
- * - Form submission
+ * - Form input handling
+ * - Form submission via authService
  * - Error states
  * - Success state (email sent confirmation)
- * - Navigation
- * - Request new link functionality
+ * - Navigation links
+ * - Accessibility
  */
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BrowserRouter } from 'react-router-dom';
-import ForgotPasswordPage from '../../pages/ForgotPasswordPage';
+import { MemoryRouter } from 'react-router-dom';
+import { createElement } from 'react';
+import { createElement as h } from 'react';
 
-// Mock console.log to avoid noise in tests
-const originalConsoleLog = console.log;
-let consoleLogMock: ReturnType<typeof vi.fn>;
+// Mock authService before importing the component
+vi.mock('../../services/auth.service', () => ({
+  authService: {
+    forgotPassword: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+
+// Mock errorHandling utility
+vi.mock('../../utils/errorHandling', () => ({
+  getErrorMessage: vi.fn((_err, fallback) => fallback),
+}));
+
+// Import after mocks
+import { ForgotPasswordPage } from '../../pages/ForgotPasswordPage';
+import { authService } from '../../services/auth.service';
 
 // Helper to render with router
 const renderForgotPasswordPage = () => {
   return render(
-    <BrowserRouter>
-      <ForgotPasswordPage />
-    </BrowserRouter>,
+    createElement(
+      MemoryRouter,
+      null,
+      createElement(ForgotPasswordPage),
+    ),
   );
 };
 
 describe('ForgotPasswordPage', () => {
   beforeEach(() => {
-    // Reset all mocks
     vi.clearAllMocks();
-
-    // Mock console.log
-    consoleLogMock = vi.fn();
-    console.log = consoleLogMock;
+    vi.mocked(authService.forgotPassword).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
-    console.log = originalConsoleLog;
+    vi.restoreAllMocks();
   });
 
   describe('Initial State Rendering', () => {
-    it('should render the forgot password page with all required elements', () => {
+    it('should render the reset password page with all required elements', () => {
       renderForgotPasswordPage();
 
-      // Logo and brand
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
-
       // Header
-      expect(screen.getByText('Forgot Password?')).toBeInTheDocument();
-      expect(screen.getByText(/enter your email address/i)).toBeInTheDocument();
+      expect(screen.getByText('Reset Password')).toBeInTheDocument();
+      expect(screen.getByText(/Enter your email and we'll send you a reset link/i)).toBeInTheDocument();
 
       // Form field
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
 
       // Submit button
-      expect(screen.getByTestId('submit-button')).toBeInTheDocument();
       expect(screen.getByText('Send Reset Link')).toBeInTheDocument();
 
       // Back to login link
-      expect(screen.getByText(/remember your password/i)).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: 'Sign In' })).toBeInTheDocument();
+      expect(screen.getByText(/Back to Login/i)).toBeInTheDocument();
     });
 
     it('should have correct input attributes for email field', () => {
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
       expect(emailInput).toHaveAttribute('type', 'email');
       expect(emailInput).toHaveAttribute('id', 'email');
-      expect(emailInput).toHaveAttribute('autoComplete', 'email');
       expect(emailInput).toHaveAttribute('required');
-      expect(emailInput).toHaveAttribute('placeholder', 'name@example.com');
+      expect(emailInput).toHaveAttribute('placeholder', 'you@example.com');
     });
 
-    it('should have correct link to home page from logo', () => {
+    it('should render the lock_reset icon', () => {
       renderForgotPasswordPage();
 
-      const logoLink = screen.getByText('AstroVerse').closest('a');
-      expect(logoLink).toHaveAttribute('href', '/');
+      const icon = screen.getByText('lock_reset');
+      expect(icon).toBeInTheDocument();
     });
 
-    it('should have correct link to login page', () => {
+    it('should render material symbols with correct class', () => {
       renderForgotPasswordPage();
 
-      const signInLink = screen.getByRole('link', { name: 'Sign In' });
-      expect(signInLink).toHaveAttribute('href', '/login');
-    });
-
-    it('should render material icons', () => {
-      renderForgotPasswordPage();
-
-      // Check for material symbols
-      const icons = screen.getAllByText('auto_awesome', { selector: 'span' });
-      expect(icons.length).toBeGreaterThan(0);
-    });
-
-    it('should render email icon', () => {
-      renderForgotPasswordPage();
-
-      // Check for mail icon
-      const mailIcon = screen.getByText('mail', { selector: 'span' });
-      expect(mailIcon).toBeInTheDocument();
+      const materialIcons = document.querySelectorAll('.material-symbols-outlined');
+      expect(materialIcons.length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -123,17 +103,16 @@ describe('ForgotPasswordPage', () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input') as HTMLInputElement;
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
       await user.type(emailInput, 'test@example.com');
 
       expect(emailInput.value).toBe('test@example.com');
     });
 
-    it('should handle empty email input', async () => {
-      const user = userEvent.setup();
+    it('should start with empty email input', () => {
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input') as HTMLInputElement;
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
       expect(emailInput.value).toBe('');
     });
 
@@ -141,334 +120,266 @@ describe('ForgotPasswordPage', () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input') as HTMLInputElement;
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
       await user.type(emailInput, 'test+special@example.com');
 
       expect(emailInput.value).toBe('test+special@example.com');
     });
   });
 
-  describe('Form Validation', () => {
-    it('should show error when email is empty (using fireEvent)', () => {
-      renderForgotPasswordPage();
-
-      const form = screen.getByTestId('submit-button').closest('form')!;
-      fireEvent.submit(form);
-
-      expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
-    });
-
-    it('should show error when email does not contain @', () => {
-      renderForgotPasswordPage();
-
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      fireEvent.change(emailInput, { target: { value: 'invalidemail' } });
-      fireEvent.submit(form);
-
-      expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
-    });
-
-    it('should show error for email without domain', () => {
-      renderForgotPasswordPage();
-
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      fireEvent.change(emailInput, { target: { value: 'test@' } });
-      fireEvent.submit(form);
-
-      // The component only checks for presence of @
-      // test@ contains @ so it should pass validation and go to success state
-      expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-    });
-
-    it('should not show error initially', () => {
-      renderForgotPasswordPage();
-
-      expect(screen.queryByText('Please enter a valid email address')).not.toBeInTheDocument();
-    });
-
-    it('should clear error when user types after error', async () => {
+  describe('Form Submission', () => {
+    it('should call authService.forgotPassword on valid submission', async () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
-      // Trigger error
-      fireEvent.submit(form);
-      expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
 
-      // Clear and type valid email
-      await user.clear(emailInput);
-      fireEvent.change(emailInput, { target: { value: 'valid@example.com' } });
-      fireEvent.submit(form);
-
-      // After successful submission, form should show success state
-      expect(screen.getByText('Check Your Email')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(authService.forgotPassword).toHaveBeenCalledWith('test@example.com');
+      });
     });
-  });
 
-  describe('Form Submission', () => {
     it('should show success state after valid submission', async () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
-      const submitButton = screen.getByTestId('submit-button');
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
       await user.type(emailInput, 'test@example.com');
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
+        expect(screen.getByText('Check your email')).toBeInTheDocument();
       });
     });
 
-    it('should handle password reset request submission', async () => {
+    it('should show submitted email in success message', async () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
-      const submitButton = screen.getByTestId('submit-button');
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
       await user.type(emailInput, 'test@example.com');
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
+        expect(screen.getByText(/test@example\.com/)).toBeInTheDocument();
+      });
+    });
+
+    it('should show mark_email_read icon in success state', async () => {
+      const user = userEvent.setup();
+      renderForgotPasswordPage();
+
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
+
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('mark_email_read')).toBeInTheDocument();
+      });
+    });
+
+    it('should show "Check your email" heading in success state', async () => {
+      const user = userEvent.setup();
+      renderForgotPasswordPage();
+
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
+
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 2, name: /check your email/i })).toBeInTheDocument();
       });
     });
 
     it('should handle form submission with fireEvent', async () => {
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
+      const emailInput = screen.getByLabelText(/email address/i);
       const form = emailInput.closest('form')!;
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
       fireEvent.submit(form);
 
       await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Success State (Email Sent)', () => {
-    beforeEach(async () => {
-      // Submit form to get to success state
-      renderForgotPasswordPage();
-
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.submit(form);
-
-      // Wait for success state
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
+        expect(authService.forgotPassword).toHaveBeenCalledWith('test@example.com');
       });
     });
 
-    it('should show success message after form submission', () => {
-      expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-    });
+    it('should show loading state during submission', async () => {
+      // Make forgotPassword hang to observe loading state
+      vi.mocked(authService.forgotPassword).mockReturnValue(new Promise(() => {}));
 
-    it('should show email in success message', () => {
-      expect(screen.getByText('test@example.com')).toBeInTheDocument();
-    });
-
-    it('should show check_circle icon in success state', () => {
-      const checkIcon = screen.getByText('check_circle', { selector: 'span' });
-      expect(checkIcon).toBeInTheDocument();
-    });
-
-    it('should show instruction text about spam folder', () => {
-      expect(screen.getByText(/didn't receive the email/i)).toBeInTheDocument();
-      expect(screen.getByText(/check your spam folder/i)).toBeInTheDocument();
-    });
-
-    it('should show Request New Link button', () => {
-      expect(screen.getByRole('button', { name: /request new link/i })).toBeInTheDocument();
-    });
-
-    it('should show Back to Login link', () => {
-      const backToLoginLink = screen.getByRole('link', { name: /back to login/i });
-      expect(backToLoginLink).toHaveAttribute('href', '/login');
-    });
-  });
-
-  describe('Request New Link Functionality', () => {
-    it('should return to form when Request New Link is clicked', async () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      // First submit to get to success state
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.submit(form);
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
 
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
-
-      // Now click Request New Link
-      const requestNewLinkButton = screen.getByRole('button', { name: /request new link/i });
-      await user.click(requestNewLinkButton);
-
-      // Should be back to form state
-      await waitFor(() => {
-        expect(screen.getByText('Forgot Password?')).toBeInTheDocument();
-        expect(screen.getByTestId('email-input')).toBeInTheDocument();
-      });
+      expect(screen.getByText('Sending...')).toBeInTheDocument();
     });
 
-    it('should clear email when Request New Link is clicked', async () => {
+    it('should disable button during submission', async () => {
+      // Make forgotPassword hang to observe disabled state
+      vi.mocked(authService.forgotPassword).mockReturnValue(new Promise(() => {}));
+
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      // First submit to get to success state
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByRole('button', { name: /send reset link/i });
 
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.submit(form);
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
 
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
-
-      // Now click Request New Link
-      const requestNewLinkButton = screen.getByRole('button', { name: /request new link/i });
-      await user.click(requestNewLinkButton);
-
-      // Email should be cleared
-      await waitFor(() => {
-        const newEmailInput = screen.getByTestId('email-input') as HTMLInputElement;
-        expect(newEmailInput.value).toBe('');
-      });
-    });
-
-    it('should allow resubmission after clicking Request New Link', async () => {
-      const user = userEvent.setup();
-      renderForgotPasswordPage();
-
-      // First submission
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      fireEvent.change(emailInput, { target: { value: 'first@example.com' } });
-      fireEvent.submit(form);
-
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
-
-      // Request new link
-      const requestNewLinkButton = screen.getByRole('button', { name: /request new link/i });
-      await user.click(requestNewLinkButton);
-
-      await waitFor(() => {
-        expect(screen.getByText('Forgot Password?')).toBeInTheDocument();
-      });
-
-      // Second submission with different email
-      const newEmailInput = screen.getByTestId('email-input');
-      const newForm = newEmailInput.closest('form')!;
-
-      fireEvent.change(newEmailInput, { target: { value: 'second@example.com' } });
-      fireEvent.submit(newForm);
-
-      await waitFor(() => {
-        expect(screen.getByText('second@example.com')).toBeInTheDocument();
-      });
+      expect(submitButton).toBeDisabled();
     });
   });
 
   describe('Error States', () => {
-    it('should display error message in error container', () => {
+    it('should display error message when API call fails', async () => {
+      vi.mocked(authService.forgotPassword).mockRejectedValue(new Error('Server error'));
+
+      const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const form = screen.getByTestId('submit-button').closest('form')!;
-      fireEvent.submit(form);
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
-      // Find the error message
-      const errorMessage = screen.getByText('Please enter a valid email address');
-      expect(errorMessage).toBeInTheDocument();
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
 
-      // Verify error is inside an error-styled container by looking for the error icon
-      const errorIcon = screen.getByText('error', { selector: 'span' });
-      expect(errorIcon).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument();
+      });
     });
 
-    it('should show error icon in error message', () => {
+    it('should show error icon in error message', async () => {
+      vi.mocked(authService.forgotPassword).mockRejectedValue(new Error('Server error'));
+
+      const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const form = screen.getByTestId('submit-button').closest('form')!;
-      fireEvent.submit(form);
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
-      // Check for error icon
-      const errorIcon = screen.getByText('error', { selector: 'span' });
-      expect(errorIcon).toBeInTheDocument();
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        const errorIcon = screen.getByText('error');
+        expect(errorIcon).toBeInTheDocument();
+      });
     });
 
-    it('should clear error on new submission attempt', () => {
+    it('should clear error on new submission attempt', async () => {
+      // First call fails, second succeeds
+      vi.mocked(authService.forgotPassword)
+        .mockRejectedValueOnce(new Error('Server error'))
+        .mockResolvedValueOnce(undefined);
+
+      const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
-      // Trigger error
-      fireEvent.submit(form);
-      expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
 
-      // Submit with valid email
-      fireEvent.change(emailInput, { target: { value: 'valid@example.com' } });
-      fireEvent.submit(form);
+      // Wait for error
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument();
+      });
+
+      // Submit again
+      await user.click(submitButton);
 
       // Error should be gone and success state shown
-      expect(screen.queryByText('Please enter a valid email address')).not.toBeInTheDocument();
-      expect(screen.getByText('Check Your Email')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+        expect(screen.getByText('Check your email')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Success State', () => {
+    it('should show Back to Login link in success state', async () => {
+      const user = userEvent.setup();
+      renderForgotPasswordPage();
+
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
+
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        const backToLoginLinks = screen.getAllByRole('link', { name: /back to login/i });
+        expect(backToLoginLinks.length).toBeGreaterThanOrEqual(1);
+      });
+    });
+
+    it('should have login link pointing to /login in success state', async () => {
+      const user = userEvent.setup();
+      renderForgotPasswordPage();
+
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
+
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        const backToLoginLinks = screen.getAllByRole('link', { name: /back to login/i });
+        const successLink = backToLoginLinks.find(link => link.closest('.glass-card'));
+        expect(successLink).toHaveAttribute('href', '/login');
+      });
+    });
+
+    it('should show instruction text about email', async () => {
+      const user = userEvent.setup();
+      renderForgotPasswordPage();
+
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
+
+      await user.type(emailInput, 'test@example.com');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/If an account exists for/i)).toBeInTheDocument();
+      });
     });
   });
 
   describe('Navigation Links', () => {
-    it('should have correct link to home page', () => {
+    it('should have Back to Login link in form state', () => {
       renderForgotPasswordPage();
 
-      const homeLink = screen.getByRole('link', { name: /astroverse/i });
-      expect(homeLink).toHaveAttribute('href', '/');
+      const backToLoginLinks = screen.getAllByRole('link', { name: /back to login/i });
+      expect(backToLoginLinks.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('should have correct link to login page in form state', () => {
+    it('should have login link pointing to /login in form state', () => {
       renderForgotPasswordPage();
 
-      const signInLink = screen.getByRole('link', { name: 'Sign In' });
-      expect(signInLink).toHaveAttribute('href', '/login');
-    });
-
-    it('should have correct link to login page in success state', async () => {
-      renderForgotPasswordPage();
-
-      // Submit to get to success state
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.submit(form);
-
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
-
-      const backToLoginLink = screen.getByRole('link', { name: /back to login/i });
-      expect(backToLoginLink).toHaveAttribute('href', '/login');
+      const backToLoginLinks = screen.getAllByRole('link', { name: /back to login/i });
+      expect(backToLoginLinks[0]).toHaveAttribute('href', '/login');
     });
   });
 
@@ -476,66 +387,28 @@ describe('ForgotPasswordPage', () => {
     it('should have proper form labels', () => {
       renderForgotPasswordPage();
 
-      // Email input should have associated label
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
     });
 
     it('should have required attribute on email field', () => {
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
+      const emailInput = screen.getByLabelText(/email address/i);
       expect(emailInput).toBeRequired();
     });
 
     it('should have email type for email input', () => {
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input');
+      const emailInput = screen.getByLabelText(/email address/i);
       expect(emailInput).toHaveAttribute('type', 'email');
     });
 
-    it('should have accessible submit button', () => {
+    it('should have aria-hidden on decorative icons', () => {
       renderForgotPasswordPage();
 
-      const submitButton = screen.getByTestId('submit-button');
-      expect(submitButton).toHaveAttribute('type', 'submit');
-    });
-  });
-
-  describe('Form Layout and Styling', () => {
-    it('should have correct container classes', () => {
-      renderForgotPasswordPage();
-
-      const container = document.querySelector('.min-h-screen');
-      expect(container).toHaveClass('min-h-screen');
-      expect(container).toHaveClass('flex');
-      expect(container).toHaveClass('items-center');
-      expect(container).toHaveClass('justify-center');
-    });
-
-    it('should have correct form card styling', () => {
-      renderForgotPasswordPage();
-
-      const card = document.querySelector('.bg-surface-dark');
-      expect(card).toHaveClass('rounded-2xl');
-      expect(card).toHaveClass('p-8');
-    });
-
-    it('should have correct title styling', () => {
-      renderForgotPasswordPage();
-
-      const title = screen.getByText('Forgot Password?');
-      expect(title).toHaveClass('text-2xl');
-      expect(title).toHaveClass('font-bold');
-    });
-
-    it('should have gradient styling on submit button', () => {
-      renderForgotPasswordPage();
-
-      const submitButton = screen.getByTestId('submit-button');
-      expect(submitButton).toHaveStyle({
-        background: 'linear-gradient(90deg, #b23de1 0%, #2563EB 100%)',
-      });
+      const decorativeIcons = document.querySelectorAll('.material-symbols-outlined[aria-hidden="true"]');
+      expect(decorativeIcons.length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -545,66 +418,20 @@ describe('ForgotPasswordPage', () => {
       renderForgotPasswordPage();
 
       const longEmail = 'a'.repeat(100) + '@example.com';
-      const emailInput = screen.getByTestId('email-input') as HTMLInputElement;
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
       await user.type(emailInput, longEmail);
 
       expect(emailInput.value).toBe(longEmail);
-    });
-
-    it('should handle email with multiple @ symbols', () => {
-      renderForgotPasswordPage();
-
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      // Component only checks if @ exists, so this would pass validation
-      fireEvent.change(emailInput, { target: { value: 'test@ex@mple.com' } });
-      fireEvent.submit(form);
-
-      // Should go to success state (basic validation passes)
-      expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-    });
-
-    it('should handle email with spaces', () => {
-      renderForgotPasswordPage();
-
-      const emailInput = screen.getByTestId('email-input');
-      const form = emailInput.closest('form')!;
-
-      // Spaces don't prevent @ check, so this would pass
-      fireEvent.change(emailInput, { target: { value: 'test @example.com' } });
-      fireEvent.submit(form);
-
-      // Should go to success state
-      expect(screen.getByText('Check Your Email')).toBeInTheDocument();
     });
 
     it('should handle uppercase email', async () => {
       const user = userEvent.setup();
       renderForgotPasswordPage();
 
-      const emailInput = screen.getByTestId('email-input') as HTMLInputElement;
+      const emailInput = screen.getByLabelText(/email address/i) as HTMLInputElement;
       await user.type(emailInput, 'TEST@EXAMPLE.COM');
 
       expect(emailInput.value).toBe('TEST@EXAMPLE.COM');
-    });
-
-    it('should handle rapid form submissions', async () => {
-      const user = userEvent.setup();
-      renderForgotPasswordPage();
-
-      const emailInput = screen.getByTestId('email-input');
-      const submitButton = screen.getByTestId('submit-button');
-
-      await user.type(emailInput, 'test@example.com');
-
-      // Rapid double click
-      await user.click(submitButton);
-
-      // Should be in success state after first click
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
     });
   });
 
@@ -614,44 +441,57 @@ describe('ForgotPasswordPage', () => {
       renderForgotPasswordPage();
 
       // Initial state
-      expect(screen.getByText('Forgot Password?')).toBeInTheDocument();
+      expect(screen.getByText('Reset Password')).toBeInTheDocument();
+      expect(screen.getByText('Send Reset Link')).toBeInTheDocument();
 
-      const emailInput = screen.getByTestId('email-input');
-      const submitButton = screen.getByTestId('submit-button');
+      const emailInput = screen.getByLabelText(/email address/i);
+      const submitButton = screen.getByText('Send Reset Link');
 
       await user.type(emailInput, 'test@example.com');
       await user.click(submitButton);
 
       // Success state
       await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-        expect(screen.queryByText('Forgot Password?')).not.toBeInTheDocument();
+        expect(screen.getByText('Check your email')).toBeInTheDocument();
+        expect(screen.queryByText('Send Reset Link')).not.toBeInTheDocument();
       });
     });
+  });
 
-    it('should transition from success back to form state', async () => {
-      const user = userEvent.setup();
+  describe('Layout and Styling', () => {
+    it('should have glass-card class on the form', () => {
       renderForgotPasswordPage();
 
-      // Go to success state
-      const emailInput = screen.getByTestId('email-input');
-      const submitButton = screen.getByTestId('submit-button');
+      const card = document.querySelector('.glass-card');
+      expect(card).toBeInTheDocument();
+    });
 
-      await user.type(emailInput, 'test@example.com');
-      await user.click(submitButton);
+    it('should have max-w-md class for form width', () => {
+      renderForgotPasswordPage();
 
-      await waitFor(() => {
-        expect(screen.getByText('Check Your Email')).toBeInTheDocument();
-      });
+      const container = document.querySelector('.max-w-md');
+      expect(container).toBeInTheDocument();
+    });
 
-      // Go back to form
-      const requestNewLinkButton = screen.getByRole('button', { name: /request new link/i });
-      await user.click(requestNewLinkButton);
+    it('should have rounded-2xl class on the form card', () => {
+      renderForgotPasswordPage();
 
-      await waitFor(() => {
-        expect(screen.getByText('Forgot Password?')).toBeInTheDocument();
-        expect(screen.queryByText('Check Your Email')).not.toBeInTheDocument();
-      });
+      const card = document.querySelector('.rounded-2xl');
+      expect(card).toBeInTheDocument();
+    });
+
+    it('should have the cosmic-gradient on submit button', () => {
+      renderForgotPasswordPage();
+
+      const submitButton = screen.getByText('Send Reset Link').closest('button');
+      expect(submitButton?.className).toContain('bg-cosmic-gradient');
+    });
+
+    it('should have input class on the email input', () => {
+      renderForgotPasswordPage();
+
+      const emailInput = screen.getByLabelText(/email address/i);
+      expect(emailInput).toHaveClass('input');
     });
   });
 });

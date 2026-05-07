@@ -35,12 +35,9 @@ describe('TransitCacheService', () => {
     generatedAt: new Date('2024-06-15T00:00:00Z'),
   };
 
-  // RedisCache uses JSON.stringify/parse which serializes Date to string.
-  // This is the expected shape after a cache round-trip.
-  const roundTripData = {
-    ...mockTransitData,
-    generatedAt: mockTransitData.generatedAt.toISOString(),
-  };
+  // In-memory cache stores objects directly (no JSON round-trip),
+  // so Date objects remain Date objects.
+  const roundTripData = mockTransitData;
 
   beforeEach(() => {
     service = new TransitCacheService();
@@ -248,13 +245,10 @@ describe('TransitCacheService', () => {
     });
 
     it('should track total entries', async () => {
-      // Note: totalEntries is hardcoded to 0 in the implementation
-      // because accurate count requires Redis SCAN (performance concern).
-      // We verify the stat field exists and returns 0.
       const date1 = new Date('2024-06-15');
 
       await service.setTransits(date1, mockTransitData);
-      expect(service.getStats().totalEntries).toBe(0); // hardcoded — Redis SCAN avoided
+      expect(service.getStats().totalEntries).toBe(1);
     });
 
     it('should return 0 hit rate when no operations', () => {

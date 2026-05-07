@@ -4,10 +4,10 @@
  * planetary positions, upcoming transits, chart cards, quick actions
  */
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks';
-import { useCharts, useTodayTransits } from '../hooks';
+import { useAuth, useCharts, useTodayTransits, useTransitForecast } from '../hooks';
+import { deriveHighlights } from '../utils/transitHelpers';
 import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
 
 const PLANET_META: Record<string, { icon: string; color: string }> = {
@@ -75,6 +75,7 @@ export default function DashboardPage() {
   const { user, isAuthenticated } = useAuth();
   const { charts, fetchCharts, isLoading } = useCharts();
   const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits();
+  const { data: forecastData } = useTransitForecast('week');
   const transitsLoading = transitsFetching && !todayTransits;
 
   useEffect(() => {
@@ -93,7 +94,105 @@ export default function DashboardPage() {
         ['Venus', { sign: 'Virgo', degree: 5.21, longitude: 175, speed: 1, retrograde: false }],
       ];
 
-  const energyScore = 72; // Placeholder — could derive from transit data
+  const highlights = useMemo(() => deriveHighlights(todayTransits), [todayTransits]);
+
+  const energyScore = useMemo(() => {
+    const transits = todayTransits?.transits;
+    if (!transits || transits.length === 0) return 50;
+    let score = 50;
+    for (const t of transits) {
+      const orb = Math.abs(t.orb);
+      if (orb > 5) continue;
+      const weight = Math.max(0, 5 - orb);
+      const aspect = t.aspect.toLowerCase();
+      if (aspect.includes('trine') || aspect.includes('sextile') || aspect.includes('conjunction')) {
+        score += weight * 3;
+      } else if (aspect.includes('square') || aspect.includes('opposition')) {
+        score -= weight * 2;
+      } else {
+        score += weight;
+      }
+    }
+    return Math.max(10, Math.min(95, Math.round(score)));
+  }, [todayTransits]);
+
+  const energyLabel = energyScore >= 70 ? 'High Vitality' : energyScore >= 40 ? 'Moderate Energy' : 'Low Energy';
+  const energyColor = energyScore >= 70 ? 'text-emerald-400' : energyScore >= 40 ? 'text-amber-400' : 'text-rose-400';
+  const energyIcon = energyScore >= 70 ? 'trending_up' : energyScore >= 40 ? 'trending_flat' : 'trending_down';
+
+  const cosmicOverview = useMemo(() => {
+    if (highlights.length > 0) {
+      const top = highlights[0];
+      const intensityWord = (top.intensity ?? 5) >= 7 ? 'Intense' : (top.intensity ?? 5) >= 4 ? 'Dynamic' : 'Gentle';
+      return `Cosmic Overview: ${intensityWord} energy today. ${top.title} — ${top.description}.`;
+    }
+    const phase = todayTransits?.moonPhase?.phase;
+    if (phase) return `Cosmic Overview: The Moon is in ${phase} phase. A day for reflection and inner alignment.`;
+    return `Cosmic Overview: ${moon.phaseName} in ${moon.sign}. Set intentions aligned with the current lunar energy.`;
+  }, [highlights, todayTransits, moon]);
+
+  interface ForecastItem {
+    badge: string;
+    icon: string;
+    iconColor: string;
+    badgeBg: string;
+    badgeText: string;
+    badgeBorder: string;
+    month: string;
+    day: string;
+    name: string;
+    desc: string;
+  }
+
+  const forecastItems: ForecastItem[] = useMemo(() => {
+    if (!forecastData || !Array.isArray(forecastData) || forecastData.length === 0) return [];
+
+    // Flatten TransitReading[] into individual transit entries with date info
+    const entries = forecastData.flatMap((reading) =>
+      (reading.transits ?? []).map((t) => ({
+        date: reading.date,
+        type: t.aspect,
+        planet1: t.transitPlanet,
+        planet2: t.natalPlanet,
+        orb: t.orb,
+        intensity: Math.max(1, Math.round(10 - Math.abs(t.orb))),
+      }))
+    );
+
+    if (entries.length === 0) return [];
+
+    const classifyAspect = (type: string) => {
+      const t = type.toLowerCase();
+      if (t.includes('trine') || t.includes('sextile')) return {
+        badge: 'Favorable', icon: 'check_circle', iconColor: 'text-emerald-400',
+        badgeBg: 'bg-emerald-500/10', badgeText: 'text-emerald-400', badgeBorder: 'border-emerald-500/20',
+      };
+      if (t.includes('square') || t.includes('opposition')) return {
+        badge: 'Challenging', icon: 'warning', iconColor: 'text-rose-400',
+        badgeBg: 'bg-rose-500/10', badgeText: 'text-rose-400', badgeBorder: 'border-rose-500/20',
+      };
+      return {
+        badge: 'Neutral', icon: 'info', iconColor: 'text-blue-400',
+        badgeBg: 'bg-blue-500/10', badgeText: 'text-blue-400', badgeBorder: 'border-blue-500/20',
+      };
+    };
+
+    return entries.slice(0, 4).map((entry) => {
+      const d = new Date(entry.date);
+      const monthStr = d.toLocaleString('en', { month: 'short' });
+      const dayStr = String(d.getDate()).padStart(2, '0');
+      const classification = classifyAspect(entry.type);
+      return {
+        ...classification,
+        month: monthStr,
+        day: dayStr,
+        name: `${entry.planet1} ${entry.type} ${entry.planet2}`,
+        desc: `Orb: ${entry.orb.toFixed(1)}° · Intensity: ${entry.intensity}/10`,
+      };
+    });
+  }, [forecastData]);
+
+  const majorTransit: ForecastItem | null = forecastItems.length > 0 ? forecastItems[0] : null;
 
   return (
     <AppLayout>
@@ -109,7 +208,7 @@ export default function DashboardPage() {
               Welcome back, {user?.name?.split(' ')[0] ?? 'Traveler'}
             </h1>
             <p className="text-slate-200 text-lg max-w-2xl">
-              Cosmic Overview: Highly Creative Energy today. The Moon trines Neptune, boosting your intuition.
+              {cosmicOverview}
             </p>
           </div>
 
@@ -160,9 +259,9 @@ export default function DashboardPage() {
                     <span className="text-[10px] uppercase tracking-widest text-slate-200">/100</span>
                   </div>
                 </div>
-                <p className="text-xs text-emerald-400 mt-2 flex items-center gap-1 z-10">
-                  <span className="material-symbols-outlined text-sm" aria-hidden="true">trending_up</span>
-                  High Vitality
+                <p className={`text-xs ${energyColor} mt-2 flex items-center gap-1 z-10`}>
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">{energyIcon}</span>
+                  {energyLabel}
                 </p>
               </div>
               )}
@@ -175,9 +274,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="relative z-10 mt-auto">
-                  <h3 className="text-2xl font-bold text-white mb-1">Venus enters Pisces</h3>
+                  <h3 className="text-2xl font-bold text-white mb-1">{majorTransit ? majorTransit.name : 'No major transits today'}</h3>
                   <p className="text-slate-200 text-sm mb-4 line-clamp-2">
-                    A time of heightened sensitivity and romantic idealism. Creativity flows effortlessly under this transit.
+                    {majorTransit ? majorTransit.desc : 'The skies are quiet. A good day for rest and reflection.'}
                   </p>
                   <Link
                     to="/transits"
@@ -246,20 +345,9 @@ export default function DashboardPage() {
                 </div>
               ) : (
               <div className="space-y-4">
-                {[
-                  {
-                    month: 'May', day: '05', name: 'Sun Trine Saturn', desc: 'Stability, long-term planning, and recognition.',
-                    icon: 'check_circle', iconColor: 'text-emerald-400', badge: 'Favorable', badgeBg: 'bg-emerald-500/10', badgeText: 'text-emerald-400', badgeBorder: 'border-emerald-500/20',
-                  },
-                  {
-                    month: 'May', day: '08', name: 'Mars Square Pluto', desc: 'Power struggles, intensity, transformative friction.',
-                    icon: 'warning', iconColor: 'text-rose-400', badge: 'Challenging', badgeBg: 'bg-rose-500/10', badgeText: 'text-rose-400', badgeBorder: 'border-rose-500/20',
-                  },
-                  {
-                    month: 'May', day: '12', name: 'Full Moon in Scorpio', desc: 'Culmination, deep transformation, emotional release.',
-                    icon: 'info', iconColor: 'text-blue-400', badge: 'Neutral', badgeBg: 'bg-blue-500/10', badgeText: 'text-blue-400', badgeBorder: 'border-blue-500/20',
-                  },
-                ].map((transit) => (
+                {(forecastItems.length > 0 ? forecastItems : [
+                  { month: moon.dateStr.slice(5, 7), day: moon.dateStr.slice(8, 10), name: 'Awaiting forecast data', desc: 'Transit forecast will appear here once available.', icon: 'hourglass_empty' as const, iconColor: 'text-slate-200', badge: 'Pending', badgeBg: 'bg-slate-500/10', badgeText: 'text-slate-200', badgeBorder: 'border-slate-500/20' },
+                ]).map((transit) => (
                   <div
                     key={transit.name}
                     role="button"
@@ -342,7 +430,7 @@ export default function DashboardPage() {
                           </span>
                           <span className="bg-surface-light px-2 py-1 rounded text-[10px] text-slate-200 font-medium border border-white/15 flex items-center gap-1">
                             <span className="material-symbols-outlined text-[10px]" aria-hidden="true">calendar_today</span>
-                            {new Date(chart.birth_date).toLocaleDateString()}
+                            {new Date(chart.birth_data?.birth_date ?? chart.created_at).toLocaleDateString()}
                           </span>
                         </div>
                       </div>

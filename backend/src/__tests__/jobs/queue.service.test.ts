@@ -16,6 +16,7 @@ import {
   shutdownQueues,
 } from '../../modules/jobs/queue.service';
 import { JobType, JOB_CONFIG, JobPayload } from '../../modules/jobs/job.types';
+import { isRedisConnected } from '../../modules/shared/services/redis.service';
 
 // Mock BullMQ
 jest.mock('bullmq', () => ({
@@ -405,8 +406,7 @@ describe('Queue Service', () => {
   describe('isQueueReady', () => {
     it('should return true when queues exist and Redis is connected', () => {
       // Given
-      const { isRedisConnected } = require('../../modules/shared/services/redis.service');
-      isRedisConnected.mockReturnValue(true);
+      (isRedisConnected as jest.Mock).mockReturnValue(true);
       getQueue(JobType.DAILY_BRIEFING);
 
       // When

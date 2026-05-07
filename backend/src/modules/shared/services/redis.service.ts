@@ -22,7 +22,7 @@ export function getRedisClient(): Redis | null {
   try {
     redisClient = new Redis(config.redis.url, {
       maxRetriesPerRequest: 3,
-      retryStrategy(times) {
+      retryStrategy(times: number) {
         if (times > 5) {
           logger.warn('[Redis] Max retries reached, giving up');
           return null;
@@ -38,7 +38,7 @@ export function getRedisClient(): Redis | null {
       logger.info('[Redis] Connected');
     });
 
-    redisClient.on('error', (err) => {
+    redisClient.on('error', (err: Error) => {
       isConnected = false;
       logger.warn(`[Redis] Error: ${err.message}`);
     });

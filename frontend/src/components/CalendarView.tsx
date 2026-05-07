@@ -3,8 +3,6 @@
  * Displays monthly astrological calendar with event badges
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -22,7 +20,7 @@ function convertToCalendarMonth(response: Awaited<ReturnType<typeof getCalendarM
       id: event.id,
       eventType: event.event_type as AstrologicalEvent['eventType'],
       eventName: event.event_type,
-      startDate: event.event_date.toString(),
+      startDate: event.event_date?.toString() ?? '',
       endDate: event.end_date?.toString(),
       intensity: 5,
       isGlobal: event.user_id === null,

@@ -52,15 +52,18 @@ export function AnalysisPage() {
   const buildComponentData = (): PersonalityAnalysisData | null => {
     if (!analysis) return null;
 
+    const overview = analysis.overview;
     return {
       overview: {
-        sunSign: toPlanetSignInterpretation('sun', analysis.overview.sunSign),
-        moonSign: toPlanetSignInterpretation('moon', analysis.overview.moonSign),
-        ascendantSign: toPlanetSignInterpretation('ascendant', analysis.overview.ascendant),
+        sunSign: toPlanetSignInterpretation('sun', { sign: overview.sunSign?.sign ?? 'Unknown', degree: 0 }),
+        moonSign: toPlanetSignInterpretation('moon', { sign: overview.moonSign?.sign ?? 'Unknown', degree: 0 }),
+        ascendantSign: overview.ascendantSign
+          ? toPlanetSignInterpretation('ascendant', { sign: overview.ascendantSign.sign, degree: 0 })
+          : undefined,
       },
-      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => toPlanetSignInterpretation(p.planet, p)),
+      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => toPlanetSignInterpretation(p.planet, { sign: p.sign, degree: 0 })),
       houses: [],
-      aspects: (analysis.majorAspects ?? []).map((a) => ({
+      aspects: (analysis.aspects ?? []).map((a) => ({
         planet1: a.planet1,
         planet2: a.planet2,
         aspect: a.aspect,
@@ -71,8 +74,8 @@ export function AnalysisPage() {
         expression: '',
         advice: [],
       })),
-      patterns: analysis.chartPattern
-        ? [{ type: analysis.chartPattern.name, description: analysis.chartPattern.description, planets: [] }]
+      patterns: (analysis.patterns ?? []).length > 0
+        ? analysis.patterns.map((p) => ({ type: p.type, description: p.description, planets: p.planets }))
         : undefined,
     };
   };

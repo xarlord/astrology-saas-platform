@@ -1,8 +1,8 @@
 /**
  * NotFoundPage Component Tests
  *
- * Comprehensive tests for the 404 Not Found page
- * Covers: rendering, navigation, mercury status, animations, accessibility
+ * Tests for the 404 Not Found page
+ * Covers: rendering, navigation links, icons, accessibility, layout
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -22,7 +22,7 @@ vi.mock('framer-motion', () => ({
 }));
 
 // Import after mocks
-import NotFoundPage from '../../pages/NotFoundPage';
+import { NotFoundPage } from '../../pages/NotFoundPage';
 
 // Helper to create wrapper with providers
 const createWrapper = (initialRoute = '/nonexistent') => {
@@ -55,412 +55,206 @@ describe('NotFoundPage', () => {
   describe('Page Rendering', () => {
     it('should render without crashing', () => {
       renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText('404')).toBeInTheDocument();
+      expect(screen.getByText('Page Not Found')).toBeInTheDocument();
     });
 
-    it('should render the 404 number prominently', () => {
+    it('should render the "Page Not Found" heading', () => {
       renderWithProviders(createElement(NotFoundPage));
-      const heading404 = screen.getByText('404');
-      expect(heading404).toBeInTheDocument();
-      expect(heading404.tagName).toBe('H1');
-    });
-
-    it('should render "Lost in the Cosmos" heading', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText('Lost in the Cosmos')).toBeInTheDocument();
+      const heading = screen.getByRole('heading', { level: 1 });
+      expect(heading).toHaveTextContent('Page Not Found');
     });
 
     it('should render the descriptive message', () => {
       renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText(/The stars couldn't find the page/i)).toBeInTheDocument();
-    });
-
-    it('should render the Mercury retrograde reference', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText(/Perhaps Mercury is in retrograde/i)).toBeInTheDocument();
-    });
-
-    it('should render the brand name', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
-    });
-  });
-
-  describe('Navigation Buttons', () => {
-    it('should render Return Home button', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText('Return Home')).toBeInTheDocument();
-    });
-
-    it('should render Go to Dashboard button', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText('Go to Dashboard')).toBeInTheDocument();
-    });
-
-    it('should have rocket icon on Return Home button', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      const returnHomeButton = screen.getByText('Return Home').closest('button');
-      expect(returnHomeButton).toBeInTheDocument();
-    });
-
-    it('should have dashboard icon on Dashboard button', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      const dashboardButton = screen.getByText('Go to Dashboard').closest('button');
-      expect(dashboardButton).toBeInTheDocument();
-    });
-
-    it('should navigate to home when Return Home is clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(createElement(NotFoundPage));
-
-      const returnHomeButton = screen.getByText('Return Home').closest('button');
-      await user.click(returnHomeButton!);
-
-      // Navigation handled by useNavigate
-      expect(returnHomeButton).toBeInTheDocument();
-    });
-
-    it('should navigate to dashboard when Go to Dashboard is clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(createElement(NotFoundPage));
-
-      const dashboardButton = screen.getByText('Go to Dashboard').closest('button');
-      await user.click(dashboardButton!);
-
-      // Navigation handled by useNavigate
-      expect(dashboardButton).toBeInTheDocument();
-    });
-  });
-
-  describe('Mercury Status Display', () => {
-    it('should render Mercury Status section', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      expect(screen.getByText(/Current Mercury Status:/i)).toBeInTheDocument();
-    });
-
-    it('should display either Direct or Retrograde status', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      const statusText = screen.getByText(/Direct|Retrograde/);
-      expect(statusText).toBeInTheDocument();
-    });
-
-    it('should show status indicator dot', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      // The status indicator is a span with animation
-      const statusDot = document.querySelector('.animate-pulse.rounded-full');
-      expect(statusDot).toBeInTheDocument();
-    });
-
-    it('should show status with checkmark or warning emoji', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      // The status text contains either checkmark or warning
-      const statusSection = screen.getByText(/Current Mercury Status:/i).parentElement;
-      expect(statusSection).toBeInTheDocument();
-    });
-
-    it('should apply correct color class based on status', () => {
-      renderWithProviders(createElement(NotFoundPage));
-      // Should have either amber (retrograde) or emerald (direct) color
-      const statusDot =
-        document.querySelector('.bg-amber-400') || document.querySelector('.bg-emerald-400');
-      // One of the colors should be present
       expect(
-        statusDot !== null || document.querySelector('.animate-pulse.rounded-full') !== null,
-      ).toBe(true);
+        screen.getByText(/The page you're looking for doesn't exist or has been moved/i),
+      ).toBeInTheDocument();
+    });
+
+    it('should render the explore_off icon', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      expect(screen.getByText('explore_off')).toBeInTheDocument();
+    });
+
+    it('should render the "Go Home" link', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      expect(screen.getByText('Go Home')).toBeInTheDocument();
+    });
+
+    it('should render the "Dashboard" link', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      expect(screen.getByText('Dashboard')).toBeInTheDocument();
     });
   });
 
-  describe('Visual Elements', () => {
-    it('should render the astronaut image', () => {
+  describe('Navigation Links', () => {
+    it('should have a link pointing to home', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const astronautImage = screen.getByAltText(/Astronaut floating/i);
-      expect(astronautImage).toBeInTheDocument();
+      const homeLink = screen.getByText('Go Home').closest('a');
+      expect(homeLink).toHaveAttribute('href', '/');
     });
 
-    it('should have correct astronaut image source', () => {
+    it('should have a link pointing to dashboard', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const astronautImage = screen.getByAltText(/Astronaut floating/i);
-      expect(astronautImage).toHaveAttribute('src', expect.stringContaining('googleusercontent'));
+      const dashboardLink = screen.getByText('Dashboard').closest('a');
+      expect(dashboardLink).toHaveAttribute('href', '/dashboard');
     });
 
-    it('should render zodiac ring background', () => {
+    it('should have a home icon on the Go Home link', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      // The zodiac ring is a div with backgroundImage style
-      const zodiacRing = document.querySelector('[style*="background-image"]');
-      expect(zodiacRing).toBeInTheDocument();
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      const icon = goHomeLink?.querySelector('.material-symbols-outlined');
+      expect(icon).toHaveTextContent('home');
     });
 
-    it('should render SVG wheel', () => {
+    it('should render the Go Home and Dashboard links as inline-flex items', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const svg = document.querySelector('svg');
-      expect(svg).toBeInTheDocument();
-    });
-
-    it('should render SVG circles for wheel', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const circles = document.querySelectorAll('svg circle');
-      expect(circles.length).toBeGreaterThan(0);
-    });
-
-    it('should render twinkling stars', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const stars = document.querySelectorAll('.star');
-      expect(stars.length).toBe(5);
-    });
-
-    it('should render debris particles', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      // Check for debris particles with animation
-      const debris = document.querySelectorAll('.animate-drift');
-      expect(debris.length).toBeGreaterThan(0);
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      const dashboardLink = screen.getByText('Dashboard').closest('a');
+      expect(goHomeLink?.className).toContain('inline-flex');
+      expect(dashboardLink?.className).toContain('inline-flex');
     });
   });
 
-  describe('Animations', () => {
-    it('should have float animation styles', () => {
+  describe('Icons', () => {
+    it('should render the explore_off Material Symbol icon', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const styleElement = document.querySelector('style');
-      expect(styleElement).toBeInTheDocument();
-      expect(styleElement?.textContent).toContain('@keyframes float');
+      const icons = screen.getAllByText('explore_off');
+      expect(icons.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('should have drift animation styles', () => {
+    it('should render the home Material Symbol icon', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const styleElement = document.querySelector('style');
-      expect(styleElement?.textContent).toContain('@keyframes drift');
+      expect(screen.getByText('home')).toBeInTheDocument();
     });
 
-    it('should have pulse-glow animation styles', () => {
+    it('should have material-symbols-outlined class on icons', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const styleElement = document.querySelector('style');
-      expect(styleElement?.textContent).toContain('@keyframes pulse-glow');
-    });
-
-    it('should have twinkle animation styles', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const styleElement = document.querySelector('style');
-      expect(styleElement?.textContent).toContain('@keyframes twinkle');
-    });
-
-    it('should have spin-slow animation styles', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const styleElement = document.querySelector('style');
-      expect(styleElement?.textContent).toContain('@keyframes spin-slow');
-    });
-
-    it('should have animate-float class on astronaut container', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const floatElement = document.querySelector('.animate-float');
-      expect(floatElement).toBeInTheDocument();
-    });
-
-    it('should have animate-spin-slow class on SVG wheel', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const spinningSvg = document.querySelector('.animate-spin-slow');
-      expect(spinningSvg).toBeInTheDocument();
-    });
-
-    it('should have animate-pulse-glow on heading', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const glowingHeading = document.querySelector('.animate-pulse-glow');
-      expect(glowingHeading).toBeInTheDocument();
+      const materialIcons = document.querySelectorAll('.material-symbols-outlined');
+      expect(materialIcons.length).toBeGreaterThanOrEqual(2);
     });
   });
 
-  describe('CSS Classes', () => {
-    it('should have glass-panel class for mercury status', () => {
+  describe('CSS Classes and Styling', () => {
+    it('should have min-h-screen class on the outer container', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const glassPanel = document.querySelector('.glass-panel');
-      expect(glassPanel).toBeInTheDocument();
+      const container = document.querySelector('.min-h-screen');
+      expect(container).toBeInTheDocument();
     });
 
-    it('should have gradient background from deep space colors', () => {
+    it('should have text-center alignment on the content area', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      // The page uses from-[#0B0D17] to-[#141627] gradient
-      const mainContainer = document.querySelector('.min-h-screen');
-      expect(mainContainer).toBeInTheDocument();
-      expect(mainContainer?.className).toContain('bg-gradient-to-br');
+      const centered = document.querySelector('.text-center');
+      expect(centered).toBeInTheDocument();
     });
 
-    it('should have min-h-screen class for full height', () => {
+    it('should have rounded-lg class on the Go Home link', () => {
       renderWithProviders(createElement(NotFoundPage));
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      expect(goHomeLink?.className).toContain('rounded-lg');
+    });
 
-      const mainContainer = document.querySelector('.min-h-screen');
-      expect(mainContainer).toBeInTheDocument();
+    it('should have border styling on the Dashboard link', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      const dashboardLink = screen.getByText('Dashboard').closest('a');
+      expect(dashboardLink?.className).toContain('border');
+    });
+
+    it('should have hover transition-colors on links', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      const dashboardLink = screen.getByText('Dashboard').closest('a');
+      expect(goHomeLink?.className).toContain('transition-colors');
+      expect(dashboardLink?.className).toContain('transition-colors');
+    });
+
+    it('should have flex layout for the link buttons', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      const linkContainer = screen.getByText('Go Home').closest('a')?.parentElement;
+      expect(linkContainer?.className).toContain('flex');
     });
   });
 
   describe('Footer Section', () => {
     it('should render footer section', () => {
       renderWithProviders(createElement(NotFoundPage));
-
       const footer = document.querySelector('footer');
       expect(footer).toBeInTheDocument();
     });
 
-    it('should render brand mark in footer', () => {
+    it('should render copyright text in footer', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      expect(screen.getByText('AstroVerse')).toBeInTheDocument();
-    });
-
-    it('should have brand icon in footer', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const brandIcon = document.querySelector('footer .material-symbols-outlined');
-      expect(brandIcon).toBeInTheDocument();
-    });
-
-    it('should have hover opacity transition on footer content', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      // The opacity class is on the inner div, not the footer itself
-      const footerContent = document.querySelector('.opacity-70.hover\\:opacity-100');
-      expect(footerContent).toBeInTheDocument();
+      expect(screen.getByText(/AstroSaaS/)).toBeInTheDocument();
     });
   });
 
   describe('Accessibility', () => {
-    it('should have proper heading hierarchy', () => {
+    it('should have proper heading hierarchy with h1', () => {
       renderWithProviders(createElement(NotFoundPage));
-
       const h1 = screen.getByRole('heading', { level: 1 });
       expect(h1).toBeInTheDocument();
-      expect(h1).toHaveTextContent('404');
-
-      const h2 = screen.getByRole('heading', { level: 2 });
-      expect(h2).toBeInTheDocument();
-      expect(h2).toHaveTextContent('Lost in the Cosmos');
-    });
-
-    it('should have alt text on astronaut image', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const astronautImage = screen.getByRole('img');
-      expect(astronautImage).toHaveAttribute('alt', 'Astronaut floating in deep space darkness');
-    });
-
-    it('should have accessible buttons', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const buttons = screen.getAllByRole('button');
-      expect(buttons.length).toBeGreaterThanOrEqual(2);
+      expect(h1).toHaveTextContent('Page Not Found');
     });
 
     it('should have main landmark', () => {
       renderWithProviders(createElement(NotFoundPage));
-
       const main = screen.getByRole('main');
       expect(main).toBeInTheDocument();
     });
 
     it('should have footer landmark', () => {
       renderWithProviders(createElement(NotFoundPage));
-
       const footer = screen.getByRole('contentinfo');
       expect(footer).toBeInTheDocument();
     });
 
-    it('should be keyboard navigable', async () => {
-      const user = userEvent.setup();
+    it('should have skip link for accessibility', () => {
       renderWithProviders(createElement(NotFoundPage));
+      const skipLink = screen.getByText('Skip to main content');
+      expect(skipLink).toBeInTheDocument();
+      expect(skipLink).toHaveAttribute('href', '#main-content');
+    });
 
-      // Tab to first button
-      await user.tab();
-
-      const focusedElement = document.activeElement;
-      expect(focusedElement?.tagName).toBe('BUTTON');
+    it('should have aria-hidden on decorative icons', () => {
+      renderWithProviders(createElement(NotFoundPage));
+      const decorativeIcons = document.querySelectorAll('.material-symbols-outlined[aria-hidden="true"]');
+      expect(decorativeIcons.length).toBeGreaterThanOrEqual(1);
     });
   });
 
   describe('Responsive Design', () => {
-    it('should have responsive text classes for 404 number', () => {
+    it('should have responsive padding on the content area', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const heading404 = screen.getByText('404');
-      expect(heading404.className).toContain('md:text');
+      const paddedContainer = document.querySelector('.px-4');
+      expect(paddedContainer).toBeInTheDocument();
     });
 
-    it('should have responsive flex direction', () => {
+    it('should use responsive flex layout for links', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const mainContainer = document.querySelector('.flex-col.md\\:flex-row');
-      expect(mainContainer).toBeInTheDocument();
-    });
-
-    it('should have responsive gap classes', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const contentContainer = document.querySelector('.gap-12.md\\:gap-20');
-      expect(contentContainer).toBeInTheDocument();
-    });
-
-    it('should have responsive button container', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      const buttonContainer = document.querySelector('.flex-col.sm\\:flex-row');
-      expect(buttonContainer).toBeInTheDocument();
+      const linkContainer = screen.getByText('Go Home').closest('a')?.parentElement;
+      expect(linkContainer?.className).toContain('justify-center');
     });
   });
 
   describe('Brand Styling', () => {
-    it('should have gradient on Return Home button', () => {
+    it('should have bg-primary on the Go Home link', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const returnHomeButton = screen.getByText('Return Home').closest('button');
-      expect(returnHomeButton?.className).toContain('bg-gradient-to-r');
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      expect(goHomeLink?.className).toContain('bg-primary');
     });
 
-    it('should have border styling on Dashboard button', () => {
+    it('should have text-white on the Go Home link', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const dashboardButton = screen.getByText('Go to Dashboard').closest('button');
-      expect(dashboardButton?.className).toContain('border');
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      expect(goHomeLink?.className).toContain('text-white');
     });
 
-    it('should have hover effects on buttons', async () => {
+    it('should have hover effects on links', () => {
       renderWithProviders(createElement(NotFoundPage));
-
-      const returnHomeButton = screen.getByText('Return Home').closest('button');
-      expect(returnHomeButton?.className).toContain('hover:');
-
-      const dashboardButton = screen.getByText('Go to Dashboard').closest('button');
-      expect(dashboardButton?.className).toContain('hover:');
-    });
-  });
-
-  describe('Content Order', () => {
-    it('should have 404 number before heading on mobile', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      // On mobile (default), order-2 is illustration, order-1 is text
-      const textContent = screen.getByText('Lost in the Cosmos').closest('div');
-      expect(textContent?.className).toContain('order-1');
-    });
-
-    it('should have illustration area with proper order', () => {
-      renderWithProviders(createElement(NotFoundPage));
-
-      // The illustration area should have order classes
-      const illustrationArea = document.querySelector('.aspect-square');
-      expect(illustrationArea).toBeInTheDocument();
+      const goHomeLink = screen.getByText('Go Home').closest('a');
+      const dashboardLink = screen.getByText('Dashboard').closest('a');
+      expect(goHomeLink?.className).toContain('hover:');
+      expect(dashboardLink?.className).toContain('hover:');
     });
   });
 });

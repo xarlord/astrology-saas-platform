@@ -3,44 +3,30 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useTransits } from '../../hooks/useTransits';
-import type { Transit, TransitChart } from '../../services/api.types';
+import type { NormalizedTransit } from '../../services/transit.service';
 
-// Mock transit data
-const mockTransit: Transit = {
-  id: 'transit-1',
-  planet: 'Saturn',
-  aspect: 'Square',
+// Mock transit data using NormalizedTransit shape
+const mockTransit: NormalizedTransit = {
+  transitPlanet: 'Saturn',
   natalPlanet: 'Sun',
-  type: 'major',
-  start_date: '2024-01-01',
-  end_date: '2024-01-31',
-  degree: 0,
-  sign: 'Pisces',
-  exact_date: '2024-01-15',
-  interpretation: 'A challenging transit',
+  aspect: 'Square',
+  orb: 0.5, // tight orb → major
 };
 
-const mockMinorTransit: Transit = {
-  id: 'transit-2',
-  planet: 'Moon',
-  aspect: 'Conjunction',
+const mockMinorTransit: NormalizedTransit = {
+  transitPlanet: 'Moon',
   natalPlanet: 'Venus',
-  type: 'minor',
-  start_date: '2024-01-15',
-  end_date: '2024-01-16',
-  degree: 2,
-  sign: 'Taurus',
-  exact_date: '2024-01-15',
-  interpretation: 'Emotional connection',
+  aspect: 'Conjunction',
+  orb: 3.5, // wide orb → minor
 };
 
 // Mock the transit store
 const mockTransitStore = {
   dateRange: null as { start: string; end: string } | null,
-  transits: [] as Transit[],
-  transitChart: null as TransitChart | null,
+  transits: [] as NormalizedTransit[],
+  transitChart: null as unknown,
   energyLevel: 50,
   isLoading: false,
   error: null as string | null,
@@ -281,7 +267,7 @@ describe('useTransits', () => {
   });
 
   describe('getMajorTransits', () => {
-    it('should filter major transits', () => {
+    it('should filter major transits (orb <= 2)', () => {
       mockTransitStore.transits = [mockTransit, mockMinorTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -289,7 +275,7 @@ describe('useTransits', () => {
       const majorTransits = result.current.getMajorTransits();
 
       expect(majorTransits).toHaveLength(1);
-      expect(majorTransits[0].type).toBe('major');
+      expect(majorTransits[0].transitPlanet).toBe('Saturn');
     });
 
     it('should return empty array when no major transits', () => {
@@ -304,7 +290,7 @@ describe('useTransits', () => {
   });
 
   describe('getMinorTransits', () => {
-    it('should filter minor transits', () => {
+    it('should filter minor transits (orb > 2)', () => {
       mockTransitStore.transits = [mockTransit, mockMinorTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -312,7 +298,7 @@ describe('useTransits', () => {
       const minorTransits = result.current.getMinorTransits();
 
       expect(minorTransits).toHaveLength(1);
-      expect(minorTransits[0].type).toBe('minor');
+      expect(minorTransits[0].transitPlanet).toBe('Moon');
     });
 
     it('should return empty array when no minor transits', () => {
@@ -327,7 +313,7 @@ describe('useTransits', () => {
   });
 
   describe('getTransitsByPlanet', () => {
-    it('should filter transits by planet', () => {
+    it('should filter transits by planet (transitPlanet or natalPlanet)', () => {
       mockTransitStore.transits = [mockTransit, mockMinorTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -335,7 +321,17 @@ describe('useTransits', () => {
       const saturnTransits = result.current.getTransitsByPlanet('Saturn');
 
       expect(saturnTransits).toHaveLength(1);
-      expect(saturnTransits[0].planet).toBe('Saturn');
+      expect(saturnTransits[0].transitPlanet).toBe('Saturn');
+    });
+
+    it('should match natalPlanet as well', () => {
+      mockTransitStore.transits = [mockTransit];
+
+      const { result } = renderHook(() => useTransits());
+
+      const sunTransits = result.current.getTransitsByPlanet('Sun');
+
+      expect(sunTransits).toHaveLength(1);
     });
 
     it('should return empty array when no transits match planet', () => {
@@ -350,7 +346,7 @@ describe('useTransits', () => {
   });
 
   describe('getActiveTransitsForDate', () => {
-    it('should return transits active on specific date', () => {
+    it('should return all transits regardless of date', () => {
       mockTransitStore.transits = [mockTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -360,8 +356,8 @@ describe('useTransits', () => {
       expect(activeTransits).toHaveLength(1);
     });
 
-    it('should return empty array when no transits are active', () => {
-      mockTransitStore.transits = [mockTransit];
+    it('should return empty array when no transits exist', () => {
+      mockTransitStore.transits = [];
 
       const { result } = renderHook(() => useTransits());
 

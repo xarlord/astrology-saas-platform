@@ -34,10 +34,14 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
       expect(res.data.data.user.name).toBe(TEST_USER.name);
       expect(res.data.data.user.password_hash).toBeUndefined();
       expect(res.data.data.accessToken).toBeDefined();
-      expect(res.data.data.refreshToken).toBeDefined();
+      // refreshToken is set as httpOnly cookie, not in response body
+      const hasRefreshCookie = res.cookies.some((c: string) => c.startsWith('refreshToken='));
+      expect(hasRefreshCookie).toBe(true);
 
       accessToken = res.data.data.accessToken;
-      refreshTokenValue = res.data.data.refreshToken;
+      // Extract refreshToken from httpOnly cookie
+      const refreshCookie = res.cookies.find((c: string) => c.startsWith('refreshToken='));
+      refreshTokenValue = refreshCookie ? refreshCookie.split(';')[0].split('=')[1] : '';
       const authCookies = res.cookies.map((s: string) => s.split(';')[0]).join('; ');
       if (authCookies) cookies += '; ' + authCookies;
     }, 15000);

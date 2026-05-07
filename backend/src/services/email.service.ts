@@ -21,7 +21,7 @@ async function getResend() {
   if (_resend) return _resend;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
-  const { Resend } = await import('resend');
+  const Resend = (await import('resend')).default;
   _resend = new Resend(apiKey);
   return _resend;
 }

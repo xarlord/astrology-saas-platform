@@ -13,7 +13,7 @@ import { transitService } from '../services/transit.service';
 import { chartService } from '../services/chart.service';
 import { AppLayout } from '../components/AppLayout';
 import { SkeletonLoader, EmptyState } from '../components';
-import type { Transit, TransitChart as TransitChartType } from '../services/api.types';
+import type { TransitReading, NormalizedTransit } from '../services/transit.service';
 
 interface Chart {
   id: string;
@@ -40,42 +40,40 @@ interface CurrentTransit {
 }
 
 /**
- * Transform API Transit type to component TransitEvent type
+ * Transform NormalizedTransit to component TransitEvent type
  */
-function transformTransitToEvent(transit: Transit): TransitEvent {
-  // Map API impact to component impact
-  const mapImpact = (impact?: string): 'low' | 'moderate' | 'high' => {
-    if (impact === 'positive') return 'high';
-    if (impact === 'negative') return 'moderate';
+function transformTransitToEvent(transit: NormalizedTransit, fallbackDate: string, index: number): TransitEvent {
+  // Compute intensity from orb (lower orb = tighter aspect = higher intensity)
+  const intensity = Math.max(1, Math.round(10 - transit.orb));
+
+  // Map intensity to component impact
+  const mapImpact = (): 'low' | 'moderate' | 'high' => {
+    if (intensity >= 7) return 'high';
+    if (intensity >= 4) return 'moderate';
     return 'low';
   };
 
-  // Map API TransitType to component type
-  const mapType = (
-    transitType: string,
-    impact?: string,
-  ): 'favorable' | 'challenging' | 'neutral' | 'major' => {
-    if (transitType === 'major') return 'major';
-    if (impact === 'positive') return 'favorable';
-    if (impact === 'negative') return 'challenging';
+  // Classify aspect type
+  const harmoniousAspects = ['trine', 'sextile', 'conjunction'];
+  const challengingAspects = ['square', 'opposition', 'quincunx'];
+  const mapType = (): 'favorable' | 'challenging' | 'neutral' | 'major' => {
+    if (intensity >= 8) return 'major';
+    if (harmoniousAspects.some((a) => transit.aspect.toLowerCase().includes(a))) return 'favorable';
+    if (challengingAspects.some((a) => transit.aspect.toLowerCase().includes(a))) return 'challenging';
     return 'neutral';
   };
 
-  // Generate title from planet and aspect
-  const title = transit.title ?? `${transit.planet}${transit.aspect ? ` ${transit.aspect}` : ''}`;
-
-  // Use peak_date or fall back to start_date
-  const date = transit.peak_date ?? transit.start_date;
+  const title = `${transit.transitPlanet} ${transit.aspect} ${transit.natalPlanet}`;
 
   return {
-    id: transit.id,
-    date,
+    id: `transit-${index}`,
+    date: fallbackDate,
     title,
-    description: transit.influence?.overall ?? transit.description ?? '',
-    type: mapType(transit.type, transit.impact),
-    impact: mapImpact(transit.impact),
+    description: `${transit.transitPlanet} forms a ${transit.aspect} with ${transit.natalPlanet} (orb: ${transit.orb.toFixed(1)})`,
+    type: mapType(),
+    impact: mapImpact(),
     tags: transit.aspect ? [transit.aspect] : undefined,
-    orb: transit.intensity,
+    orb: transit.orb,
   };
 }
 
@@ -86,26 +84,15 @@ function generateEnergyData(
   energyLevel: number,
   startDate: string,
   endDate: string,
-  transits: Transit[],
 ): TransitDataPoint[] {
   const start = new Date(startDate);
   const end = new Date(endDate);
   const days: TransitDataPoint[] = [];
 
-  // Create a map of transit dates for marking major events
-  const transitDates = new Map<string, Transit>();
-  transits.forEach((t) => {
-    const peakDate = t.peak_date || t.start_date;
-    if (peakDate) {
-      transitDates.set(peakDate.split('T')[0], t);
-    }
-  });
-
   // Generate data points for each day
   const current = new Date(start);
   while (current <= end) {
     const dateStr = current.toISOString().split('T')[0];
-    const transit = transitDates.get(dateStr);
 
     // Add some variance to the energy level based on the day
     const dayVariance = Math.sin(current.getDate() / 5) * 10;
@@ -114,10 +101,7 @@ function generateEnergyData(
     days.push({
       date: dateStr,
       energy: Math.round(baseEnergy),
-      isMajorEvent: transit?.type === 'major',
-      eventName:
-        transit?.title ?? `${transit?.planet}${transit?.aspect ? ` ${transit.aspect}` : ''}`,
-      eventDescription: transit?.influence?.overall,
+      isMajorEvent: false,
     });
 
     current.setDate(current.getDate() + 1);
@@ -196,10 +180,10 @@ const TransitForecastPage: React.FC = () => {
       const data = await transitService.getTodayTransits();
 
       // Transform transits to current positions
-      const positions: CurrentTransit[] = data.transits.map((transit) => ({
-        planet: transit.planet,
+      const positions: CurrentTransit[] = (data.transits ?? []).map((transit) => ({
+        planet: transit.transitPlanet,
         sign: transit.aspect ?? '',
-        degree: transit.intensity ?? 0,
+        degree: transit.orb,
         retrograde: false,
       }));
 
@@ -220,22 +204,24 @@ const TransitForecastPage: React.FC = () => {
       setError(null);
 
       // Fetch transit data from API
-      const data: TransitChartType = await transitService.calculateTransits(
+      const data: TransitReading = await transitService.calculateTransits(
         selectedChartId,
         startDate,
         endDate,
       );
 
-      // Transform API Transit[] to component TransitEvent[]
-      const transitEvents: TransitEvent[] = (data.transits || []).map(transformTransitToEvent);
+      // Transform NormalizedTransit[] to component TransitEvent[]
+      const transits = data.transits ?? [];
+      const transitEvents: TransitEvent[] = transits.map((t, i) =>
+        transformTransitToEvent(t, data.date ?? startDate, i),
+      );
       setEvents(transitEvents);
 
-      // Generate energy data from the single energy_level value
+      // Generate energy data
       const energyPoints = generateEnergyData(
-        data.energy_level || 50,
+        50,
         startDate,
         endDate,
-        data.transits || [],
       );
       setEnergyData(energyPoints);
 

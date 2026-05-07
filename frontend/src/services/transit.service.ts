@@ -47,13 +47,13 @@ interface TransitCalendarResponse {
   data: {
     month: number;
     year: number;
-    calendarData: Array<{
+    calendarData: {
       date: string;
       day: number;
-      aspects: Array<{ planet1: string; planet2: string; type: string; orb: number; applying?: boolean }>;
+      aspects: { planet1: string; planet2: string; type: string; orb: number; applying?: boolean }[];
       moonPhase?: { phase: string; degrees: number; illumination: number };
       retrogrades?: string[];
-    }>;
+    }[];
   };
 }
 
@@ -63,8 +63,8 @@ interface TransitForecastResponse {
     duration: string;
     startDate: string;
     endDate: string;
-    groupedByType: Record<string, Array<{ type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }>>;
-    forecast: Array<{ type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }>;
+    groupedByType: Record<string, { type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }[]>;
+    forecast: { type: string; date: string; planet1: string; planet2: string; orb: number; applying?: boolean; intensity: number }[];
   };
 }
 

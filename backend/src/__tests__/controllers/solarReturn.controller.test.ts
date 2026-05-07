@@ -8,9 +8,12 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-var */
 
 import { Response, NextFunction } from 'express';
-import {
+import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
+
+const {
   calculateSolarReturn,
   getSolarReturnByYear,
   getSolarReturnById,
@@ -19,7 +22,7 @@ import {
   getSolarReturnStats,
   deleteSolarReturn,
   getAvailableYears,
-} from '../../modules/solar/controllers/solarReturn.controller';
+} = solarReturnController;
 import solarReturnService from '../../modules/solar/services/solarReturn.service';
 import solarReturnModel from '../../modules/solar/models/solarReturn.model';
 import {
@@ -68,6 +71,22 @@ jest.mock('../../data/solarReturnInterpretations', () => ({
 jest.mock('../../middleware/errorHandler', () => ({
   asyncHandler: (fn: (...args: unknown[]) => unknown) => fn,
 }));
+
+// Mock knex (used for natal chart existence check)
+// `var` required because jest.mock factory functions are hoisted above `const`
+var mockKnexFirst: jest.Mock;
+var mockKnexChain: any;
+var mockKnex: jest.Mock;
+
+jest.mock('../../config/database', () => {
+  mockKnexFirst = jest.fn().mockResolvedValue({ id: 'chart-abc', user_id: 'user-123' });
+  mockKnexChain = {
+    where: jest.fn().mockReturnThis(),
+    first: mockKnexFirst,
+  };
+  mockKnex = jest.fn().mockReturnValue(mockKnexChain);
+  return mockKnex;
+});
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -144,6 +163,10 @@ describe('SolarReturnController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Re-establish knex mock chain after clearAllMocks
+    mockKnex.mockReturnValue(mockKnexChain);
+    mockKnexChain.where.mockReturnThis();
+    mockKnexFirst.mockResolvedValue({ id: 'chart-abc', user_id: 'user-123' });
     req = buildRequest();
     res = buildResponse();
   });

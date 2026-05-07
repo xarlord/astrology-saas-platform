@@ -51,10 +51,6 @@ vi.mock('../../hooks', () => ({
   useAuth: () => mockAuthHook,
 }));
 
-// Mock window.alert
-const originalAlert = window.alert;
-let alertMock: ReturnType<typeof vi.fn>;
-
 // Helper to render with router
 const renderRegisterPage = () => {
   return render(
@@ -76,14 +72,6 @@ describe('RegisterPage', () => {
     mockAuthHook.register.mockResolvedValue(true);
     mockAuthHook.isLoading = false;
     mockAuthHook.error = null;
-
-    // Mock alert
-    alertMock = vi.fn();
-    window.alert = alertMock;
-  });
-
-  afterEach(() => {
-    window.alert = originalAlert;
   });
 
   describe('Rendering', () => {
@@ -92,7 +80,7 @@ describe('RegisterPage', () => {
 
       // Header - use heading role for the title
       expect(screen.getByRole('heading', { name: 'Create Account' })).toBeInTheDocument();
-      expect(screen.getByText('Start your astrological journey')).toBeInTheDocument();
+      expect(screen.getByText('Start your astrological journey today')).toBeInTheDocument();
 
       // Form fields
       expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
@@ -104,7 +92,7 @@ describe('RegisterPage', () => {
       expect(screen.getByLabelText(/terms of service/i)).toBeInTheDocument();
 
       // Submit button
-      expect(screen.getByTestId('register-submit-button')).toBeInTheDocument();
+      expect(screen.getByTestId('register-submit')).toBeInTheDocument();
 
       // Sign in link
       expect(screen.getByText(/already have an account/i)).toBeInTheDocument();
@@ -118,7 +106,7 @@ describe('RegisterPage', () => {
       expect(nameInput).toHaveAttribute('type', 'text');
       expect(nameInput).toHaveAttribute('id', 'name');
       expect(nameInput).toHaveAttribute('name', 'name');
-      expect(nameInput).toHaveAttribute('required');
+      expect(nameInput).toHaveAttribute('aria-required', 'true');
       expect(nameInput).toHaveAttribute('placeholder', 'Your full name');
     });
 
@@ -130,7 +118,7 @@ describe('RegisterPage', () => {
       expect(emailInput).toHaveAttribute('id', 'email');
       expect(emailInput).toHaveAttribute('name', 'email');
       expect(emailInput).toHaveAttribute('autoComplete', 'email');
-      expect(emailInput).toHaveAttribute('required');
+      expect(emailInput).toHaveAttribute('aria-required', 'true');
     });
 
     it('should have correct input attributes for password field', () => {
@@ -141,7 +129,7 @@ describe('RegisterPage', () => {
       expect(passwordInput).toHaveAttribute('id', 'password');
       expect(passwordInput).toHaveAttribute('name', 'password');
       expect(passwordInput).toHaveAttribute('autoComplete', 'new-password');
-      expect(passwordInput).toHaveAttribute('required');
+      expect(passwordInput).toHaveAttribute('aria-required', 'true');
     });
 
     it('should have correct input attributes for confirm password field', () => {
@@ -152,7 +140,7 @@ describe('RegisterPage', () => {
       expect(confirmPasswordInput).toHaveAttribute('id', 'confirmPassword');
       expect(confirmPasswordInput).toHaveAttribute('name', 'confirmPassword');
       expect(confirmPasswordInput).toHaveAttribute('autoComplete', 'new-password');
-      expect(confirmPasswordInput).toHaveAttribute('required');
+      expect(confirmPasswordInput).toHaveAttribute('aria-required', 'true');
     });
 
     it('should have terms of service and privacy policy links', () => {
@@ -199,9 +187,9 @@ describe('RegisterPage', () => {
       renderRegisterPage();
 
       const passwordInput = screen.getByTestId('register-password-input') as HTMLInputElement;
-      await user.type(passwordInput, 'SecurePassword123');
+      await user.type(passwordInput, 'SecurePassword123!');
 
-      expect(passwordInput.value).toBe('SecurePassword123');
+      expect(passwordInput.value).toBe('SecurePassword123!');
     });
 
     it('should update confirm password state when typing', async () => {
@@ -209,16 +197,16 @@ describe('RegisterPage', () => {
       renderRegisterPage();
 
       const confirmPasswordInput = screen.getByTestId('confirm-password-input') as HTMLInputElement;
-      await user.type(confirmPasswordInput, 'SecurePassword123');
+      await user.type(confirmPasswordInput, 'SecurePassword123!');
 
-      expect(confirmPasswordInput.value).toBe('SecurePassword123');
+      expect(confirmPasswordInput.value).toBe('SecurePassword123!');
     });
 
     it('should toggle terms checkbox', async () => {
       const user = userEvent.setup();
       renderRegisterPage();
 
-      const termsCheckbox = screen.getByTestId('terms-checkbox') as HTMLInputElement;
+      const termsCheckbox = screen.getByLabelText(/terms of service/i) as HTMLInputElement;
       expect(termsCheckbox.checked).toBe(false);
 
       await user.click(termsCheckbox);
@@ -238,13 +226,13 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
+      await user.type(passwordInput, 'SecurePassword123!');
+      await user.type(confirmPasswordInput, 'SecurePassword123!');
       await user.click(termsCheckbox);
       await user.click(submitButton);
 
@@ -252,31 +240,8 @@ describe('RegisterPage', () => {
         expect(mockAuthHook.register).toHaveBeenCalledWith({
           name: 'John Doe',
           email: 'john@example.com',
-          password: 'SecurePassword123',
+          password: 'SecurePassword123!',
         });
-      });
-    });
-
-    it('should call clearError on form submit', async () => {
-      const user = userEvent.setup();
-      renderRegisterPage();
-
-      const nameInput = screen.getByTestId('name-input');
-      const emailInput = screen.getByTestId('register-email-input');
-      const passwordInput = screen.getByTestId('register-password-input');
-      const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
-
-      await user.type(nameInput, 'John Doe');
-      await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
-      await user.click(termsCheckbox);
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(mockAuthHook.clearError).toHaveBeenCalled();
       });
     });
 
@@ -289,13 +254,13 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
+      await user.type(passwordInput, 'SecurePassword123!');
+      await user.type(confirmPasswordInput, 'SecurePassword123!');
       await user.click(termsCheckbox);
       await user.click(submitButton);
 
@@ -313,13 +278,13 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
+      await user.type(passwordInput, 'SecurePassword123!');
+      await user.type(confirmPasswordInput, 'SecurePassword123!');
       await user.click(termsCheckbox);
       await user.click(submitButton);
 
@@ -333,50 +298,29 @@ describe('RegisterPage', () => {
   });
 
   describe('Terms Agreement Validation', () => {
-    it('should have disabled button when terms not agreed', () => {
+    it('should have terms checkbox that is unchecked by default', () => {
       renderRegisterPage();
 
-      const submitButton = screen.getByTestId('register-submit-button');
-      expect(submitButton).toBeDisabled();
+      const termsCheckbox = screen.getByLabelText(/terms of service/i) as HTMLInputElement;
+      expect(termsCheckbox.checked).toBe(false);
     });
 
-    it('should enable button when terms agreed', async () => {
+    it('should toggle terms checkbox on click', async () => {
       const user = userEvent.setup();
       renderRegisterPage();
 
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
-
-      expect(submitButton).toBeDisabled();
+      const termsCheckbox = screen.getByLabelText(/terms of service/i) as HTMLInputElement;
 
       await user.click(termsCheckbox);
+      expect(termsCheckbox.checked).toBe(true);
 
-      expect(submitButton).toBeEnabled();
-    });
-
-    it('should require terms checkbox to be checked for submission', async () => {
-      const user = userEvent.setup();
-      renderRegisterPage();
-
-      const nameInput = screen.getByTestId('name-input');
-      const emailInput = screen.getByTestId('register-email-input');
-      const passwordInput = screen.getByTestId('register-password-input');
-      const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-
-      await user.type(nameInput, 'John Doe');
-      await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
-
-      // Without checking terms, button is disabled so form can't be submitted
-      const submitButton = screen.getByTestId('register-submit-button');
-      expect(submitButton).toBeDisabled();
-      expect(mockAuthHook.register).not.toHaveBeenCalled();
+      await user.click(termsCheckbox);
+      expect(termsCheckbox.checked).toBe(false);
     });
   });
 
   describe('Password Confirmation Validation', () => {
-    it('should show alert when passwords do not match', async () => {
+    it('should show validation error when passwords do not match', async () => {
       const user = userEvent.setup();
       renderRegisterPage();
 
@@ -384,17 +328,20 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'DifferentPassword456');
+      await user.type(passwordInput, 'SecurePassword123!');
+      await user.type(confirmPasswordInput, 'DifferentPassword456!');
       await user.click(termsCheckbox);
       await user.click(submitButton);
 
-      expect(alertMock).toHaveBeenCalledWith('Passwords do not match');
+      // The form's validate() should show "Passwords do not match"
+      await waitFor(() => {
+        expect(screen.getByText('Passwords do not match')).toBeInTheDocument();
+      });
     });
 
     it('should not call register when passwords do not match', async () => {
@@ -405,13 +352,13 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'DifferentPassword456');
+      await user.type(passwordInput, 'SecurePassword123!');
+      await user.type(confirmPasswordInput, 'DifferentPassword456!');
       await user.click(termsCheckbox);
       await user.click(submitButton);
 
@@ -420,41 +367,61 @@ describe('RegisterPage', () => {
   });
 
   describe('Error States', () => {
-    it('should display error message when auth error exists', () => {
-      mockAuthHook.error = 'Email already exists';
+    it('should display validation error when submitting empty form', async () => {
+      const user = userEvent.setup();
       renderRegisterPage();
 
-      expect(screen.getByText('Email already exists')).toBeInTheDocument();
+      // Must check the terms checkbox (HTML required) so the form submit actually fires
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
+
+      await user.click(termsCheckbox);
+      await user.click(submitButton);
+
+      // Form validation shows errors for required fields
+      await waitFor(() => {
+        expect(screen.getByText('Name is required')).toBeInTheDocument();
+      });
     });
 
-    it('should display error in correct styling container', () => {
-      mockAuthHook.error = 'Test error message';
+    it('should not display error container when no validation errors', () => {
       renderRegisterPage();
 
-      const errorDiv = screen.getByText('Test error message').closest('div');
-      expect(errorDiv).toHaveClass('bg-red-100');
+      // The error message should not exist
+      expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
     });
 
-    it('should not display error container when no error', () => {
-      mockAuthHook.error = null;
+    it('should display error for short name', async () => {
+      const user = userEvent.setup();
       renderRegisterPage();
 
-      // The error div should not exist
-      expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
+      const nameInput = screen.getByTestId('name-input');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
+
+      await user.type(nameInput, 'J');
+      await user.click(termsCheckbox);
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Name must be at least 2 characters')).toBeInTheDocument();
+      });
     });
 
-    it('should handle different error messages', () => {
-      const errorMessages = [
-        'Email already registered',
-        'Invalid email format',
-        'Password too weak',
-        'Network error',
-      ];
+    it('should display error for invalid email', async () => {
+      const user = userEvent.setup();
+      renderRegisterPage();
 
-      errorMessages.forEach((message) => {
-        mockAuthHook.error = message;
-        renderRegisterPage();
-        expect(screen.getByText(message)).toBeInTheDocument();
+      const emailInput = screen.getByTestId('register-email-input');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
+
+      await user.type(emailInput, 'invalid-email');
+      await user.click(termsCheckbox);
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
       });
     });
   });
@@ -464,7 +431,7 @@ describe('RegisterPage', () => {
       mockAuthHook.isLoading = true;
       renderRegisterPage();
 
-      expect(screen.getByText('Creating Account...')).toBeInTheDocument();
+      expect(screen.getByText('Creating account...')).toBeInTheDocument();
     });
 
     it('should show normal text when isLoading is false', () => {
@@ -472,7 +439,7 @@ describe('RegisterPage', () => {
       renderRegisterPage();
 
       // Button text when not loading
-      const submitButton = screen.getByTestId('register-submit-button');
+      const submitButton = screen.getByTestId('register-submit');
       expect(submitButton).toHaveTextContent('Create Account');
     });
 
@@ -480,7 +447,7 @@ describe('RegisterPage', () => {
       mockAuthHook.isLoading = true;
       renderRegisterPage();
 
-      const submitButton = screen.getByTestId('register-submit-button');
+      const submitButton = screen.getByTestId('register-submit');
       expect(submitButton).toBeDisabled();
     });
 
@@ -488,7 +455,7 @@ describe('RegisterPage', () => {
       mockAuthHook.isLoading = true;
       renderRegisterPage();
 
-      const submitButton = screen.getByTestId('register-submit-button');
+      const submitButton = screen.getByTestId('register-submit');
       expect(submitButton).toHaveClass('disabled:opacity-50');
       expect(submitButton).toHaveClass('disabled:cursor-not-allowed');
     });
@@ -529,7 +496,7 @@ describe('RegisterPage', () => {
       expect(screen.getByLabelText(/terms of service/i)).toBeInTheDocument();
     });
 
-    it('should have required attribute on required fields', () => {
+    it('should have aria-required attribute on required fields', () => {
       renderRegisterPage();
 
       const nameInput = screen.getByTestId('name-input');
@@ -537,10 +504,10 @@ describe('RegisterPage', () => {
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
 
-      expect(nameInput).toBeRequired();
-      expect(emailInput).toBeRequired();
-      expect(passwordInput).toBeRequired();
-      expect(confirmPasswordInput).toBeRequired();
+      expect(nameInput).toHaveAttribute('aria-required', 'true');
+      expect(emailInput).toHaveAttribute('aria-required', 'true');
+      expect(passwordInput).toHaveAttribute('aria-required', 'true');
+      expect(confirmPasswordInput).toHaveAttribute('aria-required', 'true');
     });
 
     it('should have email type for email input', () => {
@@ -563,29 +530,20 @@ describe('RegisterPage', () => {
     it('should have terms checkbox with proper type', () => {
       renderRegisterPage();
 
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
       expect(termsCheckbox).toHaveAttribute('type', 'checkbox');
     });
   });
 
   describe('Form Layout and Styling', () => {
-    it('should have correct container classes', () => {
+    it('should have glass-panel styling on form container', () => {
       renderRegisterPage();
 
-      // The outermost container has min-h-screen classes
-      const container = document.querySelector('.min-h-screen');
-      expect(container).toHaveClass('min-h-screen');
-      expect(container).toHaveClass('flex');
-      expect(container).toHaveClass('items-center');
-      expect(container).toHaveClass('justify-center');
-    });
-
-    it('should have card styling on form container', () => {
-      renderRegisterPage();
-
-      const card = document.querySelector('.card');
-      expect(card).toHaveClass('max-w-md');
-      expect(card).toHaveClass('w-full');
+      // Use the heading specifically to avoid matching the button text
+      const heading = screen.getByRole('heading', { name: 'Create Account' });
+      const card = heading.closest('div.glass-panel');
+      expect(card).toBeInTheDocument();
+      expect(card).toHaveClass('rounded-2xl');
     });
 
     it('should have correct title styling', () => {
@@ -593,8 +551,8 @@ describe('RegisterPage', () => {
 
       const title = screen.getByRole('heading', { name: 'Create Account' });
       expect(title).toHaveClass('text-3xl');
-      expect(title).toHaveClass('font-display');
       expect(title).toHaveClass('font-bold');
+      expect(title).toHaveClass('text-white');
     });
   });
 
@@ -603,10 +561,18 @@ describe('RegisterPage', () => {
       const user = userEvent.setup();
       renderRegisterPage();
 
-      const submitButton = screen.getByTestId('register-submit-button');
+      // Must check the terms checkbox (HTML required) so the form submit actually fires
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
-      // Button is disabled without terms agreement
-      expect(submitButton).toBeDisabled();
+      await user.click(termsCheckbox);
+      await user.click(submitButton);
+
+      // Validation errors should appear
+      await waitFor(() => {
+        expect(screen.getByText('Name is required')).toBeInTheDocument();
+      });
+      expect(mockAuthHook.register).not.toHaveBeenCalled();
     });
 
     it('should handle special characters in name', async () => {
@@ -699,21 +665,19 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
       const form = nameInput.closest('form')!;
 
       fireEvent.change(nameInput, { target: { value: 'John Doe' } });
       fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'SecurePassword123' } });
-      fireEvent.change(confirmPasswordInput, { target: { value: 'SecurePassword123' } });
-      fireEvent.click(termsCheckbox);
+      fireEvent.change(passwordInput, { target: { value: 'SecurePassword123!' } });
+      fireEvent.change(confirmPasswordInput, { target: { value: 'SecurePassword123!' } });
       fireEvent.submit(form);
 
       await waitFor(() => {
         expect(mockAuthHook.register).toHaveBeenCalledWith({
           name: 'John Doe',
           email: 'john@example.com',
-          password: 'SecurePassword123',
+          password: 'SecurePassword123!',
         });
       });
     });
@@ -734,40 +698,19 @@ describe('RegisterPage', () => {
       const emailInput = screen.getByTestId('register-email-input');
       const passwordInput = screen.getByTestId('register-password-input');
       const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
+      const termsCheckbox = screen.getByLabelText(/terms of service/i);
+      const submitButton = screen.getByTestId('register-submit');
 
       await user.type(nameInput, 'Jane Doe');
       await user.type(emailInput, 'jane@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
+      await user.type(passwordInput, 'SecurePassword123!');
+      await user.type(confirmPasswordInput, 'SecurePassword123!');
       await user.click(termsCheckbox);
       await user.click(submitButton);
 
       await waitFor(() => {
         expect(mockAuthHook.register).toHaveBeenCalled();
       });
-    });
-
-    it('should clear error on new submission attempt', async () => {
-      const user = userEvent.setup();
-      renderRegisterPage();
-
-      const nameInput = screen.getByTestId('name-input');
-      const emailInput = screen.getByTestId('register-email-input');
-      const passwordInput = screen.getByTestId('register-password-input');
-      const confirmPasswordInput = screen.getByTestId('confirm-password-input');
-      const termsCheckbox = screen.getByTestId('terms-checkbox');
-      const submitButton = screen.getByTestId('register-submit-button');
-
-      await user.type(nameInput, 'John Doe');
-      await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123');
-      await user.type(confirmPasswordInput, 'SecurePassword123');
-      await user.click(termsCheckbox);
-      await user.click(submitButton);
-
-      expect(mockAuthHook.clearError).toHaveBeenCalled();
     });
   });
 });

@@ -2,7 +2,7 @@
  * CalendarPage Component Tests
  *
  * Comprehensive tests for the astrological calendar page
- * Covers: calendar grid, navigation, event display, filters, detail panel
+ * Covers: page shell, calendar grid, navigation, event display, loading/error states
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -22,104 +22,77 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: any) => children,
 }));
 
-// Mock hooks
-const mockSetSelectedDate = vi.fn();
-const mockLoadEvents = vi.fn();
-const mockLoadLunarPhases = vi.fn();
-
-vi.mock('../../hooks/useCalendar', () => ({
-  useCalendar: () => ({
-    selectedDate: new Date(2026, 1, 15), // February 15, 2026
-    lunarPhases: [
-      {
-        date: '2026-02-12',
-        phase: 'full-moon',
-        illumination: 100,
-        sign: 'Leo',
-      },
-      {
-        date: '2026-02-27',
-        phase: 'new-moon',
-        illumination: 0,
-        sign: 'Pisces',
-      },
-    ],
-    isLoading: false,
-    error: null,
-    goToPreviousMonth: vi.fn(() => mockSetSelectedDate(new Date(2026, 0, 15))),
-    goToNextMonth: vi.fn(() => mockSetSelectedDate(new Date(2026, 2, 15))),
-    goToToday: vi.fn(() => mockSetSelectedDate(new Date())),
-    setSelectedDate: mockSetSelectedDate,
-    loadEvents: mockLoadEvents,
-    loadLunarPhases: mockLoadLunarPhases,
-  }),
+// Mock motion/react (used by PageTransition and effects)
+vi.mock('motion/react', () => ({
+  motion: {
+    div: ({ children, ...props }: any) => createElement('div', props, children),
+    header: ({ children, ...props }: any) => createElement('header', props, children),
+    span: ({ children, ...props }: any) => createElement('span', props, children),
+    section: ({ children, ...props }: any) => createElement('section', props, children),
+    circle: ({ children, ...props }: any) => createElement('circle', props, children),
+  },
+  AnimatePresence: ({ children }: any) => children,
 }));
 
-vi.mock('../../hooks/useCalendarEvents', () => ({
-  useCalendarEvents: () => ({
-    data: {
-      data: [
-        {
-          id: 'event-1',
-          title: 'Venus enters Pisces',
-          description: 'A time for romance and creativity',
-          event_type: 'transit',
-          start_date: '2026-02-10T00:00:00.000Z',
-        },
-        {
-          id: 'event-2',
-          title: 'Mercury Retrograde Ends',
-          description: 'Communication improves',
-          event_type: 'retrograde',
-          start_date: '2026-02-20T00:00:00.000Z',
-        },
-        {
-          id: 'event-3',
-          title: 'Solar Eclipse',
-          description: 'Major transformation energy',
-          event_type: 'eclipse',
-          start_date: '2026-02-25T00:00:00.000Z',
-        },
-      ],
+// Mutable mock state for useCalendarEvents
+let mockCalendarEventsState: {
+  data: any[] | null;
+  isLoading: boolean;
+  error: any;
+  refetch: ReturnType<typeof vi.fn>;
+} = {
+  data: [
+    {
+      id: 'event-1',
+      title: 'Venus enters Pisces',
+      description: 'A time for romance and creativity',
+      event_type: 'new_moon',
+      event_date: '2026-05-10T00:00:00.000Z',
+      event_data: { sign: 'pisces' },
+      interpretation: 'Venus enters Pisces interpretation',
     },
-    isLoading: false,
-    error: null,
-  }),
-}));
+    {
+      id: 'event-2',
+      title: 'Mercury Retrograde',
+      description: 'Communication challenges',
+      event_type: 'mercury_retrograde',
+      event_date: '2026-05-20T00:00:00.000Z',
+      event_data: {},
+      interpretation: 'Mercury retrograde interpretation',
+    },
+    {
+      id: 'event-3',
+      title: 'Solar Eclipse',
+      description: 'Major transformation energy',
+      event_type: 'solar_eclipse',
+      event_date: '2026-05-25T00:00:00.000Z',
+      event_data: {},
+      interpretation: 'Solar eclipse interpretation',
+    },
+  ],
+  isLoading: false,
+  error: null,
+  refetch: vi.fn(),
+};
 
-// Mock child components
-vi.mock('../../components/astrology/CalendarCell', () => ({
-  __esModule: true,
-  default: ({ date, isToday, isSelected, events, onClick, ...props }: any) => (
-    <button
-      onClick={() => onClick()}
-      className={`calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
-      data-testid={`calendar-cell-${date}`}
-      data-events={events?.length || 0}
-      {...props}
-    >
-      {date}
-    </button>
-  ),
-}));
-
-vi.mock('../../components/ui/Button', () => ({
-  __esModule: true,
-  Button: ({ children, onClick, variant, leftIcon, fullWidth, ...props }: any) => (
-    <button
-      onClick={onClick}
-      className={`btn btn-${variant} ${fullWidth ? 'w-full' : ''}`}
-      {...props}
-    >
-      {leftIcon}
-      {children}
-    </button>
-  ),
+// Mock the useCalendarEvents hook to return event data as an array
+// (AstrologicalCalendar expects events to be an array)
+vi.mock('../../hooks/useCalendarEvents', () => ({
+  useCalendarEvents: () => mockCalendarEventsState,
 }));
 
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SkeletonLoader: ({ variant }: any) => <div data-testid="skeleton-loader">Loading {variant}...</div>,
+  SkeletonGrid: ({ children }: any) => <div>{children}</div>,
+  EmptyState: ({ title, description }: any) => (
+    <div data-testid="empty-state">
+      <span>{title}</span>
+      <span>{description}</span>
+    </div>
+  ),
+  EmptyStates: ({ children }: any) => <div>{children}</div>,
 }));
 
 // Import after mocks
@@ -155,15 +128,9 @@ describe('CalendarPage', () => {
       expect(screen.getByText('Astrological Calendar')).toBeInTheDocument();
     });
 
-    it('should render the app header with logo', () => {
-      renderWithProviders(createElement(CalendarPage));
-      // AppLayout is mocked; just verify the page content renders
-      expect(screen.getByText('Astrological Calendar')).toBeInTheDocument();
-    });
-
     it('should render the page title', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Astrological Calendar')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /Astrological Calendar/i })).toBeInTheDocument();
     });
 
     it('should render page subtitle', () => {
@@ -171,169 +138,267 @@ describe('CalendarPage', () => {
       expect(screen.getByText(/Track moon phases, retrogrades/i)).toBeInTheDocument();
     });
 
-    it('should render calendar grid', () => {
+    it('should render the calendar component inside AppLayout', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-grid')).toBeInTheDocument();
+      // AstrologicalCalendar renders navigation buttons when events are present
+      expect(screen.getByText('Today')).toBeInTheDocument();
     });
   });
 
   describe('Calendar Navigation', () => {
     it('should render Today button', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-today-button')).toBeInTheDocument();
+      expect(screen.getByText('Today')).toBeInTheDocument();
     });
 
     it('should render previous month button', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-prev-month')).toBeInTheDocument();
+      const prevButton = screen.getByLabelText('Previous month');
+      expect(prevButton).toBeInTheDocument();
     });
 
     it('should render next month button', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-next-month')).toBeInTheDocument();
+      const nextButton = screen.getByLabelText('Next month');
+      expect(nextButton).toBeInTheDocument();
     });
 
     it('should display current month and year', () => {
       renderWithProviders(createElement(CalendarPage));
-      // Based on mock selectedDate: February 2026
-      expect(screen.getByTestId('calendar-current-month')).toHaveTextContent('February 2026');
+      // Current month is May 2026 (from new Date() in AstrologicalCalendar default)
+      const monthYear = screen.getByRole('heading', { level: 2 });
+      expect(monthYear).toHaveTextContent('May 2026');
     });
 
-    it('should call navigation functions when buttons clicked', async () => {
+    it('should navigate to previous month when Previous clicked', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CalendarPage));
 
-      const todayButton = screen.getByTestId('calendar-today-button');
+      const prevButton = screen.getByLabelText('Previous month');
+      await user.click(prevButton);
+
+      // After clicking previous, the month should change
+      const monthYear = screen.getByRole('heading', { level: 2 });
+      expect(monthYear).toHaveTextContent('April 2026');
+    });
+
+    it('should navigate to next month when Next clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(CalendarPage));
+
+      const nextButton = screen.getByLabelText('Next month');
+      await user.click(nextButton);
+
+      // After clicking next, the month should change
+      const monthYear = screen.getByRole('heading', { level: 2 });
+      expect(monthYear).toHaveTextContent('June 2026');
+    });
+
+    it('should navigate to today when Today clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(createElement(CalendarPage));
+
+      // Navigate away first
+      const nextButton = screen.getByLabelText('Next month');
+      await user.click(nextButton);
+
+      // Click Today to go back
+      const todayButton = screen.getByText('Today');
       await user.click(todayButton);
-      // Navigation function called
-      expect(todayButton).toBeInTheDocument();
-    });
 
-    it('should render view mode buttons', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-view-modes')).toBeInTheDocument();
-      expect(screen.getByTestId('calendar-view-month')).toBeInTheDocument();
-      expect(screen.getByTestId('calendar-view-week')).toBeInTheDocument();
-      expect(screen.getByTestId('calendar-view-list')).toBeInTheDocument();
-    });
-
-    it('should have month view active by default', () => {
-      renderWithProviders(createElement(CalendarPage));
-      const monthButton = screen.getByTestId('calendar-view-month');
-      expect(monthButton).toHaveClass('bg-primary');
+      const monthYear = screen.getByRole('heading', { level: 2 });
+      expect(monthYear).toHaveTextContent('May 2026');
     });
   });
 
   describe('Calendar Grid', () => {
     it('should render weekday headers', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-weekdays')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-sun')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-mon')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-tue')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-wed')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-thu')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-fri')).toBeInTheDocument();
-      expect(screen.getByTestId('weekday-sat')).toBeInTheDocument();
+      expect(screen.getByText('Sun')).toBeInTheDocument();
+      expect(screen.getByText('Mon')).toBeInTheDocument();
+      expect(screen.getByText('Tue')).toBeInTheDocument();
+      expect(screen.getByText('Wed')).toBeInTheDocument();
+      expect(screen.getByText('Thu')).toBeInTheDocument();
+      expect(screen.getByText('Fri')).toBeInTheDocument();
+      expect(screen.getByText('Sat')).toBeInTheDocument();
     });
 
-    it('should render calendar cells for each day', () => {
+    it('should render calendar cells for each day of the month', () => {
       renderWithProviders(createElement(CalendarPage));
-      // February 2026 has 28 days
-      const cells = screen.getAllByTestId(/calendar-cell-/);
-      expect(cells.length).toBe(28);
-    });
-  });
-
-  describe('Event Filters', () => {
-    it('should render event filters section', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Event Filters')).toBeInTheDocument();
+      // May 2026 has 31 days
+      const dayCells = screen.getAllByText(/^[0-9]+$/).filter(
+        (el) => parseInt(el.textContent || '0') >= 1 && parseInt(el.textContent || '0') <= 31
+      );
+      expect(dayCells.length).toBe(31);
     });
 
-    it('should render Moon Phases filter', () => {
+    it('should display event badges on calendar days', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Moon Phases')).toBeInTheDocument();
-    });
-
-    it('should render Transits filter', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Transits')).toBeInTheDocument();
-    });
-
-    it('should render Retrogrades filter', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Retrogrades')).toBeInTheDocument();
-    });
-
-    it('should render Eclipses filter', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Eclipses')).toBeInTheDocument();
-    });
-
-    it('should render Custom Events filter', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Custom Events')).toBeInTheDocument();
-    });
-
-    it('should have checkboxes for filters', () => {
-      renderWithProviders(createElement(CalendarPage));
-      const checkboxes = screen.getAllByRole('checkbox');
-      expect(checkboxes.length).toBe(5); // 5 filter checkboxes
-    });
-
-    it('should toggle filter when checkbox clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(createElement(CalendarPage));
-
-      const checkboxes = screen.getAllByRole('checkbox');
-      await user.click(checkboxes[0]);
-
-      // Checkbox should still be functional
-      expect(checkboxes[0]).toBeInTheDocument();
+      // Event on May 10 with sign = 'pisces' renders as 'Pisces' (capitalize)
+      expect(screen.getByText('Pisces')).toBeInTheDocument();
     });
   });
 
-  describe('Upcoming Events Sidebar', () => {
-    it('should render Upcoming section', () => {
+  describe('Event Legend', () => {
+    it('should render legend section with event types', () => {
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Upcoming')).toBeInTheDocument();
-    });
-
-    it('should display upcoming events from the mock data', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText('Venus enters Pisces')).toBeInTheDocument();
-    });
-
-    it('should display event descriptions', () => {
-      renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByText(/A time for romance and creativity/i)).toBeInTheDocument();
-    });
-  });
-
-  describe('Event Detail Panel', () => {
-    it('should open detail panel when a date is clicked', async () => {
-      const user = userEvent.setup();
-      renderWithProviders(createElement(CalendarPage));
-
-      // Click on a calendar cell
-      const cells = screen.getAllByTestId(/calendar-cell-/);
-      await user.click(cells[0]);
-
-      // Panel should open (dialog appears)
-      await waitFor(() => {
-        const dialog = screen.queryByRole('dialog');
-        // Panel may or may not appear depending on implementation
-        expect(cells[0]).toBeInTheDocument();
-      });
+      expect(screen.getByText('New Moon')).toBeInTheDocument();
+      expect(screen.getByText('Full Moon')).toBeInTheDocument();
+      expect(screen.getByText('Retrograde')).toBeInTheDocument();
+      expect(screen.getByText('Eclipse')).toBeInTheDocument();
     });
   });
 
   describe('Loading State', () => {
-    it('should handle loading state gracefully', () => {
-      // Component uses useCalendar which returns isLoading: false
+    it('should render loading skeleton when events are loading', () => {
+      mockCalendarEventsState = {
+        data: null,
+        isLoading: true,
+        error: null,
+        refetch: vi.fn(),
+      };
+
       renderWithProviders(createElement(CalendarPage));
-      expect(screen.getByTestId('calendar-grid')).toBeInTheDocument();
+      // When loading, SkeletonLoader is rendered with variant="calendar"
+      expect(screen.getByTestId('skeleton-loader')).toBeInTheDocument();
+
+      // Restore default mock state
+      mockCalendarEventsState = {
+        data: [
+          {
+            id: 'event-1',
+            title: 'Venus enters Pisces',
+            description: 'A time for romance and creativity',
+            event_type: 'new_moon',
+            event_date: '2026-05-10T00:00:00.000Z',
+            event_data: { sign: 'pisces' },
+            interpretation: 'Venus enters Pisces interpretation',
+          },
+          {
+            id: 'event-2',
+            title: 'Mercury Retrograde',
+            description: 'Communication challenges',
+            event_type: 'mercury_retrograde',
+            event_date: '2026-05-20T00:00:00.000Z',
+            event_data: {},
+            interpretation: 'Mercury retrograde interpretation',
+          },
+          {
+            id: 'event-3',
+            title: 'Solar Eclipse',
+            description: 'Major transformation energy',
+            event_type: 'solar_eclipse',
+            event_date: '2026-05-25T00:00:00.000Z',
+            event_data: {},
+            interpretation: 'Solar eclipse interpretation',
+          },
+        ],
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      };
+    });
+  });
+
+  describe('Error State', () => {
+    it('should render error state when events fail to load', () => {
+      mockCalendarEventsState = {
+        data: null,
+        isLoading: false,
+        error: new Error('Failed to fetch'),
+        refetch: vi.fn(),
+      };
+
+      renderWithProviders(createElement(CalendarPage));
+      // Error state renders EmptyState with "Unable to load calendar" title
+      expect(screen.getByTestId('empty-state')).toHaveTextContent('Unable to load calendar');
+
+      // Restore default mock state
+      mockCalendarEventsState = {
+        data: [
+          {
+            id: 'event-1',
+            title: 'Venus enters Pisces',
+            description: 'A time for romance and creativity',
+            event_type: 'new_moon',
+            event_date: '2026-05-10T00:00:00.000Z',
+            event_data: { sign: 'pisces' },
+            interpretation: 'Venus enters Pisces interpretation',
+          },
+          {
+            id: 'event-2',
+            title: 'Mercury Retrograde',
+            description: 'Communication challenges',
+            event_type: 'mercury_retrograde',
+            event_date: '2026-05-20T00:00:00.000Z',
+            event_data: {},
+            interpretation: 'Mercury retrograde interpretation',
+          },
+          {
+            id: 'event-3',
+            title: 'Solar Eclipse',
+            description: 'Major transformation energy',
+            event_type: 'solar_eclipse',
+            event_date: '2026-05-25T00:00:00.000Z',
+            event_data: {},
+            interpretation: 'Solar eclipse interpretation',
+          },
+        ],
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      };
+    });
+  });
+
+  describe('Empty State', () => {
+    it('should render empty state when no events are found', () => {
+      mockCalendarEventsState = {
+        data: [],
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      };
+
+      renderWithProviders(createElement(CalendarPage));
+      // Empty state renders EmptyState with "No events this month"
+      expect(screen.getByTestId('empty-state')).toHaveTextContent('No events this month');
+
+      // Restore default mock state
+      mockCalendarEventsState = {
+        data: [
+          {
+            id: 'event-1',
+            title: 'Venus enters Pisces',
+            description: 'A time for romance and creativity',
+            event_type: 'new_moon',
+            event_date: '2026-05-10T00:00:00.000Z',
+            event_data: { sign: 'pisces' },
+            interpretation: 'Venus enters Pisces interpretation',
+          },
+          {
+            id: 'event-2',
+            title: 'Mercury Retrograde',
+            description: 'Communication challenges',
+            event_type: 'mercury_retrograde',
+            event_date: '2026-05-20T00:00:00.000Z',
+            event_data: {},
+            interpretation: 'Mercury retrograde interpretation',
+          },
+          {
+            id: 'event-3',
+            title: 'Solar Eclipse',
+            description: 'Major transformation energy',
+            event_type: 'solar_eclipse',
+            event_date: '2026-05-25T00:00:00.000Z',
+            event_data: {},
+            interpretation: 'Solar eclipse interpretation',
+          },
+        ],
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      };
     });
   });
 
@@ -345,19 +410,20 @@ describe('CalendarPage', () => {
 
     it('should have aria-labels on navigation buttons', () => {
       renderWithProviders(createElement(CalendarPage));
-      const prevButton = screen.getByTestId('calendar-prev-month');
+      const prevButton = screen.getByLabelText('Previous month');
       expect(prevButton).toHaveAttribute('aria-label', 'Previous month');
 
-      const nextButton = screen.getByTestId('calendar-next-month');
+      const nextButton = screen.getByLabelText('Next month');
       expect(nextButton).toHaveAttribute('aria-label', 'Next month');
     });
   });
 
   describe('User Profile', () => {
-    it('should render user avatar in header', () => {
+    it('should render page content inside AppLayout', () => {
       renderWithProviders(createElement(CalendarPage));
-      // AppLayout is mocked; verify calendar page content renders instead
+      // AppLayout is mocked as a simple div; verify calendar page content renders
       expect(screen.getByText('Astrological Calendar')).toBeInTheDocument();
+      expect(screen.getByText(/Track moon phases, retrogrades/i)).toBeInTheDocument();
     });
   });
 });

@@ -96,9 +96,9 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          charts: ['d3', 'recharts'],
+          charts: ['recharts'],
           query: ['@tanstack/react-query'],
-          utils: ['axios', 'date-fns'],
+          utils: ['axios'],
         },
       },
     },

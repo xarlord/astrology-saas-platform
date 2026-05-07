@@ -78,14 +78,11 @@ describe('LoginPage', () => {
 
       // Header
       expect(screen.getByText('Welcome Back')).toBeInTheDocument();
-      expect(screen.getByText('Sign in to access your charts')).toBeInTheDocument();
+      expect(screen.getByText('Sign in to access your charts and readings')).toBeInTheDocument();
 
       // Form fields
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-
-      // Remember me checkbox
-      expect(screen.getByLabelText(/remember me/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
 
       // Forgot password link
       expect(screen.getByText(/forgot password/i)).toBeInTheDocument();
@@ -101,24 +98,24 @@ describe('LoginPage', () => {
     it('should have correct input attributes for email field', () => {
       renderLoginPage();
 
-      const emailInput = screen.getByLabelText(/email address/i);
+      const emailInput = screen.getByTestId('email-input');
       expect(emailInput).toHaveAttribute('type', 'email');
       expect(emailInput).toHaveAttribute('id', 'email');
       expect(emailInput).toHaveAttribute('name', 'email');
       expect(emailInput).toHaveAttribute('autoComplete', 'email');
-      expect(emailInput).toHaveAttribute('required');
-      expect(emailInput).toHaveAttribute('placeholder', 'you@example.com');
+      expect(emailInput).toHaveAttribute('aria-required', 'true');
+      expect(emailInput).toHaveAttribute('placeholder', 'cosmic.traveler@example.com');
     });
 
     it('should have correct input attributes for password field', () => {
       renderLoginPage();
 
-      const passwordInput = screen.getByLabelText(/^password$/i);
+      const passwordInput = screen.getByTestId('password-input');
       expect(passwordInput).toHaveAttribute('type', 'password');
       expect(passwordInput).toHaveAttribute('id', 'password');
       expect(passwordInput).toHaveAttribute('name', 'password');
       expect(passwordInput).toHaveAttribute('autoComplete', 'current-password');
-      expect(passwordInput).toHaveAttribute('required');
+      expect(passwordInput).toHaveAttribute('aria-required', 'true');
     });
 
     it('should have correct link to forgot password page', () => {
@@ -156,20 +153,6 @@ describe('LoginPage', () => {
 
       expect(passwordInput.value).toBe('mypassword123');
     });
-
-    it('should toggle remember me checkbox', async () => {
-      const user = userEvent.setup();
-      renderLoginPage();
-
-      const rememberCheckbox = screen.getByLabelText(/remember me/i) as HTMLInputElement;
-      expect(rememberCheckbox.checked).toBe(false);
-
-      await user.click(rememberCheckbox);
-      expect(rememberCheckbox.checked).toBe(true);
-
-      await user.click(rememberCheckbox);
-      expect(rememberCheckbox.checked).toBe(false);
-    });
   });
 
   describe('Form Submission', () => {
@@ -190,23 +173,6 @@ describe('LoginPage', () => {
           email: 'test@example.com',
           password: 'password123',
         });
-      });
-    });
-
-    it('should call clearError on form submit', async () => {
-      const user = userEvent.setup();
-      renderLoginPage();
-
-      const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
-      const submitButton = screen.getByRole('button', { name: /sign in/i });
-
-      await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'password123');
-      await user.click(submitButton);
-
-      await waitFor(() => {
-        expect(mockAuthHook.clearError).toHaveBeenCalled();
       });
     });
 
@@ -252,8 +218,8 @@ describe('LoginPage', () => {
     it('should handle form submission with fireEvent', async () => {
       renderLoginPage();
 
-      const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
+      const emailInput = screen.getByTestId('email-input');
+      const passwordInput = screen.getByTestId('password-input');
       const form = emailInput.closest('form')!;
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -270,43 +236,56 @@ describe('LoginPage', () => {
   });
 
   describe('Error States', () => {
-    it('should display error message when auth error exists', () => {
-      mockAuthHook.error = 'Invalid email or password';
+    it('should display validation error when submitting with empty fields', async () => {
+      const user = userEvent.setup();
       renderLoginPage();
 
-      expect(screen.getByText('Invalid email or password')).toBeInTheDocument();
+      const submitButton = screen.getByRole('button', { name: /sign in/i });
+      await user.click(submitButton);
+
+      // Form validation should show error
+      await waitFor(() => {
+        expect(screen.getByText('Email is required')).toBeInTheDocument();
+      });
     });
 
-    it('should display error in correct styling container', () => {
-      mockAuthHook.error = 'Test error message';
+    it('should display error for invalid email format', async () => {
+      const user = userEvent.setup();
       renderLoginPage();
 
-      const errorDiv = screen.getByText('Test error message').closest('div');
-      expect(errorDiv).toHaveClass('bg-red-100');
+      const emailInput = screen.getByTestId('email-input');
+      const submitButton = screen.getByRole('button', { name: /sign in/i });
+
+      await user.type(emailInput, 'invalid-email');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
+      });
     });
 
-    it('should not display error container when no error', () => {
-      mockAuthHook.error = null;
+    it('should display error for short password', async () => {
+      const user = userEvent.setup();
+      renderLoginPage();
+
+      const emailInput = screen.getByTestId('email-input');
+      const passwordInput = screen.getByTestId('password-input');
+      const submitButton = screen.getByRole('button', { name: /sign in/i });
+
+      await user.type(emailInput, 'test@example.com');
+      await user.type(passwordInput, 'short');
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Password must be at least 8 characters')).toBeInTheDocument();
+      });
+    });
+
+    it('should not display error container when no validation errors', () => {
       renderLoginPage();
 
       // The error div should not exist
-      expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
-    });
-
-    it('should handle different error messages', () => {
-      const errorMessages = [
-        'Invalid credentials',
-        'Account locked',
-        'Too many attempts',
-        'Network error',
-      ];
-
-      errorMessages.forEach((message) => {
-        mockAuthHook.error = message;
-        renderLoginPage();
-        expect(screen.getByText(message)).toBeInTheDocument();
-        // Cleanup is handled by afterEach in setup
-      });
+      expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
     });
   });
 
@@ -374,17 +353,16 @@ describe('LoginPage', () => {
       // All inputs should have associated labels
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/remember me/i)).toBeInTheDocument();
     });
 
-    it('should have required attribute on required fields', () => {
+    it('should have aria-required on required fields', () => {
       renderLoginPage();
 
-      const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
+      const emailInput = screen.getByTestId('email-input');
+      const passwordInput = screen.getByTestId('password-input');
 
-      expect(emailInput).toBeRequired();
-      expect(passwordInput).toBeRequired();
+      expect(emailInput).toHaveAttribute('aria-required', 'true');
+      expect(passwordInput).toHaveAttribute('aria-required', 'true');
     });
 
     it('should have email type for email input', () => {
@@ -403,24 +381,12 @@ describe('LoginPage', () => {
   });
 
   describe('Form Layout and Styling', () => {
-    it('should have correct container classes', () => {
+    it('should have glass-panel styling on form container', () => {
       renderLoginPage();
 
-      // The outermost container has min-h-screen classes
-      const container = document.querySelector('.min-h-screen');
-      expect(container).toHaveClass('min-h-screen');
-      expect(container).toHaveClass('flex');
-      expect(container).toHaveClass('items-center');
-      expect(container).toHaveClass('justify-center');
-    });
-
-    it('should have card styling on form container', () => {
-      renderLoginPage();
-
-      const card = screen.getByText('Welcome Back').closest('div')?.parentElement;
-      expect(card).toHaveClass('max-w-md');
-      expect(card).toHaveClass('w-full');
-      expect(card).toHaveClass('card');
+      const card = screen.getByText('Welcome Back').closest('div.glass-panel');
+      expect(card).toBeInTheDocument();
+      expect(card).toHaveClass('rounded-2xl');
     });
 
     it('should have correct title styling', () => {
@@ -428,8 +394,8 @@ describe('LoginPage', () => {
 
       const title = screen.getByText('Welcome Back');
       expect(title).toHaveClass('text-3xl');
-      expect(title).toHaveClass('font-display');
       expect(title).toHaveClass('font-bold');
+      expect(title).toHaveClass('text-white');
     });
   });
 
@@ -441,8 +407,10 @@ describe('LoginPage', () => {
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
 
-      // Form has required fields, so submission should be blocked by browser
-      // The login function should not be called
+      // Form has required fields, validation errors should appear
+      await waitFor(() => {
+        expect(screen.getByText('Email is required')).toBeInTheDocument();
+      });
       expect(mockAuthHook.login).not.toHaveBeenCalled();
     });
 
@@ -511,21 +479,6 @@ describe('LoginPage', () => {
       await waitFor(() => {
         expect(mockAuthHook.login).toHaveBeenCalled();
       });
-    });
-
-    it('should clear error on new submission attempt', async () => {
-      const user = userEvent.setup();
-      renderLoginPage();
-
-      const emailInput = screen.getByLabelText(/email address/i);
-      const passwordInput = screen.getByLabelText(/^password$/i);
-      const submitButton = screen.getByRole('button', { name: /sign in/i });
-
-      await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'password123');
-      await user.click(submitButton);
-
-      expect(mockAuthHook.clearError).toHaveBeenCalled();
     });
   });
 });
