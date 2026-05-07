@@ -14,7 +14,7 @@ import { clsx } from 'clsx';
 import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
 import { ChartCard } from '../components/chart/ChartCard';
-import { AppLayout } from '../components';
+import { AppLayout, EmptyState } from '../components';
 import type { Chart } from '../services/api.types';
 
 type ViewMode = 'grid' | 'list';
@@ -340,30 +340,19 @@ export const SavedChartsGalleryPage: React.FC = () => {
             </div>
           ) : filteredCharts.length === 0 ? (
             <div className="flex items-center justify-center py-20">
-              <div className="text-center max-w-md">
-                <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-6">
-                  <span className="material-symbols-outlined text-4xl text-slate-600">
-                    folder_open
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-100 mb-2">No charts found</h3>
-                <p className="text-slate-400 mb-6">
-                  {searchQuery
+              <EmptyState
+                icon="folder_open"
+                title="No charts found"
+                description={
+                  searchQuery
                     ? `No charts match "${searchQuery}"`
                     : activeFolder !== 'all'
                       ? `No charts in ${folders.find((f) => f.id === activeFolder)?.label?.toLowerCase()}`
-                      : 'Get started by creating your first birth chart'}
-                </p>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => navigate('/charts/create')}
-                  className="flex items-center gap-2 mx-auto"
-                >
-                  <span className="material-symbols-outlined">add</span>
-                  Create Your First Chart
-                </Button>
-              </div>
+                      : 'Get started by creating your first birth chart'
+                }
+                actionText="Create Your First Chart"
+                onAction={() => navigate('/charts/new')}
+              />
             </div>
           ) : (
             <div
