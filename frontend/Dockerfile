@@ -1,51 +1,50 @@
-# Frontend Dockerfile for Astrology SaaS Platform
-# Multi-stage build for optimized static assets
+# Frontend Dockerfile for AstroVerse SaaS Platform
+# Multi-stage build: build with Node, serve with Nginx
 
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Copy root package files (workspace root)
 COPY package*.json ./
+COPY frontend/package*.json ./frontend/
 
-# Install dependencies
-RUN npm ci
+# Install all dependencies
+RUN npm ci --workspaces --include-workspace-root
 
 # Copy source code
-COPY . .
+COPY frontend/ ./frontend/
+COPY packages/ ./packages/
 
-# Build application
-RUN npm run build
+# Build shared packages first
+RUN cd packages/shared-types && npm run build 2>/dev/null || true
+RUN cd packages/shared-utils && npm run build 2>/dev/null || true
+RUN cd packages/shared-constants && npm run build 2>/dev/null || true
 
-# Stage 2: Serve with nginx
+# Build frontend
+RUN cd frontend && npm run build
+
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
 
+# Remove default config
+RUN rm /etc/nginx/conf.d/default.conf
+
 # Copy custom nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx/production.conf /etc/nginx/conf.d/default.conf
 
-# Copy built files from builder
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy built SPA from builder
+COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
-# Add non-root user
-RUN addgroup -g 1001 -S nginx && \
-    adduser -S nginx -u 1001 && \
-    chown -R nginx:nginx /usr/share/nginx/html && \
+# Security headers and caching
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chown -R nginx:nginx /var/cache/nginx && \
     chown -R nginx:nginx /var/log/nginx && \
-    chown -R nginx:nginx /etc/nginx/conf.d && \
-    touch /var/run/nginx.pid && \
-    chown -R nginx:nginx /var/run/nginx.pid
+    touch /var/run/nginx.pid && chown nginx:nginx /var/run/nginx.pid
 
-# Switch to non-root user
-USER nginx
+EXPOSE 80 443
 
-# Expose port
-EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=5s --retries=3   CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
-
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
