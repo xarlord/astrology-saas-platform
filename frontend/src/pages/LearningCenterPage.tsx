@@ -305,7 +305,7 @@ const LearningCenterPage: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">route</span>
-              <h3 className="text-xl font-bold text-white">Your Learning Paths</h3>
+              <h1 className="text-xl font-bold text-white">Your Learning Paths</h1>
             </div>
             <button className="text-sm text-primary font-semibold hover:underline">
               See all paths
