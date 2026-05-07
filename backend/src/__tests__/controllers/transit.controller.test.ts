@@ -5,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-var */
 
 import { Request, Response } from 'express';
 import {
@@ -29,6 +30,17 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
     findByUserId: jest.fn(),
   },
 }));
+
+// Mock knex (config/database) for getTransitDetails DB lookup
+var mockKnexFirst: jest.Mock;
+var mockKnexChain: any;
+var mockKnexFn: jest.Mock;
+jest.mock('../../config/database', () => {
+  mockKnexFirst = jest.fn();
+  mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
+  mockKnexFn = jest.fn().mockReturnValue(mockKnexChain);
+  return mockKnexFn;
+});
 
 /**
  * Mock AstronomyEngineService so that every `new AstronomyEngineService()`
@@ -121,6 +133,10 @@ describe('Transit Controller', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Re-establish knex mock chain after clearAllMocks
+    mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
+    mockKnexFn.mockReturnValue(mockKnexChain);
 
     // The shared mockInstance methods may have been cleared by resetMocks.
     // Re-apply default return values.
@@ -309,8 +325,18 @@ describe('Transit Controller', () => {
   });
 
   describe('getTransitDetails', () => {
-    it('should return transit details response', async () => {
+    it('should return transit details when reading exists', async () => {
       mockRequest.params = { id: 'reading-789' };
+      mockKnexFirst.mockResolvedValue({
+        id: 'reading-789',
+        user_id: '123',
+        chart_id: 'chart-456',
+        start_date: '2024-01-01',
+        end_date: '2024-01-31',
+        transit_data: { planets: { sun: { longitude: 280 } } },
+        moon_phases: null,
+        created_at: '2024-01-01T00:00:00Z',
+      });
 
       await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
 
@@ -318,8 +344,23 @@ describe('Transit Controller', () => {
       expect(mockResponse.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
+          data: expect.objectContaining({
+            transit: expect.objectContaining({
+              id: 'reading-789',
+              chartId: 'chart-456',
+            }),
+          }),
         }),
       );
+    });
+
+    it('should throw 404 when reading not found', async () => {
+      mockRequest.params = { id: 'nonexistent' };
+      mockKnexFirst.mockResolvedValue(null);
+
+      await expect(
+        getTransitDetails(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 
