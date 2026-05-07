@@ -258,7 +258,7 @@ const CourseDetailPage: React.FC = () => {
               <div className="p-6 border-t border-white/10">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{currentLesson?.title}</h3>
+                    <h2 className="text-2xl font-bold text-white mb-2">{currentLesson?.title}</h2>
                     <p className="text-slate-400">{currentLesson?.description}</p>
                   </div>
                   {currentLesson && (
