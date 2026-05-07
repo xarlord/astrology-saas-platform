@@ -511,13 +511,14 @@ describe('Synastry Controller', () => {
           chart1_id: 'c1',
           chart2_id: 'c2',
           synastry_aspects: JSON.stringify([{ planet1: 'sun', planet2: 'moon' }]),
-          compatibility_score: 8,
-          relationship_theme: 'Harmonious',
-          strengths: ['Mutual respect'],
-          challenges: ['Communication'],
-          advice: 'Be patient',
+          overall_score: 8,
+          category_scores: JSON.stringify({
+            relationshipTheme: 'Harmonious',
+            strengths: ['Mutual respect'],
+            challenges: ['Communication'],
+            advice: 'Be patient',
+          }),
           is_favorite: false,
-          notes: null,
           created_at: '2026-01-01T00:00:00Z',
         },
       ];
@@ -549,7 +550,6 @@ describe('Synastry Controller', () => {
               challenges: ['Communication'],
               advice: 'Be patient',
               isFavorite: false,
-              notes: null,
               createdAt: '2026-01-01T00:00:00Z',
             }),
           ],
@@ -619,41 +619,27 @@ describe('Synastry Controller', () => {
           { planet1: 'sun', planet2: 'moon', aspect: 'conjunction' },
         ]),
         compatibility_score: 8.5,
+        overall_score: 8.5,
+        category_scores: JSON.stringify({
+          relationshipTheme: 'Growth-oriented',
+          strengths: ['communication'],
+          challenges: ['patience'],
+          advice: 'Be patient',
+        }),
         user_id: 'user-1',
       };
 
-      const dbAspects = [
-        {
-          id: 1,
-          synastry_chart_id: 42,
-          planet1: 'sun',
-          planet2: 'moon',
-          aspect: 'conjunction',
-          orb: 2.5,
-          applying: true,
-          interpretation: 'Strong emotional bond',
-          weight: 3,
-          soulmate_indicator: true,
-        },
-      ];
-
-      // First knex call: knex('synastry_charts').where(...).first() -> dbReport
+      // knex('synastry_reports').where(...).first() -> dbReport
       mockKnexChain.first.mockResolvedValueOnce(dbReport);
-
-      // Second knex call: knex('synastry_aspects').where(...)
-      // No terminal method, resolves via thenable
-      mockKnexChain._setResolveValue(dbAspects);
 
       await getSynastryReport(mockRequest as any, mockResponse as Response, mockNext);
 
-      expect(mockKnex).toHaveBeenCalledWith('synastry_charts');
-      expect(mockKnex).toHaveBeenCalledWith('synastry_aspects');
+      expect(mockKnex).toHaveBeenCalledWith('synastry_reports');
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
         data: expect.objectContaining({
           id: 42,
           synastryAspects: [{ planet1: 'sun', planet2: 'moon', aspect: 'conjunction' }],
-          aspects: dbAspects,
         }),
       });
     });
@@ -772,7 +758,7 @@ describe('Synastry Controller', () => {
 
       expect(mockKnexChain.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          notes: 'Great compatibility!',
+          relationship_name: 'Great compatibility!',
           updated_at: expect.any(String),
         }),
       );
@@ -790,7 +776,7 @@ describe('Synastry Controller', () => {
       expect(mockKnexChain.update).toHaveBeenCalledWith(
         expect.objectContaining({
           is_favorite: false,
-          notes: 'Updated notes',
+          relationship_name: 'Updated notes',
           updated_at: expect.any(String),
         }),
       );

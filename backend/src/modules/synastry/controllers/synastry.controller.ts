@@ -211,7 +211,7 @@ export const compareCharts = asyncHandler(
     const synastryChart = calculateSynastryChart(chart1, chart2);
 
     // Check if already exists
-    const existingSynastry = await knex('synastry_charts')
+    const existingSynastry = await knex('synastry_reports')
       .where({
         chart1_id: chart1Id,
         chart2_id: chart2Id,
@@ -223,39 +223,23 @@ export const compareCharts = asyncHandler(
 
     // Save to database if new
     if (!synastryId) {
-      const inserted = await knex('synastry_charts')
+      const inserted = await knex('synastry_reports')
         .insert({
           chart1_id: chart1Id,
           chart2_id: chart2Id,
           user_id: userId,
+          overall_score: synastryChart.overallCompatibility,
           synastry_aspects: JSON.stringify(synastryChart.synastryAspects),
-          compatibility_score: synastryChart.overallCompatibility,
-          relationship_theme: synastryChart.relationshipTheme,
-          strengths: synastryChart.strengths,
-          challenges: synastryChart.challenges,
-          advice: synastryChart.advice,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          category_scores: JSON.stringify({
+            relationshipTheme: synastryChart.relationshipTheme,
+            strengths: synastryChart.strengths,
+            challenges: synastryChart.challenges,
+            advice: synastryChart.advice,
+          }),
         })
         .returning('id');
 
       synastryId = inserted[0].id;
-
-      // Insert aspects
-      for (const aspect of synastryChart.synastryAspects) {
-        await knex('synastry_aspects').insert({
-          synastry_chart_id: synastryId,
-          planet1: aspect.planet1,
-          planet2: aspect.planet2,
-          aspect: aspect.aspect,
-          orb: aspect.orb,
-          applying: aspect.applying,
-          interpretation: aspect.interpretation,
-          weight: aspect.weight,
-          soulmate_indicator: aspect.soulmateIndicator,
-          created_at: new Date().toISOString(),
-        });
-      }
     }
 
     res.json({
@@ -392,13 +376,13 @@ export const getSynastryReports = asyncHandler(
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = (page - 1) * limit;
 
-    const reports = await knex('synastry_charts')
+    const reports = await knex('synastry_reports')
       .where({ user_id: userId })
       .orderBy('created_at', 'desc')
       .limit(limit)
       .offset(offset);
 
-    const total = await knex('synastry_charts')
+    const total = await knex('synastry_reports')
       .where({ user_id: userId })
       .count('* as count')
       .first();
@@ -408,20 +392,26 @@ export const getSynastryReports = asyncHandler(
     res.json({
       success: true,
       data: {
-        reports: reports.map((r: Record<string, unknown>) => ({
-          id: r.id,
-          chart1Id: r.chart1_id,
-          chart2Id: r.chart2_id,
-          synastryAspects: JSON.parse((r.synastry_aspects as string) || '[]'),
-          overallCompatibility: r.compatibility_score,
-          relationshipTheme: r.relationship_theme,
-          strengths: r.strengths || [],
-          challenges: r.challenges || [],
-          advice: r.advice,
-          isFavorite: r.is_favorite,
-          notes: r.notes,
-          createdAt: r.created_at,
-        })),
+        reports: reports.map((r: Record<string, unknown>) => {
+          const categoryScores = typeof r.category_scores === 'string'
+            ? JSON.parse(r.category_scores)
+            : r.category_scores || {};
+          return {
+            id: r.id,
+            chart1Id: r.chart1_id,
+            chart2Id: r.chart2_id,
+            synastryAspects: typeof r.synastry_aspects === 'string'
+              ? JSON.parse(r.synastry_aspects)
+              : r.synastry_aspects || [],
+            overallCompatibility: r.overall_score,
+            relationshipTheme: categoryScores.relationshipTheme,
+            strengths: categoryScores.strengths || [],
+            challenges: categoryScores.challenges || [],
+            advice: categoryScores.advice,
+            isFavorite: r.is_favorite,
+            createdAt: r.created_at,
+          };
+        }),
         pagination: {
           page,
           limit,
@@ -446,21 +436,28 @@ export const getSynastryReport = asyncHandler(
       throw new UnauthorizedError('User authentication required');
     }
 
-    const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
+    const report = await knex('synastry_reports').where({ id, user_id: userId }).first();
 
     if (!report) {
       throw new NotFoundError('Synastry report not found');
     }
 
-    // Fetch aspects
-    const aspects = await knex('synastry_aspects').where({ synastry_chart_id: id });
+    const categoryScores = typeof report.category_scores === 'string'
+      ? JSON.parse(report.category_scores)
+      : report.category_scores || {};
 
     res.json({
       success: true,
       data: {
         ...report,
-        synastryAspects: JSON.parse(report.synastry_aspects || '[]'),
-        aspects,
+        synastryAspects: typeof report.synastry_aspects === 'string'
+          ? JSON.parse(report.synastry_aspects)
+          : report.synastry_aspects || [],
+        overallCompatibility: report.overall_score,
+        relationshipTheme: categoryScores.relationshipTheme,
+        strengths: categoryScores.strengths || [],
+        challenges: categoryScores.challenges || [],
+        advice: categoryScores.advice,
       },
     });
   },
@@ -480,13 +477,13 @@ export const deleteSynastryReport = asyncHandler(
     }
 
     // Check if report exists and belongs to user
-    const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
+    const report = await knex('synastry_reports').where({ id, user_id: userId }).first();
 
     if (!report) {
       throw new NotFoundError('Synastry report not found');
     }
 
-    await knex('synastry_charts').where({ id, user_id: userId }).del();
+    await knex('synastry_reports').where({ id, user_id: userId }).del();
 
     res.json({
       success: true,
@@ -510,7 +507,7 @@ export const updateSynastryReport = asyncHandler(
     }
 
     // Check if report exists and belongs to user
-    const report = await knex('synastry_charts').where({ id, user_id: userId }).first();
+    const report = await knex('synastry_reports').where({ id, user_id: userId }).first();
 
     if (!report) {
       throw new NotFoundError('Synastry report not found');
@@ -526,10 +523,10 @@ export const updateSynastryReport = asyncHandler(
     }
 
     if (notes !== undefined) {
-      updateData.notes = notes;
+      updateData.relationship_name = notes;
     }
 
-    await knex('synastry_charts').where({ id, user_id: userId }).update(updateData);
+    await knex('synastry_reports').where({ id, user_id: userId }).update(updateData);
 
     res.json({
       success: true,
