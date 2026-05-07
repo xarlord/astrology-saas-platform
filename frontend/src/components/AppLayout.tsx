@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useFocusTrap } from '../hooks/useFocusTrap';
+import { useFocusTrap } from '../hooks';
 import { useAuth } from '../hooks';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 
@@ -202,7 +202,13 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
 // Sidebar Component
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const sidebarRef = useFocusTrap(isOpen, onClose);
+  const sidebarRef = useFocusTrap({
+    active: isOpen,
+    onEscape: onClose,
+    autoFocus: true,
+    autoFocusDelay: 100,
+    preventScroll: true,
+  });
 
   return (
     <aside
