@@ -252,7 +252,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-white leading-tight">
               Solar Return Report {solarData.year}
-            </h2>
+            </h1>
             <p className="text-slate-400 mt-2 text-lg">
               Your birthday chart and annual forecast for the year ahead.
             </p>
