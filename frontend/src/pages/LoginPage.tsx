@@ -6,6 +6,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   return (
+      <h1 className="sr-only">Login Page</h1>
     <AuthLayout
       leftPanel={
         <>
