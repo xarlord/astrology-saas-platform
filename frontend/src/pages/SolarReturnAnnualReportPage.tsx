@@ -5,13 +5,17 @@
  * Reference: stitch-UI/desktop/17-solar-return-annual-report.html
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
 import { AppLayout } from '../components';
 import { Button } from '../components/ui/Button';
+
+// Hooks & Services
+import { usePDFGeneration, generateReportFilename } from '../hooks/usePDFGeneration';
+import api from '../services/api';
 
 // Types
 interface MonthlyData {
@@ -33,34 +37,72 @@ interface SolarReturnData {
   monthlyData: MonthlyData[];
 }
 
-// Mock data
-const MOCK_SOLAR_RETURNS: Record<string, SolarReturnData> = {
-  '2024': {
-    year: 2024,
-    theme: 'Personal Expansion',
-    description:
-      'This year marks a monumental shift in your personal evolution. As the Sun returns to the exact degree of your birth, it illuminates your sector of growth and wisdom, promising a twelve-month period defined by breaking boundaries and seeking higher truths. With Jupiter as your guiding star, the theme of "Expansion" manifests in your career and spiritual life.',
-    sunHouse: 9,
-    sunSign: 'Pisces',
-    yearlyRuler: 'Jupiter',
-    crucialAspect: 'Sun Conjunct Midheaven',
-    ascendant: 'Leo',
-    monthlyData: [
-      { month: 'MAY', powerDate: 'May 14', energy: 'high' },
-      { month: 'JUN', energy: 'medium' },
-      { month: 'JUL', challengeDate: 'Jul 28', energy: 'low' },
-      { month: 'AUG', energy: 'low' },
-      { month: 'SEP', powerDate: 'Sep 22', energy: 'high' },
-      { month: 'OCT', energy: 'medium' },
-      { month: 'NOV', challengeDate: 'Nov 11', energy: 'low' },
-      { month: 'DEC', energy: 'medium' },
-      { month: 'JAN', powerDate: 'Jan 05', energy: 'high' },
-      { month: 'FEB', energy: 'medium' },
-      { month: 'MAR', energy: 'medium' },
-      { month: 'APR', energy: 'medium' },
-    ],
-  },
+const DEFAULT_SOLAR_DATA: SolarReturnData = {
+  year: new Date().getFullYear(),
+  theme: 'Personal Expansion',
+  description:
+    'This year marks a monumental shift in your personal evolution. As the Sun returns to the exact degree of your birth, it illuminates your sector of growth and wisdom, promising a twelve-month period defined by breaking boundaries and seeking higher truths.',
+  sunHouse: 9,
+  sunSign: 'Pisces',
+  yearlyRuler: 'Jupiter',
+  crucialAspect: 'Sun Conjunct Midheaven',
+  ascendant: 'Leo',
+  monthlyData: [
+    { month: 'MAY', powerDate: 'May 14', energy: 'high' },
+    { month: 'JUN', energy: 'medium' },
+    { month: 'JUL', challengeDate: 'Jul 28', energy: 'low' },
+    { month: 'AUG', energy: 'low' },
+    { month: 'SEP', powerDate: 'Sep 22', energy: 'high' },
+    { month: 'OCT', energy: 'medium' },
+    { month: 'NOV', challengeDate: 'Nov 11', energy: 'low' },
+    { month: 'DEC', energy: 'medium' },
+    { month: 'JAN', powerDate: 'Jan 05', energy: 'high' },
+    { month: 'FEB', energy: 'medium' },
+    { month: 'MAR', energy: 'medium' },
+    { month: 'APR', energy: 'medium' },
+  ],
 };
+
+/**
+ * Transform raw API solar return data into the SolarReturnData shape.
+ */
+function transformSolarReturn(apiData: Record<string, unknown>): SolarReturnData {
+  const calculatedData = apiData.calculatedData as Record<string, unknown> | undefined;
+  const interpretation = apiData.interpretation as Record<string, unknown> | undefined;
+  const positions = (calculatedData?.positions ?? []) as { planet: string; sign: string; house: number }[];
+  const aspects = (calculatedData?.aspects ?? []) as { planet1: string; planet2: string; type: string }[];
+  const themes = interpretation?.themes as string[] | undefined;
+  const luckyDays = interpretation?.luckyDays as { date: string; description: string }[] | undefined;
+
+  const year = (apiData.year as number) ?? new Date().getFullYear();
+  const sunPosition = positions.find((p) => p.planet === 'Sun');
+
+  // Build monthly data from lucky days or default
+  const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const monthlyData: MonthlyData[] = monthNames.map((month, idx) => {
+    const lucky = luckyDays?.find((d) => {
+      const dMonth = new Date(d.date).getMonth();
+      return dMonth === idx;
+    });
+    return {
+      month,
+      powerDate: lucky ? new Date(lucky.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : undefined,
+      energy: lucky ? 'high' : 'medium',
+    };
+  });
+
+  return {
+    year,
+    theme: Array.isArray(themes) && themes.length > 0 ? themes[0] : 'Personal Expansion',
+    description: (interpretation?.overview as string) ?? DEFAULT_SOLAR_DATA.description,
+    sunHouse: sunPosition?.house ?? DEFAULT_SOLAR_DATA.sunHouse,
+    sunSign: sunPosition?.sign ?? DEFAULT_SOLAR_DATA.sunSign,
+    yearlyRuler: DEFAULT_SOLAR_DATA.yearlyRuler,
+    crucialAspect: aspects.length > 0 ? `${aspects[0].planet1} ${aspects[0].type} ${aspects[0].planet2}` : DEFAULT_SOLAR_DATA.crucialAspect,
+    ascendant: (calculatedData?.ascendant as string | undefined)?.split(' ')[0] ?? DEFAULT_SOLAR_DATA.ascendant,
+    monthlyData: monthlyData.length > 0 ? monthlyData : DEFAULT_SOLAR_DATA.monthlyData,
+  };
+}
 
 const INTERPRETATIONS = {
   career: {
@@ -91,25 +133,99 @@ const SolarReturnAnnualReportPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [_isLoadingSolar, setIsLoadingSolar] = useState(false);
+  const [_solarError, setSolarError] = useState<string | null>(null);
+  const [rawSolarReturn, setRawSolarReturn] = useState<Record<string, unknown> | null>(null);
 
-  const solarData = useMemo(() => {
-    return MOCK_SOLAR_RETURNS[id ?? '2024'] ?? MOCK_SOLAR_RETURNS['2024'];
+  // PDF generation hook
+  const {
+    isGenerating: isGeneratingPDF,
+    generateReport,
+    downloadReport,
+  } = usePDFGeneration();
+
+  // Fetch solar return data from API
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        setIsLoadingSolar(true);
+        setSolarError(null);
+        const response = await api.get<{ data: Record<string, unknown> }>(`/solar-returns/${id}`);
+        if (!cancelled && response.data?.data) {
+          setRawSolarReturn(response.data.data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setSolarError(err instanceof Error ? err.message : 'Failed to load solar return data');
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingSolar(false);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, [id]);
+
+  const solarData = useMemo<SolarReturnData>(() => {
+    if (rawSolarReturn) {
+      return transformSolarReturn(rawSolarReturn);
+    }
+    return DEFAULT_SOLAR_DATA;
+  }, [rawSolarReturn]);
 
   const toggleAccordion = (key: string) => {
     setActiveAccordion((prev) => (prev === key ? null : key));
   };
 
   const handleGeneratePDF = async () => {
-    setIsGeneratingPDF(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      // PDF generation complete
-    } catch (error) {
-      console.error('Failed to generate PDF:', error);
-    } finally {
-      setIsGeneratingPDF(false);
+    const filename = generateReportFilename('solar-return', `solar-return-${solarData.year}`);
+    const result = await generateReport(
+      {
+        reportType: 'solar-return',
+        title: `Solar Return Report ${solarData.year}`,
+        subtitle: `Year of ${solarData.theme}`,
+      },
+      {
+        solarReturn: {
+          id: '',
+          chartId: '',
+          year: solarData.year,
+          returnDate: `${solarData.year}-01-01T00:00:00Z`,
+          solarReturnChart: {
+            chart: {
+              id: '',
+              userId: '',
+              name: `Solar Return ${solarData.year}`,
+              type: 'solar-return',
+              birthData: {
+                name: `Solar Return ${solarData.year}`,
+                birthDate: `${solarData.year}-01-01`,
+                birthTime: '00:00',
+                birthPlace: 'Unknown',
+                latitude: 0,
+                longitude: 0,
+                timezone: 'UTC',
+              },
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              isDefault: false,
+            },
+            positions: [],
+            aspects: [],
+            houses: [],
+          },
+          analysis: { overview: solarData.description, themes: [solarData.theme] },
+          themes: [solarData.theme],
+          createdAt: new Date().toISOString(),
+        } as unknown as import('../types/api.types').SolarReturnResponse,
+        chartName: `Solar Return ${solarData.year}`,
+      },
+    );
+    if (result.success) {
+      downloadReport(filename);
     }
   };
 

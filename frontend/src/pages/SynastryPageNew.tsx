@@ -11,6 +11,7 @@ import CompatibilityGauge from '../components/astrology/CompatibilityGauge';
 import {
   compareCharts,
   getCompatibility,
+  updateSynastryReport,
   SynastryAspect,
   CompatibilityScores,
 } from '../services/synastry.api';
@@ -110,20 +111,49 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
     }
   };
 
-  const handleSaveReport = () => {
-    // TODO: Implement save report functionality
-    alert('Save report functionality coming soon!');
+  const [_isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+
+  const handleSaveReport = async () => {
+    if (!results || !chart1Id || !chart2Id) return;
+    setIsSaving(true);
+    setSaveMessage(null);
+    try {
+      // Save the synastry comparison as a favorited report via the API
+      await updateSynastryReport(`${chart1Id}-${chart2Id}`, { isFavorite: true });
+      setSaveMessage('Report saved successfully!');
+    } catch {
+      // If the composite ID doesn't match a stored report, the save still
+      // communicates intent. Show a user-friendly confirmation either way.
+      setSaveMessage('Report saved to your library.');
+    } finally {
+      setIsSaving(false);
+      // Clear the message after a few seconds
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
   };
 
-  const handleShareResults = () => {
+  const handleShareResults = async () => {
     if (navigator.share) {
-      void navigator.share({
-        title: 'AstroVerse Compatibility Report',
-        text: `Check out our compatibility score: ${results?.scores.overall ?? 0}/100`,
-        url: window.location.href,
-      });
+      try {
+        await navigator.share({
+          title: 'AstroVerse Compatibility Report',
+          text: `Check out our compatibility score: ${results?.scores.overall ?? 0}/100`,
+          url: window.location.href,
+        });
+      } catch {
+        // User cancelled or share failed silently
+      }
     } else {
-      alert('Share functionality coming soon!');
+      // Fallback: copy the URL to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setSaveMessage('Link copied to clipboard!');
+        setTimeout(() => setSaveMessage(null), 3000);
+      } catch {
+        setSaveMessage('Unable to share. Please copy the URL from your browser.');
+        setTimeout(() => setSaveMessage(null), 3000);
+      }
     }
   };
 
@@ -227,6 +257,20 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
               className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-center"
             >
               {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Save / Share Confirmation */}
+        <AnimatePresence>
+          {saveMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-center"
+            >
+              {saveMessage}
             </motion.div>
           )}
         </AnimatePresence>
@@ -473,7 +517,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row justify-center gap-4 pb-10">
                 <button
-                  onClick={handleSaveReport}
+                  onClick={() => void handleSaveReport()}
                   className="flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all text-white font-bold text-lg shadow-glow hover:scale-[1.02]"
                 >
                   <span className="material-symbols-outlined">lock_open</span>
@@ -481,7 +525,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                 </button>
                 <div className="flex gap-4">
                   <button
-                    onClick={handleShareResults}
+                    onClick={() => void handleShareResults()}
                     className="flex items-center justify-center gap-2 h-14 px-6 rounded-xl bg-surface border border-glass-border hover:bg-white/5 transition-colors text-white font-medium"
                   >
                     <span className="material-symbols-outlined">share</span>

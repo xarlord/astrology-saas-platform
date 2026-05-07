@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createElement } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -71,6 +71,135 @@ vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+// Mock learning service (used by component for completeLesson)
+vi.mock('../../services', () => ({
+  learningService: {
+    completeLesson: vi.fn().mockResolvedValue({}),
+  },
+}));
+
+// ----- Course test data -----
+const masterHousesCourse = {
+  id: 'master-houses',
+  title: 'Introduction to Houses',
+  description: 'Learn the fundamental concept of astrological houses and how they shape your birth chart',
+  category: 'houses' as const,
+  level: 'beginner' as const,
+  duration: 5400, // 90 minutes => "1.5 hours"
+  thumbnailUrl: 'https://example.com/houses.jpg',
+  createdAt: '2026-01-01T00:00:00Z',
+  lessons: [
+    {
+      id: 'lesson-1',
+      title: 'What Are the Houses?',
+      description: 'Learn the fundamental concept of astrological houses',
+      category: 'houses' as const,
+      level: 'beginner' as const,
+      duration: 750, // 12:30
+      order: 1,
+      videoUrl: 'https://example.com/video1.mp4',
+      prerequisites: [] as string[],
+      tags: ['houses'] as string[],
+      isPublished: true,
+      completed: true,
+    },
+    {
+      id: 'lesson-2',
+      title: 'The House System Explained',
+      description: 'Understanding different house systems in astrology',
+      category: 'houses' as const,
+      level: 'beginner' as const,
+      duration: 480, // 8:00
+      order: 2,
+      videoUrl: 'https://example.com/video2.mp4',
+      prerequisites: [] as string[],
+      tags: ['houses'] as string[],
+      isPublished: true,
+      completed: true,
+    },
+    {
+      id: 'lesson-3',
+      title: 'House Cusps and Rulers',
+      description: 'How to find and interpret house cusps and ruling planets',
+      category: 'houses' as const,
+      level: 'beginner' as const,
+      duration: 600, // 10:00
+      order: 3,
+      prerequisites: [] as string[],
+      tags: ['houses'] as string[],
+      isPublished: true,
+      completed: false,
+    },
+    {
+      id: 'lesson-4',
+      title: 'Angular Houses',
+      description: 'Understanding the angular houses and their significance',
+      category: 'houses' as const,
+      level: 'beginner' as const,
+      duration: 540, // 9:00
+      order: 4,
+      videoUrl: 'https://example.com/video4.mp4',
+      prerequisites: [] as string[],
+      tags: ['houses'] as string[],
+      isPublished: true,
+      completed: false,
+    },
+    {
+      id: 'lesson-5',
+      title: 'The 1st House - Identity',
+      description: 'Exploring the meaning of the 1st house in your chart',
+      category: 'houses' as const,
+      level: 'beginner' as const,
+      duration: 420, // 7:00
+      order: 5,
+      prerequisites: [] as string[],
+      tags: ['houses'] as string[],
+      isPublished: true,
+      completed: false,
+    },
+  ],
+};
+
+const astrology101Course = {
+  id: 'astrology-101',
+  title: 'Getting Started',
+  description: 'Your journey into astrology begins here',
+  category: 'basics' as const,
+  level: 'beginner' as const,
+  duration: 3600, // 60 minutes
+  thumbnailUrl: 'https://example.com/astrology101.jpg',
+  createdAt: '2026-01-01T00:00:00Z',
+  lessons: [
+    {
+      id: 'a101-lesson-1',
+      title: 'Welcome to Astrology',
+      description: 'Introduction to the course',
+      category: 'basics' as const,
+      level: 'beginner' as const,
+      duration: 300,
+      order: 1,
+      videoUrl: 'https://example.com/a101-video1.mp4',
+      prerequisites: [] as string[],
+      tags: ['basics'] as string[],
+      isPublished: true,
+      completed: false,
+    },
+  ],
+};
+
+// ----- Learning store mock -----
+// Mutable state that tests can configure
+let mockStoreState: {
+  currentCourse: any;
+  isLoading: boolean;
+  error: string | null;
+  loadCourse: (id: string) => Promise<void>;
+};
+
+vi.mock('../../stores/learningStore', () => ({
+  useLearningStore: () => mockStoreState,
+}));
+
 // Import after mocks
 import CourseDetailPage from '../../pages/CourseDetailPage';
 
@@ -114,6 +243,16 @@ const renderWithProviders = (
 describe('CourseDetailPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default: loadCourse resolves and sets course data synchronously
+    mockStoreState = {
+      currentCourse: masterHousesCourse,
+      isLoading: false,
+      error: null,
+      loadCourse: vi.fn().mockImplementation(async (id: string) => {
+        // Simulate store update -- but since our mock returns a static object,
+        // the loadCourse call is tracked but state is already set via currentCourse.
+      }),
+    };
   });
 
   describe('Page Rendering', () => {
@@ -133,6 +272,16 @@ describe('CourseDetailPage', () => {
   });
 
   describe('Course Not Found', () => {
+    beforeEach(() => {
+      // For "not found" tests, return no course data
+      mockStoreState = {
+        currentCourse: null,
+        isLoading: false,
+        error: null,
+        loadCourse: vi.fn().mockResolvedValue(undefined),
+      };
+    });
+
     it('should show course not found message for invalid course id', () => {
       renderWithProviders(createElement(CourseDetailPage), '/learning/courses/invalid-course');
       expect(screen.getByText(/course not found/i)).toBeInTheDocument();
@@ -181,7 +330,7 @@ describe('CourseDetailPage', () => {
 
     it('should display module completion counts', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // First module shows "2/3 completed"
+      // Module shows completion count - with 2 completed out of 5 lessons
       const completedTexts = screen.getAllByText(/completed/i);
       expect(completedTexts.length).toBeGreaterThan(0);
     });
@@ -370,7 +519,7 @@ describe('CourseDetailPage', () => {
 
     it('should display module completion progress', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Shows "2/3 completed" for first module - use getAllByText
+      // Shows completion count for module
       const completedTexts = screen.getAllByText(/completed/i);
       expect(completedTexts.length).toBeGreaterThan(0);
     });
@@ -515,34 +664,31 @@ describe('CourseDetailPage', () => {
     });
   });
 
-  describe('Second Module (Angular Houses)', () => {
-    it('should display second module title', () => {
+  describe('Lesson Content (Angular Houses lesson)', () => {
+    it('should display Angular Houses lesson title', () => {
       renderWithProviders(createElement(CourseDetailPage));
+      // "Angular Houses" is a lesson title in the flat lesson list
       expect(screen.getByText(/angular houses/i)).toBeInTheDocument();
     });
 
-    it('should have second module collapsed by default', () => {
+    it('should display lesson with identity in title', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Second module lessons should not be visible initially
-      const firstHouseLesson = screen.queryByText(/the 1st house - identity/i);
-      // Might be visible or not depending on expansion state
-      expect(screen.getByText(/angular houses/i)).toBeInTheDocument();
+      // "The 1st House - Identity" is a lesson in the list
+      expect(screen.getByText(/the 1st house - identity/i)).toBeInTheDocument();
     });
 
-    it('should expand second module when clicked', async () => {
-      const user = userEvent.setup();
+    it('should show completion counts across all lessons', () => {
       renderWithProviders(createElement(CourseDetailPage));
-
-      // Find and click the second module
-      const moduleHeaders = screen.getAllByText(/0\/2.*completed|2\/3.*completed/i);
-      expect(moduleHeaders.length).toBeGreaterThan(0);
+      // 2 of 5 lessons completed => "2/5 completed"
+      const completedTexts = screen.getAllByText(/completed/i);
+      expect(completedTexts.length).toBeGreaterThan(0);
     });
   });
 
   describe('Progress Tracking', () => {
     it('should show completed status for completed lessons', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      // Module shows completion count like "2/3 completed"
+      // Module shows completion count like "2/5 completed"
       const completedTexts = screen.getAllByText(/completed/i);
       expect(completedTexts.length).toBeGreaterThan(0);
     });
@@ -608,6 +754,16 @@ describe('CourseDetailPage', () => {
   });
 
   describe('Different Course Loading', () => {
+    beforeEach(() => {
+      // Return astrology-101 course data for these tests
+      mockStoreState = {
+        currentCourse: astrology101Course,
+        isLoading: false,
+        error: null,
+        loadCourse: vi.fn().mockResolvedValue(undefined),
+      };
+    });
+
     it('should load astrology-101 course correctly', () => {
       renderWithProviders(createElement(CourseDetailPage), '/learning/courses/astrology-101');
       // The first lesson title is rendered as the heading

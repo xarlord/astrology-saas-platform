@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
+import { EmptyState } from './EmptyState';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -526,15 +527,13 @@ function ChartsTab({
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
-        <span className="material-symbols-outlined text-slate-200 mx-auto mb-4" aria-hidden="true" style={{ fontSize: '64px' }}>star</span>
-        <h3 className="text-lg font-medium text-white mb-2">No charts yet</h3>
-        <p className="text-slate-200 mb-6">
-          Create your first natal chart to get started
-        </p>
-        <button type="button" className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-          <span className="material-symbols-outlined inline mr-2" aria-hidden="true" style={{ fontSize: '20px' }}>add</span>
-          Create Your First Chart
-        </button>
+        <EmptyState
+          icon="auto_awesome"
+          title="No charts yet"
+          description="Create your first natal chart to get started"
+          actionText="Create Your First Chart"
+          onAction={() => window.location.href = '/charts/new'}
+        />
       </div>
     );
   }

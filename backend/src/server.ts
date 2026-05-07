@@ -14,6 +14,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 import { requestLogger } from './middleware/requestLogger';
 import { csrfMiddleware } from './middleware/csrf';
+import { sentry } from './config/monitoring';
 
 // Import API router with versioning
 import apiRouter from './api';
@@ -148,6 +149,17 @@ app.use(notFoundHandler);
 // Global Error Handler
 app.use(errorHandler);
 
+// Sentry error handler (must be after all other middleware)
+if (sentry.isEnabled) {
+  // @sentry/node is an optional dependency — dynamic import avoids require()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  void import('@sentry/node' as any).then((sentryModule: any) => {
+    if (sentryModule?.setupExpressErrorHandler) {
+      app.use(sentryModule.setupExpressErrorHandler());
+    }
+  });
+}
+
 // ============================================
 // Server Startup
 // ============================================
@@ -190,10 +202,12 @@ if (require.main === module) {
 
 process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
   logger.error('Unhandled Rejection at:', { promise, reason });
+  sentry.captureException(reason instanceof Error ? reason : new Error(String(reason)));
 });
 
 process.on('uncaughtException', (error: Error) => {
   logger.error('Uncaught Exception:', error);
+  sentry.captureException(error);
   process.exit(1);
 });
 

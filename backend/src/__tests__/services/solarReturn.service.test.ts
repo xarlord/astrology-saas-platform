@@ -4,6 +4,18 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-var */
+
+// Mock knex (config/database) for getNatalChart DB lookup
+var mockKnexFirst: jest.Mock;
+var mockKnexChain: any;
+var mockKnexFn: jest.Mock;
+jest.mock('../../config/database', () => {
+  mockKnexFirst = jest.fn();
+  mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
+  mockKnexFn = jest.fn().mockReturnValue(mockKnexChain);
+  return mockKnexFn;
+});
 
 // Mock AstronomyEngineService - define mock fns inline to avoid hoisting TDZ
 jest.mock('../../modules/shared/services/astronomyEngine.service', () => {
@@ -159,6 +171,17 @@ describe('SolarReturnService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Re-establish knex mock chain after clearAllMocks
+    mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
+    mockKnexFn.mockReturnValue(mockKnexChain);
+    // Default: getNatalChart returns a chart with sun position
+    mockKnexFirst.mockResolvedValue({
+      id: 'chart-1',
+      birth_latitude: 40.7128,
+      birth_longitude: -74.006,
+      birth_timezone: 'America/New_York',
+      calculated_data: { planets: { sun: { longitude: 280.5 } } },
+    });
     service = new SolarReturnService();
   });
 
