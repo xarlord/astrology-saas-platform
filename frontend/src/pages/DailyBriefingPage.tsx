@@ -174,7 +174,7 @@ const DailyBriefingPage: React.FC = () => {
   const hasMarkedViewed = useRef(false);
 
   // Fetch real transit data
-  const { data: transitData, isLoading } = useTodayTransits();
+  const { data: transitData, isLoading: _isLoading } = useTodayTransits();
 
   // Derive moon phase from transit data
   const moonPhase: MoonPhaseData = useMemo(() => {
