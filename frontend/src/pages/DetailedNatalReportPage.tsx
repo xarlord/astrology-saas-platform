@@ -259,7 +259,7 @@ const DetailedNatalReportPage: React.FC = () => {
                 <span className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2 block">
                   Premium Natal Report
                 </span>
-                <h2 className="text-4xl font-bold text-white mb-2">{chart.name}</h2>
+                <h1 className="text-4xl font-bold text-white mb-2">{chart.name}</h1>
                 <div className="flex flex-wrap items-center gap-4 text-purple-400 text-sm">
                   <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-[18px]">calendar_today</span>
