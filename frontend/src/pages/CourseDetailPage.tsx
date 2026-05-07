@@ -4,7 +4,7 @@
  * Detailed view of a course with video player, syllabus, and progress tracking
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -12,6 +12,10 @@ import { motion } from 'framer-motion';
 import { Button } from '../components/ui/Button';
 import { AppLayout } from '../components';
 import VideoPlayer from '../components/media/VideoPlayer';
+
+// Store & Services
+import { useLearningStore } from '../stores/learningStore';
+import { learningService } from '../services';
 
 // Types
 interface Module {
@@ -40,116 +44,66 @@ interface Course {
   thumbnail: string;
 }
 
-// Mock course data
-const MOCK_COURSES: Record<string, Course> = {
-  'master-houses': {
-    id: 'master-houses',
-    title: 'Master the Houses',
-    description:
-      'Deep dive into the 12 celestial houses. Understand how the positions of planets define specific life areas.',
-    instructor: 'Dr. Stella Nova',
-    duration: '4.5 hours',
-    difficulty: 'Intermediate',
-    thumbnail: 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=800&q=80',
-    modules: [
-      {
-        id: 'module-1',
-        title: 'Introduction to Houses',
-        lessons: [
-          {
-            id: 'lesson-1',
-            title: 'What Are the Houses?',
-            duration: '12:30',
-            videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            completed: true,
-            description: 'Learn the fundamental concept of astrological houses.',
-          },
-          {
-            id: 'lesson-2',
-            title: 'The House System Explained',
-            duration: '15:45',
-            completed: true,
-            description: 'Understanding different house systems and how to choose.',
-          },
-          {
-            id: 'lesson-3',
-            title: 'House Cusps and Rulers',
-            duration: '18:20',
-            completed: false,
-            description: 'Deep dive into cusps and planetary rulers.',
-          },
-        ],
-      },
-      {
-        id: 'module-2',
-        title: 'Angular Houses (1, 4, 7, 10)',
-        lessons: [
-          {
-            id: 'lesson-4',
-            title: 'The 1st House - Identity',
-            duration: '20:15',
-            completed: false,
-            description: 'The house of self and personal identity.',
-          },
-          {
-            id: 'lesson-5',
-            title: 'The 4th House - Home & Roots',
-            duration: '22:30',
-            completed: false,
-            description: 'Understanding your foundation and family.',
-          },
-        ],
-      },
-    ],
-  },
-  'astrology-101': {
-    id: 'astrology-101',
-    title: 'Astrology 101: The Basics',
-    description: 'Learn the planets, signs, and the core language of the cosmos.',
-    instructor: 'Prof. Luna Star',
-    duration: '6 hours',
-    difficulty: 'Beginner',
-    thumbnail: 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=800&q=80',
-    modules: [
-      {
-        id: 'module-1',
-        title: 'Getting Started',
-        lessons: [
-          {
-            id: 'lesson-1',
-            title: 'Welcome to Astrology',
-            duration: '10:00',
-            completed: true,
-            description: 'Introduction to the course.',
-          },
-        ],
-      },
-    ],
-  },
-};
-
 const CourseDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  const { currentCourse, isLoading, error: storeError, loadCourse } = useLearningStore();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [currentLessonId, setCurrentLessonId] = useState<string>('');
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<'lessons' | 'resources'>('lessons');
 
-  // Load course data
+  // Load course data from API
   useEffect(() => {
-    if (id && MOCK_COURSES[id]) {
-      setCourse(MOCK_COURSES[id]);
+    if (id) {
+      void loadCourse(id);
+    }
+  }, [id, loadCourse]);
+
+  // Transform API course data to local Course shape when loaded
+  useEffect(() => {
+    if (currentCourse) {
+      const apiLessons = currentCourse.lessons ?? [];
+      // Group lessons into a single module since API has flat lesson list
+      const modules: Module[] = [
+        {
+          id: `${currentCourse.id}-module-1`,
+          title: currentCourse.title,
+          lessons: apiLessons.map((lesson) => ({
+            id: lesson.id,
+            title: lesson.title,
+            duration: lesson.duration ? `${Math.floor(lesson.duration / 60)}:${String(lesson.duration % 60).padStart(2, '0')}` : '0:00',
+            videoUrl: lesson.videoUrl,
+            completed: lesson.completed ?? false,
+            description: lesson.description,
+          })),
+        },
+      ];
+
+      const transformed: Course = {
+        id: currentCourse.id,
+        title: currentCourse.title,
+        description: currentCourse.description,
+        instructor: 'AstroVerse Instructor',
+        duration: currentCourse.duration ? `${(currentCourse.duration / 60).toFixed(1)} hours` : '0 hours',
+        difficulty: currentCourse.level === 'beginner' ? 'Beginner' : currentCourse.level === 'advanced' ? 'Advanced' : 'Intermediate',
+        modules,
+        thumbnail: currentCourse.thumbnailUrl ?? 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=800&q=80',
+      };
+
+      setCourse(transformed);
+
       // Set first lesson as current
-      const firstLesson = MOCK_COURSES[id].modules[0]?.lessons[0];
+      const firstLesson = modules[0]?.lessons[0];
       if (firstLesson) {
         setCurrentLessonId(firstLesson.id);
       }
       // Expand first module by default
-      setExpandedModules(new Set([MOCK_COURSES[id].modules[0]?.id]));
+      setExpandedModules(new Set([modules[0]?.id]));
     }
-  }, [id]);
+  }, [currentCourse]);
 
   const currentLesson = useMemo(() => {
     if (!course) return null;
@@ -176,9 +130,9 @@ const CourseDetailPage: React.FC = () => {
     setCurrentLessonId(lessonId);
   };
 
-  const handleMarkComplete = (lessonId: string) => {
+  const handleMarkComplete = useCallback((lessonId: string) => {
     if (!course) return;
-    // Update local state (in real app, this would call API)
+    // Optimistically update local state
     const updatedModules = course.modules.map((module) => ({
       ...module,
       lessons: module.lessons.map((lesson) =>
@@ -186,7 +140,9 @@ const CourseDetailPage: React.FC = () => {
       ),
     }));
     setCourse({ ...course, modules: updatedModules });
-  };
+    // Persist to API
+    void learningService.completeLesson(lessonId);
+  }, [course]);
 
   const handleNextLesson = () => {
     if (!course || !currentLesson) return;
@@ -221,10 +177,24 @@ const CourseDetailPage: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-slate-400">Loading course...</p>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
   if (!course) {
     return (
       <AppLayout>
         <div className="text-center">
+          {storeError && <p className="text-red-400 mb-2">{storeError}</p>}
           <p className="text-slate-400 mb-4">Course not found</p>
           <Button variant="primary" onClick={() => navigate('/learning')}>
             Back to Learning Center
