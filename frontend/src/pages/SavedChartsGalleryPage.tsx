@@ -251,7 +251,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 <span className="material-symbols-outlined text-accent-gold text-3xl">
                   collections_bookmark
                 </span>
-                <h2 className="text-4xl font-bold tracking-tight text-slate-100">
+                <h1 className="text-4xl font-bold tracking-tight text-slate-100">
                   My Cosmic Library
                 </h2>
               </div>
