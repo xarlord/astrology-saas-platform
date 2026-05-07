@@ -1,58 +1,65 @@
-# Backend Dockerfile for Astrology SaaS Platform
-# Multi-stage build for optimized image size
+# Backend Dockerfile for AstroVerse SaaS Platform
+# Multi-stage build for optimized production image
 
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Copy root package files (workspace root)
 COPY package*.json ./
-COPY tsconfig.json ./
+COPY backend/package*.json ./backend/
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci
+# Install all dependencies (workspace-aware)
+RUN npm ci --workspaces --include-workspace-root
 
-# Copy source code
-COPY src ./src
+# Copy shared packages and build them first
+COPY packages/ ./packages/
+RUN cd packages/shared-types && npm run build 2>/dev/null || true
+RUN cd packages/shared-utils && npm run build 2>/dev/null || true
+RUN cd packages/shared-constants && npm run build 2>/dev/null || true
 
-# Build TypeScript
-RUN npm run build
+# Copy backend source
+COPY backend/tsconfig.json ./backend/
+COPY backend/src ./backend/src
+
+# Build backend TypeScript
+RUN cd backend && npm run build
 
 # Stage 2: Production
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Install Swiss Ephemeris dependencies
-RUN apk add --no-cache libgcc
+# Install runtime dependencies
+RUN apk add --no-cache libgcc tini
 
 # Copy package files
 COPY package*.json ./
+COPY backend/package*.json ./backend/
 
 # Install production dependencies only
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev --workspaces --include-workspace-root
 
-# Copy built files from builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/ephemeris ./ephemeris
+# Copy built files
+COPY --from=builder /app/backend/dist ./backend/dist
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+# Copy shared packages (built)
+COPY --from=builder /app/packages ./packages
 
-# Change ownership of app directory
+# Copy knex config and migrations
+COPY backend/knexfile.ts ./backend/
+COPY backend/src/modules/*/migrations ./backend/migrations/ 2>/dev/null || true
+
+# Non-root user for security
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 RUN chown -R nodejs:nodejs /app
-
-# Switch to non-root user
 USER nodejs
 
-# Expose port
 EXPOSE 3001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s   CMD wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1
 
-# Start application
-CMD ["node", "dist/server.js"]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "backend/dist/server.js"]

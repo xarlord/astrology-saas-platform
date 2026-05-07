@@ -46,7 +46,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
-  const modalRef = useFocusTrap<HTMLDivElement>({ active: showCreateModal });
+  const modalRef = useFocusTrap<HTMLDivElement>({ active: showCreateModal, onEscape: () => setShowCreateModal(false) });
 
   const handleCreateShare = useCallback(async () => {
     setIsLoading(true);

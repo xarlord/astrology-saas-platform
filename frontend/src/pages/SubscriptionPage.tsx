@@ -91,7 +91,8 @@ function PricingTierCard({
 
         {/* CTA button */}
         {isCurrent ? (
-          <div className="w-full py-2.5 text-center text-sm font-medium text-green-400 bg-green-500/10 rounded-lg border border-green-500/20">
+          <div className="w-full py-2.5 text-center text-sm font-medium text-green-400 bg-green-500/10 rounded-lg border border-green-500/20" role="status">
+            <span className="material-symbols-outlined text-sm align-middle mr-1" aria-hidden="true">check_circle</span>
             Current Plan
           </div>
         ) : (

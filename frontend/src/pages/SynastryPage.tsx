@@ -46,6 +46,7 @@ const SynastryPageWrapper: React.FC = () => {
   if (error) {
     return (
       <AppLayout>
+        <h1 className="sr-only">Synastry Compatibility</h1>
         <EmptyState
           icon="⚠️"
           title="Unable to load charts"

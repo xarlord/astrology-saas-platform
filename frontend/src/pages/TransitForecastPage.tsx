@@ -312,7 +312,7 @@ const TransitForecastPage: React.FC = () => {
         {/* Header & Date Toggle */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-1">Transit Forecast</h2>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-1">Transit Forecast</h1>
             <p className="text-slate-400">
               Daily planetary influences for{' '}
               {charts.find((c) => c.id === selectedChartId)?.name ?? 'your chart'}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useFocusTrap } from '../hooks';
 import { useAuth } from '../hooks';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 
@@ -32,7 +33,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-64" {...(sidebarOpen ? { inert: '' } : {})}>
         {/* Top Navigation Bar */}
         <TopNav onMenuClick={() => setSidebarOpen(true)} />
 
@@ -201,8 +202,17 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
 // Sidebar Component
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const sidebarRef = useFocusTrap({
+    active: isOpen,
+    onEscape: onClose,
+    autoFocus: true,
+    autoFocusDelay: 100,
+    preventScroll: true,
+  });
+
   return (
     <aside
+      ref={sidebarRef}
       className={`
         fixed inset-y-0 left-0 z-sidebar w-64 bg-cosmic-card-solid border-r border-white/5
         transform transition-transform duration-300 ease-in-out

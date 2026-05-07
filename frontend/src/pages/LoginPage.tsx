@@ -6,7 +6,9 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   return (
-    <AuthLayout
+    <>
+      <h1 className="sr-only">Login to your account</h1>
+      <AuthLayout
       leftPanel={
         <>
           {/* Background gradient */}
@@ -57,5 +59,6 @@ export default function LoginPage() {
     >
       <LoginForm onSuccess={() => navigate('/dashboard')} />
     </AuthLayout>
+  </>
   );
 }
