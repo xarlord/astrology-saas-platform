@@ -247,13 +247,14 @@ export const SavedChartsGalleryPage: React.FC = () => {
           {/* Header Area */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-1">
+              <h1 className="sr-only">Saved Charts Gallery</h1>
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-accent-gold text-3xl">
                   collections_bookmark
                 </span>
-                <h1 className="text-4xl font-bold tracking-tight text-slate-100">
+                <h2 className="text-4xl font-bold tracking-tight text-slate-100">
                   My Cosmic Library
-                </h1>
+                </h2>
               </div>
               <p className="text-slate-400 text-lg">
                 Manage and explore your collection of birth charts
