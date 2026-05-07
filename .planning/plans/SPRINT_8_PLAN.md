@@ -242,8 +242,34 @@ US-8.5 (Performance) — independent
 
 ## Sprint 8 Progress Tracking
 
-- [ ] US-8.1: UI Review Issues (0/40 fixed)
-- [ ] US-8.2: Accessibility (0/8 tasks done)
-- [ ] US-8.3: Production Deploy (0/5 tasks done)
+- [ ] US-8.1: UI Review Issues (2/40 fixed)
+  - [x] t_a11y_2: aria-hidden on icons — SubscriptionPage color-only indicator fixed
+  - [x] t_a11y_4: Focus trap — mobile sidebar focus trap + escape handler + inert main content
+- [ ] US-8.2: Accessibility (2/8 tasks done)
+  - [x] t_a11y_2: Color-only indicators → icon+color (SubscriptionPage)
+  - [x] t_a11y_4: Focus trap + escape key + skip links (AppLayout Sidebar)
+- [x] US-8.3: Production Deploy (3/5 tasks done)
+  - [x] t_deploy_1: Docker Compose stack (PostgreSQL + Backend + Frontend)
+  - [x] t_deploy_2: CI/CD deploy pipeline (GHCR + SSH deploy + health check)
+  - [x] Dockerfiles updated for monorepo workspaces + multi-stage build
+  - [x] Nginx production config (gzip, caching, reverse proxy, security headers)
+  - [x] .env.production.example template
+  - [ ] t_deploy_3: DNS + SSL (pending domain)
+  - [ ] t_deploy_4: Sentry monitoring (pending DSN)
+  - [ ] t_deploy_5: Stripe live config (pending live keys)
 - [ ] US-8.4: Onboarding (0/5 tasks done)
 - [ ] US-8.5: Performance (0/4 tasks done)
+
+### Files Changed This Sprint
+
+| File | Change |
+|------|--------|
+| `docker-compose.yml` | NEW — Production stack (PG + Backend + Frontend + health checks) |
+| `nginx/production.conf` | NEW — Nginx config (gzip, reverse proxy, security headers, SPA fallback) |
+| `.env.production.example` | NEW — Production env template |
+| `.github/workflows/deploy.yml` | UPDATED — Real deploy: Docker build → GHCR push → SSH deploy |
+| `backend/Dockerfile` | UPDATED — Monorepo-aware, multi-stage, non-root user, health check |
+| `frontend/Dockerfile` | UPDATED — Monorepo-aware, Nginx serve, security headers, health check |
+| `frontend/src/components/AppLayout.tsx` | FIXED — Focus trap on mobile sidebar, inert main content, Escape handler |
+| `frontend/src/pages/SubscriptionPage.tsx` | FIXED — Color-only indicator → icon+color, role=status |
+| `README.md` | UPDATED — Deployment section, CI/CD pipeline docs
