@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 ﻿/**
  * Login Page Component
  *
@@ -41,7 +42,6 @@ export default function LoginPageNew() {
     }
   };
 
-  /* eslint-disable @typescript-eslint/no-misused-promises */
   const handleSocialLogin = async (provider: 'google' | 'apple'): Promise<void> => {
     clearError();
     try {
@@ -61,7 +61,6 @@ export default function LoginPageNew() {
       // Error handled by store
     }
   };
-  /* eslint-enable @typescript-eslint/no-misused-promises */
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cosmic-page to-cosmic-card-solid font-display text-slate-100 antialiased overflow-hidden">
