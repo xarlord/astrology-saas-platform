@@ -74,7 +74,6 @@ export default function RegisterPageNew() {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const handleSocialLogin = async (provider: 'google' | 'apple') => {
     clearError();
     try {
@@ -486,7 +485,7 @@ export default function RegisterPageNew() {
                 <button
                   className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white transition-colors duration-200"
                   type="button"
-                  onClick={() => handleSocialLogin('google')}
+                  onClick={() => { void handleSocialLogin('google'); }}
                   aria-label="Continue with Google"
                 >
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
