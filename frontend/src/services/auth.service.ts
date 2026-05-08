@@ -115,6 +115,6 @@ export const authService = {
       provider,
     });
 
-    return response.data;
+    return response.data.data;
   },
 };
