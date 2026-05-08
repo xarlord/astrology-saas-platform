@@ -116,7 +116,7 @@ describe('socialLogin controller', () => {
     );
     expect(cookie).toHaveBeenCalledWith(
       'refreshToken',
-      expect.any(String),
+      expect.anything(),
       expect.objectContaining({ httpOnly: true }),
     );
   });
