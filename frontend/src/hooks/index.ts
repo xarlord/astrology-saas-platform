@@ -131,6 +131,7 @@ export function useAuth() {
     isLoading,
     error,
     clearError,
+    socialLogin,
   } = useAuthStore();
 
   return {
@@ -144,6 +145,7 @@ export function useAuth() {
     isLoading,
     error,
     clearError,
+    socialLogin,
   };
 }
 

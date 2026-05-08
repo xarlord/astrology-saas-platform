@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Login Page Component
  *
  * Split-screen login page with cosmic artwork and form
@@ -13,7 +13,7 @@ import { Helmet } from 'react-helmet-async';
 export default function LoginPageNew() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, error, clearError } = useAuth();
+  const { login, socialLogin, isLoading, error, clearError } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,9 +41,24 @@ export default function LoginPageNew() {
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'apple') => {
-    // Social login will be implemented later
-    void provider;
+  const handleSocialLogin = async (provider: 'google' | 'apple'): Promise<void> => {
+    clearError();
+    try {
+      if (provider === 'google') {
+        await socialLogin('google');
+        const from =
+          (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
+        const lastViewed = localStorage.getItem('dailyBriefingLastViewed');
+        const today = new Date().toISOString().split('T')[0];
+        if (lastViewed !== today && from === '/dashboard') {
+          navigate('/daily-briefing', { replace: true });
+        } else {
+          navigate(from, { replace: true });
+        }
+      }
+    } catch {
+      // Error handled by store
+    }
   };
 
   return (
@@ -336,7 +351,7 @@ export default function LoginPageNew() {
                   <button
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
                     type="button"
-                    onClick={() => handleSocialLogin('google')}
+                    onClick={() => { void handleSocialLogin('google'); }}
                     aria-label="Continue with Google"
                   >
                     <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 24 24">
@@ -350,7 +365,7 @@ export default function LoginPageNew() {
                   <button
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
                     type="button"
-                    onClick={() => handleSocialLogin('apple')}
+                    onClick={() => { void handleSocialLogin('apple'); }}
                     aria-label="Continue with Apple"
                   >
                     <svg

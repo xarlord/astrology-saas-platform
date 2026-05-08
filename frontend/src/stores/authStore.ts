@@ -26,6 +26,7 @@ interface AuthState {
   loadUser: () => Promise<void>;
   updateProfile: (data: { name?: string; avatar_url?: string; timezone?: string }) => Promise<void>;
   updatePreferences: (preferences: Partial<User['preferences']>) => Promise<void>;
+  socialLogin: (provider: 'google') => Promise<void>;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
 }
@@ -84,6 +85,29 @@ export const useAuthStore = create<AuthState>()(
           } catch (error: unknown) {
             set({
               error: error instanceof Error ? error.message : 'Registration failed',
+              isLoading: false,
+              isAuthenticated: false,
+            });
+            throw error;
+          }
+        },
+
+        // Social login action
+              socialLogin: async (provider: 'google') => {
+          set({ isLoading: true, error: null });
+          try {
+            const response = await authService.socialLogin(provider);
+            const { user, accessToken } = response;
+        
+            set({
+              user,
+              token: accessToken,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+          } catch (error: unknown) {
+            set({
+              error: error instanceof Error ? error.message : 'Social login failed',
               isLoading: false,
               isAuthenticated: false,
             });

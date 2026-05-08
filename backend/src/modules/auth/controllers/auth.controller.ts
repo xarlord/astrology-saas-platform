@@ -27,6 +27,9 @@ export async function register(req: Request, res: Response): Promise<void> {
   // Check if user already exists
   const existingUser = await UserModel.findByEmail(email);
   if (existingUser) {
+    if (existingUser.auth_provider !== 'email') {
+      throw new AppError('An account with this email already exists via Google sign-in. Please use Google to log in.', 409);
+    }
     throw new AppError('User with this email already exists', 409);
   }
 
@@ -38,6 +41,7 @@ export async function register(req: Request, res: Response): Promise<void> {
     name,
     email,
     password_hash,
+    auth_provider: 'email',
   });
 
   // Generate tokens
@@ -90,6 +94,11 @@ export async function login(req: Request, res: Response): Promise<void> {
   if (!user) {
     logAuthFailure('User not found', req as Request, { email });
     throw new AppError('Invalid email or password', 401);
+  }
+
+  // Block social-only accounts from email/password login
+  if (user.auth_provider !== 'email' && !user.password_hash) {
+    throw new AppError('This account uses social login. Please sign in with Google.', 400);
   }
 
   // Check password

@@ -92,4 +92,29 @@ export const authService = {
     );
     return response.data.data;
   },
+
+  async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
+    const { getFirebaseAuth, isFirebaseConfigured } = await import('../config/firebase');
+
+    if (!isFirebaseConfigured()) {
+      throw new Error('Social login is not configured');
+    }
+
+    const auth = getFirebaseAuth();
+    const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
+
+    const googleProvider = new GoogleAuthProvider();
+    googleProvider.addScope('email');
+    googleProvider.addScope('profile');
+
+    const result = await signInWithPopup(auth, googleProvider);
+    const idToken = await result.user.getIdToken();
+
+    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
+      idToken,
+      provider,
+    });
+
+    return response.data.data;
+  },
 };

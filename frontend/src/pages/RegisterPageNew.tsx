@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /**
  * Register Page Component
  *
@@ -39,7 +40,7 @@ const calculatePasswordStrength = (
 
 export default function RegisterPageNew() {
   const navigate = useNavigate();
-  const { register, isLoading, error, clearError } = useAuth();
+  const { register, socialLogin, isLoading, error, clearError } = useAuth();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -74,9 +75,16 @@ export default function RegisterPageNew() {
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'apple') => {
-    // Social login will be implemented later
-    void provider;
+  const handleSocialLogin = async (provider: 'google' | 'apple'): Promise<void> => {
+    clearError();
+    try {
+      if (provider === 'google') {
+        await socialLogin('google');
+        navigate('/dashboard', { replace: true });
+      }
+    } catch {
+      // Error handled by store
+    }
   };
 
   return (
@@ -478,7 +486,7 @@ export default function RegisterPageNew() {
                 <button
                   className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white transition-colors duration-200"
                   type="button"
-                  onClick={() => handleSocialLogin('google')}
+                  onClick={() => { void handleSocialLogin('google'); }}
                   aria-label="Continue with Google"
                 >
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
