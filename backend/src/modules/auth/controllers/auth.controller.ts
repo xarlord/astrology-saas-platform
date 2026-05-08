@@ -41,6 +41,7 @@ export async function register(req: Request, res: Response): Promise<void> {
     name,
     email,
     password_hash,
+    auth_provider: 'email',
   });
 
   // Generate tokens
