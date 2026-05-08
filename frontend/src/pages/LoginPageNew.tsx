@@ -41,6 +41,7 @@ export default function LoginPageNew() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const handleSocialLogin = async (provider: 'google' | 'apple') => {
     clearError();
     try {
