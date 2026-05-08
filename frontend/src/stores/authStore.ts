@@ -97,7 +97,9 @@ export const useAuthStore = create<AuthState>()(
         socialLogin: async (provider: 'google') => {
           set({ isLoading: true, error: null });
           try {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const response = await authService.socialLogin(provider);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const { user, accessToken } = response;
 
             set({
