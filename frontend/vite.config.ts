@@ -95,14 +95,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          charts: ['recharts'],
+          framework: ['react', 'react-dom', 'react-router-dom'],
           query: ['@tanstack/react-query'],
-          utils: ['axios'],
+          charts: ['recharts'],
+          'ui-vendor': ['axios', 'zustand'],
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 600,
+    cssCodeSplit: true,
+    modulePreload: { polyfill: false },
     minify: 'terser',
     terserOptions: {
       compress: {
