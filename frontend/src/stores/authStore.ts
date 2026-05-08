@@ -93,6 +93,7 @@ export const useAuthStore = create<AuthState>()(
         },
 
         // Social login action
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         socialLogin: async (provider: 'google') => {
           set({ isLoading: true, error: null });
           try {
