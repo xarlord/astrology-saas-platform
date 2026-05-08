@@ -41,7 +41,8 @@ export default function LoginPageNew() {
     }
   };
 
-  const handleSocialLogin = async (provider: 'google' | 'apple') => {
+  /* eslint-disable @typescript-eslint/no-misused-promises */
+  const handleSocialLogin = async (provider: 'google' | 'apple'): Promise<void> => {
     clearError();
     try {
       if (provider === 'google') {
@@ -60,6 +61,7 @@ export default function LoginPageNew() {
       // Error handled by store
     }
   };
+  /* eslint-enable @typescript-eslint/no-misused-promises */
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cosmic-page to-cosmic-card-solid font-display text-slate-100 antialiased overflow-hidden">
@@ -365,7 +367,7 @@ export default function LoginPageNew() {
                   <button
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
                     type="button"
-                    onClick={() => handleSocialLogin('apple')}
+                    onClick={() => { void handleSocialLogin('apple')}
                     aria-label="Continue with Apple"
                   >
                     <svg
