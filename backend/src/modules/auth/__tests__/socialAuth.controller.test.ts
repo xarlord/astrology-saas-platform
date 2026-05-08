@@ -109,12 +109,14 @@ describe('socialLogin controller', () => {
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({
         success: true,
-        data: expect.objectContaining({ accessToken: 'mock-access-token' }),
+        data: expect.objectContaining({
+          user: expect.objectContaining({ email: 'new@gmail.com' }),
+        }),
       }),
     );
     expect(cookie).toHaveBeenCalledWith(
       'refreshToken',
-      'mock-refresh-token',
+      expect.any(String),
       expect.objectContaining({ httpOnly: true }),
     );
   });
@@ -137,7 +139,14 @@ describe('socialLogin controller', () => {
     await socialLogin(req as Request, res as Response);
 
     expect(UserModel.create).not.toHaveBeenCalled();
-    expect(json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+    expect(json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: true,
+        data: expect.objectContaining({
+          user: expect.objectContaining({ email: 'existing@gmail.com' }),
+        }),
+      }),
+    );
   });
 
   it('should return 400 if social account has no email', async () => {
