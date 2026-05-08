@@ -50,6 +50,10 @@ describe('socialLogin controller', () => {
       status: jest.fn().mockReturnThis(),
     };
     jest.clearAllMocks();
+    // Re-setup mock return values after clear
+    const { generateToken, generateRefreshToken } = require('../../../middleware/auth');
+    (generateToken as jest.Mock).mockReturnValue('mock-access-token');
+    (generateRefreshToken as jest.Mock).mockReturnValue('mock-refresh-token');
   });
 
   it('should return 400 if idToken is missing', async () => {

@@ -92,7 +92,6 @@ export const authService = {
     );
     return response.data.data;
   },
-,
 
   async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
     const { getFirebaseAuth, isFirebaseConfigured } = await import('../config/firebase');
