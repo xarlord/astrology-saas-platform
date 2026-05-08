@@ -181,7 +181,6 @@ export function useCharts() {
     isLoading,
     error,
     clearError,
-    socialLogin,
   };
 }
 

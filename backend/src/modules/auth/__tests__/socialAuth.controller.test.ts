@@ -25,6 +25,7 @@ jest.mock('../../../utils/logger', () => ({
 }));
 
 import UserModel from '../../users/models/user.model';
+import { generateToken, generateRefreshToken } from '../../../middleware/auth';
 
 const mockVerifyFirebaseToken = firebaseAdmin.verifyFirebaseToken as jest.MockedFunction<
   typeof firebaseAdmin.verifyFirebaseToken
@@ -49,9 +50,7 @@ describe('socialLogin controller', () => {
       cookie,
       status: jest.fn().mockReturnThis(),
     };
-    jest.clearAllMocks();
-    // Re-setup mock return values after clear
-    const { generateToken, generateRefreshToken } = require('../../../middleware/auth');
+    jest.restoreAllMocks();
     (generateToken as jest.Mock).mockReturnValue('mock-access-token');
     (generateRefreshToken as jest.Mock).mockReturnValue('mock-refresh-token');
   });

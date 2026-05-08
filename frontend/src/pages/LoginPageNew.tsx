@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-﻿/**
+/**
  * Login Page Component
  *
  * Split-screen login page with cosmic artwork and form
