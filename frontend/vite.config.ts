@@ -97,7 +97,7 @@ export default defineConfig({
         manualChunks: {
           framework: ['react', 'react-dom', 'react-router-dom'],
           query: ['@tanstack/react-query'],
-          charts: ['recharts', 'd3'],
+          charts: ['recharts'],
           'ui-vendor': ['axios', 'zustand'],
         },
       },
