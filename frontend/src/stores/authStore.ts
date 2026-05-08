@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
 /**
  * Authentication Store
  *
@@ -93,14 +94,12 @@ export const useAuthStore = create<AuthState>()(
         },
 
         // Social login action
-        /* eslint-disable @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
-        socialLogin: async (provider: 'google') => {
+              socialLogin: async (provider: 'google') => {
           set({ isLoading: true, error: null });
           try {
             const response = await authService.socialLogin(provider);
             const { user, accessToken } = response;
-          /* eslint-enable @typescript-eslint/no-misused-promises, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
-
+        
             set({
               user,
               token: accessToken,
