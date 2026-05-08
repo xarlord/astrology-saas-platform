@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /**
  * Register Page Component
  *
@@ -74,7 +75,6 @@ export default function RegisterPageNew() {
     }
   };
 
-  /* eslint-disable @typescript-eslint/no-misused-promises */
   const handleSocialLogin = async (provider: 'google' | 'apple'): Promise<void> => {
     clearError();
     try {
@@ -86,7 +86,6 @@ export default function RegisterPageNew() {
       // Error handled by store
     }
   };
-  /* eslint-enable @typescript-eslint/no-misused-promises */
 
   return (
     <div className="font-display bg-gradient-to-br from-cosmic-page to-cosmic-card-solid text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
