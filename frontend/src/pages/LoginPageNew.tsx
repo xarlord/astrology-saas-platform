@@ -13,7 +13,7 @@ import { Helmet } from 'react-helmet-async';
 export default function LoginPageNew() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, error, clearError } = useAuth();
+  const { login, socialLogin, isLoading, error, clearError } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,9 +41,24 @@ export default function LoginPageNew() {
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'apple') => {
-    // Social login will be implemented later
-    void provider;
+  const handleSocialLogin = async (provider: 'google' | 'apple') => {
+    clearError();
+    try {
+      if (provider === 'google') {
+        await socialLogin('google');
+        const from =
+          (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
+        const lastViewed = localStorage.getItem('dailyBriefingLastViewed');
+        const today = new Date().toISOString().split('T')[0];
+        if (lastViewed !== today && from === '/dashboard') {
+          navigate('/daily-briefing', { replace: true });
+        } else {
+          navigate(from, { replace: true });
+        }
+      }
+    } catch {
+      // Error handled by store
+    }
   };
 
   return (

@@ -9,6 +9,8 @@ export interface User {
   name: string;
   email: string;
   password_hash: string;
+  auth_provider: 'email' | 'google';
+  firebase_uid?: string;
   avatar_url?: string;
   timezone: string;
   plan: 'free' | 'pro' | 'premium';
@@ -24,6 +26,8 @@ export interface CreateUserData {
   name: string;
   email: string;
   password_hash: string;
+  auth_provider: 'email' | 'google';
+  firebase_uid?: string;
   timezone?: string;
 }
 
@@ -64,6 +68,7 @@ class UserModel {
         ...data,
         preferences: {},
         plan: 'free',
+        auth_provider: data.auth_provider || 'email',
         subscription_status: 'active',
         timezone: data.timezone || 'UTC',
       })
@@ -84,6 +89,18 @@ class UserModel {
         updated_at: new Date(),
       })
       .returning('*');
+
+    return user || null;
+  }
+
+  /**
+   * Find user by Firebase UID
+   */
+  async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
+    const user = await knex(this.tableName)
+      .where({ firebase_uid: firebaseUid })
+      .whereNull('deleted_at')
+      .first();
 
     return user || null;
   }

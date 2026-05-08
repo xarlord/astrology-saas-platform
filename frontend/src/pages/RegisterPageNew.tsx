@@ -39,7 +39,7 @@ const calculatePasswordStrength = (
 
 export default function RegisterPageNew() {
   const navigate = useNavigate();
-  const { register, isLoading, error, clearError } = useAuth();
+  const { register, socialLogin, isLoading, error, clearError } = useAuth();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -74,9 +74,16 @@ export default function RegisterPageNew() {
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'apple') => {
-    // Social login will be implemented later
-    void provider;
+  const handleSocialLogin = async (provider: 'google' | 'apple') => {
+    clearError();
+    try {
+      if (provider === 'google') {
+        await socialLogin('google');
+        navigate('/dashboard', { replace: true });
+      }
+    } catch {
+      // Error handled by store
+    }
   };
 
   return (

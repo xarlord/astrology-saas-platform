@@ -14,6 +14,7 @@ import {
 } from '../../../shared/schemas/auth.validation';
 import { authRateLimiter, passwordResetRateLimiter } from '../../../middleware/rateLimiter';
 import * as AuthController from '../controllers/auth.controller';
+import * as SocialAuthController from '../controllers/socialAuth.controller';
 
 const router = Router();
 
@@ -237,6 +238,19 @@ router.post(
   validateRequest(ResetPasswordSchema),
   asyncHandler(async (req, res) => {
     await AuthController.resetPassword(req, res);
+  }),
+);
+
+/**
+ * @route   POST /api/v1/auth/social
+ * @desc    Social login (Google via Firebase)
+ * @access  Public
+ */
+router.post(
+  '/social',
+  authRateLimiter,
+  asyncHandler(async (req, res) => {
+    await SocialAuthController.socialLogin(req, res);
   }),
 );
 
