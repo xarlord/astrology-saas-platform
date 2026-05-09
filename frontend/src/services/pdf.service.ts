@@ -200,7 +200,7 @@ class PDFService {
           this.addSolarReturnReportContent(data as SolarReturnReportData);
           break;
         case 'lunar-return':
-          this.addLunarReturnReportContent(data as LunarReturnData);
+          this.addLunarReturnReportContent(data as LunarReturnReportData);
           break;
         default:
           this.addNatalReportContent(data as NatalReportData);
