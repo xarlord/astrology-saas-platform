@@ -94,10 +94,62 @@ export function ChartWheel({
   const aspectRadius = size * 0.38;
 
   // Convert planet longitude to chart position (0-360)
+  // Prefer absolute ecliptic longitude from backend; fall back to sign-based computation
+  const ZODIAC_SIGN_NAMES = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
   const getPlanetAngle = (planet: PlanetPosition) => {
-    const totalDegrees = planet.degree + planet.minute / 60 + planet.second / 3600;
-    return totalDegrees % 360;
+    if (planet.longitude != null && planet.longitude >= 0) {
+      return planet.longitude % 360;
+    }
+    // Fallback: convert within-sign degree to absolute ecliptic longitude
+    const signIdx = ZODIAC_SIGN_NAMES.indexOf(planet.sign.toLowerCase());
+    const withinSign = planet.degree + planet.minute / 60 + planet.second / 3600;
+    const absolute = signIdx >= 0 ? signIdx * 30 + withinSign : withinSign;
+    return absolute % 360;
   };
+
+  // Spread overlapping planets to avoid label collision.
+  // Planets closer than minPixelGap px get nudged apart on the wheel.
+  const planetRadius = (outerRadius + innerRadius) / 2;
+  const minPixelGap = 36;
+  const minAngleGap = (minPixelGap / planetRadius) * (180 / Math.PI);
+
+  const sortedPlanets = [...planets]
+    .map((p) => ({ ...p, _angle: getPlanetAngle(p) }))
+    .sort((a, b) => a._angle - b._angle);
+
+  // Iterative spreading: keep pushing until stable (max 5 rounds)
+  for (let round = 0; round < 5; round++) {
+    let changed = false;
+    // Re-sort by current angle after each round of pushes
+    sortedPlanets.sort((a, b) => a._angle - b._angle);
+    for (let i = 1; i < sortedPlanets.length; i++) {
+      let gap = sortedPlanets[i]._angle - sortedPlanets[i - 1]._angle;
+      if (gap < 0) gap += 360;
+      if (gap < minAngleGap) {
+        const shift = minAngleGap - gap;
+        sortedPlanets[i] = { ...sortedPlanets[i], _angle: sortedPlanets[i]._angle + shift };
+        changed = true;
+      }
+    }
+    if (!changed) break;
+  }
+
+  // Wrap-around check
+  if (sortedPlanets.length >= 2) {
+    const last = sortedPlanets[sortedPlanets.length - 1];
+    const first = sortedPlanets[0];
+    let wrapGap = first._angle + 360 - last._angle;
+    if (wrapGap < minAngleGap) {
+      sortedPlanets[0] = {
+        ...sortedPlanets[0],
+        _angle: sortedPlanets[0]._angle + (minAngleGap - wrapGap),
+      };
+    }
+  }
+
+  const spreadAngleMap = new Map(
+    sortedPlanets.map((p) => [p.planet, p._angle]),
+  );
 
   // Convert house cusp to angle
   const getHouseAngle = (house: HouseCusp) => {
@@ -299,8 +351,8 @@ export function ChartWheel({
 
           if (!planet1 || !planet2) return null;
 
-          const angle1 = getPlanetAngle(planet1);
-          const angle2 = getPlanetAngle(planet2);
+          const angle1 = spreadAngleMap.get(planet1.planet) ?? getPlanetAngle(planet1);
+          const angle2 = spreadAngleMap.get(planet2.planet) ?? getPlanetAngle(planet2);
 
           const start = getCircleCoords(cx, cy, aspectRadius, angle1);
           const end = getCircleCoords(cx, cy, aspectRadius, angle2);
@@ -345,7 +397,7 @@ export function ChartWheel({
 
         {/* Planets */}
         {planets.map((planet) => {
-          const angle = getPlanetAngle(planet);
+          const angle = spreadAngleMap.get(planet.planet) ?? getPlanetAngle(planet);
           const pos = getCircleCoords(cx, cy, (outerRadius + innerRadius) / 2, angle);
           const info = PLANET_INFO[planet.planet];
 
