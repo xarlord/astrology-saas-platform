@@ -9,7 +9,7 @@ const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: `${API_URL}/api/v1`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -20,7 +20,7 @@ const api = axios.create({
 let csrfToken: string | null = null;
 
 async function fetchCsrfToken(): Promise<string> {
-  const { data } = await axios.get<{ data: { token: string } }>(`${API_URL}/api/v1/csrf-token`, { withCredentials: true });
+  const { data } = await axios.get<{ data: { token: string } }>(`${API_URL}/api/v1/health/csrf-token`, { withCredentials: true });
   const token: string = data.data.token;
   csrfToken = token;
   return token;

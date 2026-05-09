@@ -7,6 +7,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing, AppLayout } from '../components';
+import type { SolarReturnChartData } from '../components/SolarReturnChart';
+import type { SolarReturnInterpretation as SolarReturnInterpretationData } from '../components/SolarReturnInterpretation';
 
 interface RelocationLocation {
   name: string;
@@ -221,8 +223,7 @@ export const SolarReturnsPage: React.FC = () => {
             <div role="tabpanel" id="solar-tabpanel" aria-labelledby={`solar-tab-${viewMode}`} className="min-h-[400px]">
               {viewMode === 'chart' && selectedReturn.calculatedData && (
                 <SolarReturnChart
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-                  chartData={selectedReturn.calculatedData as any}
+                  chartData={selectedReturn.calculatedData as SolarReturnChartData}
                   year={selectedReturn.year}
                   location={selectedReturn.returnLocation.name}
                   showAspects={true}
@@ -232,8 +233,7 @@ export const SolarReturnsPage: React.FC = () => {
 
               {viewMode === 'interpretation' && selectedReturn.interpretation && (
                 <SolarReturnInterpretation
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-                  interpretation={selectedReturn.interpretation as any}
+                  interpretation={selectedReturn.interpretation as SolarReturnInterpretationData}
                   year={selectedReturn.year}
                   returnDate={selectedReturn.returnDate}
                   onDownload={() => {
@@ -255,8 +255,7 @@ export const SolarReturnsPage: React.FC = () => {
                 <RelocationCalculator
                   natalChartId={selectedReturn.id}
                   year={selectedReturn.year}
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-                  onRecalculate={handleRecalculate as any}
+                  onRecalculate={handleRecalculate as (location: RelocationLocation) => Promise<unknown>}
                 />
               )}
 

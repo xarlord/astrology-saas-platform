@@ -24,7 +24,7 @@ interface Opportunity {
   timing: string;
 }
 
-interface SolarReturnInterpretation {
+export interface SolarReturnInterpretation {
   themes: string[];
   sunHouse: {
     house: number;
