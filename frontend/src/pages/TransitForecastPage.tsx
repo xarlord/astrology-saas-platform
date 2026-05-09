@@ -180,14 +180,14 @@ const TransitForecastPage: React.FC = () => {
       const data = await transitService.getTodayTransits();
 
       // Transform transits to current positions
-      /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
       const positions: CurrentTransit[] = (data.transits ?? []).map((transit: any) => ({
         planet: transit.transitPlanet,
         sign: transit.aspect ?? '',
         degree: transit.orb,
         retrograde: false,
       }));
-      /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+      /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
 
       setCurrentTransits(positions);
     } catch (err) {
