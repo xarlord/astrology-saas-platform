@@ -245,7 +245,7 @@ export function sendMonthlyReportEmail(
     'November',
     'December',
   ];
-  const monthName = monthNames[parseInt(month)] || month;
+  const monthName = monthNames[Number(month)] || month;
   const dashboardUrl = `${frontendUrl}/dashboard/monthly-report?month=${month}&year=${year}`;
 
   const html = `

@@ -123,8 +123,8 @@ router.get(
 router.get(
   '/detect',
   asyncHandler(async (req, res) => {
-    const lat = parseFloat(req.query.lat as string);
-    const lng = parseFloat(req.query.lng as string);
+    const lat = Number(req.query.lat);
+    const lng = Number(req.query.lng);
 
     if (isNaN(lat) || isNaN(lng)) {
       res.status(400).json({

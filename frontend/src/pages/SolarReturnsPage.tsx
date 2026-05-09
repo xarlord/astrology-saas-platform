@@ -40,7 +40,7 @@ export const SolarReturnsPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
-  const [selectedYear, setSelectedYear] = useState<number | null>(yearParam ? parseInt(yearParam) : null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(yearParam ? Number(yearParam) : null);
   const [selectedReturn, setSelectedReturn] = useState<SolarReturn | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +68,7 @@ export const SolarReturnsPage: React.FC = () => {
 
   useEffect(() => {
     if (yearParam) {
-      void fetchSolarReturn(parseInt(yearParam));
+      void fetchSolarReturn(Number(yearParam));
     }
   }, [yearParam, fetchSolarReturn]);
 

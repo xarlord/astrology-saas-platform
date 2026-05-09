@@ -164,8 +164,8 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
  * Get all user's charts
  */
 export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 20;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 20;
   const offset = (page - 1) * limit;
 
   const charts = await ChartModel.findByUserId(req.user.id, limit, offset);

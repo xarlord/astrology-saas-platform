@@ -64,7 +64,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
       const response = await api.post(`/v1/solar-returns/${solarReturn.id}/share`, {
         type: 'link',
-        expiresInDays: parseInt(linkSettings.expiresIn),
+        expiresInDays: Number(linkSettings.expiresIn),
         maxAccesses: linkSettings.maxAccesses,
         requirePassword: linkSettings.requirePassword,
         password: linkSettings.password,
@@ -263,7 +263,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 <label className="block text-sm font-medium text-slate-200">Maximum Accesses</label>
                 <select
                   value={linkSettings.maxAccesses}
-                  onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
+                  onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: Number(e.target.value) })}
                   aria-label="Maximum number of accesses"
                   className="w-full rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >

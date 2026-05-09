@@ -97,8 +97,8 @@ export const getMonthEvents = asyncHandler(
     const { includeGlobal = 'true' } = req.query;
 
     // Validate year and month
-    const yearNum = parseInt(year);
-    const monthNum = parseInt(month);
+    const yearNum = Number(year) || new Date().getFullYear();
+    const monthNum = Number(month) || new Date().getMonth() + 1;
 
     if (isNaN(yearNum) || isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
       throw new AppError('Invalid year or month. Month must be 1-12.', 400);
