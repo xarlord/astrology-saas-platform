@@ -70,7 +70,7 @@ export async function socialLogin(req: Request, res: Response): Promise<void> {
         password_hash: '',
         auth_provider: provider,
         firebase_uid: firebaseUid,
-      } as any);
+      });
 
       logger.info('Created new user via social login', { userId: user.id, provider });
     }
