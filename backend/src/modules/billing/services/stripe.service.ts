@@ -5,20 +5,18 @@
 import * as Stripe from 'stripe';
 import config from '../../../config';
 
-let _stripe: any = null;
+let stripeInstance: Stripe.default | null = null;
 
-function getStripe(): any {
-  if (!_stripe) {
+function getStripe(): Stripe.default {
+  if (!stripeInstance) {
     if (!config.stripe.secretKey) {
       throw new Error('STRIPE_SECRET_KEY is not configured');
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    _stripe = Stripe.default(config.stripe.secretKey, {
+    stripeInstance = new Stripe.default(config.stripe.secretKey, {
       apiVersion: '2024-11-20.acacia',
     });
   }
-  return _stripe;
+  return stripeInstance;
 }
 
 export interface CheckoutSessionResult {
