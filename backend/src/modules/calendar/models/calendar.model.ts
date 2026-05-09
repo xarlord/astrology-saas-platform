@@ -42,7 +42,7 @@ export interface RetrogradePeriod {
   endDate: Date;
   shadowStartDate?: Date;
   shadowEndDate?: Date;
-};
+}
 
 export interface Eclipse {
   id: string;
@@ -53,7 +53,7 @@ export interface Eclipse {
   visibility: string[];
   zodiacSign: string;
   degree: number;
-};
+}
 
 export interface MoonPhaseEvent {
   date: Date;
@@ -61,7 +61,7 @@ export interface MoonPhaseEvent {
   sign: string;
   degree: number;
   illumination: number;
-};
+}
 
 export interface AstrologicalEvent {
   id: string;

@@ -165,7 +165,7 @@ export function calculatePlanetLongitude(
   latitude: number,
   longitude: number,
 ): number {
-  const t = julianCenturies(jd);
+  const _t = julianCenturies(jd);
 
   // Simplified position calculation based on mean anomaly
   // This is an approximation - real ephemeris should be used for production
