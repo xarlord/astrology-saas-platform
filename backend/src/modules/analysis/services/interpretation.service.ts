@@ -19,7 +19,7 @@ import { PlanetPosition, HouseCusp } from '../../../types/chart';
 // PERSONALITY ANALYSIS
 // ============================================================================
 
-type FlexibleAspect = { planet1: string; planet2: string; type?: string; orb: number; aspect?: string };
+interface FlexibleAspect { planet1: string; planet2: string; type?: string; orb: number; aspect?: string }
 
 export interface PersonalityAnalysisRequest {
   planets: PlanetPosition[];

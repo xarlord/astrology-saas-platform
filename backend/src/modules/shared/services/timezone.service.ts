@@ -102,7 +102,7 @@ export class TimezoneService {
 
     return {
       id: zone.name,
-      name: this.getTimezoneName(_zone, dt),
+      name: this.getTimezoneName(zone, dt),
       offset,
       offsetStr: this.formatOffset(offset),
       isDST: this.isDST(dt, timezone),
