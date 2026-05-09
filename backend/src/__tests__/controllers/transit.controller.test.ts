@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-var */
+/* eslint-disable no-let */
 
 import { Request, Response } from 'express';
 import {
@@ -32,9 +32,9 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
 }));
 
 // Mock knex (config/database) for getTransitDetails DB lookup
-var mockKnexFirst: jest.Mock;
-var mockKnexChain: any;
-var mockKnexFn: jest.Mock;
+let mockKnexFirst: jest.Mock;
+let mockKnexChain: any;
+let mockKnexFn: jest.Mock;
 jest.mock('../../config/database', () => {
   mockKnexFirst = jest.fn();
   mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
