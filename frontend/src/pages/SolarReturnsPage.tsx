@@ -255,7 +255,8 @@ export const SolarReturnsPage: React.FC = () => {
                 <RelocationCalculator
                   natalChartId={selectedReturn.id}
                   year={selectedReturn.year}
-                  onRecalculate={handleRecalculate as unknown as (location: RelocationLocation) => Promise<unknown>}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onRecalculate={handleRecalculate as any}
                 />
               )}
 
