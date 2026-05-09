@@ -77,15 +77,15 @@ export function generateCompletePersonalityAnalysis(
   const { planets, houses, aspects } = chartData;
 
   // Get Sun and Moon signs
-  const _sunPlanet = planets.find((p) => p.planet === 'sun');
-  const _moonPlanet = planets.find((p) => p.planet === 'moon');
+  const sunPlanet = planets.find((p) => p.planet === 'sun');
+  const moonPlanet = planets.find((p) => p.planet === 'moon');
   const ascendantSign = houses[0]?.sign; // First house cusp
 
-  const sunSign = _sunPlanet
-    ? getPlanetInSignInterpretation('sun', _sunPlanet.sign)
+  const sunSign = sunPlanet
+    ? getPlanetInSignInterpretation('sun', sunPlanet.sign)
     : null;
-  const moonSign = _moonPlanet
-    ? getPlanetInSignInterpretation('moon', _moonPlanet.sign)
+  const moonSign = moonPlanet
+    ? getPlanetInSignInterpretation('moon', moonPlanet.sign)
     : null;
 
   // Generate planets in signs analysis
