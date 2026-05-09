@@ -105,13 +105,13 @@ export function ChartWheel({
   const cy = size / 2;
 
   // Layout radii — outer planets band sits outside zodiac ring
-  const outerRimRadius = size * 0.48;     // outermost edge of SVG
-  const planetOuterRadius = size * 0.46;   // planet symbols sit here
-  const zodiacOuterRadius = size * 0.39;   // zodiac ring outer edge
-  const zodiacInnerRadius = size * 0.28;   // zodiac ring inner edge
-  const aspectRadius = size * 0.22;        // aspect lines
-  const houseLabelRadius = size * 0.16;    // house number labels
-  const centerRadius = size * 0.08;        // center hub
+  const outerRimRadius = size * 0.49;     // outermost edge of SVG
+  const planetOuterRadius = size * 0.44;   // planet symbols sit here
+  const zodiacOuterRadius = size * 0.36;   // zodiac ring outer edge
+  const zodiacInnerRadius = size * 0.26;   // zodiac ring inner edge
+  const aspectRadius = size * 0.20;        // aspect lines
+  const houseLabelRadius = size * 0.15;    // house number labels
+  const centerRadius = size * 0.07;        // center hub
 
   // Convert planet longitude to chart position (0-360)
   // Prefer absolute ecliptic longitude from backend; fall back to sign-based computation
@@ -594,86 +594,175 @@ export function ChartWheel({
   );
 }
 
-// Legend component
+// Legend component — modern interactive icon cards with hover tooltips
+const ASPECT_INFO: Record<string, { symbol: string; orb: string; meaning: string; nature: string }> = {
+  conjunction:  { symbol: '☌', orb: '0-10°',  meaning: 'Planets merge energies; intensifies both.',    nature: 'Neutral' },
+  opposition:   { symbol: '☍', orb: '0-8°',   meaning: 'Polarity and tension; awareness through contrast.', nature: 'Challenging' },
+  trine:        { symbol: '△', orb: '0-8°',   meaning: 'Natural harmony and flow; talents and ease.',    nature: 'Harmonious' },
+  square:       { symbol: '□', orb: '0-8°',   meaning: 'Friction driving growth; internal conflict.',    nature: 'Challenging' },
+  sextile:      { symbol: '⚹', orb: '0-6°',   meaning: 'Opportunity and cooperation; requires effort.',  nature: 'Harmonious' },
+  quincunx:     { symbol: '⚻', orb: '0-3°',   meaning: 'Adjustment needed; uneasy awareness.',           nature: 'Minor' },
+  'semi-sextile': { symbol: '☵', orb: '0-2°', meaning: 'Slight unease; minor adjustment.',              nature: 'Minor' },
+};
+
+const PLANET_DESCRIPTIONS: Record<string, string> = {
+  sun:     'Core identity, ego, vitality, willpower.',
+  moon:    'Emotions, instincts, inner self, habits.',
+  mercury: 'Communication, thought, intellect, logic.',
+  venus:   'Love, beauty, values, pleasure, art.',
+  mars:    'Energy, action, desire, courage, drive.',
+  jupiter: 'Expansion, luck, philosophy, growth.',
+  saturn:  'Structure, discipline, responsibility, karma.',
+  uranus:  'Innovation, rebellion, freedom, change.',
+  neptune: 'Dreams, intuition, spirituality, illusion.',
+  pluto:   'Transformation, power, rebirth, depth.',
+};
+
+const NATURE_COLORS: Record<string, string> = {
+  Harmonious: '#22C55E',
+  Challenging: '#EF4444',
+  Neutral: '#F59E0B',
+  Minor: '#6B7280',
+};
+
 export function ChartWheelLegend() {
   return (
-    <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm" role="region" aria-label="Chart legend">
+    <div className="mt-6 space-y-4" role="region" aria-label="Chart legend">
+
+      {/* Aspects row */}
       <div>
-        <h4 className="font-semibold text-white mb-2">Aspects</h4>
-        <ul className="space-y-1" role="list">
-          <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.conjunction }} aria-hidden="true">☌</span>
-            <span className="text-slate-200">
-              <span className="sr-only">Conjunction symbol</span>
-              Conjunction (10°)
-            </span>
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.opposition }} aria-hidden="true">☍</span>
-            <span className="text-slate-200">
-              <span className="sr-only">Opposition symbol</span>
-              Opposition (8°)
-            </span>
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.trine }} aria-hidden="true">△</span>
-            <span className="text-slate-200">
-              <span className="sr-only">Trine symbol</span>
-              Trine (8°)
-            </span>
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.square }} aria-hidden="true">□</span>
-            <span className="text-slate-200">
-              <span className="sr-only">Square symbol</span>
-              Square (8°)
-            </span>
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-lg" style={{ color: ASPECT_COLORS.sextile }} aria-hidden="true">⚹</span>
-            <span className="text-slate-200">
-              <span className="sr-only">Sextile symbol</span>
-              Sextile (6°)
-            </span>
-          </li>
-        </ul>
+        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Aspects</h4>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(ASPECT_INFO).map(([type, info]) => {
+            const color = ASPECT_COLORS[type] ?? '#888';
+            const natureColor = NATURE_COLORS[info.nature] ?? '#888';
+            return (
+              <div key={type} className="group relative">
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                             bg-white/[0.03] border border-white/[0.06]
+                             hover:bg-white/[0.07] hover:border-white/[0.12]
+                             transition-all duration-200 cursor-default"
+                >
+                  <span className="text-lg" style={{ color }} aria-hidden="true">{info.symbol}</span>
+                  <span className="text-xs font-medium text-slate-300 capitalize">{type}</span>
+                  <span
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: natureColor }}
+                    title={info.nature}
+                  />
+                </div>
+                {/* Hover tooltip */}
+                <div
+                  className="pointer-events-none absolute z-50 left-1/2 -translate-x-1/2
+                             bottom-full mb-2 w-56 p-3 rounded-xl
+                             bg-[#151823] border border-white/10 shadow-2xl shadow-black/60
+                             opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
+                             transition-all duration-200"
+                  role="tooltip"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xl" style={{ color }}>{info.symbol}</span>
+                    <span className="font-bold text-white capitalize">{type}</span>
+                    <span
+                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-auto"
+                      style={{ backgroundColor: `${natureColor}20`, color: natureColor }}
+                    >
+                      {info.nature}
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400 mb-1">Orb: {info.orb}</div>
+                  <div className="text-xs text-slate-300 leading-relaxed">{info.meaning}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Planets row */}
       <div>
-        <h4 className="font-semibold text-white mb-2">Planets</h4>
-        <ul className="space-y-1">
-          {Object.entries(PLANET_INFO).slice(0, 5).map(([key, info]) => (
-            <li key={key} className="flex items-center gap-2">
-              <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
-              <span className="text-slate-200">
-                <span className="sr-only">{info.name} symbol</span>
-                {info.name}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Planets</h4>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(PLANET_INFO).map(([key, info]) => {
+            const desc = PLANET_DESCRIPTIONS[key] ?? 'Celestial body in the natal chart.';
+            return (
+              <div key={key} className="group relative">
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                             bg-white/[0.03] border border-white/[0.06]
+                             hover:bg-white/[0.07] hover:border-white/[0.12]
+                             transition-all duration-200 cursor-default"
+                >
+                  <span className="text-lg" style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
+                  <span className="text-xs font-medium text-slate-300">{info.name}</span>
+                </div>
+                {/* Hover tooltip */}
+                <div
+                  className="pointer-events-none absolute z-50 left-1/2 -translate-x-1/2
+                             bottom-full mb-2 w-48 p-3 rounded-xl
+                             bg-[#151823] border border-white/10 shadow-2xl shadow-black/60
+                             opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
+                             transition-all duration-200"
+                  role="tooltip"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-2xl" style={{ color: info.color }}>{info.symbol}</span>
+                    <span className="font-bold text-white">{info.name}</span>
+                  </div>
+                  <div className="text-xs text-slate-300 leading-relaxed">{desc}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Zodiac Signs row */}
       <div>
-        <h4 className="font-semibold text-white mb-2">&nbsp;</h4>
-        <ul className="space-y-1" role="list">
-          {Object.entries(PLANET_INFO).slice(5).map(([key, info]) => (
-            <li key={key} className="flex items-center gap-2">
-              <span style={{ color: info.color }} aria-hidden="true">{info.symbol}</span>
-              <span className="text-slate-200">
-                <span className="sr-only">{info.name} symbol</span>
-                {info.name}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h4 className="font-semibold text-white mb-2">Zodiac Signs</h4>
-        <div className="grid grid-cols-4 gap-1" role="list" aria-label="Zodiac signs">
-          {ZODIAC_SIGNS.map((sign) => (
-            <div key={sign.name} role="listitem" style={{ color: sign.color }} className="text-lg text-center" aria-label={`${sign.name} ${sign.symbol}`}>
-              {sign.symbol}
-            </div>
-          ))}
+        <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Zodiac Signs</h4>
+        <div className="flex flex-wrap gap-1.5">
+          {ZODIAC_SIGNS.map((sign) => {
+            const idx = ZODIAC_NAMES.indexOf(sign.name.charAt(0).toUpperCase() + sign.name.slice(1));
+            const el = ZODIAC_ELEMENTS[idx] ?? 'fire';
+            const elColor = el === 'fire' ? '#EF4444' : el === 'earth' ? '#22C55E' : el === 'air' ? '#38BDF8' : '#6366F1';
+            const elName = el.charAt(0).toUpperCase() + el.slice(1);
+            return (
+              <div key={sign.name} className="group relative">
+                <div
+                  className="flex items-center gap-1 px-2 py-1 rounded-md
+                             bg-white/[0.03] border border-white/[0.06]
+                             hover:bg-white/[0.07] hover:border-white/[0.12]
+                             transition-all duration-200 cursor-default"
+                >
+                  <span className="text-lg" style={{ color: sign.color }} aria-hidden="true">{sign.symbol}</span>
+                  <span className="text-[10px] font-medium text-slate-400 capitalize">{sign.name}</span>
+                </div>
+                {/* Hover tooltip */}
+                <div
+                  className="pointer-events-none absolute z-50 left-1/2 -translate-x-1/2
+                             bottom-full mb-2 w-40 p-2.5 rounded-xl
+                             bg-[#151823] border border-white/10 shadow-2xl shadow-black/60
+                             opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
+                             transition-all duration-200"
+                  role="tooltip"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl" style={{ color: sign.color }}>{sign.symbol}</span>
+                    <div>
+                      <div className="font-bold text-white capitalize text-sm">{sign.name}</div>
+                      <span
+                        className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                        style={{ backgroundColor: `${elColor}20`, color: elColor }}
+                      >
+                        {elName}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

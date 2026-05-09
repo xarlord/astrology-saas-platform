@@ -426,21 +426,23 @@ describe('ChartWheel Component', () => {
     it('should render all aspect types', () => {
       render(<ChartWheelLegend />);
 
-      expect(screen.getByText('Conjunction (10°)')).toBeInTheDocument();
-      expect(screen.getByText('Opposition (8°)')).toBeInTheDocument();
-      expect(screen.getByText('Trine (8°)')).toBeInTheDocument();
-      expect(screen.getByText('Square (8°)')).toBeInTheDocument();
-      expect(screen.getByText('Sextile (6°)')).toBeInTheDocument();
+      // Aspect names appear in both the card and tooltip, so use getAllByText
+      expect(screen.getAllByText('conjunction').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('opposition').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('trine').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('square').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('sextile').length).toBeGreaterThanOrEqual(1);
     });
 
     it('should render all planets', () => {
       render(<ChartWheelLegend />);
 
-      expect(screen.getByText('Sun')).toBeInTheDocument();
-      expect(screen.getByText('Moon')).toBeInTheDocument();
-      expect(screen.getByText('Mercury')).toBeInTheDocument();
-      expect(screen.getByText('Venus')).toBeInTheDocument();
-      expect(screen.getByText('Mars')).toBeInTheDocument();
+      // Planet names appear in the legend row
+      expect(screen.getAllByText('Sun').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Moon').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Mercury').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Venus').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Mars').length).toBeGreaterThanOrEqual(1);
     });
 
     it('should render all zodiac signs', () => {
@@ -455,8 +457,9 @@ describe('ChartWheel Component', () => {
     it('should have correct styling classes', () => {
       const { container } = render(<ChartWheelLegend />);
 
-      const gridContainer = container.querySelector('.grid');
-      expect(gridContainer).toBeInTheDocument();
+      // Legend uses flex-wrap layout for icon cards
+      const flexContainer = container.querySelector('.flex.flex-wrap');
+      expect(flexContainer).toBeInTheDocument();
     });
   });
 
