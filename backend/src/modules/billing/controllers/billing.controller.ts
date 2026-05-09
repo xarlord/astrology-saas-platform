@@ -6,7 +6,9 @@ import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import UserModel from '../../users/models/user.model';
-import Stripe from 'stripe';
+// Stripe is an optional dependency — avoid direct type imports
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type StripeEvent = any;
 import {
   createCheckoutSession,
   createPortalSession,
@@ -120,7 +122,7 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let event: Stripe.default.Event;
+  let event: StripeEvent;
   try {
     event = verifyWebhookSignature(req.body, signature);
   } catch (err) {
@@ -131,7 +133,7 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
   switch (event.type) {
     case 'checkout.session.completed': {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const session = event.data.object as Stripe.Event.DataObject;
+      const session = (event.data?.object ?? {}) as Record<string, any>;
       const userId = session.metadata?.userId;
       if (!userId) {
         logger.error('Stripe webhook: checkout.session.completed missing userId metadata');
@@ -168,7 +170,7 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
 
     case 'customer.subscription.updated': {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const subscription = event.data.object as Stripe.Event.DataObject;
+      const subscription = (event.data?.object ?? {}) as Record<string, any>;
       const userId = subscription.metadata?.userId;
 
       if (subscription.status === 'canceled' && userId) {
@@ -180,7 +182,7 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
 
     case 'customer.subscription.deleted': {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const subscription = event.data.object as Stripe.Event.DataObject;
+      const subscription = (event.data?.object ?? {}) as Record<string, any>;
       const userId = subscription.metadata?.userId;
       if (userId) {
         await UserModel.updatePlan(userId, 'free', 'expired');
@@ -191,7 +193,7 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
 
     case 'invoice.payment_failed': {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const invoice = event.data.object as Stripe.Event.DataObject;
+      const invoice = (event.data?.object ?? {}) as Record<string, any>;
       const customerId = invoice.customer as string;
       logger.warn('Stripe payment failed', { customerId });
       break;

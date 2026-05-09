@@ -2,17 +2,22 @@
  * Stripe Service - Wraps Stripe SDK for billing operations
  */
 
-import * as Stripe from 'stripe';
+// Stripe is optional — use dynamic require at runtime
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let StripeModule: any = null;
+try { StripeModule = require('stripe'); } catch {} // eslint-disable-line no-empty
 import config from '../../../config';
 
-let stripeInstance: Stripe.default | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let stripeInstance: any = null;
 
-function getStripe(): Stripe.default {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getStripe(): any {
   if (!stripeInstance) {
     if (!config.stripe.secretKey) {
       throw new Error('STRIPE_SECRET_KEY is not configured');
     }
-    stripeInstance = new Stripe.default(config.stripe.secretKey, {
+    stripeInstance = new StripeModule(config.stripe.secretKey, {
       apiVersion: '2024-11-20.acacia',
     });
   }

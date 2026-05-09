@@ -223,7 +223,7 @@ export const SolarReturnsPage: React.FC = () => {
             <div role="tabpanel" id="solar-tabpanel" aria-labelledby={`solar-tab-${viewMode}`} className="min-h-[400px]">
               {viewMode === 'chart' && selectedReturn.calculatedData && (
                 <SolarReturnChart
-                  chartData={selectedReturn.calculatedData as SolarReturnChartData}
+                  chartData={selectedReturn.calculatedData as unknown as SolarReturnChartData}
                   year={selectedReturn.year}
                   location={selectedReturn.returnLocation.name}
                   showAspects={true}
@@ -233,7 +233,7 @@ export const SolarReturnsPage: React.FC = () => {
 
               {viewMode === 'interpretation' && selectedReturn.interpretation && (
                 <SolarReturnInterpretation
-                  interpretation={selectedReturn.interpretation as SolarReturnInterpretationData}
+                  interpretation={selectedReturn.interpretation as unknown as SolarReturnInterpretationData}
                   year={selectedReturn.year}
                   returnDate={selectedReturn.returnDate}
                   onDownload={() => {

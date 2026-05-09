@@ -14,7 +14,8 @@ const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 // Resend client singleton (lazy-initialised)
 // ---------------------------------------------------------------------------
 
-let resendClient: InstanceType<typeof import('resend').default> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let resendClient: any = null;
 
 async function getResend() {
   if (resendClient) return resendClient;
