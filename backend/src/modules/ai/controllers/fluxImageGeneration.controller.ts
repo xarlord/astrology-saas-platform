@@ -11,6 +11,8 @@ import fluxImageGenerationService, {
 import logger from '../../../utils/logger';
 import aiUsageService from '../services/aiUsage.service';
 
+type FluxModel = 'dev' | 'pro' | 'schnell';
+
 /**
  * Check FLUX image generation service status
  */
@@ -40,7 +42,7 @@ export async function checkImageGenStatus(_req: Request, res: Response): Promise
  */
 export async function generateImage(req: Request, res: Response): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     if (!userId) {
       res.status(401).json({ success: false, error: 'Unauthorized' });
       return;
@@ -90,7 +92,7 @@ export async function generateImage(req: Request, res: Response): Promise<void> 
     }
 
     // Select model
-    const model = req.body.model || 'dev';
+    const model = (req.body.model || 'dev') as FluxModel;
     if (!['dev', 'pro', 'schnell'].includes(model)) {
       res.status(400).json({
         success: false,
@@ -106,7 +108,7 @@ export async function generateImage(req: Request, res: Response): Promise<void> 
       numOutputs: options.numOutputs,
     });
 
-    const result = await fluxImageGenerationService.generateImage(options, model as any);
+    const result = await fluxImageGenerationService.generateImage(options, model as FluxModel);
 
     if (!result) {
       res.status(500).json({
@@ -169,7 +171,7 @@ export async function generateImage(req: Request, res: Response): Promise<void> 
  */
 export async function generateUncensoredImage(req: Request, res: Response): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     if (!userId) {
       res.status(401).json({ success: false, error: 'Unauthorized' });
       return;
@@ -283,7 +285,7 @@ export async function generateUncensoredImage(req: Request, res: Response): Prom
  */
 export async function generateVariations(req: Request, res: Response): Promise<void> {
   try {
-    const userId = (req as any).user?.id;
+    const userId = req.user?.id;
     if (!userId) {
       res.status(401).json({ success: false, error: 'Unauthorized' });
       return;

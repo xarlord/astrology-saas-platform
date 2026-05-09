@@ -97,12 +97,12 @@ export class TimezoneService {
       };
     }
 
-    const _zone = dt.zone as IANAZone;
+    const zone = dt.zone as IANAZone;
     const offset = dt.offset;
 
     return {
-      id: _zone.name,
-      name: this.getTimezoneName(_zone, dt),
+      id: zone.name,
+      name: this.getTimezoneName(zone, dt),
       offset,
       offsetStr: this.formatOffset(offset),
       isDST: this.isDST(dt, timezone),

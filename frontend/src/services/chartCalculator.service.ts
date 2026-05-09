@@ -679,7 +679,7 @@ export class ChartCalculator {
     // Find emphasized houses
     for (const [house, count] of Object.entries(houseCounts)) {
       if (count >= 2) {
-        themes.push(this.getHouseTheme(parseInt(house)));
+        themes.push(this.getHouseTheme(Number(house)));
       }
     }
 

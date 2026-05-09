@@ -234,14 +234,11 @@ router.get('/details/:placeId', async (req: Request, res: Response): Promise<voi
     const addressComponents = result.address_components || [];
 
     // Extract country and admin area from address components
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const country = addressComponents.find((c: any) => c.types.includes('country'));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const adminArea = addressComponents.find((c: any) =>
+    const country = addressComponents.find((c: { types: string[] }) => c.types.includes('country'));
+    const adminArea = addressComponents.find((c: { types: string[] }) =>
       c.types.includes('administrative_area_level_1'),
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const locality = addressComponents.find((c: any) => c.types.includes('locality'));
+    const locality = addressComponents.find((c: { types: string[] }) => c.types.includes('locality'));
 
     const details = {
       placeId: result.place_id,
@@ -266,8 +263,7 @@ router.get('/details/:placeId', async (req: Request, res: Response): Promise<voi
 /**
  * Fallback: Nominatim (OpenStreetMap) autocomplete
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function fetchNominatim(query: string): Promise<any[]> {
+async function fetchNominatim(query: string): Promise<Array<Record<string, unknown>>> {
   try {
     const url = new URL('https://nominatim.openstreetmap.org/search');
     url.searchParams.set('q', query);
@@ -285,11 +281,17 @@ async function fetchNominatim(query: string): Promise<any[]> {
       },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const results = (await response.json()) as any[];
+    interface NominatimResult {
+      display_name: string;
+      type?: string;
+      lat: string;
+      lon: string;
+      address?: { country?: string; country_code?: string };
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return results.map((item: any, index: number) => ({
+    const results = (await response.json()) as NominatimResult[];
+
+    return results.map((item, index) => ({
       placeId: `nominatim_${index}_${Date.now()}`,
       description: item.display_name,
       mainText: item.display_name.split(',')[0],

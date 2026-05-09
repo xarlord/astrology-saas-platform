@@ -78,7 +78,7 @@ export function calculatePlacidusHouses(lst: number, latitude: number): HouseDat
 
   // For Placidus, we need to interpolate between angles
   // This is a simplified implementation
-  const _e = 23.44; // Obliquity of ecliptic (approximate)
+  const OBLIQUITY = 23.44; // Obliquity of ecliptic (approximate)
 
   // Calculate intermediate house cusps using Placidus formulas
   // This is a simplified algorithm

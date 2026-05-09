@@ -128,22 +128,20 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
   } = validatedData;
 
   // Map validation schema values to model enum values
-  const mappedHouseSystem: CreateNatalChartInput['house_system'] =
-    house_system === 'whole-sign' ? ('whole' as any) : house_system;
+  const mappedHouseSystem = house_system === 'whole-sign' ? 'whole' as const : house_system;
 
   // Map type to supported model values (validation allows solar-return, lunar-return but model expects transit/progressed)
-  const mappedType: CreateNatalChartInput['type'] =
-    type === 'solar-return'
-      ? ('progressed' as any)
-      : type === 'lunar-return'
-        ? ('transit' as any)
-        : type;
+  const mappedType = type === 'solar-return'
+    ? 'progressed' as const
+    : type === 'lunar-return'
+      ? 'transit' as const
+      : type;
 
   // Create chart
   const chart = await ChartModel.create({
     user_id: req.user.id,
     name,
-    type: mappedType as any,
+    type: mappedType,
     birth_date: new Date(birth_date),
     birth_time: birth_time || '12:00:00',
     birth_time_unknown,
@@ -151,7 +149,7 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
     birth_latitude,
     birth_longitude,
     birth_timezone,
-    house_system: mappedHouseSystem as any,
+    house_system: mappedHouseSystem,
     zodiac,
     sidereal_mode,
   });
@@ -166,8 +164,8 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
  * Get all user's charts
  */
 export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 20;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 20;
   const offset = (page - 1) * limit;
 
   const charts = await ChartModel.findByUserId(req.user.id, limit, offset);
@@ -217,11 +215,11 @@ export async function updateChart(req: AuthenticatedRequest, res: Response): Pro
   const { name, house_system, zodiac, sidereal_mode } = validatedData;
 
   // Map validation schema values to model enum values
-  const mappedHouseSystem = house_system === 'whole-sign' ? ('whole' as any) : house_system;
+  const mappedHouseSystem = house_system === 'whole-sign' ? 'whole' as const : house_system;
 
   const chart = await ChartModel.update(id, req.user.id, {
     name,
-    house_system: mappedHouseSystem as any,
+    house_system: mappedHouseSystem,
     zodiac,
     sidereal_mode,
   });

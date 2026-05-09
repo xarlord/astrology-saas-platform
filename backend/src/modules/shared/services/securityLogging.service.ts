@@ -414,6 +414,8 @@ export async function getSecurityStats(
       case SecurityEventType.BRUTE_FORCE_DETECTED:
         stats.suspiciousActivities++;
         break;
+      default:
+        break;
     }
   }
 

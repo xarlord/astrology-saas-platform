@@ -111,7 +111,7 @@ export class SolarReturnController {
     }
 
     const { year } = req.params;
-    const yearNum = parseInt(year);
+    const yearNum = year != null ? Number(year) : new Date().getFullYear();
 
     if (isNaN(yearNum)) {
       throw new BadRequestError('Invalid year parameter');
@@ -175,7 +175,7 @@ export class SolarReturnController {
     if (includeRelocated === 'true') {
       solarReturns = await solarReturnModel.findByUserId(userId);
     } else {
-      solarReturns = await solarReturnModel.findRecent(userId, limit ? parseInt(limit as string) : 10);
+      solarReturns = await solarReturnModel.findRecent(userId, limit ? Number(limit) : 10);
     }
 
     res.status(200).json({

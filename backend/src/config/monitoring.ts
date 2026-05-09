@@ -8,8 +8,7 @@
  * keys aren't configured, no-ops are used.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let SentryLib: any = null;
+let SentryLib: typeof import('@sentry/node') | null = null;
 try {
   SentryLib = require('@sentry/node');
 } catch {
