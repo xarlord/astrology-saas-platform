@@ -8,7 +8,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-var */
+/* eslint-disable no-let */
 
 import { Response, NextFunction } from 'express';
 import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
@@ -74,9 +74,9 @@ jest.mock('../../middleware/errorHandler', () => ({
 
 // Mock knex (used for natal chart existence check)
 // `var` required because jest.mock factory functions are hoisted above `const`
-var mockKnexFirst: jest.Mock;
-var mockKnexChain: any;
-var mockKnex: jest.Mock;
+let mockKnexFirst: jest.Mock;
+let mockKnexChain: any;
+let mockKnex: jest.Mock;
 
 jest.mock('../../config/database', () => {
   mockKnexFirst = jest.fn().mockResolvedValue({ id: 'chart-abc', user_id: 'user-123' });

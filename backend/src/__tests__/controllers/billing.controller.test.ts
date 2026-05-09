@@ -37,9 +37,9 @@ import {
 // `let`/`const` declarations, causing TDZ errors.  `var` is hoisted and
 // initialised to undefined, so the factory can safely assign to it.
 // eslint-disable-next-line no-var
-var mockKnexChain: any;
+let mockKnexChain: any;
 // eslint-disable-next-line no-var
-var mockKnex: jest.Mock;
+let mockKnex: jest.Mock;
 
 jest.mock('../../config/database', () => {
   let _resolveValue: any = undefined;
