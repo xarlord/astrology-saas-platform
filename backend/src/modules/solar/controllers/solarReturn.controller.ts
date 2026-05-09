@@ -111,7 +111,7 @@ export class SolarReturnController {
     }
 
     const { year } = req.params;
-    const yearNum = Number(year) || new Date().getFullYear();
+    const yearNum = year != null ? Number(year) : new Date().getFullYear();
 
     if (isNaN(yearNum)) {
       throw new BadRequestError('Invalid year parameter');
