@@ -449,6 +449,9 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
     case 'year':
       endDate = addYears(now, 1);
       break;
+    default:
+      endDate = addMonths(now, 1);
+      break;
   }
 
   // Calculate significant transits (outer planets only for longer periods)
