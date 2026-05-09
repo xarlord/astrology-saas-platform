@@ -261,6 +261,8 @@ export function useKeyboardNavigation<T = HTMLElement>(
             );
           }
           break;
+        default:
+          break;
       }
 
       if (newIndex !== selectedIndex) {
@@ -338,6 +340,8 @@ export function useKeyboardNavigation<T = HTMLElement>(
         case 'Escape':
           event.preventDefault();
           onEscape?.();
+          break;
+        default:
           break;
       }
     },

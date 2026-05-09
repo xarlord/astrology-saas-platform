@@ -15,15 +15,15 @@ const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 // ---------------------------------------------------------------------------
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let _resend: any = null;
+let resendClient: any = null;
 
 async function getResend() {
-  if (_resend) return _resend;
+  if (resendClient) return resendClient;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
   const Resend = (await import('resend')).default;
-  _resend = new Resend(apiKey);
-  return _resend;
+  resendClient = new Resend(apiKey);
+  return resendClient;
 }
 
 // ---------------------------------------------------------------------------
@@ -246,7 +246,7 @@ export function sendMonthlyReportEmail(
     'November',
     'December',
   ];
-  const monthName = monthNames[parseInt(month)] || month;
+  const monthName = monthNames[Number(month)] || month;
   const dashboardUrl = `${frontendUrl}/dashboard/monthly-report?month=${month}&year=${year}`;
 
   const html = `

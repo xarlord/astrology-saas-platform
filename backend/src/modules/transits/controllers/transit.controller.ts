@@ -321,8 +321,8 @@ export async function getTodayTransits(req: AuthenticatedRequest, res: Response)
  */
 export async function getTransitCalendar(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
-  const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
-  const year = parseInt(req.query.year as string) || new Date().getFullYear();
+  const month = Number(req.query.month) || new Date().getMonth() + 1;
+  const year = Number(req.query.year) || new Date().getFullYear();
 
   const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
@@ -448,6 +448,9 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
       break;
     case 'year':
       endDate = addYears(now, 1);
+      break;
+    default:
+      endDate = addMonths(now, 1);
       break;
   }
 

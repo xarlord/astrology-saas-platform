@@ -194,6 +194,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
         case 'lunar-return':
           available = !!lunarReturn;
           break;
+        default:
+          break;
       }
 
       return { ...option, available };

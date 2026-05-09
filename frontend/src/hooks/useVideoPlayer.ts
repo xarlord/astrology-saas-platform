@@ -412,6 +412,8 @@ export function useVideoPlayer(options: VideoPlayerOptions = {}) {
             seek((video.duration * percentage) / 100);
           }
           break;
+        default:
+          break;
       }
     };
 

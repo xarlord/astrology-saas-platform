@@ -31,7 +31,7 @@ interface Aspect {
   applying: boolean;
 }
 
-interface SolarReturnChartData {
+export interface SolarReturnChartData {
   planets: PlanetaryPosition[];
   houses: HouseCusp[];
   aspects: Aspect[];

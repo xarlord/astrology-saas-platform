@@ -202,6 +202,11 @@ class PDFService {
         case 'lunar-return':
           this.addLunarReturnReportContent(data as LunarReturnReportData);
           break;
+        default:
+          this.addNatalReportContent(data as NatalReportData);
+          break;
+          this.addLunarReturnReportContent(data as LunarReturnReportData);
+          break;
       }
 
       options.onProgress?.(90);

@@ -22,7 +22,7 @@ import { logAuthFailure } from '../../../utils/securityLogger';
  */
 export async function register(req: Request, res: Response): Promise<void> {
   // Use validated data if available (from validation middleware), otherwise fall back to body
-  const { name, email, password } = (req as any).validated || req.body;
+  const { name, email, password } = req.validated ?? req.body;
 
   // Check if user already exists
   const existingUser = await UserModel.findByEmail(email);
@@ -87,7 +87,7 @@ export async function register(req: Request, res: Response): Promise<void> {
  */
 export async function login(req: Request, res: Response): Promise<void> {
   // Use validated data if available (from validation middleware), otherwise fall back to body
-  const { email, password } = (req as any).validated || req.body;
+  const { email, password } = req.validated ?? req.body;
 
   // Find user by email
   const user = await UserModel.findByEmail(email);
@@ -167,7 +167,7 @@ export async function getProfile(req: AuthenticatedRequest, res: Response): Prom
 export async function updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const { name, avatar_url, timezone } = (req as any).validated || req.body;
+  const { name, avatar_url, timezone } = req.validated ?? req.body;
 
   const user = await UserModel.update(userId, {
     name,
@@ -191,7 +191,7 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
 export async function updatePreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const preferences = (req as any).validated || req.body;
+  const preferences = req.validated ?? req.body;
 
   const user = await UserModel.updatePreferences(userId, preferences);
 
@@ -317,7 +317,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
  * Always returns success to prevent email enumeration
  */
 export async function forgotPassword(req: Request, res: Response): Promise<void> {
-  const { email } = (req as any).validated || req.body;
+  const { email } = req.validated ?? req.body;
 
   await PasswordResetService.requestPasswordReset(email);
 
@@ -331,7 +331,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
  * Reset password using a valid token
  */
 export async function resetPassword(req: Request, res: Response): Promise<void> {
-  const { token, password } = (req as any).validated || req.body;
+  const { token, password } = req.validated ?? req.body;
 
   await PasswordResetService.resetPassword(token, password);
 

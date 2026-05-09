@@ -186,10 +186,10 @@ class FluxImageGenerationService {
         imageUrls.push(output);
       } else if (output && typeof output === 'object') {
         // Some models return { output: [...] }
-        if (Array.isArray((output as any).output)) {
-          imageUrls.push(...(output as any).output);
-        } else if (typeof (output as any).output === 'string') {
-          imageUrls.push((output as any).output);
+        if (Array.isArray((output as { output?: string | string[] }).output)) {
+          imageUrls.push(...(output as { output: string[] }).output);
+        } else if (typeof (output as { output?: string | string[] }).output === 'string') {
+          imageUrls.push((output as { output: string }).output);
         }
       }
 

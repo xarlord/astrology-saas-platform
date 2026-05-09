@@ -99,8 +99,8 @@ export const getPublicCard = asyncHandler(async (req: Request, res: Response) =>
  * @access  Private
  */
 export const getCardHistory = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
-  const offset = parseInt(req.query.offset as string) || 0;
+  const limit = Math.min(Number(req.query.limit) || 20, 50);
+  const offset = Number(req.query.offset) || 0;
 
   const cards = await cardService.getUserCards(req.user.id, limit, offset);
 

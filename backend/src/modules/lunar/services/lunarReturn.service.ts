@@ -789,7 +789,7 @@ export async function getCurrentLunarReturn(userId: string): Promise<{
   };
 }> {
   // Get user's primary birth chart from database
-  const userChart = await knex('charts').where({ userId, isBirthChart: true }).first();
+  const userChart = await knex('charts').where({ user_id: userId, isBirthChart: true }).first();
 
   if (!userChart) {
     // Return default values if no birth chart exists

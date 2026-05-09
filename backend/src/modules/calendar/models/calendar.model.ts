@@ -36,15 +36,15 @@ export type MoonPhase =
   | 'last-quarter'
   | 'waning-crescent';
 
-export type RetrogradePeriod = {
+export interface RetrogradePeriod {
   planet: Planet;
   startDate: Date;
   endDate: Date;
   shadowStartDate?: Date;
   shadowEndDate?: Date;
-};
+}
 
-export type Eclipse = {
+export interface Eclipse {
   id: string;
   eclipseType: 'solar' | 'lunar';
   startDate: Date;
@@ -53,15 +53,15 @@ export type Eclipse = {
   visibility: string[];
   zodiacSign: string;
   degree: number;
-};
+}
 
-export type MoonPhaseEvent = {
+export interface MoonPhaseEvent {
   date: Date;
   phase: MoonPhase;
   sign: string;
   degree: number;
   illumination: number;
-};
+}
 
 export interface AstrologicalEvent {
   id: string;

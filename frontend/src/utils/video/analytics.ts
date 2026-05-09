@@ -200,6 +200,8 @@ class VideoAnalytics {
           session.progressMilestones.push(100);
         }
         break;
+      default:
+        break;
     }
 
     this.sessions.set(videoId, session);
