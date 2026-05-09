@@ -152,11 +152,12 @@ app.use(errorHandler);
 // Sentry error handler (must be after all other middleware)
 if (sentry.isEnabled) {
   // @sentry/node is an optional dependency — dynamic import avoids require()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  void import('@sentry/node' as any).then((sentryModule: any) => {
+  void import('@sentry/node').then((sentryModule) => {
     if (sentryModule?.setupExpressErrorHandler) {
       app.use(sentryModule.setupExpressErrorHandler());
     }
+  }, () => {
+    // Sentry not installed — skip error handler
   });
 }
 

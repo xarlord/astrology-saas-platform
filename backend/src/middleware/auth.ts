@@ -21,7 +21,6 @@ declare global {
   namespace Express {
     interface Request {
       user?: TokenPayload;
-      validated?: Record<string, unknown>;
     }
   }
 }
