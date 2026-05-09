@@ -4,6 +4,7 @@
  */
 
 import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } from '../components';
+import { ChartBirthAnimation } from '../components/chart/ChartBirthAnimation';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useChartsStore } from '../store/chartsStore';
@@ -181,7 +182,9 @@ export default function ChartViewPage() {
             {/* Chart Wheel */}
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-4">Chart Wheel</h2>
-              <ChartWheel data={chartData} interactive={true} />
+              <ChartBirthAnimation chartData={chartData} trigger={!!chartData}>
+                <ChartWheel data={chartData} interactive={true} />
+              </ChartBirthAnimation>
               <ChartWheelLegend />
             </div>
 

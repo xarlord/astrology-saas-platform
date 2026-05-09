@@ -10,12 +10,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { ChartData } from '../astrology/ChartWheel';
 
 export type AnimationPhase = 'idle' | 'spiral' | 'aspects' | 'settle';
 
 export interface ChartBirthAnimationProps {
-  chartData: ChartData;
+  chartData: { planets: unknown[] | Record<string, unknown> };
   children: React.ReactNode;
   trigger?: boolean;
   onComplete?: () => void;
@@ -118,7 +117,7 @@ export const ChartBirthAnimation: React.FC<ChartBirthAnimationProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {chartData.planets.length} planets
+            {Array.isArray(chartData.planets) ? chartData.planets.length : Object.keys(chartData.planets).length} planets
           </motion.div>
         )}
       </AnimatePresence>
