@@ -4,12 +4,12 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-let */
+/* eslint-disable no-var */
 
 // Mock knex (config/database) for getNatalChart DB lookup
-let mockKnexFirst: jest.Mock;
-let mockKnexChain: any;
-let mockKnexFn: jest.Mock;
+var mockKnexFirst: jest.Mock;
+var mockKnexChain: any;
+var mockKnexFn: jest.Mock;
 jest.mock('../../config/database', () => {
   mockKnexFirst = jest.fn();
   mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
