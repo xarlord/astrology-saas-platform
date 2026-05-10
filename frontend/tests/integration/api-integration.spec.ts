@@ -9,7 +9,7 @@ import { test, expect, request } from '@playwright/test';
 const API_BASE = process.env.BASE_URL || 'http://localhost:3001';
 
 test.describe('Backend API Integration @integration', () => {
-  test('health endpoint returns 200', async () => {
+  test('health endpoint returns 200 @integration', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
     const res = await context.get('/health');
     expect(res.ok()).toBe(true);
@@ -18,7 +18,7 @@ test.describe('Backend API Integration @integration', () => {
     await context.dispose();
   });
 
-  test('csrf token endpoint returns token', async () => {
+  test('csrf token endpoint returns token @integration', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
     const res = await context.get('/api/v1/health/csrf-token');
     expect(res.ok()).toBe(true);
@@ -27,7 +27,7 @@ test.describe('Backend API Integration @integration', () => {
     await context.dispose();
   });
 
-  test('auth register requires valid input', async () => {
+  test('auth register requires valid input @integration', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
     const res = await context.post('/api/v1/auth/register', {
       data: { name: '', email: 'bad', password: 'short' },
@@ -36,7 +36,7 @@ test.describe('Backend API Integration @integration', () => {
     await context.dispose();
   });
 
-  test('auth login rejects invalid credentials', async () => {
+  test('auth login rejects invalid credentials @integration', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
     const res = await context.post('/api/v1/auth/login', {
       data: { email: 'nonexistent@test.com', password: 'WrongPass123!' },
@@ -45,14 +45,14 @@ test.describe('Backend API Integration @integration', () => {
     await context.dispose();
   });
 
-  test('protected endpoints reject unauthenticated requests', async () => {
+  test('protected endpoints reject unauthenticated requests @integration', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
     const res = await context.get('/api/v1/charts');
     expect(res.status()).toBe(401);
     await context.dispose();
   });
 
-  test('register + login + protected access flow', async () => {
+  test('register + login + protected access flow @integration', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
 
     // Get CSRF token

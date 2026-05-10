@@ -71,21 +71,13 @@ for (const viewport of viewportConfigs) {
   });
 }
 
-test.afterAll(async ({}, testInfo) => {
+test.afterAll(async () => {
   const reportDir = path.join(__dirname, 'visual-report');
   if (!fs.existsSync(reportDir)) {
     fs.mkdirSync(reportDir, { recursive: true });
   }
-  // Extract only serializable fields to avoid circular reference errors
-  const summary = {
-    totalTests: testInfo.totalTests,
-    totalPassed: testInfo.totalPassed,
-    totalFailed: testInfo.totalFailed,
-    duration: testInfo.duration,
-    status: testInfo.status,
-  };
   fs.writeFileSync(
     path.join(reportDir, 'visual-report.json'),
-    JSON.stringify({ results: summary }, null, 2),
+    JSON.stringify({ timestamp: new Date().toISOString() }, null, 2),
   );
 });
