@@ -23,7 +23,7 @@ type FilterFolder = 'all' | 'personal' | 'clients' | 'relationships' | 'favorite
 
 export const SavedChartsGalleryPage: React.FC = () => {
   const navigate = useNavigate();
-  const { charts, isLoading, deleteChart } = useCharts();
+  const { charts, isLoading, error: chartsError, deleteChart } = useCharts();
 
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [sortBy, setSortBy] = useState<SortBy>('dateAdded');
@@ -332,7 +332,17 @@ export const SavedChartsGalleryPage: React.FC = () => {
           </div>
 
           {/* Gallery Grid */}
-          {isLoading ? (
+          {chartsError ? (
+            <div className="flex items-center justify-center py-20">
+              <EmptyState
+                icon="error"
+                title="Failed to load charts"
+                description={typeof chartsError === 'string' ? chartsError : 'Unable to fetch your charts'}
+                actionText="Try Again"
+                onAction={() => window.location.reload()}
+              />
+            </div>
+          ) : isLoading ? (
             <div className="flex items-center justify-center py-20">
               <div className="text-center">
                 <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />

@@ -125,6 +125,13 @@ const { mockChartData } = vi.hoisted(() => {
 
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  EmptyState: ({ title, description, actionText, onAction }: Record<string, unknown>) => (
+    <div data-testid="error-state">
+      <h2>{title as string}</h2>
+      <p>{description as string}</p>
+      <button onClick={onAction as () => void}>{actionText as string}</button>
+    </div>
+  ),
 }));
 
 vi.mock('../../services/chart.service', () => ({
@@ -569,6 +576,25 @@ describe('DetailedNatalReportPage', () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
       const mainContainer = document.querySelector('.max-w-7xl');
       expect(mainContainer).toBeInTheDocument();
+    });
+  });
+
+  describe('Error State', () => {
+    it('should show error state when chart fetch fails', async () => {
+      vi.mocked(chartService.getChart).mockRejectedValue(new Error('Network error'));
+      renderWithProviders(createElement(DetailedNatalReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Failed to load report')).toBeInTheDocument();
+      });
+      expect(screen.getByText('Network error')).toBeInTheDocument();
+    });
+
+    it('should show try again button in error state', async () => {
+      vi.mocked(chartService.getChart).mockRejectedValue(new Error('Server error'));
+      renderWithProviders(createElement(DetailedNatalReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Try Again')).toBeInTheDocument();
+      });
     });
   });
 });

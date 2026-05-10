@@ -10,7 +10,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
-import { AppLayout } from '../components';
+import { AppLayout, EmptyState } from '../components';
 import { Button } from '../components/ui/Button';
 import ElementalBalance from '../components/astrology/ElementalBalance';
 import PlanetaryPositionCard from '../components/astrology/PlanetaryPositionCard';
@@ -108,7 +108,7 @@ const DetailedNatalReportPage: React.FC = () => {
   );
   const [apiChart, setApiChart] = useState<Chart | null>(null);
   const [_isLoadingChart, setIsLoadingChart] = useState(false);
-  const [_chartError, setChartError] = useState<string | null>(null);
+  const [chartError, setChartError] = useState<string | null>(null);
 
   // PDF generation hook
   const {
@@ -242,6 +242,22 @@ const DetailedNatalReportPage: React.FC = () => {
       }
     }
   };
+
+  if (chartError) {
+    return (
+      <AppLayout>
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-10">
+          <EmptyState
+            icon="error"
+            title="Failed to load report"
+            description={chartError}
+            actionText="Try Again"
+            onAction={() => window.location.reload()}
+          />
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>

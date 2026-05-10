@@ -16,7 +16,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useTodayTransits } from '../hooks';
 
 // Components
-import { AppLayout } from '../components';
+import { AppLayout, EmptyState } from '../components';
 import MoonPhaseCard from '../components/astrology/MoonPhaseCard';
 import TransitTimelineCard from '../components/astrology/TransitTimelineCard';
 import type { MoonPhaseType } from '../components/astrology/MoonPhaseCard';
@@ -174,7 +174,7 @@ const DailyBriefingPage: React.FC = () => {
   const hasMarkedViewed = useRef(false);
 
   // Fetch real transit data
-  const { data: transitData, isLoading: _isLoading } = useTodayTransits();
+  const { data: transitData, isLoading: _isLoading, error: transitError } = useTodayTransits();
 
   // Derive moon phase from transit data
   const moonPhase: MoonPhaseData = useMemo(() => {
@@ -262,10 +262,29 @@ const DailyBriefingPage: React.FC = () => {
     return 'Good Evening';
   };
 
+  if (transitError) {
+    return (
+      <AppLayout>
+        <Helmet>
+          <title>Daily Briefing – AstroVerse</title>
+        </Helmet>
+        <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-10">
+          <EmptyState
+            icon="error"
+            title="Failed to load daily briefing"
+            description={transitError instanceof Error ? transitError.message : 'Unable to fetch transit data'}
+            actionText="Try Again"
+            onAction={() => window.location.reload()}
+          />
+        </div>
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout>
       <Helmet>
-        <title>Daily Briefing � AstroVerse</title>
+        <title>Daily Briefing – AstroVerse</title>
       </Helmet>
 
       <div
