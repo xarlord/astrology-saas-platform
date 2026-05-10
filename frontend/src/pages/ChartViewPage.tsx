@@ -4,6 +4,8 @@
  */
 
 import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } from '../components';
+import { ChartBirthAnimation } from '../components/chart/ChartBirthAnimation';
+import { PlanetaryPositionCard, HouseCuspCard } from '../components/PlanetaryPositionCard';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useChartsStore } from '../store/chartsStore';
@@ -181,42 +183,37 @@ export default function ChartViewPage() {
             {/* Chart Wheel */}
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-4">Chart Wheel</h2>
-              <ChartWheel data={chartData} interactive={true} />
+              <ChartBirthAnimation chartData={chartData} trigger={!!chartData}>
+                <ChartWheel data={chartData} interactive={true} />
+              </ChartBirthAnimation>
               <ChartWheelLegend />
             </div>
 
             {/* Planetary Positions */}
-            <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-4">Planetary Positions</h2>
-              <div className="space-y-2">
-                {planetList.map((planet) => (
-                  <div
-                    key={planet.planet}
-                    className="flex justify-between py-2 border-b border-white/15"
-                  >
-                    <span className="font-medium capitalize">{planet.planet}</span>
-                    <span className="text-slate-200">
-                      {planet.sign} {planet.degree}&deg;{planet.minute}&apos;{' '}
-                      {planet.retrograde && '(R)'}
-                    </span>
-                  </div>
-                ))}
+            <div className="space-y-6">
+              <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+                <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-indigo-400">☉</span>
+                  Planetary Positions
+                </h2>
+                <div className="space-y-2">
+                  {planetList.map((planet) => (
+                    <PlanetaryPositionCard key={planet.planet} planet={planet} />
+                  ))}
+                </div>
               </div>
 
               {/* House Cusps */}
-              <h2 className="text-xl font-bold mb-4 mt-6">House Cusps</h2>
-              <div className="space-y-2">
-                {chartData.houses.map((house) => (
-                  <div
-                    key={house.house}
-                    className="flex justify-between py-2 border-b border-white/15"
-                  >
-                    <span className="font-medium">House {house.house}</span>
-                    <span className="text-slate-200 capitalize">
-                      {house.sign} {house.degree}&deg;{house.minute}&apos;
-                    </span>
-                  </div>
-                ))}
+              <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+                <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="text-indigo-400">⌂</span>
+                  House Cusps
+                </h2>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {chartData.houses.map((house) => (
+                    <HouseCuspCard key={house.house} house={house} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

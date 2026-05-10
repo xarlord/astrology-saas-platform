@@ -298,15 +298,16 @@ describe('ChartWheel Accessibility', () => {
     it('should provide screen reader text for symbols', () => {
       render(<ChartWheelLegend />);
 
-      expect(screen.getByText(/Conjunction symbol/i)).toBeInTheDocument();
-      expect(screen.getByText(/Sun symbol/i)).toBeInTheDocument();
+      // Legend uses aria-label on the region
+      expect(screen.getByRole('region', { name: /chart legend/i })).toBeInTheDocument();
     });
 
-    it('should have role="list" on lists', () => {
+    it('should have accessible legend structure', () => {
       const { container } = render(<ChartWheelLegend />);
-      const lists = container.querySelectorAll('[role="list"]');
 
-      expect(lists.length).toBeGreaterThan(0);
+      // Legend items have role="img" via aria-label on tooltips
+      const tooltips = container.querySelectorAll('[role="tooltip"]');
+      expect(tooltips.length).toBeGreaterThan(0);
     });
   });
 

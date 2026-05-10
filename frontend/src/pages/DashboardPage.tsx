@@ -9,6 +9,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useCharts, useTodayTransits, useTransitForecast } from '../hooks';
 import { deriveHighlights } from '../utils/transitHelpers';
 import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
+import { CosmicWeatherWidget } from '../components/dashboard/CosmicWeatherWidget';
+import type { TransitInfo } from '../components/dashboard/CosmicWeatherWidget';
 
 const PLANET_META: Record<string, { icon: string; color: string }> = {
   Sun: { icon: 'sunny', color: 'text-gold' },
@@ -288,6 +290,24 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+
+            {/* Cosmic Weather Widget */}
+            {!transitsLoading && (
+              <CosmicWeatherWidget
+                energyScore={energyScore}
+                transits={(todayTransits?.transits ?? []).map((t: { transitPlanet: string; natalPlanet: string; aspect: string; orb: number }) => ({
+                  planet1: t.transitPlanet,
+                  planet2: t.natalPlanet,
+                  type: t.aspect,
+                  harmonious: !['square', 'opposition', 'quincunx'].some((a) => t.aspect.toLowerCase().includes(a)),
+                  intensity: Math.max(1, Math.round(10 - Math.abs(t.orb))),
+                  description: `${t.transitPlanet} ${t.aspect} ${t.natalPlanet}`,
+                })) satisfies TransitInfo[]}
+                moonPhase={moon.phaseName}
+                moonSign={moon.sign}
+                className="mt-2"
+              />
+            )}
 
             {/* Planetary Positions Grid */}
             {transitsLoading ? (

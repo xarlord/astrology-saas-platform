@@ -456,8 +456,9 @@ describe('DashboardPage', () => {
     it('should display energy level indicator', async () => {
       renderWithProviders(createElement(DashboardPage));
       // Shows High Vitality, Moderate Energy, or Low Energy
-      const energyLabels = await screen.findByText(/high vitality|moderate energy|low energy/i);
-      expect(energyLabels).toBeInTheDocument();
+      // CosmicWeatherWidget also renders energy text, so use findAllByText
+      const energyLabels = await screen.findAllByText(/high vitality|moderate energy|low energy/i);
+      expect(energyLabels.length).toBeGreaterThan(0);
     });
   });
 

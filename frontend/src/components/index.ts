@@ -14,6 +14,7 @@ export { ZodiacBadge } from './ZodiacBadge';
 // Chart & Analysis
 export { ChartWheel, ChartWheelLegend } from './ChartWheel';
 export type { ChartData, PlanetPosition, HouseCusp, Aspect } from './ChartWheel';
+export { PlanetaryPositionCard, HouseCuspCard } from './PlanetaryPositionCard';
 export { PersonalityAnalysis } from './PersonalityAnalysis';
 export type {
   PersonalityAnalysisData,

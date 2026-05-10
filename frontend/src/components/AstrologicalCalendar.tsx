@@ -3,11 +3,6 @@
  * Displays monthly astrological events (moon phases, retrogrades, eclipses)
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import React, { useState } from 'react';
@@ -37,16 +32,19 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month - 1, 1));
 
-  const { data: events, isLoading, error, refetch } = useCalendarEvents(
+  const { data: eventsResponse, isLoading, error, refetch } = useCalendarEvents(
     currentDate.getFullYear(),
     currentDate.getMonth() + 1
   );
+
+  // Extract events array from response (API returns { data: [...], meta: {...} })
+  const events = eventsResponse?.data ?? [];
 
   const getEventForDate = (date: Date) => {
     if (!events || !Array.isArray(events)) return [];
 
     return events.filter((event) => {
-      const eventDate = new Date(event.event_date);
+      const eventDate = new Date(event.event_date ?? '');
       return (
         eventDate.getDate() === date.getDate() &&
         eventDate.getMonth() === date.getMonth() &&
@@ -157,7 +155,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
     );
   }
 
-  if (!events || !Array.isArray(events) || events.length === 0) {
+  if (events.length === 0) {
     return (
       <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
         <div className="glass-panel rounded-xl p-6">

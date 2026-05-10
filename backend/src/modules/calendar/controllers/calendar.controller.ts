@@ -92,7 +92,7 @@ async function generateGlobalEvents(year: number, month: number): Promise<Global
  */
 export const getMonthEvents = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const { year, month } = req.params;
     const { includeGlobal = 'true' } = req.query;
 
@@ -104,12 +104,10 @@ export const getMonthEvents = asyncHandler(
       throw new AppError('Invalid year or month. Month must be 1-12.', 400);
     }
 
-    // Get user's personalized events for the month
-    const personalEvents = await calendarEventModel.findByMonth(
-      userId,
-      yearNum,
-      monthNum
-    );
+    // Get user's personalized events for the month (only if authenticated)
+    const personalEvents = userId
+      ? await calendarEventModel.findByMonth(userId, yearNum, monthNum)
+      : [];
 
     let events: Array<CalendarEvent | GlobalEventRow> = [...personalEvents];
 

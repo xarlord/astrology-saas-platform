@@ -138,6 +138,7 @@ export interface Chart {
   name: string;
   type: 'natal' | 'draconic' | 'harmonic' | 'composite' | 'synastry';
   birthData: BirthData;
+  calculated_data?: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
   isDefault: boolean;
@@ -209,6 +210,7 @@ export function transformChart(apiChart: APIChart): Chart {
       timezone: apiChart.birth_timezone,
       unknownTime: apiChart.birth_time_unknown,
     },
+    calculated_data: apiChart.calculated_data as Record<string, unknown> | undefined,
     createdAt: apiChart.created_at,
     updatedAt: apiChart.updated_at,
     isDefault: true, // Backend doesn't have this field, default to true

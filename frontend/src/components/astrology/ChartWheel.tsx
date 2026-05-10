@@ -119,13 +119,71 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Calculate planet positions on the wheel
+  // Convert within-sign degree (0-30) to absolute ecliptic longitude (0-360)
+  // Then spread overlapping planets so labels don't collide
   const planetPositions = useMemo(() => {
+    const baseRadius = size * 0.25;
+    const minPixelGap = 30; // minimum px between planet centers
+
+    // Step 1: compute absolute ecliptic longitude for each planet
+    const withDegrees = chartData.planets.map((planet) => {
+      const signIndex = ZODIAC_SIGNS.findIndex(
+        (s) => s.name.toLowerCase() === planet.sign.toLowerCase(),
+      );
+      const absoluteDegree =
+        signIndex >= 0
+          ? signIndex * 30 + planet.degree + planet.minute / 60
+          : planet.degree + planet.minute / 60;
+      return { ...planet, absoluteDegree };
+    });
+
+    // Step 2: sort by degree so we can detect and resolve overlaps
+    const sorted = [...withDegrees].sort(
+      (a, b) => a.absoluteDegree - b.absoluteDegree,
+    );
+
+    // Step 3: iterative spreading until stable (max 5 rounds)
+    const minAngleGap = (minPixelGap / baseRadius) * (180 / Math.PI);
+    for (let round = 0; round < 5; round++) {
+      let changed = false;
+      sorted.sort((a, b) => a.absoluteDegree - b.absoluteDegree);
+      for (let i = 1; i < sorted.length; i++) {
+        let gap = sorted[i].absoluteDegree - sorted[i - 1].absoluteDegree;
+        if (gap < 0) gap += 360;
+        if (gap < minAngleGap) {
+          const shift = minAngleGap - gap;
+          sorted[i] = { ...sorted[i], absoluteDegree: sorted[i].absoluteDegree + shift };
+          changed = true;
+        }
+      }
+      if (!changed) break;
+    }
+
+    // Step 4: also check last→first wrap-around
+    if (sorted.length >= 2) {
+      const last = sorted[sorted.length - 1];
+      const first = sorted[0];
+      const wrapGap = first.absoluteDegree + 360 - last.absoluteDegree;
+      if (wrapGap < minAngleGap) {
+        // Shift the first planet forward, or shift last backward
+        const shift = minAngleGap - wrapGap;
+        sorted[0] = {
+          ...sorted[0],
+          absoluteDegree: sorted[0].absoluteDegree + shift,
+        };
+      }
+    }
+
+    // Step 5: map back to x/y preserving original planet order
+    const degreeMap = new Map(
+      sorted.map((p) => [p.name, p.absoluteDegree]),
+    );
     return chartData.planets.map((planet) => {
-      const degree = planet.degree + planet.minute / 60;
-      const radians = ((degree - 90) * Math.PI) / 180;
-      const radius = size * 0.25;
-      const x = size / 2 + radius * Math.cos(radians);
-      const y = size / 2 + radius * Math.sin(radians);
+      const absoluteDegree =
+        degreeMap.get(planet.name) ?? planet.degree + planet.minute / 60;
+      const radians = ((absoluteDegree - 90) * Math.PI) / 180;
+      const x = size / 2 + baseRadius * Math.cos(radians);
+      const y = size / 2 + baseRadius * Math.sin(radians);
       return { ...planet, x, y, radians };
     });
   }, [chartData.planets, size]);

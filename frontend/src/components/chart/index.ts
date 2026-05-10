@@ -12,3 +12,10 @@ export { LinkedInCard } from './LinkedInCard';
 export { PinterestCard } from './PinterestCard';
 export { TikTokCard } from './TikTokCard';
 export { ShareCardModal } from './ShareCardModal';
+
+export { ChartBirthAnimation } from './ChartBirthAnimation';
+export type { ChartBirthAnimationProps, AnimationPhase } from './ChartBirthAnimation';
+export { AnimatedAspectLines } from './AnimatedAspectLines';
+export type { AnimatedAspectLinesProps, AspectLineData, PlanetPositionData } from './AnimatedAspectLines';
+export { PlanetDeepDiveCard } from './PlanetDeepDiveCard';
+export type { PlanetDeepDiveCardProps, PlanetInfo, PlanetAspectInfo } from './PlanetDeepDiveCard';
