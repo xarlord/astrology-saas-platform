@@ -50,7 +50,7 @@ const LessonCard: React.FC<LessonCardProps> = ({
       whileHover={{ x: 4 }}
     >
       <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 relative">
-        <img loading="lazy"src={thumbnail}
+        <img loading="lazy" src={thumbnail}
           alt={title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />

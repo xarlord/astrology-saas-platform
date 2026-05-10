@@ -125,7 +125,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           {name ? getInitials(name) : '?'}
         </span>
       ) : (
-        <img loading="lazy"src={src}
+        <img loading="lazy" src={src}
           alt={alt ?? name ?? 'Avatar'}
           onError={handleImageError}
           className={clsx(
