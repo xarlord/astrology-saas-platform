@@ -41,35 +41,38 @@ let mockCalendarEventsState: {
   error: any;
   refetch: ReturnType<typeof vi.fn>;
 } = {
-  data: [
-    {
-      id: 'event-1',
-      title: 'Venus enters Pisces',
-      description: 'A time for romance and creativity',
-      event_type: 'new_moon',
-      event_date: '2026-05-10T00:00:00.000Z',
-      event_data: { sign: 'pisces' },
-      interpretation: 'Venus enters Pisces interpretation',
-    },
-    {
-      id: 'event-2',
-      title: 'Mercury Retrograde',
-      description: 'Communication challenges',
-      event_type: 'mercury_retrograde',
-      event_date: '2026-05-20T00:00:00.000Z',
-      event_data: {},
-      interpretation: 'Mercury retrograde interpretation',
-    },
-    {
-      id: 'event-3',
-      title: 'Solar Eclipse',
-      description: 'Major transformation energy',
-      event_type: 'solar_eclipse',
-      event_date: '2026-05-25T00:00:00.000Z',
-      event_data: {},
-      interpretation: 'Solar eclipse interpretation',
-    },
-  ],
+  data: {
+    data: [
+      {
+        id: 'event-1',
+        title: 'Venus enters Pisces',
+        description: 'A time for romance and creativity',
+        event_type: 'new_moon',
+        event_date: '2026-05-10T00:00:00.000Z',
+        event_data: { sign: 'pisces' },
+        interpretation: 'Venus enters Pisces interpretation',
+      },
+      {
+        id: 'event-2',
+        title: 'Mercury Retrograde',
+        description: 'Communication challenges',
+        event_type: 'mercury_retrograde',
+        event_date: '2026-05-20T00:00:00.000Z',
+        event_data: {},
+        interpretation: 'Mercury retrograde interpretation',
+      },
+      {
+        id: 'event-3',
+        title: 'Solar Eclipse',
+        description: 'Major transformation energy',
+        event_type: 'solar_eclipse',
+        event_date: '2026-05-25T00:00:00.000Z',
+        event_data: {},
+        interpretation: 'Solar eclipse interpretation',
+      },
+    ],
+    meta: { total: 3, page: 1, pageSize: 31 },
+  },
   isLoading: false,
   error: null,
   refetch: vi.fn(),
@@ -264,35 +267,38 @@ describe('CalendarPage', () => {
 
       // Restore default mock state
       mockCalendarEventsState = {
-        data: [
-          {
-            id: 'event-1',
-            title: 'Venus enters Pisces',
-            description: 'A time for romance and creativity',
-            event_type: 'new_moon',
-            event_date: '2026-05-10T00:00:00.000Z',
-            event_data: { sign: 'pisces' },
-            interpretation: 'Venus enters Pisces interpretation',
-          },
-          {
-            id: 'event-2',
-            title: 'Mercury Retrograde',
-            description: 'Communication challenges',
-            event_type: 'mercury_retrograde',
-            event_date: '2026-05-20T00:00:00.000Z',
-            event_data: {},
-            interpretation: 'Mercury retrograde interpretation',
-          },
-          {
-            id: 'event-3',
-            title: 'Solar Eclipse',
-            description: 'Major transformation energy',
-            event_type: 'solar_eclipse',
-            event_date: '2026-05-25T00:00:00.000Z',
-            event_data: {},
-            interpretation: 'Solar eclipse interpretation',
-          },
-        ],
+        data: {
+          data: [
+            {
+              id: 'event-1',
+              title: 'Venus enters Pisces',
+              description: 'A time for romance and creativity',
+              event_type: 'new_moon',
+              event_date: '2026-05-10T00:00:00.000Z',
+              event_data: { sign: 'pisces' },
+              interpretation: 'Venus enters Pisces interpretation',
+            },
+            {
+              id: 'event-2',
+              title: 'Mercury Retrograde',
+              description: 'Communication challenges',
+              event_type: 'mercury_retrograde',
+              event_date: '2026-05-20T00:00:00.000Z',
+              event_data: {},
+              interpretation: 'Mercury retrograde interpretation',
+            },
+            {
+              id: 'event-3',
+              title: 'Solar Eclipse',
+              description: 'Major transformation energy',
+              event_type: 'solar_eclipse',
+              event_date: '2026-05-25T00:00:00.000Z',
+              event_data: {},
+              interpretation: 'Solar eclipse interpretation',
+            },
+          ],
+          meta: { total: 3, page: 1, pageSize: 31 },
+        },
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -315,35 +321,38 @@ describe('CalendarPage', () => {
 
       // Restore default mock state
       mockCalendarEventsState = {
-        data: [
-          {
-            id: 'event-1',
-            title: 'Venus enters Pisces',
-            description: 'A time for romance and creativity',
-            event_type: 'new_moon',
-            event_date: '2026-05-10T00:00:00.000Z',
-            event_data: { sign: 'pisces' },
-            interpretation: 'Venus enters Pisces interpretation',
-          },
-          {
-            id: 'event-2',
-            title: 'Mercury Retrograde',
-            description: 'Communication challenges',
-            event_type: 'mercury_retrograde',
-            event_date: '2026-05-20T00:00:00.000Z',
-            event_data: {},
-            interpretation: 'Mercury retrograde interpretation',
-          },
-          {
-            id: 'event-3',
-            title: 'Solar Eclipse',
-            description: 'Major transformation energy',
-            event_type: 'solar_eclipse',
-            event_date: '2026-05-25T00:00:00.000Z',
-            event_data: {},
-            interpretation: 'Solar eclipse interpretation',
-          },
-        ],
+        data: {
+          data: [
+            {
+              id: 'event-1',
+              title: 'Venus enters Pisces',
+              description: 'A time for romance and creativity',
+              event_type: 'new_moon',
+              event_date: '2026-05-10T00:00:00.000Z',
+              event_data: { sign: 'pisces' },
+              interpretation: 'Venus enters Pisces interpretation',
+            },
+            {
+              id: 'event-2',
+              title: 'Mercury Retrograde',
+              description: 'Communication challenges',
+              event_type: 'mercury_retrograde',
+              event_date: '2026-05-20T00:00:00.000Z',
+              event_data: {},
+              interpretation: 'Mercury retrograde interpretation',
+            },
+            {
+              id: 'event-3',
+              title: 'Solar Eclipse',
+              description: 'Major transformation energy',
+              event_type: 'solar_eclipse',
+              event_date: '2026-05-25T00:00:00.000Z',
+              event_data: {},
+              interpretation: 'Solar eclipse interpretation',
+            },
+          ],
+          meta: { total: 3, page: 1, pageSize: 31 },
+        },
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -354,7 +363,7 @@ describe('CalendarPage', () => {
   describe('Empty State', () => {
     it('should render empty state when no events are found', () => {
       mockCalendarEventsState = {
-        data: [],
+        data: { data: [], meta: { total: 0, page: 1, pageSize: 31 } },
         isLoading: false,
         error: null,
         refetch: vi.fn(),
@@ -366,35 +375,38 @@ describe('CalendarPage', () => {
 
       // Restore default mock state
       mockCalendarEventsState = {
-        data: [
-          {
-            id: 'event-1',
-            title: 'Venus enters Pisces',
-            description: 'A time for romance and creativity',
-            event_type: 'new_moon',
-            event_date: '2026-05-10T00:00:00.000Z',
-            event_data: { sign: 'pisces' },
-            interpretation: 'Venus enters Pisces interpretation',
-          },
-          {
-            id: 'event-2',
-            title: 'Mercury Retrograde',
-            description: 'Communication challenges',
-            event_type: 'mercury_retrograde',
-            event_date: '2026-05-20T00:00:00.000Z',
-            event_data: {},
-            interpretation: 'Mercury retrograde interpretation',
-          },
-          {
-            id: 'event-3',
-            title: 'Solar Eclipse',
-            description: 'Major transformation energy',
-            event_type: 'solar_eclipse',
-            event_date: '2026-05-25T00:00:00.000Z',
-            event_data: {},
-            interpretation: 'Solar eclipse interpretation',
-          },
-        ],
+        data: {
+          data: [
+            {
+              id: 'event-1',
+              title: 'Venus enters Pisces',
+              description: 'A time for romance and creativity',
+              event_type: 'new_moon',
+              event_date: '2026-05-10T00:00:00.000Z',
+              event_data: { sign: 'pisces' },
+              interpretation: 'Venus enters Pisces interpretation',
+            },
+            {
+              id: 'event-2',
+              title: 'Mercury Retrograde',
+              description: 'Communication challenges',
+              event_type: 'mercury_retrograde',
+              event_date: '2026-05-20T00:00:00.000Z',
+              event_data: {},
+              interpretation: 'Mercury retrograde interpretation',
+            },
+            {
+              id: 'event-3',
+              title: 'Solar Eclipse',
+              description: 'Major transformation energy',
+              event_type: 'solar_eclipse',
+              event_date: '2026-05-25T00:00:00.000Z',
+              event_data: {},
+              interpretation: 'Solar eclipse interpretation',
+            },
+          ],
+          meta: { total: 3, page: 1, pageSize: 31 },
+        },
         isLoading: false,
         error: null,
         refetch: vi.fn(),
