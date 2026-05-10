@@ -14,7 +14,7 @@ window.addEventListener('unhandledrejection', (event) => {
   // Send to Sentry (if configured)
   import('./utils/sentry').then(({ captureException }) => {
     captureException(event.reason, { source: 'unhandledrejection' });
-  }).catch(() => {});
+  }).catch(() => { /* Sentry not configured */ });
   // Prevent default browser error handling
   event.preventDefault();
 });
@@ -24,7 +24,7 @@ window.addEventListener('error', (event) => {
   // Send to Sentry (if configured)
   import('./utils/sentry').then(({ captureException }) => {
     captureException(event.error, { source: 'global_error' });
-  }).catch(() => {});
+  }).catch(() => { /* Sentry not configured */ });
 });
 
 // Import service worker hook only in production

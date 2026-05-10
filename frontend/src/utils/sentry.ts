@@ -16,7 +16,7 @@ let sentryInitialized = false;
  * Only initializes if VITE_SENTRY_DSN is configured.
  */
 export function initSentry(): void {
-  const dsn = import.meta.env.VITE_SENTRY_DSN;
+  const dsn = String(import.meta.env.VITE_SENTRY_DSN ?? '');
 
   if (!dsn) {
     console.info('[Sentry] No DSN configured — error tracking disabled');
@@ -25,8 +25,8 @@ export function initSentry(): void {
 
   Sentry.init({
     dsn,
-    environment: import.meta.env.MODE,
-    release: import.meta.env.VITE_APP_VERSION ?? 'unknown',
+    environment: String(import.meta.env.MODE),
+    release: String(import.meta.env.VITE_APP_VERSION ?? 'unknown'),
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
@@ -37,7 +37,7 @@ export function initSentry(): void {
     tracesSampleRate: 0.1,
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
-    enabled: import.meta.env.PROD,
+    enabled: Boolean(import.meta.env.PROD),
   });
 
   sentryInitialized = true;
