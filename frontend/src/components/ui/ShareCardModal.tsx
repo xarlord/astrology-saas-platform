@@ -101,7 +101,7 @@ function TemplatePreview({
         'relative rounded-xl overflow-hidden transition-all duration-200',
         'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-transparent',
         isSelected
-          ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-[#0B0D17] shadow-lg shadow-purple-500/50'
+          ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-cosmic-page shadow-lg shadow-purple-500/50'
           : 'ring-1 ring-white/10 hover:ring-white/30 opacity-60 hover:opacity-100',
       )}
       whileHover={{ scale: isSelected ? 1.02 : 1.05 }}
@@ -169,7 +169,7 @@ function DownloadButton({
       disabled={disabled || isRendering}
       className={clsx(
         'flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all',
-        'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#0B0D17]',
+        'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-cosmic-page',
         isSuccess
           ? 'bg-green-500 text-white'
           : isError
@@ -232,7 +232,7 @@ function ShareButton({
       disabled={disabled || state === 'rendering'}
       className={clsx(
         'flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all',
-        'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#0B0D17]',
+        'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-cosmic-page',
         state === 'error'
           ? 'bg-red-500/20 text-red-400 border border-red-500/50'
           : 'bg-white/10 hover:bg-white/15 text-white border border-white/20 disabled:bg-white/5 disabled:text-gray-500',
@@ -461,7 +461,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
             ref={trapRef}
             className={clsx(
               'relative w-full max-w-4xl rounded-2xl overflow-hidden',
-              'bg-gradient-to-br from-[#0B0D17] via-[#141627] to-[#1a1d3a]',
+              'bg-gradient-to-br from-cosmic-page via-cosmic-card-solid to-[#1a1d3a]',
               'backdrop-blur-xl border border-white/10',
               'shadow-2xl shadow-purple-500/20',
               className,

@@ -84,7 +84,7 @@ export default function LoginPageNew() {
             />
 
             {/* Overlay Gradient */}
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-cosmic-page via-[#0B0D17]/40 to-transparent"></div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-cosmic-page via-cosmic-page/40 to-transparent"></div>
 
             {/* Content */}
             <div className="relative z-20 flex h-full flex-col justify-between p-12 xl:p-16">
@@ -349,7 +349,7 @@ export default function LoginPageNew() {
                 {/* Social Logins */}
                 <div className="mt-8 grid grid-cols-2 gap-4">
                   <button
-                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
+                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-cosmic-page"
                     type="button"
                     onClick={() => { void handleSocialLogin('google'); }}
                     aria-label="Continue with Google"
@@ -363,7 +363,7 @@ export default function LoginPageNew() {
                     <span className="text-sm font-semibold leading-6">Google</span>
                   </button>
                   <button
-                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
+                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-cosmic-page"
                     type="button"
                     onClick={() => { void handleSocialLogin('apple'); }}
                     aria-label="Continue with Apple"

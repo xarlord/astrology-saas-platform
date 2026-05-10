@@ -146,9 +146,9 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
   });
 
   return (
-    <div className={`w-[794px] min-h-[1123px] bg-[#0B0D17] text-white font-sans ${className}`}>
+    <div className={`w-[794px] min-h-[1123px] bg-cosmic-page text-white font-sans ${className}`}>
       {/* ── Header Band ──────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-[#6b3de1] to-indigo-600 p-8">
+      <div className="bg-gradient-to-r from-primary to-indigo-600 p-8">
         {/* Brand */}
         <div className="flex items-center gap-2 mb-1">
           <span className="text-white/80 text-sm tracking-widest uppercase">
@@ -174,7 +174,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
 
         {/* Key Dates */}
         <section>
-          <div className="bg-[#141627] rounded-xl p-6 border border-white/5">
+          <div className="bg-cosmic-card-solid rounded-xl p-6 border border-white/5">
             <h2 className="text-lg font-semibold text-white mb-4">Key Dates</h2>
 
             <div className="space-y-0">
@@ -183,10 +183,10 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
                   key={kd.date}
                   className={`flex gap-4 py-3 ${
                     idx < keyDates.length - 1 ? 'border-b border-white/5' : ''
-                  } ${idx % 2 !== 0 ? 'bg-[#141627]' : ''}`}
+                  } ${idx % 2 !== 0 ? 'bg-cosmic-card-solid' : ''}`}
                 >
                   {/* Date column */}
-                  <span className="w-16 shrink-0 text-sm font-semibold text-[#6b3de1]">
+                  <span className="w-16 shrink-0 text-sm font-semibold text-primary">
                     {kd.date}
                   </span>
 
@@ -208,7 +208,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
 
           <div className="space-y-5">
             {lifeAreas.map((area) => (
-              <div key={area.name} className="bg-[#141627] rounded-xl p-5 border border-white/5">
+              <div key={area.name} className="bg-cosmic-card-solid rounded-xl p-5 border border-white/5">
                 {/* Name row with bar */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-semibold text-white flex items-center gap-2">
@@ -250,7 +250,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
         {/* Premium Upsell (free users only) */}
         {!isPremium && (
           <section>
-            <div className="border-2 border-dashed border-[#6b3de1]/40 rounded-xl p-6 text-center">
+            <div className="border-2 border-dashed border-primary/40 rounded-xl p-6 text-center">
               <h3 className="text-base font-semibold text-white mb-2 flex items-center justify-center gap-2">
                 <span className="text-yellow-400">&#11088;</span>
                 Premium Insights
@@ -262,7 +262,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
               <button
                 type="button"
                 onClick={onPremiumCta}
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#6b3de1] hover:bg-[#5a2fd4] text-white text-sm font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary hover:bg-[#5a2fd4] text-white text-sm font-semibold rounded-lg transition-colors"
               >
                 {premiumCtaText}
                 <span className="text-white/70">&rarr;</span>

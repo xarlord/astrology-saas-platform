@@ -174,13 +174,13 @@ export const ProfileSettingsPage: React.FC = () => {
             {/* Avatar Section */}
             <div className="relative shrink-0">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-[3px] bg-gradient-to-tr from-primary via-cosmic-blue to-primary/30 animate-spin-slow relative">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-[#0B0D17] to-[#141627] p-1">
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-cosmic-page to-cosmic-card-solid p-1">
                   <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/30 to-cosmic-blue/30 flex items-center justify-center">
                     <span className="material-symbols-outlined text-5xl text-white">person</span>
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-2 right-2 bg-amber-400 text-[#0B0D17] text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-[#0B0D17] flex items-center gap-1">
+              <div className="absolute -bottom-2 right-2 bg-amber-400 text-cosmic-page text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-cosmic-page flex items-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">stars</span>
                 <span>PRO</span>
               </div>
@@ -800,7 +800,7 @@ export const ProfileSettingsPage: React.FC = () => {
                       <select
                         value={notificationPrefs.time}
                         onChange={(e) => handleNotificationPrefChange('time', e.target.value)}
-                        className="w-full bg-[#0B0D17] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full bg-cosmic-page border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       >
                         <option value="06:00">6:00 AM — Early riser</option>
                         <option value="07:00">7:00 AM — Morning routine</option>

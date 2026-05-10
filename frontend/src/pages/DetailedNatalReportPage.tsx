@@ -599,7 +599,7 @@ const DetailedNatalReportPage: React.FC = () => {
               src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&q=80"
               alt="Synastry Guide"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D17] via-[#0B0D17]/40 to-transparent p-6 flex flex-col justify-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-cosmic-page via-cosmic-page/40 to-transparent p-6 flex flex-col justify-end">
               <h5 className="text-white font-bold text-lg mb-1">Synastry Guide</h5>
               <p className="text-slate-300 text-xs mb-4">
                 Unlock compatibility secrets for your relationships.

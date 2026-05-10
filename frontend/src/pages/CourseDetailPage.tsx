@@ -220,7 +220,7 @@ const CourseDetailPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Video Player */}
             <motion.div
-              className="bg-[#141627] rounded-xl overflow-hidden border border-white/10"
+              className="bg-cosmic-card-solid rounded-xl overflow-hidden border border-white/10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -309,7 +309,7 @@ const CourseDetailPage: React.FC = () => {
 
             {/* Resources Section */}
             <motion.div
-              className="bg-[#141627] rounded-xl p-6 border border-white/10"
+              className="bg-cosmic-card-solid rounded-xl p-6 border border-white/10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -345,7 +345,7 @@ const CourseDetailPage: React.FC = () => {
           {/* Sidebar - Course Content */}
           <div className="lg:col-span-1">
             <motion.div
-              className="bg-[#141627] rounded-xl border border-white/10 sticky top-24"
+              className="bg-cosmic-card-solid rounded-xl border border-white/10 sticky top-24"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
