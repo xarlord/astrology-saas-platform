@@ -137,7 +137,7 @@ export default function BirthDataStep() {
   };
 
   return (
-    <div className="font-display bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
+    <div className="font-display bg-gradient-to-br from-cosmic-page to-cosmic-card-solid text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
       <div className="flex flex-col lg:flex-row min-h-screen w-full">
         {/* Left Panel: Brand & Features (same as Step 1) */}
         <div
@@ -236,7 +236,7 @@ export default function BirthDataStep() {
         </div>
 
         {/* Right Panel: Birth Data Form */}
-        <div className="w-full lg:w-7/12 xl:w-1/2 bg-gradient-to-br from-[#0B0D17] to-[#141627] flex items-center justify-center p-6 lg:p-12 relative">
+        <div className="w-full lg:w-7/12 xl:w-1/2 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid flex items-center justify-center p-6 lg:p-12 relative">
           {/* Background glows */}
           <div
             className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"
@@ -317,7 +317,7 @@ export default function BirthDataStep() {
                     </span>
                   </div>
                   <input
-                    className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     id="birth-date"
                     type="date"
                     required
@@ -342,7 +342,7 @@ export default function BirthDataStep() {
                     </span>
                   </div>
                   <input
-                    className={`block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
+                    className={`block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
                       timeUnknown ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                     id="birth-time"
@@ -363,7 +363,7 @@ export default function BirthDataStep() {
               {/* Unknown Time Checkbox */}
               <div className="flex items-center gap-3 px-1">
                 <input
-                  className="w-4 h-4 rounded border-slate-600 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 text-primary focus:ring-primary"
+                  className="w-4 h-4 rounded border-slate-600 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid/50 text-primary focus:ring-primary"
                   id="time-unknown"
                   type="checkbox"
                   checked={timeUnknown}
@@ -394,7 +394,7 @@ export default function BirthDataStep() {
                     </span>
                   </div>
                   <input
-                    className={`block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-[#0B0D17] to-[#141627]/50 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
+                    className={`block w-full pl-11 pr-4 py-3 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid/50 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
                       placeSelected ? 'border-emerald-500/50' : 'border-slate-700'
                     }`}
                     id="birth-place"

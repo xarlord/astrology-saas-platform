@@ -333,7 +333,7 @@ const DailyBriefingPage: React.FC = () => {
         {/* ---- Daily Theme Card ---- */}
         <motion.section
           aria-label="Daily theme"
-          className="bg-gradient-to-br from-primary/10 via-[#141627]/70 to-purple-900/20 backdrop-blur-md border border-primary/20 rounded-2xl p-5 mb-5"
+          className="bg-gradient-to-br from-primary/10 via-cosmic-card-solid/70 to-purple-900/20 backdrop-blur-md border border-primary/20 rounded-2xl p-5 mb-5"
           initial="hidden"
           animate="visible"
           custom={2}
@@ -367,7 +367,7 @@ const DailyBriefingPage: React.FC = () => {
             {PRIORITY_AREAS.map((area) => (
               <div
                 key={area.key}
-                className={`${area.accentBg} bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-xl p-4 min-w-[90px] min-h-[100px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform cursor-default`}
+                className={`${area.accentBg} bg-cosmic-card-solid/70 backdrop-blur-md border border-white/10 rounded-xl p-4 min-w-[90px] min-h-[100px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform cursor-default`}
               >
                 <span className={`material-symbols-outlined text-[24px] ${area.accentText}`}>
                   {area.icon}
@@ -418,7 +418,7 @@ const DailyBriefingPage: React.FC = () => {
           {/* Notification Preferences */}
           <motion.section
             aria-label="Notification preferences"
-            className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-5"
+            className="bg-cosmic-card-solid/70 backdrop-blur-md border border-white/10 rounded-2xl p-5"
             initial="hidden"
             animate="visible"
             custom={7}
@@ -448,7 +448,7 @@ const DailyBriefingPage: React.FC = () => {
                     aria-label={item.label}
                     onClick={() => toggleNotification(item.key)}
                     data-testid={`briefing-toggle-${item.key}`}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#141627] ${
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-cosmic-card-solid ${
                       notifications[item.key] ? 'bg-primary' : 'bg-slate-600'
                     }`}
                   >
@@ -466,7 +466,7 @@ const DailyBriefingPage: React.FC = () => {
           {/* Energy Overview */}
           <motion.section
             aria-label="Energy overview"
-            className="bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-5"
+            className="bg-cosmic-card-solid/70 backdrop-blur-md border border-white/10 rounded-2xl p-5"
             initial="hidden"
             animate="visible"
             custom={8}
@@ -489,7 +489,7 @@ const DailyBriefingPage: React.FC = () => {
                     </span>
                   </div>
                   <div
-                    className="h-2 w-full rounded-full bg-[#0B0D17]"
+                    className="h-2 w-full rounded-full bg-cosmic-page"
                     role="progressbar"
                     aria-valuenow={bar.value}
                     aria-valuemin={0}
@@ -518,7 +518,7 @@ const DailyBriefingPage: React.FC = () => {
         >
           <button
             onClick={() => navigate('/transits')}
-            className="flex-1 flex items-center justify-center gap-2 bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3.5 text-slate-300 hover:text-white hover:border-primary/40 transition-all group"
+            className="flex-1 flex items-center justify-center gap-2 bg-cosmic-card-solid/70 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3.5 text-slate-300 hover:text-white hover:border-primary/40 transition-all group"
             data-testid="briefing-view-transits"
           >
             <span className="material-symbols-outlined text-[18px] text-primary">trending_up</span>

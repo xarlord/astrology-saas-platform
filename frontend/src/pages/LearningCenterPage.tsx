@@ -243,7 +243,7 @@ const LearningCenterPage: React.FC = () => {
                     </span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D17]/80 to-transparent flex items-end p-6">
+                <div className="absolute inset-0 bg-gradient-to-t from-cosmic-page/80 to-transparent flex items-end p-6">
                   <span className="bg-primary/20 backdrop-blur-md text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/30 uppercase tracking-tighter">
                     Current Path
                   </span>

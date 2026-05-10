@@ -360,7 +360,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
 
             {/* Central Badge */}
             <div className="md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20">
-              <div className="bg-amber-400 text-[#0B0D17] px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(251,191,36,0.4)] flex flex-col items-center border-4 border-[#0B0D17]">
+              <div className="bg-amber-400 text-cosmic-page px-6 py-4 rounded-xl shadow-[0_0_30px_rgba(251,191,36,0.4)] flex flex-col items-center border-4 border-cosmic-page">
                 <span className="text-[10px] font-black uppercase tracking-tighter opacity-80">
                   Solar Return Ascendant
                 </span>
@@ -477,7 +477,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
                       {data.month}
                     </span>
                     {data.powerDate ? (
-                      <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-[#0B0D17] shadow-[0_0_15px_rgba(251,191,36,0.4)]">
+                      <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-cosmic-page shadow-[0_0_15px_rgba(251,191,36,0.4)]">
                         <span className="material-symbols-outlined text-sm font-bold">star</span>
                       </div>
                     ) : data.challengeDate ? (

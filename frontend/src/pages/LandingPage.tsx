@@ -13,7 +13,7 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-slate-100 font-display antialiased overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-cosmic-page to-cosmic-card-solid text-slate-100 font-display antialiased overflow-x-hidden">
       <Helmet>
         <title>AstroVerse — Discover Your Cosmic Blueprint</title>
       </Helmet>
@@ -22,7 +22,7 @@ export default function LandingPage() {
         Skip to main content
       </a>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-br from-[#0B0D17] to-[#141627]/85 backdrop-blur-md border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid/85 backdrop-blur-md border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -90,7 +90,7 @@ export default function LandingPage() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-gradient-to-br from-[#0B0D17] to-[#141627]/95 backdrop-blur-lg border-t border-white/5">
+          <div className="md:hidden bg-gradient-to-br from-cosmic-page to-cosmic-card-solid/95 backdrop-blur-lg border-t border-white/5">
             <div className="px-4 py-4 space-y-3">
               <a
                 href="#features"
@@ -136,9 +136,9 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <main id="main-content">
-        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-br from-[#0B0D17] to-[#141627]">
+        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-br from-cosmic-page to-cosmic-card-solid">
           {/* Stars Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0B0D17] to-[#141627]">
+          <div className="absolute inset-0 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid">
             <div
               className="absolute inset-0 opacity-60"
               style={{
@@ -325,7 +325,7 @@ export default function LandingPage() {
 
         {/* Features Section */}
         <section
-          className="py-24 relative bg-gradient-to-br from-[#0B0D17] to-[#141627]"
+          className="py-24 relative bg-gradient-to-br from-cosmic-page to-cosmic-card-solid"
           id="features"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -731,7 +731,7 @@ export default function LandingPage() {
 
         {/* Footer */}
       </main>
-      <footer className="bg-gradient-to-br from-[#0B0D17] to-[#141627] border-t border-white/5 pt-16 pb-12">
+      <footer className="bg-gradient-to-br from-cosmic-page to-cosmic-card-solid border-t border-white/5 pt-16 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">

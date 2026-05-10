@@ -84,9 +84,9 @@ const MonthlyTransitReportView: React.FC = () => {
         <title>Monthly Transit Report &mdash; AstroVerse</title>
       </Helmet>
 
-      <div className="min-h-screen bg-[#0B0D17]">
+      <div className="min-h-screen bg-cosmic-page">
         {/* ── Sticky Action Bar ─────────────────────────────── */}
-        <div className="sticky top-0 z-30 bg-[#0B0D17]/90 backdrop-blur-md border-b border-white/10">
+        <div className="sticky top-0 z-30 bg-cosmic-page/90 backdrop-blur-md border-b border-white/10">
           <div className="max-w-5xl mx-auto flex items-center justify-between px-6 py-3">
             {/* Back navigation */}
             <button

@@ -141,7 +141,7 @@ export default function SharedCardPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-cosmic-page to-cosmic-card-solid text-white">
       {/* WCAG 2.1 AA - Skip Navigation Link */}
       <a href="#main-content" className="skip-link">
         Skip to main content
