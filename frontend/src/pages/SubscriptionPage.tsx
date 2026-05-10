@@ -6,6 +6,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
+import { EmptyState } from '../components';
 import UsageMeter from '../components/UsageMeter';
 import { useCharts } from '../hooks';
 import type { Tier } from '../components/UsageMeter';
@@ -177,7 +178,7 @@ const TIER_LIMITS: Record<string, number> = {
 
 export default function SubscriptionPage() {
   const navigate = useNavigate();
-  const { charts, fetchCharts } = useCharts();
+  const { charts, fetchCharts, error: chartsError } = useCharts();
 
   useEffect(() => {
     void fetchCharts();
@@ -186,6 +187,26 @@ export default function SubscriptionPage() {
   const currentTier = (charts.length > 0 ? 'free' : 'free') as Tier;
   const chartCount = charts.length;
   const tierLimit = TIER_LIMITS[currentTier] ?? 3;
+
+  if (chartsError) {
+    return (
+      <AppLayout>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Subscription</h1>
+          <p className="text-slate-200">
+            Manage your plan and usage
+          </p>
+        </div>
+        <EmptyState
+          icon="error"
+          title="Failed to load charts"
+          description={typeof chartsError === 'string' ? chartsError : 'Unable to fetch chart data'}
+          actionText="Try Again"
+          onAction={() => window.location.reload()}
+        />
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>

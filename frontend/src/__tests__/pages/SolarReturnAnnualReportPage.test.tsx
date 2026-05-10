@@ -50,6 +50,13 @@ vi.mock('../../components/ui/Button', () => ({
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  EmptyState: ({ title, description, actionText, onAction }: Record<string, unknown>) => (
+    <div data-testid="error-state">
+      <h2>{title as string}</h2>
+      <p>{description as string}</p>
+      <button onClick={onAction as () => void}>{actionText as string}</button>
+    </div>
+  ),
 }));
 
 // Mock the API module so the component's useEffect fetches controlled data
@@ -680,6 +687,25 @@ describe('SolarReturnAnnualReportPage', () => {
         },
         { timeout: 3000 },
       );
+    });
+  });
+
+  describe('Error State', () => {
+    it('should show error state when solar return fetch fails', async () => {
+      mockApiGet.mockRejectedValue(new Error('Network error'));
+      renderWithProviders(createElement(SolarReturnAnnualReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Failed to load solar return report')).toBeInTheDocument();
+      });
+      expect(screen.getByText('Network error')).toBeInTheDocument();
+    });
+
+    it('should show try again button in error state', async () => {
+      mockApiGet.mockRejectedValue(new Error('Server error'));
+      renderWithProviders(createElement(SolarReturnAnnualReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Try Again')).toBeInTheDocument();
+      });
     });
   });
 });

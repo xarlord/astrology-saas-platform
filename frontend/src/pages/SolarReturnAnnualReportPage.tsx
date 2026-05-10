@@ -10,7 +10,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
-import { AppLayout } from '../components';
+import { AppLayout, EmptyState } from '../components';
 import { Button } from '../components/ui/Button';
 
 // Hooks & Services
@@ -134,7 +134,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
   const [_isLoadingSolar, setIsLoadingSolar] = useState(false);
-  const [_solarError, setSolarError] = useState<string | null>(null);
+  const [solarError, setSolarError] = useState<string | null>(null);
   const [rawSolarReturn, setRawSolarReturn] = useState<Record<string, unknown> | null>(null);
 
   // PDF generation hook
@@ -228,6 +228,22 @@ const SolarReturnAnnualReportPage: React.FC = () => {
       downloadReport(filename);
     }
   };
+
+  if (solarError) {
+    return (
+      <AppLayout>
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-10">
+          <EmptyState
+            icon="error"
+            title="Failed to load solar return report"
+            description={solarError}
+            actionText="Try Again"
+            onAction={() => window.location.reload()}
+          />
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
