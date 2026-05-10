@@ -194,9 +194,15 @@
     outline-offset: 2px;
   }
 
-  /* Remove default outline */
-  * {
+  /* Focus management - visible outline for keyboard navigation only */
+  *:focus {
     outline: none;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary, #6366f1);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   /* Scrollbar */
