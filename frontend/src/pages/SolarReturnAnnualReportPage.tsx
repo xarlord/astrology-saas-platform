@@ -5,17 +5,22 @@
  * Reference: stitch-UI/desktop/17-solar-return-annual-report.html
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Components
 import { AppLayout, EmptyState } from '../components';
 import { Button } from '../components/ui/Button';
+import { SolarReturnChart } from '../components/SolarReturnChart';
+import { ChartWheel } from '../components/ChartWheel';
+import type { SolarReturnChartData } from '../components/SolarReturnChart';
+import type { ChartData } from '../components/ChartWheel';
 
 // Hooks & Services
 import { usePDFGeneration, generateReportFilename } from '../hooks/usePDFGeneration';
 import api from '../services/api';
+import aiService from '../services/ai.service';
 
 // Types
 interface MonthlyData {
@@ -37,36 +42,39 @@ interface SolarReturnData {
   monthlyData: MonthlyData[];
 }
 
-const DEFAULT_SOLAR_DATA: SolarReturnData = {
-  year: new Date().getFullYear(),
-  theme: 'Personal Expansion',
-  description:
-    'This year marks a monumental shift in your personal evolution. As the Sun returns to the exact degree of your birth, it illuminates your sector of growth and wisdom, promising a twelve-month period defined by breaking boundaries and seeking higher truths.',
-  sunHouse: 9,
-  sunSign: 'Pisces',
-  yearlyRuler: 'Jupiter',
-  crucialAspect: 'Sun Conjunct Midheaven',
-  ascendant: 'Leo',
-  monthlyData: [
-    { month: 'MAY', powerDate: 'May 14', energy: 'high' },
-    { month: 'JUN', energy: 'medium' },
-    { month: 'JUL', challengeDate: 'Jul 28', energy: 'low' },
-    { month: 'AUG', energy: 'low' },
-    { month: 'SEP', powerDate: 'Sep 22', energy: 'high' },
-    { month: 'OCT', energy: 'medium' },
-    { month: 'NOV', challengeDate: 'Nov 11', energy: 'low' },
-    { month: 'DEC', energy: 'medium' },
-    { month: 'JAN', powerDate: 'Jan 05', energy: 'high' },
-    { month: 'FEB', energy: 'medium' },
-    { month: 'MAR', energy: 'medium' },
-    { month: 'APR', energy: 'medium' },
-  ],
-};
+interface AIInterpretationSection {
+  title: string;
+  icon: string;
+  color: string;
+  content: string;
+}
+
+const FALLBACK_INTERPRETATIONS: AIInterpretationSection[] = [
+  {
+    title: 'Career & Purpose',
+    icon: 'work',
+    color: 'bg-amber-400/10 text-amber-400',
+    content: 'Career interpretation is being generated. Please wait or try again.',
+  },
+  {
+    title: 'Love & Social Life',
+    icon: 'favorite',
+    color: 'bg-purple-400/10 text-purple-400',
+    content: 'Love & social interpretation is being generated. Please wait or try again.',
+  },
+  {
+    title: 'Health & Vitality',
+    icon: 'vital_signs',
+    color: 'bg-orange-400/10 text-orange-400',
+    content: 'Health interpretation is being generated. Please wait or try again.',
+  },
+];
 
 /**
  * Transform raw API solar return data into the SolarReturnData shape.
+ * Returns null if required data is missing.
  */
-function transformSolarReturn(apiData: Record<string, unknown>): SolarReturnData {
+function transformSolarReturn(apiData: Record<string, unknown>): SolarReturnData | null {
   const calculatedData = apiData.calculatedData as Record<string, unknown> | undefined;
   const interpretation = apiData.interpretation as Record<string, unknown> | undefined;
   const positions = (calculatedData?.positions ?? []) as { planet: string; sign: string; house: number }[];
@@ -77,7 +85,12 @@ function transformSolarReturn(apiData: Record<string, unknown>): SolarReturnData
   const year = (apiData.year as number) ?? new Date().getFullYear();
   const sunPosition = positions.find((p) => p.planet === 'Sun');
 
-  // Build monthly data from lucky days or default
+  // If we have no positions and no interpretation at all, this is empty data
+  if (positions.length === 0 && !interpretation) {
+    return null;
+  }
+
+  // Build monthly data from lucky days
   const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   const monthlyData: MonthlyData[] = monthNames.map((month, idx) => {
     const lucky = luckyDays?.find((d) => {
@@ -93,49 +106,62 @@ function transformSolarReturn(apiData: Record<string, unknown>): SolarReturnData
 
   return {
     year,
-    theme: Array.isArray(themes) && themes.length > 0 ? themes[0] : 'Personal Expansion',
-    description: (interpretation?.overview as string) ?? DEFAULT_SOLAR_DATA.description,
-    sunHouse: sunPosition?.house ?? DEFAULT_SOLAR_DATA.sunHouse,
-    sunSign: sunPosition?.sign ?? DEFAULT_SOLAR_DATA.sunSign,
-    yearlyRuler: DEFAULT_SOLAR_DATA.yearlyRuler,
-    crucialAspect: aspects.length > 0 ? `${aspects[0].planet1} ${aspects[0].type} ${aspects[0].planet2}` : DEFAULT_SOLAR_DATA.crucialAspect,
-    ascendant: (calculatedData?.ascendant as string | undefined)?.split(' ')[0] ?? DEFAULT_SOLAR_DATA.ascendant,
-    monthlyData: monthlyData.length > 0 ? monthlyData : DEFAULT_SOLAR_DATA.monthlyData,
+    theme: Array.isArray(themes) && themes.length > 0 ? themes[0] : 'Annual Solar Return',
+    description: (interpretation?.overview as string) ?? 'Your solar return chart for the year ahead.',
+    sunHouse: sunPosition?.house ?? 1,
+    sunSign: sunPosition?.sign ?? 'Unknown',
+    yearlyRuler: (interpretation?.yearlyRuler as string) ?? 'Sun',
+    crucialAspect: aspects.length > 0 ? `${aspects[0].planet1} ${aspects[0].type} ${aspects[0].planet2}` : 'No major aspects',
+    ascendant: (calculatedData?.ascendant as string | undefined)?.split(' ')[0] ?? 'Unknown',
+    monthlyData,
   };
 }
 
-const INTERPRETATIONS = {
-  career: {
-    title: 'Career & Purpose',
-    icon: 'work',
-    color: 'bg-amber-400/10 text-amber-400',
-    content:
-      'Your professional landscape is undergoing a radical transformation. The placement of the Solar Midheaven suggests that you are ready to step into a leadership role that aligns more closely with your personal ethics. Look for opportunities between September and January to pitch high-stakes projects or ask for significant advancements.',
-  },
-  love: {
-    title: 'Love & Social Life',
-    icon: 'favorite',
-    color: 'bg-purple-400/10 text-purple-400',
-    content:
-      'Social dynamics will shift as you prioritize deep intellectual connections over surface-level interactions. Existing relationships may undergo testing, leading to greater authenticity and depth.',
-  },
-  health: {
-    title: 'Health & Vitality',
-    icon: 'vital_signs',
-    color: 'bg-orange-400/10 text-orange-400',
-    content:
-      'Focus on routine and mental health as a foundation for physical stamina this year. The Solar Return chart emphasizes the need for balance between activity and rest.',
-  },
-};
+/**
+ * Extract SolarReturnChartData from raw API data for the SolarReturnChart component.
+ */
+function extractSolarReturnChartData(apiData: Record<string, unknown>): SolarReturnChartData | null {
+  const calculatedData = apiData.calculatedData as Record<string, unknown> | undefined;
+  if (!calculatedData) return null;
+
+  // Check if the data already matches SolarReturnChartData shape
+  if (calculatedData.planets && calculatedData.houses && calculatedData.ascendant) {
+    return calculatedData as unknown as SolarReturnChartData;
+  }
+
+  return null;
+}
+
+/**
+ * Extract ChartData from raw API data for the ChartWheel component (natal chart).
+ */
+function extractNatalChartData(apiData: Record<string, unknown>): ChartData | null {
+  const natalChart = apiData.natalChart as Record<string, unknown> | undefined;
+  if (!natalChart) return null;
+
+  const calculatedData = natalChart.calculatedData as Record<string, unknown> | undefined;
+  if (!calculatedData) return null;
+
+  if (calculatedData.planets && calculatedData.houses) {
+    return calculatedData as unknown as ChartData;
+  }
+
+  return null;
+}
 
 const SolarReturnAnnualReportPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
-  const [_isLoadingSolar, setIsLoadingSolar] = useState(false);
+  const [isLoadingSolar, setIsLoadingSolar] = useState(true);
   const [solarError, setSolarError] = useState<string | null>(null);
   const [rawSolarReturn, setRawSolarReturn] = useState<Record<string, unknown> | null>(null);
+
+  // AI interpretation state
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiInterpretations, setAiInterpretations] = useState<AIInterpretationSection[]>(FALLBACK_INTERPRETATIONS);
 
   // PDF generation hook
   const {
@@ -146,7 +172,11 @@ const SolarReturnAnnualReportPage: React.FC = () => {
 
   // Fetch solar return data from API
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setIsLoadingSolar(false);
+      setSolarError('No solar return ID provided. Please select a solar return chart.');
+      return;
+    }
     let cancelled = false;
     void (async () => {
       try {
@@ -155,6 +185,8 @@ const SolarReturnAnnualReportPage: React.FC = () => {
         const response = await api.get<{ data: Record<string, unknown> }>(`/solar-returns/${id}`);
         if (!cancelled && response.data?.data) {
           setRawSolarReturn(response.data.data);
+        } else if (!cancelled) {
+          setSolarError('No solar return data returned from the API.');
         }
       } catch (err) {
         if (!cancelled) {
@@ -169,11 +201,133 @@ const SolarReturnAnnualReportPage: React.FC = () => {
     return () => { cancelled = true; };
   }, [id]);
 
-  const solarData = useMemo<SolarReturnData>(() => {
+  // Fetch AI interpretations when solar return data is available
+  const fetchAIInterpretation = useCallback(async () => {
+    if (!rawSolarReturn) return;
+
+    let cancelled = false;
+    try {
+      setIsLoadingAI(true);
+      setAiError(null);
+
+      const year = (rawSolarReturn.year as number) ?? new Date().getFullYear();
+      const result = await aiService.generateSolarReturn({
+        year,
+        solarReturnData: rawSolarReturn,
+      });
+
+      if (cancelled) return;
+
+      // Parse the AI response into structured sections
+      if (result.interpretation) {
+        try {
+          const parsed = JSON.parse(result.interpretation) as Record<string, unknown>;
+          const sections: AIInterpretationSection[] = [];
+
+          // Try to extract structured sections from AI response
+          const careerContent = (parsed.career as string) ?? (parsed.careerAndPurpose as string) ?? null;
+          const loveContent = (parsed.love as string) ?? (parsed.loveAndSocial as string) ?? null;
+          const healthContent = (parsed.health as string) ?? (parsed.healthAndVitality as string) ?? null;
+
+          if (careerContent) {
+            sections.push({
+              title: 'Career & Purpose',
+              icon: 'work',
+              color: 'bg-amber-400/10 text-amber-400',
+              content: careerContent,
+            });
+          }
+          if (loveContent) {
+            sections.push({
+              title: 'Love & Social Life',
+              icon: 'favorite',
+              color: 'bg-purple-400/10 text-purple-400',
+              content: loveContent,
+            });
+          }
+          if (healthContent) {
+            sections.push({
+              title: 'Health & Vitality',
+              icon: 'vital_signs',
+              color: 'bg-orange-400/10 text-orange-400',
+              content: healthContent,
+            });
+          }
+
+          // If we got sections, use them; otherwise treat the whole response as one block
+          if (sections.length > 0) {
+            setAiInterpretations(sections);
+          } else {
+            // Use the full interpretation text as a single section
+            setAiInterpretations([
+              {
+                title: 'AI Solar Return Interpretation',
+                icon: 'auto_awesome',
+                color: 'bg-amber-400/10 text-amber-400',
+                content: result.interpretation,
+              },
+            ]);
+          }
+        } catch {
+          // Not JSON — use the raw text as a single section
+          setAiInterpretations([
+            {
+              title: 'AI Solar Return Interpretation',
+              icon: 'auto_awesome',
+              color: 'bg-amber-400/10 text-amber-400',
+              content: result.interpretation,
+            },
+          ]);
+        }
+      } else if (result.enhanced && typeof result.enhanced === 'string') {
+        setAiInterpretations([
+          {
+            title: 'AI Enhanced Interpretation',
+            icon: 'auto_awesome',
+            color: 'bg-amber-400/10 text-amber-400',
+            content: result.enhanced,
+          },
+        ]);
+      }
+    } catch (err) {
+      if (!cancelled) {
+        const message = err instanceof Error ? err.message : 'Failed to generate AI interpretation';
+        setAiError(message);
+        // Keep fallback interpretations on error
+      }
+    } finally {
+      if (!cancelled) {
+        setIsLoadingAI(false);
+      }
+    }
+    return () => { cancelled = true; };
+  }, [rawSolarReturn]);
+
+  useEffect(() => {
+    if (rawSolarReturn) {
+      void fetchAIInterpretation();
+    }
+  }, [rawSolarReturn, fetchAIInterpretation]);
+
+  const solarData = useMemo<SolarReturnData | null>(() => {
     if (rawSolarReturn) {
       return transformSolarReturn(rawSolarReturn);
     }
-    return DEFAULT_SOLAR_DATA;
+    return null;
+  }, [rawSolarReturn]);
+
+  const solarChartData = useMemo<SolarReturnChartData | null>(() => {
+    if (rawSolarReturn) {
+      return extractSolarReturnChartData(rawSolarReturn);
+    }
+    return null;
+  }, [rawSolarReturn]);
+
+  const natalChartData = useMemo<ChartData | null>(() => {
+    if (rawSolarReturn) {
+      return extractNatalChartData(rawSolarReturn);
+    }
+    return null;
   }, [rawSolarReturn]);
 
   const toggleAccordion = (key: string) => {
@@ -181,6 +335,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
   };
 
   const handleGeneratePDF = async () => {
+    if (!solarData) return;
     const filename = generateReportFilename('solar-return', `solar-return-${solarData.year}`);
     const result = await generateReport(
       {
@@ -190,7 +345,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
       },
       {
         solarReturn: {
-          id: '',
+          id: id ?? '',
           chartId: '',
           year: solarData.year,
           returnDate: `${solarData.year}-01-01T00:00:00Z`,
@@ -229,6 +384,24 @@ const SolarReturnAnnualReportPage: React.FC = () => {
     }
   };
 
+  // Loading state
+  if (isLoadingSolar) {
+    return (
+      <AppLayout>
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-10">
+          <div className="flex flex-col items-center justify-center py-20 space-y-6">
+            <div className="w-12 h-12 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
+            <div className="text-center space-y-2">
+              <h2 className="text-xl font-bold text-white">Loading Solar Return Report</h2>
+              <p className="text-slate-400">Calculating your annual forecast...</p>
+            </div>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // Error state
   if (solarError) {
     return (
       <AppLayout>
@@ -239,6 +412,23 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             description={solarError}
             actionText="Try Again"
             onAction={() => window.location.reload()}
+          />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  // No data state — no valid solar return data could be extracted
+  if (!solarData) {
+    return (
+      <AppLayout>
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-10">
+          <EmptyState
+            icon="wb_sunny"
+            title="No solar return data available"
+            description="The solar return chart data could not be loaded or contains insufficient information. Please select a valid solar return chart."
+            actionText="View All Solar Returns"
+            onAction={() => navigate('/solar-returns')}
           />
         </div>
       </AppLayout>
@@ -284,7 +474,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             <Button
               variant="primary"
               leftIcon={<span className="material-symbols-outlined text-[18px]">download</span>}
-              onClick={() => void handleGeneratePDF}
+              onClick={() => void handleGeneratePDF()}
               disabled={isGeneratingPDF}
             >
               {isGeneratingPDF ? 'Generating...' : 'Download PDF'}
@@ -305,16 +495,25 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             <div className="flex justify-center md:justify-start order-2 md:order-1">
               <div className="relative w-64 h-64 md:w-80 md:h-80">
                 <div className="absolute inset-0 bg-amber-400/20 blur-3xl animate-pulse"></div>
-                <img loading="lazy"
-                  src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=600&q=80"
-                  alt="Solar Theme"
-                  className="w-full h-full object-cover rounded-full shadow-2xl shadow-amber-400/20 border-4 border-amber-400/30"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[120px] text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]">
-                    light_mode
-                  </span>
-                </div>
+                {solarChartData ? (
+                  <div className="w-full h-full rounded-full overflow-hidden shadow-2xl shadow-amber-400/20 border-4 border-amber-400/30">
+                    <SolarReturnChart
+                      chartData={solarChartData}
+                      year={solarData.year}
+                      showAspects={false}
+                      showHouses={false}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full rounded-full shadow-2xl shadow-amber-400/20 border-4 border-amber-400/30 bg-black/40 flex items-center justify-center">
+                    <div className="text-center space-y-2">
+                      <span className="material-symbols-outlined text-[80px] text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]">
+                        light_mode
+                      </span>
+                      <p className="text-slate-500 text-xs">Chart data unavailable</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <div className="order-1 md:order-2 space-y-6">
@@ -329,10 +528,6 @@ const SolarReturnAnnualReportPage: React.FC = () => {
               <div className="space-y-4 text-slate-300 text-lg leading-relaxed">
                 <p>{solarData.description}</p>
               </div>
-              <button className="text-amber-400 font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform">
-                Read Full Executive Summary{' '}
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
             </div>
           </div>
         </motion.section>
@@ -359,17 +554,17 @@ const SolarReturnAnnualReportPage: React.FC = () => {
               <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
                 Natal Birth Chart
               </p>
-              <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-slate-700/50 flex items-center justify-center bg-black/20">
-                <img loading="lazy"
-                  src="https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=400&q=80"
-                  alt="Natal Chart Wheel"
-                  className="w-full h-full object-cover rounded-full opacity-60"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[100px] text-slate-500/30">
-                    auto_awesome
-                  </span>
-                </div>
+              <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-slate-700/50 flex items-center justify-center bg-black/20 overflow-hidden">
+                {natalChartData ? (
+                  <ChartWheel data={natalChartData} size={280} interactive={false} />
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <span className="material-symbols-outlined text-[80px] text-slate-500/30">
+                      auto_awesome
+                    </span>
+                    <p className="text-slate-600 text-xs">Natal chart not available</p>
+                  </div>
+                )}
               </div>
               <p className="text-center text-slate-300 text-sm">Fixed positions at time of birth</p>
             </div>
@@ -390,17 +585,22 @@ const SolarReturnAnnualReportPage: React.FC = () => {
               <p className="text-amber-400 font-bold uppercase tracking-widest text-xs">
                 Solar Return {solarData.year} Chart
               </p>
-              <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-amber-400/30 flex items-center justify-center bg-amber-400/5">
-                <img loading="lazy"
-                  src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&q=80"
-                  alt="Solar Return Chart Wheel"
-                  className="w-full h-full object-cover rounded-full opacity-80"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[100px] text-amber-400/40">
-                    flare
-                  </span>
-                </div>
+              <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-amber-400/30 flex items-center justify-center bg-amber-400/5 overflow-hidden">
+                {solarChartData ? (
+                  <SolarReturnChart
+                    chartData={solarChartData}
+                    year={solarData.year}
+                    showAspects={true}
+                    showHouses={true}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <span className="material-symbols-outlined text-[80px] text-amber-400/40">
+                      flare
+                    </span>
+                    <p className="text-slate-600 text-xs">Chart data not available</p>
+                  </div>
+                )}
               </div>
               <p className="text-center text-slate-300 text-sm">
                 Annual celestial alignment for current year
@@ -426,13 +626,13 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             </h4>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white">
-                Sun in the {solarData.sunHouse}th House
+                Sun in the {solarData.sunHouse}{solarData.sunHouse === 1 ? 'st' : solarData.sunHouse === 2 ? 'nd' : solarData.sunHouse === 3 ? 'rd' : 'th'} House
               </p>
-              <p className="text-amber-400 font-medium">Horizon Expansion</p>
+              <p className="text-amber-400 font-medium">in {solarData.sunSign}</p>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Your vital energy is focused on travel, higher learning, and spiritual philosophy. A
-              prime year for academic pursuits or international ventures.
+              Your vital energy this year is focused in the {solarData.sunHouse}{solarData.sunHouse === 1 ? 'st' : solarData.sunHouse === 2 ? 'nd' : solarData.sunHouse === 3 ? 'rd' : 'th'} house,
+              highlighting themes related to this area of life for the coming year.
             </p>
           </div>
 
@@ -446,11 +646,11 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             </h4>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white">{solarData.yearlyRuler}</p>
-              <p className="text-purple-400 font-medium">Benevolent Growth</p>
+              <p className="text-purple-400 font-medium">Planetary Influence</p>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Jupiter acts as your personal advocate this year, magnifying abundance in whichever
-              house it currently transits. Focus on "Yes" as your default.
+              {solarData.yearlyRuler} serves as your guiding planetary influence this year, shaping the
+              overall tone and opportunities that arise throughout the solar return period.
             </p>
           </div>
 
@@ -464,11 +664,11 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             </h4>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white">{solarData.crucialAspect}</p>
-              <p className="text-orange-400 font-medium">Public Peak</p>
+              <p className="text-orange-400 font-medium">Key Alignment</p>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              A rare alignment signaling a professional peak. Your visibility is at an all-time
-              high; the world is watching your career moves closely.
+              This notable aspect in your solar return chart highlights a key dynamic that will
+              play a significant role in shaping your experiences this year.
             </p>
           </div>
         </motion.section>
@@ -529,14 +729,39 @@ const SolarReturnAnnualReportPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <h3 className="text-2xl font-bold text-white px-2 mb-6">Detailed Interpretations</h3>
-          {Object.entries(INTERPRETATIONS).map(([key, data]) => (
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-2xl font-bold text-white">Detailed Interpretations</h3>
+            {isLoadingAI && (
+              <div className="flex items-center gap-2 text-amber-400 text-sm">
+                <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                <span>Generating AI insights...</span>
+              </div>
+            )}
+          </div>
+
+          {aiError && (
+            <div className="mx-2 p-4 bg-orange-500/10 border border-orange-400/30 rounded-lg flex items-start gap-3">
+              <span className="material-symbols-outlined text-orange-400">warning</span>
+              <div>
+                <p className="text-orange-400 font-medium text-sm">AI Interpretation Error</p>
+                <p className="text-slate-400 text-xs mt-1">{aiError}</p>
+                <button
+                  onClick={() => void fetchAIInterpretation()}
+                  className="mt-2 text-orange-400 text-xs font-bold hover:text-orange-300 transition-colors"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          )}
+
+          {aiInterpretations.map((data, index) => (
             <div
-              key={key}
+              key={data.title}
               className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10"
             >
               <button
-                onClick={() => toggleAccordion(key)}
+                onClick={() => toggleAccordion(String(index))}
                 className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-4">
@@ -549,15 +774,22 @@ const SolarReturnAnnualReportPage: React.FC = () => {
                 </div>
                 <span
                   className={`material-symbols-outlined text-slate-500 transition-transform ${
-                    activeAccordion === key ? 'rotate-180' : ''
+                    activeAccordion === String(index) ? 'rotate-180' : ''
                   }`}
                 >
                   expand_more
                 </span>
               </button>
-              {activeAccordion === key && (
+              {activeAccordion === String(index) && (
                 <div className="p-6 pt-0 text-slate-400 leading-relaxed border-t border-white/5">
-                  {data.content}
+                  {isLoadingAI ? (
+                    <div className="flex items-center gap-3 py-4">
+                      <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                      <span className="text-slate-400 text-sm">AI is generating this interpretation...</span>
+                    </div>
+                  ) : (
+                    data.content
+                  )}
                 </div>
               )}
             </div>

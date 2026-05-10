@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import axios from 'axios';
+import locationService from '../services/location.service';
 
 interface Location {
   name: string;
@@ -43,10 +43,6 @@ interface RelocationCalculatorProps {
   natalChartId: string;
   year: number;
   onRecalculate: (location: Location) => Promise<SolarReturnData>;
-}
-
-interface GeocodingResponse {
-  results: Location[];
 }
 
 interface HouseChange {
@@ -109,12 +105,10 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       setLoading(true);
       setError(null);
 
-      // Use geocoding API (placeholder - would use real geocoding service)
-      const response = await axios.get<GeocodingResponse>('https://geocoding-api.example.com/search', {
-        params: { q: searchQuery },
-      });
+      // Use the real location service for geocoding
+      const result = await locationService.searchLocation(searchQuery);
 
-      setLocations(response.data.results);
+      setLocations(result.locations);
     } catch (_err) {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');

@@ -65,6 +65,21 @@ class AIService {
   }
 
   /**
+   * Generate AI solar return interpretation
+   */
+  async generateSolarReturn(solarReturnData: {
+    chartId?: string;
+    year: number;
+    solarReturnData: Record<string, unknown>;
+  }): Promise<AIInterpretationResponse> {
+    const response = await api.post<{ data: AIInterpretationResponse }>(
+      '/ai/interpret',
+      { type: 'solar-return', ...solarReturnData },
+    );
+    return response.data.data;
+  }
+
+  /**
    * Check AI service status
    */
   async checkStatus(): Promise<{ available: boolean; service: string | null }> {

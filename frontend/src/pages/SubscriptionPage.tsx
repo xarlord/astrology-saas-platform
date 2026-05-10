@@ -3,12 +3,14 @@
  * Pricing tiers and current plan usage
  */
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import { EmptyState } from '../components';
 import UsageMeter from '../components/UsageMeter';
 import { useCharts } from '../hooks';
+import { billingService } from '../services/billing.service';
+import type { SubscriptionInfo, PlanDetail } from '../services/billing.service';
 import type { Tier } from '../components/UsageMeter';
 
 interface PricingTierProps {
@@ -180,13 +182,75 @@ export default function SubscriptionPage() {
   const navigate = useNavigate();
   const { charts, fetchCharts, error: chartsError } = useCharts();
 
+  // Billing state
+  const [plans, setPlans] = useState<PlanDetail[]>([]);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
+  const [billingLoading, setBillingLoading] = useState(true);
+  const [billingError, setBillingError] = useState<string | null>(null);
+
   useEffect(() => {
     void fetchCharts();
   }, [fetchCharts]);
 
-  const currentTier = (charts.length > 0 ? 'free' : 'free') as Tier;
+  // Fetch billing plans and subscription info
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchBillingData() {
+      setBillingLoading(true);
+      setBillingError(null);
+      try {
+        const [plansData, subData] = await Promise.all([
+          billingService.getPlans(),
+          billingService.getSubscription(),
+        ]);
+        if (!cancelled) {
+          setPlans(plansData);
+          setSubscription(subData);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          // Graceful fallback — use hardcoded TIERS as fallback
+          console.warn('Failed to fetch billing data, using fallback:', err);
+          setBillingError(err instanceof Error ? err.message : 'Failed to load billing data');
+        }
+      } finally {
+        if (!cancelled) {
+          setBillingLoading(false);
+        }
+      }
+    }
+
+    void fetchBillingData();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Derive current tier from subscription data
+  const currentTier = (subscription?.plan ?? 'free') as Tier;
   const chartCount = charts.length;
   const tierLimit = TIER_LIMITS[currentTier] ?? 3;
+
+  // Use API plans if available, otherwise fall back to hardcoded TIERS
+  const displayTiers = plans.length > 0
+    ? plans.map((p) => ({
+        name: p.name,
+        tier: p.id as Tier,
+        price: p.interval === 'none' ? '$0' : `$${(p.price / 100).toFixed(0)}`,
+        period: p.interval === 'none' ? 'forever' : `/${p.interval}`,
+        chartLimit: p.maxCharts,
+        features: p.features,
+        icon:
+          p.id === 'pro' ? (
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>workspace_premium</span>
+          ) : p.id === 'premium' ? (
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>bolt</span>
+          ) : (
+            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>star</span>
+          ),
+        accentColor:
+          p.id === 'pro' ? '#8b5cf6' : p.id === 'premium' ? '#f59e0b' : '#6b7280',
+      }))
+    : TIERS;
 
   if (chartsError) {
     return (
@@ -223,15 +287,22 @@ export default function SubscriptionPage() {
         <h3 className="text-lg font-semibold text-white mb-4">
           Current Usage
         </h3>
-        <UsageMeter
-          currentCount={chartCount}
-          limit={tierLimit}
-          tier={currentTier}
-          onUpgradeClick={() => {
-            const section = document.getElementById('pricing-tiers');
-            section?.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
+        {billingLoading ? (
+          <div className="flex items-center gap-3 text-slate-400">
+            <span className="material-symbols-outlined animate-spin text-xl">progress_activity</span>
+            Loading plan details…
+          </div>
+        ) : (
+          <UsageMeter
+            currentCount={chartCount}
+            limit={tierLimit}
+            tier={currentTier}
+            onUpgradeClick={() => {
+              const section = document.getElementById('pricing-tiers');
+              section?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
+        )}
       </div>
 
       {/* Pricing Tiers */}
@@ -240,7 +311,7 @@ export default function SubscriptionPage() {
           Choose Your Plan
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TIERS.map((t) => (
+          {displayTiers.map((t) => (
             <PricingTierCard
               key={t.tier}
               name={t.name}

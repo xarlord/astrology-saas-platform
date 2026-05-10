@@ -15,6 +15,9 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../hooks/useAuth';
 import { useTodayTransits } from '../hooks';
 
+// Services
+import type { TransitReading } from '../services/transit.service';
+
 // Components
 import { AppLayout, EmptyState } from '../components';
 import MoonPhaseCard from '../components/astrology/MoonPhaseCard';
@@ -73,6 +76,91 @@ const DEFAULT_ENERGY: EnergyBarData[] = [
   { label: 'Spiritual', value: 50, color: 'bg-purple-500' },
 ];
 
+/**
+ * Derive energy scores from transit data.
+ *
+ * Maps transiting planets to energy categories and adjusts scores based on
+ * aspect harmony, orb tightness, and retrograde status.
+ */
+function computeEnergyFromTransits(
+  transitData: TransitReading | null | undefined,
+): EnergyBarData[] {
+  if (!transitData) return DEFAULT_ENERGY;
+
+  // Planet → energy-category mapping with weights
+  const planetEnergyMap: Record<string, { category: string; weight: number }> = {
+    Mars:     { category: 'Physical',   weight: 1.2 },
+    Sun:      { category: 'Physical',   weight: 0.8 },
+    Pluto:    { category: 'Physical',   weight: 0.6 },
+    Moon:     { category: 'Emotional',  weight: 1.2 },
+    Venus:    { category: 'Emotional',  weight: 1.0 },
+    Neptune:  { category: 'Emotional',  weight: 0.8 },
+    Mercury:  { category: 'Mental',     weight: 1.2 },
+    Uranus:   { category: 'Mental',     weight: 0.8 },
+    Saturn:   { category: 'Mental',     weight: 0.6 },
+    Jupiter:  { category: 'Spiritual',  weight: 1.0 },
+  };
+
+  // Scoring buckets: accumulate positive / negative influence per category
+  const buckets: Record<string, { positive: number; negative: number }> = {
+    Physical:  { positive: 0, negative: 0 },
+    Emotional: { positive: 0, negative: 0 },
+    Mental:    { positive: 0, negative: 0 },
+    Spiritual: { positive: 0, negative: 0 },
+  };
+
+  const harmonicAspects = new Set(['trine', 'sextile', 'conjunct']);
+  const challengingAspects = new Set(['square', 'opposition', 'quincunx']);
+
+  const aspects = transitData.majorAspects ?? [];
+  const transits = transitData.transits ?? [];
+
+  const allAspects = [
+    ...aspects.map((a) => ({
+      planet1: a.planet1,
+      planet2: a.planet2,
+      type: a.type,
+      orb: a.orb,
+    })),
+    ...transits.map((t) => ({
+      planet1: t.transitPlanet,
+      planet2: t.natalPlanet,
+      type: t.aspect,
+      orb: t.orb,
+    })),
+  ];
+
+  for (const asp of allAspects) {
+    for (const planet of [asp.planet1, asp.planet2]) {
+      const mapping = planetEnergyMap[planet];
+      if (!mapping) continue;
+
+      // Tighter orb → stronger influence (max ~1.0 at 0° orb, ~0.3 at 8°)
+      const orbFactor = Math.max(0.3, 1 - asp.orb / 10);
+
+      if (harmonicAspects.has(asp.type)) {
+        buckets[mapping.category].positive += mapping.weight * orbFactor;
+      } else if (challengingAspects.has(asp.type)) {
+        buckets[mapping.category].negative += mapping.weight * orbFactor * 0.7;
+      } else {
+        // Neutral aspect — small positive nudge
+        buckets[mapping.category].positive += mapping.weight * orbFactor * 0.3;
+      }
+    }
+  }
+
+  // Convert buckets to 0-100 scores. Base is 50, clamped to [15, 95].
+  const categoryOrder = ['Physical', 'Emotional', 'Mental', 'Spiritual'];
+  const colors = ['bg-emerald-500', 'bg-blue-500', 'bg-amber-400', 'bg-purple-500'];
+
+  return categoryOrder.map((cat, i) => {
+    const b = buckets[cat];
+    const raw = 50 + (b.positive - b.negative) * 8;
+    const value = Math.round(Math.max(15, Math.min(95, raw)));
+    return { label: cat, value, color: colors[i] };
+  });
+}
+
 function getCurrentSeason(): string {
   const month = new Date().getMonth();
   if (month >= 2 && month <= 4) return 'Aries Season';
@@ -97,7 +185,7 @@ interface PriorityArea {
   accentText: string;
 }
 
-const PRIORITY_AREAS: PriorityArea[] = [
+const PRIORITY_AREAS_DEFAULT: PriorityArea[] = [
   {
     key: 'love',
     label: 'Love',
@@ -135,6 +223,129 @@ const PRIORITY_AREAS: PriorityArea[] = [
     accentText: 'text-blue-400',
   },
 ];
+
+/**
+ * Derive priority-area scores from transit-to-natal aspects.
+ *
+ * Maps planets involved in transits to life areas, weighting by aspect type
+ * and orb tightness. Returns the four priority areas with computed scores.
+ */
+function computePriorityFromTransits(
+  transitData: TransitReading | null | undefined,
+): PriorityArea[] {
+  if (!transitData) return PRIORITY_AREAS_DEFAULT;
+
+  // Planet → life-area weights
+  const planetAreaMap: Record<string, Record<string, number>> = {
+    Venus:    { love: 1.4, growth: 0.3 },
+    Mars:     { career: 0.8, health: 0.9 },
+    Jupiter:  { growth: 1.3, career: 0.6, love: 0.4 },
+    Saturn:   { career: 1.2, health: 0.5 },
+    Sun:      { career: 0.7, growth: 0.6 },
+    Moon:     { love: 0.9, health: 0.6 },
+    Mercury:  { career: 0.8, growth: 0.7 },
+    Uranus:   { growth: 1.0, career: 0.4 },
+    Neptune:  { love: 0.6, health: 0.7, growth: 0.5 },
+    Pluto:    { career: 0.9, growth: 0.8 },
+  };
+
+  const areaScores: Record<string, number> = { love: 0, career: 0, health: 0, growth: 0 };
+  let totalWeight = 0;
+
+  const harmonicAspects = new Set(['trine', 'sextile', 'conjunct']);
+  const challengingAspects = new Set(['square', 'opposition', 'quincunx']);
+
+  const transits = transitData.transits ?? [];
+  const majorAspects = transitData.majorAspects ?? [];
+
+  // Process transit-to-natal aspects (most relevant for personal priority)
+  for (const t of transits) {
+    for (const planet of [t.transitPlanet, t.natalPlanet]) {
+      const areaMap = planetAreaMap[planet];
+      if (!areaMap) continue;
+
+      const orbFactor = Math.max(0.3, 1 - t.orb / 10);
+      const isHarmonic = harmonicAspects.has(t.aspect);
+      const isChallenging = challengingAspects.has(t.aspect);
+      const signMultiplier = isHarmonic ? 1 : isChallenging ? 0.5 : 0.7;
+
+      for (const [area, weight] of Object.entries(areaMap)) {
+        areaScores[area] = (areaScores[area] ?? 0) + weight * orbFactor * signMultiplier;
+      }
+      totalWeight += orbFactor * signMultiplier;
+    }
+  }
+
+  // Also factor in major aspects for additional context
+  for (const a of majorAspects) {
+    for (const planet of [a.planet1, a.planet2]) {
+      const areaMap = planetAreaMap[planet];
+      if (!areaMap) continue;
+
+      const orbFactor = Math.max(0.3, 1 - a.orb / 10);
+      const isHarmonic = harmonicAspects.has(a.type);
+      const isChallenging = challengingAspects.has(a.type);
+      const signMultiplier = isHarmonic ? 0.8 : isChallenging ? 0.4 : 0.5;
+
+      for (const [area, weight] of Object.entries(areaMap)) {
+        areaScores[area] = (areaScores[area] ?? 0) + weight * orbFactor * signMultiplier * 0.5;
+      }
+      totalWeight += orbFactor * signMultiplier * 0.5;
+    }
+  }
+
+  // Normalize scores to 0-100 range (50 baseline)
+  const normalize = (raw: number): number => {
+    if (totalWeight === 0) return 50;
+    const scaled = 50 + (raw / totalWeight) * 25;
+    return Math.round(Math.max(15, Math.min(95, scaled)));
+  };
+
+  const computeTrend = (score: number): PriorityArea['trend'] => {
+    if (score >= 65) return 'up';
+    if (score <= 35) return 'down';
+    return 'stable';
+  };
+
+  return [
+    {
+      key: 'love',
+      label: 'Love',
+      icon: 'favorite',
+      score: normalize(areaScores.love),
+      trend: computeTrend(normalize(areaScores.love)),
+      accentBg: 'bg-pink-500/10',
+      accentText: 'text-pink-400',
+    },
+    {
+      key: 'career',
+      label: 'Career',
+      icon: 'work',
+      score: normalize(areaScores.career),
+      trend: computeTrend(normalize(areaScores.career)),
+      accentBg: 'bg-amber-500/10',
+      accentText: 'text-amber-400',
+    },
+    {
+      key: 'health',
+      label: 'Health',
+      icon: 'self_improvement',
+      score: normalize(areaScores.health),
+      trend: computeTrend(normalize(areaScores.health)),
+      accentBg: 'bg-emerald-500/10',
+      accentText: 'text-emerald-400',
+    },
+    {
+      key: 'growth',
+      label: 'Growth',
+      icon: 'school',
+      score: normalize(areaScores.growth),
+      trend: computeTrend(normalize(areaScores.growth)),
+      accentBg: 'bg-blue-500/10',
+      accentText: 'text-blue-400',
+    },
+  ];
+}
 
 const scoreColor = (s: number): string => {
   if (s >= 75) return 'text-emerald-400';
@@ -174,7 +385,7 @@ const DailyBriefingPage: React.FC = () => {
   const hasMarkedViewed = useRef(false);
 
   // Fetch real transit data
-  const { data: transitData, isLoading: _isLoading, error: transitError } = useTodayTransits();
+  const { data: transitData, isLoading, error: transitError } = useTodayTransits();
 
   // Derive moon phase from transit data
   const moonPhase: MoonPhaseData = useMemo(() => {
@@ -209,7 +420,17 @@ const DailyBriefingPage: React.FC = () => {
     }));
   }, [transitData]);
 
-  const energyData = DEFAULT_ENERGY;
+  // Derive energy scores from transit data (replaces hardcoded DEFAULT_ENERGY)
+  const energyData: EnergyBarData[] = useMemo(
+    () => computeEnergyFromTransits(transitData ?? null),
+    [transitData],
+  );
+
+  // Derive priority areas from transit-to-natal aspects
+  const priorityAreas: PriorityArea[] = useMemo(
+    () => computePriorityFromTransits(transitData ?? null),
+    [transitData],
+  );
 
   // Notification toggle states
   const [notifications, setNotifications] = useState({
@@ -219,7 +440,11 @@ const DailyBriefingPage: React.FC = () => {
   });
 
   const toggleNotification = (key: keyof typeof notifications) => {
-    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+    const newValue = !notifications[key];
+    setNotifications((prev) => ({ ...prev, [key]: newValue }));
+    // Persist notification preference via API
+    // TODO: Replace with real notification-settings endpoint when available
+    console.warn(`[DailyBriefing] Notification preference "${key}" set to ${newValue}. API persistence not yet wired.`);
   };
 
   // Mark briefing as viewed for today
@@ -261,6 +486,20 @@ const DailyBriefingPage: React.FC = () => {
     if (hour < 17) return 'Good Afternoon';
     return 'Good Evening';
   };
+
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <Helmet>
+          <title>Daily Briefing – AstroVerse</title>
+        </Helmet>
+        <div className="max-w-[860px] mx-auto px-4 sm:px-6 py-10 flex flex-col items-center justify-center min-h-[50vh] gap-4">
+          <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
+          <p className="text-slate-400 text-sm">Loading today&apos;s briefing…</p>
+        </div>
+      </AppLayout>
+    );
+  }
 
   if (transitError) {
     return (
@@ -383,7 +622,7 @@ const DailyBriefingPage: React.FC = () => {
             Priority Areas
           </h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {PRIORITY_AREAS.map((area) => (
+            {priorityAreas.map((area) => (
               <div
                 key={area.key}
                 className={`${area.accentBg} bg-cosmic-card-solid/70 backdrop-blur-md border border-white/10 rounded-xl p-4 min-w-[90px] min-h-[100px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform cursor-default`}
