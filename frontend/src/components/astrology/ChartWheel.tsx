@@ -163,7 +163,7 @@ const ChartWheel: React.FC<ChartWheelProps> = ({
     if (sorted.length >= 2) {
       const last = sorted[sorted.length - 1];
       const first = sorted[0];
-      let wrapGap = first.absoluteDegree + 360 - last.absoluteDegree;
+      const wrapGap = first.absoluteDegree + 360 - last.absoluteDegree;
       if (wrapGap < minAngleGap) {
         // Shift the first planet forward, or shift last backward
         const shift = minAngleGap - wrapGap;

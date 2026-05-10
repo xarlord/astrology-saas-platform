@@ -155,7 +155,7 @@ export function ChartWheel({
   if (sortedPlanets.length >= 2) {
     const last = sortedPlanets[sortedPlanets.length - 1];
     const first = sortedPlanets[0];
-    let wrapGap = first._angle + 360 - last._angle;
+    const wrapGap = first._angle + 360 - last._angle;
     if (wrapGap < minAngleGap) {
       sortedPlanets[0] = {
         ...sortedPlanets[0],

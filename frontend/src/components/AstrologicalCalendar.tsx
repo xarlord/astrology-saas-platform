@@ -3,11 +3,6 @@
  * Displays monthly astrological events (moon phases, retrogrades, eclipses)
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import React, { useState } from 'react';
@@ -49,7 +44,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
     if (!events || !Array.isArray(events)) return [];
 
     return events.filter((event) => {
-      const eventDate = new Date(event.event_date);
+      const eventDate = new Date(event.event_date ?? '');
       return (
         eventDate.getDate() === date.getDate() &&
         eventDate.getMonth() === date.getMonth() &&

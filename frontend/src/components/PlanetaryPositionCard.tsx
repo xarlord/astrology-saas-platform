@@ -57,12 +57,12 @@ export function PlanetaryPositionCard({ planet }: PlanetaryPositionCardProps) {
 
   const signKey = planet.sign.toLowerCase();
   const signSymbol = ZODIAC_SYMBOLS[signKey] ?? '?';
-  const signColor = (ZODIAC_COLORS as Record<string, string>)[name] ?? '#6366F1';
+  const _signColor = (ZODIAC_COLORS as Record<string, string>)[name] ?? '#6366F1';
   const signMeta = ZODIAC_ELEMENTS[signKey];
   const element = signMeta?.element ?? '';
   const quality = signMeta?.quality ?? '';
   const elementColor = signMeta?.color ?? '#888';
-  const elementBg = ELEMENT_BG[element] ?? 'rgba(255,255,255,0.04)';
+  const _elementBg = ELEMENT_BG[element] ?? 'rgba(255,255,255,0.04)';
 
   const degreeStr = `${planet.degree}°${String(planet.minute).padStart(2, '0')}'`;
 
