@@ -85,6 +85,9 @@ function App() {
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Public routes (eager-loaded) */}
+              {/* NOTE: HomePage (eager, route "/") is the primary landing page for logged-out visitors. */}
+              {/* LandingPage (lazy, route "/landing") is the extended marketing/feature showcase page. */}
+              {/* Both are kept intentionally. If consolidating, merge LandingPage content into HomePage. */}
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -250,6 +253,8 @@ function App() {
               />
 
               {/* Newly routed pages (protected) */}
+              {/* /landing — Extended marketing landing page (LandingPage.tsx). NOT protected by design — */}
+              {/* public marketing page. If this route is dead traffic, consider removing or redirecting to /. */}
               <Route
                 path="/landing"
                 element={<LandingPage />}

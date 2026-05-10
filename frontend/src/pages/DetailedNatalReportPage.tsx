@@ -625,7 +625,7 @@ const DetailedNatalReportPage: React.FC = () => {
           >
             <img loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&q=80"
+              src="/assets/images/purple-cosmos.jpg"
               alt="Synastry Guide"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-cosmic-page via-cosmic-page/40 to-transparent p-6 flex flex-col justify-end">

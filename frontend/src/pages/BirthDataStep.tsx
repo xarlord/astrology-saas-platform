@@ -150,7 +150,7 @@ export default function BirthDataStep() {
           <div
             className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-screen pointer-events-none"
             style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=2342&q=80')`,
+              backgroundImage: `url('/assets/images/stars-nebula.jpg')`,
             }}
             aria-hidden="true"
           />
