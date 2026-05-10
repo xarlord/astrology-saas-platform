@@ -13,8 +13,8 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Eager-loaded pages (landing, auth — needed immediately)
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPageNew';
+import RegisterPage from './pages/RegisterPageNew';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import StaticPage from './pages/StaticPage';
@@ -30,7 +30,7 @@ const TransitPage = lazy(() => import('./pages/TransitPage'));
 const TodayTransitsPage = lazy(() => import('./pages/TodayTransitsPage'));
 const ForecastPage = lazy(() => import('./pages/ForecastPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const SynastryPageWrapper = lazy(() => import('./pages/SynastryPage'));
+const SynastryPageWrapper = lazy(() => import('./pages/SynastryPageNew'));
 const SolarReturnsPage = lazy(() => import('./pages/SolarReturnsPage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const MoonCalendarPage = lazy(() => import('./pages/MoonCalendarPage'));
