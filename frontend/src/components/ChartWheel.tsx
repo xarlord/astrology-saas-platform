@@ -2,7 +2,7 @@
 // import { PlanetSymbol, AspectSymbol } from './';
 
 import type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
-import { PLANET_COLORS, ASPECT_COLORS as ASPECT_COLORS_TOKEN, ZODIAC_COLORS } from '../utils/design-tokens';
+import { PLANET_COLORS, ASPECT_COLORS as ASPECT_COLORS_TOKEN, ZODIAC_COLORS, CHART_UI_COLORS } from '../utils/design-tokens';
 export type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
 
 function normalizePlanets(planets: ChartData['planets']): PlanetPosition[] {
@@ -44,17 +44,17 @@ for (const key of Object.keys(PLANET_SYMBOLS)) {
   const k = key.charAt(0).toUpperCase() + key.slice(1);
   PLANET_INFO[key] = {
     symbol: PLANET_SYMBOLS[key],
-    color: PLANET_COLORS[k as keyof typeof PLANET_COLORS] ?? '#888888',
+    color: PLANET_COLORS[k as keyof typeof PLANET_COLORS] ?? CHART_UI_COLORS.fallback,
     name: PLANET_NAMES[key],
   };
 }
 
 const ASPECT_COLORS: Record<string, string> = {
   ...ASPECT_COLORS_TOKEN,
-  'semi-sextile': '#888888',
-  square: '#FF6600',
-  sextile: '#00BFFF',
-  quincunx: '#9932CC',
+  'semi-sextile': CHART_UI_COLORS.aspectSemiSextile,
+  square: CHART_UI_COLORS.aspectSquare,
+  sextile: CHART_UI_COLORS.aspectSextile,
+  quincunx: CHART_UI_COLORS.aspectQuincunx,
 };
 
 // Zodiac signs and colors
@@ -64,15 +64,15 @@ const ZODIAC_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','
 const ZODIAC_SIGNS = ZODIAC_NAMES.map((name, i) => ({
   name: name.toLowerCase(),
   symbol: ZODIAC_SYMBOLS[i],
-  color: ZODIAC_COLORS[name as keyof typeof ZODIAC_COLORS] ?? '#6366F1',
+  color: ZODIAC_COLORS[name as keyof typeof ZODIAC_COLORS] ?? CHART_UI_COLORS.elementWater,
 }));
 
 // Element-based muted colors for carved/etched zodiac segments
 const ELEMENT_TINT: Record<string, string> = {
-  fire: 'rgba(239, 68, 68, 0.08)',   // red-500 faint
-  earth: 'rgba(34, 197, 94, 0.08)',   // green-500 faint
-  air: 'rgba(56, 189, 248, 0.08)',    // sky-400 faint
-  water: 'rgba(99, 102, 241, 0.08)',  // indigo-500 faint
+  fire: CHART_UI_COLORS.elementTintFire,
+  earth: CHART_UI_COLORS.elementTintEarth,
+  air: CHART_UI_COLORS.elementTintAir,
+  water: CHART_UI_COLORS.elementTintWater,
 };
 
 const ZODIAC_ELEMENTS = [
@@ -260,7 +260,7 @@ export function ChartWheel({
             </feComponentTransfer>
             <feGaussianBlur stdDeviation="0.8" />
             <feOffset dx="0.5" dy="0.5" result="innerShadow" />
-            <feFlood floodColor="#000000" floodOpacity="0.6" />
+            <feFlood floodColor={CHART_UI_COLORS.shadowFlood} floodOpacity="0.6" />
             <feComposite in2="innerShadow" operator="in" />
             <feComposite in2="SourceAlpha" operator="in" result="shadow" />
             {/* Light highlight — top-left */}
@@ -269,7 +269,7 @@ export function ChartWheel({
             </feComponentTransfer>
             <feGaussianBlur stdDeviation="0.4" />
             <feOffset dx="-0.3" dy="-0.3" result="highlight" />
-            <feFlood floodColor="#ffffff" floodOpacity="0.12" />
+            <feFlood floodColor={CHART_UI_COLORS.highlightFlood} floodOpacity="0.12" />
             <feComposite in2="highlight" operator="in" />
             <feComposite in2="SourceAlpha" operator="in" result="hl" />
             {/* Merge base + shadow + highlight */}
@@ -281,9 +281,9 @@ export function ChartWheel({
           </filter>
           {/* Radial gradient for background */}
           <radialGradient id="chart-bg-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#0d0f1a" />
-            <stop offset="70%" stopColor="#0a0c14" />
-            <stop offset="100%" stopColor="#070810" />
+            <stop offset="0%" stopColor={CHART_UI_COLORS.bgGradCenter} />
+            <stop offset="70%" stopColor={CHART_UI_COLORS.bgGradMid} />
+            <stop offset="100%" stopColor={CHART_UI_COLORS.bgGradEdge} />
           </radialGradient>
         </defs>
 
@@ -300,7 +300,7 @@ export function ChartWheel({
           cy={cy}
           r={outerRimRadius}
           fill="url(#chart-bg-grad)"
-          stroke="#1e1b3a"
+          stroke={CHART_UI_COLORS.rimStroke}
           strokeWidth="2"
         />
 
@@ -317,7 +317,7 @@ export function ChartWheel({
           const labelPos = getCircleCoords(cx, cy, (zodiacOuterRadius + zodiacInnerRadius) / 2, midAngle);
 
           const element = ZODIAC_ELEMENTS[index];
-          const tint = ELEMENT_TINT[element] ?? 'rgba(255,255,255,0.04)';
+          const tint = ELEMENT_TINT[element] ?? CHART_UI_COLORS.elementTintFallback;
 
           // Create path for zodiac segment
           const pathData = `
@@ -334,7 +334,7 @@ export function ChartWheel({
               <path
                 d={pathData}
                 fill={tint}
-                stroke="#1a1730"
+                stroke={CHART_UI_COLORS.zodiacSegmentStroke}
                 strokeWidth="0.5"
               />
               {/* Subtle dividing line between segments */}
@@ -343,7 +343,7 @@ export function ChartWheel({
                 y1={start.y}
                 x2={innerStart.x}
                 y2={innerStart.y}
-                stroke="#1a1730"
+                stroke={CHART_UI_COLORS.zodiacSegmentStroke}
                 strokeWidth="0.5"
               />
               {/* Zodiac symbol — carved/etched */}
@@ -353,7 +353,7 @@ export function ChartWheel({
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fontSize={size * 0.045}
-                fill="rgba(255,255,255,0.10)"
+                fill={CHART_UI_COLORS.zodiacSymbolFill}
                 fontWeight="bold"
                 filter={`url(#${filterId})`}
                 role="img"
@@ -368,11 +368,11 @@ export function ChartWheel({
         {/* Zodiac ring border circles */}
         <circle
           cx={cx} cy={cy} r={zodiacOuterRadius}
-          fill="none" stroke="#1e1b3a" strokeWidth="1.5"
+          fill="none" stroke={CHART_UI_COLORS.rimStroke} strokeWidth="1.5"
         />
         <circle
           cx={cx} cy={cy} r={zodiacInnerRadius}
-          fill="none" stroke="#1e1b3a" strokeWidth="1"
+          fill="none" stroke={CHART_UI_COLORS.rimStroke} strokeWidth="1"
         />
 
         {/* ═══════════ HOUSE LINES ═══════════ */}
@@ -389,8 +389,8 @@ export function ChartWheel({
               x2={inner.x}
               y2={inner.y}
               stroke={house.house === 1 || house.house === 4 || house.house === 7 || house.house === 10
-                ? 'rgba(255,255,255,0.18)'
-                : 'rgba(255,255,255,0.07)'}
+                ? CHART_UI_COLORS.houseLineAngular
+                : CHART_UI_COLORS.houseLineNonAngular}
               strokeWidth={house.house === 1 ? 1.5 : 0.7}
               aria-label={`House cusp ${house.house} in ${house.sign}`}
             />
@@ -413,7 +413,7 @@ export function ChartWheel({
               textAnchor="middle"
               dominantBaseline="middle"
               fontSize={size * 0.028}
-              fill="rgba(255,255,255,0.12)"
+              fill={CHART_UI_COLORS.houseNumberFill}
               fontWeight="normal"
             >
               {house.house}
@@ -463,7 +463,7 @@ export function ChartWheel({
                 y1={start.y}
                 x2={end.x}
                 y2={end.y}
-                stroke={ASPECT_COLORS[aspect.type] || '#888'}
+                stroke={ASPECT_COLORS[aspect.type] || CHART_UI_COLORS.fallback}
                 strokeWidth={aspect.type === 'conjunction' || aspect.type === 'opposition' ? 1.2 : 0.8}
                 strokeDasharray={aspect.type === 'quincunx' || aspect.type === 'semi-sextile' ? '3,2' : 'none'}
                 aria-label={aspectLabel}
@@ -534,7 +534,7 @@ export function ChartWheel({
                 cx={pos.x}
                 cy={pos.y}
                 r={planetCircleR}
-                fill="#0d0f1a"
+                fill={CHART_UI_COLORS.planetDiscFill}
                 stroke={info.color}
                 strokeWidth="1.5"
                 aria-label={planetLabel}
@@ -561,7 +561,7 @@ export function ChartWheel({
                   y={pos.y - planetCircleR + 2}
                   textAnchor="start"
                   fontSize={size * 0.016}
-                  fill="#ef4444"
+                  fill={CHART_UI_COLORS.retrograde}
                   fontWeight="bold"
                   aria-label="retrograde"
                 >
@@ -577,16 +577,16 @@ export function ChartWheel({
           cx={cx}
           cy={cy}
           r={centerRadius}
-          fill="#0a0c14"
-          stroke="#1e1b3a"
+          fill={CHART_UI_COLORS.centerHubFill}
+          stroke={CHART_UI_COLORS.rimStroke}
           strokeWidth="1"
         />
         <circle
           cx={cx}
           cy={cy}
           r={size * 0.015}
-          fill="#1e1b3a"
-          stroke="#2d2850"
+          fill={CHART_UI_COLORS.centerHubInnerFill}
+          stroke={CHART_UI_COLORS.centerHubStroke}
           strokeWidth="0.5"
         />
       </svg>
@@ -619,10 +619,10 @@ const PLANET_DESCRIPTIONS: Record<string, string> = {
 };
 
 const NATURE_COLORS: Record<string, string> = {
-  Harmonious: '#22C55E',
-  Challenging: '#EF4444',
-  Neutral: '#F59E0B',
-  Minor: '#6B7280',
+  Harmonious: CHART_UI_COLORS.natureHarmonious,
+  Challenging: CHART_UI_COLORS.natureChallenging,
+  Neutral: CHART_UI_COLORS.natureNeutral,
+  Minor: CHART_UI_COLORS.natureMinor,
 };
 
 export function ChartWheelLegend() {
@@ -634,8 +634,8 @@ export function ChartWheelLegend() {
         <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Aspects</h4>
         <div className="flex flex-wrap gap-2">
           {Object.entries(ASPECT_INFO).map(([type, info]) => {
-            const color = ASPECT_COLORS[type] ?? '#888';
-            const natureColor = NATURE_COLORS[info.nature] ?? '#888';
+            const color = ASPECT_COLORS[type] ?? CHART_UI_COLORS.fallback;
+            const natureColor = NATURE_COLORS[info.nature] ?? CHART_UI_COLORS.fallback;
             return (
               <div key={type} className="group relative">
                 <div
@@ -656,9 +656,10 @@ export function ChartWheelLegend() {
                 <div
                   className="pointer-events-none absolute z-50 left-1/2 -translate-x-1/2
                              bottom-full mb-2 w-56 p-3 rounded-xl
-                             bg-[#151823] border border-white/10 shadow-2xl shadow-black/60
+                             border border-white/10 shadow-2xl shadow-black/60
                              opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
                              transition-all duration-200"
+                  style={{ backgroundColor: CHART_UI_COLORS.tooltipBg }}
                   role="tooltip"
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -701,9 +702,10 @@ export function ChartWheelLegend() {
                 <div
                   className="pointer-events-none absolute z-50 left-1/2 -translate-x-1/2
                              bottom-full mb-2 w-48 p-3 rounded-xl
-                             bg-[#151823] border border-white/10 shadow-2xl shadow-black/60
+                             border border-white/10 shadow-2xl shadow-black/60
                              opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
                              transition-all duration-200"
+                  style={{ backgroundColor: CHART_UI_COLORS.tooltipBg }}
                   role="tooltip"
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -725,7 +727,7 @@ export function ChartWheelLegend() {
           {ZODIAC_SIGNS.map((sign) => {
             const idx = ZODIAC_NAMES.indexOf(sign.name.charAt(0).toUpperCase() + sign.name.slice(1));
             const el = ZODIAC_ELEMENTS[idx] ?? 'fire';
-            const elColor = el === 'fire' ? '#EF4444' : el === 'earth' ? '#22C55E' : el === 'air' ? '#38BDF8' : '#6366F1';
+            const elColor = el === 'fire' ? CHART_UI_COLORS.elementFire : el === 'earth' ? CHART_UI_COLORS.elementEarth : el === 'air' ? CHART_UI_COLORS.elementAir : CHART_UI_COLORS.elementWater;
             const elName = el.charAt(0).toUpperCase() + el.slice(1);
             return (
               <div key={sign.name} className="group relative">
@@ -742,9 +744,10 @@ export function ChartWheelLegend() {
                 <div
                   className="pointer-events-none absolute z-50 left-1/2 -translate-x-1/2
                              bottom-full mb-2 w-40 p-2.5 rounded-xl
-                             bg-[#151823] border border-white/10 shadow-2xl shadow-black/60
+                             border border-white/10 shadow-2xl shadow-black/60
                              opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0
                              transition-all duration-200"
+                  style={{ backgroundColor: CHART_UI_COLORS.tooltipBg }}
                   role="tooltip"
                 >
                   <div className="flex items-center gap-2">

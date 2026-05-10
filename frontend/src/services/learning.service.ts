@@ -352,6 +352,46 @@ export class LearningService {
       throw new Error('Failed to search courses');
     }
   }
+
+  /**
+   * Get knowledge base categories
+   */
+  async getCategories(): Promise<
+    {
+      id: string;
+      title: string;
+      icon: string;
+      color: string;
+      topics: number;
+      items: string[];
+    }[]
+  > {
+    try {
+      const response = await api.get<
+        ApiResponse<
+          {
+            id: string;
+            title: string;
+            icon: string;
+            color: string;
+            topics: number;
+            items: string[];
+          }[]
+        >
+      >(`${this.baseUrl}/categories`);
+
+      if (!response.data.success) {
+        throw new Error(response.data.error ?? 'Failed to get categories');
+      }
+
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Failed to get categories');
+    }
+  }
 }
 
 // Export singleton instance

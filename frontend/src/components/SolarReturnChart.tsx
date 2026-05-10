@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { PLANET_COLORS as PLANET_COLORS_TOKEN, ASPECT_COLORS as ASPECT_COLORS_TOKEN, CHART_UI_COLORS } from '../utils/design-tokens';
 
 
 
@@ -88,26 +89,26 @@ const PLANET_SYMBOLS: Record<string, string> = {
 };
 
 const PLANET_COLORS: Record<string, string> = {
-  sun: '#FFD700',
-  moon: '#C0C0C0',
-  mercury: '#8B4513',
-  venus: '#FF69B4',
-  mars: '#FF0000',
-  jupiter: '#FFA500',
-  saturn: '#696969',
-  uranus: '#40E0D0',
-  neptune: '#4169E1',
-  pluto: '#8B0000',
+  sun: PLANET_COLORS_TOKEN.Sun,
+  moon: PLANET_COLORS_TOKEN.Moon,
+  mercury: PLANET_COLORS_TOKEN.Mercury,
+  venus: PLANET_COLORS_TOKEN.Venus,
+  mars: PLANET_COLORS_TOKEN.Mars,
+  jupiter: PLANET_COLORS_TOKEN.Jupiter,
+  saturn: PLANET_COLORS_TOKEN.Saturn,
+  uranus: PLANET_COLORS_TOKEN.Uranus,
+  neptune: PLANET_COLORS_TOKEN.Neptune,
+  pluto: PLANET_COLORS_TOKEN.Pluto,
 };
 
 const ASPECT_COLORS: Record<string, string> = {
-  conjunction: '#FF0000',
-  opposition: '#FF0000',
-  trine: '#00FF00',
-  square: '#FF6600',
-  sextile: '#00BFFF',
-  'semi-sextile': '#9370DB',
-  quincunx: '#9932CC',
+  conjunction: ASPECT_COLORS_TOKEN.conjunction,
+  opposition: ASPECT_COLORS_TOKEN.opposition,
+  trine: ASPECT_COLORS_TOKEN.trine,
+  square: CHART_UI_COLORS.aspectSquare,
+  sextile: CHART_UI_COLORS.aspectSextile,
+  'semi-sextile': CHART_UI_COLORS.aspectSemiSextile,
+  quincunx: CHART_UI_COLORS.aspectQuincunx,
 };
 
 export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
@@ -172,7 +173,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
     // Draw outer circle
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-    ctx.strokeStyle = '#2d3748';
+    ctx.strokeStyle = CHART_UI_COLORS.solarOuterStroke;
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -186,7 +187,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, r, startAngle, endAngle);
       ctx.closePath();
-      ctx.fillStyle = index % 2 === 0 ? '#f7fafc' : '#edf2f7';
+      ctx.fillStyle = index % 2 === 0 ? CHART_UI_COLORS.solarSectorEven : CHART_UI_COLORS.solarSectorOdd;
       ctx.fill();
       ctx.stroke();
 
@@ -196,7 +197,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       const symbolY = cy + (r - 20) * Math.sin(symbolAngle);
 
       ctx.font = '20px Arial';
-      ctx.fillStyle = '#2d3748';
+      ctx.fillStyle = CHART_UI_COLORS.solarOuterStroke;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(ZODIAC_SYMBOLS[sign], symbolX, symbolY);
@@ -205,7 +206,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
     // Draw inner circle
     ctx.beginPath();
     ctx.arc(cx, cy, r * 0.7, 0, 2 * Math.PI);
-    ctx.strokeStyle = '#cbd5e0';
+    ctx.strokeStyle = CHART_UI_COLORS.solarInnerStroke;
     ctx.lineWidth = 1;
     ctx.stroke();
   };
@@ -221,7 +222,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
         cx + r * 0.7 * Math.cos(angle),
         cy + r * 0.7 * Math.sin(angle)
       );
-      ctx.strokeStyle = '#a0aec0';
+      ctx.strokeStyle = CHART_UI_COLORS.solarHouseLine;
       ctx.lineWidth = 1;
       ctx.stroke();
 
@@ -231,7 +232,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       const textY = cy + r * 0.35 * Math.sin(textAngle);
 
       ctx.font = 'bold 14px Arial';
-      ctx.fillStyle = '#4a5568';
+      ctx.fillStyle = CHART_UI_COLORS.solarHouseText;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(house.house.toString(), textX, textY);
@@ -251,13 +252,13 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       ctx.arc(x, y, selectedPlanet === planet.planet ? 16 : 12, 0, 2 * Math.PI);
       ctx.fillStyle = PLANET_COLORS[planet.planet];
       ctx.fill();
-      ctx.strokeStyle = selectedPlanet === planet.planet ? '#2d3748' : '#fff';
+      ctx.strokeStyle = selectedPlanet === planet.planet ? CHART_UI_COLORS.solarSelectedStroke : CHART_UI_COLORS.solarWhite;
       ctx.lineWidth = 2;
       ctx.stroke();
 
       // Draw planet symbol
       ctx.font = '16px Arial';
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = CHART_UI_COLORS.solarWhite;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(PLANET_SYMBOLS[planet.planet], x, y);
@@ -265,7 +266,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       // Draw retrograde symbol if applicable
       if (planet.retrograde) {
         ctx.font = '10px Arial';
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = CHART_UI_COLORS.solarWhite;
         ctx.fillText('Ⓡ', x, y - 8);
       }
     });
@@ -304,7 +305,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
         ctx.arc(midX, midY, 8, 0, 2 * Math.PI);
         ctx.fillStyle = ASPECT_COLORS[aspect.type];
         ctx.fill();
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = CHART_UI_COLORS.solarWhite;
         ctx.lineWidth = 1;
         ctx.stroke();
       }
@@ -314,7 +315,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
   const drawLabels = (ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) => {
     // Draw ASC label
     ctx.font = 'bold 12px Arial';
-    ctx.fillStyle = '#2d3748';
+    ctx.fillStyle = CHART_UI_COLORS.solarOuterStroke;
     ctx.textAlign = 'center';
     ctx.fillText('ASC', cx, cy - r - 20);
 
@@ -327,7 +328,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
     ctx.fillText(phaseEmoji, cx + r + 30, cy);
 
     ctx.font = '10px Arial';
-    ctx.fillStyle = '#718096';
+    ctx.fillStyle = CHART_UI_COLORS.solarMoonLabel;
     ctx.fillText(`${chartData.moonPhase.illumination}%`, cx + r + 30, cy + 20);
   };
 

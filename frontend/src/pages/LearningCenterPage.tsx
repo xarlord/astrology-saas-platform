@@ -16,6 +16,9 @@ import { AppLayout } from '../components';
 // Hooks
 import { useLearning } from '../hooks/useLearning';
 
+// Services
+import { learningService } from '../services';
+
 // Types
 import type { Course, Lesson } from '../types/api.types';
 
@@ -28,8 +31,8 @@ interface KnowledgeCategory {
   items: string[];
 }
 
-// Static knowledge base categories (these are reference topics, not dynamic data)
-const KNOWLEDGE_BASE: KnowledgeCategory[] = [
+// Fallback knowledge base categories used when the API is unavailable
+const FALLBACK_CATEGORIES: KnowledgeCategory[] = [
   {
     id: 'planets',
     title: 'Planets',
@@ -79,6 +82,32 @@ const KNOWLEDGE_BASE: KnowledgeCategory[] = [
 const LearningCenterPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [knowledgeCategories, setKnowledgeCategories] = useState<KnowledgeCategory[]>(FALLBACK_CATEGORIES);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  // Fetch knowledge base categories from API on mount
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchCategories() {
+      setCategoriesLoading(true);
+      try {
+        const categories = await learningService.getCategories();
+        if (!cancelled && categories.length > 0) {
+          setKnowledgeCategories(categories);
+        }
+      } catch {
+        // Silently fall back to FALLBACK_CATEGORIES
+      } finally {
+        if (!cancelled) {
+          setCategoriesLoading(false);
+        }
+      }
+    }
+
+    void fetchCategories();
+    return () => { cancelled = true; };
+  }, []);
 
   // Use the learning hook with autoLoad enabled
   const {
@@ -398,7 +427,17 @@ const LearningCenterPage: React.FC = () => {
               <h3 className="text-xl font-bold text-white">Knowledge Base</h3>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {KNOWLEDGE_BASE.map((category) => (
+              {categoriesLoading ? (
+                <div className="col-span-2 flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
+                </div>
+              ) : knowledgeCategories.length === 0 ? (
+                <div className="col-span-2 text-center py-12">
+                  <span className="material-symbols-outlined text-4xl text-slate-500 mb-4">auto_stories</span>
+                  <p className="text-slate-400">No knowledge base categories available yet.</p>
+                </div>
+              ) : (
+                knowledgeCategories.map((category) => (
                 <div
                   key={category.id}
                   className="bg-white/5 backdrop-blur-sm p-6 rounded-xl hover:bg-white/10 transition-all cursor-pointer group border border-white/10"
@@ -430,7 +469,8 @@ const LearningCenterPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           </div>
 

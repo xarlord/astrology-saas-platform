@@ -306,6 +306,8 @@ export interface Course {
   duration: number;
   lessons: Lesson[];
   thumbnailUrl?: string;
+  instructor?: string;
+  resources?: { title: string; type?: string; size?: string; url?: string }[];
   createdAt: string;
 }
 

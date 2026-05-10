@@ -6,11 +6,80 @@
  */
 
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { billingService } from '../services/billing.service';
+import type { PlanDetail } from '../services/billing.service';
+
+// Hardcoded fallback pricing tiers used when the API is unavailable
+const FALLBACK_TIERS: {
+  id: string;
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  highlighted?: boolean;
+}[] = [
+  {
+    id: 'free',
+    name: 'Seeker',
+    price: 'Free',
+    period: '/forever',
+    description: 'Perfect for getting started with your basic natal placement.',
+    features: ['Basic Natal Chart', 'Daily Horoscope', 'Moon Phase Tracker'],
+  },
+  {
+    id: 'pro',
+    name: 'Mystic',
+    price: '$9.99',
+    period: '/mo',
+    description: 'Unlock deep insights and predictive transit tools.',
+    features: ['Everything in Seeker', 'Full Transit Forecasts', 'Synastry (Compatibility)', 'Personality Reports'],
+    highlighted: true,
+  },
+  {
+    id: 'premium',
+    name: 'Oracle',
+    price: '$29.99',
+    period: '/mo',
+    description: 'For professional astrologers and deep researchers.',
+    features: ['Everything in Mystic', 'Unlimited Charts', 'PDF Export Reports', 'API Access'],
+  },
+];
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pricingTiers, setPricingTiers] = useState(FALLBACK_TIERS);
+
+  // Fetch plans from billingService on mount; fall back to hardcoded on failure
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchPlans() {
+      try {
+        const plans: PlanDetail[] = await billingService.getPlans();
+        if (!cancelled && plans.length > 0) {
+          setPricingTiers(
+            plans.map((p) => ({
+              id: p.id,
+              name: p.name,
+              price: p.interval === 'none' ? 'Free' : `$${(p.price / 100).toFixed(2)}`,
+              period: p.interval === 'none' ? '/forever' : `/${p.interval}`,
+              description: p.features[0] ?? '',
+              features: p.features,
+              highlighted: p.highlighted ?? p.id === 'pro',
+            })),
+          );
+        }
+      } catch {
+        // Silently fall back to hardcoded tiers
+      }
+    }
+
+    void fetchPlans();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cosmic-page to-cosmic-card-solid text-slate-100 font-display antialiased overflow-x-hidden">
@@ -589,142 +658,80 @@ export default function LandingPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
-              {/* Free Plan */}
-              <div
-                className="rounded-2xl p-8 border border-white/5 hover:border-white/10 transition-colors"
-                style={{
-                  background: 'rgba(19, 22, 37, 0.6)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <h3 className="text-xl font-semibold text-white mb-2">Seeker</h3>
-                <div className="flex items-baseline mb-6">
-                  <span className="text-4xl font-bold text-white">Free</span>
-                  <span className="text-slate-500 ml-2">/forever</span>
-                </div>
-                <p className="text-slate-400 text-sm mb-6 h-10">
-                  Perfect for getting started with your basic natal placement.
-                </p>
-                <Link
-                  to="/register"
-                  className="w-full block text-center py-3 px-4 rounded-lg bg-surface-dark text-white hover:bg-slate-700 font-semibold mb-8 transition-colors"
-                >
-                  Start Free
-                </Link>
-                <ul className="space-y-4 text-sm text-slate-300">
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    Basic Natal Chart
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    Daily Horoscope
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    Moon Phase Tracker
-                  </li>
-                </ul>
-              </div>
+              {pricingTiers.map((tier) => {
+                const isHighlighted = tier.highlighted ?? tier.id === 'pro';
+                const ctaLabel =
+                  tier.id === 'free'
+                    ? 'Start Free'
+                    : tier.id === 'premium'
+                      ? 'Contact Sales'
+                      : `Get ${tier.name} Access`;
 
-              {/* Pro Plan */}
-              <div
-                className="relative rounded-2xl p-8 border border-primary z-10 scale-105"
-                style={{
-                  background: 'rgba(19, 22, 37, 0.6)',
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 0 40px rgba(123, 59, 227, 0.2)',
-                }}
-              >
-                <div className="absolute top-0 right-0 left-0 -mt-4 flex justify-center">
-                  <span className="bg-primary text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full shadow-lg">
-                    Most Popular
-                  </span>
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Mystic</h3>
-                <div className="flex items-baseline mb-6">
-                  <span className="text-4xl font-bold text-white">$9.99</span>
-                  <span className="text-slate-500 ml-2">/mo</span>
-                </div>
-                <p className="text-slate-300 text-sm mb-6 h-10">
-                  Unlock deep insights and predictive transit tools.
-                </p>
-                <Link
-                  to="/register"
-                  className="w-full block text-center py-3 px-4 rounded-lg bg-primary text-white hover:bg-primary-dark font-semibold mb-8 transition-all"
-                  style={{
-                    boxShadow: '0 0 20px rgba(123, 59, 227, 0.4)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 0 30px rgba(123, 59, 227, 0.6)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 0 20px rgba(123, 59, 227, 0.4)';
-                  }}
-                >
-                  Get Pro Access
-                </Link>
-                <ul className="space-y-4 text-sm text-white font-medium">
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
-                    Everything in Seeker
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
-                    Full Transit Forecasts
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
-                    Synastry (Compatibility)
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
-                    Personality Reports
-                  </li>
-                </ul>
-              </div>
-
-              {/* Enterprise Plan */}
-              <div
-                className="rounded-2xl p-8 border border-white/5 hover:border-white/10 transition-colors"
-                style={{
-                  background: 'rgba(19, 22, 37, 0.6)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <h3 className="text-xl font-semibold text-white mb-2">Oracle</h3>
-                <div className="flex items-baseline mb-6">
-                  <span className="text-4xl font-bold text-white">$29.99</span>
-                  <span className="text-slate-500 ml-2">/mo</span>
-                </div>
-                <p className="text-slate-400 text-sm mb-6 h-10">
-                  For professional astrologers and deep researchers.
-                </p>
-                <Link
-                  to="/register"
-                  className="w-full block text-center py-3 px-4 rounded-lg bg-surface-dark text-white hover:bg-slate-700 font-semibold mb-8 transition-colors"
-                >
-                  Contact Sales
-                </Link>
-                <ul className="space-y-4 text-sm text-slate-300">
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    Everything in Mystic
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    Unlimited Charts
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    PDF Export Reports
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[20px]">check</span>
-                    API Access
-                  </li>
-                </ul>
-              </div>
+                return (
+                  <div
+                    key={tier.id}
+                    className={`rounded-2xl p-8 transition-colors ${
+                      isHighlighted
+                        ? 'relative border border-primary z-10 scale-105'
+                        : 'border border-white/5 hover:border-white/10'
+                    }`}
+                    style={{
+                      background: 'rgba(19, 22, 37, 0.6)',
+                      backdropFilter: 'blur(12px)',
+                      ...(isHighlighted
+                        ? { boxShadow: '0 0 40px rgba(123, 59, 227, 0.2)' }
+                        : {}),
+                    }}
+                  >
+                    {isHighlighted && (
+                      <div className="absolute top-0 right-0 left-0 -mt-4 flex justify-center">
+                        <span className="bg-primary text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full shadow-lg">
+                          Most Popular
+                        </span>
+                      </div>
+                    )}
+                    <h3 className="text-xl font-semibold text-white mb-2">{tier.name}</h3>
+                    <div className="flex items-baseline mb-6">
+                      <span className="text-4xl font-bold text-white">{tier.price}</span>
+                      <span className="text-slate-500 ml-2">{tier.period}</span>
+                    </div>
+                    <p className={`text-sm mb-6 h-10 ${isHighlighted ? 'text-slate-300' : 'text-slate-400'}`}>
+                      {tier.description}
+                    </p>
+                    <Link
+                      to="/register"
+                      className={`w-full block text-center py-3 px-4 rounded-lg font-semibold mb-8 transition-all ${
+                        isHighlighted
+                          ? 'bg-primary text-white hover:bg-primary-dark'
+                          : 'bg-surface-dark text-white hover:bg-slate-700'
+                      }`}
+                      {...(isHighlighted
+                        ? {
+                            style: { boxShadow: '0 0 20px rgba(123, 59, 227, 0.4)' },
+                            onMouseEnter: (e: React.MouseEvent<HTMLAnchorElement>) => {
+                              e.currentTarget.style.boxShadow = '0 0 30px rgba(123, 59, 227, 0.6)';
+                            },
+                            onMouseLeave: (e: React.MouseEvent<HTMLAnchorElement>) => {
+                              e.currentTarget.style.boxShadow = '0 0 20px rgba(123, 59, 227, 0.4)';
+                            },
+                          }
+                        : {})}
+                    >
+                      {ctaLabel}
+                    </Link>
+                    <ul className={`space-y-4 text-sm ${isHighlighted ? 'text-white font-medium' : 'text-slate-300'}`}>
+                      {tier.features.map((feature) => (
+                        <li key={feature} className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-[20px]">
+                            {isHighlighted ? 'check_circle' : 'check'}
+                          </span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

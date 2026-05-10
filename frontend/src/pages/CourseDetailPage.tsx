@@ -42,6 +42,14 @@ interface Course {
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   modules: Module[];
   thumbnail: string;
+  resources: CourseResource[];
+}
+
+interface CourseResource {
+  title: string;
+  type?: string;
+  size?: string;
+  url?: string;
 }
 
 const CourseDetailPage: React.FC = () => {
@@ -86,11 +94,12 @@ const CourseDetailPage: React.FC = () => {
         id: currentCourse.id,
         title: currentCourse.title,
         description: currentCourse.description,
-        instructor: 'AstroVerse Instructor',
+        instructor: currentCourse.instructor ?? 'AstroVerse Instructor',
         duration: currentCourse.duration ? `${(currentCourse.duration / 60).toFixed(1)} hours` : '0 hours',
         difficulty: currentCourse.level === 'beginner' ? 'Beginner' : currentCourse.level === 'advanced' ? 'Advanced' : 'Intermediate',
         modules,
-        thumbnail: currentCourse.thumbnailUrl ?? 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=800&q=80',
+        thumbnail: currentCourse.thumbnailUrl ?? '',
+        resources: currentCourse.resources ?? [],
       };
 
       setCourse(transformed);
@@ -316,28 +325,32 @@ const CourseDetailPage: React.FC = () => {
             >
               <h3 className="text-lg font-bold text-white mb-4">Course Resources</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { title: 'Course Workbook', type: 'PDF', size: '2.4 MB' },
-                  { title: 'House Reference Chart', type: 'PDF', size: '1.1 MB' },
-                  { title: 'Aspect Cheat Sheet', type: 'PDF', size: '0.8 MB' },
-                  { title: 'Practice Worksheets', type: 'ZIP', size: '5.2 MB' },
-                ].map((resource, index) => (
-                  <button
-                    key={index}
-                    className="flex items-center gap-4 p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
-                  >
-                    <div className="size-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
-                      <span className="material-symbols-outlined">picture_as_pdf</span>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="text-white font-medium text-sm">{resource.title}</p>
-                      <p className="text-slate-500 text-xs">
-                        {resource.type} • {resource.size}
-                      </p>
-                    </div>
-                    <span className="material-symbols-outlined text-slate-400">download</span>
-                  </button>
-                ))}
+                {course.resources.length > 0 ? (
+                  course.resources.map((resource, index) => (
+                    <a
+                      key={index}
+                      href={resource.url ?? '#'}
+                      className="flex items-center gap-4 p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
+                    >
+                      <div className="size-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400">
+                        <span className="material-symbols-outlined">
+                          {resource.type?.toLowerCase() === 'zip' ? 'folder_zip' : 'picture_as_pdf'}
+                        </span>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-white font-medium text-sm">{resource.title}</p>
+                        <p className="text-slate-500 text-xs">
+                          {resource.type ?? 'Resource'}{resource.size ? ` • ${resource.size}` : ''}
+                        </p>
+                      </div>
+                      <span className="material-symbols-outlined text-slate-400">download</span>
+                    </a>
+                  ))
+                ) : (
+                  <p className="text-slate-500 text-sm col-span-2 text-center py-4">
+                    No resources available for this course yet.
+                  </p>
+                )}
               </div>
             </motion.div>
           </div>
@@ -476,22 +489,39 @@ const CourseDetailPage: React.FC = () => {
                 <div className="p-4">
                   <p className="text-sm text-slate-400 mb-4">Additional learning materials</p>
                   <div className="space-y-3">
-                    {[
-                      { name: 'Recommended Reading', icon: 'menu_book' },
-                      { name: 'External Links', icon: 'link' },
-                      { name: 'Glossary', icon: 'list' },
-                      { name: 'FAQ', icon: 'help' },
-                    ].map((item, index) => (
-                      <button
-                        key={index}
-                        className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3"
-                      >
-                        <span className="material-symbols-outlined text-slate-400">
-                          {item.icon}
-                        </span>
-                        <span className="text-sm text-white">{item.name}</span>
-                      </button>
-                    ))}
+                    {course.resources.length > 0 ? (
+                      course.resources.map((resource, index) => (
+                        <a
+                          key={index}
+                          href={resource.url ?? '#'}
+                          className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3"
+                        >
+                          <span className="material-symbols-outlined text-slate-400">
+                            {resource.type?.toLowerCase() === 'zip' ? 'folder_zip' : 'menu_book'}
+                          </span>
+                          <span className="text-sm text-white">{resource.title}</span>
+                        </a>
+                      ))
+                    ) : (
+                      <>
+                        <a href="#" className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3">
+                          <span className="material-symbols-outlined text-slate-400">menu_book</span>
+                          <span className="text-sm text-white">Recommended Reading</span>
+                        </a>
+                        <a href="#" className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3">
+                          <span className="material-symbols-outlined text-slate-400">link</span>
+                          <span className="text-sm text-white">External Links</span>
+                        </a>
+                        <a href="#" className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3">
+                          <span className="material-symbols-outlined text-slate-400">list</span>
+                          <span className="text-sm text-white">Glossary</span>
+                        </a>
+                        <a href="#" className="w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-3">
+                          <span className="material-symbols-outlined text-slate-400">help</span>
+                          <span className="text-sm text-white">FAQ</span>
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
