@@ -154,12 +154,12 @@ export function logError(error: AppError, context?: string): void {
     console.error(`${contextPrefix}Details:`, error.details);
   }
 
-  // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
-  // Example with Sentry:
-  // Sentry.captureException(error, {
-  //   tags: { context },
-  //   extra: { details: error.details }
-  // });
+  // Send to Sentry error tracking (if configured)
+  import('./sentry').then(({ captureException }) => {
+    captureException(error, context ? { context } : undefined, { details: error.details });
+  }).catch(() => {
+    // Sentry not available — already logged above
+  });
 }
 
 /**
