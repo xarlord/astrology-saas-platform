@@ -42,6 +42,22 @@ const LearnPage = lazy(() => import('./pages/LearnPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 
+// Newly routed pages (previously unwired)
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const BirthDataStep = lazy(() => import('./pages/BirthDataStep'));
+const ChartCreationWizardPage = lazy(() => import('./pages/ChartCreationWizardPage'));
+const NatalChartDetailPage = lazy(() => import('./pages/NatalChartDetailPage'));
+const ProfileSettingsPage = lazy(() => import('./pages/ProfileSettingsPage'));
+const DailyBriefingPage = lazy(() => import('./pages/DailyBriefingPage'));
+const TransitForecastPage = lazy(() => import('./pages/TransitForecastPage'));
+const DetailedNatalReportPage = lazy(() => import('./pages/DetailedNatalReportPage'));
+const SolarReturnAnnualReportPage = lazy(() => import('./pages/SolarReturnAnnualReportPage'));
+const LearningCenterPage = lazy(() => import('./pages/LearningCenterPage'));
+const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'));
+const SavedChartsGalleryPage = lazy(() => import('./pages/SavedChartsGalleryPage'));
+const ShareCardPage = lazy(() => import('./pages/ShareCardPage'));
+const SharedCardPage = lazy(() => import('./pages/SharedCardPage'));
+
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-cosmic-page">
     <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -231,6 +247,112 @@ function App() {
                     <LunarReturnsPage />
                   </ProtectedRoute>
                 }
+              />
+
+              {/* Newly routed pages (protected) */}
+              <Route
+                path="/landing"
+                element={<LandingPage />}
+              />
+              <Route
+                path="/onboarding/birth-data"
+                element={
+                  <ProtectedRoute>
+                    <BirthDataStep />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/charts/wizard"
+                element={
+                  <ProtectedRoute>
+                    <ChartCreationWizardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/charts/:id/detail"
+                element={
+                  <ProtectedRoute>
+                    <NatalChartDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/charts/gallery"
+                element={
+                  <ProtectedRoute>
+                    <SavedChartsGalleryPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/settings"
+                element={
+                  <ProtectedRoute>
+                    <ProfileSettingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/daily-briefing"
+                element={
+                  <ProtectedRoute>
+                    <DailyBriefingPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/transits/forecast"
+                element={
+                  <ProtectedRoute>
+                    <TransitForecastPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/reports/natal/:id"
+                element={
+                  <ProtectedRoute>
+                    <DetailedNatalReportPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/solar-returns/:id/annual"
+                element={
+                  <ProtectedRoute>
+                    <SolarReturnAnnualReportPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/learn/center"
+                element={
+                  <ProtectedRoute>
+                    <LearningCenterPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/learn/courses/:id"
+                element={
+                  <ProtectedRoute>
+                    <CourseDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/share"
+                element={
+                  <ProtectedRoute>
+                    <ShareCardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shared/:id"
+                element={<SharedCardPage />}
               />
 
               {/* Static pages (eager-loaded — lightweight) */}
