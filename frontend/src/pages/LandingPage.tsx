@@ -229,17 +229,17 @@ export default function LandingPage() {
 
                 <div className="pt-8 flex items-center justify-center lg:justify-start gap-4 text-sm text-slate-500">
                   <div className="flex -space-x-2">
-                    <img
+                    <img loading="lazy"
                       alt="User Avatar"
                       className="inline-block h-8 w-8 rounded-full ring-2 ring-background-dark"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiNT-ipFXLCwACXlAnyX9g6kDBhT4MiS_799zyc2g8ybMXAUUGLuMyquG12cm6ABFGdjWCRMtaEZMfLQiiD7435v0aFOJp1eLZ0-IzoFWJwnOkVEsMK1yazpfbRPW7nr2_DIQ3J9sxmuW2Vtdyc8DhI1S5vZDlur2k3S-ozbweq23E0jGhCNWvTdYoDyH6ry7eiRGF9K2b9qBp5lg8UUXGh9eGddjvk_1IQwZ8sZUnxPKd2gBNeLR_oA7a-7HccWxHEgyyKrjez3u7"
                     />
-                    <img
+                    <img loading="lazy"
                       alt="User Avatar"
                       className="inline-block h-8 w-8 rounded-full ring-2 ring-background-dark"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsxOUZOuRyHQu36eBm1mnhAnWotNFYoXgoOTlV3-iDr1AAANEMRRjtqtcNGN1dVXSVnPyrhq5btQBCLs2wUeEFWTDunhEALMwQR5YDVFUIErVZ8eGYgVl6yT35ua1w_ptFmH4tGwEfO-GuG-6yLxKfVbmqMigFv5dEM1FbVRa-rfWW7QZ3Mh2tHWAmqSeHyRPyhhZRV05f9pdjnKz0r4XtA-K654N37bqIJYiRhuqzoVbEa_3YiPyiDqys8omUHxtBL39dTl0q06-n"
                     />
-                    <img
+                    <img loading="lazy"
                       alt="User Avatar"
                       className="inline-block h-8 w-8 rounded-full ring-2 ring-background-dark"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMk58smEaqkR_FzG21stmfTnhknIkFjd6bwmw2Xh3rXHzgEZ9Kme3LY6alpUyFu3W6KvouEHLGrRzft4zyfnyhzSkWhzTaRtSQoQ38rPxAyvEirB_OyKVT89UFd3ndT4uZkmnYfbpsO9y7OzzxOoN8waxjBCOdbRC_mJJargEJ6-ucKrUtVqfecuoOW6NyDdhG7FjKxkXoDQEC2xN8EipKj7APfH2WTqZGKE5O4BhzIresABcFtCFWe5UCjg7OH4rXVZ9tYc0BcF-f"
@@ -497,7 +497,7 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                  <img
+                  <img loading="lazy"
                     alt="Elena R."
                     className="size-10 rounded-full object-cover"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjmOX8On5c0sHF3HWyOOIybQWDtbT_Zfy_CE4jQZO29fVu9ZaufncaQamtgctpTOhrjrYSyPvbDf3LpG2VZIIi7LvCOHAkZno2xoDpnNQ24Bw1ReTtylDK_02Fnn0-DRqcQSvOvDUBIt_A-M8cE9iiR7Vwqhs6S5Lgga1X7QfZ8qMl51pUrWtqGXsMpTdEjHm3Igvch_yk2OOzNKIc_HwPVX9BYfLjp0dJ2_YuCHwIIK2mmGFzRyuAH5fy8J6vv6amP9zbg_RfCMId"
@@ -529,7 +529,7 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                  <img
+                  <img loading="lazy"
                     alt="Marcus T."
                     className="size-10 rounded-full object-cover"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzgXONST5iDpipGxC8sINf6t5KxJVEqciK1adWFABCS6SBSBiyTfqzHvZzXiugyUYBHMGzba9QfgFXyga6k2F7d7Lz0gHzlWYpNXDjYssPva7r5qxeTibbHZJpYvB9SyhxiDa14vS97PsOQolQFB9XxqkaGEu9LB8SUnF5Pyi-tVbJctDcrVOZp5BxdHq0KGxZuShtdPs99pPYhBp3GMmjVC54wZm_MaxuKn5HK7K-vYRqyLH2SGGr5YsEUFv0JBW-FsGjeMVq6oQF"
@@ -561,7 +561,7 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                  <img
+                  <img loading="lazy"
                     alt="Sarah L."
                     className="size-10 rounded-full object-cover"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxl1fXODoPxcHqQVyg452TrRfJ7bdeuHqoO-u5HxZZ11yJ5zHfdlg2KnfzLpjqZZhXpq9tBspxemVQpIwBQ46_vc_pSWQOqgQuawLk871kxbKZGRxmFcEs3Cpy0-kR64CpmPMW-uYSU13PGWeOYqhY-fpnEWhi62qEIcRBEdaK5RBZ3NNbr8Ss3BKM5-DhEWaIOwNF607KLjvVF4-IV5kRLh1XC6LbfhgEEPKhol0QnxM3fE2brM3qee9RfP0WN3lGMO_OZR9BMqr"

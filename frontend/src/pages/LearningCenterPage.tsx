@@ -231,8 +231,7 @@ const LearningCenterPage: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none"></div>
               <div className="w-full md:w-2/5 h-64 md:h-auto overflow-hidden relative bg-white/5">
                 {currentCourse.thumbnailUrl ? (
-                  <img
-                    src={currentCourse.thumbnailUrl}
+                  <img loading="lazy" src={currentCourse.thumbnailUrl}
                     alt={currentCourse.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />

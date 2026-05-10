@@ -305,7 +305,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
             <div className="flex justify-center md:justify-start order-2 md:order-1">
               <div className="relative w-64 h-64 md:w-80 md:h-80">
                 <div className="absolute inset-0 bg-amber-400/20 blur-3xl animate-pulse"></div>
-                <img
+                <img loading="lazy"
                   src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=600&q=80"
                   alt="Solar Theme"
                   className="w-full h-full object-cover rounded-full shadow-2xl shadow-amber-400/20 border-4 border-amber-400/30"
@@ -360,7 +360,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
                 Natal Birth Chart
               </p>
               <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-slate-700/50 flex items-center justify-center bg-black/20">
-                <img
+                <img loading="lazy"
                   src="https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?w=400&q=80"
                   alt="Natal Chart Wheel"
                   className="w-full h-full object-cover rounded-full opacity-60"
@@ -391,7 +391,7 @@ const SolarReturnAnnualReportPage: React.FC = () => {
                 Solar Return {solarData.year} Chart
               </p>
               <div className="w-64 h-64 md:w-80 md:h-80 relative rounded-full border-2 border-amber-400/30 flex items-center justify-center bg-amber-400/5">
-                <img
+                <img loading="lazy"
                   src="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=400&q=80"
                   alt="Solar Return Chart Wheel"
                   className="w-full h-full object-cover rounded-full opacity-80"
