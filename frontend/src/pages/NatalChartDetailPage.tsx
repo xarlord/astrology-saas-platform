@@ -357,9 +357,23 @@ export const NatalChartDetailPage: React.FC = () => {
     };
   }, [calculatedData, currentChart]);
 
-  const _handleDelete = useCallback(() => {
-    console.log('Delete chart:', id);
-  }, [id]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleDelete = useCallback(async () => {
+    if (!id) return;
+    try {
+      setIsDeleting(true);
+      const { chartService } = await import('../services/chart.service');
+      await chartService.deleteChart(id);
+      navigate('/charts');
+    } catch (err) {
+      console.error('Failed to delete chart:', err);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  }, [id, navigate]);
 
   const handleDownload = useCallback(() => {
     if (currentChart) {
@@ -378,7 +392,7 @@ export const NatalChartDetailPage: React.FC = () => {
     setShareCardModalOpen(true);
   }, []);
 
-  const _handleShareUrl = useCallback(async () => {
+  const handleShareUrl = useCallback(async () => {
     if (navigator.share && currentChart) {
       try {
         await navigator.share({
@@ -572,12 +586,22 @@ export const NatalChartDetailPage: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    void handleShare();
+                    void handleShareUrl();
                   }}
                   className="w-10 h-10 rounded-full"
                   data-testid="share-chart-btn"
                 >
                   <span className="material-symbols-outlined text-[20px]">share</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="w-10 h-10 rounded-full text-red-400 hover:text-red-300"
+                  data-testid="delete-chart-btn"
+                  disabled={isDeleting}
+                >
+                  <span className="material-symbols-outlined text-[20px]">delete</span>
                 </Button>
                 <div className="w-px h-8 bg-white/10 mx-1" />
                 <Button
@@ -604,7 +628,7 @@ export const NatalChartDetailPage: React.FC = () => {
 
                   {/* Zodiac Ring */}
                   <div className="absolute inset-[10px] rounded-full border-[20px] border-deep-navy flex items-center justify-center overflow-hidden">
-                    <svg className="w-full h-full opacity-80" viewBox="0 0 100 100">
+                    <svg className="w-full h-full opacity-80" viewBox="0 0 100 100" aria-hidden="true">
                       {Object.entries(ZODIAC_COLORS).map(([sign, color], index) => {
                         const rotation = index * 30;
                         return (
@@ -855,6 +879,35 @@ export const NatalChartDetailPage: React.FC = () => {
           onClose={() => setShareCardModalOpen(false)}
           chartData={shareCardData}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-card-dark rounded-2xl p-6 max-w-sm w-full mx-4 border border-white/10">
+            <h3 className="text-lg font-bold text-white mb-2">Delete Chart</h3>
+            <p className="text-sm text-slate-400 mb-6">
+              Are you sure you want to delete this chart? This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowDeleteConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => void handleDelete()}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </AppLayout>
   );

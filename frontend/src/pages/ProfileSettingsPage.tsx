@@ -9,7 +9,6 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
@@ -54,8 +53,7 @@ interface AppearanceSettings {
 }
 
 export const ProfileSettingsPage: React.FC = () => {
-  const _navigate = useNavigate();
-  const { user, updateProfile, isLoading: _isLoading } = useAuth();
+  const { user, updateProfile } = useAuth();
 
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -137,21 +135,6 @@ export const ProfileSettingsPage: React.FC = () => {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), TIMEOUTS.SAVE_ERROR_DURATION_MS);
     }
-  };
-
-  const _ZODIAC_SYMBOLS: Record<string, string> = {
-    Aries: '♈',
-    Taurus: '♉',
-    Gemini: '♊',
-    Cancer: '♋',
-    Leo: '♌',
-    Virgo: '♍',
-    Libra: '♎',
-    Scorpio: '♏',
-    Sagittarius: '♐',
-    Capricorn: '♑',
-    Aquarius: '♒',
-    Pisces: '♓',
   };
 
   const tabs = [

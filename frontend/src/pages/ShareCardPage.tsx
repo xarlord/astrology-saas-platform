@@ -157,6 +157,7 @@ export default function ShareCardPage() {
           </div>
         ) : (
           <div className="flex flex-col items-center">
+            <h1 className="sr-only">Shared Astrology Chart</h1>
             {/* Template badge */}
             {templateInfo && (
               <div className="mb-4 px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400">

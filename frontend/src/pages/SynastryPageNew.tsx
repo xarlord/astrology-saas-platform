@@ -111,7 +111,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
     }
   };
 
-  const [_isSaving, setIsSaving] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   const handleSaveReport = async () => {
@@ -518,10 +518,11 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
               <div className="flex flex-col sm:flex-row justify-center gap-4 pb-10">
                 <button
                   onClick={() => void handleSaveReport()}
-                  className="flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all text-white font-bold text-lg shadow-glow hover:scale-[1.02]"
+                  disabled={isSaving}
+                  className="flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all text-white font-bold text-lg shadow-glow hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <span className="material-symbols-outlined">lock_open</span>
-                  Generate Full Report
+                  <span className="material-symbols-outlined">{isSaving ? 'hourglass_empty' : 'lock_open'}</span>
+                  {isSaving ? 'Saving...' : 'Generate Full Report'}
                 </button>
                 <div className="flex gap-4">
                   <button

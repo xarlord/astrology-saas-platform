@@ -194,8 +194,9 @@
     outline-offset: 2px;
   }
 
-  /* Focus management - visible outline for keyboard navigation only */
-  *:focus {
+  /* WCAG 2.1 AA - Focus management */
+  /* Only suppress the default outline for mouse users; keyboard users get focus-visible */
+  *:focus:not(:focus-visible) {
     outline: none;
   }
 

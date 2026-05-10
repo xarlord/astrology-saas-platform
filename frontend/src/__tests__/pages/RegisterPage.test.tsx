@@ -25,7 +25,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import RegisterPage from '../../pages/RegisterPage';
+import RegisterPageNew from '../../pages/RegisterPageNew';
 
 // Mock react-router-dom's useNavigate
 const mockNavigate = vi.fn();
@@ -55,7 +55,7 @@ vi.mock('../../hooks', () => ({
 const renderRegisterPage = () => {
   return render(
     <BrowserRouter>
-      <RegisterPage />
+      <RegisterPageNew />
     </BrowserRouter>,
   );
 };

@@ -23,7 +23,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import LoginPage from '../../pages/LoginPage';
+import LoginPageNew from '../../pages/LoginPageNew';
 
 // Mock react-router-dom's useNavigate
 const mockNavigate = vi.fn();
@@ -53,7 +53,7 @@ vi.mock('../../hooks', () => ({
 const renderLoginPage = () => {
   return render(
     <BrowserRouter>
-      <LoginPage />
+      <LoginPageNew />
     </BrowserRouter>,
   );
 };

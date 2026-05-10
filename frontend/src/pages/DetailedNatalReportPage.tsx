@@ -107,7 +107,7 @@ const DetailedNatalReportPage: React.FC = () => {
     'summary',
   );
   const [apiChart, setApiChart] = useState<Chart | null>(null);
-  const [_isLoadingChart, setIsLoadingChart] = useState(false);
+  const [isLoadingChart, setIsLoadingChart] = useState(false);
   const [chartError, setChartError] = useState<string | null>(null);
 
   // PDF generation hook
@@ -254,6 +254,19 @@ const DetailedNatalReportPage: React.FC = () => {
             actionText="Try Again"
             onAction={() => window.location.reload()}
           />
+        </div>
+      </AppLayout>
+    );
+  }
+
+  if (isLoadingChart) {
+    return (
+      <AppLayout>
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-10">
+          <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-slate-400">Loading chart data...</p>
+          </div>
         </div>
       </AppLayout>
     );

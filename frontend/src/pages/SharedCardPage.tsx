@@ -247,6 +247,7 @@ export default function SharedCardPage() {
           </div>
         ) : (
           <div className="flex flex-col items-center">
+            <h1 className="sr-only">Shared Astrology Chart</h1>
             {/* Style and theme badges */}
             <div className="flex flex-wrap gap-2 mb-4 justify-center">
               {styleInfo && (

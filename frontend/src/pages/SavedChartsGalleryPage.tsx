@@ -133,7 +133,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareChartId, setShareChartId] = useState<string | null>(null);
 
-  const _openShareModal = useCallback((id: string) => {
+  const openShareModal = useCallback((id: string) => {
     setShareChartId(id);
     setShareModalOpen(true);
   }, []);
@@ -382,7 +382,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                     void handleDelete(id);
                   }}
                   onShare={(id) => {
-                    void handleShare(id);
+                    void openShareModal(id);
                   }}
                   className={viewMode === 'list' ? 'w-full' : ''}
                 />

@@ -89,6 +89,7 @@ export default function RegisterPageNew() {
 
   return (
     <div className="font-display bg-gradient-to-br from-cosmic-page to-cosmic-card-solid text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <div className="flex flex-col lg:flex-row min-h-screen w-full">
         {/* Left Panel: Brand & Features */}
         <div
@@ -114,7 +115,7 @@ export default function RegisterPageNew() {
             aria-label="AstroVerse home"
           >
             <div className="size-10 bg-gradient-to-br from-primary to-cosmic-blue rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(178,61,225,0.5)]">
-              <span className="material-symbols-outlined text-white text-2xl">all_inclusive</span>
+              <span className="material-symbols-outlined text-white text-2xl" aria-hidden="true">all_inclusive</span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-white">AstroVerse</h2>
           </Link>
@@ -194,7 +195,7 @@ export default function RegisterPageNew() {
         </div>
 
         {/* Right Panel: Registration Form */}
-        <div className="w-full lg:w-7/12 xl:w-1/2 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid flex items-center justify-center p-6 lg:p-12 relative">
+        <main id="main-content" tabIndex={-1} className="w-full lg:w-7/12 xl:w-1/2 bg-gradient-to-br from-cosmic-page to-cosmic-card-solid flex items-center justify-center p-6 lg:p-12 relative">
           {/* Background glows */}
           <div
             className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"
@@ -489,7 +490,7 @@ export default function RegisterPageNew() {
                   onClick={() => { void handleSocialLogin('google'); }}
                   aria-label="Continue with Google"
                 >
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                       fill="#4285F4"
@@ -515,7 +516,7 @@ export default function RegisterPageNew() {
                   onClick={() => handleSocialLogin('apple')}
                   aria-label="Continue with Apple"
                 >
-                  <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
+                  <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M17.05 20.28c-.98.95-2.05.88-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.78 1.18-.19 2.31-.89 3.51-.84 1.54.06 2.77.79 3.49 1.84-3.16 1.76-2.56 5.8 .46 6.96-.54 1.58-1.27 3.12-2.54 4.23zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"></path>
                   </svg>
                   <span className="text-sm font-medium">Apple</span>
@@ -536,7 +537,7 @@ export default function RegisterPageNew() {
               </div>
             </form>
           </div>
-        </div>
+        </main>
       </div>
 
       <style>{`

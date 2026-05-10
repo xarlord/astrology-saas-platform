@@ -210,7 +210,7 @@ const CourseDetailPage: React.FC = () => {
     (sum, m) => sum + m.lessons.filter((l) => l.completed).length,
     0,
   );
-  const _progress = Math.round((completedLessons / totalLessons) * 100);
+  const progress = Math.round((completedLessons / totalLessons) * 100);
 
   return (
     <AppLayout>
@@ -350,6 +350,23 @@ const CourseDetailPage: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
+              {/* Course Progress */}
+              <div className="px-4 pt-4 pb-3 border-b border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-medium text-slate-400">Course Progress</span>
+                  <span className="text-xs font-bold text-primary">{progress}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <p className="text-[10px] text-slate-500 mt-1">
+                  {completedLessons} of {totalLessons} lessons completed
+                </p>
+              </div>
+
               {/* Tabs */}
               <div className="flex border-b border-white/10">
                 <button
