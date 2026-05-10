@@ -235,6 +235,7 @@ export default function LoginPageNew() {
                         placeholder="cosmic.traveler@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        aria-label="Email address"
                         aria-describedby="email-description"
                         data-testid="email-input"
                       />
@@ -266,6 +267,7 @@ export default function LoginPageNew() {
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        aria-label="Password"
                         aria-describedby="password-description"
                         data-testid="password-input"
                       />

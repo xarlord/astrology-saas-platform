@@ -64,7 +64,7 @@ const EnergyMeter: React.FC<EnergyMeterProps> = ({
       aria-valuemax={100}
       aria-label={ariaLabel}
     >
-      <svg width={circleSize} height={circleSize} className="transform -rotate-90">
+      <svg width={circleSize} height={circleSize} className="transform -rotate-90" aria-hidden="true">
         {/* Background circle */}
         <circle
           cx={circleSize / 2}

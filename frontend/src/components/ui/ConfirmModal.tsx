@@ -278,6 +278,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          aria-hidden="true"
                         >
                           <path
                             strokeLinecap="round"
@@ -360,6 +361,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                       className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                       fill="none"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <circle
                         className="opacity-25"

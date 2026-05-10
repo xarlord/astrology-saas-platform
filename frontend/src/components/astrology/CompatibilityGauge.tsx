@@ -87,7 +87,7 @@ const CompatibilityGauge: React.FC<CompatibilityGaugeProps> = ({
     <div className="flex flex-col items-center gap-4">
       {/* Gauge */}
       <div className="relative" style={{ width, height }}>
-        <svg width={width} height={height} className="transform -rotate-90">
+        <svg width={width} height={height} className="transform -rotate-90" aria-hidden="true">
           {/* Background circle */}
           <circle
             cx={width / 2}
