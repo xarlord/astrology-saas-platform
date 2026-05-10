@@ -264,8 +264,7 @@ export default function SharedCardPage() {
             {/* Card image */}
             {card.image_url ? (
               <div className="rounded-lg overflow-hidden border border-white/10 shadow-2xl shadow-purple-500/10">
-                <img
-                  src={card.image_url}
+                <img loading="lazy"src={card.image_url}
                   alt="Shared astrology chart card"
                   className="max-w-full max-h-[70vh] object-contain"
                 />
@@ -291,8 +290,7 @@ export default function SharedCardPage() {
             {showQRCode && (
               <div className="mt-6 p-6 rounded-lg bg-white/5 border border-white/10">
                 <div className="flex flex-col items-center gap-4">
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}`}
+                  <img loading="lazy"src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}`}
                     alt="QR Code"
                     className="rounded-lg"
                   />

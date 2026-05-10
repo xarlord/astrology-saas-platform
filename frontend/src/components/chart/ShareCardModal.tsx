@@ -437,8 +437,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
           <div className="flex justify-center">
             {generatedCard.image_url ? (
               <div className="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg">
-                <img
-                  src={generatedCard.image_url}
+                <img loading="lazy"src={generatedCard.image_url}
                   alt={`${chartName ?? 'Chart'} shareable card`}
                   className="max-w-full max-h-[400px] object-contain"
                 />

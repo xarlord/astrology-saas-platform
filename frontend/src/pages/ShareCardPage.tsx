@@ -169,6 +169,7 @@ export default function ShareCardPage() {
             {card.image_url ? (
               <div className="rounded-lg overflow-hidden border border-white/10 shadow-2xl shadow-purple-500/10">
                 <img
+                  loading="lazy"
                   src={card.image_url}
                   alt="Shared astrology chart card"
                   className="max-w-full max-h-[70vh] object-contain"

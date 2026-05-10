@@ -610,7 +610,7 @@ const DetailedNatalReportPage: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <img
+            <img loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&q=80"
               alt="Synastry Guide"
