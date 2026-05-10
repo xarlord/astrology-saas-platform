@@ -45,6 +45,62 @@
   --text-2xl: 1.5rem;
   --text-3xl: 1.875rem;
   --text-4xl: 2.25rem;
+
+  /* Semantic / Status colors */
+  --color-error: #EF4444;
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-info: #3B82F6;
+  --color-error-dark: #dc2626;
+  --color-success-dark: #16a34a;
+  --color-warning-dark: #d97706;
+
+  /* Planet colors */
+  --color-planet-sun: #FFD700;
+  --color-planet-moon: #C0C0C0;
+  --color-planet-mercury: #696969;
+  --color-planet-venus: #FF69B4;
+  --color-planet-mars: #FF0000;
+  --color-planet-jupiter: #FFA500;
+  --color-planet-saturn: #8B4513;
+  --color-planet-uranus: #40E0D0;
+  --color-planet-neptune: #4169E1;
+  --color-planet-pluto: #8B0000;
+  --color-planet-northnode: #6b3de1;
+
+  /* Neutral colors */
+  --color-white: #ffffff;
+  --color-white-05: rgba(255, 255, 255, 0.05);
+  --color-white-10: rgba(255, 255, 255, 0.10);
+  --color-white-15: rgba(255, 255, 255, 0.15);
+  --color-dim-gray: #696969;
+
+  /* Extended palette */
+  --color-indigo: #6366F1;
+  --color-violet: #8b5cf6;
+  --color-emerald: #10B981;
+  --color-amber: #f59e0b;
+  --color-cosmic-blue: #2563EB;
+  --color-gold: #FFD700;
+  --color-orange: #FFA500;
+  --color-pink: #FF69B4;
+  --color-silver: #C0C0C0;
+  --color-lavender: #A78BFA;
+
+  /* Surface variants */
+  --color-surface-dark: #151725;
+  --color-surface-light: #1e2136;
+
+  /* Glass effects */
+  --glass-nav-bg: rgba(11, 13, 23, 0.85);
+  --glass-shadow: rgba(0, 0, 0, 0.15);
+  --shadow-accent: rgba(107, 61, 225, 0.5);
+  --shadow-accent-strong: rgba(107, 61, 225, 0.6);
+
+  /* Gradients */
+  --gradient-cosmic: linear-gradient(135deg, #6b3de1 0%, #2563EB 100%);
+  --gradient-text: linear-gradient(135deg, #ffffff 0%, #A78BFA 100%);
+  --gradient-nebula: radial-gradient(ellipse at center, rgba(107, 61, 225, 0.15) 0%, transparent 70%);
 }
 
 /* Shimmer loading animation */
@@ -123,12 +179,12 @@
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border: 1px solid var(--color-border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 30px var(--glass-shadow);
   }
 
   /* Glassmorphism nav bar */
   .glass-nav {
-    background: rgba(11, 13, 23, 0.85);
+    background: var(--glass-nav-bg);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--color-border);
@@ -136,7 +192,7 @@
 
   /* Gradient text effect */
   .gradient-text {
-    background: linear-gradient(135deg, #ffffff 0%, #A78BFA 100%);
+    background: var(--gradient-text);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -144,12 +200,12 @@
 
   /* Text glow effect */
   .text-glow {
-    text-shadow: 0 0 20px rgba(107, 61, 225, 0.5);
+    text-shadow: 0 0 20px var(--shadow-accent);
   }
 
   /* Force text fill color for gradient text overrides */
   .text-fill-primary {
-    -webkit-text-fill-color: #6b3de1;
+    -webkit-text-fill-color: var(--color-accent);
   }
 
   /* Button glow hover effect */
@@ -157,18 +213,18 @@
     transition: all 0.3s ease;
   }
   .btn-glow:hover {
-    box-shadow: 0 0 30px rgba(107, 61, 225, 0.6);
+    box-shadow: 0 0 30px var(--shadow-accent-strong);
     transform: translateY(-1px);
   }
 
   /* Cosmic gradient (purple → blue) */
   .bg-cosmic-gradient {
-    background: linear-gradient(135deg, #6b3de1 0%, #2563EB 100%);
+    background: var(--gradient-cosmic);
   }
 
   /* Animated starfield background */
   .stars-bg {
-    background-color: #0B0D17;
+    background-color: var(--color-bg-page);
     background-image:
       radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
       radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
@@ -179,7 +235,7 @@
 
   /* Nebula radial gradient overlay */
   .nebula-bg {
-    background: radial-gradient(ellipse at center, rgba(107, 61, 225, 0.15) 0%, transparent 70%);
+    background: var(--gradient-nebula);
   }
 
   /* Custom scrollbar */
@@ -205,7 +261,7 @@
 
   .btn-secondary {
     @apply px-4 py-2 text-slate-300 rounded-lg transition-colors duration-200 font-medium;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-white-05);
     border: 1px solid var(--color-border);
   }
   .btn-secondary:hover {
@@ -222,7 +278,7 @@
 
   .input {
     @apply w-full px-4 py-2 text-white rounded-lg;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-white-05);
     border: 1px solid var(--color-border);
   }
   .input:focus {
