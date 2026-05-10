@@ -19,3 +19,4 @@ export { AnimatedAspectLines } from './AnimatedAspectLines';
 export type { AnimatedAspectLinesProps, AspectLineData, PlanetPositionData } from './AnimatedAspectLines';
 export { PlanetDeepDiveCard } from './PlanetDeepDiveCard';
 export type { PlanetDeepDiveCardProps, PlanetInfo, PlanetAspectInfo } from './PlanetDeepDiveCard';
+export { default as TransitOverlay } from './TransitOverlay';
