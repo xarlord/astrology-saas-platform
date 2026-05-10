@@ -11,14 +11,20 @@ import './assets/styles/globals.css';
 // Global error handlers
 window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason);
-  // TODO: Send to error reporting service (Sentry, LogRocket, etc.)
+  // Send to Sentry (if configured)
+  import('./utils/sentry').then(({ captureException }) => {
+    captureException(event.reason, { source: 'unhandledrejection' });
+  }).catch(() => { /* Sentry not configured */ });
   // Prevent default browser error handling
   event.preventDefault();
 });
 
 window.addEventListener('error', (event) => {
   console.error('Global error:', event.error);
-  // TODO: Send to error reporting service
+  // Send to Sentry (if configured)
+  import('./utils/sentry').then(({ captureException }) => {
+    captureException(event.error, { source: 'global_error' });
+  }).catch(() => { /* Sentry not configured */ });
 });
 
 // Import service worker hook only in production
