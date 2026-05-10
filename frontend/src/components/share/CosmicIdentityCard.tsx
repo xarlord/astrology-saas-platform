@@ -122,7 +122,7 @@ const CosmicIdentityCard: React.FC<CosmicIdentityCardProps> = ({
     >
       {/* Cosmic Fingerprint Background */}
       <div className="absolute inset-0 opacity-10" data-testid="cosmic-fingerprint">
-        <svg viewBox="0 0 300 200" className="w-full h-full">
+        <svg viewBox="0 0 300 200" className="w-full h-full" aria-hidden="true">
           <motion.path
             d={fingerprintPath}
             fill="none"

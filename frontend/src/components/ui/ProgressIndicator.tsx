@@ -190,6 +190,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
+        aria-hidden="true"
       >
         {/* Track */}
         <circle

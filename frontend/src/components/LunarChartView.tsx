@@ -63,7 +63,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
 
     return (
       <div className="house-wheel">
-        <svg viewBox="0 0 200 200" className="wheel-svg">
+        <svg viewBox="0 0 200 200" className="wheel-svg" role="img" aria-label="Lunar chart house wheel">
           {/* Outer circle */}
           <circle cx="100" cy="100" r="95" fill="none" stroke="#333" strokeWidth="2" />
           <circle cx="100" cy="100" r="85" fill="none" stroke="#ddd" strokeWidth="1" />
