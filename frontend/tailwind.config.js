@@ -71,15 +71,29 @@ export default {
         planet: {
           sun: '#FFD700',
           moon: '#C0C0C0',
-          mercury: '#8B4513',
+          mercury: '#696969',
           venus: '#FF69B4',
           mars: '#FF0000',
           jupiter: '#FFA500',
-          saturn: '#696969',
+          saturn: '#8B4513',
           uranus: '#40E0D0',
           neptune: '#4169E1',
           pluto: '#8B0000',
+          northnode: '#6b3de1',
         },
+        // Status / Semantic colors
+        status: {
+          error: '#EF4444',
+          success: '#22c55e',
+          warning: '#fbbf24',
+          info: '#3B82F6',
+        },
+        // Extended palette
+        indigo: '#6366F1',
+        violet: '#8b5cf6',
+        emerald: '#10B981',
+        amber: '#f59e0b',
+        'dim-gray': '#696969',
       },
       keyframes: {
         slideIn: {
