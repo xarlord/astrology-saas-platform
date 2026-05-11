@@ -283,7 +283,7 @@ describe('LandingPage', () => {
       const mysticTexts = screen.getAllByText(/mystic/i);
       expect(mysticTexts.length).toBeGreaterThan(0);
       expect(screen.getByText(/\$9\.99/)).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /get pro access/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /get mystic access/i })).toBeInTheDocument();
     });
 
     it('should render Oracle (Enterprise) plan', () => {
@@ -323,7 +323,7 @@ describe('LandingPage', () => {
       renderWithProviders(createElement(LandingPage));
       const pricingLinks = [
         screen.getByRole('link', { name: /start free/i }),
-        screen.getByRole('link', { name: /get pro access/i }),
+        screen.getByRole('link', { name: /get mystic access/i }),
         screen.getByRole('link', { name: /contact sales/i }),
       ];
       expect(pricingLinks.length).toBe(3);

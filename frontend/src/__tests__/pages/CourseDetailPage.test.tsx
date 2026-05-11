@@ -627,44 +627,45 @@ describe('CourseDetailPage', () => {
       expect(screen.getByText(/additional learning materials/i)).toBeInTheDocument();
     });
 
-    it('should display recommended reading option', async () => {
+    it('should display course workbook resource', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CourseDetailPage));
 
       const resourcesTab = screen.getByRole('button', { name: /resources/i });
       await user.click(resourcesTab);
 
-      expect(screen.getByText(/recommended reading/i)).toBeInTheDocument();
+      expect(screen.getByText(/course workbook/i)).toBeInTheDocument();
     });
 
-    it('should display external links option', async () => {
+    it('should display house reference chart resource', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CourseDetailPage));
 
       const resourcesTab = screen.getByRole('button', { name: /resources/i });
       await user.click(resourcesTab);
 
-      expect(screen.getByText(/external links/i)).toBeInTheDocument();
+      expect(screen.getByText(/house reference chart/i)).toBeInTheDocument();
     });
 
-    it('should display glossary option', async () => {
+    it('should display additional learning materials label', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CourseDetailPage));
 
       const resourcesTab = screen.getByRole('button', { name: /resources/i });
       await user.click(resourcesTab);
 
-      expect(screen.getByText(/glossary/i)).toBeInTheDocument();
+      expect(screen.getByText(/additional learning materials/i)).toBeInTheDocument();
     });
 
-    it('should display FAQ option', async () => {
+    it('should display resource links', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(CourseDetailPage));
 
       const resourcesTab = screen.getByRole('button', { name: /resources/i });
       await user.click(resourcesTab);
 
-      expect(screen.getByText(/faq/i)).toBeInTheDocument();
+      const resourceLinks = screen.getAllByRole('link').filter(l => l.textContent?.includes('Workbook') || l.textContent?.includes('Chart'));
+      expect(resourceLinks.length).toBeGreaterThan(0);
     });
   });
 

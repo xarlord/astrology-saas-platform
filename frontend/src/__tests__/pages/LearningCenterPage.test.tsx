@@ -146,6 +146,58 @@ vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+// Mock learningService so getCategories resolves with fallback-style data
+vi.mock('../../services', () => ({
+  learningService: {
+    getCategories: vi.fn().mockResolvedValue([
+      {
+        id: 'planets',
+        title: 'Planets',
+        icon: 'brightness_high',
+        color: 'text-blue-400 bg-blue-400/10',
+        topics: 12,
+        items: [
+          'The Sun: Your Core Identity',
+          'The Moon: Emotions & Subconscious',
+          'Mercury: Communication Style',
+        ],
+      },
+      {
+        id: 'zodiac',
+        title: 'Zodiac Signs',
+        icon: 'star',
+        color: 'text-amber-400 bg-amber-400/10',
+        topics: 8,
+        items: [
+          'The 12 Signs & Their Archetypes',
+          'Modalities: Cardinal, Fixed, Mutable',
+          'The Four Elements in Astrology',
+        ],
+      },
+      {
+        id: 'houses',
+        title: 'Houses',
+        icon: 'grid_view',
+        color: 'text-purple-400 bg-purple-400/10',
+        topics: 10,
+        items: [
+          'Angular Houses: Action & Initiation',
+          'Succedent Houses: Stability',
+          'Cadent Houses: Adaptation',
+        ],
+      },
+      {
+        id: 'aspects',
+        title: 'Aspects',
+        icon: 'change_history',
+        color: 'text-green-400 bg-green-400/10',
+        topics: 15,
+        items: ['Conjunctions: Fusion of Energy', 'Squares: Dynamic Tension', 'Trines: Natural Flow'],
+      },
+    ]),
+  },
+}));
+
 // Import after mocks
 import LearningCenterPage from '../../pages/LearningCenterPage';
 
@@ -403,39 +455,49 @@ describe('LearningCenterPage', () => {
       expect(screen.getByText(/knowledge base/i)).toBeInTheDocument();
     });
 
-    it('should display all four knowledge categories', () => {
+    it('should display all four knowledge categories', async () => {
       renderWithProviders(createElement(LearningCenterPage));
       // Use getAllByText since these appear in descriptions too
       const planetsTexts = screen.getAllByText(/planets/i);
       expect(planetsTexts.length).toBeGreaterThan(0);
-      expect(screen.getByText(/zodiac signs/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/zodiac signs/i)).toBeInTheDocument();
+      });
       const housesTexts = screen.getAllByText(/houses/i);
       expect(housesTexts.length).toBeGreaterThan(0);
       const aspectsTexts = screen.getAllByText(/aspects/i);
       expect(aspectsTexts.length).toBeGreaterThan(0);
     });
 
-    it('should display topic counts', () => {
+    it('should display topic counts', async () => {
       renderWithProviders(createElement(LearningCenterPage));
-      expect(screen.getByText(/browse 12 more/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/browse 12 more/i)).toBeInTheDocument();
+      });
       expect(screen.getByText(/browse 8 more/i)).toBeInTheDocument();
     });
 
-    it('should display category items for Planets', () => {
+    it('should display category items for Planets', async () => {
       renderWithProviders(createElement(LearningCenterPage));
-      expect(screen.getByText(/the sun: your core identity/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/the sun: your core identity/i)).toBeInTheDocument();
+      });
       expect(screen.getByText(/the moon: emotions & subconscious/i)).toBeInTheDocument();
     });
 
-    it('should display category items for Zodiac Signs', () => {
+    it('should display category items for Zodiac Signs', async () => {
       renderWithProviders(createElement(LearningCenterPage));
-      expect(screen.getByText(/the 12 signs & their archetypes/i)).toBeInTheDocument();
-      expect(screen.getByText(/the four elements in astrology/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/the 12 signs & their archetypes/i)).toBeInTheDocument();
+        expect(screen.getByText(/the four elements in astrology/i)).toBeInTheDocument();
+      });
     });
 
-    it('should display category items for Houses', () => {
+    it('should display category items for Houses', async () => {
       renderWithProviders(createElement(LearningCenterPage));
-      expect(screen.getByText(/angular houses: action & initiation/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/angular houses: action & initiation/i)).toBeInTheDocument();
+      });
     });
 
     it('should display category items for Aspects', () => {
