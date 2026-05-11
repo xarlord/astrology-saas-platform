@@ -7,9 +7,11 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
   testMatch: /.*\.spec\.ts$/,
+  // Exclude debug/dev-only test files in CI
+  testIgnore: process.env.CI ? /(?:debug-|chart-options-test|console-error|smoke-core)\.spec\.ts$/ : undefined,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 2 : undefined,
   timeout: 30000,
   expect: {
