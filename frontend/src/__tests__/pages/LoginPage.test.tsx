@@ -393,9 +393,12 @@ describe('LoginPage', () => {
     it('should have rounded-2xl styling on form container', () => {
       renderLoginPage();
 
-      const card = screen.getByText('Welcome Back').closest('div.rounded-2xl');
-      expect(card).toBeInTheDocument();
-      expect(card).toHaveClass('rounded-2xl');
+      // The form container is a sibling of the header div, not an ancestor of "Welcome Back"
+      // Find the form container by looking for the element with rounded-2xl that contains the form
+      const form = screen.getByTestId('email-input').closest('form');
+      const formContainer = form?.parentElement;
+      expect(formContainer).toBeInTheDocument();
+      expect(formContainer).toHaveClass('rounded-2xl');
     });
 
     it('should have correct title styling', () => {

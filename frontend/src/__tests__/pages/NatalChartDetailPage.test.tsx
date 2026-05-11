@@ -721,20 +721,23 @@ describe('NatalChartDetailPage', () => {
       expect(mockRevokeObjectURL).toHaveBeenCalled();
     });
 
-    it('should open ShareCardModal when share button is clicked', async () => {
+    it('should copy URL to clipboard when share button is clicked (no Web Share API)', async () => {
+      // Mock clipboard API (jsdom doesn't have navigator.share)
+      const mockWriteText = vi.fn().mockResolvedValue(undefined);
+      Object.assign(navigator, {
+        clipboard: { writeText: mockWriteText },
+      });
+
       const user = userEvent.setup();
       renderWithProviders(createElement(NatalChartDetailPage));
 
       const shareButton = screen.getByRole('button', { name: /^share$/i });
       await user.click(shareButton);
 
-      // ShareCardModal should be visible (it has role="dialog" with aria-modal="true")
-      const modal = await screen.findByRole('dialog', { hidden: true });
-      expect(modal).toBeInTheDocument();
-      expect(modal).toHaveAttribute('aria-modal', 'true');
-
-      // Modal should contain "Share Card" title
-      expect(screen.getByText('Share Card')).toBeInTheDocument();
+      // Since navigator.share is not available in jsdom, it falls back to clipboard
+      await waitFor(() => {
+        expect(mockWriteText).toHaveBeenCalled();
+      });
     });
   });
 
