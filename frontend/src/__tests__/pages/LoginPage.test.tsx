@@ -38,6 +38,7 @@ vi.mock('react-router-dom', async () => {
 // Mock the useAuth hook
 const mockAuthHook = {
   login: vi.fn(),
+  socialLogin: vi.fn(),
   isLoading: false,
   user: null,
   isAuthenticated: false,
@@ -78,7 +79,7 @@ describe('LoginPage', () => {
 
       // Header
       expect(screen.getByText('Welcome Back')).toBeInTheDocument();
-      expect(screen.getByText('Sign in to access your charts and readings')).toBeInTheDocument();
+      expect(screen.getByText('Sign in to access your cosmic insights')).toBeInTheDocument();
 
       // Form fields
       expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
@@ -92,7 +93,7 @@ describe('LoginPage', () => {
 
       // Sign up link
       expect(screen.getByText(/don't have an account/i)).toBeInTheDocument();
-      expect(screen.getByText('Sign up')).toBeInTheDocument();
+      expect(screen.getByText('Sign up for free')).toBeInTheDocument();
     });
 
     it('should have correct input attributes for email field', () => {
@@ -103,7 +104,7 @@ describe('LoginPage', () => {
       expect(emailInput).toHaveAttribute('id', 'email');
       expect(emailInput).toHaveAttribute('name', 'email');
       expect(emailInput).toHaveAttribute('autoComplete', 'email');
-      expect(emailInput).toHaveAttribute('aria-required', 'true');
+      expect(emailInput).toHaveAttribute('required');
       expect(emailInput).toHaveAttribute('placeholder', 'cosmic.traveler@example.com');
     });
 
@@ -115,7 +116,7 @@ describe('LoginPage', () => {
       expect(passwordInput).toHaveAttribute('id', 'password');
       expect(passwordInput).toHaveAttribute('name', 'password');
       expect(passwordInput).toHaveAttribute('autoComplete', 'current-password');
-      expect(passwordInput).toHaveAttribute('aria-required', 'true');
+      expect(passwordInput).toHaveAttribute('required');
     });
 
     it('should have correct link to forgot password page', () => {
@@ -128,7 +129,7 @@ describe('LoginPage', () => {
     it('should have correct link to register page', () => {
       renderLoginPage();
 
-      const signUpLink = screen.getByText('Sign up').closest('a');
+      const signUpLink = screen.getByText('Sign up for free').closest('a');
       expect(signUpLink).toHaveAttribute('href', '/register');
     });
   });
@@ -190,7 +191,8 @@ describe('LoginPage', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+        // LoginPageNew redirects to /daily-briefing when daily briefing not yet viewed today
+        expect(mockNavigate).toHaveBeenCalledWith('/daily-briefing', { replace: true });
       });
     });
 
@@ -236,20 +238,21 @@ describe('LoginPage', () => {
   });
 
   describe('Error States', () => {
-    it('should display validation error when submitting with empty fields', async () => {
+    it('should not submit when email field is empty (HTML5 required)', async () => {
       const user = userEvent.setup();
       renderLoginPage();
 
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
 
-      // Form validation should show error
+      // LoginPageNew uses native HTML5 validation — no custom error text rendered
+      // The browser blocks submission; login should not be called
       await waitFor(() => {
-        expect(screen.getByText('Email is required')).toBeInTheDocument();
+        expect(mockAuthHook.login).not.toHaveBeenCalled();
       });
     });
 
-    it('should display error for invalid email format', async () => {
+    it('should block submit for invalid email format via HTML5 validation', async () => {
       const user = userEvent.setup();
       renderLoginPage();
 
@@ -259,12 +262,14 @@ describe('LoginPage', () => {
       await user.type(emailInput, 'invalid-email');
       await user.click(submitButton);
 
+      // Native type="email" validation blocks submission; no custom error text
+      // Just verify login was not called since form won't submit
       await waitFor(() => {
-        expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument();
+        expect(mockAuthHook.login).not.toHaveBeenCalled();
       });
     });
 
-    it('should display error for short password', async () => {
+    it('should submit even with short password (no client-side length check)', async () => {
       const user = userEvent.setup();
       renderLoginPage();
 
@@ -276,16 +281,20 @@ describe('LoginPage', () => {
       await user.type(passwordInput, 'short');
       await user.click(submitButton);
 
+      // LoginPageNew has no client-side password length validation
       await waitFor(() => {
-        expect(screen.getByText('Password must be at least 8 characters')).toBeInTheDocument();
+        expect(mockAuthHook.login).toHaveBeenCalledWith({
+          email: 'test@example.com',
+          password: 'short',
+        });
       });
     });
 
-    it('should not display error container when no validation errors', () => {
+    it('should not display error container when no auth errors', () => {
       renderLoginPage();
 
-      // The error div should not exist
-      expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
+      // LoginPageNew shows auth errors in role="alert" container
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
 
@@ -341,7 +350,7 @@ describe('LoginPage', () => {
     it('should have correct link to register page', () => {
       renderLoginPage();
 
-      const signUpLink = screen.getByRole('link', { name: 'Sign up' });
+      const signUpLink = screen.getByRole('link', { name: /sign up for free/i });
       expect(signUpLink).toHaveAttribute('href', '/register');
     });
   });
@@ -355,14 +364,14 @@ describe('LoginPage', () => {
       expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
     });
 
-    it('should have aria-required on required fields', () => {
+    it('should have required attribute on required fields', () => {
       renderLoginPage();
 
       const emailInput = screen.getByTestId('email-input');
       const passwordInput = screen.getByTestId('password-input');
 
-      expect(emailInput).toHaveAttribute('aria-required', 'true');
-      expect(passwordInput).toHaveAttribute('aria-required', 'true');
+      expect(emailInput).toHaveAttribute('required');
+      expect(passwordInput).toHaveAttribute('required');
     });
 
     it('should have email type for email input', () => {
@@ -381,10 +390,10 @@ describe('LoginPage', () => {
   });
 
   describe('Form Layout and Styling', () => {
-    it('should have glass-panel styling on form container', () => {
+    it('should have rounded-2xl styling on form container', () => {
       renderLoginPage();
 
-      const card = screen.getByText('Welcome Back').closest('div.glass-panel');
+      const card = screen.getByText('Welcome Back').closest('div.rounded-2xl');
       expect(card).toBeInTheDocument();
       expect(card).toHaveClass('rounded-2xl');
     });
@@ -393,7 +402,7 @@ describe('LoginPage', () => {
       renderLoginPage();
 
       const title = screen.getByText('Welcome Back');
-      expect(title).toHaveClass('text-3xl');
+      expect(title).toHaveClass('text-4xl');
       expect(title).toHaveClass('font-bold');
       expect(title).toHaveClass('text-white');
     });
@@ -407,11 +416,11 @@ describe('LoginPage', () => {
       const submitButton = screen.getByRole('button', { name: /sign in/i });
       await user.click(submitButton);
 
-      // Form has required fields, validation errors should appear
+      // LoginPageNew uses native HTML5 required validation — browser blocks submission
+      // No custom error text rendered; login simply not called
       await waitFor(() => {
-        expect(screen.getByText('Email is required')).toBeInTheDocument();
+        expect(mockAuthHook.login).not.toHaveBeenCalled();
       });
-      expect(mockAuthHook.login).not.toHaveBeenCalled();
     });
 
     it('should handle special characters in email', async () => {
