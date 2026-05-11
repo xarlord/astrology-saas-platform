@@ -515,7 +515,12 @@ jobs:
         run: |
           mkdir -p deploy/backend deploy/frontend
           cp -r backend/dist deploy/backend/
-          cp -r backend/node_modules deploy/backend/
+          # npm workspaces hoist node_modules to root — copy from there
+          if [ -d backend/node_modules ]; then
+            cp -r backend/node_modules deploy/backend/
+          elif [ -d node_modules ]; then
+            cp -r node_modules deploy/backend/node_modules
+          fi
           cp -r backend/package*.json deploy/backend/
           cp -r frontend/dist deploy/frontend/
 
