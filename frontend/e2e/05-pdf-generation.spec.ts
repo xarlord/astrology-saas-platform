@@ -76,7 +76,7 @@ test.describe('PDF Generation', () => {
       await pdfButton.first().click();
 
       const errorEl = page.locator(
-        '[data-testid="pdf-error"], [role="alert"], .error-message, text=error, text=failed',
+        '[data-testid="pdf-error"], [role="alert"], .error-message, .text-red-500, :text-is("error"), :text-is("failed")',
       );
       await expect(errorEl).toBeVisible({ timeout: 5000 });
     } else {

@@ -34,7 +34,7 @@ test.describe('Accessibility - Form Components', () => {
       await page.click('button[type="submit"]');
       await page.waitForTimeout(500);
 
-      const errorMessages = page.locator('.error, [role="alert"], .error-message');
+      const errorMessages = page.locator('.error, [role="alert"], .error-message, .text-red-500, .text-red-400, [aria-invalid="true"]');
       const count = await errorMessages.count();
 
       if (count > 0) {

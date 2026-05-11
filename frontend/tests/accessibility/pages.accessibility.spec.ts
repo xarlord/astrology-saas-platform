@@ -191,7 +191,7 @@ test.describe('Accessibility - Form Elements', () => {
     await page.waitForTimeout(500);
 
     // Check for error messages with proper ARIA
-    const errorMessages = await page.locator('[role="alert"], .error, .error-message').all();
+    const errorMessages = await page.locator('[role="alert"], .error, .error-message, .text-red-500, .text-red-400, [aria-invalid="true"]').all();
 
     for (const error of errorMessages) {
       const isVisible = await error.isVisible();
