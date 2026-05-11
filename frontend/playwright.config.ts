@@ -10,7 +10,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined,
   timeout: 30000,
   expect: {
     timeout: 10000,
@@ -41,92 +41,108 @@ export default defineConfig({
     navigationTimeout: 30000,
   },
 
-  projects: [
-    // Setup project: runs auth.setup.ts to create authenticated state
-    {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-      timeout: 60000,
-    },
-
-    // Console audit (public routes) — runs first, Chromium only
-    {
-      name: 'console-audit',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: /00-console-audit\.spec\.ts/,
-    },
-
-    // Console audit (authenticated routes) — uses pre-seeded auth state
-    {
-      name: 'console-audit-authenticated',
-      use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'e2e/.auth/user.json',
-      },
-      testMatch: /00-console-audit\.spec\.ts/,
-    },
-
-    // Authenticated project: uses pre-saved auth state for tests that require login
-    {
-      name: 'authenticated-chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'e2e/.auth/user.json',
-      },
-      dependencies: ['setup'],
-      testMatch: /.*\.spec\.ts/,
-      // Only run in authenticated-chromium when explicitly selected,
-      // otherwise falls through to unauthenticated browsers below
-    },
-
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports */
-    {
-      name: 'Mobile Chrome',
-      use: {
-        ...devices['Pixel 5'],
-        // Mobile-specific timeouts for slower execution
-        actionTimeout: 20000,
-        navigationTimeout: 40000,
-      },
-    },
-    {
-      name: 'Mobile Safari',
-      use: {
-        ...devices['iPhone 13'],
-        // Mobile-specific timeouts for slower execution
-        actionTimeout: 20000,
-        navigationTimeout: 40000,
-      },
-    },
-
-    /* Test against tablet viewports */
-    {
-      name: 'Tablet',
-      use: {
-        ...devices['iPad Pro'],
-        actionTimeout: 15000,
-        navigationTimeout: 35000,
-      },
-    },
-  ],
-
-  // Timeout for setup tests (bcrypt hashing can be slow)
-  timeout: 30000,
+  // In CI: only run chromium + authenticated-chromium to keep runtime manageable.
+  // Cross-browser, mobile, and tablet are covered by BDD/visual/accessibility jobs.
+  projects: process.env.CI
+    ? [
+        {
+          name: 'setup',
+          testMatch: /.*\.setup\.ts/,
+          timeout: 60000,
+        },
+        {
+          name: 'console-audit',
+          use: { ...devices['Desktop Chrome'] },
+          testMatch: /00-console-audit\.spec\.ts/,
+        },
+        {
+          name: 'console-audit-authenticated',
+          use: {
+            ...devices['Desktop Chrome'],
+            storageState: 'e2e/.auth/user.json',
+          },
+          testMatch: /00-console-audit\.spec\.ts/,
+        },
+        {
+          name: 'authenticated-chromium',
+          use: {
+            ...devices['Desktop Chrome'],
+            storageState: 'e2e/.auth/user.json',
+          },
+          dependencies: ['setup'],
+          testMatch: /.*\.spec\.ts/,
+        },
+        {
+          name: 'chromium',
+          use: { ...devices['Desktop Chrome'] },
+        },
+      ]
+    : [
+        // Local dev: full matrix
+        {
+          name: 'setup',
+          testMatch: /.*\.setup\.ts/,
+          timeout: 60000,
+        },
+        {
+          name: 'console-audit',
+          use: { ...devices['Desktop Chrome'] },
+          testMatch: /00-console-audit\.spec\.ts/,
+        },
+        {
+          name: 'console-audit-authenticated',
+          use: {
+            ...devices['Desktop Chrome'],
+            storageState: 'e2e/.auth/user.json',
+          },
+          testMatch: /00-console-audit\.spec\.ts/,
+        },
+        {
+          name: 'authenticated-chromium',
+          use: {
+            ...devices['Desktop Chrome'],
+            storageState: 'e2e/.auth/user.json',
+          },
+          dependencies: ['setup'],
+          testMatch: /.*\.spec\.ts/,
+        },
+        {
+          name: 'chromium',
+          use: { ...devices['Desktop Chrome'] },
+        },
+        {
+          name: 'firefox',
+          use: { ...devices['Desktop Firefox'] },
+        },
+        {
+          name: 'webkit',
+          use: { ...devices['Desktop Safari'] },
+        },
+        {
+          name: 'Mobile Chrome',
+          use: {
+            ...devices['Pixel 5'],
+            actionTimeout: 20000,
+            navigationTimeout: 40000,
+          },
+        },
+        {
+          name: 'Mobile Safari',
+          use: {
+            ...devices['iPhone 13'],
+            actionTimeout: 20000,
+            navigationTimeout: 40000,
+          },
+        },
+        {
+          name: 'Tablet',
+          use: {
+            ...devices['iPad Pro'],
+            actionTimeout: 15000,
+            navigationTimeout: 35000,
+          },
+        },
+      ],
 
   // Run local dev servers before starting the tests
   webServer: [
