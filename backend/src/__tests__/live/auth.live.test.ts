@@ -13,7 +13,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
   let accessToken = '';
   let refreshTokenValue = '';
   let cookies = '';
-  let registrationSucceeded = false;
+  let _registrationSucceeded = false;
 
   // ============================================================
   // REGISTER
@@ -32,7 +32,7 @@ describe('Authentication Controller - LIVE SYSTEM', () => {
       expect([201, 500]).toContain(res.status);
 
       if (res.status === 201) {
-        registrationSucceeded = true;
+        _registrationSucceeded = true;
         expect(res.data.success).toBe(true);
         expect(res.data.data.user).toBeDefined();
         expect(res.data.data.user.email).toBe(TEST_USER.email);

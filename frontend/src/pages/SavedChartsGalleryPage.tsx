@@ -96,7 +96,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
     [deleteChart],
   );
 
-  const handleShare = useCallback(
+  const _handleShare = useCallback(
     async (id: string) => {
       const shareUrl = `${window.location.origin}/charts/${id}`;
       const chart = charts.find((c) => c.id === id);

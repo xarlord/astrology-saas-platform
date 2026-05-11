@@ -186,7 +186,7 @@ export default function SubscriptionPage() {
   const [plans, setPlans] = useState<PlanDetail[]>([]);
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [billingLoading, setBillingLoading] = useState(true);
-  const [billingError, setBillingError] = useState<string | null>(null);
+  const [_billingError, setBillingError] = useState<string | null>(null);
 
   useEffect(() => {
     void fetchCharts();

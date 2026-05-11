@@ -388,7 +388,7 @@ export const NatalChartDetailPage: React.FC = () => {
     }
   }, [currentChart]);
 
-  const handleShare = useCallback(() => {
+  const _handleShare = useCallback(() => {
     setShareCardModalOpen(true);
   }, []);
 

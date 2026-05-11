@@ -5,7 +5,6 @@
 
 import React, { useState, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { CHART_UI_COLORS } from '../../utils/design-tokens';
 
 // Types
 export interface Planet {
