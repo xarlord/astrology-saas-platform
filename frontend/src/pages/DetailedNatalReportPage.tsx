@@ -259,7 +259,7 @@ const DetailedNatalReportPage: React.FC = () => {
     );
   }
 
-  if (isLoadingChart) {
+  if (isLoadingChart && !apiChart) {
     return (
       <AppLayout>
         <div className="max-w-7xl mx-auto px-6 lg:px-20 py-10">

@@ -88,6 +88,10 @@ const masterHousesCourse = {
   duration: 5400, // 90 minutes => "1.5 hours"
   thumbnailUrl: 'https://example.com/houses.jpg',
   createdAt: '2026-01-01T00:00:00Z',
+  resources: [
+    { title: 'Course Workbook', type: 'PDF', size: '2.4 MB', url: 'https://example.com/workbook.pdf' },
+    { title: 'House Reference Chart', type: 'PDF', size: '1.1 MB', url: 'https://example.com/chart.pdf' },
+  ],
   lessons: [
     {
       id: 'lesson-1',
@@ -481,15 +485,15 @@ describe('CourseDetailPage', () => {
 
     it('should have downloadable resource buttons', () => {
       renderWithProviders(createElement(CourseDetailPage));
-      const resourceButtons = screen
-        .getAllByRole('button')
+      const resourceLinks = screen
+        .getAllByRole('link')
         .filter(
-          (btn) =>
-            btn.textContent?.includes('Workbook') ||
-            btn.textContent?.includes('Chart') ||
-            btn.textContent?.includes('Sheet'),
+          (link) =>
+            link.textContent?.includes('Workbook') ||
+            link.textContent?.includes('Chart') ||
+            link.textContent?.includes('Sheet'),
         );
-      expect(resourceButtons.length).toBeGreaterThan(0);
+      expect(resourceLinks.length).toBeGreaterThan(0);
     });
 
     it('should display download icons on resources', () => {

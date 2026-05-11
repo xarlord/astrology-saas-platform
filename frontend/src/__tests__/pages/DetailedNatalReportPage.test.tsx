@@ -228,15 +228,17 @@ describe('DetailedNatalReportPage', () => {
   });
 
   describe('Page Rendering', () => {
-    it('should render without crashing', () => {
+    it('should render without crashing', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
+      });
     });
 
     it('should render the header with chart info', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
       await waitFor(() => {
+        expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
         expect(screen.getByText('Sarah Mitchell')).toBeInTheDocument();
       });
     });
@@ -252,52 +254,64 @@ describe('DetailedNatalReportPage', () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
       await waitFor(() => {
         expect(screen.getByText('January 14, 1992')).toBeInTheDocument();
+        expect(screen.getByText('14:42 EST')).toBeInTheDocument();
+        expect(screen.getByText('New York, USA')).toBeInTheDocument();
       });
-      expect(screen.getByText('14:42 EST')).toBeInTheDocument();
-      expect(screen.getByText('New York, USA')).toBeInTheDocument();
     });
 
-    it('should render all tabs', () => {
+    it('should render all tabs', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Summary')).toBeInTheDocument();
-      expect(screen.getByText('Planets')).toBeInTheDocument();
-      expect(screen.getByText('Houses')).toBeInTheDocument();
-      expect(screen.getByText('Aspects')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+        expect(screen.getByText('Planets')).toBeInTheDocument();
+        expect(screen.getByText('Houses')).toBeInTheDocument();
+        expect(screen.getByText('Aspects')).toBeInTheDocument();
+      });
     });
   });
 
   describe('Summary Tab (Default)', () => {
-    it('should show summary tab by default', () => {
+    it('should show summary tab by default', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('The Big Three')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('The Big Three')).toBeInTheDocument();
+      });
     });
 
-    it('should render Big Three section', () => {
+    it('should render Big Three section', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('The Big Three')).toBeInTheDocument();
-      expect(screen.getByTestId('planet-card-sun')).toBeInTheDocument();
-      expect(screen.getByTestId('planet-card-moon')).toBeInTheDocument();
-      expect(screen.getByTestId('planet-card-rising')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('The Big Three')).toBeInTheDocument();
+        expect(screen.getByTestId('planet-card-sun')).toBeInTheDocument();
+        expect(screen.getByTestId('planet-card-moon')).toBeInTheDocument();
+        expect(screen.getByTestId('planet-card-rising')).toBeInTheDocument();
+      });
     });
 
-    it('should render Elemental Balance component', () => {
+    it('should render Elemental Balance component', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByTestId('elemental-balance')).toBeInTheDocument();
-      expect(screen.getByTestId('fire-value')).toHaveTextContent('Fire: 35%');
-      expect(screen.getByTestId('earth-value')).toHaveTextContent('Earth: 45%');
-      expect(screen.getByTestId('air-value')).toHaveTextContent('Air: 10%');
-      expect(screen.getByTestId('water-value')).toHaveTextContent('Water: 10%');
+      await waitFor(() => {
+        expect(screen.getByTestId('elemental-balance')).toBeInTheDocument();
+        expect(screen.getByTestId('fire-value')).toHaveTextContent('Fire: 35%');
+        expect(screen.getByTestId('earth-value')).toHaveTextContent('Earth: 45%');
+        expect(screen.getByTestId('air-value')).toHaveTextContent('Air: 10%');
+        expect(screen.getByTestId('water-value')).toHaveTextContent('Water: 10%');
+      });
     });
 
-    it('should render Chart Strength Overview', () => {
+    it('should render Chart Strength Overview', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Chart Strength Overview')).toBeInTheDocument();
-      expect(screen.getByText(/Cardinal energy/)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Chart Strength Overview')).toBeInTheDocument();
+        expect(screen.getByText(/Cardinal energy/)).toBeInTheDocument();
+      });
     });
 
-    it('should render Personal Planets section', () => {
+    it('should render Personal Planets section', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Personal Planets')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Personal Planets')).toBeInTheDocument();
+      });
     });
   });
 
@@ -306,6 +320,10 @@ describe('DetailedNatalReportPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
 
+      // Wait for loading to finish first
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
       const planetsTab = screen.getByText('Planets');
       await user.click(planetsTab);
 
@@ -317,6 +335,10 @@ describe('DetailedNatalReportPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
 
+      // Wait for loading to finish first
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
       const housesTab = screen.getByText('Houses');
       await user.click(housesTab);
 
@@ -329,6 +351,10 @@ describe('DetailedNatalReportPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
 
+      // Wait for loading to finish first
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
       const aspectsTab = screen.getByText('Aspects');
       await user.click(aspectsTab);
 
@@ -338,6 +364,11 @@ describe('DetailedNatalReportPage', () => {
     it('should switch back to Summary tab when clicked', async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
+
+      // Wait for loading to finish first
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
 
       // First switch to Planets
       await user.click(screen.getByText('Planets'));
@@ -353,6 +384,9 @@ describe('DetailedNatalReportPage', () => {
     beforeEach(async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
       await user.click(screen.getByText('Houses'));
     });
 
@@ -384,6 +418,9 @@ describe('DetailedNatalReportPage', () => {
     beforeEach(async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
       await user.click(screen.getByText('Planets'));
     });
 
@@ -404,6 +441,9 @@ describe('DetailedNatalReportPage', () => {
     beforeEach(async () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
+      await waitFor(() => {
+        expect(screen.getByText('Summary')).toBeInTheDocument();
+      });
       await user.click(screen.getByText('Aspects'));
     });
 
@@ -425,9 +465,11 @@ describe('DetailedNatalReportPage', () => {
   });
 
   describe('PDF Generation', () => {
-    it('should have Download PDF button in sidebar', () => {
+    it('should have Download PDF button in sidebar', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Download PDF Report')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Download PDF Report')).toBeInTheDocument();
+      });
     });
 
     it('should start PDF generation when button clicked', async () => {
@@ -447,16 +489,20 @@ describe('DetailedNatalReportPage', () => {
       expect(screen.getByText('Download PDF Report')).toBeInTheDocument();
     });
 
-    it('should have Order Printed Chart button', () => {
+    it('should have Order Printed Chart button', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
+      });
     });
   });
 
   describe('Share Functionality', () => {
-    it('should have Share Report button in sidebar', () => {
+    it('should have Share Report button in sidebar', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Share Report')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Share Report')).toBeInTheDocument();
+      });
     });
 
     it('should call navigator.share when share button clicked', async () => {
@@ -464,6 +510,9 @@ describe('DetailedNatalReportPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
 
+      await waitFor(() => {
+        expect(screen.getByText('Share Report')).toBeInTheDocument();
+      });
       const shareButton = screen.getByText('Share Report');
       await user.click(shareButton);
 
@@ -476,6 +525,9 @@ describe('DetailedNatalReportPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(DetailedNatalReportPage));
 
+      await waitFor(() => {
+        expect(screen.getByText('Share Report')).toBeInTheDocument();
+      });
       const shareButton = screen.getByText('Share Report');
       await user.click(shareButton);
 
@@ -485,21 +537,27 @@ describe('DetailedNatalReportPage', () => {
   });
 
   describe('Navigation', () => {
-    it('should have Print button in sidebar', () => {
+    it('should have Print button in sidebar', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
+      });
     });
 
-    it('should have upsell synastry card', () => {
+    it('should have upsell synastry card', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Synastry Guide')).toBeInTheDocument();
-      expect(screen.getByText('Learn More')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Synastry Guide')).toBeInTheDocument();
+        expect(screen.getByText('Learn More')).toBeInTheDocument();
+      });
     });
 
-    it('should have current transit information', () => {
+    it('should have current transit information', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Current Transit')).toBeInTheDocument();
-      expect(screen.getByText('Jupiter Retrograde')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Current Transit')).toBeInTheDocument();
+        expect(screen.getByText('Jupiter Retrograde')).toBeInTheDocument();
+      });
     });
   });
 
@@ -527,33 +585,41 @@ describe('DetailedNatalReportPage', () => {
       });
     });
 
-    it('should have all interactive tab elements', () => {
+    it('should have all interactive tab elements', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
 
-      const tabs = ['Summary', 'Planets', 'Houses', 'Aspects'];
-      tabs.forEach((tabName) => {
-        const tab = screen.getByText(tabName);
-        expect(tab).toBeInTheDocument();
+      await waitFor(() => {
+        const tabs = ['Summary', 'Planets', 'Houses', 'Aspects'];
+        tabs.forEach((tabName) => {
+          const tab = screen.getByText(tabName);
+          expect(tab).toBeInTheDocument();
+        });
       });
     });
   });
 
   describe('Sidebar Content', () => {
-    it('should render Premium Actions section', () => {
+    it('should render Premium Actions section', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Premium Actions')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Premium Actions')).toBeInTheDocument();
+      });
     });
 
-    it('should render all sidebar buttons', () => {
+    it('should render all sidebar buttons', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Download PDF Report')).toBeInTheDocument();
-      expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
-      expect(screen.getByText('Share Report')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Download PDF Report')).toBeInTheDocument();
+        expect(screen.getByText('Order Printed Chart')).toBeInTheDocument();
+        expect(screen.getByText('Share Report')).toBeInTheDocument();
+      });
     });
 
-    it('should render upsell card with synastry guide', () => {
+    it('should render upsell card with synastry guide', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      expect(screen.getByText('Synastry Guide')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Synastry Guide')).toBeInTheDocument();
+      });
     });
   });
 
@@ -566,16 +632,20 @@ describe('DetailedNatalReportPage', () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
       renderWithProviders(createElement(DetailedNatalReportPage));
 
-      // Component should not crash
-      expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
+      // Component should not crash — wait for content to load
+      await waitFor(() => {
+        expect(screen.getByText('Premium Natal Report')).toBeInTheDocument();
+      });
     });
   });
 
   describe('Responsive Design', () => {
-    it('should have responsive grid classes', () => {
+    it('should have responsive grid classes', async () => {
       renderWithProviders(createElement(DetailedNatalReportPage));
-      const mainContainer = document.querySelector('.max-w-7xl');
-      expect(mainContainer).toBeInTheDocument();
+      await waitFor(() => {
+        const mainContainer = document.querySelector('.max-w-7xl');
+        expect(mainContainer).toBeInTheDocument();
+      });
     });
   });
 
