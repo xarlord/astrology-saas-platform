@@ -130,9 +130,10 @@ describe('ShareModal', () => {
       const passwordInput = screen.getByPlaceholderText('Enter password');
       await user.type(passwordInput, 'mypassword');
 
-      // Use waitFor to handle AnimatePresence animation timing
+      // onChange fires per-keystroke; verify the final value was passed
       await waitFor(() => {
-        expect(onPasswordSet).toHaveBeenCalledWith('mypassword');
+        const calls = onPasswordSet.mock.calls.map((c: string[]) => c[0]);
+        expect(calls).toContain('mypassword');
       });
     });
   });
