@@ -31,7 +31,7 @@ async function findCalculatedChart(userId: string, chartId?: string) {
 
   // Find first chart with calculated_data
   const charts = await ChartModel.findByUserId(userId);
-  const calculated = charts.find((c: any) => c.calculated_data != null);
+  const calculated = charts.find((c: Record<string, unknown>) => c.calculated_data != null);
   if (!calculated) {
     if (charts.length === 0) throw new AppError('No charts found. Please create a natal chart first.', 404);
     throw new AppError('Chart must be calculated first', 400);

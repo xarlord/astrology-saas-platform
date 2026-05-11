@@ -140,7 +140,7 @@ class FluxImageGenerationService {
       }
 
       // Build input for Replicate
-      const input: Record<string, any> = {
+      const input: Record<string, unknown> = {
         prompt: opts.prompt,
         aspect_ratio: opts.aspectRatio || '1:1',
         num_outputs: opts.numOutputs || 1,

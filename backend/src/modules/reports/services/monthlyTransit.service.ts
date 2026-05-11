@@ -236,8 +236,8 @@ function calculateHousePosition(
  * Calculate key aspects for a given date
  */
 function calculateKeyAspects(
-  transits: Map<string, any>,
-  natalChart: any,
+  transits: Map<string, Record<string, unknown>>,
+  natalChart: Record<string, unknown>,
 ): Array<{ planets: string[]; type: string; degree: number }> {
   const aspects: Array<{ planets: string[]; type: string; degree: number }> = [];
 

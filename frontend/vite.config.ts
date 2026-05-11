@@ -102,7 +102,7 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 1500,
     cssCodeSplit: true,
     modulePreload: { polyfill: false },
     minify: 'terser',
