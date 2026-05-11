@@ -11,8 +11,8 @@ export default defineConfig({
   testDir: './',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 2 : undefined,
 
   reporter: [
     ['html', { outputFolder: 'visual-report' }],
@@ -40,28 +40,39 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
   },
 
-  projects: [
-    // Visual tests run on Chromium for consistency
-    {
-      name: 'visual-desktop',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1280, height: 720 },
-      },
-    },
-    {
-      name: 'visual-tablet',
-      use: {
-        ...devices['iPad Pro'],
-      },
-    },
-    {
-      name: 'visual-mobile',
-      use: {
-        ...devices['Pixel 5'],
-      },
-    },
-  ],
+  // In CI: only desktop viewport for speed. Local dev gets all 3 viewports.
+  projects: process.env.CI
+    ? [
+        {
+          name: 'visual-desktop',
+          use: {
+            ...devices['Desktop Chrome'],
+            viewport: { width: 1280, height: 720 },
+          },
+        },
+      ]
+    : [
+        // Visual tests run on Chromium for consistency
+        {
+          name: 'visual-desktop',
+          use: {
+            ...devices['Desktop Chrome'],
+            viewport: { width: 1280, height: 720 },
+          },
+        },
+        {
+          name: 'visual-tablet',
+          use: {
+            ...devices['iPad Pro'],
+          },
+        },
+        {
+          name: 'visual-mobile',
+          use: {
+            ...devices['Pixel 5'],
+          },
+        },
+      ],
 
   webServer: {
     command: 'npm run dev',
