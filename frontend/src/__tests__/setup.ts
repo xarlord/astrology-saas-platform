@@ -8,6 +8,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import { expect, afterEach, beforeAll, afterAll, vi } from 'vitest';
+
+// Mock react-helmet-async globally to prevent HelmetProvider errors in tests
+vi.mock('react-helmet-async', () => ({
+  Helmet: ({ children }: { children: React.ReactNode }) => children,
+  HelmetProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 
