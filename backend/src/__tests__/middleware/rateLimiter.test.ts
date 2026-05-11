@@ -14,7 +14,15 @@ jest.mock('express-rate-limit', () => ({
 import rateLimit from 'express-rate-limit';
 
 describe('Rate Limiter Middleware', () => {
-  let configs: any[];
+  let configs: Array<{
+    windowMs: number;
+    max: number;
+    message: { success: boolean; error: string; code: string };
+    standardHeaders: boolean;
+    legacyHeaders: boolean;
+    keyGenerator?: (req: Record<string, unknown>) => string;
+    skipSuccessfulRequests?: boolean;
+  }>;
 
   beforeAll(() => {
     // Load the module once to capture all configurations

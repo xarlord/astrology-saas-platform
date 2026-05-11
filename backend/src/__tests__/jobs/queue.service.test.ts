@@ -57,16 +57,16 @@ describe('Queue Service', () => {
       getDelayedCount: jest.fn().mockResolvedValue(1),
       getRepeatableJobs: jest.fn().mockResolvedValue([]),
       close: jest.fn().mockResolvedValue(undefined),
-    } as any;
+    } as unknown as Queue;
 
     mockWorker = {
       on: jest.fn().mockReturnThis(),
       close: jest.fn().mockResolvedValue(undefined),
-    } as any;
+    } as unknown as Worker;
 
     mockQueueEvents = {
       close: jest.fn().mockResolvedValue(undefined),
-    } as any;
+    } as unknown as QueueEvents;
 
     // Mock Queue constructor
     (Queue as jest.MockedClass<typeof Queue>).mockImplementation(() => mockQueue);
@@ -542,9 +542,9 @@ describe('Queue Service', () => {
       };
 
       (Queue as jest.MockedClass<typeof Queue>).mockImplementation((type) => {
-        if (type === JobType.DAILY_BRIEFING) return mockDailyQueue as any;
-        if (type === JobType.MONTHLY_REPORT) return mockMonthlyQueue as any;
-        return mockQueue as any;
+        if (type === JobType.DAILY_BRIEFING) return mockDailyQueue as unknown as Queue;
+        if (type === JobType.MONTHLY_REPORT) return mockMonthlyQueue as unknown as Queue;
+        return mockQueue as unknown as Queue;
       });
 
       // When

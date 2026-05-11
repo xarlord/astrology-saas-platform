@@ -26,7 +26,7 @@ jest.mock('../../utils/logger', () => ({
 }));
 
 describe('Scheduler Service', () => {
-  let mockQueue: any;
+  let mockQueue: { add: jest.Mock; getRepeatableJobs: jest.Mock; removeRepeatableByKey: jest.Mock };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -194,7 +194,7 @@ describe('Scheduler Service', () => {
       const now = new Date('2026-04-09T12:00:00Z');
 
       // Mock Date to return specific date
-      jest.spyOn(global, 'Date').mockImplementation(() => now as any);
+      jest.spyOn(global, 'Date').mockImplementation(() => now as unknown as Date);
 
       // When
       await scheduleMonthlyReport(userId);
