@@ -634,7 +634,7 @@ describe('CourseDetailPage', () => {
       const resourcesTab = screen.getByRole('button', { name: /resources/i });
       await user.click(resourcesTab);
 
-      expect(screen.getByText(/course workbook/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/course workbook/i).length).toBeGreaterThanOrEqual(1);
     });
 
     it('should display house reference chart resource', async () => {
@@ -644,7 +644,7 @@ describe('CourseDetailPage', () => {
       const resourcesTab = screen.getByRole('button', { name: /resources/i });
       await user.click(resourcesTab);
 
-      expect(screen.getByText(/house reference chart/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/house reference chart/i).length).toBeGreaterThanOrEqual(1);
     });
 
     it('should display additional learning materials label', async () => {

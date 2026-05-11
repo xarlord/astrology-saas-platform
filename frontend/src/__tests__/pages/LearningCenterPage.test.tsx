@@ -500,9 +500,11 @@ describe('LearningCenterPage', () => {
       });
     });
 
-    it('should display category items for Aspects', () => {
+    it('should display category items for Aspects', async () => {
       renderWithProviders(createElement(LearningCenterPage));
-      expect(screen.getByText(/conjunctions: fusion of energy/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/conjunctions: fusion of energy/i)).toBeInTheDocument();
+      });
       expect(screen.getByText(/trines: natural flow/i)).toBeInTheDocument();
     });
 
@@ -525,10 +527,12 @@ describe('LearningCenterPage', () => {
       expect(screen.getAllByText(/planets/i).length).toBeGreaterThan(0);
     });
 
-    it('should show hover effect on category cards', () => {
+    it('should show hover effect on category cards', async () => {
       renderWithProviders(createElement(LearningCenterPage));
-      const categoryCards = document.querySelectorAll('.hover\\:bg-white\\/10');
-      expect(categoryCards.length).toBeGreaterThan(0);
+      await waitFor(() => {
+        const categoryCards = document.querySelectorAll('.hover\\:bg-white\\/10');
+        expect(categoryCards.length).toBeGreaterThan(0);
+      });
     });
   });
 
