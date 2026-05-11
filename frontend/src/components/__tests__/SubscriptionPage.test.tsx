@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderWithProviders } from '../../__tests__/test-utils';
 import SubscriptionPage from '../../pages/SubscriptionPage';
@@ -35,6 +35,14 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => mockNavigate,
   };
 });
+
+// Mock billing service so SubscriptionPage's billing fetch completes immediately
+vi.mock('../../services/billing.service', () => ({
+  billingService: {
+    getPlans: vi.fn().mockResolvedValue([]),
+    getSubscription: vi.fn().mockResolvedValue({ plan: 'free' }),
+  },
+}));
 
 import { useCharts } from '../../hooks';
 
@@ -139,7 +147,7 @@ describe('SubscriptionPage', () => {
       }
     });
 
-    it('shows chart count from fetched charts', () => {
+    it('shows chart count from fetched charts', async () => {
       (useCharts as any).mockReturnValue({
         charts: [
           { id: 1, name: 'Chart 1' },
@@ -151,7 +159,10 @@ describe('SubscriptionPage', () => {
       renderWithProviders(<SubscriptionPage />);
 
       // UsageMeter shows "2 / 3 charts" for free tier with 2 charts
-      expect(screen.getByText('2 / 3 charts')).toBeInTheDocument();
+      // (need to wait for billing service mock to resolve and billingLoading to become false)
+      await waitFor(() => {
+        expect(screen.getByText('2 / 3 charts')).toBeInTheDocument();
+      });
     });
   });
 });

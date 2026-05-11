@@ -724,8 +724,10 @@ describe('NatalChartDetailPage', () => {
     it('should copy URL to clipboard when share button is clicked (no Web Share API)', async () => {
       // Mock clipboard API (jsdom doesn't have navigator.share)
       const mockWriteText = vi.fn().mockResolvedValue(undefined);
-      Object.assign(navigator, {
-        clipboard: { writeText: mockWriteText },
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: mockWriteText },
+        writable: true,
+        configurable: true,
       });
 
       const user = userEvent.setup();

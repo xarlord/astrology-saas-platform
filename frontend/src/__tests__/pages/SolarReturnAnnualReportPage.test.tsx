@@ -173,6 +173,7 @@ const createWrapper = (initialRoute = '/solar-returns/2024') => {
           Routes,
           null,
           createElement(Route, { path: '/solar-returns/:id', element: children }),
+          createElement(Route, { path: '/solar-returns', element: children }),
           createElement(Route, {
             path: '/solar-returns',
             element: <div data-testid="solar-returns-page">Solar Returns</div>,
@@ -323,7 +324,7 @@ describe('SolarReturnAnnualReportPage', () => {
     it('should render solar return chart component when chart data available', async () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
       await waitFor(() => {
-        expect(screen.getByTestId('solar-return-chart')).toBeInTheDocument();
+        expect(screen.getAllByTestId('solar-return-chart').length).toBeGreaterThan(0);
       });
     });
   });
@@ -874,15 +875,11 @@ describe('SolarReturnAnnualReportPage', () => {
     });
 
     it('should show error when no ID is provided', async () => {
-      renderWithProviders(createElement(SolarReturnAnnualReportPage), '/solar-returns/');
-      // Route doesn't match /solar-returns/:id pattern, but if rendered directly:
-      // The component checks for id param and shows error if missing
+      renderWithProviders(createElement(SolarReturnAnnualReportPage), '/solar-returns');
+      // Component checks for id param and shows error if missing
       await waitFor(() => {
-        // Either error state or loading completes
-        const errorEl = screen.queryByText('Failed to load solar return report');
-        const noDataEl = screen.queryByText('No solar return data available');
-        const annualEl = screen.queryByText('Annual Forecast');
-        expect(errorEl || noDataEl || annualEl).toBeTruthy();
+        expect(screen.getByText('Failed to load solar return report')).toBeInTheDocument();
+        expect(screen.getByText('No solar return ID provided. Please select a solar return chart.')).toBeInTheDocument();
       });
     });
   });
