@@ -27,11 +27,8 @@ WORKDIR /app
 # Copy frontend source
 COPY frontend/ ./frontend/
 
-# Build frontend (Vite)
-# VITE_API_URL is empty — same-origin in production (Express serves both)
-ARG VITE_API_URL=""
-ENV VITE_API_URL=$VITE_API_URL
-RUN cd frontend && npm run build
+# Build frontend (Vite) — npx resolves from hoisted root node_modules
+RUN cd frontend && npx vite build
 
 # ---- Stage 3: Build backend ----
 FROM shared-builder AS backend-builder
@@ -42,8 +39,8 @@ WORKDIR /app
 COPY backend/tsconfig.json ./backend/
 COPY backend/src ./backend/src
 
-# Build backend TypeScript
-RUN cd backend && npm run build
+# Build backend TypeScript — npx resolves from hoisted root node_modules
+RUN cd backend && npx tsc
 
 # ---- Stage 4: Production runtime ----
 FROM node:20-alpine
