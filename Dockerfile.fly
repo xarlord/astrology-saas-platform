@@ -1,21 +1,24 @@
 # Combined Dockerfile for Fly.io deployment (backend + frontend in one image)
 # Serves React SPA as static files from Express in production
 
-# ---- Stage 1: Install + Build ----
+# ---- Stage 1: Build everything ----
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install build tools (swisseph native module needs python3+make+g++)
+RUN apk add --no-cache python3 make g++ py3-setuptools
+
 # Copy ALL package files for workspace resolution
-COPY package*.json ./
+COPY package.json package-lock.json ./
 COPY frontend/package*.json ./frontend/
 COPY backend/package*.json ./backend/
 COPY packages/shared-types/package*.json ./packages/shared-types/
 COPY packages/shared-utils/package*.json ./packages/shared-utils/
 COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
-# Install all dependencies (dev + prod, workspace-aware)
-RUN npm ci --workspaces --include-workspace-root
+# Install all dependencies (workspace-aware)
+RUN npm install
 
 # Copy source code
 COPY packages/ ./packages/
@@ -31,48 +34,36 @@ RUN cd packages/shared-constants && npm run build 2>/dev/null || true
 # Build frontend (Vite)
 RUN cd frontend && npx vite build
 
-# Build backend (TypeScript) — use --noEmit false to allow errors in non-critical files
+# Build backend (TypeScript)
 RUN cd backend && npx tsc || true
+
+# Prune dev dependencies in-place (keeps native modules intact)
+RUN npm prune --omit=dev && npm cache clean --force
 
 # ---- Stage 2: Production runtime ----
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install build tools (swisseph native module) + runtime deps
-RUN apk add --no-cache python3 make g++ libgcc tini
+# Install runtime dependencies for native modules (swisseph needs libstdc++)
+RUN apk add --no-cache libstdc++ libgcc tini
 
-# Copy ALL package files
-COPY package*.json ./
-COPY backend/package*.json ./backend/
-COPY packages/shared-types/package*.json ./packages/shared-types/
-COPY packages/shared-utils/package*.json ./packages/shared-utils/
-COPY packages/shared-constants/package*.json ./packages/shared-constants/
+# Copy entire pruned workspace from builder (includes compiled native modules)
+COPY --from=builder /app ./
 
-# Install production dependencies only
-RUN npm ci --omit=dev --workspaces --include-workspace-root
+# Install tsx for running migrations
+RUN cd backend && npm install tsx --no-save
 
-# Remove build tools to save space
-RUN apk del python3 make g++
-
-# Copy built backend
-COPY --from=builder /app/backend/dist ./backend/dist
-
-# Copy built frontend (static files)
-COPY --from=builder /app/frontend/dist ./frontend/dist
-
-# Copy shared packages (already built)
-COPY --from=builder /app/packages ./packages
-
-# Copy migrations and knex config
+# Copy migrations and knex config (if not already present)
 COPY backend/knexfile.ts ./backend/
-COPY backend/scripts ./backend/scripts
-COPY backend/migrations ./backend/migrations
-COPY backend/seeds ./backend/seeds
+COPY backend/migrations ./backend/migrations/
+COPY backend/seeds ./backend/seeds/
 
-# Non-root user for security
-RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
-RUN chown -R nodejs:nodejs /app
+# Create logs directory + non-root user
+RUN mkdir -p backend/logs && \
+    addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 && \
+    chown -R nodejs:nodejs /app
 USER nodejs
 
 EXPOSE 8080
