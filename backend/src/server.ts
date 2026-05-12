@@ -2,7 +2,9 @@
  * Astrology SaaS Platform - Main Server Entry Point
  */
 
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -138,6 +140,29 @@ app.get('/health', (_req: Request, res: Response) => {
 // ============================================
 
 app.use('/api', apiRouter);
+
+// ============================================
+// Static File Serving (Production only — Fly.io combined image)
+// ============================================
+
+if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'true') {
+  const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+  logger.info(`📁 Serving frontend static files from: ${frontendDistPath}`);
+
+  // Serve static assets (JS, CSS, images, fonts, etc.)
+  app.use(express.static(frontendDistPath, {
+    maxAge: '1y',           // Long cache for hashed assets
+    etag: true,
+    lastModified: true,
+    immutable: true,
+  }));
+
+  // SPA fallback — all non-API routes return index.html for client-side routing
+  app.get('*', (_req: Request, res: Response, next: NextFunction) => {
+    if (_req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
 
 // ============================================
 // Error Handling
