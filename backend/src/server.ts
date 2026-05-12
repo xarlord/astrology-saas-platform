@@ -149,16 +149,20 @@ if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'tru
   logger.info(`📁 Serving frontend static files from: ${frontendDistPath}`);
 
   // Serve static assets (JS, CSS, images, fonts, etc.)
+  // Hashed assets (JS/CSS bundles) get long cache; HTML is served separately below
   app.use(express.static(frontendDistPath, {
-    maxAge: '1y',           // Long cache for hashed assets
+    maxAge: '1y',
     etag: true,
     lastModified: true,
     immutable: true,
+    index: false,          // Don't serve index.html from static middleware
   }));
 
-  // SPA fallback — all non-API routes return index.html for client-side routing
+  // SPA fallback — all non-API routes return index.html (no-cache for HTML)
   app.get('*', (_req: Request, res: Response, next: NextFunction) => {
     if (_req.path.startsWith('/api')) return next();
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
     res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 }
