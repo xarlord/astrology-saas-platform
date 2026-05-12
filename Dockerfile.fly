@@ -26,12 +26,28 @@ COPY frontend/ ./frontend/
 COPY backend/tsconfig.json ./backend/
 COPY backend/src ./backend/src
 
+# Firebase config (build-time args for Vite — these are public client-side keys)
+ARG VITE_FIREBASE_API_KEY=AIzaSyBvdiU2UDvmWbrbbYDL_ijKGjqDnYls0Ig
+ARG VITE_FIREBASE_AUTH_DOMAIN=astroverse-4ca2e.firebaseapp.com
+ARG VITE_FIREBASE_PROJECT_ID=astroverse-4ca2e
+ARG VITE_FIREBASE_STORAGE_BUCKET=astroverse-4ca2e.firebasestorage.app
+ARG VITE_FIREBASE_MESSAGING_SENDER_ID=867374800592
+ARG VITE_FIREBASE_APP_ID=1:867374800592:web:f5f06c09942618a84b48d5
+ARG VITE_FIREBASE_MEASUREMENT_ID=G-H4MF2NX7YT
+
 # Build shared packages first
 RUN cd packages/shared-types && npm run build 2>/dev/null || true
 RUN cd packages/shared-utils && npm run build 2>/dev/null || true
 RUN cd packages/shared-constants && npm run build 2>/dev/null || true
 
-# Build frontend (Vite)
+# Build frontend (Vite) — Firebase env vars must be set at build time
+ENV VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY
+ENV VITE_FIREBASE_AUTH_DOMAIN=$VITE_FIREBASE_AUTH_DOMAIN
+ENV VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID
+ENV VITE_FIREBASE_STORAGE_BUCKET=$VITE_FIREBASE_STORAGE_BUCKET
+ENV VITE_FIREBASE_MESSAGING_SENDER_ID=$VITE_FIREBASE_MESSAGING_SENDER_ID
+ENV VITE_FIREBASE_APP_ID=$VITE_FIREBASE_APP_ID
+ENV VITE_FIREBASE_MEASUREMENT_ID=$VITE_FIREBASE_MEASUREMENT_ID
 RUN cd frontend && npx vite build
 
 # Verify self-hosted font was copied by Vite from public/ to dist/
