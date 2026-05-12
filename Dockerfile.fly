@@ -34,6 +34,11 @@ RUN cd packages/shared-constants && npm run build 2>/dev/null || true
 # Build frontend (Vite)
 RUN cd frontend && npx vite build
 
+# Verify self-hosted font was copied by Vite from public/ to dist/
+RUN ls -la frontend/dist/fonts/ || echo "WARNING: dist/fonts/ not found, copying manually" && \
+    mkdir -p frontend/dist/fonts && \
+    cp -v frontend/public/fonts/*.woff2 frontend/dist/fonts/ 2>/dev/null || true
+
 # Build backend (TypeScript)
 RUN cd backend && npx tsc || true
 
