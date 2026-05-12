@@ -13,9 +13,34 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://api.stripe.com" />
 
-    <!-- Fonts: use display=swap for non-blocking + preload the critical font -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+    <!-- Fonts: display=swap ensures text visible before font loads -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+
+    <!-- Fallback: force re-render icons once font loads (fixes mobile Safari/Chrome) -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        function refreshIcons() {
+          var icons = document.querySelectorAll('.material-symbols-outlined');
+          if (icons.length === 0) return;
+          // Force browser to re-render with loaded font
+          icons.forEach(function(el) {
+            el.style.display = 'none';
+            el.offsetHeight; // trigger reflow
+            el.style.display = '';
+          });
+        }
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(function() {
+            // Check if Material Symbols loaded
+            var loaded = false;
+            document.fonts.forEach(function(f) {
+              if (f.family === 'Material Symbols Outlined' && f.status === 'loaded') loaded = true;
+            });
+            if (loaded) refreshIcons();
+          });
+        }
+      });
+    </script>
 
     <!-- PWA icons -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
