@@ -97,22 +97,50 @@ export const authService = {
     const { getFirebaseAuth, isFirebaseConfigured } = await import('../config/firebase');
 
     if (!isFirebaseConfigured()) {
-      throw new Error('Social login is not configured');
+      throw new Error('Social login is not configured. Please contact support.');
     }
 
     const auth = getFirebaseAuth();
-    const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
+    const { GoogleAuthProvider, signInWithRedirect, getRedirectResult } = await import('firebase/auth');
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.addScope('email');
     googleProvider.addScope('profile');
 
-    const result = await signInWithPopup(auth, googleProvider);
+    // Use redirect-based auth (mobile-friendly, works with popup blockers)
+    await signInWithRedirect(auth, googleProvider);
+
+    // Note: The redirect will navigate away from the page.
+    // The result is handled by handleRedirectResult() on page load.
+    // This return is never reached — the page navigates to Google.
+    return {} as unknown as AuthServiceResponse;
+  },
+
+  /**
+   * Handle Firebase redirect result after Google sign-in returns to our page.
+   * Must be called on app initialization (e.g., in App.tsx or a top-level effect).
+   * Returns null if no redirect is pending, or the AuthServiceResponse on success.
+   */
+  async handleRedirectResult(): Promise<AuthServiceResponse | null> {
+    const { getFirebaseAuth, isFirebaseConfigured } = await import('../config/firebase');
+
+    if (!isFirebaseConfigured()) {
+      return null;
+    }
+
+    const auth = getFirebaseAuth();
+    const { getRedirectResult } = await import('firebase/auth');
+
+    const result = await getRedirectResult(auth);
+    if (!result) {
+      return null; // No redirect happened
+    }
+
     const idToken = await result.user.getIdToken();
 
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
       idToken,
-      provider,
+      provider: 'google',
     });
 
     return response.data.data;

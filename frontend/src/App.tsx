@@ -2,8 +2,8 @@
  * Main App Component
  */
 
-import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -11,6 +11,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
+
+// Auth store for redirect result handling
+import { useAuthStore } from './stores/authStore';
 
 // Eager-loaded pages (landing, auth — needed immediately)
 import HomePage from './pages/HomePage';
@@ -75,11 +78,34 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Handles Firebase redirect result on page load.
+ * Must be rendered inside QueryClientProvider for React context.
+ */
+function FirebaseRedirectHandler() {
+  const handleRedirectResult = useAuthStore((s) => s.handleRedirectResult);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    void (async () => {
+      const result = await handleRedirectResult();
+      if (result) {
+        // Redirect succeeded — navigate to dashboard
+        navigate('/dashboard', { replace: true });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
       <div className="min-h-screen bg-cosmic-page">
+        <FirebaseRedirectHandler />
         <ServiceWorkerUpdateBanner />
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>

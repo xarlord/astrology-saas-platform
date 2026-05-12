@@ -46,15 +46,8 @@ export default function LoginPageNew() {
     try {
       if (provider === 'google') {
         await socialLogin('google');
-        const from =
-          (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
-        const lastViewed = localStorage.getItem('dailyBriefingLastViewed');
-        const today = new Date().toISOString().split('T')[0];
-        if (lastViewed !== today && from === '/dashboard') {
-          navigate('/daily-briefing', { replace: true });
-        } else {
-          navigate(from, { replace: true });
-        }
+        // Note: signInWithRedirect navigates away to Google.
+        // Result is handled by FirebaseRedirectHandler in App.tsx on return.
       }
     } catch {
       // Error handled by store

@@ -8,6 +8,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { authService } from '../services';
+import type { AuthServiceResponse } from '../services/auth.service';
 import { getAccessToken } from '../utils/tokenStorage';
 import type { User, LoginCredentials, RegisterData } from '../services/api.types';
 
@@ -27,6 +28,7 @@ interface AuthState {
   updateProfile: (data: { name?: string; avatar_url?: string; timezone?: string }) => Promise<void>;
   updatePreferences: (preferences: Partial<User['preferences']>) => Promise<void>;
   socialLogin: (provider: 'google') => Promise<void>;
+  handleRedirectResult: () => Promise<AuthServiceResponse | null>;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
 }
@@ -92,19 +94,13 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Social login action
-              socialLogin: async (provider: 'google') => {
+        // Social login action (triggers redirect to Google)
+        socialLogin: async (provider: 'google') => {
           set({ isLoading: true, error: null });
           try {
-            const response = await authService.socialLogin(provider);
-            const { user, accessToken } = response;
-        
-            set({
-              user,
-              token: accessToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
+            await authService.socialLogin(provider);
+            // Note: signInWithRedirect navigates away — this line is rarely reached.
+            // The auth result is handled by handleRedirectResult on page reload.
           } catch (error: unknown) {
             set({
               error: error instanceof Error ? error.message : 'Social login failed',
@@ -112,6 +108,31 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: false,
             });
             throw error;
+          }
+        },
+
+        // Handle redirect result after Google sign-in returns to our page
+        handleRedirectResult: async () => {
+          try {
+            const response = await authService.handleRedirectResult();
+            if (response) {
+              const { user, accessToken } = response;
+              set({
+                user,
+                token: accessToken,
+                isAuthenticated: true,
+                isLoading: false,
+              });
+              return response;
+            }
+            return null;
+          } catch (error: unknown) {
+            set({
+              error: error instanceof Error ? error.message : 'Social login failed',
+              isLoading: false,
+              isAuthenticated: false,
+            });
+            return null;
           }
         },
 
