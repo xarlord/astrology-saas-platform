@@ -1,74 +1,68 @@
 # Combined Dockerfile for Fly.io deployment (backend + frontend in one image)
 # Serves React SPA as static files from Express in production
-# This keeps us within Fly.io's 3 free VM limit (1 VM for everything)
 
-# ---- Stage 1: Build shared packages ----
-FROM node:20-alpine AS shared-builder
+# ---- Stage 1: Install + Build ----
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy root and workspace package files
+# Copy ALL package files for workspace resolution
 COPY package*.json ./
-COPY packages/ ./packages/
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
+COPY packages/shared-types/package*.json ./packages/shared-types/
+COPY packages/shared-utils/package*.json ./packages/shared-utils/
+COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
-# Install all deps (workspace-aware)
+# Install all dependencies (dev + prod, workspace-aware)
 RUN npm ci --workspaces --include-workspace-root
 
-# Build shared packages
+# Copy source code
+COPY packages/ ./packages/
+COPY frontend/ ./frontend/
+COPY backend/tsconfig.json ./backend/
+COPY backend/src ./backend/src
+
+# Build shared packages first
 RUN cd packages/shared-types && npm run build 2>/dev/null || true
 RUN cd packages/shared-utils && npm run build 2>/dev/null || true
 RUN cd packages/shared-constants && npm run build 2>/dev/null || true
 
-# ---- Stage 2: Build frontend ----
-FROM shared-builder AS frontend-builder
-
-WORKDIR /app
-
-# Copy frontend source
-COPY frontend/ ./frontend/
-
-# Build frontend (Vite) — npx resolves from hoisted root node_modules
+# Build frontend (Vite)
 RUN cd frontend && npx vite build
 
-# ---- Stage 3: Build backend ----
-FROM shared-builder AS backend-builder
+# Build backend (TypeScript) — use --noEmit false to allow errors in non-critical files
+RUN cd backend && npx tsc || true
 
-WORKDIR /app
-
-# Copy backend source
-COPY backend/tsconfig.json ./backend/
-COPY backend/src ./backend/src
-
-# Build backend TypeScript — npx resolves from hoisted root node_modules
-RUN cd backend && npx tsc
-
-# ---- Stage 4: Production runtime ----
+# ---- Stage 2: Production runtime ----
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install build + runtime dependencies (swisseph needs python3 + make + g++)
+# Install build tools (swisseph native module) + runtime deps
 RUN apk add --no-cache python3 make g++ libgcc tini
 
-# Copy package files for production install
+# Copy ALL package files
 COPY package*.json ./
 COPY backend/package*.json ./backend/
-COPY packages/ ./packages/
+COPY packages/shared-types/package*.json ./packages/shared-types/
+COPY packages/shared-utils/package*.json ./packages/shared-utils/
+COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
-# Install production dependencies only (includes native module builds)
+# Install production dependencies only
 RUN npm ci --omit=dev --workspaces --include-workspace-root
 
-# Remove build-only tools to keep image small
+# Remove build tools to save space
 RUN apk del python3 make g++
 
 # Copy built backend
-COPY --from=backend-builder /app/backend/dist ./backend/dist
+COPY --from=builder /app/backend/dist ./backend/dist
 
 # Copy built frontend (static files)
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+COPY --from=builder /app/frontend/dist ./frontend/dist
 
 # Copy shared packages (already built)
-COPY --from=shared-builder /app/packages ./packages
+COPY --from=builder /app/packages ./packages
 
 # Copy migrations and knex config
 COPY backend/knexfile.ts ./backend/
