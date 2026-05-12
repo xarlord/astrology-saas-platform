@@ -30,7 +30,8 @@ export function getRedisClient(): Redis | null {
         return Math.min(times * 200, 2000);
       },
       lazyConnect: true,
-      enableOfflineQueue: false,
+      enableOfflineQueue: true,
+      tls: config.redis.url.startsWith('rediss://') ? { rejectUnauthorized: false } : undefined,
     });
 
     redisClient.on('connect', () => {
