@@ -101,14 +101,25 @@ export const authService = {
     }
 
     const auth = getFirebaseAuth();
-    const { GoogleAuthProvider, signInWithRedirect, getRedirectResult } = await import('firebase/auth');
+    const { GoogleAuthProvider, signInWithRedirect } = await import('firebase/auth');
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.addScope('email');
     googleProvider.addScope('profile');
 
     // Use redirect-based auth (mobile-friendly, works with popup blockers)
-    await signInWithRedirect(auth, googleProvider);
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (redirectError: unknown) {
+      // If redirect fails, log the full error for debugging
+      const err = redirectError as { code?: string; message?: string; customData?: unknown };
+      console.error('[Firebase] signInWithRedirect failed:', {
+        code: err.code,
+        message: err.message,
+        customData: err.customData,
+      });
+      throw redirectError;
+    }
 
     // Note: The redirect will navigate away from the page.
     // The result is handled by handleRedirectResult() on page load.
@@ -131,7 +142,19 @@ export const authService = {
     const auth = getFirebaseAuth();
     const { getRedirectResult } = await import('firebase/auth');
 
-    const result = await getRedirectResult(auth);
+    let result;
+    try {
+      result = await getRedirectResult(auth);
+    } catch (err: unknown) {
+      const e = err as { code?: string; message?: string; customData?: unknown };
+      console.error('[Firebase] getRedirectResult failed:', {
+        code: e.code,
+        message: e.message,
+        customData: e.customData,
+      });
+      throw err;
+    }
+
     if (!result) {
       return null; // No redirect happened
     }
