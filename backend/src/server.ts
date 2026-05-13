@@ -50,7 +50,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
-      frameSrc: ["'self'", "https://astroverse-4ca2e.firebaseapp.com"],
+      frameSrc: ["'self'", "https://astroverse-4ca2e.firebaseapp.com", "https://apis.google.com"],
     },
   },
   crossOriginEmbedderPolicy: false,
