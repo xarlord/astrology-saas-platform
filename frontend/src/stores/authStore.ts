@@ -94,13 +94,18 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Social login action (triggers redirect to Google)
+        // Social login action (opens Google popup, returns immediately with result)
         socialLogin: async (provider: 'google') => {
           set({ isLoading: true, error: null });
           try {
-            await authService.socialLogin(provider);
-            // Note: signInWithRedirect navigates away — this line is rarely reached.
-            // The auth result is handled by handleRedirectResult on page reload.
+            const response = await authService.socialLogin(provider);
+            const { user, accessToken } = response;
+            set({
+              user,
+              token: accessToken,
+              isAuthenticated: true,
+              isLoading: false,
+            });
           } catch (error: unknown) {
             set({
               error: error instanceof Error ? error.message : 'Social login failed',

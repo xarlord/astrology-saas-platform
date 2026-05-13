@@ -101,30 +101,22 @@ export const authService = {
     }
 
     const auth = getFirebaseAuth();
-    const { GoogleAuthProvider, signInWithRedirect } = await import('firebase/auth');
+    const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.addScope('email');
     googleProvider.addScope('profile');
 
-    // Use redirect-based auth (mobile-friendly, works with popup blockers)
-    try {
-      await signInWithRedirect(auth, googleProvider);
-    } catch (redirectError: unknown) {
-      // If redirect fails, log the full error for debugging
-      const err = redirectError as { code?: string; message?: string; customData?: unknown };
-      console.error('[Firebase] signInWithRedirect failed:', {
-        code: err.code,
-        message: err.message,
-        customData: err.customData,
-      });
-      throw redirectError;
-    }
+    // Use popup-based auth — result is available immediately, no redirect flow needed
+    const result = await signInWithPopup(auth, googleProvider);
+    const idToken = await result.user.getIdToken();
 
-    // Note: The redirect will navigate away from the page.
-    // The result is handled by handleRedirectResult() on page load.
-    // This return is never reached — the page navigates to Google.
-    return {} as unknown as AuthServiceResponse;
+    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
+      idToken,
+      provider,
+    });
+
+    return response.data.data;
   },
 
   /**
