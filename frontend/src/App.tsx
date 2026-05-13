@@ -2,8 +2,8 @@
  * Main App Component
  */
 
-import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -78,6 +78,30 @@ const queryClient = new QueryClient({
   },
 });
 
+// Component that handles Firebase redirect result on every page load.
+// Placed inside Router so it can call useNavigate after processing.
+function FirebaseRedirectHandler() {
+  const navigate = useNavigate();
+  const handleRedirectResult = useAuthStore((s) => s.handleRedirectResult);
+  const clearError = useAuthStore((s) => s.clearError);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const result = await handleRedirectResult();
+        if (result) {
+          clearError();
+          navigate('/dashboard', { replace: true });
+        }
+      } catch {
+        // Error already set in store — user sees it on the page
+      }
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -86,6 +110,7 @@ function App() {
         <ServiceWorkerUpdateBanner />
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
+            <FirebaseRedirectHandler />
             <Routes>
               {/* Public routes (eager-loaded) */}
               {/* NOTE: HomePage (eager, route "/") is the primary landing page for logged-out visitors. */}

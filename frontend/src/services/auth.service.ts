@@ -101,22 +101,18 @@ export const authService = {
     }
 
     const auth = getFirebaseAuth();
-    const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
+    const { GoogleAuthProvider, signInWithRedirect } = await import('firebase/auth');
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.addScope('email');
     googleProvider.addScope('profile');
 
-    // Use popup-based auth — result is available immediately, no redirect flow needed
-    const result = await signInWithPopup(auth, googleProvider);
-    const idToken = await result.user.getIdToken();
+    // signInWithRedirect navigates away to Google — result handled on return via handleRedirectResult
+    await signInWithRedirect(auth, googleProvider);
 
-    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
-      idToken,
-      provider,
-    });
-
-    return response.data.data;
+    // This line never executes — browser navigates away to Google
+    // The result is processed by handleRedirectResult() when user returns
+    throw new Error('Redirect did not occur');
   },
 
   /**
@@ -139,7 +135,7 @@ export const authService = {
       result = await getRedirectResult(auth);
     } catch (err: unknown) {
       const e = err as { code?: string; message?: string; customData?: unknown };
-      console.error('[Firebase] getRedirectResult failed:', {
+      console.error('[Firebase] getRedirectResult error:', {
         code: e.code,
         message: e.message,
         customData: e.customData,
@@ -148,9 +144,10 @@ export const authService = {
     }
 
     if (!result) {
-      return null; // No redirect happened
+      return null; // No redirect happened — normal page load
     }
 
+    console.log('[Firebase] getRedirectResult success, user:', result.user.email);
     const idToken = await result.user.getIdToken();
 
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
