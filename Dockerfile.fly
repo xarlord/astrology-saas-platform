@@ -28,7 +28,7 @@ COPY backend/src ./backend/src
 
 # Firebase config (build-time args for Vite — these are public client-side keys)
 ARG VITE_FIREBASE_API_KEY=AIzaSyBvdiU2UDvmWbrbbYDL_ijKGjqDnYls0Ig
-ARG VITE_FIREBASE_AUTH_DOMAIN=astroverse-4ca2e.firebaseapp.com
+ARG VITE_FIREBASE_AUTH_DOMAIN=astroverse.fly.dev
 ARG VITE_FIREBASE_PROJECT_ID=astroverse-4ca2e
 ARG VITE_FIREBASE_STORAGE_BUCKET=astroverse-4ca2e.firebasestorage.app
 ARG VITE_FIREBASE_MESSAGING_SENDER_ID=867374800592
