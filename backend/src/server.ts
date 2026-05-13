@@ -166,6 +166,20 @@ if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'tru
     index: false,          // Don't serve index.html from static middleware
   }));
 
+  // Firebase Auth handler routes — needed because Firebase Hosting is not deployed.
+  // Firebase Auth SDK fetches /__/firebase/init.json to validate the config,
+  // and uses /__/auth/* endpoints for the OAuth redirect flow.
+  app.get('/__/firebase/init.json', (_req: Request, res: Response) => {
+    res.json({
+      apiKey: process.env.VITE_FIREBASE_API_KEY || 'AIzaSyBvdiU2UDvmWbrbbYDL_ijKGjqDnYls0Ig',
+      authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'astroverse-4ca2e.firebaseapp.com',
+      projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'astroverse-4ca2e',
+      storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'astroverse-4ca2e.firebasestorage.app',
+      messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '867374800592',
+      appId: process.env.VITE_FIREBASE_APP_ID || '1:867374800592:web:f5f06c09942618a84b48d5',
+    });
+  });
+
   // SPA fallback — all non-API routes return index.html (no-cache for HTML)
   app.get('*', (_req: Request, res: Response, next: NextFunction) => {
     if (_req.path.startsWith('/api')) return next();
