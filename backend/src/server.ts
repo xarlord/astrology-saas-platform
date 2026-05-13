@@ -36,7 +36,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://apis.google.com"],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: [
         "'self'",
@@ -45,6 +45,7 @@ app.use(helmet({
         "https://www.googleapis.com",
         "https://identitytoolkit.googleapis.com",
         "https://firebaseinstallations.googleapis.com",
+        "https://apis.google.com",
       ],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       objectSrc: ["'none'"],
