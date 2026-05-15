@@ -76,14 +76,14 @@ export const useTransits = () => {
     [loadTransitForecast],
   );
 
-  // Get major transits
+  // Get major transits (high intensity)
   const getMajorTransits = useCallback((): Transit[] => {
-    return transits.filter((t) => t.type === 'major');
+    return transits.filter((t) => t.intensity >= 7);
   }, [transits]);
 
-  // Get minor transits
+  // Get minor transits (lower intensity)
   const getMinorTransits = useCallback((): Transit[] => {
-    return transits.filter((t) => t.type === 'minor');
+    return transits.filter((t) => t.intensity < 7);
   }, [transits]);
 
   // Get transits by planet
@@ -94,14 +94,10 @@ export const useTransits = () => {
     [transits],
   );
 
-  // Get active transits for date
+  // Get all transits (no date filtering available on Transit)
   const getActiveTransitsForDate = useCallback(
-    (date: Date): Transit[] => {
-      return transits.filter((t) => {
-        const start = new Date(t.start_date);
-        const end = new Date(t.end_date);
-        return date >= start && date <= end;
-      });
+    (_date: Date): Transit[] => {
+      return transits;
     },
     [transits],
   );

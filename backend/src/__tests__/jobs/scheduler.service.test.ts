@@ -12,6 +12,7 @@ import {
   getUserScheduledJobs,
 } from '../../modules/jobs/scheduler.service';
 import { JobType } from '../../modules/jobs/job.types';
+import { getQueue } from '../../modules/jobs/queue.service';
 
 // Mock queue service
 jest.mock('../../modules/jobs/queue.service', () => ({
@@ -24,10 +25,7 @@ jest.mock('../../utils/logger', () => ({
   error: jest.fn(),
 }));
 
-import { getQueue } from '../../modules/jobs/queue.service';
-
 describe('Scheduler Service', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockQueue: any;
 
   beforeEach(() => {
@@ -196,7 +194,6 @@ describe('Scheduler Service', () => {
       const now = new Date('2026-04-09T12:00:00Z');
 
       // Mock Date to return specific date
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest.spyOn(global, 'Date').mockImplementation(() => now as any);
 
       // When
@@ -350,7 +347,6 @@ describe('Scheduler Service', () => {
     it('should remove all scheduled jobs for user across all job types', async () => {
       // Given
       const userId = 'user-to-remove';
-      const mockGetQueue = getQueue as jest.Mock;
 
       // Mock different job types
       const mockQueues = {
@@ -374,7 +370,7 @@ describe('Scheduler Service', () => {
         },
       };
 
-      mockGetQueue.mockImplementation((type: JobType) => mockQueues[type]);
+      getQueue.mockImplementation((type: JobType) => mockQueues[type]);
 
       // When
       const removedCount = await unscheduleAllForUser(userId);
@@ -395,9 +391,8 @@ describe('Scheduler Service', () => {
     it('should return 0 when user has no scheduled jobs', async () => {
       // Given
       const userId = 'user-no-jobs';
-      const mockGetQueue = getQueue as jest.Mock;
 
-      mockGetQueue.mockReturnValue({
+      (getQueue as jest.Mock).mockReturnValue({
         getRepeatableJobs: jest.fn().mockResolvedValue([]),
         removeRepeatableByKey: jest.fn().mockResolvedValue(undefined),
       });
@@ -412,9 +407,8 @@ describe('Scheduler Service', () => {
     it('should only remove jobs matching user ID', async () => {
       // Given
       const userId = 'user-123';
-      const mockGetQueue = getQueue as jest.Mock;
 
-      mockGetQueue.mockReturnValue({
+      (getQueue as jest.Mock).mockReturnValue({
         getRepeatableJobs: jest.fn().mockResolvedValue([
           { key: `daily-briefing:${userId}:111`, next: 1 },
           { key: `daily-briefing:other-user:222`, next: 2 },
@@ -439,7 +433,6 @@ describe('Scheduler Service', () => {
     it('should return all scheduled jobs for user across all job types', async () => {
       // Given
       const userId = 'user-123';
-      const mockGetQueue = getQueue as jest.Mock;
 
       const mockQueues = {
         [JobType.DAILY_BRIEFING]: {
@@ -457,7 +450,7 @@ describe('Scheduler Service', () => {
         },
       };
 
-      mockGetQueue.mockImplementation((type: JobType) => mockQueues[type]);
+      getQueue.mockImplementation((type: JobType) => mockQueues[type]);
 
       // When
       const jobs = await getUserScheduledJobs(userId);
@@ -473,9 +466,8 @@ describe('Scheduler Service', () => {
     it('should return empty array when user has no scheduled jobs', async () => {
       // Given
       const userId = 'user-no-jobs';
-      const mockGetQueue = getQueue as jest.Mock;
 
-      mockGetQueue.mockReturnValue({
+      (getQueue as jest.Mock).mockReturnValue({
         getRepeatableJobs: jest.fn().mockResolvedValue([]),
       });
 
@@ -489,11 +481,10 @@ describe('Scheduler Service', () => {
     it('should only return jobs matching user ID', async () => {
       // Given
       const userId = 'user-123';
-      const mockGetQueue = getQueue as jest.Mock;
 
       // Create different mock data for each job type
       let callCount = 0;
-      mockGetQueue.mockImplementation(() => ({
+      getQueue.mockImplementation(() => ({
         getRepeatableJobs: jest.fn().mockImplementation(() => {
           callCount++;
           if (callCount === 1) {
@@ -604,7 +595,6 @@ describe('Scheduler Service', () => {
     it('should handle unschedule after scheduling', async () => {
       // Given
       const userId = 'user-full-lifecycle';
-      const mockGetQueue = getQueue as jest.Mock;
 
       // Create simple mocks that verify the function calls
       const mockQueue = {
@@ -615,7 +605,7 @@ describe('Scheduler Service', () => {
         removeRepeatableByKey: jest.fn().mockResolvedValue(undefined),
       };
 
-      mockGetQueue.mockReturnValue(mockQueue);
+      getQueue.mockReturnValue(mockQueue);
 
       // When
       await scheduleDailyBriefing(userId, 8, 0);

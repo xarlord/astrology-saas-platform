@@ -16,6 +16,7 @@ import {
   shutdownQueues,
 } from '../../modules/jobs/queue.service';
 import { JobType, JOB_CONFIG, JobPayload } from '../../modules/jobs/job.types';
+import { isRedisConnected } from '../../modules/shared/services/redis.service';
 
 // Mock BullMQ
 jest.mock('bullmq', () => ({
@@ -29,8 +30,6 @@ jest.mock('bullmq', () => ({
 jest.mock('../../modules/shared/services/redis.service', () => ({
   isRedisConnected: jest.fn(() => true),
 }));
-
-import { isRedisConnected } from '../../modules/shared/services/redis.service';
 
 // Mock logger
 jest.mock('../../utils/logger', () => ({
@@ -58,18 +57,15 @@ describe('Queue Service', () => {
       getDelayedCount: jest.fn().mockResolvedValue(1),
       getRepeatableJobs: jest.fn().mockResolvedValue([]),
       close: jest.fn().mockResolvedValue(undefined),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     mockWorker = {
       on: jest.fn().mockReturnThis(),
       close: jest.fn().mockResolvedValue(undefined),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     mockQueueEvents = {
       close: jest.fn().mockResolvedValue(undefined),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     // Mock Queue constructor
@@ -546,11 +542,9 @@ describe('Queue Service', () => {
       };
 
       (Queue as jest.MockedClass<typeof Queue>).mockImplementation((type) => {
-        /* eslint-disable @typescript-eslint/no-explicit-any */
         if (type === JobType.DAILY_BRIEFING) return mockDailyQueue as any;
         if (type === JobType.MONTHLY_REPORT) return mockMonthlyQueue as any;
         return mockQueue as any;
-        /* eslint-enable @typescript-eslint/no-explicit-any */
       });
 
       // When

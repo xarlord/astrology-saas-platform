@@ -2,8 +2,6 @@
  * Chart Controller
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';

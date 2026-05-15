@@ -267,13 +267,16 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
     throw new AppError('Chart must be calculated first', 400);
   }
 
-  const { planets, houses } = chart.calculated_data as {
-    planets: Record<string, PlanetCalcData>;
-    houses: { houses: HouseCalcData[] };
-  };
+  const raw = chart.calculated_data as Record<string, unknown>;
+  const planets = (raw.planets ?? {}) as Record<string, PlanetCalcData>;
+  const rawHouses = raw.houses;
+  const houseArray: HouseCalcData[] = Array.isArray(rawHouses)
+    ? rawHouses
+    : (rawHouses as { houses?: HouseCalcData[] })?.houses ?? [];
+  const houses = { houses: houseArray };
 
   const housesAnalysis = {
-    houses: houses.houses,
+    houses: houseArray,
     planetsInHouses: buildPlanetsInHouses(planets, houses),
     houseRulers: calculateHouseRulers(planets, houses),
     emptyHouses: identifyEmptyHouses(planets, houses),

@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { transitService, normalizeTransits } from '../../services/transit.service';
-import { createMockResponse, createMockError } from './utils';
+import type { TransitReading } from '../../services/transit.service';
 
 // Mock the api module with hoisted mock
 vi.mock('../../services/api', () => ({
@@ -36,14 +36,13 @@ describe('transitService', () => {
 
   describe('calculateTransits', () => {
     it('should calculate transits for a date range', async () => {
-      const mockReading = {
+      const mockTransitReading: TransitReading = {
         date: '2024-02-01',
         transits: [
           { transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'conjunction', orb: 2.5 },
         ],
-        majorAspects: [],
       };
-      const mockResponse = createMockResponse(mockReading);
+      const mockResponse = { data: { data: mockTransitReading } };
       (api.post as any).mockResolvedValue(mockResponse);
 
       const result = await transitService.calculateTransits(
@@ -62,32 +61,27 @@ describe('transitService', () => {
       );
       expect(result.date).toBe('2024-02-01');
       expect(result.transits).toHaveLength(1);
+      expect(result.transits![0].transitPlanet).toBe('Saturn');
     });
 
-    it('should normalize transits from majorAspects when transits not present', async () => {
-      const mockReading = {
-        date: '2024-02-01',
-        majorAspects: [
-          { planet1: 'Saturn', planet2: 'Sun', type: 'square', orb: 3.0, applying: true },
-        ],
-      };
-      const mockResponse = createMockResponse(mockReading);
+    it('should call api.post with correct arguments', async () => {
+      const mockResponse = { data: { data: { date: '2024-02-01', transits: [] } } };
       (api.post as any).mockResolvedValue(mockResponse);
 
-      const result = await transitService.calculateTransits(
-        'chart-123',
-        '2024-01-01',
-        '2024-03-01',
-      );
+      await transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01');
 
-      expect(result.transits).toHaveLength(1);
-      expect(result.transits?.[0].transitPlanet).toBe('Saturn');
-      expect(result.transits?.[0].natalPlanet).toBe('Sun');
-      expect(result.transits?.[0].aspect).toBe('square');
+      expect(api.post).toHaveBeenCalledWith(
+        '/transits/calculate',
+        {
+          chartId: 'chart-123',
+          startDate: '2024-01-01',
+          endDate: '2024-03-01',
+        },
+      );
     });
 
-    it('should throw on API failure', async () => {
-      const mockError = createMockError('Calculation failed', 500);
+    it('should propagate errors on API failure', async () => {
+      const mockError = new Error('Calculation failed');
       (api.post as any).mockRejectedValue(mockError);
 
       await expect(
@@ -95,25 +89,34 @@ describe('transitService', () => {
       ).rejects.toThrow('Calculation failed');
     });
 
-    it('should handle null data response gracefully', async () => {
-      const mockResponse = { data: { data: null } };
+    it('should throw on null response data', async () => {
+      const mockResponse = { data: null };
       (api.post as any).mockResolvedValue(mockResponse);
 
-      const result = await transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01');
-      expect(result).toEqual({ transits: [] });
+      await expect(
+        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01'),
+      ).rejects.toThrow();
+    });
+
+    it('should preserve custom errors from inner calls', async () => {
+      const customError = new Error('Custom error');
+      (api.post as any).mockRejectedValue(customError);
+
+      await expect(
+        transitService.calculateTransits('chart-123', '2024-01-01', '2024-03-01'),
+      ).rejects.toThrow('Custom error');
     });
   });
 
   describe('getTodayTransits', () => {
     it('should fetch today transits', async () => {
-      const mockReading = {
+      const mockReading: TransitReading = {
         date: '2024-02-22',
         transits: [
-          { transitPlanet: 'Jupiter', natalPlanet: 'Moon', aspect: 'trine', orb: 1.5 },
+          { transitPlanet: 'Mars', natalPlanet: 'Moon', aspect: 'square', orb: 1.2 },
         ],
-        majorAspects: [],
       };
-      const mockResponse = createMockResponse(mockReading);
+      const mockResponse = { data: { data: mockReading } };
       (api.get as any).mockResolvedValue(mockResponse);
 
       const result = await transitService.getTodayTransits();
@@ -124,12 +127,7 @@ describe('transitService', () => {
     });
 
     it('should handle empty transit response', async () => {
-      const mockReading = {
-        date: '2024-02-22',
-        transits: [],
-        majorAspects: [],
-      };
-      const mockResponse = createMockResponse(mockReading);
+      const mockResponse = { data: { data: { date: '2024-02-22', transits: [] } } };
       (api.get as any).mockResolvedValue(mockResponse);
 
       const result = await transitService.getTodayTransits();
@@ -137,40 +135,40 @@ describe('transitService', () => {
       expect(result.transits).toHaveLength(0);
     });
 
-    it('should throw on API failure', async () => {
-      const mockError = createMockError('Service unavailable', 503);
+    it('should propagate errors on API failure', async () => {
+      const mockError = new Error('Service unavailable');
       (api.get as any).mockRejectedValue(mockError);
 
       await expect(transitService.getTodayTransits()).rejects.toThrow('Service unavailable');
     });
 
-    it('should handle null data response gracefully', async () => {
-      (api.get as any).mockResolvedValue({ data: { data: null } });
+    it('should throw on null response', async () => {
+      (api.get as any).mockResolvedValue({ data: null });
 
-      const result = await transitService.getTodayTransits();
-      expect(result).toEqual({ transits: [] });
+      await expect(transitService.getTodayTransits()).rejects.toThrow();
     });
   });
 
   describe('getTransitCalendar', () => {
     it('should fetch transit calendar for month', async () => {
-      const mockCalendarData = {
-        month: 2,
-        year: 2024,
-        calendarData: [
-          {
-            date: '2024-02-01',
-            day: 1,
-            aspects: [{ planet1: 'Saturn', planet2: 'Sun', type: 'square', orb: 3.0 }],
+      const mockResponse = {
+        data: {
+          data: {
+            month: 2,
+            year: 2024,
+            calendarData: [
+              {
+                date: '2024-02-01',
+                day: 1,
+                aspects: [
+                  { planet1: 'Saturn', planet2: 'Sun', type: 'conjunction', orb: 2.5 },
+                ],
+                moonPhase: { phase: 'Full Moon', degrees: 180, illumination: 0.99 },
+              },
+            ],
           },
-          {
-            date: '2024-02-02',
-            day: 2,
-            aspects: [],
-          },
-        ],
+        },
       };
-      const mockResponse = createMockResponse(mockCalendarData);
       (api.get as any).mockResolvedValue(mockResponse);
 
       const result = await transitService.getTransitCalendar(2, 2024);
@@ -178,18 +176,21 @@ describe('transitService', () => {
       expect(api.get).toHaveBeenCalledWith('/transits/calendar', {
         params: { month: 2, year: 2024 },
       });
-      expect(result).toHaveLength(2);
+      expect(result).toHaveLength(1);
       expect(result[0].date).toBe('2024-02-01');
       expect(result[0].transits).toHaveLength(1);
     });
 
     it('should pass correct params for different months', async () => {
-      const mockCalendarData = {
-        month: 12,
-        year: 2024,
-        calendarData: [],
+      const mockResponse = {
+        data: {
+          data: {
+            month: 12,
+            year: 2024,
+            calendarData: [],
+          },
+        },
       };
-      const mockResponse = createMockResponse(mockCalendarData);
       (api.get as any).mockResolvedValue(mockResponse);
 
       await transitService.getTransitCalendar(12, 2024);
@@ -199,8 +200,8 @@ describe('transitService', () => {
       });
     });
 
-    it('should throw on calendar fetch failure', async () => {
-      const mockError = createMockError('Calendar unavailable', 500);
+    it('should propagate errors on calendar fetch failure', async () => {
+      const mockError = new Error('Calendar unavailable');
       (api.get as any).mockRejectedValue(mockError);
 
       await expect(transitService.getTransitCalendar(2, 2024)).rejects.toThrow('Calendar unavailable');
@@ -209,17 +210,20 @@ describe('transitService', () => {
 
   describe('getTransitForecast', () => {
     it('should fetch transit forecast with default duration', async () => {
-      const mockForecastData = {
-        chart: { id: 'chart-1', name: 'My Chart' },
-        duration: 'month',
-        startDate: '2024-02-01',
-        endDate: '2024-02-28',
-        groupedByType: {},
-        forecast: [
-          { type: 'conjunction', date: '2024-02-15', planet1: 'Venus', planet2: 'Mars', orb: 1.0, applying: true, intensity: 7 },
-        ],
+      const mockResponse = {
+        data: {
+          data: {
+            chart: { id: 'chart-1', name: 'My Chart' },
+            duration: 'month',
+            startDate: '2024-01-01',
+            endDate: '2024-01-31',
+            groupedByType: {},
+            forecast: [
+              { type: 'conjunction', date: '2024-01-15', planet1: 'Mars', planet2: 'Venus', orb: 1.5, intensity: 7 },
+            ],
+          },
+        },
       };
-      const mockResponse = createMockResponse(mockForecastData);
       (api.get as any).mockResolvedValue(mockResponse);
 
       const result = await transitService.getTransitForecast();
@@ -228,20 +232,23 @@ describe('transitService', () => {
         params: { duration: 'month' },
       });
       expect(result).toHaveLength(1);
-      expect(result[0].date).toBe('2024-02-15');
-      expect(result[0].transits).toHaveLength(1);
+      expect(result[0].date).toBe('2024-01-15');
+      expect(result[0].transits![0].transitPlanet).toBe('Mars');
     });
 
     it('should fetch forecast with custom duration', async () => {
-      const mockForecastData = {
-        chart: { id: 'chart-1', name: 'My Chart' },
-        duration: 'week',
-        startDate: '2024-02-01',
-        endDate: '2024-02-07',
-        groupedByType: {},
-        forecast: [],
+      const mockResponse = {
+        data: {
+          data: {
+            chart: { id: 'chart-1', name: 'My Chart' },
+            duration: 'week',
+            startDate: '2024-01-01',
+            endDate: '2024-01-07',
+            groupedByType: {},
+            forecast: [],
+          },
+        },
       };
-      const mockResponse = createMockResponse(mockForecastData);
       (api.get as any).mockResolvedValue(mockResponse);
 
       await transitService.getTransitForecast('week');
@@ -253,15 +260,18 @@ describe('transitService', () => {
 
     it('should support all duration types', async () => {
       const durations = ['week', 'month', 'quarter', 'year'] as const;
-      const mockForecastData = {
-        chart: { id: 'chart-1', name: 'My Chart' },
-        duration: 'week',
-        startDate: '2024-02-01',
-        endDate: '2024-02-07',
-        groupedByType: {},
-        forecast: [],
+      const mockResponse = {
+        data: {
+          data: {
+            chart: { id: 'chart-1', name: 'My Chart' },
+            duration: 'week',
+            startDate: '2024-01-01',
+            endDate: '2024-01-07',
+            groupedByType: {},
+            forecast: [],
+          },
+        },
       };
-      const mockResponse = createMockResponse(mockForecastData);
       (api.get as any).mockResolvedValue(mockResponse);
 
       for (const duration of durations) {
@@ -273,8 +283,8 @@ describe('transitService', () => {
       }
     });
 
-    it('should throw on forecast failure', async () => {
-      const mockError = createMockError('Forecast unavailable', 500);
+    it('should propagate errors on forecast failure', async () => {
+      const mockError = new Error('Forecast unavailable');
       (api.get as any).mockRejectedValue(mockError);
 
       await expect(transitService.getTransitForecast()).rejects.toThrow('Forecast unavailable');
@@ -283,25 +293,25 @@ describe('transitService', () => {
 
   describe('getTransitDetails', () => {
     it('should fetch specific transit details', async () => {
-      const mockReading = {
-        date: '2024-02-15',
+      const mockReading: TransitReading = {
+        date: '2024-02-01',
         transits: [
           { transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'conjunction', orb: 2.5 },
         ],
-        majorAspects: [],
       };
-      const mockResponse = createMockResponse(mockReading);
+      const mockResponse = { data: { data: mockReading } };
       (api.get as any).mockResolvedValue(mockResponse);
 
       const result = await transitService.getTransitDetails('transit-123');
 
       expect(api.get).toHaveBeenCalledWith('/transits/transit-123');
+      expect(result.date).toBe('2024-02-01');
       expect(result.transits).toHaveLength(1);
-      expect(result.transits?.[0].transitPlanet).toBe('Saturn');
+      expect(result.transits![0].transitPlanet).toBe('Saturn');
     });
 
     it('should handle transit not found', async () => {
-      const mockError = createMockError('Transit not found', 404);
+      const mockError = new Error('Transit not found');
       (api.get as any).mockRejectedValue(mockError);
 
       await expect(transitService.getTransitDetails('nonexistent')).rejects.toThrow(
@@ -309,52 +319,75 @@ describe('transitService', () => {
       );
     });
 
-    it('should handle null data response gracefully', async () => {
-      (api.get as any).mockResolvedValue({ data: { data: null } });
+    it('should throw on null response data', async () => {
+      (api.get as any).mockResolvedValue({ data: null });
 
-      const result = await transitService.getTransitDetails('transit-123');
-      expect(result).toEqual({ transits: [] });
+      await expect(transitService.getTransitDetails('transit-123')).rejects.toThrow();
+    });
+
+    it('should preserve custom errors on re-throw', async () => {
+      const customError = new Error('Not found');
+      (api.get as any).mockRejectedValue(customError);
+
+      await expect(transitService.getTransitDetails('transit-123')).rejects.toThrow('Not found');
     });
   });
 
   describe('normalizeTransits', () => {
-    it('should return empty array for null reading', () => {
+    it('should return empty array for null input', () => {
       expect(normalizeTransits(null)).toEqual([]);
     });
 
-    it('should return empty array for undefined reading', () => {
+    it('should return empty array for undefined input', () => {
       expect(normalizeTransits(undefined)).toEqual([]);
     });
 
-    it('should return transits array when present', () => {
-      const reading = {
-        date: '2024-02-01',
+    it('should return transits array if present', () => {
+      const reading: TransitReading = {
+        date: '2024-01-01',
         transits: [
-          { transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'conjunction', orb: 2.5 },
+          { transitPlanet: 'Mars', natalPlanet: 'Venus', aspect: 'square', orb: 3.0 },
         ],
       };
-      const result = normalizeTransits(reading as any);
-      expect(result).toHaveLength(1);
-      expect(result[0].transitPlanet).toBe('Saturn');
+      const result = normalizeTransits(reading);
+      expect(result).toEqual([
+        { transitPlanet: 'Mars', natalPlanet: 'Venus', aspect: 'square', orb: 3.0 },
+      ]);
     });
 
-    it('should convert majorAspects to transits when transits not present', () => {
-      const reading = {
-        date: '2024-02-01',
+    it('should convert majorAspects to NormalizedTransit format', () => {
+      const reading: TransitReading = {
+        date: '2024-01-01',
         majorAspects: [
-          { planet1: 'Mars', planet2: 'Venus', type: 'square', orb: 3.0, applying: true },
+          { planet1: 'Saturn', planet2: 'Moon', type: 'opposition', orb: 1.5, applying: true },
         ],
       };
-      const result = normalizeTransits(reading as any);
+      const result = normalizeTransits(reading);
+      expect(result).toEqual([
+        { transitPlanet: 'Saturn', natalPlanet: 'Moon', aspect: 'opposition', orb: 1.5 },
+      ]);
+    });
+
+    it('should prefer transits over majorAspects when both exist', () => {
+      const reading: TransitReading = {
+        date: '2024-01-01',
+        transits: [
+          { transitPlanet: 'Mars', natalPlanet: 'Venus', aspect: 'trine', orb: 1.0 },
+        ],
+        majorAspects: [
+          { planet1: 'Jupiter', planet2: 'Sun', type: 'conjunction', orb: 2.0 },
+        ],
+      };
+      const result = normalizeTransits(reading);
       expect(result).toHaveLength(1);
       expect(result[0].transitPlanet).toBe('Mars');
-      expect(result[0].natalPlanet).toBe('Venus');
-      expect(result[0].aspect).toBe('square');
     });
 
-    it('should return empty array when neither transits nor majorAspects present', () => {
-      const reading = { date: '2024-02-01' };
-      expect(normalizeTransits(reading as any)).toEqual([]);
+    it('should return empty array when no transit data present', () => {
+      const reading: TransitReading = {
+        date: '2024-01-01',
+      };
+      expect(normalizeTransits(reading)).toEqual([]);
     });
   });
 });

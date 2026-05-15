@@ -170,7 +170,8 @@ export function ChartWheel({
 
       <svg
         role="img"
-        aria-label={`Astrological chart wheel with ${planets.length} planets`}
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
+        aria-label={`Astrological chart wheel with ${data.planets.length} planets`}
         aria-describedby={interactive ? 'chart-description' : undefined}
         data-testid="chart-wheel"
         width={size}

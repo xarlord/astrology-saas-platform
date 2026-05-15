@@ -4,8 +4,6 @@
  * Handles HTTP requests for FLUX image generation with LoRA support
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Response, Request } from 'express';
 import fluxImageGenerationService, {
   type FluxImageOptions,

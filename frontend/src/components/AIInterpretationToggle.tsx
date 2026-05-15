@@ -3,12 +3,20 @@
  * Allows users to enable/disable AI enhancements
  */
 
+/* eslint-disable @typescript-eslint/no-floating-promises */
+
 import React, { useState } from 'react';
 import { useAIInterpretation } from '../hooks/useAIInterpretation';
+
 
 interface AIInterpretationToggleProps {
   onInterpretationGenerated?: (interpretation: Record<string, unknown>) => void;
   chartData?: Record<string, unknown>;
+}
+
+interface NatalChartData {
+  chartId: string;
+  birthData: unknown;
 }
 
 export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
@@ -27,7 +35,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
     if (!enabled || !chartData) return;
 
     try {
-      const interpretation = await generateNatal(chartData as unknown as { chartId: string; birthData: unknown });
+      const interpretation = await generateNatal(chartData as unknown as NatalChartData);
 
       if (onInterpretationGenerated) {
         onInterpretationGenerated(interpretation as unknown as Record<string, unknown>);
@@ -40,7 +48,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
   const handleToggle = (checked: boolean) => {
     setEnabled(checked);
     if (checked && chartData) {
-      void handleGenerate();
+      handleGenerate();
     }
   };
 

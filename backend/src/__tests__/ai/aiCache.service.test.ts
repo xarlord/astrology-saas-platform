@@ -1,116 +1,126 @@
 /**
  * AI Cache Service Tests
- * Tests for caching system with SHA-256 key generation
- * Uses in-memory mock implementation to avoid database dependency
+ * Tests for PostgreSQL-based caching system with SHA-256 key generation
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import crypto from 'crypto';
+// In-memory store to simulate the database for mock persistence
+const store = new Map<string, { data: Record<string, unknown>; expiresAt: Date | null }>();
 
-// In-memory cache store
-const cacheStore = new Map<string, { data: any; expiresAt: number | null }>();
+jest.mock('../../modules/ai/models/aiCache.model', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(async (key: string) => {
+      const entry = store.get(key);
+      if (!entry) return null;
+      if (entry.expiresAt && entry.expiresAt < new Date()) {
+        store.delete(key);
+        return null;
+      }
+      return entry.data;
+    }),
+    set: jest.fn(async (key: string, data: Record<string, unknown>, ttlSeconds?: number) => {
+      const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : null;
+      store.set(key, { data, expiresAt });
+      return { id: 'mock-id', cache_key: key, data, expires_at: expiresAt, created_at: new Date(), updated_at: new Date() };
+    }),
+    delete: jest.fn(async (key: string) => {
+      return store.delete(key);
+    }),
+    clear: jest.fn(async () => {
+      store.clear();
+    }),
+    clearExpired: jest.fn(async () => {
+      let count = 0;
+      for (const [key, entry] of store) {
+        if (entry.expiresAt && entry.expiresAt < new Date()) {
+          store.delete(key);
+          count++;
+        }
+      }
+      return count;
+    }),
+    getStats: jest.fn(async () => {
+      const totalEntries = store.size;
+      let expiredEntries = 0;
+      let activeEntries = 0;
+      for (const [, entry] of store) {
+        if (entry.expiresAt && entry.expiresAt < new Date()) {
+          expiredEntries++;
+        } else {
+          activeEntries++;
+        }
+      }
+      return { totalEntries, expiredEntries, activeEntries };
+    }),
+  },
+}));
 
-// Create a mock implementation that mirrors the real service
-const mockAICacheService = {
-  async get(key: string): Promise<any> {
-    const entry = cacheStore.get(key);
+import { describe, it, expect, beforeEach } from '@jest/globals';
+
+// Re-import the mock module so we can re-apply implementations after resetMocks
+import aiCacheModel from '../../modules/ai/models/aiCache.model';
+import aiCacheService from '../../modules/ai/services/aiCache.service';
+
+/**
+ * Re-apply the in-memory store implementations to the mock model functions.
+ * This is necessary because jest.config.js has `resetMocks: true`, which
+ * strips all mock implementations before each test.
+ */
+function applyStoreImplementations() {
+  (aiCacheModel.get as jest.Mock).mockImplementation(async (key: string) => {
+    const entry = store.get(key);
     if (!entry) return null;
-    if (entry.expiresAt && entry.expiresAt < Date.now()) {
-      cacheStore.delete(key);
+    if (entry.expiresAt && entry.expiresAt < new Date()) {
+      store.delete(key);
       return null;
     }
     return entry.data;
-  },
-
-  async set(key: string, data: any, options?: { ttl?: number }): Promise<void> {
-    cacheStore.set(key, {
-      data,
-      expiresAt: options?.ttl ? Date.now() + options.ttl * 1000 : null,
-    });
-  },
-
-  async delete(key: string): Promise<void> {
-    cacheStore.delete(key);
-  },
-
-  async clear(): Promise<void> {
-    cacheStore.clear();
-  },
-
-  async clearExpired(): Promise<number> {
+  });
+  (aiCacheModel.set as jest.Mock).mockImplementation(async (key: string, data: Record<string, unknown>, ttlSeconds?: number) => {
+    const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000) : null;
+    store.set(key, { data, expiresAt });
+    return { id: 'mock-id', cache_key: key, data, expires_at: expiresAt, created_at: new Date(), updated_at: new Date() };
+  });
+  (aiCacheModel.delete as jest.Mock).mockImplementation(async (key: string) => {
+    return store.delete(key);
+  });
+  (aiCacheModel.clear as jest.Mock).mockImplementation(async () => {
+    store.clear();
+  });
+  (aiCacheModel.clearExpired as jest.Mock).mockImplementation(async () => {
     let count = 0;
-    const now = Date.now();
-    for (const [key, entry] of cacheStore.entries()) {
-      if (entry.expiresAt && entry.expiresAt < now) {
-        cacheStore.delete(key);
+    for (const [key, entry] of store) {
+      if (entry.expiresAt && entry.expiresAt < new Date()) {
+        store.delete(key);
         count++;
       }
     }
     return count;
-  },
-
-  generateKey(data: unknown): string {
-    const hash = crypto
-      .createHash('sha256')
-      .update(JSON.stringify(data))
-      .digest('hex');
-    return `ai:${hash}`;
-  },
-
-  async getOrGenerate<T>(
-    key: string,
-    generator: () => Promise<T>,
-    options?: { ttl?: number },
-  ): Promise<T> {
-    const cached = await this.get(key);
-    if (cached) return cached as T;
-
-    const data = await generator();
-    await this.set(key, data, options);
-    return data;
-  },
-
-  async getStats(): Promise<{
-    totalEntries: number;
-    expiredEntries: number;
-    activeEntries: number;
-  }> {
-    let expired = 0;
-    const now = Date.now();
-    for (const [, entry] of cacheStore.entries()) {
-      if (entry.expiresAt && entry.expiresAt < now) expired++;
+  });
+  (aiCacheModel.getStats as jest.Mock).mockImplementation(async () => {
+    const totalEntries = store.size;
+    let expiredEntries = 0;
+    let activeEntries = 0;
+    for (const [, entry] of store) {
+      if (entry.expiresAt && entry.expiresAt < new Date()) {
+        expiredEntries++;
+      } else {
+        activeEntries++;
+      }
     }
-    return {
-      totalEntries: cacheStore.size,
-      expiredEntries: expired,
-      activeEntries: cacheStore.size - expired,
-    };
-  },
-};
-
-// Mock the module to return our in-memory implementation
-jest.mock('../../modules/ai/services/aiCache.service', () => ({
-  __esModule: true,
-  default: mockAICacheService,
-}));
-
-jest.mock('../../utils/logger', () => ({
-  __esModule: true,
-  default: {
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
-  },
-}));
-
-import aiCacheService from '../../modules/ai/services/aiCache.service';
+    return { totalEntries, expiredEntries, activeEntries };
+  });
+}
 
 describe('AI Cache Service', () => {
   beforeEach(() => {
-    cacheStore.clear();
+    // Clear in-memory store before each test
+    store.clear();
+    // resetMocks (from jest.config) runs before beforeEach and strips
+    // all mock implementations. Re-apply them here.
+    applyStoreImplementations();
   });
 
   describe('Cache Operations', () => {
@@ -126,6 +136,7 @@ describe('AI Cache Service', () => {
 
     it('should return null for non-existent keys', async () => {
       const cached = await aiCacheService.get('non-existent');
+
       expect(cached).toBeNull();
     });
 
@@ -133,23 +144,27 @@ describe('AI Cache Service', () => {
       const key = 'test-key';
       const data = { test: 'data' };
 
-      await aiCacheService.set(key, data, { ttl: 1 });
+      await aiCacheService.set(key, data, { ttl: 1 }); // 1 second TTL
 
+      // Wait for expiration
       await new Promise(resolve => setTimeout(resolve, 1100));
 
       const cached = await aiCacheService.get(key);
       expect(cached).toBeNull();
-    }, 10000);
+    });
 
     it('should handle TTL correctly - not expired immediately', async () => {
       const key = 'test-key-ttl';
       const data = { test: 'data' };
 
-      await aiCacheService.set(key, data, { ttl: 60 });
+      await aiCacheService.set(key, data, { ttl: 60 }); // 60 seconds TTL
 
+      // Should still be cached after short delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const cached = await aiCacheService.get(key);
       expect(cached).toEqual(data);
 
+      // Clean up
       await aiCacheService.delete(key);
     });
 
@@ -173,28 +188,36 @@ describe('AI Cache Service', () => {
 
       await aiCacheService.clear();
 
-      expect(await aiCacheService.get('key1')).toBeNull();
-      expect(await aiCacheService.get('key2')).toBeNull();
-      expect(await aiCacheService.get('key3')).toBeNull();
+      const cached1 = await aiCacheService.get('key1');
+      const cached2 = await aiCacheService.get('key2');
+      const cached3 = await aiCacheService.get('key3');
+
+      expect(cached1).toBeNull();
+      expect(cached2).toBeNull();
+      expect(cached3).toBeNull();
     });
   });
 
   describe('Key Generation', () => {
-    it('should generate cache key from chart data', () => {
+    it('should generate cache key from chart data', async () => {
       const chartData = {
-        planets: [{ planet: 'sun', sign: 'aries', degree: 15 }],
+        planets: [
+          { planet: 'sun', sign: 'aries', degree: 15 },
+        ],
       };
 
       const key = aiCacheService.generateKey(chartData);
 
       expect(key).toBeDefined();
       expect(typeof key).toBe('string');
-      expect(key).toMatch(/^ai:[a-f0-9]{64}$/);
+      expect(key).toMatch(/^ai:[a-f0-9]{64}$/); // SHA-256 hex hash
     });
 
     it('should generate consistent keys for identical data', () => {
       const chartData = {
-        planets: [{ planet: 'sun', sign: 'aries', degree: 15 }],
+        planets: [
+          { planet: 'sun', sign: 'aries', degree: 15 },
+        ],
       };
 
       const key1 = aiCacheService.generateKey(chartData);
@@ -219,6 +242,7 @@ describe('AI Cache Service', () => {
       const key = 'cache-aside-test';
       const cachedData = { interpretation: 'Cached interpretation' };
 
+      // Set up cache
       await aiCacheService.set(key, cachedData);
 
       let generatorCalled = false;
@@ -248,6 +272,7 @@ describe('AI Cache Service', () => {
       expect(result).toEqual(freshData);
       expect(generatorCalled).toBe(true);
 
+      // Verify it was cached
       const cached = await aiCacheService.get(key);
       expect(cached).toEqual(freshData);
     });
@@ -260,25 +285,30 @@ describe('AI Cache Service', () => {
 
       await aiCacheService.getOrGenerate(key, generator, { ttl: 1 });
 
+      // Wait for expiration
       await new Promise(resolve => setTimeout(resolve, 1100));
 
       const cached = await aiCacheService.get(key);
       expect(cached).toBeNull();
-    }, 10000);
+    });
   });
 
   describe('Error Handling', () => {
-    it('should handle get for non-existent key gracefully', async () => {
-      const result = await aiCacheService.get('non-existent-key');
+    it('should handle get errors gracefully', async () => {
+      // Mock database error by using invalid key (will be caught by try-catch)
+      const result = await aiCacheService.get('test-key');
+      // Should not throw, return null on error
       expect(result).toBeNull();
     });
 
-    it('should handle set operations', async () => {
+    it('should handle set errors gracefully', async () => {
+      // Should not throw
       await expect(aiCacheService.set('test-key', { data: 'test' })).resolves.not.toThrow();
     });
 
-    it('should handle delete for non-existent key gracefully', async () => {
-      await expect(aiCacheService.delete('non-existent-key')).resolves.not.toThrow();
+    it('should handle delete errors gracefully', async () => {
+      // Should not throw
+      await expect(aiCacheService.delete('test-key')).resolves.not.toThrow();
     });
   });
 
@@ -290,14 +320,19 @@ describe('AI Cache Service', () => {
       await aiCacheService.set(key1, { data: '1' }, { ttl: 1 });
       await aiCacheService.set(key2, { data: '2' }, { ttl: 10 });
 
+      // Wait for first entry to expire
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       const deletedCount = await aiCacheService.clearExpired();
+
       expect(deletedCount).toBeGreaterThanOrEqual(0);
 
-      expect(await aiCacheService.get(key1)).toBeNull();
-      expect(await aiCacheService.get(key2)).toEqual({ data: '2' });
-    }, 10000);
+      const cached1 = await aiCacheService.get(key1);
+      const cached2 = await aiCacheService.get(key2);
+
+      expect(cached1).toBeNull();
+      expect(cached2).toEqual({ data: '2' });
+    });
 
     it('should return 0 when no expired entries exist', async () => {
       const deletedCount = await aiCacheService.clearExpired();
@@ -320,7 +355,7 @@ describe('AI Cache Service', () => {
         moonInTaurus: 'You seek emotional stability...',
       };
 
-      await aiCacheService.set(key, interpretation, { ttl: 3600 });
+      await aiCacheService.set(key, interpretation, { ttl: 3600 }); // 1 hour
 
       const cached = await aiCacheService.get(key);
       expect(cached).toEqual(interpretation);
@@ -339,12 +374,14 @@ describe('AI Cache Service', () => {
         return { interpretation: `Generated interpretation ${callCount}` };
       };
 
+      // First call - cache miss, should generate
       const result1 = await aiCacheService.getOrGenerate(key, generator, { ttl: 3600 });
       expect(callCount).toBe(1);
       expect(result1).toEqual({ interpretation: 'Generated interpretation 1' });
 
+      // Second call - cache hit, should not generate
       const result2 = await aiCacheService.getOrGenerate(key, generator, { ttl: 3600 });
-      expect(callCount).toBe(1);
+      expect(callCount).toBe(1); // Still 1, not called again
       expect(result2).toEqual({ interpretation: 'Generated interpretation 1' });
     });
   });

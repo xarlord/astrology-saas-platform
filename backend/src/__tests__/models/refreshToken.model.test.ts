@@ -51,7 +51,7 @@ function createMockQueryBuilder(overrides: Record<string, unknown> = {}) {
   qb.delete = jest.fn().mockResolvedValue(0);
 
   // Thenable interface — makes `await knexChain` resolve to _resolveValue
-  qb.then = jest.fn((resolve: any, reject?: any) => // eslint-disable-line @typescript-eslint/no-explicit-any
+  qb.then = jest.fn((resolve: any, reject?: any) =>
     Promise.resolve(_resolveValue).then(resolve, reject),
   );
 
@@ -61,7 +61,6 @@ function createMockQueryBuilder(overrides: Record<string, unknown> = {}) {
   });
 
   // Helper for tests to set what the chain resolves to when awaited
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (qb as any)._setResolveValue = (val: unknown) => {
     _resolveValue = val;
   };
@@ -257,7 +256,6 @@ describe('Refresh Token Model', () => {
       };
 
       const qb = createMockQueryBuilder();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (qb as any)._setResolveValue([foundToken]);
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);
@@ -274,7 +272,6 @@ describe('Refresh Token Model', () => {
 
     it('should return null when token not found', async () => {
       const qb = createMockQueryBuilder();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (qb as any)._setResolveValue([]);
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
 
@@ -365,7 +362,6 @@ describe('Refresh Token Model', () => {
       const qb = createMockQueryBuilder({
         update: jest.fn().mockResolvedValue(1),
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (qb as any)._setResolveValue([foundRecord]);
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);
@@ -384,7 +380,6 @@ describe('Refresh Token Model', () => {
 
     it('should return false when token not found', async () => {
       const qb = createMockQueryBuilder();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (qb as any)._setResolveValue([]);
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
 
@@ -407,7 +402,6 @@ describe('Refresh Token Model', () => {
       };
 
       const findQb = createMockQueryBuilder();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (findQb as any)._setResolveValue([foundRecord]);
       mockDb.mockReturnValueOnce(findQb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);
@@ -445,7 +439,6 @@ describe('Refresh Token Model', () => {
       const qb = createMockQueryBuilder({
         update: jest.fn().mockResolvedValue(1),
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (qb as any)._setResolveValue([foundRecord]);
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);
@@ -507,7 +500,6 @@ describe('Refresh Token Model', () => {
         whereNot: mockWhereNot,
         update: jest.fn().mockResolvedValue(2),
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (qb as any)._setResolveValue([exceptRecord]);
       mockDb.mockReturnValue(qb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);

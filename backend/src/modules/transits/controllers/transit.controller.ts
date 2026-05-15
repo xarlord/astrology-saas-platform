@@ -6,14 +6,13 @@
  * calculates aspects between natal and transit positions.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import ChartModel from '../../charts/models/chart.model';
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
+import knex from '../../../config/database';
 
 // Module-level singleton of the real calculation engine
 const astronomyEngine = new AstronomyEngineService();
@@ -278,7 +277,10 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
  * Get today's transits
  */
 export async function getTodayTransits(req: AuthenticatedRequest, res: Response): Promise<void> {
-  const userId = req.user.id;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new AppError('Authentication required', 401);
+  }
   const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
   const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
@@ -386,15 +388,36 @@ export async function getTransitCalendar(req: AuthenticatedRequest, res: Respons
 /**
  * Get specific transit details
  */
-export async function getTransitDetails(_req: AuthenticatedRequest, res: Response): Promise<void> {
-  // const { id } = _req.params; // Transit reading ID - TODO: will be used
+export async function getTransitDetails(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const userId = req.user.id;
+  const { id } = req.params;
 
-  // TODO: Fetch specific transit reading from database
-  // For now, calculate on-demand
+  const reading = await knex('transit_readings')
+    .where({ id, user_id: userId })
+    .first();
+
+  if (!reading) {
+    throw new AppError('Transit reading not found', 404);
+  }
 
   res.status(200).json({
     success: true,
-    data: { transit: null },
+    data: {
+      transit: {
+        id: reading.id,
+        userId: reading.user_id,
+        chartId: reading.chart_id,
+        startDate: reading.start_date,
+        endDate: reading.end_date,
+        transitData: typeof reading.transit_data === 'string'
+          ? JSON.parse(reading.transit_data)
+          : reading.transit_data,
+        moonPhases: typeof reading.moon_phases === 'string'
+          ? JSON.parse(reading.moon_phases)
+          : reading.moon_phases,
+        createdAt: reading.created_at,
+      },
+    },
   });
 }
 

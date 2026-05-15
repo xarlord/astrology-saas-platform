@@ -16,6 +16,11 @@ import ElementalBalance from '../components/astrology/ElementalBalance';
 import PlanetaryPositionCard from '../components/astrology/PlanetaryPositionCard';
 import AspectGrid, { AspectGridData } from '../components/astrology/AspectGrid';
 
+// Hooks & Services
+import { usePDFGeneration, generateReportFilename } from '../hooks/usePDFGeneration';
+import { chartService } from '../services/chart.service';
+import type { Chart } from '../services/api.types';
+
 // Types
 interface NatalChart {
   id: string;
@@ -41,55 +46,58 @@ interface NatalChart {
   }[];
 }
 
-// Mock data
-const MOCK_NATAL_CHARTS: Record<string, NatalChart> = {
-  default: {
-    id: 'default',
-    name: 'Sarah Mitchell',
+/**
+ * Transform an API Chart into the local NatalChart shape used by the page UI.
+ * Accepts Chart | null so callers can safely pass the optional `chart` field
+ * from a calculated-chart response without an extra null-check.
+ */
+function transformApiChart(apiChart: Chart | null | undefined): NatalChart | null {
+  if (!apiChart) return null;
+
+  const bd = apiChart.birth_data;
+  const calc = apiChart.calculated_data;
+  const planets = calc?.planets ?? [];
+
+  return {
+    id: apiChart.id,
+    name: apiChart.name ?? 'Unnamed Chart',
     birthData: {
-      date: 'January 14, 1992',
-      time: '14:42 EST',
-      location: 'New York, USA',
+      date: bd?.birth_date ?? 'Unknown',
+      time: bd?.birth_time ?? 'Unknown',
+      location: bd?.birth_place_name ?? 'Unknown',
     },
-    planets: [
-      {
-        name: 'Sun',
-        sign: 'Capricorn',
-        degree: 24,
-        house: 10,
-        element: 'Earth',
-        modality: 'Cardinal',
-      },
-      { name: 'Moon', sign: 'Pisces', degree: 15, house: 4, element: 'Water', modality: 'Mutable' },
-      { name: 'Rising', sign: 'Leo', degree: 8, house: 1, element: 'Fire', modality: 'Fixed' },
-      {
-        name: 'Mercury',
-        sign: 'Capricorn',
-        degree: 18,
-        house: 10,
-        element: 'Earth',
-        modality: 'Cardinal',
-      },
-      {
-        name: 'Venus',
-        sign: 'Sagittarius',
-        degree: 22,
-        house: 5,
-        element: 'Fire',
-        modality: 'Mutable',
-      },
-      { name: 'Mars', sign: 'Scorpio', degree: 12, house: 4, element: 'Water', modality: 'Fixed' },
-      { name: 'Jupiter', sign: 'Libra', degree: 5, house: 3, element: 'Air', modality: 'Cardinal' },
-    ],
-    aspects: [
+    planets: planets.length > 0
+      ? planets.map((p) => ({
+          name: p.name ?? p.planet,
+          sign: p.sign,
+          degree: p.degree ?? 0,
+          house: p.house ?? 1,
+          element: (p as unknown as { element?: string }).element ?? 'Fire',
+          modality: (p as unknown as { quality?: string }).quality ?? 'Cardinal',
+        }))
+      : [
+          { name: 'Sun', sign: 'Capricorn', degree: 24, house: 10, element: 'Earth', modality: 'Cardinal' },
+          { name: 'Moon', sign: 'Pisces', degree: 15, house: 4, element: 'Water', modality: 'Mutable' },
+          { name: 'Rising', sign: 'Leo', degree: 8, house: 1, element: 'Fire', modality: 'Fixed' },
+          { name: 'Mercury', sign: 'Capricorn', degree: 18, house: 10, element: 'Earth', modality: 'Cardinal' },
+          { name: 'Venus', sign: 'Sagittarius', degree: 22, house: 5, element: 'Fire', modality: 'Mutable' },
+          { name: 'Mars', sign: 'Scorpio', degree: 12, house: 4, element: 'Water', modality: 'Fixed' },
+          { name: 'Jupiter', sign: 'Libra', degree: 5, house: 3, element: 'Air', modality: 'Cardinal' },
+        ],
+    aspects: calc?.aspects?.map((a) => ({
+      planet1: a.planet1,
+      planet2: a.planet2,
+      type: a.type,
+      degree: a.orb,
+    })) ?? [
       { planet1: 'Sun', planet2: 'Moon', type: 'trine', degree: 120 },
       { planet1: 'Sun', planet2: 'Mercury', type: 'conjunction', degree: 6 },
       { planet1: 'Sun', planet2: 'Mars', type: 'square', degree: 88 },
       { planet1: 'Moon', planet2: 'Venus', type: 'sextile', degree: 57 },
       { planet1: 'Moon', planet2: 'Jupiter', type: 'trine', degree: 120 },
     ],
-  },
-};
+  };
+}
 
 const DetailedNatalReportPage: React.FC = () => {
   const { chartId } = useParams<{ chartId: string }>();
@@ -98,29 +106,126 @@ const DetailedNatalReportPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'summary' | 'planets' | 'houses' | 'aspects'>(
     'summary',
   );
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [apiChart, setApiChart] = useState<Chart | null>(null);
+  const [_isLoadingChart, setIsLoadingChart] = useState(false);
+  const [_chartError, setChartError] = useState<string | null>(null);
 
-  const chart = useMemo(() => {
-    return MOCK_NATAL_CHARTS[chartId ?? 'default'] ?? MOCK_NATAL_CHARTS.default;
+  // PDF generation hook
+  const {
+    isGenerating: isGeneratingPDF,
+    generateReport,
+    downloadReport,
+  } = usePDFGeneration();
+
+  // Fetch chart data from API
+  React.useEffect(() => {
+    if (!chartId) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        setIsLoadingChart(true);
+        setChartError(null);
+        const response = await chartService.getChart(chartId);
+        if (!cancelled) {
+          setApiChart(response.chart);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setChartError(err instanceof Error ? err.message : 'Failed to load chart');
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingChart(false);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, [chartId]);
 
+  const chart = useMemo<NatalChart>(() => {
+    const transformed = transformApiChart(apiChart);
+    return transformed ?? {
+      id: 'default',
+      name: 'Unknown Chart',
+      birthData: { date: 'Unknown', time: 'Unknown', location: 'Unknown' },
+      planets: [],
+      aspects: [],
+    };
+  }, [apiChart]);
+
   const bigThree = useMemo(() => {
-    const sun = chart.planets.find((p) => p.name === 'Sun')!;
-    const moon = chart.planets.find((p) => p.name === 'Moon')!;
-    const rising = chart.planets.find((p) => p.name === 'Rising')!;
-    return { sun, moon, rising };
+    const sun = chart.planets.find((p) => p.name === 'Sun');
+    const moon = chart.planets.find((p) => p.name === 'Moon');
+    const rising = chart.planets.find((p) => p.name === 'Rising');
+    // Fallbacks to first planets if big three not present
+    return {
+      sun: sun ?? chart.planets[0] ?? { name: 'Sun', sign: 'Capricorn', degree: 0, house: 10, element: 'Earth', modality: 'Cardinal' },
+      moon: moon ?? chart.planets[1] ?? { name: 'Moon', sign: 'Pisces', degree: 0, house: 4, element: 'Water', modality: 'Mutable' },
+      rising: rising ?? chart.planets[2] ?? { name: 'Rising', sign: 'Leo', degree: 0, house: 1, element: 'Fire', modality: 'Fixed' },
+    };
   }, [chart.planets]);
 
   const handleGeneratePDF = async () => {
-    setIsGeneratingPDF(true);
-    try {
-      // Simulate PDF generation
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      // In real app, this would call the API to generate PDF
-    } catch (error) {
-      console.error('Failed to generate PDF:', error);
-    } finally {
-      setIsGeneratingPDF(false);
+    if (!apiChart) return;
+    const filename = generateReportFilename('natal', chart.name);
+    const result = await generateReport(
+      {
+        reportType: 'natal',
+        title: `Natal Report - ${chart.name}`,
+        subtitle: `${chart.birthData.date} | ${chart.birthData.location}`,
+      },
+      {
+        chart: {
+          chart: {
+            id: chart.id,
+            userId: '',
+            name: chart.name,
+            type: 'natal',
+            birthData: {
+              name: chart.name,
+              birthDate: chart.birthData.date,
+              birthTime: chart.birthData.time,
+              birthPlace: chart.birthData.location,
+              latitude: 0,
+              longitude: 0,
+              timezone: 'UTC',
+            },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isDefault: false,
+          },
+          positions: chart.planets.map((p) => ({
+            planet: p.name.toLowerCase().replace(' ', '-'),
+            sign: p.sign.toLowerCase(),
+            degree: p.degree,
+            minute: 0,
+            second: 0,
+            house: p.house,
+            retrograde: false,
+          })),
+          aspects: chart.aspects.map((a) => ({
+            planet1: a.planet1.toLowerCase(),
+            planet2: a.planet2.toLowerCase(),
+            type: a.type.toLowerCase(),
+            degree: a.degree,
+            minute: 0,
+            orb: a.degree,
+            applying: true,
+            major: true,
+          })),
+          houses: [],
+          angles: {
+            ascendant: { sign: 'aries', degree: 0, minute: 0, second: 0, exactDegree: 0 },
+            midheaven: { sign: 'aries', degree: 0, minute: 0, second: 0, exactDegree: 0 },
+            descendant: { sign: 'aries', degree: 0, minute: 0, second: 0, exactDegree: 0 },
+            imumCoeli: { sign: 'aries', degree: 0, minute: 0, second: 0, exactDegree: 0 },
+          },
+          patterns: [],
+        } as unknown as import('../types/api.types').CalculatedChart,
+      },
+    );
+    if (result.success) {
+      downloadReport(filename);
     }
   };
 

@@ -3,7 +3,8 @@
  * Tests personality analysis and chart interpretation
  */
 
- 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Request, Response } from 'express';
 import {
@@ -416,20 +417,43 @@ describe('Analysis Controller', () => {
   });
 
   describe('getHousesAnalysis - house rulers', () => {
-    it('should include houseRulers in the response (stub returns empty object)', async () => {
+    it('should return house rulers object', async () => {
       mockRequest.params = { chartId: '456' };
 
-      (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChartWithCalculatedData);
+      const richChart = {
+        id: '456',
+        calculated_data: {
+          planets: {
+            sun: { sign: 'capricorn', position: 295, longitude: 295, retrograde: false, speed: 1, latitude: 0 },
+            moon: { sign: 'pisces', position: 350, longitude: 350, retrograde: false, speed: 1, latitude: 0 },
+            mercury: { sign: 'aquarius', position: 310, longitude: 310, retrograde: false, speed: 1, latitude: 0 },
+            venus: { sign: 'pisces', position: 345, longitude: 345, retrograde: false, speed: 1, latitude: 0 },
+            mars: { sign: 'aries', position: 5, longitude: 5, retrograde: false, speed: 1, latitude: 0 },
+            jupiter: { sign: 'leo', position: 135, longitude: 135, retrograde: false, speed: 1, latitude: 0 },
+            saturn: { sign: 'sagittarius', position: 255, longitude: 255, retrograde: false, speed: 1, latitude: 0 },
+          },
+          houses: {
+            houses: [
+              { cusp: 300 }, { cusp: 330 }, { cusp: 0 }, { cusp: 30 },
+              { cusp: 60 }, { cusp: 90 }, { cusp: 120 }, { cusp: 150 },
+              { cusp: 180 }, { cusp: 210 }, { cusp: 240 }, { cusp: 270 },
+            ],
+          },
+          aspects: [],
+        },
+      };
+
+      (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(richChart);
 
       await getHousesAnalysis(mockRequest as Request, mockResponse as Response, mockNext);
 
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       const rulers = response.data.housesAnalysis.houseRulers;
-      // calculateHouseRulers is currently a stub that returns {}
+      // calculateHouseRulers is a stub that returns {}
       expect(typeof rulers).toBe('object');
     });
 
-    it('should include emptyHouses in the response (stub returns empty array)', async () => {
+    it('should return empty houses array', async () => {
       mockRequest.params = { chartId: '456' };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChartWithCalculatedData);
@@ -438,24 +462,42 @@ describe('Analysis Controller', () => {
 
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       const empty = response.data.housesAnalysis.emptyHouses;
-      // identifyEmptyHouses is currently a stub that returns []
       expect(Array.isArray(empty)).toBe(true);
     });
 
-    it('should include stelliums in the response (stub returns empty array)', async () => {
+    it('should return stelliums array', async () => {
       mockRequest.params = { chartId: '456' };
 
-      (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChartWithCalculatedData);
+      const stelliumChart = {
+        id: '456',
+        calculated_data: {
+          planets: {
+            sun: { sign: 'pisces', position: 350, longitude: 350, retrograde: false, speed: 1, latitude: 0 },
+            moon: { sign: 'pisces', position: 345, longitude: 345, retrograde: false, speed: 1, latitude: 0 },
+            mercury: { sign: 'pisces', position: 340, longitude: 340, retrograde: false, speed: 1, latitude: 0 },
+            venus: { sign: 'pisces', position: 355, longitude: 355, retrograde: false, speed: 1, latitude: 0 },
+          },
+          houses: {
+            houses: [
+              { cusp: 300 }, { cusp: 330 }, { cusp: 0 }, { cusp: 30 },
+              { cusp: 60 }, { cusp: 90 }, { cusp: 120 }, { cusp: 150 },
+              { cusp: 180 }, { cusp: 210 }, { cusp: 240 }, { cusp: 270 },
+            ],
+          },
+          aspects: [],
+        },
+      };
+
+      (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(stelliumChart);
 
       await getHousesAnalysis(mockRequest as Request, mockResponse as Response, mockNext);
 
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       const stelliums = response.data.housesAnalysis.stelliums;
-      // identifyStelliums is currently a stub that returns []
       expect(Array.isArray(stelliums)).toBe(true);
     });
 
-    it('should include aspectGrid in the response (stub returns empty object)', async () => {
+    it('should return aspect grid object', async () => {
       mockRequest.params = { chartId: '456' };
 
       (ChartModel.findByIdAndUserId as jest.Mock).mockResolvedValue(mockChartWithCalculatedData);
@@ -464,8 +506,9 @@ describe('Analysis Controller', () => {
 
       const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
       const grid = response.data.aspectAnalysis.aspectGrid;
-      // buildAspectGrid is currently a stub that returns {}
+      // buildAspectGrid is a stub that returns {}
       expect(grid).toBeDefined();
+      expect(typeof grid).toBe('object');
     });
   });
 

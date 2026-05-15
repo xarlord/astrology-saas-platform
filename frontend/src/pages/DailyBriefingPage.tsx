@@ -6,13 +6,14 @@
  * and energy overview in a scrollable single-column layout.
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 
 // Hooks
 import { useAuth } from '../hooks/useAuth';
+import { useTodayTransits } from '../hooks';
 
 // Components
 import { AppLayout } from '../components';
@@ -22,7 +23,7 @@ import type { MoonPhaseType } from '../components/astrology/MoonPhaseCard';
 import type { TransitType } from '../components/astrology/TransitTimelineCard';
 
 // ---------------------------------------------------------------------------
-// Mock Data
+// Types
 // ---------------------------------------------------------------------------
 
 interface MoonPhaseData {
@@ -31,10 +32,10 @@ interface MoonPhaseData {
   sign: string;
 }
 
-const MOCK_MOON_PHASE: MoonPhaseData = {
-  phase: 'waxing-gibbous',
-  illumination: 72,
-  sign: 'Taurus',
+const DEFAULT_MOON_PHASE: MoonPhaseData = {
+  phase: 'new',
+  illumination: 0,
+  sign: 'Aries',
 };
 
 interface DailyThemeData {
@@ -43,11 +44,10 @@ interface DailyThemeData {
   description: string;
 }
 
-const MOCK_DAILY_THEME: DailyThemeData = {
-  title: 'Embrace Change',
-  transit: 'Uranus trine Sun',
-  description:
-    'invites innovation and breakthroughs. A powerful day to lean into the unexpected and let curiosity lead.',
+const DEFAULT_DAILY_THEME: DailyThemeData = {
+  title: 'Daily Transit Overview',
+  transit: '',
+  description: 'Check your transits for today\'s cosmic weather.',
 };
 
 interface TransitCardData {
@@ -58,30 +58,7 @@ interface TransitCardData {
   tags: string[];
 }
 
-const MOCK_TRANSITS: TransitCardData[] = [
-  {
-    time: 'Today',
-    title: 'Venus in Pisces',
-    description:
-      'Heightened romance and creativity. Sensitivity is amplified across relationships.',
-    type: 'favorable',
-    tags: ['Love', 'Creativity'],
-  },
-  {
-    time: 'Today',
-    title: 'Mars in Gemini',
-    description: 'Mental energy peaks today. Communication is sharp and persuasive.',
-    type: 'major',
-    tags: ['Communication', 'Energy'],
-  },
-  {
-    time: 'Tonight',
-    title: 'Neptune in Pisces',
-    description: 'Dreamy intuition. Boundaries soften — trust your inner voice.',
-    type: 'challenging',
-    tags: ['Intuition', 'Boundaries'],
-  },
-];
+const DEFAULT_TRANSITS: TransitCardData[] = [];
 
 interface EnergyBarData {
   label: string;
@@ -89,17 +66,25 @@ interface EnergyBarData {
   color: string;
 }
 
-const MOCK_ENERGY: EnergyBarData[] = [
-  { label: 'Physical', value: 72, color: 'bg-emerald-500' },
-  { label: 'Emotional', value: 65, color: 'bg-blue-500' },
-  { label: 'Mental', value: 80, color: 'bg-amber-400' },
-  { label: 'Spiritual', value: 58, color: 'bg-purple-500' },
+const DEFAULT_ENERGY: EnergyBarData[] = [
+  { label: 'Physical', value: 50, color: 'bg-emerald-500' },
+  { label: 'Emotional', value: 50, color: 'bg-blue-500' },
+  { label: 'Mental', value: 50, color: 'bg-amber-400' },
+  { label: 'Spiritual', value: 50, color: 'bg-purple-500' },
 ];
 
-const CURRENT_SEASON = 'Aries Season';
+function getCurrentSeason(): string {
+  const month = new Date().getMonth();
+  if (month >= 2 && month <= 4) return 'Aries Season';
+  if (month >= 5 && month <= 7) return 'Cancer Season';
+  if (month >= 8 && month <= 10) return 'Libra Season';
+  return 'Capricorn Season';
+}
+
+const CURRENT_SEASON = getCurrentSeason();
 
 // ---------------------------------------------------------------------------
-// Priority Areas mock data
+// Priority Areas (static defaults — will be derived from transit scores)
 // ---------------------------------------------------------------------------
 
 interface PriorityArea {
@@ -112,13 +97,13 @@ interface PriorityArea {
   accentText: string;
 }
 
-const MOCK_PRIORITY_AREAS: PriorityArea[] = [
+const PRIORITY_AREAS: PriorityArea[] = [
   {
     key: 'love',
     label: 'Love',
     icon: 'favorite',
-    score: 82,
-    trend: 'up',
+    score: 50,
+    trend: 'stable',
     accentBg: 'bg-pink-500/10',
     accentText: 'text-pink-400',
   },
@@ -126,7 +111,7 @@ const MOCK_PRIORITY_AREAS: PriorityArea[] = [
     key: 'career',
     label: 'Career',
     icon: 'work',
-    score: 65,
+    score: 50,
     trend: 'stable',
     accentBg: 'bg-amber-500/10',
     accentText: 'text-amber-400',
@@ -135,8 +120,8 @@ const MOCK_PRIORITY_AREAS: PriorityArea[] = [
     key: 'health',
     label: 'Health',
     icon: 'self_improvement',
-    score: 74,
-    trend: 'up',
+    score: 50,
+    trend: 'stable',
     accentBg: 'bg-emerald-500/10',
     accentText: 'text-emerald-400',
   },
@@ -144,8 +129,8 @@ const MOCK_PRIORITY_AREAS: PriorityArea[] = [
     key: 'growth',
     label: 'Growth',
     icon: 'school',
-    score: 58,
-    trend: 'down',
+    score: 50,
+    trend: 'stable',
     accentBg: 'bg-blue-500/10',
     accentText: 'text-blue-400',
   },
@@ -188,8 +173,43 @@ const DailyBriefingPage: React.FC = () => {
   const dwellTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasMarkedViewed = useRef(false);
 
-  const [moonPhase] = useState<MoonPhaseData>(MOCK_MOON_PHASE);
-  const [dailyTheme] = useState<DailyThemeData>(MOCK_DAILY_THEME);
+  // Fetch real transit data
+  const { data: transitData, isLoading: _isLoading } = useTodayTransits();
+
+  // Derive moon phase from transit data
+  const moonPhase: MoonPhaseData = useMemo(() => {
+    if (!transitData?.moonPhase) return DEFAULT_MOON_PHASE;
+    return {
+      phase: transitData.moonPhase.phase as MoonPhaseType,
+      illumination: Math.round(transitData.moonPhase.illumination),
+      sign: 'Moon',
+    };
+  }, [transitData]);
+
+  // Derive daily theme from major aspects
+  const dailyTheme: DailyThemeData = useMemo(() => {
+    if (!transitData?.majorAspects?.length) return DEFAULT_DAILY_THEME;
+    const top = transitData.majorAspects[0];
+    return {
+      title: `${top.planet1} ${top.type} ${top.planet2}`,
+      transit: `${top.planet1} ${top.type} ${top.planet2}`,
+      description: `Active transit with ${top.orb.toFixed(1)}° orb.`,
+    };
+  }, [transitData]);
+
+  // Derive transit cards from major aspects
+  const transitCards: TransitCardData[] = useMemo(() => {
+    if (!transitData?.majorAspects?.length) return DEFAULT_TRANSITS;
+    return transitData.majorAspects.slice(0, 5).map((a) => ({
+      time: 'Today',
+      title: `${a.planet1} ${a.type} ${a.planet2}`,
+      description: `${a.applying ? 'Applying' : 'Separating'} aspect with ${a.orb.toFixed(1)}° orb.`,
+      type: (['trine', 'sextile'].includes(a.type) ? 'favorable' : ['square', 'opposition'].includes(a.type) ? 'challenging' : 'major') as TransitType,
+      tags: [a.planet1, a.planet2],
+    }));
+  }, [transitData]);
+
+  const energyData = DEFAULT_ENERGY;
 
   // Notification toggle states
   const [notifications, setNotifications] = useState({
@@ -344,7 +364,7 @@ const DailyBriefingPage: React.FC = () => {
             Priority Areas
           </h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {MOCK_PRIORITY_AREAS.map((area) => (
+            {PRIORITY_AREAS.map((area) => (
               <div
                 key={area.key}
                 className={`${area.accentBg} bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-xl p-4 min-w-[90px] min-h-[100px] flex flex-col items-center justify-center gap-1 active:scale-95 transition-transform cursor-default`}
@@ -380,7 +400,7 @@ const DailyBriefingPage: React.FC = () => {
         </motion.div>
 
         <div className="space-y-2 mb-6" data-testid="briefing-transits-list">
-          {MOCK_TRANSITS.map((transit) => (
+          {transitCards.map((transit) => (
             <TransitTimelineCard
               key={transit.title}
               time={transit.time}
@@ -460,7 +480,7 @@ const DailyBriefingPage: React.FC = () => {
               <h2 className="text-white font-bold text-sm">Energy Overview</h2>
             </div>
             <div className="space-y-3">
-              {MOCK_ENERGY.map((bar) => (
+              {energyData.map((bar) => (
                 <div key={bar.label}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-slate-300 text-sm">{bar.label}</span>

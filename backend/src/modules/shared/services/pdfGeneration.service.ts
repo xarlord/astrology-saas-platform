@@ -490,16 +490,19 @@ export class PDFGenerationService {
           </tr>
         </thead>
         <tbody>
-          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => `
+          ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => {
+              const p1 = typeof aspect.planet1 === 'string' ? aspect.planet1 : (aspect.planet1 as any)?.planet ?? String(aspect.planet1);
+              const p2 = typeof aspect.planet2 === 'string' ? aspect.planet2 : (aspect.planet2 as any)?.planet ?? String(aspect.planet2);
+              return `
             <tr>
-              <td>${this.capitalize((typeof aspect.planet1 === 'string' ? aspect.planet1 : String(aspect.planet1)))}</td>
+              <td>${this.capitalize(p1)}</td>
               <td class="aspect-type ${aspect.harmonious ? 'harmonious' : 'challenging'}">
                 ${ASPECT_SYMBOLS[aspect.type] || aspect.type} ${this.capitalize(aspect.type)}
               </td>
-              <td>${this.capitalize((typeof aspect.planet2 === 'string' ? aspect.planet2 : String(aspect.planet2)))}</td>
+              <td>${this.capitalize(p2)}</td>
               <td>${aspect.harmonious ? '✓' : ''}</td>
-            </tr>
-          `).join('')}
+            </tr>`;
+            }).join('')}
         </tbody>
       </table>
     </section>

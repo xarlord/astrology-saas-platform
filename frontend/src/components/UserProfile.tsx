@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
+import { EmptyState } from './EmptyState';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -123,10 +124,10 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     name: chart.name,
     type: (chart.type ?? 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
     birthData: {
-      date: new Date((chart.birthData?.birthDate ?? chart.birth_data?.birth_date) ?? Date.now()),
-      time: (chart.birthData?.birthTime ?? chart.birth_data?.birth_time) ?? '00:00',
+      date: new Date(chart.birth_data?.birth_date ?? Date.now()),
+      time: chart.birth_data?.birth_time ?? '00:00',
       place: {
-        name: (chart.birthData?.birthPlace ?? chart.birth_data?.birth_place_name) ?? 'Unknown',
+        name: chart.birth_data?.birth_place_name ?? 'Unknown',
         latitude: 0,
         longitude: 0,
         timezone: 'UTC',
@@ -138,8 +139,8 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
       zodiac: 'tropical',
     },
     calculatedData: chart.calculated_data as Record<string, unknown> | undefined,
-    createdAt: new Date((chart.created_at as string | number | Date) ?? Date.now()),
-    updatedAt: new Date((chart.created_at as string | number | Date) ?? Date.now()),
+    createdAt: new Date(chart.created_at ?? Date.now()),
+    updatedAt: new Date(chart.created_at ?? Date.now()),
   }));
 
   const [activeTab, setActiveTab] = useState<'account' | 'charts' | 'preferences' | 'subscription'>('account');
@@ -526,15 +527,13 @@ function ChartsTab({
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
-        <span className="material-symbols-outlined text-slate-200 mx-auto mb-4" aria-hidden="true" style={{ fontSize: '64px' }}>star</span>
-        <h3 className="text-lg font-medium text-white mb-2">No charts yet</h3>
-        <p className="text-slate-200 mb-6">
-          Create your first natal chart to get started
-        </p>
-        <button type="button" className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-          <span className="material-symbols-outlined inline mr-2" aria-hidden="true" style={{ fontSize: '20px' }}>add</span>
-          Create Your First Chart
-        </button>
+        <EmptyState
+          icon="auto_awesome"
+          title="No charts yet"
+          description="Create your first natal chart to get started"
+          actionText="Create Your First Chart"
+          onAction={() => window.location.href = '/charts/new'}
+        />
       </div>
     );
   }

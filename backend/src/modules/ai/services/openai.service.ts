@@ -714,48 +714,50 @@ class OpenAIService {
   }
 
   /**
-   * Generate a brief astrological insight for shareable card
+   * Get usage statistics from tracked AI usage data
    */
-  async generateCardInsight(
-    placements: string[],
-    userId?: string,
-  ): Promise<string | null> {
+  async getUsageStats(userId?: string): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
+    if (!userId) {
+      return { available: false, usage: { totalRequests: 0, totalTokens: 0, totalCost: 0 } };
+    }
+
     try {
-      const prompt = this.formatPrompt(PROMPT_TEMPLATES.cardInsight, {
-        placements: placements.join(', '),
-      });
-
-      const client = getOpenAIClient();
-      const completion = await client.chat.completions.create({
-        model: openaiConfig.model,
-        messages: [
-          { role: 'system', content: PROMPT_TEMPLATES.cardInsight },
-          { role: 'user', content: prompt },
-        ],
-        max_tokens: INTERPRETATION_PARAMS.cardInsight.maxTokens,
-        temperature: INTERPRETATION_PARAMS.cardInsight.temperature,
-      }, { headers: { 'X-User-ID': userId ?? 'anonymous' } });
-
-      return completion.choices[0]?.message?.content ?? null;
+      const stats = await aiUsageService.getUserStats(userId);
+      return {
+        available: true,
+        usage: {
+          totalRequests: Object.values(stats.byType).reduce((sum, count) => sum + count, 0),
+          totalTokens: stats.totalTokens,
+          totalCost: stats.totalCost,
+        },
+      };
     } catch (error) {
-      logger.error('Error generating card insight:', error);
-      return null;
+      logger.error('Failed to get usage stats:', error);
+      return { available: false, usage: { totalRequests: 0, totalTokens: 0, totalCost: 0 } };
     }
   }
 
   /**
-   * Get usage statistics (placeholder for future implementation)
+   * Generate a short AI insight for a card's planet placements.
+   * Lightweight call — single sentence summary.
    */
-  async getUsageStats(): Promise<{ available: boolean; usage: { totalRequests: number; totalTokens: number; totalCost: number } }> {
-    // This would call OpenAI API to get usage/billing info
-    return {
-      available: true,
-      usage: {
-        totalRequests: 0,
-        totalTokens: 0,
-        totalCost: 0,
-      },
-    };
+  async generateCardInsight(placements: string[], _userId?: string): Promise<string | null> {
+    try {
+      const client = getOpenAIClient();
+      const completion = await client.chat.completions.create({
+        model: openaiConfig.model,
+        messages: [
+          { role: 'system', content: 'You are an astrology expert. Respond with a single insightful sentence.' },
+          { role: 'user', content: `Write a short astrology insight for these placements: ${placements.join(', ')}.` },
+        ],
+        max_tokens: 60,
+        temperature: 0.7,
+      });
+      return completion.choices[0]?.message?.content?.trim() ?? null;
+    } catch {
+      logger.warn('Failed to generate card insight');
+      return null;
+    }
   }
 }
 

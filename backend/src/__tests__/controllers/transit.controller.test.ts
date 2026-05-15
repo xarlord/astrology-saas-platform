@@ -3,8 +3,9 @@
  * Tests transit calculations and forecasting
  */
 
- 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-var */
 
 import { Request, Response } from 'express';
 import {
@@ -30,23 +31,41 @@ jest.mock('../../modules/charts/models/chart.model', () => ({
   },
 }));
 
-// Mock knex for transit_readings lookups
+// Mock knex (config/database) for getTransitDetails DB lookup
+var mockKnexFirst: jest.Mock;
+var mockKnexChain: any;
+var mockKnexFn: jest.Mock;
 jest.mock('../../config/database', () => {
-  const first = jest.fn();
-  const where = jest.fn(() => ({ first }));
-  const knex = jest.fn(() => ({ where }));
-  (knex as any).raw = jest.fn();
-  return { __esModule: true, default: knex };
+  mockKnexFirst = jest.fn();
+  mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
+  mockKnexFn = jest.fn().mockReturnValue(mockKnexChain);
+  return mockKnexFn;
 });
 
-// Auto-mock AstronomyEngineService. jest.mock (not jest.doMock!) hoists the
- 
-(module,
-  // creating a mock class. The controller creates a module-level singleton at import time.
-  // We then find that singleton instance via mock.instances[0].
-  jest.mock('../../modules/shared/services/astronomyEngine.service'));
+/**
+ * Mock AstronomyEngineService so that every `new AstronomyEngineService()`
+ * returns the same instance whose methods produce iterable Map results.
+ *
+ * The shared instance is stashed as `_mockInstance` on the mock constructor
+ * so the test's beforeEach can always find it, even after resetMocks clears
+ * mock.results / mock.instances.
+ */
+jest.mock('../../modules/shared/services/astronomyEngine.service', () => {
+  const _mockAstronomyEngineMethods = {
+    calculatePlanetaryPositions: jest.fn(),
+    calculateChiron: jest.fn(),
+    calculateLunarNodes: jest.fn(),
+  };
+  const MockConstructor = jest.fn().mockImplementation(() => _mockAstronomyEngineMethods);
+  (MockConstructor as any)._mockInstance = _mockAstronomyEngineMethods;
+  return {
+    __esModule: true,
+    AstronomyEngineService: MockConstructor,
+  };
+});
 
 import { AstronomyEngineService } from '../../modules/shared/services/astronomyEngine.service';
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -95,11 +114,12 @@ function makeMockPositions(): Map<string, MockPosition> {
 }
 
 /**
- * Get the mock instance that the AstronomyEngineService that the controller uses.
- * The controller creates a module-level singleton at import time, so the auto-mock creates it once.
+ * Get the mock instance that the controller uses.
+ * Because our mock factory returns a shared mockInstance object,
+ * every `new AstronomyEngineService()` call returns the same object.
  */
 function getEngineMockInstance() {
-  return (AstronomyEngineService as jest.Mock).mock.instances[0];
+  return (AstronomyEngineService as any)._mockInstance;
 }
 
 // ---------------------------------------------------------------------------
@@ -114,7 +134,12 @@ describe('Transit Controller', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Re-apply mock return values on the auto-mocked instance
+    // Re-establish knex mock chain after clearAllMocks
+    mockKnexChain = { where: jest.fn().mockReturnThis(), first: mockKnexFirst };
+    mockKnexFn.mockReturnValue(mockKnexChain);
+
+    // The shared mockInstance methods may have been cleared by resetMocks.
+    // Re-apply default return values.
     const engine = getEngineMockInstance();
     if (engine) {
       engine.calculatePlanetaryPositions.mockReturnValue(makeMockPositions());
@@ -300,36 +325,42 @@ describe('Transit Controller', () => {
   });
 
   describe('getTransitDetails', () => {
-    it('should return transit details stub response', async () => {
+    it('should return transit details when reading exists', async () => {
       mockRequest.params = { id: 'reading-789' };
-
-      await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        success: true,
-        data: { transit: null },
+      mockKnexFirst.mockResolvedValue({
+        id: 'reading-789',
+        user_id: '123',
+        chart_id: 'chart-456',
+        start_date: '2024-01-01',
+        end_date: '2024-01-31',
+        transit_data: { planets: { sun: { longitude: 280 } } },
+        moon_phases: null,
+        created_at: '2024-01-01T00:00:00Z',
       });
-    });
-
-    it('should return null transit for any ID', async () => {
-      mockRequest.params = { id: 'nonexistent' };
 
       await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
-      expect(response.data.transit).toBeNull();
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          data: expect.objectContaining({
+            transit: expect.objectContaining({
+              id: 'reading-789',
+              chartId: 'chart-456',
+            }),
+          }),
+        }),
+      );
     });
 
-    it('should return success response structure', async () => {
-      mockRequest.params = { id: 'any-id' };
+    it('should throw 404 when reading not found', async () => {
+      mockRequest.params = { id: 'nonexistent' };
+      mockKnexFirst.mockResolvedValue(null);
 
-      await getTransitDetails(mockRequest, mockResponse as Response, mockNext);
-
-      const response = (mockResponse.json as jest.Mock).mock.calls[0][0];
-      expect(response.success).toBe(true);
-      expect(response.data).toBeDefined();
+      await expect(
+        getTransitDetails(mockRequest, mockResponse as Response, mockNext),
+      ).rejects.toThrow(AppError);
     });
   });
 

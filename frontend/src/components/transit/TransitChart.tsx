@@ -165,8 +165,8 @@ const TransitChart: React.FC<TransitChartProps> = ({
             dataKey="energy"
             stroke={color}
             strokeWidth={2}
-            // @ts-expect-error recharts DotType doesn't support custom props but runtime works fine
-            dot={(props: DotProps) => {
+            /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
+            dot={(props: any) => {
               const index =
                 'payload' in props &&
                 props.payload &&
@@ -176,6 +176,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
                   : 0;
               return <CustomDot {...props} dataPoint={data[index]} onClick={onDataPointClick} />;
             }}
+            /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
             activeDot={{ r: 6, fill: color, stroke: '#fff', strokeWidth: 2 }}
             animationDuration={1000}
             animationBegin={0}

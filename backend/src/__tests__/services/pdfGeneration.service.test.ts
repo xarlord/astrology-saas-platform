@@ -723,8 +723,8 @@ describe('PDFGenerationService', () => {
         data: makeSynastryChartData({
           aspects: [
             {
-              planet1: 'Jupiter',
-              planet2: 'Neptune',
+              planet1: { planet: 'Jupiter' },
+              planet2: { planet: 'Neptune' },
               type: 'trine',
               angle: 120,
               orb: 2.0,

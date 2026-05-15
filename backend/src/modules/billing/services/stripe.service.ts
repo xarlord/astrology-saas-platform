@@ -2,9 +2,7 @@
  * Stripe Service - Wraps Stripe SDK for billing operations
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import * as Stripe from 'stripe';
+import Stripe from 'stripe';
 import config from '../../../config';
 
 let _stripe: any = null;

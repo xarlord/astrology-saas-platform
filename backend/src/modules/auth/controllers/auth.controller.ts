@@ -2,8 +2,6 @@
  * Authentication Controller
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
 import db from '../../../db';

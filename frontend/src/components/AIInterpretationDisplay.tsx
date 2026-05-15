@@ -3,7 +3,6 @@
  * Shows AI-enhanced interpretations with special formatting
  */
 
-import React from 'react';
 import { TextGenerateEffect } from './effects';
 
 interface AIInterpretationDisplayProps {

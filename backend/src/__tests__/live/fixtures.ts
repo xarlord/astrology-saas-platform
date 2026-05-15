@@ -11,7 +11,7 @@ export const KNOWN_CHARTS = {
     input: {
       name: 'Test - NYC 1990',
       birth_date: '1990-06-15',
-      birth_time: '14:30:00',
+      birth_time: '14:30',
       birth_place_name: 'New York, NY, USA',
       birth_latitude: 40.7128,
       birth_longitude: -74.006,
@@ -28,7 +28,7 @@ export const KNOWN_CHARTS = {
     input: {
       name: 'Test - London 1988',
       birth_date: '1988-03-22',
-      birth_time: '09:15:00',
+      birth_time: '09:15',
       birth_place_name: 'London, UK',
       birth_latitude: 51.5074,
       birth_longitude: -0.1278,
@@ -45,7 +45,7 @@ export const KNOWN_CHARTS = {
     input: {
       name: 'Test - Midnight Birth',
       birth_date: '2000-01-01',
-      birth_time: '00:00:00',
+      birth_time: '00:00',
       birth_place_name: 'Tokyo, Japan',
       birth_latitude: 35.6762,
       birth_longitude: 139.6503,
@@ -62,7 +62,7 @@ export const KNOWN_CHARTS = {
     input: {
       name: 'Test - Equator Birth',
       birth_date: '1995-07-04',
-      birth_time: '12:00:00',
+      birth_time: '12:00',
       birth_place_name: 'Quito, Ecuador',
       birth_latitude: 0.0,
       birth_longitude: -78.4678,
@@ -90,7 +90,7 @@ export const INVALID_INPUTS = {
     input: {
       name: 'Future Person',
       birth_date: '2099-01-01',
-      birth_time: '12:00:00',
+      birth_time: '12:00',
       birth_latitude: 40.7128,
       birth_longitude: -74.006,
       birth_timezone: 'America/New_York',
@@ -101,7 +101,7 @@ export const INVALID_INPUTS = {
     input: {
       name: 'Bad Coords',
       birth_date: '1990-01-01',
-      birth_time: '12:00:00',
+      birth_time: '12:00',
       birth_latitude: 999,
       birth_longitude: -74.006,
       birth_timezone: 'America/New_York',
@@ -114,7 +114,7 @@ export const INVALID_INPUTS = {
 export const PARTNER_CHART = {
   name: 'Partner Test Chart',
   birth_date: '1992-11-05',
-  birth_time: '08:00:00',
+  birth_time: '08:00',
   birth_place_name: 'Paris, France',
   birth_latitude: 48.8566,
   birth_longitude: 2.3522,

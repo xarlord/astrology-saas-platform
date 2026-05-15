@@ -15,6 +15,7 @@ import {
 } from '../../../utils/appError';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { SolarReturnCalculationParams } from '../models/types';
+import knex from '../../../config/database';
 
 export class SolarReturnController {
   /**
@@ -38,6 +39,12 @@ export class SolarReturnController {
     const currentYear = new Date().getFullYear();
     if (year < currentYear - 1 || year > currentYear + 2) {
       throw new BadRequestError('Year must be within reasonable range');
+    }
+
+    // Verify the natal chart exists and belongs to the user
+    const natalChart = await knex('charts').where({ id: natalChartId, user_id: userId }).first();
+    if (!natalChart) {
+      throw new NotFoundError('Natal chart not found');
     }
 
     // Check if solar return already exists for this year

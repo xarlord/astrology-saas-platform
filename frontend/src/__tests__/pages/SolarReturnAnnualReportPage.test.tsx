@@ -52,8 +52,41 @@ vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+// Mock the API module so the component's useEffect fetches controlled data
+const mockApiGet = vi.fn();
+vi.mock('../../services/api', () => ({
+  default: {
+    get: (...args: unknown[]) => mockApiGet(...args),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+    create: vi.fn(),
+  },
+}));
+
 // Import after mocks
 import SolarReturnAnnualReportPage from '../../pages/SolarReturnAnnualReportPage';
+
+// Solar return data returned by the mocked API
+const MOCK_SOLAR_RETURN_API_RESPONSE = {
+  data: {
+    year: 2024,
+    calculatedData: {
+      positions: [],
+      aspects: [],
+      ascendant: 'Leo',
+    },
+    interpretation: {
+      overview:
+        'This year marks a monumental shift in your personal evolution. As the Sun returns to the exact degree of your birth, it illuminates your sector of growth and wisdom, promising a twelve-month period defined by breaking boundaries and seeking higher truths.',
+      themes: ['Personal Expansion'],
+    },
+  },
+};
 
 // Helper to create wrapper with providers and routes
 const createWrapper = (initialRoute = '/solar-returns/2024') => {
@@ -102,6 +135,9 @@ describe('SolarReturnAnnualReportPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
+    // Set up API mock to return solar return data for the component's useEffect fetch
+    mockApiGet.mockResolvedValue({ data: MOCK_SOLAR_RETURN_API_RESPONSE });
+
     // Mock console.log and console.error
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -117,15 +153,19 @@ describe('SolarReturnAnnualReportPage', () => {
       expect(screen.getByText('Annual Forecast')).toBeInTheDocument();
     });
 
-    it('should render navigation header content', () => {
+    it('should render navigation header content', async () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
       expect(screen.getByText('Annual Forecast')).toBeInTheDocument();
-      expect(screen.getByText(/Solar Return Report 2024/)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/Solar Return Report 2024/)).toBeInTheDocument();
+      });
     });
 
-    it('should render year in header', () => {
+    it('should render year in header', async () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText(/Solar Return Report 2024/)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/Solar Return Report 2024/)).toBeInTheDocument();
+      });
     });
 
     it('should render page description', () => {
@@ -186,9 +226,11 @@ describe('SolarReturnAnnualReportPage', () => {
       expect(screen.getByText('Fixed positions at time of birth')).toBeInTheDocument();
     });
 
-    it('should render solar return chart card', () => {
+    it('should render solar return chart card', async () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      expect(screen.getByText('Solar Return 2024 Chart')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('Solar Return 2024 Chart')).toBeInTheDocument();
+      });
       expect(screen.getByText('Annual celestial alignment for current year')).toBeInTheDocument();
     });
 
@@ -499,9 +541,9 @@ describe('SolarReturnAnnualReportPage', () => {
   });
 
   describe('Accessibility', () => {
-    it('should have proper heading structure', () => {
+    it('should have proper heading structure', async () => {
       renderWithProviders(createElement(SolarReturnAnnualReportPage));
-      const heading = screen.getByRole('heading', { name: /Solar Return Report 2024/ });
+      const heading = await screen.findByRole('heading', { name: /Solar Return Report 2024/ });
       expect(heading).toBeInTheDocument();
     });
 

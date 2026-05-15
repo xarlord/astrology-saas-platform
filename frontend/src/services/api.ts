@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios';
-import { getAccessToken, getRefreshToken } from '../utils/tokenStorage';
+import { getAccessToken } from '../utils/tokenStorage';
 
 const API_URL = import.meta.env.VITE_API_URL ?? '';
 
@@ -88,16 +88,8 @@ api.interceptors.response.use(
       (originalRequest as unknown as Record<string, unknown>)._retry = true;
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        const refreshToken = getRefreshToken();
-        if (!refreshToken) {
-          throw new Error('No refresh token');
-        }
-
-        const { data } = await api.post<{ data: { accessToken: string } }>('/v1/auth/refresh', {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          refreshToken,
-        });
+        // Refresh token is sent automatically via httpOnly cookie
+        const { data } = await api.post<{ data: { accessToken: string } }>('/v1/auth/refresh');
 
         const { accessToken } = data.data;
 

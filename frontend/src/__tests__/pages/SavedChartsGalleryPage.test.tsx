@@ -361,6 +361,13 @@ vi.mock('../../components/chart/ChartCard', () => ({
 // Mock the components barrel to avoid circular import SyntaxError
 vi.mock('../../components', () => ({
   AppLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  EmptyState: ({ title, description, actionText, onAction }: Record<string, unknown>) => (
+    <div data-testid="empty-state">
+      <h3>{title as string}</h3>
+      <p>{description as string}</p>
+      {actionText && <button onClick={onAction as () => void}>{actionText as string}</button>}
+    </div>
+  ),
 }));
 
 // Import after mocks

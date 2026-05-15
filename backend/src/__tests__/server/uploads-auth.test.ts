@@ -1,24 +1,36 @@
 /**
- * Uploads Endpoint Tests
- * Verifies that /uploads/* routes are handled by the server
+ * Uploads Endpoint Authentication Tests
+ * TDD: RED phase - tests must fail before implementation
  */
 
+import express, { Request, Response } from 'express';
 import request from 'supertest';
-import app from '../../server';
+import { authenticate } from '../../middleware/auth';
+import { errorHandler } from '../../middleware/errorHandler';
 
-describe('GET /uploads/* - Route Handling', () => {
-  it('should return 404 for non-existent upload files', async () => {
+// Create a minimal Express app that mounts the uploads route with auth middleware
+const app = express();
+
+// Mount a static uploads route protected by authenticate middleware
+app.use('/uploads', authenticate, (_req: Request, res: Response) => {
+  res.json({ success: true, message: 'File served' });
+});
+
+app.use(errorHandler);
+
+describe('GET /uploads/* - Authentication Required', () => {
+  it('should return 401 without authentication token', async () => {
     const response = await request(app)
       .get('/uploads/test-file.png');
 
-    // No static file serving or /uploads route configured
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
   });
 
-  it('should return 404 for upload path without file', async () => {
+  it('should return 401 with invalid authentication token', async () => {
     const response = await request(app)
-      .get('/uploads/');
+      .get('/uploads/test-file.png')
+      .set('Authorization', 'Bearer invalid-token');
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
   });
 });

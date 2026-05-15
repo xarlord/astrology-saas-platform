@@ -65,7 +65,7 @@ export function registerProcessor(
   if (existing) return existing;
 
   const config = JOB_CONFIG[type];
-  const worker = new Worker(type, processor, {
+  const worker = new Worker(type, processor as (job: Job<unknown>) => Promise<unknown>, {
     connection: getConnectionOpts(),
     concurrency: config.concurrency,
     limiter: {
@@ -74,17 +74,20 @@ export function registerProcessor(
     },
   });
 
-  worker.on('completed', (job: Job<JobPayload>, result: JobResult) => {
-    logger.info(`[Queue] Job ${job.id} (${type}) completed in ${result.durationMs ?? '?'}ms`);
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  worker.on('completed', ((job: Job<unknown>, result: any) => {
+    logger.info(`[Queue] Job ${job.id} (${type}) completed in ${result?.durationMs ?? '?'}ms`);
+  }) as any);
 
-  worker.on('failed', (job: Job<JobPayload> | undefined, err: Error) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  worker.on('failed', ((job: Job<unknown> | undefined, err: Error) => {
     logger.error(`[Queue] Job ${job?.id ?? 'unknown'} (${type}) failed: ${err.message}`);
-  });
+  }) as any);
 
-  worker.on('error', (err: Error) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  worker.on('error', ((err: Error) => {
     logger.error(`[Queue] Worker error (${type}): ${err.message}`);
-  });
+  }) as any);
 
   workers.set(type, worker);
   logger.info(`[Queue] Registered processor for: ${type} (concurrency: ${config.concurrency})`);

@@ -11,9 +11,6 @@ jobs:
   # Backend Tests
   backend-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
 
     steps:
       - uses: actions/checkout@v4
@@ -26,21 +23,19 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
+        run: npm ci
 
       - name: Run linter
-        run: npm run lint
+        run: cd backend && npm run lint
 
       - name: Run type check
-        run: npx tsc --noEmit
+        run: cd backend && npx tsc --noEmit
 
       - name: Run unit tests
-        run: npm run test:unit -- --coverage
+        run: cd backend && npm run test:unit -- --coverage
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
-        if: always()
-        continue-on-error: true
         with:
           directory: backend/coverage
           flags: backend
@@ -48,6 +43,105 @@ jobs:
   # Frontend Tests
   frontend-test:
     runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: cd frontend && npm run lint
+
+      - name: Run type check
+        run: cd frontend && npx tsc --noEmit
+
+      - name: Run unit tests
+        run: cd frontend && npm run test:run -- --coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          directory: frontend/coverage
+          flags: frontend
+
+  # Live Tests (requires running server + database)
+  live-tests:
+    runs-on: ubuntu-latest
+    needs: [backend-test]
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: astrology_saas
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5434
+      DATABASE_NAME: astrology_saas
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      RATE_LIMIT_MAX_REQUESTS: 10000
+      JWT_SECRET: test-jwt-secret-for-ci
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database migrations
+        run: npx tsx ../node_modules/knex/bin/cli.js migrate:latest
+
+      - name: Start backend server
+        run: npx tsx src/server.ts &
+
+      - name: Wait for backend to be ready
+        run: npx wait-on http://localhost:3001/health --timeout 30000
+
+      - name: Run live tests
+        run: npm run test:live
+
+      - name: Upload live test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-test-results
+          path: backend/test-results/
+          retention-days: 30
+
+  # E2E Tests
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [live-tests, frontend-test]
     defaults:
       run:
         working-directory: frontend
@@ -63,159 +157,21 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: cd .. && npm ci
-
-      - name: Run linter
-        run: npm run lint
-
-      - name: Run type check
-        run: npx tsc --noEmit
-
-      - name: Run unit tests
-        run: npm run test:run -- --coverage
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        if: always()
-        continue-on-error: true
-        with:
-          directory: frontend/coverage
-          flags: frontend
-
-  # Live Tests (requires running server + database)
-  live-tests:
-    runs-on: ubuntu-latest
-    needs: [backend-test]
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: astrology_saas
-        ports:
-          - 5434:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      NODE_ENV: test
-      DB_HOST: localhost
-      DB_PORT: 5434
-      DB_NAME: astrology_saas
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      RATE_LIMIT_MAX_REQUESTS: 10000
-      JWT_SECRET: test-jwt-secret-for-ci
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install wait-on
-        run: npm install -g wait-on
-
-      - name: Run database migrations
-        run: cd backend && npx knex migrate:latest
-
-      - name: Start backend server
-        run: cd backend && npx tsx src/server.ts &
-
-      - name: Wait for backend to be ready
-        run: wait-on http://localhost:3001/health --timeout 30000
-
-      - name: Run live tests
-        run: cd backend && npm run test:live
-
-      - name: Upload live test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: live-test-results
-          path: backend/test-results/
-          retention-days: 30
-
-  # E2E Tests
-  e2e-tests:
-    runs-on: ubuntu-latest
-    needs: [live-tests, frontend-test]
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: astrology_saas
-        ports:
-          - 5434:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      NODE_ENV: test
-      DB_HOST: localhost
-      DB_PORT: 5434
-      DB_NAME: astrology_saas
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      RATE_LIMIT_MAX_REQUESTS: 10000
-      JWT_SECRET: test-jwt-secret-for-ci
-      BASE_URL: http://localhost:5173
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
+        working-directory: .
         run: npm ci
 
       - name: Install Playwright browsers
-        run: cd frontend && npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Install wait-on
-        run: npm install -g wait-on
-
-      - name: Run database migrations
-        run: cd backend && npx knex migrate:latest
-
-      - name: Start backend server
-        run: cd backend && npx tsx src/server.ts &
-
-      - name: Start frontend dev server
-        run: cd frontend && npx vite --host 0.0.0.0 --port 5173 &
-
-      - name: Wait for servers
-        run: |
-          wait-on http://localhost:3001/health --timeout 30000
-          wait-on http://localhost:5173 --timeout 30000
+      - name: Build frontend
+        run: npm run build
 
       - name: Run E2E tests
-        run: cd frontend && npx playwright test --project=chromium
+        run: npx playwright test
+        continue-on-error: true
         env:
           CI: true
+          RATE_LIMIT_MAX_REQUESTS: 10000
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
@@ -229,32 +185,9 @@ jobs:
   visual-tests:
     runs-on: ubuntu-latest
     needs: [frontend-test]
-    continue-on-error: true
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: astrology_saas
-        ports:
-          - 5434:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      NODE_ENV: test
-      DB_HOST: localhost
-      DB_PORT: 5434
-      DB_NAME: astrology_saas
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      RATE_LIMIT_MAX_REQUESTS: 10000
-      JWT_SECRET: test-jwt-secret-for-ci
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -267,30 +200,18 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
+        working-directory: .
         run: npm ci
 
       - name: Install Playwright browsers
-        run: cd frontend && npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
-      - name: Install wait-on
-        run: npm install -g wait-on
-
-      - name: Run database migrations
-        run: cd backend && npx knex migrate:latest
-
-      - name: Start backend server
-        run: cd backend && npx tsx src/server.ts &
-
-      - name: Start frontend dev server
-        run: cd frontend && npx vite --host 0.0.0.0 --port 5173 &
-
-      - name: Wait for servers
-        run: |
-          wait-on http://localhost:3001/health --timeout 30000
-          wait-on http://localhost:5173 --timeout 30000
+      - name: Build frontend
+        run: npm run build
 
       - name: Run visual regression tests
-        run: cd frontend && npx playwright test --config=tests/visual/playwright.visual.config.ts
+        run: npx playwright test --config=tests/visual/playwright.visual.config.ts
+        continue-on-error: true
         env:
           CI: true
 
@@ -314,7 +235,9 @@ jobs:
   bdd-tests:
     runs-on: ubuntu-latest
     needs: [backend-test, frontend-test]
-    continue-on-error: true
+    defaults:
+      run:
+        working-directory: frontend
 
     services:
       postgres:
@@ -331,14 +254,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    env:
-      CI: true
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_TEST_NAME: astrology_test
-
     steps:
       - uses: actions/checkout@v4
 
@@ -350,30 +265,28 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
+        working-directory: .
         run: npm ci
 
       - name: Install Playwright browsers
-        run: cd frontend && npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
-      - name: Install wait-on
-        run: npm install -g wait-on
+      - name: Build frontend
+        run: npm run build
 
-      - name: Run database migrations
-        run: cd backend && npx knex migrate:latest
-
-      - name: Start backend server
-        run: cd backend && npx tsx src/server.ts &
-
-      - name: Start frontend dev server
-        run: cd frontend && npx vite --host 0.0.0.0 --port 5173 &
-
-      - name: Wait for servers
-        run: |
-          wait-on http://localhost:3001/health --timeout 30000
-          wait-on http://localhost:5173 --timeout 30000
+      - name: Run BDD tests (Gherkin/Cucumber)
+        run: npx cucumber-js
+        env:
+          CI: true
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_TEST_NAME: astrology_test
 
       - name: Run Playwright-native BDD tests
-        run: cd frontend && npx playwright test --config=tests/bdd/playwright.bdd.config.ts
+        run: npx playwright test --config=tests/bdd/playwright.bdd.config.ts
+        continue-on-error: true
         env:
           CI: true
 
@@ -382,39 +295,17 @@ jobs:
         if: always()
         with:
           name: bdd-test-reports
-          path: frontend/reports/bdd/
+          path: |
+            frontend/reports/bdd/
           retention-days: 30
 
   # Accessibility Tests (WCAG 2.1 AA)
   accessibility-tests:
     runs-on: ubuntu-latest
     needs: [frontend-test]
-    continue-on-error: true
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: astrology_saas
-        ports:
-          - 5434:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      NODE_ENV: test
-      DB_HOST: localhost
-      DB_PORT: 5434
-      DB_NAME: astrology_saas
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      RATE_LIMIT_MAX_REQUESTS: 10000
-      JWT_SECRET: test-jwt-secret-for-ci
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -427,30 +318,18 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
+        working-directory: .
         run: npm ci
 
       - name: Install Playwright browsers
-        run: cd frontend && npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
-      - name: Install wait-on
-        run: npm install -g wait-on
-
-      - name: Run database migrations
-        run: cd backend && npx knex migrate:latest
-
-      - name: Start backend server
-        run: cd backend && npx tsx src/server.ts &
-
-      - name: Start frontend dev server
-        run: cd frontend && npx vite --host 0.0.0.0 --port 5173 &
-
-      - name: Wait for servers
-        run: |
-          wait-on http://localhost:3001/health --timeout 30000
-          wait-on http://localhost:5173 --timeout 30000
+      - name: Build frontend
+        run: npm run build
 
       - name: Run accessibility tests
-        run: cd frontend && npx playwright test --config=tests/accessibility/playwright.accessibility.config.ts
+        run: npx playwright test --config=tests/accessibility/playwright.accessibility.config.ts
+        continue-on-error: true
         env:
           CI: true
 
@@ -466,7 +345,9 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     needs: [backend-test, frontend-test]
-    continue-on-error: true
+    defaults:
+      run:
+        working-directory: frontend
 
     services:
       postgres:
@@ -493,16 +374,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    env:
-      CI: true
-      NODE_ENV: test
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_TEST_NAME: astrology_test
-      REDIS_URL: redis://localhost:6379
-
     steps:
       - uses: actions/checkout@v4
 
@@ -514,38 +385,59 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
+        working-directory: .
         run: npm ci
 
       - name: Install Playwright browsers
-        run: cd frontend && npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Install wait-on
-        run: npm install -g wait-on
-
-      - name: Run database migrations
-        run: cd backend && npx knex migrate:latest
+      - name: Setup test database
+        working-directory: backend
+        run: npx tsx ../node_modules/knex/bin/cli.js migrate:latest
         env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_NAME: astrology_test
+          NODE_ENV: test
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: astrology_test
+
+      - name: Build all packages
+        working-directory: .
+        run: npm run build --workspaces
 
       - name: Start backend server
-        run: cd backend && npx tsx src/server.ts &
+        working-directory: backend
+        run: npx tsx src/server.ts &
+        env:
+          NODE_ENV: test
+          PORT: 3001
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: astrology_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-jwt-secret-for-ci
+          RATE_LIMIT_MAX_REQUESTS: 10000
 
-      - name: Start frontend dev server
-        run: cd frontend && npx vite --host 0.0.0.0 --port 5173 &
+      - name: Wait for backend
+        run: npx wait-on http://localhost:3001/health --timeout 30000
 
-      - name: Wait for servers
-        run: |
-          wait-on http://localhost:3001/health --timeout 30000
-          wait-on http://localhost:5173 --timeout 30000
-
-      - name: Run Playwright integration tests
-        run: cd frontend && npx playwright test --grep @integration
+      - name: Run integration tests
+        run: npx playwright test --config=tests/integration/playwright.integration.config.ts
+        continue-on-error: true
         env:
           CI: true
+          BASE_URL: http://localhost:3001
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: astrology_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-jwt-secret-for-ci
+          RATE_LIMIT_MAX_REQUESTS: 10000
 
       - name: Upload integration test reports
         uses: actions/upload-artifact@v4

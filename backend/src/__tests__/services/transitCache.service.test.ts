@@ -3,7 +3,7 @@
  * Tests in-memory caching with TTL expiration, stats, and cleanup
  */
 
- 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { TransitCacheService } from '../../modules/shared/services/transitCache.service';
@@ -35,6 +35,10 @@ describe('TransitCacheService', () => {
     generatedAt: new Date('2024-06-15T00:00:00Z'),
   };
 
+  // In-memory cache stores objects directly (no JSON round-trip),
+  // so Date objects remain Date objects.
+  const roundTripData = mockTransitData;
+
   beforeEach(() => {
     service = new TransitCacheService();
   });
@@ -52,7 +56,7 @@ describe('TransitCacheService', () => {
       await service.setTransits(date, mockTransitData);
 
       const result = await service.getTransits(date);
-      expect(result).toEqual(mockTransitData);
+      expect(result).toEqual(roundTripData);
     });
 
     it('should track hits and misses', async () => {
@@ -97,7 +101,7 @@ describe('TransitCacheService', () => {
       expect(cleaned).toBe(0); // Nothing expired yet
 
       const result = await service.getTransits(date);
-      expect(result).toEqual(mockTransitData);
+      expect(result).toEqual(roundTripData);
     });
   });
 
@@ -154,7 +158,7 @@ describe('TransitCacheService', () => {
 
       // Verify it's cached (round-tripped through JSON serialization)
       const cached = await service.getTransits(date);
-      expect(cached).toEqual(mockTransitData);
+      expect(cached).toEqual(roundTripData);
     });
 
     it('should return cached data without recalculating on hit', async () => {
@@ -164,7 +168,7 @@ describe('TransitCacheService', () => {
       const calculator = jest.fn().mockResolvedValue({ ...mockTransitData, date: 'different' });
       const result = await service.warmCache(date, calculator);
 
-      expect(result).toEqual(mockTransitData);
+      expect(result).toEqual(roundTripData);
       expect(calculator).not.toHaveBeenCalled();
     });
   });
@@ -287,7 +291,7 @@ describe('TransitCacheService', () => {
       const moon = await service.getMoonPhase(date);
       const retro = await service.getRetrogrades(date);
 
-      expect(transits).toEqual(mockTransitData);
+      expect(transits).toEqual(roundTripData);
       expect(moon).toEqual({ phase: 'new', illumination: 0 });
       expect(retro).toEqual(['pluto']);
     });

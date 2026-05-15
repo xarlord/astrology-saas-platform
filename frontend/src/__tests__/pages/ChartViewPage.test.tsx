@@ -11,14 +11,17 @@ import { createElement } from 'react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Mock the charts store
+// Mock the Zustand store
+const mockFetchChart = vi.fn();
+let mockStoreState = {
+  currentChart: null as Record<string, unknown> | null,
+  isLoading: false,
+  error: null as string | null,
+  fetchChart: mockFetchChart,
+};
+
 vi.mock('../../store/chartsStore', () => ({
-  useChartsStore: () => ({
-    currentChart: null,
-    isLoading: true,
-    error: null,
-    fetchChart: vi.fn(),
-  }),
+  useChartsStore: () => mockStoreState,
 }));
 
 // Mock child components synchronously
@@ -38,8 +41,10 @@ vi.mock('../../components/EmptyState', () => ({
     onAction,
     secondaryActionText,
     onSecondaryAction,
+    icon,
   }: Record<string, unknown>) => (
     <div data-testid="empty-state">
+      {icon && <span>{icon}</span>}
       <h3>{title}</h3>
       <p>{description}</p>
       {actionText && (
@@ -68,11 +73,7 @@ vi.mock('../../components/ChartWheel', () => ({
       </span>
     </div>
   ),
-  ChartWheelLegend: () => (
-    <div data-testid="chart-wheel-legend">
-      <span>Legend</span>
-    </div>
-  ),
+  ChartWheelLegend: () => <div data-testid="chart-wheel-legend">Legend</div>,
 }));
 
 // Mock the components barrel to avoid circular import SyntaxError
@@ -90,8 +91,10 @@ vi.mock('../../components', () => ({
     onAction,
     secondaryActionText,
     onSecondaryAction,
+    icon,
   }: Record<string, unknown>) => (
     <div data-testid="empty-state">
+      {icon && <span>{icon}</span>}
       <h3>{title}</h3>
       <p>{description}</p>
       {actionText && (
@@ -117,17 +120,21 @@ vi.mock('../../components', () => ({
       </span>
     </div>
   ),
-  ChartWheelLegend: () => (
-    <div data-testid="chart-wheel-legend">
-      <span>Legend</span>
-    </div>
-  ),
+  ChartWheelLegend: () => <div data-testid="chart-wheel-legend">Legend</div>,
+}));
+
+// Mock chartService - return never-resolving promise for loading state tests
+vi.mock('../../services', () => ({
+  chartService: {
+    getChart: () => new Promise(() => {}), // Never resolves - keeps loading state
+    calculateChart: () => Promise.resolve({}),
+  },
 }));
 
 // Import after mocks
 import ChartViewPage from '../../pages/ChartViewPage';
 
-// Helper to create wrapper with providers and routes
+// Helper to create wrapper with providers
 const createWrapper = (initialRoute = '/charts/chart-1') => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -140,11 +147,9 @@ const createWrapper = (initialRoute = '/charts/chart-1') => {
       createElement(
         MemoryRouter,
         { initialEntries: [initialRoute] },
-        createElement(
-          Routes,
-          null,
+        createElement(Routes, null,
           createElement(Route, { path: '/charts/:id', element: children }),
-          createElement(Route, { path: '/charts', element: children }),
+          createElement(Route, { path: '*', element: children }),
         ),
       ),
     );
@@ -158,17 +163,25 @@ const renderWithProviders = (ui: React.ReactElement, initialRoute = '/charts/cha
 describe('ChartViewPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset store state to loading state for most tests
+    mockStoreState = {
+      currentChart: null,
+      isLoading: true,
+      error: null,
+      fetchChart: mockFetchChart,
+    };
   });
 
   describe('Page Rendering', () => {
     it('should render without crashing', () => {
       renderWithProviders(createElement(ChartViewPage));
-      // Page renders inside AppLayout (mocked as div) with loading skeleton
+      // When chartId exists and isLoading with no currentChart, shows skeleton
       expect(screen.getByTestId('skeleton-loader')).toBeInTheDocument();
     });
 
     it('should render page header', () => {
       renderWithProviders(createElement(ChartViewPage));
+      // When no currentChart, fallback title "Natal Chart" is rendered as h1
       expect(screen.getByText('Natal Chart')).toBeInTheDocument();
     });
 
@@ -193,7 +206,7 @@ describe('ChartViewPage', () => {
   });
 
   describe('Header Structure', () => {
-    it('should display Natal Chart title', () => {
+    it('should display Natal Chart title as h1', () => {
       renderWithProviders(createElement(ChartViewPage));
       const heading = screen.getByText('Natal Chart');
       expect(heading).toBeInTheDocument();
@@ -239,6 +252,7 @@ describe('ChartViewPage', () => {
 
     it('should have heading visible during loading state', () => {
       renderWithProviders(createElement(ChartViewPage));
+      // The h1 "Natal Chart" is rendered even during loading
       const heading = screen.getByText('Natal Chart');
       expect(heading.tagName).toBe('H1');
     });
@@ -246,10 +260,12 @@ describe('ChartViewPage', () => {
 
   describe('Edge Cases', () => {
     it('should handle missing chartId in URL params', () => {
-      // Render with route that has no chartId - shows empty state
+      // Render with route that has no chartId
       renderWithProviders(createElement(ChartViewPage), '/charts');
 
+      // When no chartId, shows EmptyState with "No chart specified"
       expect(screen.getByTestId('empty-state')).toBeInTheDocument();
+      expect(screen.getByText('No chart specified')).toBeInTheDocument();
     });
 
     it('should handle routes with different chartId patterns', () => {
@@ -257,6 +273,60 @@ describe('ChartViewPage', () => {
 
       // Should render loading state
       expect(screen.getByTestId('skeleton-loader')).toBeInTheDocument();
+    });
+  });
+
+  describe('Error State', () => {
+    it('should display error empty state when error exists', () => {
+      mockStoreState = {
+        currentChart: null,
+        isLoading: false,
+        error: 'Failed to fetch chart',
+        fetchChart: mockFetchChart,
+      };
+
+      renderWithProviders(createElement(ChartViewPage));
+
+      expect(screen.getByTestId('empty-state')).toBeInTheDocument();
+      expect(screen.getByText('Unable to load chart')).toBeInTheDocument();
+      expect(screen.getByText('Failed to fetch chart')).toBeInTheDocument();
+    });
+
+    it('should have retry action in error state', () => {
+      mockStoreState = {
+        currentChart: null,
+        isLoading: false,
+        error: 'Network error',
+        fetchChart: mockFetchChart,
+      };
+
+      renderWithProviders(createElement(ChartViewPage));
+
+      expect(screen.getByText('Retry')).toBeInTheDocument();
+      expect(screen.getByText('Back to Dashboard')).toBeInTheDocument();
+    });
+  });
+
+  describe('Chart Not Found', () => {
+    it('should show chart not found when loading is done with no chart', () => {
+      mockStoreState = {
+        currentChart: null,
+        isLoading: false,
+        error: null,
+        fetchChart: mockFetchChart,
+      };
+
+      renderWithProviders(createElement(ChartViewPage));
+
+      expect(screen.getByText('Chart not found')).toBeInTheDocument();
+    });
+  });
+
+  describe('fetchChart called', () => {
+    it('should call fetchChart with chartId on mount', () => {
+      renderWithProviders(createElement(ChartViewPage), '/charts/my-chart-123');
+
+      expect(mockFetchChart).toHaveBeenCalledWith('my-chart-123');
     });
   });
 });
