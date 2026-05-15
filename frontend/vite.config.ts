@@ -99,6 +99,7 @@ export default defineConfig({
           query: ['@tanstack/react-query'],
           charts: ['recharts'],
           'ui-vendor': ['axios', 'zustand'],
+          firebase: ['firebase/app', 'firebase/auth'],
         },
       },
     },
@@ -108,8 +109,9 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
         drop_debugger: true,
+        // Keep console.warn and console.error for Firebase/production debugging
+        // drop_console removes ALL console methods including error reporting
       },
     },
   },

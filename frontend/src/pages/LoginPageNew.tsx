@@ -46,8 +46,10 @@ export default function LoginPageNew() {
     try {
       if (provider === 'google') {
         await socialLogin('google');
-        // signInWithRedirect navigates away — no need to navigate here
-        // On return, FirebaseRedirectHandler in App.tsx will redirect to /dashboard
+        // signInWithPopup returns immediately — navigate to dashboard on success
+        const from =
+          (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
+        navigate(from, { replace: true });
       }
     } catch {
       // Error handled by store

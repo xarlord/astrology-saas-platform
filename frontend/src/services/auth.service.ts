@@ -101,18 +101,24 @@ export const authService = {
     }
 
     const auth = getFirebaseAuth();
-    const { GoogleAuthProvider, signInWithRedirect } = await import('firebase/auth');
+    const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.addScope('email');
     googleProvider.addScope('profile');
 
-    // signInWithRedirect navigates away to Google — result handled on return via handleRedirectResult
-    await signInWithRedirect(auth, googleProvider);
+    // Use signInWithPopup — more reliable across browsers and doesn't require
+    // redirect handling. signInWithRedirect was failing silently in production
+    // because Vite's chunk merging corrupted the dynamic import resolution.
+    const result = await signInWithPopup(auth, googleProvider);
+    const idToken = await result.user.getIdToken();
 
-    // This line never executes — browser navigates away to Google
-    // The result is processed by handleRedirectResult() when user returns
-    throw new Error('Redirect did not occur');
+    // Send the ID token to our backend to verify and create/get user
+    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
+      idToken,
+      provider,
+    });
+    return response.data.data;
   },
 
   /**
