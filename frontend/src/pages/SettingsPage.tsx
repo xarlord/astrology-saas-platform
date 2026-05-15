@@ -112,8 +112,8 @@ export default function SettingsPage() {
         notifications: {
           email: emailNotifications,
           push: pushNotifications,
-          transitAlerts: user?.preferences?.notifications?.transitAlerts ?? true,
-          lunarPhases: user?.preferences?.notifications?.lunarPhases ?? true,
+          transitAlerts: true,
+          lunarPhases: true,
         },
       });
       setSaveMessage('Settings saved successfully');

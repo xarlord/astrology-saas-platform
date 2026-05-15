@@ -107,8 +107,8 @@ const DetailedNatalReportPage: React.FC = () => {
     'summary',
   );
   const [apiChart, setApiChart] = useState<Chart | null>(null);
-  const [isLoadingChart, setIsLoadingChart] = useState(false);
-  const [chartError, setChartError] = useState<string | null>(null);
+  const [_isLoadingChart, setIsLoadingChart] = useState(false);
+  const [_chartError, setChartError] = useState<string | null>(null);
 
   // PDF generation hook
   const {

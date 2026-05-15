@@ -88,7 +88,7 @@ api.interceptors.response.use(
       (originalRequest as unknown as Record<string, unknown>)._retry = true;
 
       try {
-        // Refresh token is sent automatically via httpOnly cookie (withCredentials: true)
+        // Refresh token is sent automatically via httpOnly cookie
         const { data } = await api.post<{ data: { accessToken: string } }>('/v1/auth/refresh');
 
         const { accessToken } = data.data;

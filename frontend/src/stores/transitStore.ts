@@ -7,7 +7,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { transitService } from '../services';
-import type { TransitReading, NormalizedTransit } from '../services/transit.service';
+import type { Transit, TransitChart } from '../services/api.types';
 
 interface TransitState {
   // State
@@ -15,8 +15,8 @@ interface TransitState {
     start: string;
     end: string;
   } | null;
-  transits: NormalizedTransit[];
-  transitChart: TransitReading | null;
+  transits: Transit[];
+  transitChart: TransitChart | null;
   energyLevel: number; // 0-100
   isLoading: boolean;
   error: string | null;
@@ -55,10 +55,10 @@ export const useTransitStore = create<TransitState>()(
             const response = await transitService.calculateTransits(chartId, startDate, endDate);
 
             set({
-              transits: response.transits ?? [],
+              transits: (response.transits ?? []) as unknown as Transit[],
               dateRange: { start: startDate, end: endDate },
-              energyLevel: 50,
-              transitChart: response,
+              energyLevel: ((response as unknown as Record<string, unknown>).energy_level as number) ?? 50,
+              transitChart: response as unknown as TransitChart,
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -78,8 +78,8 @@ export const useTransitStore = create<TransitState>()(
             const response = await transitService.getTodayTransits();
 
             set({
-              transits: response.transits ?? [],
-              energyLevel: 50,
+              transits: (response.transits ?? []) as unknown as Transit[],
+              energyLevel: ((response as unknown as Record<string, unknown>).energyLevel as number) ?? 50,
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -99,11 +99,8 @@ export const useTransitStore = create<TransitState>()(
           try {
             const response = await transitService.getTransitCalendar(month, year);
 
-            // response is TransitReading[] — collect transits from all days
-            const allTransits = response.flatMap((reading) => reading.transits ?? []);
-
             set({
-              transits: allTransits,
+              transits: response as unknown as Transit[],
               isLoading: false,
             });
           } catch (error: unknown) {
@@ -123,11 +120,8 @@ export const useTransitStore = create<TransitState>()(
           try {
             const response = await transitService.getTransitForecast(duration);
 
-            // response is TransitReading[] — collect transits from all forecast entries
-            const allTransits = response.flatMap((reading) => reading.transits ?? []);
-
             set({
-              transits: allTransits,
+              transits: response as unknown as Transit[],
               energyLevel: 50,
               isLoading: false,
             });

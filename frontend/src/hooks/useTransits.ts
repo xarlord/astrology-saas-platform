@@ -7,7 +7,7 @@
 
 import { useCallback } from 'react';
 import { useTransitStore } from '../stores';
-import type { NormalizedTransit } from '../services/transit.service';
+import type { Transit } from '../services/api.types';
 
 export const useTransits = () => {
   const {
@@ -76,27 +76,27 @@ export const useTransits = () => {
     [loadTransitForecast],
   );
 
-  // Get major transits (tight orb = major)
-  const getMajorTransits = useCallback((): NormalizedTransit[] => {
-    return transits.filter((t) => Math.abs(t.orb) <= 2);
+  // Get major transits (high intensity)
+  const getMajorTransits = useCallback((): Transit[] => {
+    return transits.filter((t) => t.intensity >= 7);
   }, [transits]);
 
-  // Get minor transits (wider orb)
-  const getMinorTransits = useCallback((): NormalizedTransit[] => {
-    return transits.filter((t) => Math.abs(t.orb) > 2);
+  // Get minor transits (lower intensity)
+  const getMinorTransits = useCallback((): Transit[] => {
+    return transits.filter((t) => t.intensity < 7);
   }, [transits]);
 
   // Get transits by planet
   const getTransitsByPlanet = useCallback(
-    (planet: string): NormalizedTransit[] => {
-      return transits.filter((t) => t.transitPlanet === planet || t.natalPlanet === planet);
+    (planet: string): Transit[] => {
+      return transits.filter((t) => t.planet === planet);
     },
     [transits],
   );
 
-  // Get all transits (no date filtering available on NormalizedTransit)
+  // Get all transits (no date filtering available on Transit)
   const getActiveTransitsForDate = useCallback(
-    (_date: Date): NormalizedTransit[] => {
+    (_date: Date): Transit[] => {
       return transits;
     },
     [transits],
