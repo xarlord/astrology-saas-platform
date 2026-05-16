@@ -5,27 +5,9 @@
  * Backend sets refresh token as httpOnly cookie which the browser sends automatically.
  */
 
-const AUTH_STORAGE_KEY = 'auth-storage';
-
-interface PersistedAuthState {
-  accessToken: string | null;
-}
-
-interface PersistedState {
-  state: PersistedAuthState;
-}
-
-function readPersistedState(): PersistedAuthState | null {
-  try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as PersistedState;
-    return parsed.state ?? null;
-  } catch {
-    return null;
-  }
-}
+import { useAuthStore } from '../stores/authStore';
 
 export function getAccessToken(): string | null {
-  return readPersistedState()?.accessToken ?? null;
+  // Read directly from Zustand store's current state (in-memory)
+  return useAuthStore.getState().token;
 }

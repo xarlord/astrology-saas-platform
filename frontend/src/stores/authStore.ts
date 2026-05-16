@@ -219,4 +219,18 @@ export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenti
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
 export const useAuthError = () => useAuthStore((state) => state.error);
 
+// Listen for token refresh events from API interceptor
+window.addEventListener('auth:token-refreshed', ((event: CustomEvent<{ accessToken: string }>) => {
+  useAuthStore.setState({ token: event.detail.accessToken });
+}) as EventListener);
+
+// Listen for session expiry events
+window.addEventListener('auth:session-expired', () => {
+  useAuthStore.setState({
+    user: null,
+    token: null,
+    isAuthenticated: false,
+  });
+});
+
 export default useAuthStore;

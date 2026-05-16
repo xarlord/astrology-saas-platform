@@ -70,9 +70,10 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       await login({ email: formData.email, password: formData.password });
       onSuccess?.();
     } catch (error: unknown) {
-      const err = error as { message?: string };
+      const axiosErr = error as { response?: { data?: { error?: string } }; message?: string };
+      const message = axiosErr?.response?.data?.error || axiosErr?.message || 'Login failed. Please check your credentials.';
       setErrors({
-        email: err.message ?? 'Login failed. Please check your credentials.',
+        email: message,
       });
     }
   };
@@ -337,6 +338,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [errors, setErrors] = useState<Partial<Record<keyof typeof formData, string>>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [socialError, setSocialError] = useState<string | null>(null);
 
   // Generate unique IDs for accessibility
   const nameErrorId = 'name-error';
@@ -361,11 +363,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(formData.password)) {
+    } else if (formData.password.length < 12) {
+      newErrors.password = 'Password must be at least 12 characters';
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/.test(formData.password)) {
       newErrors.password =
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
     }
 
     if (!formData.confirmPassword) {
@@ -387,9 +389,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       await register({ name: formData.name, email: formData.email, password: formData.password });
       onSuccess?.();
     } catch (error: unknown) {
-      const err = error as { message?: string };
+      // Extract real error message from AxiosError response, not the generic "Request failed with status code N"
+      const axiosErr = error as { response?: { data?: { error?: string } }; message?: string };
+      const message = axiosErr?.response?.data?.error || axiosErr?.message || 'Registration failed. Please try again.';
       setErrors({
-        email: err.message ?? 'Registration failed. Please try again.',
+        email: message,
       });
     }
   };
@@ -417,11 +421,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         newErrors.email = 'Please enter a valid email address';
       }
     } else if (name === 'password' && value) {
-      if (value.length < 8) {
-        newErrors.password = 'Password must be at least 8 characters';
-      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(value)) {
+      if (value.length < 12) {
+        newErrors.password = 'Password must be at least 12 characters';
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/.test(value)) {
         newErrors.password =
-          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)';
       }
     } else if (name === 'confirmPassword' && value && formData.password) {
       if (formData.password !== value) {
@@ -579,7 +583,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             {errors.password && <ErrorMessage message={errors.password} id={passwordErrorId} />}
             {!errors.password && (
               <p className="mt-2 text-xs text-slate-200">
-                Must be at least 8 characters with uppercase, lowercase, number, and special character
+                Must be at least 12 characters with uppercase, lowercase, number, and special character (@$!%*?&)
               </p>
             )}
           </div>
@@ -710,10 +714,16 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             type="button"
             className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-cosmic-border bg-white/15 hover:bg-white/15 text-white transition-colors duration-200"
             onClick={async () => {
+              setSocialError(null);
               try {
                 await socialLogin('google');
                 onSuccess?.();
-              } catch { /* error handled by store */ }
+              } catch (err: unknown) {
+                const axiosErr = err as { response?: { data?: { error?: string } }; message?: string };
+                const msg = axiosErr?.response?.data?.error || (err instanceof Error ? err.message : 'Google login failed');
+                console.error('[RegisterGoogleLogin]', err);
+                setSocialError(msg);
+              }
             }}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
@@ -731,6 +741,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             <span className="text-sm font-medium">Apple</span>
           </button>
         </div>
+
+        {socialError && (
+          <p className="mt-3 text-center text-sm text-red-400" role="alert">
+            {socialError}
+          </p>
+        )}
 
         {/* Sign In Link */}
         <div className="text-center mt-6">
