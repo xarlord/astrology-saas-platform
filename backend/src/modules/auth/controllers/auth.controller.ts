@@ -331,3 +331,87 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
     message: 'Password has been reset successfully.',
   });
 }
+
+/**
+ * Social login (Google via Firebase ID token)
+ * Verifies the Firebase ID token, finds or creates the user, returns JWT
+ */
+export async function socialLogin(req: Request, res: Response): Promise<void> {
+  const { idToken, provider } = req.body;
+
+  if (!idToken || !provider) {
+    throw new AppError('idToken and provider are required', 400);
+  }
+
+  // Lazy-load firebase-admin to avoid startup cost if never used
+  const admin = await import('firebase-admin');
+
+  // Initialize once
+  if (admin.default.apps.length === 0) {
+    admin.default.initializeApp({
+      projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+    });
+  }
+
+  // Verify the ID token
+  let decodedToken;
+  try {
+    decodedToken = await admin.default.auth().verifyIdToken(idToken);
+  } catch (err) {
+    throw new AppError('Invalid ID token', 401);
+  }
+
+  const email = decodedToken.email;
+  const name = decodedToken.name || email?.split('@')[0] || 'User';
+
+  if (!email) {
+    throw new AppError('Email not available from social provider', 400);
+  }
+
+  // Find or create user
+  let user = await UserModel.findByEmail(email);
+  if (!user) {
+    // Auto-register: create account with a random password (they'll use Google to login)
+    const randomPassword = crypto.randomUUID();
+    const password_hash = await hashPassword(randomPassword);
+    user = await UserModel.create({
+      name,
+      email,
+      password_hash,
+    });
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(user.email, user.name);
+  }
+
+  // Generate tokens
+  const tokenPayload = { id: user.id, email: user.email };
+  const accessToken = generateToken(tokenPayload);
+  const refreshTokenValue = generateRefreshToken(tokenPayload);
+
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7);
+
+  await RefreshTokenModel.createRefreshToken({
+    user_id: user.id,
+    token: refreshTokenValue,
+    expires_at: expiresAt,
+    user_agent: req.get('user-agent'),
+    ip_address: req.ip,
+  });
+
+  res.cookie('refreshToken', refreshTokenValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/api/v1/auth/refresh',
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      user: sanitizeUser(user as unknown as Record<string, unknown>),
+      accessToken,
+    },
+  });
+}
