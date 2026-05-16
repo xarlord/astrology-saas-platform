@@ -4,11 +4,48 @@
 
 import api from './api';
 import type { User, UserPreferences } from './api.types';
-import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth';
-import { getFirebaseApp, isFirebaseConfigured } from '../config/firebase';
+import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, signInWithPopup, type Auth } from 'firebase/auth';
 
 // Re-export types from api.types
 export type { LoginCredentials, RegisterData, AuthResponse } from './api.types';
+
+// ---------------------------------------------------------------------------
+// Firebase singleton — initialized once, reused across calls
+// ---------------------------------------------------------------------------
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
+
+let _app: FirebaseApp | null = null;
+let _auth: Auth | null = null;
+
+function getFirebaseApp(): FirebaseApp {
+  if (!_app) {
+    _app = initializeApp(firebaseConfig);
+  }
+  return _app;
+}
+
+function getFirebaseAuth(): Auth {
+  if (!_auth) {
+    _auth = getAuth(getFirebaseApp());
+  }
+  return _auth;
+}
+
+function isFirebaseConfigured(): boolean {
+  return Boolean(firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId);
+}
+
+// ---------------------------------------------------------------------------
+// Auth service
+// ---------------------------------------------------------------------------
 
 export interface AuthServiceResponse {
   user: User;
@@ -96,20 +133,16 @@ export const authService = {
   },
 
   async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
-    // All firebase/auth imports are now static — prevents Vite tree-shaking this entire code path
     if (!isFirebaseConfigured()) {
       throw new Error('Social login is not configured. Please contact support.');
     }
 
-    const auth = getAuth(getFirebaseApp());
+    const auth = getFirebaseAuth();
 
     const googleProvider = new GoogleAuthProvider();
     googleProvider.addScope('email');
     googleProvider.addScope('profile');
 
-    // Use signInWithPopup — more reliable across browsers and doesn't require
-    // redirect handling. signInWithRedirect was failing silently in production
-    // because Vite's chunk merging corrupted the dynamic import resolution.
     const result = await signInWithPopup(auth, googleProvider);
     const idToken = await result.user.getIdToken();
 
@@ -118,46 +151,6 @@ export const authService = {
       idToken,
       provider,
     });
-    return response.data.data;
-  },
-
-  /**
-   * Handle Firebase redirect result after Google sign-in returns to our page.
-   * Must be called on app initialization (e.g., in App.tsx or a top-level effect).
-   * Returns null if no redirect is pending, or the AuthServiceResponse on success.
-   */
-  async handleRedirectResult(): Promise<AuthServiceResponse | null> {
-    if (!isFirebaseConfigured()) {
-      return null;
-    }
-
-    const auth = getAuth(getFirebaseApp());
-
-    let result;
-    try {
-      result = await getRedirectResult(auth);
-    } catch (err: unknown) {
-      const e = err as { code?: string; message?: string; customData?: unknown };
-      console.error('[Firebase] getRedirectResult error:', {
-        code: e.code,
-        message: e.message,
-        customData: e.customData,
-      });
-      throw err;
-    }
-
-    if (!result) {
-      return null; // No redirect happened — normal page load
-    }
-
-    console.log('[Firebase] getRedirectResult success, user:', result.user.email);
-    const idToken = await result.user.getIdToken();
-
-    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
-      idToken,
-      provider: 'google',
-    });
-
     return response.data.data;
   },
 };
