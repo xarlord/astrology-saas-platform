@@ -281,7 +281,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 await socialLogin('google');
                 onSuccess?.();
               } catch (err: unknown) {
-                setSocialError(err instanceof Error ? err.message : 'Google login failed');
+                const msg = err instanceof Error ? `${err.message}\n${err.stack?.split('\n')[1] || ''}` : 'Google login failed';
+                console.error('[GoogleLogin]', err);
+                setSocialError(msg);
               }
             }}
           >
