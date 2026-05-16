@@ -1,0 +1,30 @@
+app = "astroverse"
+primary_region = "ams"
+
+[build]
+  dockerfile = "Dockerfile.fly"
+
+[build.args]
+  VITE_FIREBASE_API_KEY = "AIzaSyBvdiU2UDvmWbrbbYDL_ijKGjqDnYls0Ig"
+  VITE_FIREBASE_AUTH_DOMAIN = "astroverse-4ca2e.firebaseapp.com"
+  VITE_FIREBASE_PROJECT_ID = "astroverse-4ca2e"
+  VITE_FIREBASE_STORAGE_BUCKET = "astroverse-4ca2e.firebasestorage.app"
+  VITE_FIREBASE_MESSAGING_SENDER_ID = "910871693432"
+  VITE_FIREBASE_APP_ID = "1:910871693432:web:c6af97b6d1d4eb5a73fe7a"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  SERVE_FRONTEND = "true"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

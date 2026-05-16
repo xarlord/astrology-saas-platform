@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
 
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
@@ -148,6 +149,19 @@ app.get('/health', (_req: Request, res: Response) => {
 // ============================================
 
 app.use('/api', apiRouter);
+
+// ============================================
+// Serve Frontend Static Files (production only)
+// ============================================
+
+if (process.env.SERVE_FRONTEND === 'true') {
+  const frontendDist = path.join(__dirname, '..', 'public');
+  app.use(express.static(frontendDist));
+  // SPA fallback — serve index.html for all non-API routes
+  app.get('*', (_req: Request, res: Response) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
 
 // ============================================
 // Error Handling
