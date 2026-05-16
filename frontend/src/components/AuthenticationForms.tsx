@@ -29,13 +29,14 @@ function ErrorMessage({ message, id }: ErrorMessageProps) {
 
 // ==================== LOGIN FORM ====================
 export function LoginForm({ onSuccess }: LoginFormProps) {
-  const { login, isLoading } = useAuth();
+  const { login, socialLogin, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof typeof formData, string>>>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [socialError, setSocialError] = useState<string | null>(null);
 
   // Generate unique IDs for accessibility
   const emailErrorId = 'email-error';
@@ -274,6 +275,15 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           <button
             type="button"
             className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/15 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/15 transition-colors"
+            onClick={async () => {
+              setSocialError(null);
+              try {
+                await socialLogin('google');
+                onSuccess?.();
+              } catch (err: unknown) {
+                setSocialError(err instanceof Error ? err.message : 'Google login failed');
+              }
+            }}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12.0003 20.45c4.6593 0 8.3604-3.8532 8.1897-8.5082h-8.1897v-3.3444h11.9793c.1251.681.1897 1.3857.1897 2.1154 0 6.627-5.373 12-12 12-6.627 0-12-5.373-12-12s5.373-12 12-12c3.056 0 5.845 1.137 7.973 3.013l-2.585 2.528c-1.397-1.127-3.172-1.805-5.388-1.805-4.615 0-8.356 3.741-8.356 8.356s3.741 8.356 8.356 8.356z" fill="currentColor" />
@@ -290,6 +300,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             <span className="text-sm font-semibold leading-6">Apple</span>
           </button>
         </div>
+
+        {socialError && (
+          <p className="mt-3 text-center text-sm text-red-400" role="alert">
+            {socialError}
+          </p>
+        )}
 
         {/* Sign Up Link */}
         <p className="mt-8 text-center text-sm text-slate-200">
@@ -309,7 +325,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
 // ==================== REGISTER FORM ====================
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
-  const { register, isLoading } = useAuth();
+  const { register, socialLogin, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -691,6 +707,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           <button
             type="button"
             className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-cosmic-border bg-white/15 hover:bg-white/15 text-white transition-colors duration-200"
+            onClick={async () => {
+              try {
+                await socialLogin('google');
+                onSuccess?.();
+              } catch { /* error handled by store */ }
+            }}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12.0003 20.45c4.6593 0 8.3604-3.8532 8.1897-8.5082h-8.1897v-3.3444h11.9793c.1251.681.1897 1.3857.1897 2.1154 0 6.627-5.373 12-12 12-6.627 0-12-5.373-12-12s5.373-12 12-12c3.056 0 5.845 1.137 7.973 3.013l-2.585 2.528c-1.397-1.127-3.172-1.805-5.388-1.805-4.615 0-8.356 3.741-8.356 8.356s3.741 8.356 8.356 8.356z" fill="currentColor" />
