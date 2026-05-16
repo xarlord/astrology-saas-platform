@@ -29,6 +29,10 @@ export default defineConfig({
     },
   },
 
+  // Use platform-agnostic snapshot paths so baselines work across CI and local dev
+  // Default template includes {platform} which creates separate snapshots per OS
+  snapshotPathTemplate: '{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}{-projectName}{ext}',
+
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',

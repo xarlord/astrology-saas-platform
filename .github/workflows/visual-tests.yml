@@ -53,13 +53,33 @@ jobs:
         run: npm run build
         working-directory: frontend
 
+      - name: Check for missing baseline snapshots
+        id: check_snapshots
+        run: |
+          # Check if any snapshot directories are empty or missing
+          MISSING=false
+          for dir in tests/visual/*-snapshots; do
+            if [ ! -d "$dir" ] || [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
+              echo "Missing or empty snapshot dir: $dir"
+              MISSING=true
+            fi
+          done
+          # Also check if visual.spec.ts has any snapshots at all
+          if [ ! -d "tests/visual/visual.spec.ts-snapshots" ]; then
+            echo "visual.spec.ts has no snapshot directory"
+            MISSING=true
+          fi
+          echo "missing_baselines=$MISSING" >> "$GITHUB_OUTPUT"
+        working-directory: frontend
+
       - name: Run visual regression tests
         run: |
-          if [ "${{ inputs.update_snapshots }}" = "true" ]; then
-            npx playwright test --config=tests/visual/playwright.visual.config.ts --update-snapshots
-          else
-            npx playwright test --config=tests/visual/playwright.visual.config.ts
+          UPDATE_FLAG=""
+          if [ "${{ inputs.update_snapshots }}" = "true" ] || [ "${{ steps.check_snapshots.outputs.missing_baselines }}" = "true" ]; then
+            echo "::notice::Generating missing baseline snapshots"
+            UPDATE_FLAG="--update-snapshots"
           fi
+          npx playwright test --config=tests/visual/playwright.visual.config.ts $UPDATE_FLAG
         working-directory: frontend
         env:
           CI: true
@@ -89,7 +109,9 @@ jobs:
           retention-days: 30
 
       - name: Commit baseline snapshots
-        if: github.event_name == 'workflow_dispatch' && inputs.update_snapshots == 'true'
+        if: >-
+          (github.event_name == 'workflow_dispatch' && inputs.update_snapshots == 'true') ||
+          steps.check_snapshots.outputs.missing_baselines == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
