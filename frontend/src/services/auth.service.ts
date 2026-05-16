@@ -4,6 +4,8 @@
 
 import api from './api';
 import type { User, UserPreferences } from './api.types';
+import { getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult } from 'firebase/auth';
+import { getFirebaseApp, isFirebaseConfigured } from '../config/firebase';
 
 // Re-export types from api.types
 export type { LoginCredentials, RegisterData, AuthResponse } from './api.types';
@@ -90,6 +92,72 @@ export const authService = {
         headers: { Authorization: `Bearer ${refreshToken}` },
       },
     );
+    return response.data.data;
+  },
+
+  async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
+    // All firebase/auth imports are now static — prevents Vite tree-shaking this entire code path
+    if (!isFirebaseConfigured()) {
+      throw new Error('Social login is not configured. Please contact support.');
+    }
+
+    const auth = getAuth(getFirebaseApp());
+
+    const googleProvider = new GoogleAuthProvider();
+    googleProvider.addScope('email');
+    googleProvider.addScope('profile');
+
+    // Use signInWithPopup — more reliable across browsers and doesn't require
+    // redirect handling. signInWithRedirect was failing silently in production
+    // because Vite's chunk merging corrupted the dynamic import resolution.
+    const result = await signInWithPopup(auth, googleProvider);
+    const idToken = await result.user.getIdToken();
+
+    // Send the ID token to our backend to verify and create/get user
+    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
+      idToken,
+      provider,
+    });
+    return response.data.data;
+  },
+
+  /**
+   * Handle Firebase redirect result after Google sign-in returns to our page.
+   * Must be called on app initialization (e.g., in App.tsx or a top-level effect).
+   * Returns null if no redirect is pending, or the AuthServiceResponse on success.
+   */
+  async handleRedirectResult(): Promise<AuthServiceResponse | null> {
+    if (!isFirebaseConfigured()) {
+      return null;
+    }
+
+    const auth = getAuth(getFirebaseApp());
+
+    let result;
+    try {
+      result = await getRedirectResult(auth);
+    } catch (err: unknown) {
+      const e = err as { code?: string; message?: string; customData?: unknown };
+      console.error('[Firebase] getRedirectResult error:', {
+        code: e.code,
+        message: e.message,
+        customData: e.customData,
+      });
+      throw err;
+    }
+
+    if (!result) {
+      return null; // No redirect happened — normal page load
+    }
+
+    console.log('[Firebase] getRedirectResult success, user:', result.user.email);
+    const idToken = await result.user.getIdToken();
+
+    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
+      idToken,
+      provider: 'google',
+    });
+
     return response.data.data;
   },
 };
