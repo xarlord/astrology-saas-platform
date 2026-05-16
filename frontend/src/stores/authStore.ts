@@ -173,7 +173,7 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Social login (Google)
+        // Social login (Google) — popup with redirect fallback
         socialLogin: async (provider: 'google') => {
           set({ isLoading: true, error: null });
           try {

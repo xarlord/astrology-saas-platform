@@ -29,8 +29,10 @@
     "@astrology-saas/shared-types": "*",
     "@astrology-saas/shared-utils": "*",
     "@tanstack/react-query": "^5.17.19",
+    "@types/google.accounts": "^0.0.18",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
+    "firebase": "^11.0.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "luxon": "^3.7.2",
@@ -41,8 +43,7 @@
     "react-router-dom": "^6.21.1",
     "recharts": "^3.8.1",
     "tailwind-merge": "^2.2.0",
-    "zustand": "^4.4.7",
-    "firebase": "^11.0.0"
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",

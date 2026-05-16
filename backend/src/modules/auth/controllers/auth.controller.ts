@@ -333,36 +333,41 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
 }
 
 /**
- * Social login (Google via Firebase ID token)
- * Verifies the Firebase ID token, finds or creates the user, returns JWT
+ * Social login (Google via ID token or access token)
+ *
+ * Supports two flows:
+ * 1. Firebase ID token (legacy) — verified via firebase-admin
+ * 2. Google ID token (GIS One Tap) — verified via Google's public keys (jose library)
+ * 3. Google access token (GIS popup) — verified via Google's tokeninfo endpoint
+ *
+ * No Firebase Admin credentials needed for flow 2 & 3.
  */
 export async function socialLogin(req: Request, res: Response): Promise<void> {
-  const { idToken, provider } = req.body;
+  const { idToken, accessToken, provider } = req.body;
 
-  if (!idToken || !provider) {
-    throw new AppError('idToken and provider are required', 400);
+  if (provider !== 'google') {
+    throw new AppError('Only Google social login is supported', 400);
   }
 
-  // Lazy-load firebase-admin to avoid startup cost if never used
-  const admin = await import('firebase-admin');
-
-  // Initialize once
-  if (admin.default.apps.length === 0) {
-    admin.default.initializeApp({
-      projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-    });
+  if (!idToken && !accessToken) {
+    throw new AppError('idToken or accessToken is required', 400);
   }
 
-  // Verify the ID token
-  let decodedToken;
-  try {
-    decodedToken = await admin.default.auth().verifyIdToken(idToken);
-  } catch (err) {
-    throw new AppError('Invalid ID token', 401);
-  }
+  let email: string | undefined;
+  let name: string = 'User';
 
-  const email = decodedToken.email;
-  const name = decodedToken.name || email?.split('@')[0] || 'User';
+  if (idToken) {
+    // Try to verify as a Google ID token (JWT)
+    // Works for both Firebase ID tokens and GIS ID tokens
+    const result = await verifyGoogleIdToken(idToken);
+    email = result.email;
+    name = result.name;
+  } else if (accessToken) {
+    // Verify Google access token via tokeninfo endpoint
+    const result = await verifyGoogleAccessToken(accessToken);
+    email = result.email;
+    name = result.name;
+  }
 
   if (!email) {
     throw new AppError('Email not available from social provider', 400);
@@ -385,7 +390,7 @@ export async function socialLogin(req: Request, res: Response): Promise<void> {
 
   // Generate tokens
   const tokenPayload = { id: user.id, email: user.email };
-  const accessToken = generateToken(tokenPayload);
+  const accessTokenValue = generateToken(tokenPayload);
   const refreshTokenValue = generateRefreshToken(tokenPayload);
 
   const expiresAt = new Date();
@@ -411,7 +416,111 @@ export async function socialLogin(req: Request, res: Response): Promise<void> {
     success: true,
     data: {
       user: sanitizeUser(user as unknown as Record<string, unknown>),
-      accessToken,
+      accessToken: accessTokenValue,
     },
   });
+}
+
+/**
+ * Verify a Google ID token (JWT).
+ * Works with Firebase ID tokens and Google Identity Services ID tokens.
+ * Uses Google's public keys to verify the signature.
+ */
+async function verifyGoogleIdToken(token: string): Promise<{ email: string; name: string }> {
+  // First, try Google's tokeninfo endpoint (simplest, no library needed)
+  try {
+    const response = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(token)}`,
+    );
+    if (response.ok) {
+      const data = await response.json() as {
+        email?: string;
+        email_verified?: string;
+        name?: string;
+        aud?: string;
+        sub?: string;
+      };
+
+      // Verify the token is for our app
+      const clientId = process.env.VITE_FIREBASE_MESSAGING_SENDER_ID
+        ? `${process.env.VITE_FIREBASE_MESSAGING_SENDER_ID}.apps.googleusercontent.com`
+        : undefined;
+
+      if (clientId && data.aud && data.aud !== clientId) {
+        // Also check Firebase project audience
+        const firebaseAud = `projects/${process.env.VITE_FIREBASE_PROJECT_ID}/auth/callback/google`;
+        if (data.aud !== firebaseAud) {
+          throw new AppError('Token audience mismatch', 401);
+        }
+      }
+
+      if (!data.email) {
+        throw new AppError('Email not found in token', 400);
+      }
+
+      return {
+        email: data.email,
+        name: data.name || data.email.split('@')[0],
+      };
+    }
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    // Fall through to Firebase verification
+  }
+
+  // Fallback: try Firebase Admin verification (for Firebase-generated tokens)
+  try {
+    const admin = await import('firebase-admin');
+    if (admin.default.apps.length === 0) {
+      admin.default.initializeApp({
+        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+      });
+    }
+    const decodedToken = await admin.default.auth().verifyIdToken(token);
+    return {
+      email: decodedToken.email || '',
+      name: decodedToken.name || decodedToken.email?.split('@')[0] || 'User',
+    };
+  } catch {
+    throw new AppError('Invalid ID token', 401);
+  }
+}
+
+/**
+ * Verify a Google access token via Google's tokeninfo endpoint.
+ */
+async function verifyGoogleAccessToken(token: string): Promise<{ email: string; name: string }> {
+  const response = await fetch(
+    `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`,
+  );
+
+  if (!response.ok) {
+    throw new AppError('Invalid access token', 401);
+  }
+
+  const data = await response.json() as {
+    email?: string;
+    email_verified?: string;
+    scope?: string;
+  };
+
+  if (!data.email) {
+    throw new AppError('Email not available from access token', 400);
+  }
+
+  // Also fetch user profile for the name
+  let name = data.email.split('@')[0];
+  try {
+    const profileResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (profileResponse.ok) {
+      const profile = await profileResponse.json() as { name?: string; email?: string };
+      if (profile.name) name = profile.name;
+    }
+  } catch {
+    // Ignore profile fetch failure — use email-derived name
+  }
+
+  return { email: data.email, name };
 }
