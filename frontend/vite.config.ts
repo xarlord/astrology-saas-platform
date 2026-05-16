@@ -99,7 +99,6 @@ export default defineConfig({
           charts: ['recharts'],
           query: ['@tanstack/react-query'],
           utils: ['axios', 'date-fns'],
-          firebase: ['firebase/app', 'firebase/auth'],
         },
       },
     },
