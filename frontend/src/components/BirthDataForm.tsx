@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useCreateChart, useCalculateChart } from '../hooks';
 import { useChartsStore } from '../store/chartsStore';
 
@@ -78,8 +78,9 @@ export function BirthDataForm({
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof BirthData, string>>>({});
-  const [placeSuggestions, setPlaceSuggestions] = useState<string[]>([]);
+  const [placeSuggestions, setPlaceSuggestions] = useState<Array<{ display_name: string; lat: string; lon: string }>>([]);
   const [showPlaceSearch, setShowPlaceSearch] = useState(false);
+  const placeInputRef = useRef<HTMLInputElement>(null);
 
   // Generate unique IDs for accessibility
   const birthDateErrorId = 'birthDate-error';
@@ -91,64 +92,83 @@ export function BirthDataForm({
   const createChartMutation = useCreateChart();
   const calculateChartMutation = useCalculateChart();
 
-  // Handle geocoding (place to coordinates)
-  const searchPlace = async (query: string) => {
-    if (!query || query.length < 3) {
+  // Handle geocoding (place to coordinates) — Nominatim with proper headers
+  const searchPlace = useCallback(async (query: string) => {
+    if (!query || query.length < 2) {
       setPlaceSuggestions([]);
+      setShowPlaceSearch(false);
       return;
     }
 
     try {
-      // Using OpenStreetMap Nominatim API (free, no key required)
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`,
+        {
+          headers: {
+            'Accept-Language': 'en',
+            'User-Agent': 'AstroVerse/1.0',
+          },
+        },
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data: { display_name: string }[] = await response.json();
 
-      const suggestions = data.map((item) => item.display_name);
-      setPlaceSuggestions(suggestions);
-      setShowPlaceSearch(true);
-    } catch (error) {
-      console.error('Place search error:', error);
-    }
-  };
-
-  // Get coordinates for selected place
-  const getPlaceCoordinates = async (placeName: string) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}&limit=1`
-      );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data: { lat: string; lon: string }[] = await response.json();
-
-      if (data?.[0]) {
-        setFormData((prev) => ({
-          ...prev,
-          birthPlace: placeName,
-          latitude: parseFloat(data[0].lat),
-          longitude: parseFloat(data[0].lon),
-        }));
-        setShowPlaceSearch(false);
+      if (!response.ok) {
         setPlaceSuggestions([]);
+        return;
+      }
+
+      const data: { display_name: string; lat: string; lon: string }[] = await response.json();
+
+      if (data.length > 0) {
+        setPlaceSuggestions(data);
+        setShowPlaceSearch(true);
+      } else {
+        setPlaceSuggestions([]);
+        setShowPlaceSearch(false);
       }
     } catch (error) {
-      console.error('Geocoding error:', error);
+      console.error('Place search error:', error);
+      setPlaceSuggestions([]);
+      setShowPlaceSearch(false);
     }
-  };
+  }, []);
+
+  // Select a place from suggestions — coordinates already available
+  const selectPlace = useCallback((place: { display_name: string; lat: string; lon: string }) => {
+    setFormData((prev) => ({
+      ...prev,
+      birthPlace: place.display_name.split(',').slice(0, 3).join(',').trim(),
+      latitude: parseFloat(place.lat),
+      longitude: parseFloat(place.lon),
+    }));
+    setShowPlaceSearch(false);
+    setPlaceSuggestions([]);
+  }, []);
 
   // Debounced place search
   useEffect(() => {
+    if (!formData.birthPlace || formData.birthPlace.length < 2) {
+      setPlaceSuggestions([]);
+      setShowPlaceSearch(false);
+      return;
+    }
+
     const timer = setTimeout(() => {
-      if (formData.birthPlace && formData.birthPlace.length >= 3) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        searchPlace(formData.birthPlace);
-      }
-    }, 500);
+      void searchPlace(formData.birthPlace);
+    }, 400);
 
     return () => clearTimeout(timer);
-  }, [formData.birthPlace]);
+  }, [formData.birthPlace, searchPlace]);
+
+  // Close suggestions on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (placeInputRef.current && !placeInputRef.current.contains(e.target as Node)) {
+        setShowPlaceSearch(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof BirthData, string>> = {};
@@ -333,7 +353,7 @@ export function BirthDataForm({
           Location
         </h3>
         <div className="space-y-4">
-          <div className="relative">
+          <div className="relative" ref={placeInputRef}>
             <label htmlFor="birthPlace" className="block text-sm font-medium text-slate-200">
               Birth Place <span className="text-red-500">*</span>
             </label>
@@ -344,11 +364,14 @@ export function BirthDataForm({
                 name="birthPlace"
                 value={formData.birthPlace}
                 onChange={handleChange}
-                placeholder="Search city or enter coordinates"
+                placeholder="Start typing a city name..."
                 autoComplete="off"
                 aria-required="true"
                 aria-invalid={errors.birthPlace ? 'true' : undefined}
                 aria-describedby={errors.birthPlace ? birthPlaceErrorId : undefined}
+                aria-expanded={showPlaceSearch}
+                aria-autocomplete="list"
+                aria-controls="place-suggestions"
                 className={`mt-1 block w-full rounded-lg pr-10 ${
                   errors.birthPlace
                     ? 'input-error border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-900/10'
@@ -365,15 +388,26 @@ export function BirthDataForm({
 
             {/* Place Suggestions Dropdown */}
             {showPlaceSearch && placeSuggestions.length > 0 && (
-              <div className="absolute z-10 mt-1 w-full bg-cosmic-card/90 backdrop-blur-md rounded-md border border-cosmic-border max-h-60 overflow-auto">
+              <div
+                id="place-suggestions"
+                role="listbox"
+                className="absolute z-50 mt-1 w-full rounded-lg shadow-2xl max-h-60 overflow-auto border border-cosmic-border"
+                style={{ backgroundColor: '#1a1d2e' }}
+              >
                 {placeSuggestions.map((place, index) => (
                   <button
                     key={index}
                     type="button"
-                    onClick={() => void getPlaceCoordinates(place)}
-                    className="w-full text-left px-3 py-2 text-sm text-white hover:bg-cosmic-hover"
+                    role="option"
+                    onClick={() => selectPlace(place)}
+                    className="w-full text-left px-3 py-2.5 text-sm text-slate-200 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
                   >
-                    {place}
+                    <span className="material-symbols-outlined text-slate-500 text-base" aria-hidden="true">
+                      location_on
+                    </span>
+                    <span className="truncate">
+                      {place.display_name.split(',').slice(0, 3).join(',').trim()}
+                    </span>
                   </button>
                 ))}
               </div>

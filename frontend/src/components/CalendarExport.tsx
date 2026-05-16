@@ -161,7 +161,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
                 type="date"
                 value={params.startDate}
                 onChange={(e) => setParams({ ...params, startDate: e.target.value })}
-                className="px-3 py-2.5 border border-white/15 rounded-md text-sm text-slate-200 bg-white/15 transition-all duration-200 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(107,61,225,0.1)]"
+                className="date-input-dark"
               />
             </div>
 
@@ -173,7 +173,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
                 value={params.endDate}
                 min={params.startDate}
                 onChange={(e) => setParams({ ...params, endDate: e.target.value })}
-                className="px-3 py-2.5 border border-white/15 rounded-md text-sm text-slate-200 bg-white/15 transition-all duration-200 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(107,61,225,0.1)]"
+                className="date-input-dark"
               />
             </div>
           </div>

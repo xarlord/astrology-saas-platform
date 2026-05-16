@@ -18,7 +18,7 @@ export interface AuthServiceResponse {
 // Firebase — static imports to prevent tree-shaking / bundling issues
 // ---------------------------------------------------------------------------
 import { initializeApp, getApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -98,27 +98,12 @@ export const authService = {
       googleProvider.addScope('email');
       googleProvider.addScope('profile');
 
-      // Sign out any existing Firebase user first to prevent popup-closed-by-user errors
-      // when the user has already authenticated via Firebase on a different page
-      try {
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-          await firebaseSignOut(auth);
-        }
-      } catch {
-        // Ignore sign-out errors — proceed with popup
-      }
-
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
       const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', { idToken, provider });
       return response.data.data;
     } catch (err) {
-      // If the error is popup-closed-by-user, provide a clearer message
-      if (err instanceof Error && err.message?.includes('popup-closed-by-user')) {
-        throw new Error('Sign-in was cancelled. Please try again.');
-      }
       throw err;
     }
   },

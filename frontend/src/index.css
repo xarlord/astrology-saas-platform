@@ -105,6 +105,20 @@
     background-color: var(--color-bg-card-solid);
     color: var(--color-text-primary);
   }
+
+  /* Native date/time input dark theme */
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    color-scheme: dark;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7) sepia(0.5) saturate(3) hue-rotate(220deg);
+    cursor: pointer;
+  }
 }
 
 /* Stitch Design System Utilities */
@@ -308,5 +322,19 @@
       opacity: 0.7;
       transform: translate(0, -50%) scale(1.05);
     }
+  }
+
+  /* Dark-themed date/time input base styles */
+  .date-input-dark {
+    @apply px-4 py-2.5 rounded-xl text-sm text-white transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary;
+    background: var(--color-bg-card-solid);
+    border: 1px solid var(--color-border-subtle);
+  }
+  .date-input-dark:hover {
+    border-color: var(--color-border-hover);
+  }
+  .date-input-dark::placeholder {
+    color: var(--color-text-muted);
   }
 }

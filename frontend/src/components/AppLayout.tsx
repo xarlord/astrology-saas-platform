@@ -204,10 +204,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
   return (
     <aside
       className={`
-        fixed inset-y-0 left-0 z-sidebar w-64 bg-cosmic-card-solid border-r border-white/5
+        fixed inset-y-0 left-0 z-sidebar w-64 border-r border-white/5
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}
+      style={{ backgroundColor: '#141627' }}
       aria-label="Main navigation"
     >
       <div className="flex flex-col h-full">

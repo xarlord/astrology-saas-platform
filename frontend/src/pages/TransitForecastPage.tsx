@@ -386,7 +386,7 @@ const TransitForecastPage: React.FC = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-4 py-2 bg-surface border border-glass-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="date-input-dark"
                 data-testid="start-date-input"
               />
             </div>
@@ -396,7 +396,7 @@ const TransitForecastPage: React.FC = () => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-4 py-2 bg-surface border border-glass-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="date-input-dark"
                 data-testid="end-date-input"
               />
             </div>
