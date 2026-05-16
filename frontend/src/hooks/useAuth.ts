@@ -30,12 +30,7 @@ export const useAuth = () => {
   // Login wrapper with error handling
   const handleLogin = useCallback(
     async (credentials: LoginCredentials) => {
-      try {
-        await login(credentials);
-        return true;
-      } catch {
-        return false;
-      }
+      await login(credentials);
     },
     [login],
   );
@@ -43,12 +38,7 @@ export const useAuth = () => {
   // Register wrapper with error handling
   const handleRegister = useCallback(
     async (data: RegisterData) => {
-      try {
-        await register(data);
-        return true;
-      } catch {
-        return false;
-      }
+      await register(data);
     },
     [register],
   );
