@@ -21,7 +21,9 @@ async function getResend() {
   if (_resend) return _resend;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
-  const Resend = (await import('resend')).Resend;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resendModule: any = await import('resend');
+  const Resend = resendModule.default ?? resendModule.Resend;
   _resend = new Resend(apiKey);
   return _resend;
 }
