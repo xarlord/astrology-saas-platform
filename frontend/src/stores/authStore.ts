@@ -27,6 +27,7 @@ interface AuthState {
   updateProfile: (data: { name?: string; avatar_url?: string; timezone?: string }) => Promise<void>;
   updatePreferences: (preferences: Partial<User['preferences']>) => Promise<void>;
   socialLogin: (provider: 'google') => Promise<void>;
+  socialLoginWithToken: (idToken: string) => Promise<void>;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
 }
@@ -178,6 +179,28 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: true, error: null });
           try {
             const response = await authService.socialLogin(provider);
+            const { user, accessToken } = response;
+            set({
+              user,
+              token: accessToken,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+          } catch (error: unknown) {
+            set({
+              error: error instanceof Error ? error.message : 'Social login failed',
+              isLoading: false,
+              isAuthenticated: false,
+            });
+            throw error;
+          }
+        },
+
+        // Social login with a pre-obtained ID token (from OAuth redirect callback)
+        socialLoginWithToken: async (idToken: string) => {
+          set({ isLoading: true, error: null });
+          try {
+            const response = await authService.socialLoginWithToken(idToken);
             const { user, accessToken } = response;
             set({
               user,

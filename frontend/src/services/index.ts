@@ -8,7 +8,7 @@
 export { default as api } from './api';
 
 // Services
-export { authService } from './auth.service';
+export { authService, handleOAuthCallback } from './auth.service';
 export { chartService } from './chart.service';
 export { analysisService } from './analysis.service';
 export type { PersonalityAnalysisResponse, PlanetInSignInterpretation } from './analysis.service';

@@ -18,6 +18,7 @@ import RegisterPage from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import StaticPage from './pages/StaticPage';
+import GoogleCallbackPage from './pages/GoogleCallbackPage';
 
 // Lazy-loaded pages (code-split into separate chunks)
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -71,6 +72,9 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+              {/* Google OAuth callback — handles redirect from Google */}
+              <Route path="/auth/google-callback" element={<GoogleCallbackPage />} />
 
               {/* Redirects */}
               <Route path="/charts" element={<Navigate to="/dashboard" replace />} />
