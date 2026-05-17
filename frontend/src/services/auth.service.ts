@@ -1,14 +1,16 @@
 /**
  * Auth Service — Google Sign-In via Firebase Auth SDK
  *
- * Uses Firebase Auth's signInWithPopup which handles the full OAuth flow:
- *   - Opens popup to accounts.google.com
- *   - Google redirects to firebaseapp.com/__/auth/handler (alive and working)
- *   - Firebase Auth handler processes the token
- *   - Result relayed back through popup to parent window
+ * Uses signInWithRedirect (full page redirect) instead of signInWithPopup.
+ * This avoids popup blocker issues and popup-closed-by-user errors that
+ * occur on mobile browsers or when third-party cookies are blocked.
  *
- * The Firebase auth handler at astroverse-4ca2e.firebaseapp.com/__/auth/handler
- * returns 200 and is fully functional (served by Firebase Auth infra, not Hosting).
+ * Flow:
+ * 1. Click Google button → redirect to Google auth
+ * 2. Google auth → redirect to firebaseapp.com/__/auth/handler
+ * 3. Firebase handler → redirect back to our app
+ * 4. On page load, getRedirectResult() extracts the credential
+ * 5. Send ID token to backend
  */
 
 import api from './api';
@@ -23,46 +25,60 @@ export interface AuthServiceResponse {
   refreshToken: string;
 }
 
+// Track if we've already checked for redirect result on this page load
+let redirectResultChecked = false;
+
 // ---------------------------------------------------------------------------
-// Firebase Auth — Google Sign-In
+// Firebase Auth — Google Sign-In via redirect
 // ---------------------------------------------------------------------------
 
 /**
- * Sign in with Google using Firebase Auth SDK.
- * Lazy-loads Firebase to avoid unnecessary bundle size.
+ * Initiate Google Sign-In by redirecting the entire page to Google.
  */
-async function firebaseGoogleSignIn(): Promise<string> {
-  // Dynamic imports — Firebase is only loaded when user clicks Google login
+async function firebaseGoogleSignInRedirect(): Promise<void> {
   const { getFirebaseAuth } = await import('../config/firebase');
-  const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
+  const { GoogleAuthProvider, signInWithRedirect } = await import('firebase/auth');
 
   const auth = getFirebaseAuth();
   const provider = new GoogleAuthProvider();
 
-  // Add scopes
   provider.addScope('email');
   provider.addScope('profile');
+  provider.setCustomParameters({ prompt: 'select_account' });
 
-  // Set custom parameters to always show account picker
-  provider.setCustomParameters({
-    prompt: 'select_account',
-  });
-
-  const result = await signInWithPopup(auth, provider);
-
-  // Get the ID token from the Firebase user
-  const idToken = await result.user.getIdToken();
-
-  if (!idToken) {
-    throw new Error('Failed to get ID token from Google Sign-In');
-  }
-
-  return idToken;
+  await signInWithRedirect(auth, provider);
 }
 
 /**
  * Check if we're returning from a Google OAuth redirect.
- * Not used in popup flow but kept for potential redirect fallback.
+ * If so, extract the credential and return the ID token.
+ */
+export async function checkRedirectResult(): Promise<string | null> {
+  if (redirectResultChecked) return null;
+  redirectResultChecked = true;
+
+  try {
+    const { getFirebaseAuth } = await import('../config/firebase');
+    const { getRedirectResult } = await import('firebase/auth');
+
+    const auth = getFirebaseAuth();
+    const result = await getRedirectResult(auth);
+
+    if (result) {
+      const idToken = await result.user.getIdToken();
+      return idToken;
+    }
+  } catch (err) {
+    console.error('Firebase redirect result error:', err);
+    throw err;
+  }
+
+  return null;
+}
+
+/**
+ * Check if we're returning from a redirect (sync version for router guard).
+ * Always returns null — actual check is async via checkRedirectResult().
  */
 export function handleOAuthCallback(): string | null {
   return null;
@@ -116,27 +132,20 @@ export const authService = {
   },
 
   /**
-   * Google social login using Firebase Auth SDK signInWithPopup.
-   *
-   * Flow:
-   * 1. signInWithPopup opens Google auth in a popup
-   * 2. Google redirects to firebaseapp.com/__/auth/handler (alive and working)
-   * 3. Firebase processes the credential
-   * 4. Result returned to parent window via popup relay
-   * 5. We extract the ID token and send to our backend
+   * Google social login using Firebase Auth SDK signInWithRedirect.
+   * This triggers a full page redirect to Google, which then redirects back.
+   * The result is picked up by checkRedirectResult() on page load.
    */
   async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
-    const idToken = await firebaseGoogleSignIn();
-
-    const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
-      idToken,
-      provider,
-    });
-    return response.data.data;
+    // Initiate the redirect — this navigates away from the page
+    await firebaseGoogleSignInRedirect();
+    // Code after this won't execute (page navigates away)
+    // But TypeScript needs a return value
+    throw new Error('Redirecting to Google...');
   },
 
   /**
-   * Complete social login with a pre-obtained id_token.
+   * Complete social login with a pre-obtained ID token.
    */
   async socialLoginWithToken(idToken: string): Promise<AuthServiceResponse> {
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
