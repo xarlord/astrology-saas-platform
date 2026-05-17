@@ -1,11 +1,9 @@
 /**
- * Auth Service — Firebase Auth for Google Sign-In
+ * Auth Service — Google Sign-In via Google Identity Services (GIS)
  *
- * Uses Firebase Auth SDK for Google sign-in popup.
- * The Firebase project astroverse-4ca2e has astroverse.fly.dev
- * as an authorized domain.
- *
- * Backend verifies Firebase ID tokens using Firebase Admin SDK.
+ * Uses Google's native popup flow via GIS.
+ * The OAuth client ID is discovered from the Firebase project config.
+ * Backend verifies tokens via Google's tokeninfo endpoint.
  */
 
 import api from './api';
@@ -21,14 +19,66 @@ export interface AuthServiceResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Firebase Auth
+// Google OAuth Client ID — from Firebase project's auto-created web client
 // ---------------------------------------------------------------------------
 
-async function getFirebaseAuth() {
-  const { getAuth, signInWithPopup, GoogleAuthProvider } = await import('firebase/auth');
-  const { getFirebaseApp } = await import('../config/firebase');
-  const auth = getAuth(getFirebaseApp());
-  return { auth, signInWithPopup, GoogleAuthProvider };
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  '867374800592-se2qmbmoi4n8nc9kjispnnk7cijt2nnk.apps.googleusercontent.com';
+
+// ---------------------------------------------------------------------------
+// Google Identity Services — popup OAuth flow
+// ---------------------------------------------------------------------------
+
+let gisScriptLoaded = false;
+let gisScriptLoading: Promise<void> | null = null;
+
+function loadGoogleIdentityServices(): Promise<void> {
+  if (gisScriptLoaded) return Promise.resolve();
+  if (typeof google !== 'undefined' && google.accounts?.oauth2) {
+    gisScriptLoaded = true;
+    return Promise.resolve();
+  }
+  if (gisScriptLoading) return gisScriptLoading;
+
+  gisScriptLoading = new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      gisScriptLoaded = true;
+      resolve();
+    };
+    script.onerror = () => reject(new Error('Failed to load Google Sign-In'));
+    document.head.appendChild(script);
+  });
+
+  return gisScriptLoading;
+}
+
+/**
+ * Open Google Sign-In popup using GIS token client.
+ * Returns the access token from Google.
+ */
+function googleSignInPopup(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'email profile openid',
+      callback: (response) => {
+        if (response.access_token) {
+          resolve(response.access_token);
+        } else {
+          reject(new Error('Google Sign-In was cancelled'));
+        }
+      },
+      error_callback: (error) => {
+        reject(new Error(`Google Sign-In error: ${error.message || 'Unknown error'}`));
+      },
+    });
+
+    tokenClient.requestAccessToken();
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -79,21 +129,16 @@ export const authService = {
   },
 
   /**
-   * Google social login using Firebase Auth SDK.
-   * Firebase handles the OAuth flow internally using the project's API key.
+   * Google social login using Google Identity Services (GIS).
+   * Opens a popup from accounts.google.com — no Firebase authDomain needed.
+   * Backend verifies the access token via Google's tokeninfo endpoint.
    */
   async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
-    const { auth, signInWithPopup, GoogleAuthProvider } = await getFirebaseAuth();
-
-    const googleProvider = new GoogleAuthProvider();
-    googleProvider.addScope('email');
-    googleProvider.addScope('profile');
-
-    const result = await signInWithPopup(auth, googleProvider);
-    const idToken = await result.user.getIdToken();
+    await loadGoogleIdentityServices();
+    const accessToken = await googleSignInPopup();
 
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
-      idToken,
+      accessToken,
       provider,
     });
     return response.data.data;
