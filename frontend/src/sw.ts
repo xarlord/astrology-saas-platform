@@ -11,12 +11,17 @@
 
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute, NavigationRoute, setCatchHandler } from 'workbox-routing';
-import { NetworkFirst, StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
+import { NetworkFirst, CacheFirst } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CACHE, HTTP } from './utils/constants';
 
 declare const self: ServiceWorkerGlobalScope;
+
+// CRITICAL: Immediately activate new service worker without waiting
+// This ensures users always get the latest code (auth fixes, etc.)
+(self as any).skipWaiting();
+(self as any).clients.claim();
 
 // Precache static assets
 precacheAndRoute(self.__WB_MANIFEST);
@@ -69,19 +74,6 @@ const imageCacheStrategy = new CacheFirst({
   ],
 });
 
-/**
- * Static assets - StaleWhileRevalidate
- * Serves cached content immediately while updating in background
- */
-const staticCacheStrategy = new StaleWhileRevalidate({
-  cacheName: CACHE_NAMES.STATIC,
-  plugins: [
-    new CacheableResponsePlugin({
-      statuses: [0, HTTP.STATUS_INTERNAL_ERROR - 300],
-    }),
-  ],
-});
-
 // Register routes
 
 // API routes - NetworkFirst for /api/* paths
@@ -94,10 +86,23 @@ registerRoute(({ request }) => {
   return request.destination === 'image';
 }, imageCacheStrategy);
 
-// JavaScript and CSS - StaleWhileRevalidate
+// JavaScript and CSS - NetworkFirst to ensure fresh auth code
+// (previously StaleWhileRevalidate which served stale cached bundles)
 registerRoute(({ request }) => {
   return request.destination === 'script' || request.destination === 'style';
-}, staticCacheStrategy);
+}, new NetworkFirst({
+  cacheName: CACHE_NAMES.STATIC,
+  plugins: [
+    new CacheableResponsePlugin({
+      statuses: [0, 200],
+    }),
+    new ExpirationPlugin({
+      maxEntries: 60,
+      maxAgeSeconds: CACHE.ONE_DAY_SECONDS,
+      purgeOnQuotaError: true,
+    }),
+  ],
+}));
 
 // Navigation route (SPA fallback)
 // This ensures all navigation requests return the index.html
@@ -202,16 +207,16 @@ setCatchHandler(({ event }) =>
   }),
 );
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches AND delete ALL workbox precache caches
+// to force fresh downloads on every deploy
 (self as any).addEventListener('activate', (event: any) => {
-  const currentCaches = Object.values(CACHE_NAMES);
-
   event.waitUntil(
     (async () => {
       const cacheNames = await caches.keys();
-
+      // Delete ALL old caches (including workbox-precache-v2) to ensure
+      // no stale JS bundles survive across deploys
       for (const cacheName of cacheNames) {
-        if (!currentCaches.includes(cacheName as any)) {
+        if (cacheName.startsWith('workbox-precache') || cacheName.startsWith('api-cache-') || cacheName.startsWith('images-cache-') || cacheName.startsWith('static-cache-')) {
           await caches.delete(cacheName);
         }
       }
