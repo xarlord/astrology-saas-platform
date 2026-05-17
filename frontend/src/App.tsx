@@ -2,7 +2,7 @@
  * Main App Component
  */
 
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -60,27 +60,8 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // Check for Firebase redirect result on mount
-  useEffect(() => {
-    import('./services/auth.service').then(({ checkRedirectResult }) => {
-      return checkRedirectResult();
-    }).then(async (idToken) => {
-      if (idToken) {
-        const { authService } = await import('./services/auth.service');
-        const response = await authService.socialLoginWithToken(idToken);
-        const { user, accessToken } = response;
-        const { useAuthStore } = await import('./stores/authStore');
-        useAuthStore.setState({
-          user,
-          token: accessToken,
-          isAuthenticated: true,
-          isLoading: false,
-        });
-      }
-    }).catch((err) => {
-      console.error('Firebase redirect result error:', err);
-    });
-  }, []);
+  // Popup flow: socialLogin() returns directly with user data.
+  // No redirect result check needed.
 
   return (
     <QueryClientProvider client={queryClient}>
