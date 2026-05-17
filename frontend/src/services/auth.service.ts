@@ -1,15 +1,14 @@
 /**
- * Auth Service — Google Sign-In via Firebase Identity Toolkit
+ * Auth Service — Google Sign-In via Firebase Auth SDK
  *
- * Uses Firebase's createAuthUri API to generate a Google OAuth URL.
- * Two flows:
- * 1. Popup: Opens Google auth in a popup, monitors for redirect back
- * 2. Redirect: Full page redirect to Google, then back with token in hash
+ * Uses Firebase Auth's signInWithPopup which handles the full OAuth flow:
+ *   - Opens popup to accounts.google.com
+ *   - Google redirects to firebaseapp.com/__/auth/handler (alive and working)
+ *   - Firebase Auth handler processes the token
+ *   - Result relayed back through popup to parent window
  *
- * Firebase's createAuthUri sets redirect_uri to our domain, which IS
- * authorized in the OAuth client's redirect URI list. This bypasses:
- *   - The dead authDomain (firebaseapp.com → Site Not Found)
- *   - The origin_mismatch error (OAuth client has no JS origins configured)
+ * The Firebase auth handler at astroverse-4ca2e.firebaseapp.com/__/auth/handler
+ * returns 200 and is fully functional (served by Firebase Auth infra, not Hosting).
  */
 
 import api from './api';
@@ -25,165 +24,47 @@ export interface AuthServiceResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Firebase config
-// ---------------------------------------------------------------------------
-
-const FIREBASE_API_KEY = import.meta.env.VITE_FIREBASE_API_KEY ||
-  'AIzaSyBvdiU2UDvmWbrbbYDL_ijKGjqDnYls0Ig';
-
-// ---------------------------------------------------------------------------
-// Firebase Identity Toolkit — createAuthUri flow
-// ---------------------------------------------------------------------------
-
-interface CreateAuthUriResponse {
-  authUri: string;
-  sessionId: string;
-  providerId: string;
-}
-
-/**
- * Call Firebase's createAuthUri to get a Google OAuth URL.
- * The redirect_uri is set to our domain (which IS in the authorized redirect URIs).
- */
-async function getGoogleAuthUri(): Promise<CreateAuthUriResponse> {
-  const continueUri = window.location.origin + '/auth/google-callback';
-
-  const response = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:createAuthUri?key=${FIREBASE_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        providerId: 'google.com',
-        continueUri,
-      }),
-    },
-  );
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: { message: 'Unknown error' } }));
-    throw new Error(error.error?.message || 'Failed to create auth URI');
-  }
-
-  return response.json();
-}
-
-// ---------------------------------------------------------------------------
-// Popup flow
+// Firebase Auth — Google Sign-In
 // ---------------------------------------------------------------------------
 
 /**
- * Open Google Sign-In popup and extract the id_token after redirect.
- * The popup goes: accounts.google.com → auth → redirect back to our domain
- * We poll the popup URL and extract the token when it returns to our origin.
+ * Sign in with Google using Firebase Auth SDK.
+ * Lazy-loads Firebase to avoid unnecessary bundle size.
  */
-function googleSignInPopup(): Promise<string> {
-  return new Promise(async (resolve, reject) => {
-    let authData: CreateAuthUriResponse;
-    try {
-      authData = await getGoogleAuthUri();
-    } catch (err) {
-      reject(err instanceof Error ? err : new Error('Failed to initiate Google Sign-In'));
-      return;
-    }
+async function firebaseGoogleSignIn(): Promise<string> {
+  // Dynamic imports — Firebase is only loaded when user clicks Google login
+  const { getFirebaseAuth } = await import('../config/firebase');
+  const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
 
-    const width = 500;
-    const height = 600;
-    const left = Math.max(0, (screen.width - width) / 2);
-    const top = Math.max(0, (screen.height - height) / 2);
+  const auth = getFirebaseAuth();
+  const provider = new GoogleAuthProvider();
 
-    const popup = window.open(
-      authData.authUri,
-      'google-signin',
-      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`,
-    );
+  // Add scopes
+  provider.addScope('email');
+  provider.addScope('profile');
 
-    if (!popup) {
-      reject(new Error('Popup blocked. Please allow popups for this site.'));
-      return;
-    }
-
-    const origin = window.location.origin;
-    let resolved = false;
-
-    const interval = setInterval(() => {
-      try {
-        if (popup.closed) {
-          clearInterval(interval);
-          if (!resolved) {
-            resolved = true;
-            reject(new Error('Google Sign-In was cancelled'));
-          }
-          return;
-        }
-
-        const popupUrl = popup.location.href;
-        if (popupUrl.startsWith(origin)) {
-          clearInterval(interval);
-
-          // Extract id_token from URL hash or query params
-          const idToken = extractToken(popupUrl);
-          popup.close();
-
-          if (idToken) {
-            resolved = true;
-            resolve(idToken);
-          } else {
-            resolved = true;
-            reject(new Error('No ID token received from Google'));
-          }
-        }
-      } catch {
-        // Cross-origin error while popup is on Google's domain — expected, keep polling
-      }
-    }, 300);
-
-    setTimeout(() => {
-      clearInterval(interval);
-      if (!resolved) {
-        resolved = true;
-        if (!popup.closed) popup.close();
-        reject(new Error('Google Sign-In timed out'));
-      }
-    }, 120_000);
+  // Set custom parameters to always show account picker
+  provider.setCustomParameters({
+    prompt: 'select_account',
   });
-}
 
-/**
- * Extract id_token from a URL — checks both hash fragment and query params.
- */
-function extractToken(url: string): string | null {
-  try {
-    const parsed = new URL(url);
-    // Check hash fragment first: #id_token=xxx
-    const hash = parsed.hash.substring(1);
-    const hashParams = new URLSearchParams(hash);
-    const fromHash = hashParams.get('id_token');
-    if (fromHash) return fromHash;
+  const result = await signInWithPopup(auth, provider);
 
-    // Check query params: ?id_token=xxx or ?code=xxx
-    const fromQuery = parsed.searchParams.get('id_token');
-    if (fromQuery) return fromQuery;
+  // Get the ID token from the Firebase user
+  const idToken = await result.user.getIdToken();
 
-    return null;
-  } catch {
-    return null;
+  if (!idToken) {
+    throw new Error('Failed to get ID token from Google Sign-In');
   }
+
+  return idToken;
 }
 
 /**
  * Check if we're returning from a Google OAuth redirect.
- * Call this on app startup to handle the redirect callback.
+ * Not used in popup flow but kept for potential redirect fallback.
  */
 export function handleOAuthCallback(): string | null {
-  const url = window.location.href;
-  const token = extractToken(url);
-  if (token) {
-    // Clean up the URL
-    const cleanUrl = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, '', cleanUrl);
-    return token;
-  }
   return null;
 }
 
@@ -235,15 +116,17 @@ export const authService = {
   },
 
   /**
-   * Google social login using Firebase Identity Toolkit createAuthUri.
+   * Google social login using Firebase Auth SDK signInWithPopup.
    *
-   * 1. Call Firebase API → get Google OAuth URL with our domain as redirect_uri
-   * 2. Open popup to Google auth
-   * 3. Google redirects back to our domain with id_token
-   * 4. Send id_token to backend for verification
+   * Flow:
+   * 1. signInWithPopup opens Google auth in a popup
+   * 2. Google redirects to firebaseapp.com/__/auth/handler (alive and working)
+   * 3. Firebase processes the credential
+   * 4. Result returned to parent window via popup relay
+   * 5. We extract the ID token and send to our backend
    */
   async socialLogin(provider: 'google'): Promise<AuthServiceResponse> {
-    const idToken = await googleSignInPopup();
+    const idToken = await firebaseGoogleSignIn();
 
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
       idToken,
@@ -253,7 +136,7 @@ export const authService = {
   },
 
   /**
-   * Complete social login with a pre-obtained id_token (from redirect callback).
+   * Complete social login with a pre-obtained id_token.
    */
   async socialLoginWithToken(idToken: string): Promise<AuthServiceResponse> {
     const response = await api.post<{ data: AuthServiceResponse }>('/auth/social', {
