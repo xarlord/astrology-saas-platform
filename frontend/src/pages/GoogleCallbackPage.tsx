@@ -2,55 +2,64 @@
  * Google OAuth Callback Page
  *
  * Handles the redirect from Google after OAuth authentication.
- * Extracts the id_token from the URL hash and completes the login.
+ * Google OAuth2 implicit flow puts id_token in the URL hash fragment.
+ * This page extracts it and sends it to the opener window via postMessage.
+ *
+ * URL format after Google redirect:
+ * /auth/google-callback#access_token=...&id_token=...&token_type=Bearer&expires_in=3599
  */
 
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
-import { handleOAuthCallback } from '../services/auth.service';
 
 export default function GoogleCallbackPage() {
-  const navigate = useNavigate();
-  const socialLoginWithToken = useAuthStore((s) => s.socialLoginWithToken);
-  const setLoading = useAuthStore((s) => s.setLoading);
   const processed = useRef(false);
 
   useEffect(() => {
     if (processed.current) return;
     processed.current = true;
 
-    const idToken = handleOAuthCallback();
+    // Extract id_token from URL hash fragment
+    const hash = window.location.hash.substring(1); // Remove leading #
+    const params = new URLSearchParams(hash);
+
+    const idToken = params.get('id_token');
+    const error = params.get('error');
+
+    if (error) {
+      // Send error to opener
+      if (window.opener) {
+        window.opener.postMessage(
+          { type: 'google-oauth-error', error: error },
+          window.location.origin,
+        );
+      }
+      // Close popup
+      window.close();
+      return;
+    }
 
     if (idToken) {
-      setLoading(true);
-      // Import authService directly to use socialLoginWithToken
-      import('../services/auth.service').then(({ authService }) => {
-        authService.socialLoginWithToken(idToken)
-          .then((response) => {
-            const { user, accessToken } = response;
-            useAuthStore.setState({
-              user,
-              token: accessToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-            navigate('/dashboard', { replace: true });
-          })
-          .catch((err) => {
-            console.error('Google login failed:', err);
-            useAuthStore.setState({
-              error: err instanceof Error ? err.message : 'Google login failed',
-              isLoading: false,
-            });
-            navigate('/login', { replace: true });
-          });
-      });
-    } else {
-      // No token found — redirect to login
-      navigate('/login', { replace: true });
+      // Send id_token to the opener window
+      if (window.opener) {
+        window.opener.postMessage(
+          { type: 'google-oauth-success', idToken },
+          window.location.origin,
+        );
+      }
+      // Close popup
+      window.close();
+      return;
     }
-  }, [navigate, socialLoginWithToken, setLoading]);
+
+    // No token and no error — something went wrong
+    if (window.opener) {
+      window.opener.postMessage(
+        { type: 'google-oauth-error', error: 'No ID token received from Google' },
+        window.location.origin,
+      );
+    }
+    window.close();
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cosmic-page">
