@@ -4,15 +4,6 @@ primary_region = "ams"
 [build]
   dockerfile = "Dockerfile.fly"
 
-[build.args]
-  VITE_FIREBASE_API_KEY = "AIzaSyBvdiU2UDvmWbrbbYDL_ijKGjqDnYls0Ig"
-  VITE_FIREBASE_AUTH_DOMAIN = "astroverse-4ca2e.firebaseapp.com"
-  VITE_FIREBASE_PROJECT_ID = "astroverse-4ca2e"
-  VITE_FIREBASE_STORAGE_BUCKET = "astroverse-4ca2e.firebasestorage.app"
-  VITE_FIREBASE_MESSAGING_SENDER_ID = "910871693432"
-  VITE_FIREBASE_APP_ID = "1:910871693432:web:c6af97b6d1d4eb5a73fe7a"
-  VITE_GOOGLE_CLIENT_ID = "867374800592-se2qmbmoi4n8nc9kjispnnk7cijt2nnk.apps.googleusercontent.com"
-
 [env]
   NODE_ENV = "production"
   PORT = "8080"

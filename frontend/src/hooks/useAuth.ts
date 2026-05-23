@@ -1,8 +1,5 @@
 /**
- * useAuth Hook
- *
- * Custom hook for authentication methods and state
- * Wraps the auth store for easier use in components
+ * useAuth Hook — Email/password only
  */
 
 import { useCallback } from 'react';
@@ -19,7 +16,6 @@ export const useAuth = () => {
     login,
     register,
     logout,
-    socialLogin,
     loadUser,
     updateProfile,
     updatePreferences,
@@ -27,7 +23,6 @@ export const useAuth = () => {
     setLoading,
   } = useAuthStore();
 
-  // Login wrapper with error handling
   const handleLogin = useCallback(
     async (credentials: LoginCredentials) => {
       await login(credentials);
@@ -35,7 +30,6 @@ export const useAuth = () => {
     [login],
   );
 
-  // Register wrapper with error handling
   const handleRegister = useCallback(
     async (data: RegisterData) => {
       await register(data);
@@ -43,12 +37,10 @@ export const useAuth = () => {
     [register],
   );
 
-  // Logout wrapper
   const handleLogout = useCallback(async () => {
     await logout();
   }, [logout]);
 
-  // Update profile wrapper
   const handleUpdateProfile = useCallback(
     async (data: { name?: string; avatar_url?: string; timezone?: string }) => {
       try {
@@ -61,7 +53,6 @@ export const useAuth = () => {
     [updateProfile],
   );
 
-  // Update preferences wrapper
   const handleUpdatePreferences = useCallback(
     async (preferences: Partial<User['preferences']>) => {
       try {
@@ -74,7 +65,6 @@ export const useAuth = () => {
     [updatePreferences],
   );
 
-  // Check if user has specific plan
   const hasPlan = useCallback(
     (plan: 'free' | 'basic' | 'premium') => {
       return user?.plan === plan;
@@ -82,7 +72,6 @@ export const useAuth = () => {
     [user],
   );
 
-  // Check if user has at least specific plan
   const hasAtLeastPlan = useCallback(
     (plan: 'free' | 'basic' | 'premium') => {
       const planHierarchy = { free: 0, basic: 1, premium: 2 };
@@ -94,25 +83,21 @@ export const useAuth = () => {
   );
 
   return {
-    // State
     user,
     token,
     isAuthenticated,
     isLoading,
     error,
 
-    // Methods
     login: handleLogin,
     register: handleRegister,
     logout: handleLogout,
-    socialLogin,
     loadUser,
     updateProfile: handleUpdateProfile,
     updatePreferences: handleUpdatePreferences,
     clearError,
     setLoading,
 
-    // Computed
     hasPlan,
     hasAtLeastPlan,
   };

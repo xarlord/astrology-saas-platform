@@ -1,8 +1,5 @@
 /**
- * Authentication Store
- *
- * Manages user authentication state and actions
- * Persists to localStorage for session persistence
+ * Authentication Store — Email/password only
  */
 
 import { create } from 'zustand';
@@ -12,22 +9,18 @@ import { getAccessToken } from '../utils/tokenStorage';
 import type { User, LoginCredentials, RegisterData } from '../services/api.types';
 
 interface AuthState {
-  // State
   user: User | null;
-  token: string | null; // In-memory only (not persisted)
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
 
-  // Actions
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   loadUser: () => Promise<void>;
   updateProfile: (data: { name?: string; avatar_url?: string; timezone?: string }) => Promise<void>;
   updatePreferences: (preferences: Partial<User['preferences']>) => Promise<void>;
-  socialLogin: (provider: 'google') => Promise<void>;
-  socialLoginWithToken: (idToken: string) => Promise<void>;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
 }
@@ -36,22 +29,17 @@ export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set, _get) => ({
-        // Initial state
         user: null,
         token: null,
         isAuthenticated: false,
         isLoading: false,
         error: null,
 
-        // Login action
         login: async (credentials: LoginCredentials) => {
           set({ isLoading: true, error: null });
           try {
             const response = await authService.login(credentials);
             const { user, accessToken } = response;
-
-            // Store only access token in-memory; refresh token handled via httpOnly cookie
-
             set({
               user,
               token: accessToken,
@@ -68,15 +56,11 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Register action
         register: async (data: RegisterData) => {
           set({ isLoading: true, error: null });
           try {
             const response = await authService.register(data);
             const { user, accessToken } = response;
-
-            // Store only access token in-memory; refresh token handled via httpOnly cookie
-
             set({
               user,
               token: accessToken,
@@ -93,14 +77,12 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Logout action
         logout: async () => {
           try {
             await authService.logout();
           } catch (error) {
             console.error('Logout error:', error);
           } finally {
-            // Clear state
             set({
               user: null,
               token: null,
@@ -110,7 +92,6 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Load user from token
         loadUser: async () => {
           const token = getAccessToken();
           if (!token) {
@@ -128,7 +109,6 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
             });
           } catch {
-            // Clear invalid tokens via Zustand persist
             set({
               user: null,
               token: null,
@@ -138,7 +118,6 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Update profile
         updateProfile: async (data) => {
           set({ isLoading: true, error: null });
           try {
@@ -156,7 +135,6 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Update preferences
         updatePreferences: async (preferences) => {
           set({ isLoading: true, error: null });
           try {
@@ -174,54 +152,7 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        // Social login (Google) — popup with redirect fallback
-        socialLogin: async (provider: 'google') => {
-          set({ isLoading: true, error: null });
-          try {
-            const response = await authService.socialLogin(provider);
-            const { user, accessToken } = response;
-            set({
-              user,
-              token: accessToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-          } catch (error: unknown) {
-            set({
-              error: error instanceof Error ? error.message : 'Social login failed',
-              isLoading: false,
-              isAuthenticated: false,
-            });
-            throw error;
-          }
-        },
-
-        // Social login with a pre-obtained ID token (from OAuth redirect callback)
-        socialLoginWithToken: async (idToken: string) => {
-          set({ isLoading: true, error: null });
-          try {
-            const response = await authService.socialLoginWithToken(idToken);
-            const { user, accessToken } = response;
-            set({
-              user,
-              token: accessToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-          } catch (error: unknown) {
-            set({
-              error: error instanceof Error ? error.message : 'Social login failed',
-              isLoading: false,
-              isAuthenticated: false,
-            });
-            throw error;
-          }
-        },
-
-        // Clear error
         clearError: () => set({ error: null }),
-
-        // Set loading state
         setLoading: (loading: boolean) => set({ isLoading: loading }),
       }),
       {
@@ -236,7 +167,7 @@ export const useAuthStore = create<AuthState>()(
   ),
 );
 
-// Selector hooks for optimized re-renders
+// Selector hooks
 export const useUser = () => useAuthStore((state) => state.user);
 export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);

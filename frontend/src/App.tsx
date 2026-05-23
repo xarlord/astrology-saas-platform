@@ -6,21 +6,17 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Components
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-// Eager-loaded pages (landing, auth — needed immediately)
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import StaticPage from './pages/StaticPage';
-import GoogleCallbackPage from './pages/GoogleCallbackPage';
 
-// Lazy-loaded pages (code-split into separate chunks)
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const ChartCreatePage = lazy(() => import('./pages/ChartCreatePage'));
 const ChartViewPage = lazy(() => import('./pages/ChartViewPage'));
@@ -48,21 +44,17 @@ const PageLoader = () => (
   </div>
 );
 
-// Create React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
     },
   },
 });
 
 function App() {
-  // Popup flow: socialLogin() returns directly with user data.
-  // No redirect result check needed.
-
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-cosmic-page">
@@ -70,175 +62,96 @@ function App() {
         <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              {/* Public routes (eager-loaded) */}
+              {/* Public routes */}
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
-              {/* Google OAuth callback — handles redirect from Google */}
-              <Route path="/auth/google-callback" element={<GoogleCallbackPage />} />
 
               {/* Redirects */}
               <Route path="/charts" element={<Navigate to="/dashboard" replace />} />
               <Route path="/charts/natal" element={<Navigate to="/charts/new" replace />} />
               <Route path="/compatibility" element={<Navigate to="/synastry" replace />} />
 
-              {/* Protected routes (lazy-loaded) */}
+              {/* Protected routes */}
               <Route
                 path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><DashboardPage /></ProtectedRoute>}
               />
               <Route
                 path="/charts/new"
-                element={
-                  <ProtectedRoute>
-                    <ChartCreatePage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><ChartCreatePage /></ProtectedRoute>}
               />
               <Route
                 path="/charts/:id"
-                element={
-                  <ProtectedRoute>
-                    <ChartViewPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><ChartViewPage /></ProtectedRoute>}
               />
               <Route
                 path="/analysis/:chartId"
-                element={
-                  <ProtectedRoute>
-                    <AnalysisPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><AnalysisPage /></ProtectedRoute>}
               />
               <Route
                 path="/transits"
-                element={
-                  <ProtectedRoute>
-                    <TransitPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><TransitPage /></ProtectedRoute>}
               />
               <Route
                 path="/transits/today"
-                element={
-                  <ProtectedRoute>
-                    <TodayTransitsPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><TodayTransitsPage /></ProtectedRoute>}
               />
               <Route
                 path="/forecast"
-                element={
-                  <ProtectedRoute>
-                    <ForecastPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><ForecastPage /></ProtectedRoute>}
               />
               <Route
                 path="/synastry"
-                element={
-                  <ProtectedRoute>
-                    <SynastryPageWrapper />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><SynastryPageWrapper /></ProtectedRoute>}
               />
               <Route
                 path="/moon-calendar"
-                element={
-                  <ProtectedRoute>
-                    <MoonCalendarPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><MoonCalendarPage /></ProtectedRoute>}
               />
               <Route
                 path="/retrograde"
-                element={
-                  <ProtectedRoute>
-                    <RetrogradePage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><RetrogradePage /></ProtectedRoute>}
               />
               <Route
                 path="/ephemeris"
-                element={
-                  <ProtectedRoute>
-                    <EphemerisPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><EphemerisPage /></ProtectedRoute>}
               />
               <Route
                 path="/learn"
-                element={
-                  <ProtectedRoute>
-                    <LearnPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><LearnPage /></ProtectedRoute>}
               />
               <Route
                 path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <SettingsPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><SettingsPage /></ProtectedRoute>}
               />
               <Route
                 path="/subscription"
-                element={
-                  <ProtectedRoute>
-                    <SubscriptionPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>}
               />
               <Route
                 path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
               />
               <Route
                 path="/solar-returns"
-                element={
-                  <ProtectedRoute>
-                    <SolarReturnsPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><SolarReturnsPage /></ProtectedRoute>}
               />
               <Route
                 path="/solar-returns/:year"
-                element={
-                  <ProtectedRoute>
-                    <SolarReturnsPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><SolarReturnsPage /></ProtectedRoute>}
               />
               <Route
                 path="/calendar"
-                element={
-                  <ProtectedRoute>
-                    <CalendarPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><CalendarPage /></ProtectedRoute>}
               />
               <Route
                 path="/lunar-returns"
-                element={
-                  <ProtectedRoute>
-                    <LunarReturnsPage />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute><LunarReturnsPage /></ProtectedRoute>}
               />
 
-              {/* Static pages (eager-loaded — lightweight) */}
+              {/* Static pages */}
               <Route path="/about" element={<StaticPage pageKey="about" />} />
               <Route path="/features" element={<StaticPage pageKey="features" />} />
               <Route path="/pricing" element={<StaticPage pageKey="pricing" />} />

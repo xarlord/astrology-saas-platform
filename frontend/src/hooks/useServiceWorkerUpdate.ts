@@ -49,8 +49,18 @@ export function useServiceWorkerUpdate(): UseServiceWorkerUpdateResult {
       }
     });
 
+    // Also listen for the custom 'sw-updated' event dispatched on controllerchange
+    // This replaces the old auto-reload that killed Firebase Auth popups
+    const handleSwUpdated = () => {
+      if (mounted) {
+        setNeedRefresh(true);
+      }
+    };
+    window.addEventListener('sw-updated', handleSwUpdated);
+
     return () => {
       mounted = false;
+      window.removeEventListener('sw-updated', handleSwUpdated);
     };
   }, []);
 

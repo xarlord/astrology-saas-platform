@@ -57,9 +57,15 @@ export async function registerSW(
     });
 
     // Listen for controller change (new service worker activated)
+    // IMPORTANT: Do NOT auto-reload here — a hard reload kills any open
+    // Firebase Auth popup, causing the dreaded "popup-closed-by-user" error.
+    // Instead, show a banner letting the user reload when it's safe.
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      // Reload the page to use the new service worker
-      window.location.reload();
+      // Set a flag that the UI can check to show an update banner
+      // The user should reload AFTER any auth flow completes
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('sw-updated', { detail: { needsReload: true } }));
+      }
     });
 
     // Listen for offline/online events

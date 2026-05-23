@@ -189,7 +189,10 @@ if (sentry.isEnabled) {
 // ============================================
 
 // Only start server if this file is run directly (not when imported by tests)
-if (require.main === module) {
+// Handles both CJS (require.main === module) and tsx ESM (process.argv check)
+const isMainModule = (typeof require !== 'undefined' && require.main === module)
+  || (typeof require !== 'undefined' && require.main === undefined && process.argv[1]?.includes('server'));
+if (isMainModule) {
   const server = app.listen(PORT, () => {
     logger.info(`🚀 Server is running on port ${PORT}`);
     logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);

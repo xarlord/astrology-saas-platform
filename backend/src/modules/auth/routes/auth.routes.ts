@@ -240,17 +240,4 @@ router.post(
   }),
 );
 
-/**
- * @route   POST /api/auth/social
- * @desc    Social login (Google via Firebase ID token)
- * @access  Public
- */
-router.post(
-  '/social',
-  authRateLimiter,
-  asyncHandler(async (req, res) => {
-    await AuthController.socialLogin(req, res);
-  }),
-);
-
 export { router };

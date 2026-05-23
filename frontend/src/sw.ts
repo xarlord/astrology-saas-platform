@@ -21,7 +21,9 @@ declare const self: ServiceWorkerGlobalScope;
 // CRITICAL: Immediately activate new service worker without waiting
 // This ensures users always get the latest code (auth fixes, etc.)
 (self as any).skipWaiting();
-(self as any).clients.claim();
+// NOTE: clients.claim() MUST be inside the 'activate' event, NOT top-level.
+// Calling it at top-level throws: "Only the active worker can claim clients"
+// because the SW hasn't reached the 'activated' state yet.
 
 // Precache static assets
 precacheAndRoute(self.__WB_MANIFEST);
@@ -207,11 +209,15 @@ setCatchHandler(({ event }) =>
   }),
 );
 
-// Activate event - clean up old caches AND delete ALL workbox precache caches
+// Activate event - claim clients + clean up old caches AND delete ALL workbox precache caches
 // to force fresh downloads on every deploy
 (self as any).addEventListener('activate', (event: any) => {
   event.waitUntil(
     (async () => {
+      // Claim all clients immediately so the new SW controls existing pages
+      // This MUST be inside 'activate' — calling at top-level throws InvalidStateError
+      await (self as any).clients.claim();
+
       const cacheNames = await caches.keys();
       // Delete ALL old caches (including workbox-precache-v2) to ensure
       // no stale JS bundles survive across deploys

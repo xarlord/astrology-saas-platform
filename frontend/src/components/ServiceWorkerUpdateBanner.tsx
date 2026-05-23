@@ -10,11 +10,13 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
   const { needRefresh, offlineReady, update, skipWaiting } = useServiceWorkerUpdate();
 
   const handleRefresh = () => {
-    skipWaiting();
+    // New SW already activated — just reload the page
+    window.location.reload();
   };
 
   const handleReload = () => {
-    update();
+    // Dismiss — user will see banner again next visit
+    // No-op: banner stays until refresh
   };
 
   if (offlineReady) {

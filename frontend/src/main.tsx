@@ -26,6 +26,7 @@ if (import.meta.env.PROD) {
   void import('./hooks/useServiceWorkerUpdate').then(() => {
     // Service worker registration initialized
   });
+
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
