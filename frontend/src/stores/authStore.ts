@@ -93,10 +93,26 @@ export const useAuthStore = create<AuthState>()(
         },
 
         loadUser: async () => {
-          const token = getAccessToken();
+          // First try: use existing token
+          let token = getAccessToken();
+          
+          // If no token but user was authenticated (persisted state), try refresh
           if (!token) {
-            set({ isAuthenticated: false });
-            return;
+            try {
+              const { data } = await (await import('../services/api')).default.post<{ data: { accessToken: string } }>('/v1/auth/refresh');
+              token = data.data.accessToken;
+              // Update store with refreshed token
+              set({ token, isAuthenticated: true });
+            } catch {
+              // Refresh failed — clear auth
+              set({
+                user: null,
+                token: null,
+                isAuthenticated: false,
+                isLoading: false,
+              });
+              return;
+            }
           }
 
           set({ isLoading: true, error: null });
@@ -159,6 +175,7 @@ export const useAuthStore = create<AuthState>()(
         name: 'auth-storage',
         partialize: (state) => ({
           user: state.user,
+          token: state.token,
           isAuthenticated: state.isAuthenticated,
         }),
       },

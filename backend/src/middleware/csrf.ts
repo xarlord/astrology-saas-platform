@@ -94,6 +94,12 @@ export const csrfMiddleware = (req: Request, res: Response, next: NextFunction):
     return;
   }
 
+  // Skip CSRF for auth refresh endpoint — uses httpOnly cookie, not form data
+  if (req.path === '/v1/auth/refresh' || req.path === '/auth/refresh' || req.path.endsWith('/auth/refresh')) {
+    next();
+    return;
+  }
+
   try {
     const isValid = validateRequest(req);
     if (!isValid) {

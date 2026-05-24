@@ -8,7 +8,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  testMatch: /13-full-user-flow-console-monitored\.spec\.ts$/,
+  testMatch: /1[34]-.*\.spec\.ts$/,
   fullyParallel: false,
   retries: 1,
   workers: 1,
