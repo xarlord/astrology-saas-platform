@@ -161,8 +161,3 @@ declare module 'resend' {
   export = Resend;
 }
 
-declare module 'firebase-admin' {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const admin: any;
-  export default admin;
-}
