@@ -1,1 +1,4 @@
 frontend/vite.config.ts.timestamp-*.mjs
+frontend/test-results-prod.json
+*.mjs.timestamp-*
+vite.config.ts.timestamp-*.mjs

@@ -92,7 +92,7 @@ export function BirthDataForm({
   const createChartMutation = useCreateChart();
   const calculateChartMutation = useCalculateChart();
 
-  // Handle geocoding (place to coordinates) — Nominatim with proper headers
+  // Handle geocoding — routed through backend proxy (avoids CORS/rate-limit issues with direct Nominatim calls)
   const searchPlace = useCallback(async (query: string) => {
     if (!query || query.length < 2) {
       setPlaceSuggestions([]);
@@ -101,14 +101,9 @@ export function BirthDataForm({
     }
 
     try {
+      const apiBase = import.meta.env.VITE_API_URL ?? '';
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`,
-        {
-          headers: {
-            'Accept-Language': 'en',
-            'User-Agent': 'AstroVerse/1.0',
-          },
-        },
+        `${apiBase}/api/v1/location/autocomplete?input=${encodeURIComponent(query)}`,
       );
 
       if (!response.ok) {
@@ -116,10 +111,19 @@ export function BirthDataForm({
         return;
       }
 
-      const data: { display_name: string; lat: string; lon: string }[] = await response.json();
+      const result = await response.json() as {
+        predictions: { description: string; lat?: number; lon?: number; mainText?: string; secondaryText?: string }[];
+      };
 
-      if (data.length > 0) {
-        setPlaceSuggestions(data);
+      const predictions = result.predictions ?? [];
+      if (predictions.length > 0) {
+        // Map backend prediction format to the component's expected format
+        const mapped = predictions.map((p) => ({
+          display_name: p.description,
+          lat: String(p.lat ?? 0),
+          lon: String(p.lon ?? 0),
+        }));
+        setPlaceSuggestions(mapped);
         setShowPlaceSearch(true);
       } else {
         setPlaceSuggestions([]);

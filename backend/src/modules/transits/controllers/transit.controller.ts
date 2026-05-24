@@ -281,7 +281,31 @@ export async function getTodayTransits(req: AuthenticatedRequest, res: Response)
   if (!userId) {
     throw new AppError('Authentication required', 401);
   }
-  const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
+
+  // Try to find a calculated chart; return empty data if user has none yet
+  const chartId = req.query.chartId as string | undefined;
+  let chart: Awaited<ReturnType<typeof findCalculatedChart>> | null = null;
+  try {
+    chart = await findCalculatedChart(userId, chartId);
+  } catch {
+    // User has no calculated chart — return empty ephemeris data
+    const today = new Date();
+    const emptyTransitPlanets = await calculateTransitPlanetsOnly(today);
+    res.status(200).json({
+      success: true,
+      data: {
+        date: today.toISOString().split('T')[0],
+        chart: null,
+        majorAspects: [],
+        moonPhase: calculateMoonPhase(
+          emptyTransitPlanets.moon?.longitude ?? 0,
+          emptyTransitPlanets.sun?.longitude ?? 0,
+        ),
+        transitPlanets: emptyTransitPlanets,
+      },
+    });
+    return;
+  }
 
   const natalPlanets = (chart.calculated_data as Record<string, unknown>).planets as TransitResult['transitPlanets'] ?? {};
   const today = new Date();
@@ -314,6 +338,26 @@ export async function getTodayTransits(req: AuthenticatedRequest, res: Response)
       transitPlanets: transitData.transitPlanets,
     },
   });
+}
+
+/**
+ * Calculate today's transit planets without requiring a natal chart.
+ * Used for the ephemeris page when user has no chart yet.
+ */
+async function calculateTransitPlanetsOnly(date: Date): Promise<TransitResult['transitPlanets']> {
+  const positions = astronomyEngine.calculatePlanetaryPositions(date, 0, 0);
+  const result: TransitResult['transitPlanets'] = {};
+  for (const [name, pos] of positions) {
+    result[name] = {
+      longitude: pos.longitude,
+      latitude: pos.latitude,
+      speed: pos.speed,
+      retrograde: pos.isRetrograde,
+      sign: pos.sign,
+      degree: pos.degree,
+    };
+  }
+  return result;
 }
 
 /**
