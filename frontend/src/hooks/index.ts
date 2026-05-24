@@ -260,7 +260,7 @@ export function useCreateChart() {
   const { createChart } = useCharts();
 
   return useMutation({
-    mutationFn: (data: BirthData) => createChart(data),
+    mutationFn: (data: Record<string, unknown>) => createChart(data as BirthData),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['charts'] });
     },

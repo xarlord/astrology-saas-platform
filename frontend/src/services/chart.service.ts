@@ -36,9 +36,18 @@ export const chartService = {
   /**
    * Create new chart
    */
-  async createChart(data: BirthData): Promise<ChartResponse> {
-    // Transform frontend BirthData to API format
-    const apiData = birthDataToAPI(data as unknown as FrontendBirthData);
+  async createChart(data: Record<string, unknown>): Promise<ChartResponse> {
+    // The form may send data already in API format (snake_case) or in frontend format (camelCase).
+    // Detect which format we have and transform accordingly.
+    let apiData: Record<string, unknown>;
+    if ('birth_date' in data || 'birth_latitude' in data) {
+      // Already in API format — pass through directly
+      apiData = data;
+    } else {
+      // Frontend camelCase format — transform to API format
+      apiData = birthDataToAPI(data as unknown as FrontendBirthData);
+    }
+
     const response = await api.post<ApiResponse<{ chart: APIChart }>>('/charts', apiData);
 
     // Transform API response back to frontend format

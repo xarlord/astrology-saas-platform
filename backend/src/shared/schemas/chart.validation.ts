@@ -25,7 +25,7 @@ export const CreateNatalChartSchema = z
     birth_latitude: z.number().min(-90).max(90, 'Invalid latitude'),
     birth_longitude: z.number().min(-180).max(180, 'Invalid longitude'),
     birth_timezone: z.string().min(1, 'Timezone is required'),
-    house_system: z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign']).optional(),
+    house_system: z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign', 'whole', 'topocentric']).optional(),
     zodiac: z.enum(['tropical', 'sidereal']).optional(),
     sidereal_mode: z.string().optional(),
   })
