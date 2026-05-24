@@ -75,7 +75,7 @@ export default function DashboardPage() {
   const { user, isAuthenticated } = useAuth();
   const { charts, fetchCharts, isLoading } = useCharts();
   const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits();
-  const { data: forecastData } = useTransitForecast('week');
+  const { data: forecastData } = useTransitForecast('week', charts.length > 0);
   const transitsLoading = transitsFetching && !todayTransits;
 
   useEffect(() => {
