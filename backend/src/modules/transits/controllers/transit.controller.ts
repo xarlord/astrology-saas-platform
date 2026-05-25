@@ -250,7 +250,7 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
 
     // Filter for significant aspects only
     const majorAspects = transitData.aspects.filter(
-      (a) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
+      (a) => ['conjunction', 'opposition', 'trine', 'square', 'sextile', 'quincunx'].includes(a.type) && a.orb <= 8
     );
 
     if (majorAspects.length > 0) {
@@ -319,7 +319,7 @@ export async function getTodayTransits(req: AuthenticatedRequest, res: Response)
 
   // Get significant aspects
   const majorAspects = transitData.aspects.filter(
-    (a) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 3
+    (a) => ['conjunction', 'opposition', 'trine', 'square', 'sextile', 'quincunx'].includes(a.type) && a.orb <= 8
   );
 
   // Calculate moon phase
@@ -394,7 +394,7 @@ export async function getTransitCalendar(req: AuthenticatedRequest, res: Respons
 
     // Get major aspects
     const majorAspects = transitData.aspects.filter(
-      (a) => ['conjunction', 'opposition', 'trine', 'square'].includes(a.type) && a.orb <= 2
+      (a) => ['conjunction', 'opposition', 'trine', 'square', 'sextile', 'quincunx'].includes(a.type) && a.orb <= 8
     );
 
     // Moon phase
@@ -518,7 +518,7 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
     );
 
     // Further filter for tighter orbs
-    const tightAspects = outerPlanetAspects.filter((a) => a.orb <= 1);
+    const tightAspects = outerPlanetAspects.filter((a) => a.orb <= 3);
 
     if (tightAspects.length > 0) {
       tightAspects.forEach((aspect) => {
