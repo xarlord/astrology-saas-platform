@@ -232,7 +232,12 @@ export type CalendarEventType =
   | 'new_moon'
   | 'full_moon'
   | 'solar_eclipse'
-  | 'lunar_eclipse';
+  | 'lunar_eclipse'
+  | 'mercury_retrograde'
+  | 'venus_retrograde'
+  | 'mars_retrograde'
+  | 'jupiter_retrograde'
+  | 'saturn_retrograde';
 
 export interface LunarPhase {
   date: string;

@@ -84,8 +84,8 @@ export function normalizeTransits(reading: TransitReading | null | undefined): N
   if (reading.transits && Array.isArray(reading.transits)) return reading.transits;
   if (reading.majorAspects && Array.isArray(reading.majorAspects)) {
     return reading.majorAspects.map((a) => ({
-      transitPlanet: a.planet1,
-      natalPlanet: a.planet2,
+      transitPlanet: a.planet2,
+      natalPlanet: a.planet1,
       aspect: a.type,
       orb: a.orb,
     }));

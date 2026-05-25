@@ -6,6 +6,7 @@
  */
 
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTodayTransits } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
@@ -67,6 +68,7 @@ interface GroupedTransits {
 }
 
 const EphemerisPage: React.FC = () => {
+  const navigate = useNavigate();
   const { data, isLoading, error, refetch } = useTodayTransits();
 
   // Group transits by transit planet
@@ -105,7 +107,16 @@ const EphemerisPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-cosmic-page p-6">
-        <h1 className="text-2xl font-bold text-white mb-4">Ephemeris</h1>
+        <div className="flex items-center mb-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
+            aria-label="Go back to dashboard"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <h1 className="text-2xl font-bold text-white">Ephemeris</h1>
+        </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse">
@@ -125,7 +136,16 @@ const EphemerisPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-cosmic-page p-6">
-        <h1 className="text-2xl font-bold text-white mb-4">Ephemeris</h1>
+        <div className="flex items-center mb-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
+            aria-label="Go back to dashboard"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <h1 className="text-2xl font-bold text-white">Ephemeris</h1>
+        </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
           <span className="material-symbols-outlined text-red-400 text-4xl mb-2 block">
             cloud_off
@@ -149,7 +169,16 @@ const EphemerisPage: React.FC = () => {
   if (!data && !data?.transitPlanets) {
     return (
       <div className="min-h-screen bg-cosmic-page p-6">
-        <h1 className="text-2xl font-bold text-white mb-4">Ephemeris</h1>
+        <div className="flex items-center mb-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
+            aria-label="Go back to dashboard"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <h1 className="text-2xl font-bold text-white">Ephemeris</h1>
+        </div>
         <div className="text-center py-12">
           <span className="material-symbols-outlined text-slate-500 text-5xl block mb-3">
             planet
@@ -170,9 +199,18 @@ const EphemerisPage: React.FC = () => {
     <div className="min-h-screen bg-cosmic-page p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Ephemeris</h1>
-          <p className="text-slate-400 text-sm">Current planetary positions and active transits</p>
+        <div className="flex items-center">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
+            aria-label="Go back to dashboard"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-1">Ephemeris</h1>
+            <p className="text-slate-400 text-sm">Current planetary positions and active transits</p>
+          </div>
         </div>
         <button
           onClick={() => void refetch()}

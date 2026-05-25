@@ -82,6 +82,51 @@ async function generateGlobalEvents(year: number, month: number): Promise<Global
     });
   });
 
+  // Get retrogrades
+  const retrogrades = await globalEventsService.getAllRetrogrades(year);
+  const monthRetrogrades = retrogrades.filter((r) => {
+    const rStart = new Date(r.startDate);
+    const rEnd = new Date(r.endDate);
+    return rStart <= endDate && rEnd >= startDate;
+  });
+
+  monthRetrogrades.forEach((r) => {
+    events.push({
+      id: `global-retrograde-${r.planet}-${r.startDate.getTime()}`,
+      user_id: null,
+      event_type: `${r.planet}_retrograde`,
+      event_date: r.startDate,
+      end_date: r.endDate,
+      event_data: {
+        sign: r.sign,
+        degree: r.degree,
+        stationDate: r.stationDate,
+      },
+      interpretation: `${capitalize(r.planet)} Retrograde in ${capitalize(r.sign)} at ${r.degree}° - Review and reconsider ${r.planet} themes`,
+    });
+  });
+
+  // Get eclipses
+  const eclipses = await globalEventsService.calculateEclipses(year);
+  const monthEclipses = eclipses.filter((e) => {
+    const eDate = new Date(e.date);
+    return eDate >= startDate && eDate <= endDate;
+  });
+
+  monthEclipses.forEach((e) => {
+    events.push({
+      id: `global-eclipse-${e.type}-${e.date.getTime()}`,
+      user_id: null,
+      event_type: e.type === 'solar' ? 'solar_eclipse' : 'lunar_eclipse',
+      event_date: e.date,
+      event_data: {
+        magnitude: e.magnitude,
+        visibility: e.visibility,
+      },
+      interpretation: `${e.type === 'solar' ? 'Solar' : 'Lunar'} Eclipse - Magnitude ${e.magnitude}. A powerful time for transformation.`,
+    });
+  });
+
   return events;
 }
 

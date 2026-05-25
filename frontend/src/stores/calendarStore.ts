@@ -75,7 +75,7 @@ export const useCalendarStore = create<CalendarState>()(
             );
 
             // Filter events based on filters
-            const filteredEvents = response.data.filter((event) => {
+            const filteredEvents = response.filter((event) => {
               if (get().filters.eventTypes.length === 0) return true;
               return event.type && get().filters.eventTypes.includes(event.type);
             });
@@ -99,7 +99,7 @@ export const useCalendarStore = create<CalendarState>()(
             const response = await calendarService.getMonthEvents(year, month, true);
 
             // Filter for lunar phase events
-            const lunarPhases: LunarPhase[] = response.data
+            const lunarPhases: LunarPhase[] = response
               .filter((event) => event.event_type === 'lunar-phase')
               .map((event) => ({
                 date: event.event_date

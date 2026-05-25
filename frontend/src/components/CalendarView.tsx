@@ -12,18 +12,18 @@ import { CalendarMonth as CalendarMonthType, AstrologicalEvent } from '../types/
 import { DailyWeatherModal } from './DailyWeatherModal';
 
 // Helper to convert API response to CalendarMonth type
-function convertToCalendarMonth(response: Awaited<ReturnType<typeof getCalendarMonth>>): CalendarMonthType {
+function convertToCalendarMonth(events: Awaited<ReturnType<typeof getCalendarMonth>>, month: number, year: number): CalendarMonthType {
   return {
-    month: response.meta.month,
-    year: response.meta.year,
-    events: response.data.map(event => ({
+    month,
+    year,
+    events: events.map(event => ({
       id: event.id,
       eventType: event.event_type as AstrologicalEvent['eventType'],
       eventName: event.event_type,
-      startDate: event.event_date?.toString() ?? '',
+      startDate: event.event_date?.toString() ?? event.start_date ?? '',
       endDate: event.end_date?.toString(),
       intensity: 5,
-      isGlobal: event.user_id === null,
+      isGlobal: !event.user_id,
       createdAt: new Date().toISOString(),
     })),
     dailyWeather: {},
@@ -53,7 +53,7 @@ export function CalendarView({
     setError(null);
     try {
       const response = await getCalendarMonth(currentYear, currentMonth);
-      const calendarMonth = convertToCalendarMonth(response);
+      const calendarMonth = convertToCalendarMonth(response, currentMonth, currentYear);
       setCalendarData(calendarMonth);
     } catch (err) {
       setError('Failed to load calendar. Please try again.');

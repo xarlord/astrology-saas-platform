@@ -68,19 +68,19 @@ class CalendarService {
     year: number,
     month: number,
     includeGlobal = true,
-  ): Promise<MonthEventsResponse> {
+  ): Promise<CalendarEvent[]> {
     return this.withRetry(async () => {
       try {
-        const response = await api.get<MonthEventsResponse>(`/calendar/month/${year}/${month}`, {
+        const response = await api.get<{ success: boolean; data: CalendarEvent[]; meta: { year: number; month: number; total: number } }>(`/calendar/month/${year}/${month}`, {
           params: { includeGlobal: includeGlobal.toString() },
           timeout: this.TIMEOUT,
         });
 
-        if (!response.data) {
+        if (!response.data?.data) {
           throw new CalendarServiceError('No data received from calendar API', 'NO_DATA');
         }
 
-        return response.data;
+        return response.data.data;
       } catch (error) {
         if (error instanceof CalendarServiceError) throw error;
 
