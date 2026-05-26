@@ -27,6 +27,8 @@ function toHouseSystemEnum(value: string | undefined): 'Placidus' | 'Koch' | 'Eq
     equal_house: 'Equal',
     whole_sign: 'WholeSign',
     wholesign: 'WholeSign',
+    whole: 'WholeSign',
+    'whole-sign': 'WholeSign',
   };
   return map[(value ?? 'placidus').toLowerCase()] ?? 'Placidus';
 }

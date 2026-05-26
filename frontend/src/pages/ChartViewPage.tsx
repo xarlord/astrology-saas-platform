@@ -138,6 +138,7 @@ export default function ChartViewPage() {
       return {
         house: i + 1,
         sign: signFromDegree(cuspVal),
+        cusp: cuspVal,
         ...dms,
       };
     });

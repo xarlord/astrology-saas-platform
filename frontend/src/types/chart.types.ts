@@ -55,6 +55,7 @@ export interface HouseCusp {
   degree: number;
   minute: number;
   second: number;
+  cusp?: number; // Ecliptic longitude 0-360
 }
 
 // Aspect between two planets
