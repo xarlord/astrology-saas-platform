@@ -61,7 +61,7 @@ const queryClient = new QueryClient({
  */
 function NatalChartRedirect() {
   const charts = useChartsStore((s) => s.charts);
-  const loadCharts = useChartsStore((s) => s.loadCharts);
+  const fetchCharts = useChartsStore((s) => s.fetchCharts);
   const isLoading = useChartsStore((s) => s.isLoading);
   const navigate = useNavigate();
   const [resolved, setResolved] = useState(false);
@@ -70,9 +70,9 @@ function NatalChartRedirect() {
   // Fetch charts on mount
   useEffect(() => {
     if (!fetched) {
-      void loadCharts().finally(() => setFetched(true));
+      void fetchCharts().finally(() => setFetched(true));
     }
-  }, [fetched, loadCharts]);
+  }, [fetched, fetchCharts]);
 
   useEffect(() => {
     if (!fetched || isLoading) return;
