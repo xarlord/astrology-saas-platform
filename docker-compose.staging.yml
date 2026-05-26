@@ -107,6 +107,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:-staging-jwt-secret-minimum-32-characters-long-for-security}
       JWT_EXPIRES_IN: 1h
       JWT_REFRESH_EXPIRES_IN: 7d
+      CSRF_SECRET: ${CSRF_SECRET:-staging-csrf-secret-minimum-32-characters-long-for-security}
       # CORS — allow nginx proxy and direct access
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://localhost:80,http://localhost:3001}
       FRONTEND_URL: http://localhost
@@ -125,7 +126,7 @@ services:
       start_period: 45s
     # Run migrations + seeds, then start the server
     command: >-
-      sh -c "npx tsx scripts/migrate.ts && npx knex seed:run --knexfile knexfile.ts --env staging && node dist/server.js"
+      sh -c "npx tsx scripts/migrate.ts && node dist/server.js"
     networks:
       - staging-network
 

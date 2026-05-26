@@ -51,11 +51,22 @@ export default function ChartViewPage() {
     const hasAspects = Array.isArray(calc.aspects);
     if (!hasPlanets || !hasHouses || !hasAspects) return { chartData: null as ChartData | null, planetList: [] as PlanetPosition[] };
 
-    // Convert planets
-    const rawPlanets = calc.planets as Record<string, PlanetData> | PlanetPosition[];
+    // Convert planets — backend may use { name } or { planet } as key, and may be array or object
+    const rawPlanets = calc.planets as Record<string, PlanetData> | PlanetPosition[] | Array<Record<string, unknown>>;
     const pList: PlanetPosition[] = Array.isArray(rawPlanets)
-      ? rawPlanets
-      : Object.entries(rawPlanets).map(([name, p]) => ({
+      ? (rawPlanets as Array<Record<string, unknown>>).map((p) => ({
+          planet: (p.planet as string) ?? (p.name as string) ?? '',
+          sign: (p.sign as string) ?? '',
+          degree: (p.degree as number) ?? 0,
+          minute: (p.minute as number) ?? 0,
+          second: (p.second as number) ?? 0,
+          house: (p.house as number) ?? 0,
+          retrograde: (p.retrograde as boolean) ?? (p.isRetrograde as boolean) ?? false,
+          latitude: (p.latitude as number) ?? 0,
+          longitude: (p.longitude as number) ?? 0,
+          speed: (p.speed as number) ?? 0,
+        }))
+      : Object.entries(rawPlanets as Record<string, PlanetData>).map(([name, p]) => ({
           planet: name,
           sign: p.sign,
           degree: p.degree,
@@ -68,13 +79,25 @@ export default function ChartViewPage() {
           speed: p.speed ?? 0,
         }));
 
-    // Convert houses: backend [{cusp, size}] → frontend [{house, sign, degree, minute, second}]
+    // Convert houses: backend [{cusp, size}] or [{number}] → frontend [{house, sign, degree, minute, second}]
     const rawHouses = calc.houses as BackendHouse[];
     const houses: HouseCusp[] = rawHouses.map((h, i) => {
-      const dms = degreeToDms(h.cusp);
+      const cuspVal = (h as unknown as Record<string, unknown>).cusp as number | undefined;
+      // If houses have no cusp values, the data is incomplete (old seed/mock data)
+      if (cuspVal === undefined || cuspVal === null || isNaN(cuspVal)) {
+        // Generate evenly-spaced fallback cusps starting from Aries
+        const fallbackCusp = i * 30;
+        const dms = degreeToDms(fallbackCusp);
+        return {
+          house: i + 1,
+          sign: signFromDegree(fallbackCusp),
+          ...dms,
+        };
+      }
+      const dms = degreeToDms(cuspVal);
       return {
         house: i + 1,
-        sign: signFromDegree(h.cusp),
+        sign: signFromDegree(cuspVal),
         ...dms,
       };
     });
