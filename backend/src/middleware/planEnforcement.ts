@@ -16,7 +16,7 @@ interface PlanLimits {
 }
 
 const PLAN_LIMITS: Record<string, PlanLimits> = {
-  free: { maxCharts: 3, maxAIMonthly: 5 },
+  free: { maxCharts: 10, maxAIMonthly: 5 },
   pro: { maxCharts: 25, maxAIMonthly: -1 },
   premium: { maxCharts: -1, maxAIMonthly: -1 },
 };
