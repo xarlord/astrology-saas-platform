@@ -4,9 +4,10 @@
  */
 
 import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } from '../components';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useChartsStore } from '../store/chartsStore';
+import { chartService } from '../services/chart.service';
 import type { ChartData, HouseCusp, Aspect, PlanetData, PlanetPosition } from '../types/chart.types';
 
 const ZODIAC_SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
@@ -32,6 +33,8 @@ export default function ChartViewPage() {
   const navigate = useNavigate();
   const { currentChart, isLoading, error, fetchChart } = useChartsStore();
   const [localError, setLocalError] = useState<string | null>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const calculatingRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!chartId) {
@@ -41,6 +44,28 @@ export default function ChartViewPage() {
 
     void fetchChart(chartId);
   }, [chartId, fetchChart]);
+
+  // Auto-calculate if chart has no calculated_data
+  useEffect(() => {
+    if (
+      !chartId ||
+      isLoading ||
+      !currentChart ||
+      currentChart.calculated_data ||
+      calculatingRef.current === chartId
+    ) return;
+
+    calculatingRef.current = chartId;
+    setIsCalculating(true);
+
+    chartService.calculateChart(chartId)
+      .then(() => fetchChart(chartId))
+      .catch((err) => {
+        console.error('Auto-calculate failed:', err);
+        setLocalError('Failed to calculate chart. Please try again.');
+      })
+      .finally(() => setIsCalculating(false));
+  }, [chartId, currentChart, isLoading, fetchChart]);
 
   // Extract and convert ChartData from the chart's calculated_data
   const { chartData, planetList } = (() => {
@@ -125,7 +150,7 @@ export default function ChartViewPage() {
   })();
 
   const displayError = localError ?? error;
-  const displayLoading = isLoading && !currentChart;
+  const displayLoading = (isLoading && !currentChart) || isCalculating;
 
   // No chart ID at all
   if (!chartId) {
