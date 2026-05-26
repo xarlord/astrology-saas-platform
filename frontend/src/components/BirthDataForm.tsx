@@ -38,10 +38,10 @@ interface BirthDataFormProps {
 }
 
 const HOUSE_SYSTEMS = [
-  { value: 'placidus', label: 'Placidus', description: 'Most commonly used house system' },
+  { value: 'whole', label: 'Whole Sign', description: 'Each sign = one house (recommended)' },
+  { value: 'placidus', label: 'Placidus', description: 'Time-based house system' },
   { value: 'koch', label: 'Koch', description: 'Popular in German-speaking countries' },
   { value: 'porphyry', label: 'Porphyry', description: 'Based on equal segments of ecliptic' },
-  { value: 'whole', label: 'Whole Sign', description: 'Each house covers entire sign' },
   { value: 'equal', label: 'Equal', description: 'Houses are equal 30° segments' },
   { value: 'topocentric', label: 'Topocentric', description: 'Based on local horizon' },
 ] as const;
@@ -72,7 +72,7 @@ export function BirthDataForm({
     longitude: initialData?.longitude,
     timezone: initialData?.timezone,
     chartName: initialData?.chartName ?? 'My Natal Chart',
-    houseSystem: initialData?.houseSystem ?? 'placidus',
+    houseSystem: initialData?.houseSystem ?? 'whole',
     zodiac: initialData?.zodiac ?? 'tropical',
     siderealMode: initialData?.siderealMode ?? 'lahiri',
   });
