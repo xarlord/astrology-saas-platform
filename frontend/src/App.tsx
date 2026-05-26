@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { useCharts } from './hooks';
+import { useChartsStore } from './store/chartsStore';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -60,19 +60,29 @@ const queryClient = new QueryClient({
  * or to the creation form if they have none.
  */
 function NatalChartRedirect() {
-  const { charts, fetchCharts, isLoading } = useCharts();
+  const charts = useChartsStore((s) => s.charts);
+  const loadCharts = useChartsStore((s) => s.loadCharts);
+  const isLoading = useChartsStore((s) => s.isLoading);
   const navigate = useNavigate();
   const [resolved, setResolved] = useState(false);
+  const [fetched, setFetched] = useState(false);
+
+  // Fetch charts on mount
+  useEffect(() => {
+    if (!fetched) {
+      void loadCharts().finally(() => setFetched(true));
+    }
+  }, [fetched, loadCharts]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (!fetched || isLoading) return;
     if (charts.length > 0) {
       navigate(`/charts/${charts[0].id}`, { replace: true });
     } else {
       navigate('/charts/new', { replace: true });
     }
     setResolved(true);
-  }, [charts, isLoading, navigate]);
+  }, [charts, fetched, isLoading, navigate]);
 
   if (resolved) return null;
   return <PageLoader />;
