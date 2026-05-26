@@ -2,13 +2,14 @@
  * Main App Component
  */
 
-import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { useCharts } from './hooks';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -54,6 +55,29 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Smart redirect: "Natal Chart" sidebar link goes to the user's first chart,
+ * or to the creation form if they have none.
+ */
+function NatalChartRedirect() {
+  const { charts, fetchCharts, isLoading } = useCharts();
+  const navigate = useNavigate();
+  const [resolved, setResolved] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (charts.length > 0) {
+      navigate(`/charts/${charts[0].id}`, { replace: true });
+    } else {
+      navigate('/charts/new', { replace: true });
+    }
+    setResolved(true);
+  }, [charts, isLoading, navigate]);
+
+  if (resolved) return null;
+  return <PageLoader />;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -70,7 +94,7 @@ function App() {
 
               {/* Redirects */}
               <Route path="/charts" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/charts/natal" element={<Navigate to="/charts/new" replace />} />
+              <Route path="/charts/natal" element={<ProtectedRoute><NatalChartRedirect /></ProtectedRoute>} />
               <Route path="/compatibility" element={<Navigate to="/synastry" replace />} />
 
               {/* Protected routes */}
