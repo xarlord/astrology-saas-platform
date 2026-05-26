@@ -190,8 +190,8 @@ export default function ChartViewPage() {
         </h1>
         {currentChart && (
           <p className="text-slate-200">
-            {currentChart.birth_data?.birth_date ?? currentChart.created_at} &middot; {currentChart.birth_data?.birth_time ?? ''} &middot;{' '}
-            {currentChart.birth_data?.birth_place_name ?? ''}
+            {currentChart.birth_date ?? currentChart.created_at} &middot; {currentChart.birth_time ?? ''} &middot;{' '}
+            {currentChart.birth_place_name ?? ''}
           </p>
         )}
       </div>

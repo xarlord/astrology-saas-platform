@@ -117,18 +117,22 @@ export interface Chart {
   user_id: string;
   name: string;
   type: ChartType;
-  birth_data: BirthData;
-  calculated_data?: CalculatedChartData;
+  // Birth data fields (flat, matching backend response)
+  birth_date: string;
+  birth_time: string;
+  birth_time_unknown: boolean;
+  birth_place_name: string;
+  birth_latitude: number;
+  birth_longitude: number;
+  birth_timezone: string;
+  house_system: string;
+  zodiac: string;
+  sidereal_mode?: string;
+  // Calculated data
+  calculated_data?: CalculatedChartData | Record<string, unknown>;
   created_at: string;
   updated_at: string;
-  // Optional camelCase aliases for component compatibility
-  birthData?: BirthData;
-  createdAt?: string;
-  updatedAt?: string;
-  // Optional extended fields used by components
-  positions?: PlanetPosition[];
-  tags?: string[];
-  element?: string;
+  deleted_at?: string;
 }
 
 export interface CalculatedChartData {

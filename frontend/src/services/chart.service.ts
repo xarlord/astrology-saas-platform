@@ -5,8 +5,6 @@
 import api from './api';
 import type { Chart, BirthData, ApiResponse } from './api.types';
 import {
-  transformChart,
-  transformCharts,
   birthDataToAPI,
   type APIChart,
   type BirthData as FrontendBirthData,
@@ -45,31 +43,24 @@ export const chartService = {
       apiData = data;
     } else {
       // Frontend camelCase format — transform to API format
-      apiData = birthDataToAPI(data as unknown as FrontendBirthData);
+      apiData = birthDataToAPI(data as unknown as FrontendBirthData) as unknown as Record<string, unknown>;
     }
 
-    const response = await api.post<ApiResponse<{ chart: APIChart }>>('/charts', apiData);
-
-    // Transform API response back to frontend format
-    const apiChart = response.data.data.chart;
-    return {
-      chart: transformChart(apiChart) as unknown as Chart,
-    };
+    const response = await api.post<ApiResponse<{ chart: Chart }>>('/charts', apiData);
+    return { chart: response.data.data.chart };
   },
 
   /**
    * Get user's charts
    */
   async getCharts(page = 1, limit = 20): Promise<ChartListResponse> {
-    const response = await api.get<ApiResponse<{ charts: APIChart[]; pagination: PaginationInfo }>>(
+    const response = await api.get<ApiResponse<{ charts: Chart[]; pagination: PaginationInfo }>>(
       '/charts',
       { params: { page, limit } },
     );
 
-    // Transform API charts to frontend format
-    const apiCharts = response.data.data.charts;
     return {
-      charts: transformCharts(apiCharts) as unknown as Chart[],
+      charts: response.data.data.charts,
       pagination: {
         ...response.data.data.pagination,
         totalPages: response.data.data.pagination.pages,
@@ -81,28 +72,17 @@ export const chartService = {
    * Get chart by ID
    */
   async getChart(id: string): Promise<ChartResponse> {
-    const response = await api.get<ApiResponse<{ chart: APIChart }>>(`/charts/${id}`);
-
-    // Transform API chart to frontend format
-    const apiChart = response.data.data.chart;
-    return {
-      chart: transformChart(apiChart) as unknown as Chart,
-    };
+    const response = await api.get<ApiResponse<{ chart: Chart }>>(`/charts/${id}`);
+    return { chart: response.data.data.chart };
   },
 
   /**
    * Update chart
    */
   async updateChart(id: string, data: Partial<BirthData>): Promise<ChartResponse> {
-    // Transform frontend BirthData to API format
     const apiData = birthDataToAPI(data as unknown as FrontendBirthData);
-    const response = await api.put<ApiResponse<{ chart: APIChart }>>(`/charts/${id}`, apiData);
-
-    // Transform API response back to frontend format
-    const apiChart = response.data.data.chart;
-    return {
-      chart: transformChart(apiChart) as unknown as Chart,
-    };
+    const response = await api.put<ApiResponse<{ chart: Chart }>>(`/charts/${id}`, apiData);
+    return { chart: response.data.data.chart };
   },
 
   /**
@@ -116,12 +96,7 @@ export const chartService = {
    * Calculate chart
    */
   async calculateChart(id: string): Promise<ChartResponse> {
-    const response = await api.post<ApiResponse<{ chart: APIChart }>>(`/charts/${id}/calculate`);
-
-    // Transform API chart to frontend format
-    const apiChart = response.data.data.chart;
-    return {
-      chart: transformChart(apiChart) as unknown as Chart,
-    };
+    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate`);
+    return { chart: response.data.data.chart };
   },
 };
