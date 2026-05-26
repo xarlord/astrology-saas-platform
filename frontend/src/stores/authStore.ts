@@ -6,6 +6,7 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { authService } from '../services';
 import { getAccessToken } from '../utils/tokenStorage';
+import { clearCsrfToken } from '../services/api';
 import type { User, LoginCredentials, RegisterData } from '../services/api.types';
 
 interface AuthState {
@@ -40,6 +41,9 @@ export const useAuthStore = create<AuthState>()(
           try {
             const response = await authService.login(credentials);
             const { user, accessToken } = response;
+            // CSRF token was generated for anonymous session; clear it
+            // so the next mutating request fetches a fresh one for the authenticated session.
+            clearCsrfToken();
             set({
               user,
               token: accessToken,
@@ -61,6 +65,8 @@ export const useAuthStore = create<AuthState>()(
           try {
             const response = await authService.register(data);
             const { user, accessToken } = response;
+            // CSRF token was generated for anonymous session; clear it
+            clearCsrfToken();
             set({
               user,
               token: accessToken,
@@ -83,6 +89,7 @@ export const useAuthStore = create<AuthState>()(
           } catch (error) {
             console.error('Logout error:', error);
           } finally {
+            clearCsrfToken();
             set({
               user: null,
               token: null,

@@ -19,6 +19,15 @@ const api = axios.create({
 // CSRF token management
 let csrfToken: string | null = null;
 
+/**
+ * Clear the cached CSRF token.
+ * Must be called after login/register because the session identifier changes
+ * from IP-based (anonymous) to user-based (authenticated).
+ */
+export function clearCsrfToken(): void {
+  csrfToken = null;
+}
+
 async function fetchCsrfToken(): Promise<string> {
   const { data } = await axios.get<{ data: { token: string } }>(`${API_URL}/api/v1/health/csrf-token`, { withCredentials: true });
   const token: string = data.data.token;

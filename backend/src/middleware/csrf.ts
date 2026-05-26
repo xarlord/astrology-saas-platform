@@ -12,13 +12,10 @@ import { logCSRFViolation } from '../utils/securityLogger';
 
 // Generate a session identifier from the request
 const getSessionIdentifier = (req: Request): string => {
-  // Use user ID if authenticated, otherwise use IP + User-Agent
-  const userId = (req as { user?: { id?: string } }).user?.id;
-  if (userId) {
-    return `user:${userId}`;
-  }
-
-  // Fallback to IP-based identifier
+  // Always use a consistent identifier based on the CSRF cookie.
+  // Do NOT vary by auth state (req.user) — the token is generated on an
+  // unauthenticated endpoint (/health/csrf-token) but validated on
+  // authenticated endpoints, which would cause a mismatch.
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
   const userAgent = req.headers['user-agent'] || '';
   return `session:${ip}:${userAgent.slice(0, 50)}`;
