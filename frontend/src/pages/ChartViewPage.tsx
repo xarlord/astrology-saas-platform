@@ -7,7 +7,6 @@ import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } f
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useChartsStore } from '../store/chartsStore';
-import { chartService } from '../services/chart.service';
 import type { ChartData, HouseCusp, Aspect, PlanetData, PlanetPosition } from '../types/chart.types';
 
 const ZODIAC_SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
@@ -31,7 +30,7 @@ interface BackendAspect { orb: number; type: string; planet1: string; planet2: s
 export default function ChartViewPage() {
   const { id: chartId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { currentChart, isLoading, error, fetchChart } = useChartsStore();
+  const { currentChart, isLoading, error, fetchChart, calculateChart } = useChartsStore();
   const [localError, setLocalError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const calculatingRef = useRef<string | null>(null);
@@ -58,14 +57,30 @@ export default function ChartViewPage() {
     calculatingRef.current = chartId;
     setIsCalculating(true);
 
-    chartService.calculateChart(chartId)
+    calculateChart(chartId)
       .then(() => fetchChart(chartId))
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error('Auto-calculate failed:', err);
-        setLocalError('Failed to calculate chart. Please try again.');
+        // Don't block — user can click Calculate button manually
+        calculatingRef.current = null;
       })
       .finally(() => setIsCalculating(false));
-  }, [chartId, currentChart, isLoading, fetchChart]);
+  }, [chartId, currentChart, isLoading, fetchChart, calculateChart]);
+
+  // Manual calculate handler
+  const handleCalculate = async () => {
+    if (!chartId) return;
+    setLocalError(null);
+    setIsCalculating(true);
+    try {
+      await calculateChart(chartId);
+      await fetchChart(chartId);
+    } catch (err) {
+      setLocalError('Failed to calculate chart. Please try again.');
+    } finally {
+      setIsCalculating(false);
+    }
+  };
 
   // Extract and convert ChartData from the chart's calculated_data
   const { chartData, planetList } = (() => {
@@ -210,18 +225,12 @@ export default function ChartViewPage() {
           <EmptyState
             icon="🧮"
             title="Chart not yet calculated"
-            description="This chart has been created but not yet calculated. Calculate it to see the full chart wheel and planetary positions."
-            actionText="Back to Dashboard"
-            onAction={() => navigate('/dashboard')}
+            description="This chart has been created but not yet calculated. Click the button below to generate the full chart wheel and planetary positions."
+            actionText="Calculate Chart"
+            onAction={handleCalculate}
+            secondaryActionText="Back to Dashboard"
+            onSecondaryAction={() => navigate('/dashboard')}
           />
-          <div className="text-center">
-            <Link
-              to={`/analysis/${chartId}`}
-              className="inline-block bg-cosmic-gradient text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-            >
-              View Analysis
-            </Link>
-          </div>
         </div>
       ) : (
         <>
