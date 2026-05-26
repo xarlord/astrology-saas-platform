@@ -261,6 +261,7 @@ export async function deleteChart(req: AuthenticatedRequest, res: Response): Pro
  */
 export async function calculateChart(req: AuthenticatedRequest, res: Response): Promise<void> {
   const { id } = req.params;
+  const force = req.query.force === 'true';
 
   const chart = await ChartModel.findByIdAndUserId(id, req.user.id);
 
@@ -268,8 +269,8 @@ export async function calculateChart(req: AuthenticatedRequest, res: Response): 
     throw new AppError('Chart not found', 404);
   }
 
-  // If already calculated, return cached data
-  if (chart.calculated_data) {
+  // If already calculated (and not forcing recalculation), return cached data
+  if (chart.calculated_data && !force) {
     res.status(200).json({
       success: true,
       data: { chart },
