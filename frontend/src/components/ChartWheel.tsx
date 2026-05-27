@@ -140,9 +140,9 @@ export function ChartWheel({
   const angleLabelRadius = outerEdge + 38;
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
-  // In traditional chart layout: ASC at the LEFT (9 o'clock), DSC at right (3 o'clock),
-  // MC near the top (12 o'clock), IC near bottom (6 o'clock).
-  const rot = 90 - ascendant;
+  // In SVG polar coords: 0°=TOP, 90°=RIGHT, 180°=BOTTOM, 270°=LEFT.
+  // ASC must map to 270° (LEFT/9-o'clock) → rot = 270 - ascendant.
+  const rot = 270 - ascendant;
 
   // Whole Sign houses: each sign = one house, starting from ASC sign.
   // ASC sign occupies house 1, next sign = house 2, etc.
