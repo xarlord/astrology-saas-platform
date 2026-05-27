@@ -239,67 +239,191 @@ export default function ChartViewPage() {
               <ChartWheelLegend />
             </div>
 
-            {/* Planetary Positions */}
+            {/* Natal Positions Table */}
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-4">Planetary Positions</h2>
-              <div className="space-y-2">
-                {planetList.map((planet) => (
-                  <div
-                    key={planet.planet}
-                    className="flex justify-between py-2 border-b border-white/15"
-                  >
-                    <span className="font-medium capitalize">{planet.planet}</span>
-                    <span className="text-slate-200">
-                      {planet.sign} {planet.degree}&deg;{planet.minute}&apos;{' '}
-                      {planet.retrograde && '(R)'}
-                    </span>
-                  </div>
-                ))}
+              <h2 className="text-xl font-bold mb-4">Natal Positions</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/20 text-slate-400">
+                      <th className="text-left py-2 px-1 w-8"></th>
+                      <th className="text-left py-2 px-1">Point</th>
+                      <th className="text-left py-2 px-1">Longitude</th>
+                      <th className="text-left py-2 px-1">Sign</th>
+                      <th className="text-right py-2 px-1">House</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(() => {
+                      const glyphs: Record<string, string> = {
+                        ascendant: '↑', midheaven: 'MC', sun: '☉', moon: '☽',
+                        mercury: '☿', venus: '♀', mars: '♂', jupiter: '♃',
+                        saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇',
+                        chiron: '⚷', northnode: '☊', southnode: '☋',
+                        partoffortune: '⊗',
+                      };
+                      const signGlyphs: Record<string, string> = {
+                        aries: '♈', taurus: '♉', gemini: '♊', cancer: '♋',
+                        leo: '♌', virgo: '♍', libra: '♎', scorpio: '♏',
+                        sagittarius: '♐', capricorn: '♑', aquarius: '♒', pisces: '♓',
+                      };
+                      const ordinal = (n: number) => {
+                        const s = ['th','st','nd','rd'];
+                        const v = n % 100;
+                        return n + (s[(v-20)%10] || s[v] || s[0]);
+                      };
+                      const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+
+                      // Build combined list: ASC first, then planets sorted by longitude, then MC
+                      type Row = { key: string; glyph: string; name: string; lon: number; sign: string; house: string };
+                      const rows: Row[] = [];
+
+                      // ASC
+                      if (chartData.ascendant !== undefined) {
+                        const ascSign = signs[Math.floor(chartData.ascendant / 30) % 12];
+                        rows.push({ key: 'asc', glyph: glyphs.ascendant, name: 'Ascendant', lon: chartData.ascendant, sign: ascSign, house: '1st' });
+                      }
+
+                      // Planets + special points sorted by longitude
+                      const allPlanets = [...planetList].sort((a, b) => (a.longitude ?? 0) - (b.longitude ?? 0));
+                      for (const p of allPlanets) {
+                        const name = p.planet.toLowerCase();
+                        rows.push({
+                          key: name,
+                          glyph: glyphs[name] || '',
+                          name: name === 'partoffortune' ? 'Part of Fortune' : name === 'northnode' ? 'North Node' : name === 'southnode' ? 'South Node' : p.planet.charAt(0).toUpperCase() + p.planet.slice(1),
+                          lon: p.longitude ?? 0,
+                          sign: p.sign,
+                          house: p.house ? ordinal(p.house) : '',
+                        });
+                      }
+
+                      // MC
+                      if (chartData.midheaven !== undefined) {
+                        const mcSign = signs[Math.floor(chartData.midheaven / 30) % 12];
+                        // Find MC house (where MC longitude falls)
+                        const mcHouse = chartData.houses.find(h => {
+                          const cuspDeg = h.cusp ?? 0;
+                          const nextCusp = chartData.houses[(h.house % 12)]?.cusp ?? (cuspDeg + 30);
+                          const mcLon = chartData.midheaven!;
+                          if (nextCusp > cuspDeg) return mcLon >= cuspDeg && mcLon < nextCusp;
+                          return mcLon >= cuspDeg || mcLon < nextCusp;
+                        });
+                        rows.push({ key: 'mc', glyph: '⊗', name: 'Midheaven', lon: chartData.midheaven, sign: mcSign, house: mcHouse ? ordinal(mcHouse.house) : '10th' });
+                      }
+
+                      return rows.map(r => {
+                        const d = r.lon % 30;
+                        const deg = Math.floor(d);
+                        const min = Math.floor((d - deg) * 60 + 0.5);
+                        return (
+                          <tr key={r.key} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="py-1.5 px-1 text-lg text-center">{r.glyph}</td>
+                            <td className={`py-1.5 px-1 font-medium ${r.key === 'asc' || r.key === 'mc' ? 'text-indigo-300' : ''}`}>{r.name}</td>
+                            <td className="py-1.5 px-1 text-slate-300">{deg}°{min}'</td>
+                            <td className="py-1.5 px-1"><span className="mr-1">{signGlyphs[r.sign?.toLowerCase()] || ''}</span>{r.sign}</td>
+                            <td className="py-1.5 px-1 text-right text-slate-400">{r.house}</td>
+                          </tr>
+                        );
+                      });
+                    })()}
+                  </tbody>
+                </table>
               </div>
 
               {/* Angles */}
               {chartData.ascendant !== undefined && (
-                <>
-                  <h2 className="text-xl font-bold mb-4 mt-6">Angles</h2>
-                  <div className="space-y-2">
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
                     {(() => {
                       const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-                      const ascDms = degreeToDms(chartData.ascendant!);
-                      const mcVal = chartData.midheaven ?? (chartData.houses.find(h => h.house === 10)?.cusp ?? 0);
-                      const mcDms = degreeToDms(mcVal);
-                      const dscDms = degreeToDms(chartData.ascendant! + 180);
-                      const icDms = degreeToDms(mcVal + 180);
+                      const mcVal = chartData.midheaven ?? 0;
                       return [
-                        { label: 'ASC', sign: signs[Math.floor(chartData.ascendant! / 30)], ...ascDms },
-                        { label: 'DSC', sign: signs[Math.floor(((chartData.ascendant! + 180) % 360) / 30)], ...dscDms },
-                        { label: 'MC',  sign: signs[Math.floor((mcVal % 360) / 30)], ...mcDms },
-                        { label: 'IC',  sign: signs[Math.floor(((mcVal + 180) % 360) / 30)], ...icDms },
-                      ].map(a => (
-                        <div key={a.label} className="flex justify-between py-2 border-b border-white/15">
-                          <span className="font-medium text-indigo-300">{a.label}</span>
-                          <span className="text-slate-200 capitalize">{a.sign} {a.degree}&deg;{a.minute}&apos;</span>
+                        { label: 'ASC (Ascendant)', lon: chartData.ascendant! },
+                        { label: 'DSC (Descendant)', lon: (chartData.ascendant! + 180) % 360 },
+                        { label: 'MC (Midheaven)', lon: mcVal },
+                        { label: 'IC (Imum Coeli)', lon: (mcVal + 180) % 360 },
+                      ].map(a => {
+                        const d = a.lon % 30;
+                        return { ...a, sign: signs[Math.floor(a.lon / 30) % 12], deg: Math.floor(d), min: Math.floor((d - Math.floor(d)) * 60 + 0.5) };
+                      }).map(a => (
+                        <div key={a.label} className="flex justify-between">
+                          <span className="text-indigo-300 font-medium">{a.label}</span>
+                          <span className="text-slate-200">{a.sign} {a.deg}°{a.min}'</span>
                         </div>
                       ));
                     })()}
                   </div>
-                </>
+                </div>
               )}
+            </div>
+          </div>
 
-              {/* House Cusps */}
-              <h2 className="text-xl font-bold mb-4 mt-6">House Cusps</h2>
-              <div className="space-y-2">
-                {chartData.houses.map((house) => (
-                  <div
-                    key={house.house}
-                    className="flex justify-between py-2 border-b border-white/15"
-                  >
-                    <span className="font-medium">House {house.house}</span>
-                    <span className="text-slate-200 capitalize">
-                      {house.sign} {house.degree}&deg;{house.minute}&apos;
-                    </span>
-                  </div>
-                ))}
+          {/* Aspects Table */}
+          {chartData.aspects.length > 0 && (
+            <div className="mt-8 bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+              <h2 className="text-xl font-bold mb-4">Natal Aspects ({chartData.aspects.length})</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/20 text-slate-400">
+                      <th className="text-left py-2 px-2">Point 1</th>
+                      <th className="text-left py-2 px-2">Aspect</th>
+                      <th className="text-left py-2 px-2">Point 2</th>
+                      <th className="text-right py-2 px-2">Orb</th>
+                      <th className="text-right py-2 px-2">Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chartData.aspects
+                      .sort((a, b) => a.orb - b.orb)
+                      .map((a, i) => {
+                        const nameMap: Record<string, string> = {
+                          ascendant: 'Ascendant', midheaven: 'Midheaven',
+                          northnode: 'North Node', southnode: 'South Node',
+                          partoffortune: 'Part of Fortune',
+                        };
+                        const p1 = nameMap[a.planet1] || a.planet1.charAt(0).toUpperCase() + a.planet1.slice(1);
+                        const p2 = nameMap[a.planet2] || a.planet2.charAt(0).toUpperCase() + a.planet2.slice(1);
+                        const typeLabel = a.applying ? 'Applying' : 'Separating';
+                        const typeColor = a.applying ? 'text-emerald-400' : 'text-amber-400';
+                        const aspectSymbols: Record<string, string> = {
+                          conjunction: '☌', opposition: '☍', trine: '△', square: '□',
+                          sextile: '⚹', quincunx: '$_[', semisextile: '⚐',
+                          semisquare: '∠', sesquiquadrate: '⋱', biquintile: '⋆',
+                        };
+                        const orbDeg = Math.floor(a.orb);
+                        const orbMin = Math.floor((a.orb - orbDeg) * 60 + 0.5);
+                        return (
+                          <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="py-1.5 px-2 font-medium">{p1}</td>
+                            <td className="py-1.5 px-2 text-slate-300">
+                              <span className="mr-1">{aspectSymbols[a.type] || ''}</span>
+                              {a.type.charAt(0).toUpperCase() + a.type.slice(1)}
+                            </td>
+                            <td className="py-1.5 px-2 font-medium">{p2}</td>
+                            <td className="py-1.5 px-2 text-right text-slate-400">{orbDeg}°{orbMin}'</td>
+                            <td className={`py-1.5 px-2 text-right ${typeColor}`}>{typeLabel}</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
               </div>
+            </div>
+          )}
+
+          {/* House Cusps */}
+          <div className="mt-8 bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-4">House Cusps (Whole Sign)</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {chartData.houses.map((house) => (
+                <div key={house.house} className="text-center p-3 bg-white/5 rounded-lg">
+                  <div className="text-xs text-slate-400 mb-1">House {house.house}</div>
+                  <div className="font-medium capitalize">{house.sign}</div>
+                  <div className="text-sm text-slate-300">{house.degree}°{house.minute}'</div>
+                </div>
+              ))}
             </div>
           </div>
 

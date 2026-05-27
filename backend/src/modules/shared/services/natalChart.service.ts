@@ -197,9 +197,6 @@ export class NatalChartService {
     let partOfFortune: number | undefined;
     if (sunPos && moonPos) {
       partOfFortune = this.normalizeAngle(ascendant + moonPos.longitude - sunPos.longitude);
-      console.log('[DEBUG] Part of Fortune:', partOfFortune, 'asc:', ascendant, 'moon:', moonPos.longitude, 'sun:', sunPos.longitude);
-    } else {
-      console.log('[DEBUG] Part of Fortune: sun or moon missing', !!sunPos, !!moonPos);
     }
 
     // Calculate elemental and modality balance

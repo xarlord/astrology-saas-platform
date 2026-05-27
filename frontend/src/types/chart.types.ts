@@ -62,7 +62,7 @@ export interface HouseCusp {
 export interface Aspect {
   planet1: string;
   planet2: string;
-  type: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile';
+  type: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semisextile' | 'semisquare' | 'sesquiquadrate' | 'biquintile';
   degree: number;
   minute: number;
   orb: number;
