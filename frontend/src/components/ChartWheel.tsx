@@ -140,15 +140,20 @@ export function ChartWheel({
   const angleLabelRadius = outerEdge + 38;
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
-  const rot = 180 - ascendant;
+  // In traditional chart layout: ASC at the LEFT (9 o'clock), DSC at right (3 o'clock),
+  // MC near the top (12 o'clock), IC near bottom (6 o'clock).
+  const rot = 90 - ascendant;
+
+  // Whole Sign houses: each sign = one house, starting from ASC sign.
+  // ASC sign occupies house 1, next sign = house 2, etc.
+  const ascSignIndex = Math.floor(ascendant / 30); // e.g. Taurus = 1
 
   // Pre-compute house midpoint angles for number placement, then spread to avoid overlap
   const houseMidAngles = data.houses.map((house, i) => {
-    const nextHouse = data.houses[(i + 1) % data.houses.length];
-    let mid = getHouseLongitude(house);
-    let next = getHouseLongitude(nextHouse);
-    if (next < mid) next += 360;
-    return toScreen((mid + next) / 2, rot);
+    // In Whole Sign, house i spans from (ascSignIndex + i) * 30 to (ascSignIndex + i + 1) * 30
+    const signStart = ((ascSignIndex + i) % 12) * 30;
+    const mid = signStart + 15; // midpoint of the sign/house
+    return toScreen(mid, rot);
   });
   const spreadHouseAngles = spreadAngles(houseMidAngles, 22); // min 22° between numbers
 
@@ -205,11 +210,12 @@ export function ChartWheel({
               stroke={isSign ? '#818CF8' : '#3d2d6b'} strokeWidth={isSign ? 1.5 : 0.5} />;
           })}
 
-          {/* House cusp lines */}
-          {data.houses.map(house => {
-            const angle = getHouseLongitude(house);
-            const outer = polar(cx, cy, zodiacInner, angle);
-            const inner = polar(cx, cy, innerCircle, angle);
+          {/* House cusp lines — in Whole Sign, each cusp is at the start of the sign */}
+          {data.houses.map((house, i) => {
+            // House 1 starts at ASC sign start (0° within sign), House 2 at next sign start, etc.
+            const signStart = ((ascSignIndex + i) % 12) * 30;
+            const outer = polar(cx, cy, zodiacInner, signStart);
+            const inner = polar(cx, cy, innerCircle, signStart);
             const isAngle = [1, 4, 7, 10].includes(house.house);
             return (
               <line key={`hl${house.house}`} x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y}
@@ -333,18 +339,17 @@ export function ChartWheel({
           );
         })}
 
-        {/* Angle labels: ASC, DSC, MC, IC — upright, at actual cusp positions */}
+        {/* Angle labels: ASC, DSC, MC, IC — upright, at their ecliptic positions */}
         {(() => {
-          const angles: { label: string; house: number; color: string }[] = [
-            { label: 'ASC', house: 1, color: '#FF6B6B' },
-            { label: 'DSC', house: 7, color: '#6B9FFF' },
-            { label: 'MC', house: 10, color: '#6BFF9F' },
-            { label: 'IC', house: 4, color: '#FFB86B' },
+          const mcLon = data.midheaven ?? (data.houses.find(h => h.house === 10) ? ((ascSignIndex + 9) % 12) * 30 : 0);
+          const angles: { label: string; lon: number; color: string }[] = [
+            { label: 'ASC', lon: ascendant, color: '#FF6B6B' },
+            { label: 'DSC', lon: (ascendant + 180) % 360, color: '#6B9FFF' },
+            { label: 'MC', lon: mcLon, color: '#6BFF9F' },
+            { label: 'IC', lon: (mcLon + 180) % 360, color: '#FFB86B' },
           ];
-          return angles.map(({ label, house, color }) => {
-            const h = data.houses.find(x => x.house === house);
-            if (!h) return null;
-            const screenAngle = toScreen(getHouseLongitude(h), rot);
+          return angles.map(({ label, lon, color }) => {
+            const screenAngle = toScreen(lon, rot);
             const pos = polar(cx, cy, angleLabelRadius, screenAngle);
             return (
               <text key={`a-${label}`} x={pos.x} y={pos.y}
