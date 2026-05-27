@@ -368,6 +368,9 @@ export class NatalChartService {
       }
     }
 
+    // Sort by orb (tightest first = strongest aspects)
+    aspects.sort((a, b) => (a.orb ?? 0) - (b.orb ?? 0));
+
     return aspects;
   }
 
