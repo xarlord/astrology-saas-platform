@@ -127,7 +127,7 @@ export function ChartWheel({
         <h3>Planets</h3>
         <ul>{planets.map(p => <li key={p.planet}>{PLANET_NAMES[p.planet] || p.planet} in {p.sign} {p.degree}°{p.minute}'{p.retrograde ? ' R' : ''}</li>)}</ul>
         <h3>Houses</h3>
-        <ul>{data.houses.map(h => <li key={h.house}>House {h.house}: {h.sign} {h.degree}°{p.minute}'</li>)}</ul>
+        <ul>{data.houses.map(h => <li key={h.house}>House {h.house}: {h.sign} {h.degree}°{h.minute}'</li>)}</ul>
       </div>
 
       <svg
