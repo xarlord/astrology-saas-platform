@@ -247,15 +247,19 @@ export function ChartWheel({
         {/* Inner circle */}
         <circle cx={cx} cy={cy} r={innerCircle} fill="none" stroke="#2a1f4e" strokeWidth="1" />
 
-        {/* Aspect lines */}
+        {/* Aspect lines — extend from planet positions to inner circle connections */}
         {data.aspects.map((aspect, idx) => {
           const p1 = planets.find(p => p.planet === aspect.planet1);
           const p2 = planets.find(p => p.planet === aspect.planet2);
           if (!p1 || !p2) return null;
           const scr1 = toScreen(getPlanetLongitude(p1), rot);
           const scr2 = toScreen(getPlanetLongitude(p2), rot);
-          const s = polar(cx, cy, aspectRadius, scr1);
-          const e = polar(cx, cy, aspectRadius, scr2);
+          // Inner endpoints (inside the inner circle)
+          const inner1 = polar(cx, cy, aspectRadius, scr1);
+          const inner2 = polar(cx, cy, aspectRadius, scr2);
+          // Outer endpoints at planet ring (connects to zodiac sign area)
+          const outer1 = polar(cx, cy, planetOuter, scr1);
+          const outer2 = polar(cx, cy, planetOuter, scr2);
           const color = ASPECT_COLORS[aspect.type] || '#888';
           const isDashed = ['quincunx', 'semi-sextile', 'semisextile'].includes(aspect.type);
           const w = ['conjunction', 'opposition'].includes(aspect.type) ? 1.5 : 1;
@@ -264,9 +268,16 @@ export function ChartWheel({
               onClick={interactive ? () => onAspectClick?.(aspect) : undefined}
               className={interactive ? 'cursor-pointer' : ''}
               role="img" aria-label={`${PLANET_NAMES[aspect.planet1] || aspect.planet1} ${aspect.type} ${PLANET_NAMES[aspect.planet2] || aspect.planet2}`}>
-              <line x1={s.x} y1={s.y} x2={e.x} y2={e.y}
-                stroke={color} strokeWidth={w} opacity={0.4}
+              {/* Main aspect line across the inner circle */}
+              <line x1={inner1.x} y1={inner1.y} x2={inner2.x} y2={inner2.y}
+                stroke={color} strokeWidth={w} opacity={0.5}
                 strokeDasharray={isDashed ? '4,2' : 'none'} />
+              {/* Connection line from planet 1 position down to inner circle */}
+              <line x1={outer1.x} y1={outer1.y} x2={inner1.x} y2={inner1.y}
+                stroke={color} strokeWidth={0.6} opacity={0.3} />
+              {/* Connection line from planet 2 position down to inner circle */}
+              <line x1={outer2.x} y1={outer2.y} x2={inner2.x} y2={inner2.y}
+                stroke={color} strokeWidth={0.6} opacity={0.3} />
             </g>
           );
         })}
