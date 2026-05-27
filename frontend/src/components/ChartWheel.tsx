@@ -149,7 +149,6 @@ export function ChartWheel({
   const aspectRadius = innerCircle * 0.82;
 
   const houseNumRadius = outerEdge + 20;
-  const angleLabelRadius = outerEdge + 38;
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
   const ascSignIndex = Math.floor(ascendant / 30);
@@ -247,19 +246,15 @@ export function ChartWheel({
         {/* Inner circle */}
         <circle cx={cx} cy={cy} r={innerCircle} fill="none" stroke="#2a1f4e" strokeWidth="1" />
 
-        {/* Aspect lines — extend from planet positions to inner circle connections */}
+        {/* Aspect lines — inside the inner circle */}
         {data.aspects.map((aspect, idx) => {
           const p1 = planets.find(p => p.planet === aspect.planet1);
           const p2 = planets.find(p => p.planet === aspect.planet2);
           if (!p1 || !p2) return null;
           const scr1 = toScreen(getPlanetLongitude(p1), rot);
           const scr2 = toScreen(getPlanetLongitude(p2), rot);
-          // Inner endpoints (inside the inner circle)
           const inner1 = polar(cx, cy, aspectRadius, scr1);
           const inner2 = polar(cx, cy, aspectRadius, scr2);
-          // Outer endpoints at planet ring (connects to zodiac sign area)
-          const outer1 = polar(cx, cy, planetOuter, scr1);
-          const outer2 = polar(cx, cy, planetOuter, scr2);
           const color = ASPECT_COLORS[aspect.type] || '#888';
           const isDashed = ['quincunx', 'semi-sextile', 'semisextile'].includes(aspect.type);
           const w = ['conjunction', 'opposition'].includes(aspect.type) ? 1.5 : 1;
@@ -272,12 +267,6 @@ export function ChartWheel({
               <line x1={inner1.x} y1={inner1.y} x2={inner2.x} y2={inner2.y}
                 stroke={color} strokeWidth={w} opacity={0.5}
                 strokeDasharray={isDashed ? '4,2' : 'none'} />
-              {/* Connection line from planet 1 position down to inner circle */}
-              <line x1={outer1.x} y1={outer1.y} x2={inner1.x} y2={inner1.y}
-                stroke={color} strokeWidth={0.6} opacity={0.3} />
-              {/* Connection line from planet 2 position down to inner circle */}
-              <line x1={outer2.x} y1={outer2.y} x2={inner2.x} y2={inner2.y}
-                stroke={color} strokeWidth={0.6} opacity={0.3} />
             </g>
           );
         })}
@@ -371,34 +360,55 @@ export function ChartWheel({
           );
         })}
 
-        {/* Angle labels with icons and degrees */}
+        {/* Angle labels — icons at zodiac inner level */}
         {(() => {
           const mcLon = data.midheaven ?? ((ascSignIndex + 9) % 12) * 30;
-          const angles: { key: string; label: string; lon: number; color: string }[] = [
-            { key: 'asc', label: 'ASC', lon: ascendant, color: '#FF6B6B' },
-            { key: 'dsc', label: 'DSC', lon: (ascendant + 180) % 360, color: '#6B9FFF' },
-            { key: 'mc', label: 'MC', lon: mcLon, color: '#6BFF9F' },
-            { key: 'ic', label: 'IC', lon: (mcLon + 180) % 360, color: '#FFB86B' },
+          // Use actual house data for ASC degree/minute if available
+          const ascHouse = data.houses[0];
+          const ascDeg = ascHouse?.degree ?? Math.floor(ascendant % 30);
+          const ascMin = ascHouse?.minute ?? Math.floor(((ascendant % 30) - ascDeg) * 60 + 0.5);
+          const dscLon = (ascendant + 180) % 360;
+          const dscSignIdx = Math.floor(dscLon / 30) % 12;
+          const dscDeg = Math.floor(dscLon % 30);
+          const dscMin = Math.floor(((dscLon % 30) - dscDeg) * 60 + 0.5);
+          const icLon = (mcLon + 180) % 360;
+          const mcSignIdx = Math.floor(mcLon / 30) % 12;
+          const mcDeg = Math.floor(mcLon % 30);
+          const mcMin = Math.floor(((mcLon % 30) - mcDeg) * 60 + 0.5);
+          const icSignIdx = Math.floor(icLon / 30) % 12;
+          const icDeg = Math.floor(icLon % 30);
+          const icMin = Math.floor(((icLon % 30) - icDeg) * 60 + 0.5);
+          const ascSignIdx = Math.floor(ascendant / 30) % 12;
+
+          const angles: { key: string; label: string; lon: number; deg: number; min: number; signIdx: number; color: string }[] = [
+            { key: 'asc', label: 'ASC', lon: ascendant, deg: ascDeg, min: ascMin, signIdx: ascSignIdx, color: '#FF6B6B' },
+            { key: 'dsc', label: 'DSC', lon: dscLon, deg: dscDeg, min: dscMin, signIdx: dscSignIdx, color: '#6B9FFF' },
+            { key: 'mc', label: 'MC', lon: mcLon, deg: mcDeg, min: mcMin, signIdx: mcSignIdx, color: '#6BFF9F' },
+            { key: 'ic', label: 'IC', lon: icLon, deg: icDeg, min: icMin, signIdx: icSignIdx, color: '#FFB86B' },
           ];
-          return angles.map(({ key, label, lon, color }) => {
+          // Place angle icons at zodiacInner level (same as zodiac symbols)
+          const angleIconRadius = (zodiacOuter + zodiacInner) / 2;
+          return angles.map(({ key, label, lon, deg, min, signIdx, color }) => {
             const scr = toScreen(lon, rot);
-            const pos = polar(cx, cy, angleLabelRadius, scr);
-            const signIdx = Math.floor(lon / 30) % 12;
-            const rawDeg = lon % 30;
-            const deg = Math.floor(rawDeg);
-            const min = Math.floor((rawDeg - deg) * 60 + 0.5);
+            const pos = polar(cx, cy, angleIconRadius, scr);
             const signSym = ZODIAC_SYMBOLS[signIdx] || '';
             const sym = PLANET_SYMBOLS[key] || label;
+            // Offset label radially outward from icon
+            const dx = pos.x - cx, dy = pos.y - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const nx = dx / dist, ny = dy / dist;
+            const labelX = pos.x + nx * size * 0.022;
+            const labelY = pos.y + ny * size * 0.022;
             return (
               <g key={`a-${label}`}>
-                {/* Icon circle */}
-                <circle cx={pos.x} cy={pos.y} r={size * 0.015}
-                  fill={color} stroke="#0d0a1a" strokeWidth="1" opacity={0.9} />
+                {/* Icon circle at zodiac ring level */}
+                <circle cx={pos.x} cy={pos.y} r={size * 0.02}
+                  fill={color} stroke="#0d0a1a" strokeWidth="1.5" opacity={0.95} />
                 <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.016} fill="#FFF" fontWeight="bold">{sym}</text>
-                {/* Label and degree below icon */}
-                <text x={pos.x} y={pos.y + size * 0.026} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.016} fill={color} fontWeight="bold">
+                  fontSize={size * 0.018} fill="#FFF" fontWeight="bold">{sym}</text>
+                {/* Degree label radially offset from icon */}
+                <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="central"
+                  fontSize={size * 0.014} fill={color} fontWeight="600">
                   {label} {deg}°{String(min).padStart(2, '0')}'{signSym}
                 </text>
               </g>
