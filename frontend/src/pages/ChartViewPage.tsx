@@ -156,7 +156,7 @@ export default function ChartViewPage() {
     });
 
     return {
-      chartData: { planets: pList, houses, aspects } as ChartData,
+      chartData: { planets: pList, houses, aspects, ascendant: calc.ascendant as number | undefined, midheaven: calc.midheaven as number | undefined } as ChartData,
       planetList: pList,
     };
   })();
@@ -256,6 +256,34 @@ export default function ChartViewPage() {
                   </div>
                 ))}
               </div>
+
+              {/* Angles */}
+              {chartData.ascendant !== undefined && (
+                <>
+                  <h2 className="text-xl font-bold mb-4 mt-6">Angles</h2>
+                  <div className="space-y-2">
+                    {(() => {
+                      const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+                      const ascDms = degreeToDms(chartData.ascendant!);
+                      const mcVal = chartData.midheaven ?? (chartData.houses.find(h => h.house === 10)?.cusp ?? 0);
+                      const mcDms = degreeToDms(mcVal);
+                      const dscDms = degreeToDms(chartData.ascendant! + 180);
+                      const icDms = degreeToDms(mcVal + 180);
+                      return [
+                        { label: 'ASC', sign: signs[Math.floor(chartData.ascendant! / 30)], ...ascDms },
+                        { label: 'DSC', sign: signs[Math.floor(((chartData.ascendant! + 180) % 360) / 30)], ...dscDms },
+                        { label: 'MC',  sign: signs[Math.floor((mcVal % 360) / 30)], ...mcDms },
+                        { label: 'IC',  sign: signs[Math.floor(((mcVal + 180) % 360) / 30)], ...icDms },
+                      ].map(a => (
+                        <div key={a.label} className="flex justify-between py-2 border-b border-white/15">
+                          <span className="font-medium text-indigo-300">{a.label}</span>
+                          <span className="text-slate-200 capitalize">{a.sign} {a.degree}&deg;{a.minute}&apos;</span>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                </>
+              )}
 
               {/* House Cusps */}
               <h2 className="text-xl font-bold mb-4 mt-6">House Cusps</h2>

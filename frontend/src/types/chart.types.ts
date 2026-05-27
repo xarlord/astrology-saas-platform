@@ -89,6 +89,8 @@ export interface ChartData {
   planets: PlanetPosition[] | Record<string, PlanetData>;
   houses: HouseCusp[];
   aspects: Aspect[];
+  ascendant?: number;
+  midheaven?: number;
 }
 
 // House system options
