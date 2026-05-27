@@ -12,7 +12,7 @@ import { HouseCalculationService, HouseCusps, HouseSystem } from './houseCalcula
 export interface Aspect {
   planet1: string;
   planet2: string;
-  type: 'conjunction' | 'sextile' | 'square' | 'trine' | 'opposition' | 'quincunx' | 'semisextile';
+  type: 'conjunction' | 'sextile' | 'square' | 'trine' | 'opposition' | 'quincunx' | 'semisextile' | 'semisquare' | 'sesquiquadrate' | 'biquintile';
   orb: number;
   exact: boolean;
   applying?: boolean;
@@ -72,12 +72,15 @@ export interface NatalChartInput {
 
 // Aspect orbs (allowable deviation in degrees)
 const ASPECT_ORBS: Record<string, number> = {
-  conjunction: 10,
+  conjunction: 8,
   opposition: 8,
   trine: 8,
-  square: 6,
-  sextile: 4,
+  square: 8,
+  sextile: 6,
   quincunx: 3,
+  semisquare: 2,
+  sesquiquadrate: 2,
+  biquintile: 2,
   semisextile: 2,
 };
 
@@ -86,8 +89,11 @@ const ASPECT_ANGLES: Record<string, number> = {
   conjunction: 0,
   semisextile: 30,
   sextile: 60,
+  semisquare: 45,
   square: 90,
+  sesquiquadrate: 135,
   trine: 120,
+  biquintile: 144,
   quincunx: 150,
   opposition: 180,
 };
@@ -180,8 +186,21 @@ export class NatalChartService {
     // Assign planets to houses
     this.assignPlanetsToHouses(planets, houses);
 
-    // Calculate aspects between planets
-    const aspects = this.calculateAspects(planets);
+    // Calculate aspects between planets (including ASC and MC as points)
+    const mc = this.houseCalculator.calculateMidheaven(lst);
+    const aspects = this.calculateAspects(planets, ascendant, mc);
+
+    // Calculate Part of Fortune
+    const sunPos = planets.get('sun');
+    const moonPos = planets.get('moon');
+    let partOfFortune: number | undefined;
+    if (sunPos && moonPos) {
+      // Day chart formula: ASC + Moon - Sun (night chart: ASC - Moon + Sun)
+      const isDayChart = sunPos.longitude >= ascendant || sunPos.longitude < this.normalizeAngle(ascendant + 180);
+      partOfFortune = isDayChart
+        ? this.normalizeAngle(ascendant + moonPos.longitude - sunPos.longitude)
+        : this.normalizeAngle(ascendant - moonPos.longitude + sunPos.longitude);
+    }
 
     // Calculate elemental and modality balance
     const elements = this.calculateElements(planets);
@@ -234,6 +253,7 @@ export class NatalChartService {
       modalities,
       lunarNodes,
       chiron,
+      partOfFortune,
     };
   }
 
@@ -330,16 +350,21 @@ export class NatalChartService {
   /**
    * Calculate aspects between all planets
    */
-  private calculateAspects(planets: Map<string, PlanetaryPosition>): Aspect[] {
+  private calculateAspects(planets: Map<string, PlanetaryPosition>, ascendant?: number, mc?: number): Aspect[] {
     const aspects: Aspect[] = [];
     const planetArray = Array.from(planets.entries());
 
-    for (let i = 0; i < planetArray.length; i++) {
-      for (let j = i + 1; j < planetArray.length; j++) {
-        const [name1, pos1] = planetArray[i];
-        const [name2, pos2] = planetArray[j];
+    // Build extended list including ASC and MC as aspect points
+    const allPoints: Array<[string, number]> = planetArray.map(([name, pos]) => [name, pos.longitude]);
+    if (ascendant !== undefined) allPoints.push(['Ascendant', ascendant]);
+    if (mc !== undefined) allPoints.push(['Midheaven', mc]);
 
-        const aspect = this.calculateAspect(name1, pos1.longitude, name2, pos2.longitude);
+    for (let i = 0; i < allPoints.length; i++) {
+      for (let j = i + 1; j < allPoints.length; j++) {
+        const [name1, lon1] = allPoints[i];
+        const [name2, lon2] = allPoints[j];
+
+        const aspect = this.calculateAspect(name1, lon1, name2, lon2);
         if (aspect) {
           aspects.push(aspect);
         }

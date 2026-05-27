@@ -78,6 +78,19 @@ function adaptNatalChart(chart: NatalChart): Record<string, unknown> {
     };
   }
 
+  // Add Part of Fortune if present
+  if (chart.partOfFortune !== undefined) {
+    const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    const si = Math.floor(chart.partOfFortune / 30) % 12;
+    const deg = chart.partOfFortune % 30;
+    planetsObj['partoffortune'] = {
+      longitude: chart.partOfFortune,
+      sign: signs[si].toLowerCase(),
+      degree: Math.floor(deg),
+      minute: Math.floor((deg - Math.floor(deg)) * 60),
+    };
+  }
+
   // Convert houses to the legacy array-of-objects format
   const housesArr = chart.houses.cusps.map((cusp, i) => {
     const nextCusp = chart.houses.cusps[(i + 1) % 12];

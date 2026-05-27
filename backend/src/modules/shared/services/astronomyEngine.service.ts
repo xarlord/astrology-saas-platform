@@ -185,54 +185,90 @@ export class AstronomyEngineService {
   }
   /**
    * Calculate Chiron position
-   * Chiron is a centaur object - we calculate it using orbital elements
+   * Uses J2000 orbital elements with heliocentric → geocentric conversion
    */
   calculateChiron(date: Date): ChironPosition {
     const time = astronomy.MakeTime(date);
     const jd = time.ut + 2451545.0;
-    const T = jd / 36525.0;
+    const T = jd / 36525.0; // Julian centuries from J2000.0
+
+    // Chiron orbital elements (J2000 epoch, approximate)
+    const a = 13.7196;       // Semi-major axis (AU)
+    const e = 0.3815;        // Eccentricity
+    const omega_bar = 338.96; // Longitude of perihelion (deg)
+    const L0 = 209.13;       // Mean longitude at epoch (deg)
+    const n = 360 / 50.7;    // Mean motion (deg/year) — orbital period ~50.7 years
+
+    // Mean longitude
+    const L = this.normalizeAngle(L0 + n * T * 100);
 
     // Mean anomaly
-    const M = this.normalizeAngle(224.0347 + 11.04632909 * T);
+    const M = this.normalizeAngle(L - omega_bar);
+    const M_rad = (M * Math.PI) / 180;
 
-    // Eccentricity
-    const e = 0.3815;
-
-    // Solve Kepler's equation (simplified)
-    let E = M;
-    for (let i = 0; i < 10; i++) {
-      E = M + e * (180 / Math.PI) * Math.sin((E * Math.PI) / 180);
+    // Solve Kepler's equation: E - e*sin(E) = M
+    let E_rad = M_rad;
+    for (let i = 0; i < 20; i++) {
+      E_rad = M_rad + e * Math.sin(E_rad);
     }
 
     // True anomaly
-    const v =
-      (2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan((E * Math.PI) / 360)) * 180) / Math.PI;
+    const v_rad = 2 * Math.atan2(
+      Math.sqrt(1 + e) * Math.sin(E_rad / 2),
+      Math.sqrt(1 - e) * Math.cos(E_rad / 2),
+    );
+    const v = (v_rad * 180) / Math.PI;
 
-    // Heliocentric longitude (approximate)
-    const longitude = this.normalizeAngle(v + 33.6342);
+    // Heliocentric longitude
+    const helioLon = this.normalizeAngle(v + omega_bar);
 
-    // Calculate speed (simplified - Chiron moves very slowly)
+    // Approximate geocentric correction:
+    // Earth's heliocentric longitude for the date
+    const earthL = this.normalizeAngle(100.46435 + 36000.76975 * T + 0.0003 * T * T);
+
+    // Elongation
+    const elongation = helioLon - earthL;
+
+    // Simplified geocentric longitude (project heliocentric onto ecliptic)
+    // For outer bodies, geocentric ≈ heliocentric + small correction
+    // The parallax correction is small for Chiron (distant body)
+    // But we need the correct sign and rough magnitude
+    const r = a * (1 - e * Math.cos(E_rad)); // heliocentric distance
+    const R = 1.0; // Earth's distance (approximate)
+    const sinE = Math.sin((elongation * Math.PI) / 180);
+    const correction = (R / r) * (180 / Math.PI) * Math.sin((elongation * Math.PI) / 180) * 0.5;
+    let geoLon = this.normalizeAngle(helioLon - correction);
+
+    // Calculate speed
     const prevTime = new astronomy.AstroTime(time.ut - 1);
     const prevJd = prevTime.ut + 2451545.0;
     const prevT = prevJd / 36525.0;
-    const prevM = this.normalizeAngle(224.0347 + 11.04632909 * prevT);
-    let prevE = prevM;
-    for (let i = 0; i < 10; i++) {
-      prevE = prevM + e * (180 / Math.PI) * Math.sin((prevE * Math.PI) / 180);
+    const prevL = this.normalizeAngle(L0 + n * prevT * 100);
+    const prevM = this.normalizeAngle(prevL - omega_bar);
+    let prevE_rad = (prevM * Math.PI) / 180;
+    for (let i = 0; i < 20; i++) {
+      prevE_rad = (prevM * Math.PI) / 180 + e * Math.sin(prevE_rad);
     }
-    const prevV =
-      (2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan((prevE * Math.PI) / 360)) * 180) /
-      Math.PI;
-    const prevLongitude = this.normalizeAngle(prevV + 33.6342);
+    const prevV_rad = 2 * Math.atan2(
+      Math.sqrt(1 + e) * Math.sin(prevE_rad / 2),
+      Math.sqrt(1 - e) * Math.cos(prevE_rad / 2),
+    );
+    const prevV = (prevV_rad * 180) / Math.PI;
+    const prevHelioLon = this.normalizeAngle(prevV + omega_bar);
+    const prevEarthL = this.normalizeAngle(100.46435 + 36000.76975 * prevT);
+    const prevElongation = prevHelioLon - prevEarthL;
+    const prevR = a * (1 - e * Math.cos(prevE_rad));
+    const prevCorrection = (1.0 / prevR) * (180 / Math.PI) * Math.sin((prevElongation * Math.PI) / 180) * 0.5;
+    const prevGeoLon = this.normalizeAngle(prevHelioLon - prevCorrection);
 
-    let speed = longitude - prevLongitude;
+    let speed = geoLon - prevGeoLon;
     if (speed > 180) speed -= 360;
     if (speed < -180) speed += 360;
 
-    const signPos = this.longitudeToSignPosition(longitude);
+    const signPos = this.longitudeToSignPosition(geoLon);
 
     return {
-      longitude,
+      longitude: geoLon,
       sign: signPos.sign,
       degree: signPos.degree,
       isRetrograde: speed < 0,
