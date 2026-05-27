@@ -148,8 +148,7 @@ export class NatalChartService {
     // Parse birth time or use noon
     const birthDateTime = birthTime
       ? this.parseBirthTime(birthDateObj, birthTime)
-      : new Date(birthDateObj);
-    birthDateTime.setHours(12, 0, 0, 0);
+      : (() => { const d = new Date(birthDateObj); d.setHours(12, 0, 0, 0); return d; })();
 
     // Calculate Julian Day
     const julianDay = this.astronomyEngine.calculateJulianDay(birthDateTime);
