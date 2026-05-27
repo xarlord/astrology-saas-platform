@@ -309,7 +309,21 @@ export default function ChartViewPage() {
                           if (nextCusp > cuspDeg) return mcLon >= cuspDeg && mcLon < nextCusp;
                           return mcLon >= cuspDeg || mcLon < nextCusp;
                         });
-                        rows.push({ key: 'mc', glyph: '⊗', name: 'Midheaven', lon: chartData.midheaven, sign: mcSign, house: mcHouse ? ordinal(mcHouse.house) : '10th' });
+                        rows.push({ key: 'mc', glyph: '⊗', name: 'Midheaven (MC)', lon: chartData.midheaven, sign: mcSign, house: mcHouse ? ordinal(mcHouse.house) : '10th' });
+                      }
+
+                      // DSC
+                      if (chartData.ascendant !== undefined) {
+                        const dscLon = (chartData.ascendant + 180) % 360;
+                        const dscSign = signs[Math.floor(dscLon / 30) % 12];
+                        rows.push({ key: 'dsc', glyph: '↓', name: 'Descendant (DSC)', lon: dscLon, sign: dscSign, house: '7th' });
+                      }
+
+                      // IC
+                      if (chartData.midheaven !== undefined) {
+                        const icLon = (chartData.midheaven + 180) % 360;
+                        const icSign = signs[Math.floor(icLon / 30) % 12];
+                        rows.push({ key: 'ic', glyph: '≘', name: 'Imum Coeli (IC)', lon: icLon, sign: icSign, house: '4th' });
                       }
 
                       return rows.map(r => {
@@ -319,7 +333,7 @@ export default function ChartViewPage() {
                         return (
                           <tr key={r.key} className="border-b border-white/5 hover:bg-white/5">
                             <td className="py-1.5 px-1 text-lg text-center">{r.glyph}</td>
-                            <td className={`py-1.5 px-1 font-medium ${r.key === 'asc' || r.key === 'mc' ? 'text-indigo-300' : ''}`}>{r.name}</td>
+                            <td className={`py-1.5 px-1 font-medium ${['asc','mc','dsc','ic'].includes(r.key) ? 'text-indigo-300' : ''}`}>{r.name}</td>
                             <td className="py-1.5 px-1 text-slate-300">{deg}°{min}'</td>
                             <td className="py-1.5 px-1"><span className="mr-1">{signGlyphs[r.sign?.toLowerCase()] || ''}</span>{r.sign}</td>
                             <td className="py-1.5 px-1 text-right text-slate-400">{r.house}</td>
@@ -425,6 +439,68 @@ export default function ChartViewPage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* House Connections */}
+          <div className="mt-8 bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-4">House Connections</h2>
+            {(() => {
+              // Calculate house-to-house connections based on angular distance between cusps
+              const HOUSE_ASPECTS: { deg: number; name: string; color: string; symbol: string }[] = [
+                { deg: 0,   name: 'Conjunction', color: 'text-orange-400', symbol: '☌' },
+                { deg: 60,  name: 'Sextile',    color: 'text-cyan-400',   symbol: '⚹' },
+                { deg: 90,  name: 'Square',      color: 'text-red-400',    symbol: '□' },
+                { deg: 120, name: 'Trine',       color: 'text-green-400',  symbol: '△' },
+                { deg: 180, name: 'Opposition',  color: 'text-purple-400', symbol: '☍' },
+              ];
+              const orb = 8; // degree orb for house connections
+              type Conn = { h1: number; h2: number; type: string; color: string; symbol: string };
+              const connections: Conn[] = [];
+              const cusps = chartData.houses.map(h => h.cusp ?? (h.house === 1 ? chartData.ascendant ?? 0 : h.degree + (Math.floor((chartData.ascendant ?? 0) / 30) + h.house - 1) * 30));
+
+              for (let i = 0; i < cusps.length; i++) {
+                for (let j = i + 1; j < cusps.length; j++) {
+                  const diff = Math.abs(cusps[i] - cusps[j]);
+                  const dist = Math.min(diff, 360 - diff);
+                  for (const ha of HOUSE_ASPECTS) {
+                    if (Math.abs(dist - ha.deg) <= orb) {
+                      connections.push({ h1: i + 1, h2: j + 1, type: ha.name, color: ha.color, symbol: ha.symbol });
+                      break;
+                    }
+                  }
+                }
+              }
+
+              if (connections.length === 0) {
+                return <p className="text-slate-400 text-sm">No major house connections found.</p>;
+              }
+
+              return (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-white/20 text-slate-400">
+                        <th className="text-left py-2 px-2">House</th>
+                        <th className="text-left py-2 px-2">Connection</th>
+                        <th className="text-left py-2 px-2">House</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {connections.map((c, i) => (
+                        <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="py-1.5 px-2 font-medium text-indigo-300">House {c.h1}</td>
+                          <td className={`py-1.5 px-2 ${c.color}`}>
+                            <span className="mr-1">{c.symbol}</span>
+                            {c.type}
+                          </td>
+                          <td className="py-1.5 px-2 font-medium text-indigo-300">House {c.h2}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
           </div>
 
           <div className="mt-8">

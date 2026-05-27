@@ -38,6 +38,7 @@ const PLANET_SYMBOLS: Record<string, string> = {
   sun: '☉', moon: '☽', mercury: '☿', venus: '♀', mars: '♂',
   jupiter: '♃', saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇',
   chiron: '⚷', northnode: '☊', southnode: '☋',
+  asc: '↑', dsc: '↓', mc: '⊗', ic: '≘',
 };
 const PLANET_NAMES: Record<string, string> = {
   sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
@@ -307,7 +308,9 @@ export function ChartWheel({
             const color = PLANET_COLORS_MAP[planet.planet] || '#C084FC';
             const lon = getPlanetLongitude(planet);
             const signIdx = Math.floor(lon / 30);
-            const degInSign = Math.round(lon % 30);
+            const rawDeg = lon % 30;
+            const degInSign = planet.degree ?? Math.floor(rawDeg);
+            const minInSign = planet.minute ?? Math.floor((rawDeg - Math.floor(rawDeg)) * 60 + 0.5);
             const signSym = ZODIAC_SYMBOLS[signIdx] || '';
 
             const scr = toScreen(angle, rot);
@@ -337,7 +340,7 @@ export function ChartWheel({
                 )}
                 <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="central"
                   fontSize={size * 0.013} fill="#9CA3AF" fontWeight="500">
-                  {degInSign}°{signSym}
+                  {degInSign}°{String(minInSign).padStart(2, '0')}'{signSym}
                 </text>
               </g>
             );
@@ -357,24 +360,37 @@ export function ChartWheel({
           );
         })}
 
-        {/* Angle labels */}
+        {/* Angle labels with icons and degrees */}
         {(() => {
           const mcLon = data.midheaven ?? ((ascSignIndex + 9) % 12) * 30;
-          const angles: { label: string; lon: number; color: string }[] = [
-            { label: 'ASC', lon: ascendant, color: '#FF6B6B' },
-            { label: 'DSC', lon: (ascendant + 180) % 360, color: '#6B9FFF' },
-            { label: 'MC', lon: mcLon, color: '#6BFF9F' },
-            { label: 'IC', lon: (mcLon + 180) % 360, color: '#FFB86B' },
+          const angles: { key: string; label: string; lon: number; color: string }[] = [
+            { key: 'asc', label: 'ASC', lon: ascendant, color: '#FF6B6B' },
+            { key: 'dsc', label: 'DSC', lon: (ascendant + 180) % 360, color: '#6B9FFF' },
+            { key: 'mc', label: 'MC', lon: mcLon, color: '#6BFF9F' },
+            { key: 'ic', label: 'IC', lon: (mcLon + 180) % 360, color: '#FFB86B' },
           ];
-          return angles.map(({ label, lon, color }) => {
+          return angles.map(({ key, label, lon, color }) => {
             const scr = toScreen(lon, rot);
             const pos = polar(cx, cy, angleLabelRadius, scr);
+            const signIdx = Math.floor(lon / 30) % 12;
+            const rawDeg = lon % 30;
+            const deg = Math.floor(rawDeg);
+            const min = Math.floor((rawDeg - deg) * 60 + 0.5);
+            const signSym = ZODIAC_SYMBOLS[signIdx] || '';
+            const sym = PLANET_SYMBOLS[key] || label;
             return (
-              <text key={`a-${label}`} x={pos.x} y={pos.y}
-                textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.026} fill={color} fontWeight="bold">
-                {label}
-              </text>
+              <g key={`a-${label}`}>
+                {/* Icon circle */}
+                <circle cx={pos.x} cy={pos.y} r={size * 0.015}
+                  fill={color} stroke="#0d0a1a" strokeWidth="1" opacity={0.9} />
+                <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
+                  fontSize={size * 0.016} fill="#FFF" fontWeight="bold">{sym}</text>
+                {/* Label and degree below icon */}
+                <text x={pos.x} y={pos.y + size * 0.026} textAnchor="middle" dominantBaseline="central"
+                  fontSize={size * 0.016} fill={color} fontWeight="bold">
+                  {label} {deg}°{String(min).padStart(2, '0')}'{signSym}
+                </text>
+              </g>
             );
           });
         })()}
