@@ -79,6 +79,7 @@ function adaptNatalChart(chart: NatalChart): Record<string, unknown> {
   }
 
   // Add Part of Fortune if present
+  console.log('[DEBUG] chart.partOfFortune:', chart.partOfFortune);
   if (chart.partOfFortune !== undefined) {
     const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     const si = Math.floor(chart.partOfFortune / 30) % 12;
