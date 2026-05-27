@@ -63,6 +63,7 @@ export interface NatalChartInput {
   latitude: number;
   longitude: number;
   location?: string;
+  /** IANA timezone name, e.g. "Europe/Istanbul". Used to convert local birth time to UTC. */
   timezone?: string;
   houseSystem?: HouseSystem;
   includeChiron?: boolean;
@@ -146,9 +147,17 @@ export class NatalChartService {
     const birthDateObj = typeof birthDate === 'string' ? new Date(birthDate) : birthDate;
 
     // Parse birth time or use noon
-    const birthDateTime = birthTime
-      ? this.parseBirthTime(birthDateObj, birthTime)
-      : (() => { const d = new Date(birthDateObj); d.setHours(12, 0, 0, 0); return d; })();
+    let birthDateTime: Date;
+    if (birthTime) {
+      birthDateTime = this.parseBirthTime(birthDateObj, birthTime);
+      // Convert local birth time to UTC using timezone offset
+      if (input.timezone) {
+        birthDateTime = this.localTimeToUTC(birthDateTime, input.timezone);
+      }
+    } else {
+      birthDateTime = new Date(birthDateObj);
+      birthDateTime.setUTCHours(12, 0, 0, 0);
+    }
 
     // Calculate Julian Day
     const julianDay = this.astronomyEngine.calculateJulianDay(birthDateTime);
@@ -234,8 +243,47 @@ export class NatalChartService {
   private parseBirthTime(date: Date, timeStr: string): Date {
     const [hours, minutes] = timeStr.split(':').map(Number);
     const result = new Date(date);
-    result.setHours(hours || 0, minutes || 0, 0, 0);
+    result.setUTCHours(hours || 0, minutes || 0, 0, 0);
     return result;
+  }
+
+  /**
+   * Convert a Date that has local wall-clock time in UTC fields
+   * to the correct UTC Date, using the IANA timezone for offset.
+   *
+   * E.g. birthTime "15:20" in "Europe/Istanbul" (UTC+3):
+   *   - parseBirthTime creates 1982-12-14T15:20:00Z (wrong - treated as UTC)
+   *   - This method returns 1982-12-14T12:20:00Z (correct - adjusted for UTC+3)
+   */
+  private localTimeToUTC(localDate: Date, timezone: string): Date {
+    try {
+      const y = localDate.getUTCFullYear();
+      const m = localDate.getUTCMonth();
+      const d = localDate.getUTCDate();
+      const h = localDate.getUTCHours();
+      const min = localDate.getUTCMinutes();
+
+      // Wall-clock time as UTC (e.g. 15:20 UTC)
+      const wallUTC = new Date(Date.UTC(y, m, d, h, min, 0));
+
+      // Check what this UTC moment looks like in the target timezone
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour: '2-digit', minute: '2-digit', hour12: false,
+      }).formatToParts(wallUTC);
+
+      const tzHour = parseInt(parts.find(p => p.type === 'hour')?.value ?? '0');
+      const tzMin = parseInt(parts.find(p => p.type === 'minute')?.value ?? '0');
+
+      // Offset in minutes: how far ahead the timezone is from UTC
+      // e.g. Istanbul shows 18:20 when UTC is 15:20 → offset = +180min (+3h)
+      const offsetMin = (tzHour * 60 + tzMin) - (h * 60 + min);
+
+      // True UTC = wallUTC - offset (to show 15:20 in tz, UTC must be 12:20)
+      return new Date(wallUTC.getTime() - offsetMin * 60 * 1000);
+    } catch {
+      return localDate;
+    }
   }
 
   /**
