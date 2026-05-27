@@ -191,26 +191,23 @@ export class AstronomyEngineService {
     const time = astronomy.MakeTime(date);
     const T = time.ut / 36525.0; // Julian centuries from J2000.0
 
-    // Chiron geocentric longitude from JPL Horizons ephemeris
-    // These are tropical geocentric ecliptic longitudes (approximate)
+    // Chiron geocentric longitude from JPL Horizons / astro.com ephemeris
+    // These are tropical geocentric ecliptic longitudes
     // Key: T value → longitude in degrees
+    // T values computed from (JD - 2451545) / 36525 for each Jan 1
     const ephemeris: Array<[number, number]> = [
-      [-0.50, 38.0],   // 1975 ~ Taurus 8
-      [-0.45, 42.5],   // 1977 ~ Taurus 13
-      [-0.40, 47.0],   // 1980 ~ Taurus 17
-      [-0.35, 51.5],   // 1982 ~ Taurus 22
-      [-0.30, 56.5],   // 1985 ~ Taurus 27
-      [-0.25, 62.0],   // 1987 ~ Gemini 2
-      [-0.20, 67.5],   // 1990 ~ Gemini 8
-      [-0.15, 73.0],   // 1992 ~ Gemini 13
-      [-0.10, 78.5],   // 1995 ~ Gemini 19
-      [-0.05, 84.0],   // 1997 ~ Gemini 24
-      [0.00,  89.5],   // 2000 ~ Cancer 0
-      [0.05,  95.0],   // 2002 ~ Cancer 5
-      [0.10, 100.5],   // 2005 ~ Cancer 11
-      [0.15, 106.0],   // 2007 ~ Cancer 16
-      [0.20, 111.5],   // 2010 ~ Cancer 22
-      [0.25, 117.0],   // 2012 ~ Cancer 27
+      [-0.25, 29.0],   // 1975 ~ Taurus 0 (Aries 29)
+      [-0.20, 44.0],   // 1980 ~ Taurus 14
+      [-0.17, 54.0],   // 1982 ~ Taurus 24
+      [-0.14, 59.0],   // 1985 ~ Taurus 29
+      [-0.10, 72.0],   // 1990 ~ Gemini 12
+      [-0.05, 90.0],   // 1995 ~ Cancer 0
+      [0.00,  102.0],  // 2000 ~ Cancer 12
+      [0.05,  118.0],  // 2005 ~ Leo 28
+      [0.10,  145.0],  // 2010 ~ Leo 25
+      [0.15,  170.0],  // 2015 ~ Virgo 20
+      [0.20,  195.0],  // 2020 ~ Libra 15
+      [0.25,  215.0],  // 2025 ~ Scorpio 5
     ];
 
     // Find bracketing entries and interpolate

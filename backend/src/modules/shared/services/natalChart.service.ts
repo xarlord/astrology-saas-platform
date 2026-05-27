@@ -44,6 +44,7 @@ export interface NatalChart {
     degree: number;
     isRetrograde: boolean;
   };
+  partOfFortune?: number;
 }
 
 export interface ElementalBalance {
@@ -190,16 +191,12 @@ export class NatalChartService {
     const mc = this.houseCalculator.calculateMidheaven(lst);
     const aspects = this.calculateAspects(planets, ascendant, mc);
 
-    // Calculate Part of Fortune
+    // Calculate Part of Fortune (always use day formula: ASC + Moon - Sun)
     const sunPos = planets.get('sun');
     const moonPos = planets.get('moon');
     let partOfFortune: number | undefined;
     if (sunPos && moonPos) {
-      // Day chart formula: ASC + Moon - Sun (night chart: ASC - Moon + Sun)
-      const isDayChart = sunPos.longitude >= ascendant || sunPos.longitude < this.normalizeAngle(ascendant + 180);
-      partOfFortune = isDayChart
-        ? this.normalizeAngle(ascendant + moonPos.longitude - sunPos.longitude)
-        : this.normalizeAngle(ascendant - moonPos.longitude + sunPos.longitude);
+      partOfFortune = this.normalizeAngle(ascendant + moonPos.longitude - sunPos.longitude);
     }
 
     // Calculate elemental and modality balance
