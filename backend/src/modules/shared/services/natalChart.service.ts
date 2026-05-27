@@ -192,8 +192,8 @@ export class NatalChartService {
     const aspects = this.calculateAspects(planets, ascendant, mc);
 
     // Calculate Part of Fortune (always use day formula: ASC + Moon - Sun)
-    const sunPos = planets.get('sun');
-    const moonPos = planets.get('moon');
+    const sunPos = planets.get('Sun');
+    const moonPos = planets.get('Moon');
     let partOfFortune: number | undefined;
     if (sunPos && moonPos) {
       partOfFortune = this.normalizeAngle(ascendant + moonPos.longitude - sunPos.longitude);
