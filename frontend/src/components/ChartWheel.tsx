@@ -1,16 +1,15 @@
 /**
  * Professional Natal Chart Wheel Component
  *
- * All text (zodiac symbols, planet labels, degree annotations, house numbers)
- * stays upright and never rotates with the wheel.
+ * All text stays upright — never rotates with the wheel.
  *
  * Layout (outside → inside):
- * 1. Degree tick marks + degree labels on outer edge (upright)
- * 2. Zodiac ring: 12 segments with zodiac symbols + degree annotations (upright)
- * 3. House cusp lines, house numbers (1-12) outside ring (upright)
- * 4. Planet symbols between zodiac ring and inner circle (upright, no overlap)
- * 5. Aspect lines inside inner circle
- * 6. ASC/DSC/MC/IC angle markers (upright)
+ * 1. House numbers (1-12) + angle labels (ASC/DSC/MC/IC) — outermost, upright
+ * 2. Degree tick marks + degree labels on outer edge
+ * 3. Zodiac ring: 12 colored 30° segments with zodiac symbols (upright)
+ * 4. House cusp lines extending inward
+ * 5. Planet symbols between zodiac ring and inner circle (upright, no overlap)
+ * 6. Aspect lines inside inner circle
  */
 
 import type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
@@ -74,6 +73,29 @@ function getHouseLongitude(h: HouseCusp): number {
   return (si >= 0 ? si * 30 : 0) + (h.degree ?? 0) + (h.minute ?? 0) / 60 + (h.second ?? 0) / 3600;
 }
 
+function toScreen(eclipticDeg: number, wheelRot: number): number {
+  return ((eclipticDeg + wheelRot) % 360 + 360) % 360;
+}
+
+/** Spread overlapping angles apart so labels don't collide */
+function spreadAngles(angles: number[], minGapDeg: number): number[] {
+  const result = [...angles];
+  const n = result.length;
+  for (let pass = 0; pass < 8; pass++) {
+    for (let i = 0; i < n; i++) {
+      const next = (i + 1) % n;
+      let gap = result[next] - result[i];
+      if (gap < 0) gap += 360;
+      if (gap < minGapDeg) {
+        const shift = (minGapDeg - gap) / 2;
+        result[i] = (result[i] - shift + 360) % 360;
+        result[next] = (result[next] + shift) % 360;
+      }
+    }
+  }
+  return result;
+}
+
 function resolveOverlaps(planets: PlanetPosition[], minGap: number) {
   const items = planets.map(p => ({ lon: getPlanetLongitude(p), planet: p })).sort((a, b) => a.lon - b.lon);
   const angles = items.map(i => i.lon);
@@ -93,35 +115,45 @@ function resolveOverlaps(planets: PlanetPosition[], minGap: number) {
   return items.map((item, i) => ({ angle: angles[i], planet: item.planet }));
 }
 
-/** Apply wheel rotation to an ecliptic longitude to get screen angle */
-function toScreen(eclipticDeg: number, wheelRot: number): number {
-  return (eclipticDeg + wheelRot) % 360;
-}
-
 export function ChartWheel({
   data, size = 600, interactive = true, onPlanetClick, onAspectClick,
 }: ChartWheelProps) {
   const planets = normalizePlanets(data.planets);
-  const cx = size / 2, cy = size / 2;
 
-  // Ring radii
-  const outerEdge = size * 0.46;
+  // Add padding for external labels
+  const pad = 48;
+  const totalSize = size + pad * 2;
+  const cx = totalSize / 2, cy = totalSize / 2;
+
+  // Ring radii (generous spacing between each ring)
+  const outerEdge = size * 0.43;
   const zodiacOuter = outerEdge;
-  const zodiacInner = size * 0.35;
-  const planetOuter = zodiacInner - 6;
-  const planetInner = size * 0.24;
+  const zodiacInner = size * 0.33;
+  const planetOuter = zodiacInner - 8;
+  const planetInner = size * 0.21;
   const planetMid = (planetOuter + planetInner) / 2;
-  const innerCircle = size * 0.22;
+  const innerCircle = size * 0.19;
   const aspectRadius = innerCircle * 0.82;
-  const labelRadius = outerEdge + 16;  // house numbers & angles
-  const angleLabelRadius = outerEdge + 30; // ASC/DSC/MC/IC
+
+  // External labels
+  const houseNumRadius = outerEdge + 20;
+  const angleLabelRadius = outerEdge + 38;
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
-  const rot = 180 - ascendant; // ASC → 9 o'clock
+  const rot = 180 - ascendant;
+
+  // Pre-compute house midpoint angles for number placement, then spread to avoid overlap
+  const houseMidAngles = data.houses.map((house, i) => {
+    const nextHouse = data.houses[(i + 1) % data.houses.length];
+    let mid = getHouseLongitude(house);
+    let next = getHouseLongitude(nextHouse);
+    if (next < mid) next += 360;
+    return toScreen((mid + next) / 2, rot);
+  });
+  const spreadHouseAngles = spreadAngles(houseMidAngles, 22); // min 22° between numbers
 
   return (
     <div className="flex justify-center items-center">
-      {/* Screen reader text */}
       <div className="sr-only" role="region" aria-label="Chart data">
         <h2>Natal Chart</h2>
         <h3>Planets</h3>
@@ -132,8 +164,8 @@ export function ChartWheel({
 
       <svg
         role="img" aria-label={`Natal chart wheel with ${planets.length} planets`}
-        data-testid="chart-wheel" width={size} height={size}
-        viewBox={`0 0 ${size} ${size}`} className="max-w-full h-auto"
+        data-testid="chart-wheel" width={totalSize} height={totalSize}
+        viewBox={`0 0 ${totalSize} ${totalSize}`} className="max-w-full h-auto"
         style={{ fontFamily: 'system-ui, sans-serif' }}
       >
         <defs>
@@ -146,11 +178,11 @@ export function ChartWheel({
         {/* ========== ROTATED GROUP: paths & lines only ========== */}
         <g transform={`rotate(${rot}, ${cx}, ${cy})`}>
 
-          {/* Zodiac ring background */}
+          {/* Zodiac ring circles */}
           <circle cx={cx} cy={cy} r={zodiacOuter} fill="none" stroke="#2a1f4e" strokeWidth="1.5" />
           <circle cx={cx} cy={cy} r={zodiacInner} fill="none" stroke="#2a1f4e" strokeWidth="1" />
 
-          {/* Zodiac segments (paths only, no text) */}
+          {/* Zodiac segment fills */}
           {ZODIAC_NAMES.map((name, i) => {
             const sa = i * 30, ea = (i + 1) * 30;
             const s1 = polar(cx, cy, zodiacOuter, sa), s2 = polar(cx, cy, zodiacOuter, ea);
@@ -163,13 +195,13 @@ export function ChartWheel({
             );
           })}
 
-          {/* Degree tick marks */}
-          {Array.from({ length: 360 }, (_, i) => {
-            const isSign = i % 30 === 0, is5 = i % 5 === 0;
-            if (!isSign && !is5) return null;
+          {/* Degree tick marks on outer edge */}
+          {Array.from({ length: 72 }, (_, i) => {
+            const deg = i * 5;
+            const isSign = deg % 30 === 0;
             const len = isSign ? 8 : 4;
-            const p1 = polar(cx, cy, zodiacOuter, i), p2 = polar(cx, cy, zodiacOuter - len, i);
-            return <line key={`t${i}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+            const p1 = polar(cx, cy, zodiacOuter, deg), p2 = polar(cx, cy, zodiacOuter - len, deg);
+            return <line key={`t${deg}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
               stroke={isSign ? '#818CF8' : '#3d2d6b'} strokeWidth={isSign ? 1.5 : 0.5} />;
           })}
 
@@ -182,14 +214,14 @@ export function ChartWheel({
             return (
               <line key={`hl${house.house}`} x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y}
                 stroke={isAngle ? '#818CF8' : '#4a3d7a'}
-                strokeWidth={isAngle ? 2.5 : 1} opacity={isAngle ? 1 : 0.5} />
+                strokeWidth={isAngle ? 2 : 0.8} opacity={isAngle ? 0.9 : 0.4} />
             );
           })}
 
           {/* Inner circle */}
           <circle cx={cx} cy={cy} r={innerCircle} fill="none" stroke="#2a1f4e" strokeWidth="1" />
 
-          {/* Aspect lines */}
+          {/* Aspect lines inside inner circle */}
           {data.aspects.map((aspect, idx) => {
             const p1 = planets.find(p => p.planet === aspect.planet1);
             const p2 = planets.find(p => p.planet === aspect.planet2);
@@ -214,36 +246,34 @@ export function ChartWheel({
 
         {/* ========== UPRIGHT TEXT (never rotated) ========== */}
 
-        {/* Zodiac symbols + degree annotations — upright */}
+        {/* Zodiac symbols — upright, centered in each segment */}
         {ZODIAC_NAMES.map((name, i) => {
-          const midEcliptic = i * 30 + 15; // midpoint of sign in ecliptic degrees
+          const midEcliptic = i * 30 + 15;
           const screenAngle = toScreen(midEcliptic, rot);
           const midR = (zodiacOuter + zodiacInner) / 2;
           const pos = polar(cx, cy, midR, screenAngle);
           const signColor = ZODIAC_COLORS[name as keyof typeof ZODIAC_COLORS] ?? '#9CA3AF';
 
-          // Degree annotation at the start of the sign
+          // Degree label at sign start boundary
           const startEcliptic = i * 30;
           const startScreen = toScreen(startEcliptic, rot);
-          const degPos = polar(cx, cy, zodiacOuter - 14, startScreen);
+          const degPos = polar(cx, cy, zodiacOuter - 16, startScreen);
 
           return (
             <g key={`zt-${name}`}>
-              {/* Zodiac symbol */}
               <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.042} fill={signColor} fontWeight="bold">
+                fontSize={size * 0.04} fill={signColor} fontWeight="bold">
                 {ZODIAC_SYMBOLS[i]}
               </text>
-              {/* Degree annotation at sign boundary */}
               <text x={degPos.x} y={degPos.y} textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.015} fill="#6B7280" fontWeight="500">
+                fontSize={size * 0.016} fill="#6B7280" fontWeight="500">
                 {startEcliptic}°
               </text>
             </g>
           );
         })}
 
-        {/* Planet symbols + degree labels — upright */}
+        {/* Planet symbols + degree labels — upright, spread apart */}
         {(() => {
           const placed = resolveOverlaps(planets, 10);
           return placed.map(({ angle, planet }) => {
@@ -258,12 +288,12 @@ export function ChartWheel({
             const screenAngle = toScreen(angle, rot);
             const pos = polar(cx, cy, planetMid, screenAngle);
 
-            // Degree label: push radially outward
+            // Push degree label radially outward from center
             const dx = pos.x - cx, dy = pos.y - cy;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             const nx = dx / dist, ny = dy / dist;
-            const labelX = pos.x + nx * size * 0.028;
-            const labelY = pos.y + ny * size * 0.028;
+            const labelX = pos.x + nx * size * 0.03;
+            const labelY = pos.y + ny * size * 0.03;
 
             return (
               <g key={`pl-${planet.planet}`}
@@ -272,18 +302,17 @@ export function ChartWheel({
                 className={interactive ? 'cursor-pointer' : ''}
                 role="img" aria-label={`${PLANET_NAMES[planet.planet]} in ${planet.sign} ${degInSign}°`}
                 filter="url(#pglow)">
-                <circle cx={pos.x} cy={pos.y} r={size * 0.02}
+                <circle cx={pos.x} cy={pos.y} r={size * 0.018}
                   fill={color} stroke="#0d0a1a" strokeWidth="1.5" opacity={0.95} />
                 <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.022} fill="#FFF" fontWeight="bold">{sym}</text>
+                  fontSize={size * 0.02} fill="#FFF" fontWeight="bold">{sym}</text>
                 {planet.retrograde && (
-                  <text x={pos.x + size * 0.015} y={pos.y - size * 0.015}
+                  <text x={pos.x + size * 0.013} y={pos.y - size * 0.013}
                     textAnchor="start" dominantBaseline="central"
-                    fontSize={size * 0.012} fill="#FF6B6B" fontWeight="bold">R</text>
+                    fontSize={size * 0.011} fill="#FF6B6B" fontWeight="bold">R</text>
                 )}
-                {/* Degree + sign label (upright) */}
                 <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.014} fill="#9CA3AF" fontWeight="500">
+                  fontSize={size * 0.013} fill="#9CA3AF" fontWeight="500">
                   {degInSign}°{signSym}
                 </text>
               </g>
@@ -291,25 +320,20 @@ export function ChartWheel({
           });
         })()}
 
-        {/* House numbers (1-12) — upright, outside ring */}
+        {/* House numbers (1-12) — upright, spread apart to avoid overlap */}
         {data.houses.map((house, i) => {
-          const nextHouse = data.houses[(i + 1) % data.houses.length];
-          let midAngle = getHouseLongitude(house);
-          let nextAngle = getHouseLongitude(nextHouse);
-          if (nextAngle < midAngle) nextAngle += 360;
-          midAngle = (midAngle + nextAngle) / 2;
-          const screenAngle = toScreen(midAngle, rot);
-          const pos = polar(cx, cy, labelRadius, screenAngle);
+          const screenAngle = spreadHouseAngles[i];
+          const pos = polar(cx, cy, houseNumRadius, screenAngle);
           return (
             <text key={`hn${house.house}`} x={pos.x} y={pos.y}
               textAnchor="middle" dominantBaseline="central"
-              fontSize={size * 0.028} fill="#818CF8" fontWeight="700">
+              fontSize={size * 0.032} fill="#818CF8" fontWeight="700">
               {house.house}
             </text>
           );
         })}
 
-        {/* Angle labels: ASC, DSC, MC, IC — upright */}
+        {/* Angle labels: ASC, DSC, MC, IC — upright, at actual cusp positions */}
         {(() => {
           const angles: { label: string; house: number; color: string }[] = [
             { label: 'ASC', house: 1, color: '#FF6B6B' },
@@ -325,7 +349,7 @@ export function ChartWheel({
             return (
               <text key={`a-${label}`} x={pos.x} y={pos.y}
                 textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.024} fill={color} fontWeight="bold">
+                fontSize={size * 0.026} fill={color} fontWeight="bold">
                 {label}
               </text>
             );
@@ -333,7 +357,7 @@ export function ChartWheel({
         })()}
 
         {/* Center dot */}
-        <circle cx={cx} cy={cy} r={size * 0.012} fill="#1a1035" stroke="#6366F1" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r={size * 0.01} fill="#1a1035" stroke="#6366F1" strokeWidth="1" />
       </svg>
     </div>
   );
