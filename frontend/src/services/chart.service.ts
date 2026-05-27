@@ -96,7 +96,7 @@ export const chartService = {
    * Calculate chart
    */
   async calculateChart(id: string): Promise<ChartResponse> {
-    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate`);
+    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate?force=true`);
     return { chart: response.data.data.chart };
   },
 };

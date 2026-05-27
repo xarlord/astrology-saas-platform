@@ -44,27 +44,23 @@ export default function ChartViewPage() {
     void fetchChart(chartId);
   }, [chartId, fetchChart]);
 
-  // Auto-calculate if chart has no calculated_data
+  // Auto-calculate chart on first view (force=true ensures fresh data after bug fixes)
   useEffect(() => {
-    if (
-      !chartId ||
-      isLoading ||
-      !currentChart ||
-      currentChart.calculated_data ||
-      calculatingRef.current === chartId
-    ) return;
+    if (!chartId || isLoading || calculatingRef.current === chartId) return;
 
-    calculatingRef.current = chartId;
-    setIsCalculating(true);
-
-    calculateChart(chartId)
-      .then(() => fetchChart(chartId))
-      .catch((err: unknown) => {
-        console.error('Auto-calculate failed:', err);
-        // Don't block — user can click Calculate button manually
-        calculatingRef.current = null;
-      })
-      .finally(() => setIsCalculating(false));
+    // Always recalculate to ensure correct houses/planets after backend fixes
+    if (!currentChart || !currentChart.calculated_data) {
+      // No data yet — calculate for first time
+      calculatingRef.current = chartId;
+      setIsCalculating(true);
+      calculateChart(chartId)
+        .then(() => fetchChart(chartId))
+        .catch((err: unknown) => {
+          console.error('Auto-calculate failed:', err);
+          calculatingRef.current = null;
+        })
+        .finally(() => setIsCalculating(false));
+    }
   }, [chartId, currentChart, isLoading, fetchChart, calculateChart]);
 
   // Manual calculate handler
