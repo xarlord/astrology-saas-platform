@@ -351,17 +351,19 @@ export class NatalChartService {
     const aspects: Aspect[] = [];
     const planetArray = Array.from(planets.entries());
 
-    // Build extended list including ASC and MC as aspect points
-    const allPoints: Array<[string, number]> = planetArray.map(([name, pos]) => [name, pos.longitude]);
-    if (ascendant !== undefined) allPoints.push(['Ascendant', ascendant]);
-    if (mc !== undefined) allPoints.push(['Midheaven', mc]);
+    // Build extended list including ASC and MC as aspect points, with speed data
+    const allPoints: Array<[string, number, number]> = planetArray.map(
+      ([name, pos]) => [name, pos.longitude, pos.speed],
+    );
+    if (ascendant !== undefined) allPoints.push(['Ascendant', ascendant, 0]);
+    if (mc !== undefined) allPoints.push(['Midheaven', mc, 0]);
 
     for (let i = 0; i < allPoints.length; i++) {
       for (let j = i + 1; j < allPoints.length; j++) {
-        const [name1, lon1] = allPoints[i];
-        const [name2, lon2] = allPoints[j];
+        const [name1, lon1, speed1] = allPoints[i];
+        const [name2, lon2, speed2] = allPoints[j];
 
-        const aspect = this.calculateAspect(name1, lon1, name2, lon2);
+        const aspect = this.calculateAspect(name1, lon1, speed1, name2, lon2, speed2);
         if (aspect) {
           aspects.push(aspect);
         }
@@ -380,8 +382,10 @@ export class NatalChartService {
   private calculateAspect(
     planet1: string,
     longitude1: number,
+    speed1: number,
     planet2: string,
     longitude2: number,
+    speed2: number,
   ): Aspect | null {
     const diff = this.angularDistance(longitude1, longitude2);
 
@@ -396,7 +400,7 @@ export class NatalChartService {
           type: type as Aspect['type'],
           orb: deviation,
           exact: deviation < 1,
-          applying: this.isApplying(longitude1, longitude2, diff, angle),
+          applying: this.isApplying(longitude1, speed1, longitude2, speed2, diff, angle),
           harmonious: type === 'trine' || type === 'sextile' || type === 'semisextile',
         };
       }
@@ -408,12 +412,21 @@ export class NatalChartService {
   /**
    * Check if aspect is applying (getting tighter)
    */
-  private isApplying(lon1: number, lon2: number, actualDiff: number, targetAngle: number): boolean {
-    // Determine if the aspect is applying or separating
-    // This is simplified - a more accurate approach would compare speeds
-    const diff1 = this.angularDistance(lon1, lon2);
-    // If the difference is moving toward the target angle, it's applying
-    return Math.abs(diff1 - targetAngle) < Math.abs(actualDiff - targetAngle);
+  private isApplying(
+    lon1: number,
+    speed1: number,
+    lon2: number,
+    speed2: number,
+    currentDiff: number,
+    targetAngle: number,
+  ): boolean {
+    // Project positions forward by 1 time unit using each planet's speed
+    const futureLon1 = this.normalizeAngle(lon1 + speed1);
+    const futureLon2 = this.normalizeAngle(lon2 + speed2);
+    const futureDiff = this.angularDistance(futureLon1, futureLon2);
+
+    // If the future separation is closer to the exact aspect angle, it's applying
+    return Math.abs(futureDiff - targetAngle) < Math.abs(currentDiff - targetAngle);
   }
 
   /**

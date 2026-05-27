@@ -135,20 +135,20 @@ export function ChartWheel({
 }: ChartWheelProps) {
   const planets = normalizePlanets(data.planets);
 
-  const pad = 52;
+  const pad = 28;
   const totalSize = size + pad * 2;
   const cx = totalSize / 2, cy = totalSize / 2;
 
-  const outerEdge = size * 0.44;
+  const outerEdge = size * 0.46;
   const zodiacOuter = outerEdge;
-  const zodiacInner = size * 0.35;
-  const planetOuter = zodiacInner - 10;
-  const planetInner = size * 0.22;
+  const zodiacInner = size * 0.37;
+  const planetOuter = zodiacInner - 8;
+  const planetInner = size * 0.24;
   const planetMid = (planetOuter + planetInner) / 2;
-  const innerCircle = size * 0.20;
+  const innerCircle = size * 0.22;
   const aspectRadius = innerCircle * 0.82;
 
-  const houseNumRadius = outerEdge + 22;
+  const houseNumRadius = outerEdge + 16;
   const angleRingRadius = innerCircle + size * 0.02; // one ring inside inner circle
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
@@ -183,8 +183,8 @@ export function ChartWheel({
 
       <svg
         role="img" aria-label={`Natal chart wheel with ${planets.length} planets`}
-        data-testid="chart-wheel" width={totalSize} height={totalSize}
-        viewBox={`0 0 ${totalSize} ${totalSize}`} className="max-w-full h-auto"
+        data-testid="chart-wheel"
+        viewBox={`0 0 ${totalSize} ${totalSize}`} className="w-full h-auto"
         style={{ fontFamily: 'system-ui, sans-serif' }}
       >
         <defs>
@@ -230,7 +230,10 @@ export function ChartWheel({
             stroke={isSign ? '#818CF8' : '#3d2d6b'} strokeWidth={isSign ? 1.5 : 0.5} />;
         })}
 
-        {/* House cusp lines */}
+        {/* Inner circle */}
+        <circle cx={cx} cy={cy} r={innerCircle} fill="none" stroke="#2a1f4e" strokeWidth="1" />
+
+        {/* House cusp lines — drawn AFTER inner circle so they appear on top */}
         {data.houses.map((house, i) => {
           const signStart = ((ascSignIndex + i) % 12) * 30;
           const scr = toScreen(signStart, rot);
@@ -239,13 +242,10 @@ export function ChartWheel({
           const isAngle = [1, 4, 7, 10].includes(house.house);
           return (
             <line key={`hl${house.house}`} x1={outer.x} y1={outer.y} x2={inner.x} y2={inner.y}
-              stroke={isAngle ? '#818CF8' : '#4a3d7a'}
-              strokeWidth={isAngle ? 2 : 0.8} opacity={isAngle ? 0.9 : 0.4} />
+              stroke={isAngle ? '#818CF8' : '#6d5faa'}
+              strokeWidth={isAngle ? 2 : 1} opacity={isAngle ? 0.9 : 0.6} />
           );
         })}
-
-        {/* Inner circle */}
-        <circle cx={cx} cy={cy} r={innerCircle} fill="none" stroke="#2a1f4e" strokeWidth="1" />
 
         {/* Aspect lines — inside the inner circle */}
         {data.aspects.map((aspect, idx) => {
@@ -282,27 +282,17 @@ export function ChartWheel({
           const pos = polar(cx, cy, symbolR, exactScr);
           const signColor = ZODIAC_COLORS[name as keyof typeof ZODIAC_COLORS] ?? '#9CA3AF';
 
-          const startEcl = i * 30;
-          const startScr = toScreen(startEcl, rot);
-          const degPos = polar(cx, cy, zodiacOuter - 14, startScr);
-
           return (
-            <g key={`zt-${name}`}>
-              <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.035} fill={signColor} fontWeight="bold">
-                {ZODIAC_SYMBOLS[i]}
-              </text>
-              <text x={degPos.x} y={degPos.y} textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.014} fill="#6B7280" fontWeight="500">
-                {startEcl}°
-              </text>
-            </g>
+            <text key={`zt-${name}`} x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
+              fontSize={size * 0.035} fill={signColor} fontWeight="bold">
+              {ZODIAC_SYMBOLS[i]}
+            </text>
           );
         })}
 
         {/* Planet symbols */}
         {(() => {
-          const placed = resolveOverlaps(planets, 10);
+          const placed = resolveOverlaps(planets, 14);
           return placed.map(({ angle, planet }) => {
             const sym = PLANET_SYMBOLS[planet.planet];
             if (!sym) return null;
@@ -320,8 +310,8 @@ export function ChartWheel({
             const dx = pos.x - cx, dy = pos.y - cy;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             const nx = dx / dist, ny = dy / dist;
-            const labelX = pos.x + nx * size * 0.03;
-            const labelY = pos.y + ny * size * 0.03;
+            const labelX = pos.x + nx * size * 0.038;
+            const labelY = pos.y + ny * size * 0.038;
 
             return (
               <g key={`pl-${planet.planet}`}
@@ -340,8 +330,8 @@ export function ChartWheel({
                     fontSize={size * 0.011} fill="#FF6B6B" fontWeight="bold">R</text>
                 )}
                 <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.013} fill="#9CA3AF" fontWeight="500">
-                  {degInSign}°{String(minInSign).padStart(2, '0')}'{signSym}
+                  fontSize={size * 0.011} fill="#9CA3AF" fontWeight="500">
+                  {degInSign}°{signSym}
                 </text>
               </g>
             );
