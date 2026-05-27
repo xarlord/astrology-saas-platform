@@ -131,24 +131,25 @@ function resolveOverlaps(planets: PlanetPosition[], minGap: number) {
 }
 
 export function ChartWheel({
-  data, size = 600, interactive = true, onPlanetClick, onAspectClick,
+  data, size = 720, interactive = true, onPlanetClick, onAspectClick,
 }: ChartWheelProps) {
   const planets = normalizePlanets(data.planets);
 
-  const pad = 48;
+  const pad = 52;
   const totalSize = size + pad * 2;
   const cx = totalSize / 2, cy = totalSize / 2;
 
-  const outerEdge = size * 0.43;
+  const outerEdge = size * 0.44;
   const zodiacOuter = outerEdge;
-  const zodiacInner = size * 0.33;
-  const planetOuter = zodiacInner - 8;
-  const planetInner = size * 0.21;
+  const zodiacInner = size * 0.35;
+  const planetOuter = zodiacInner - 10;
+  const planetInner = size * 0.22;
   const planetMid = (planetOuter + planetInner) / 2;
-  const innerCircle = size * 0.19;
+  const innerCircle = size * 0.20;
   const aspectRadius = innerCircle * 0.82;
 
-  const houseNumRadius = outerEdge + 20;
+  const houseNumRadius = outerEdge + 22;
+  const angleRingRadius = innerCircle + size * 0.02; // one ring inside inner circle
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
   const ascSignIndex = Math.floor(ascendant / 30);
@@ -273,26 +274,26 @@ export function ChartWheel({
 
         {/* ========== UPRIGHT TEXT ========== */}
 
-        {/* Zodiac symbols */}
+        {/* Zodiac symbols — at their exact ecliptic start degree */}
         {ZODIAC_NAMES.map((name, i) => {
-          const midEcl = i * 30 + 15;
-          const midScr = toScreen(midEcl, rot);
-          const midR = (zodiacOuter + zodiacInner) / 2;
-          const pos = polar(cx, cy, midR, midScr);
+          const exactEcl = i * 30; // e.g. Aquarius = 300°
+          const exactScr = toScreen(exactEcl, rot);
+          const symbolR = zodiacOuter - size * 0.035;
+          const pos = polar(cx, cy, symbolR, exactScr);
           const signColor = ZODIAC_COLORS[name as keyof typeof ZODIAC_COLORS] ?? '#9CA3AF';
 
           const startEcl = i * 30;
           const startScr = toScreen(startEcl, rot);
-          const degPos = polar(cx, cy, zodiacOuter - 16, startScr);
+          const degPos = polar(cx, cy, zodiacOuter - 14, startScr);
 
           return (
             <g key={`zt-${name}`}>
               <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.04} fill={signColor} fontWeight="bold">
+                fontSize={size * 0.035} fill={signColor} fontWeight="bold">
                 {ZODIAC_SYMBOLS[i]}
               </text>
               <text x={degPos.x} y={degPos.y} textAnchor="middle" dominantBaseline="central"
-                fontSize={size * 0.016} fill="#6B7280" fontWeight="500">
+                fontSize={size * 0.014} fill="#6B7280" fontWeight="500">
                 {startEcl}°
               </text>
             </g>
@@ -360,10 +361,9 @@ export function ChartWheel({
           );
         })}
 
-        {/* Angle labels — icons at zodiac inner level */}
+        {/* Angle labels — icons one ring inside the inner circle */}
         {(() => {
           const mcLon = data.midheaven ?? ((ascSignIndex + 9) % 12) * 30;
-          // Use actual house data for ASC degree/minute if available
           const ascHouse = data.houses[0];
           const ascDeg = ascHouse?.degree ?? Math.floor(ascendant % 30);
           const ascMin = ascHouse?.minute ?? Math.floor(((ascendant % 30) - ascDeg) * 60 + 0.5);
@@ -386,29 +386,28 @@ export function ChartWheel({
             { key: 'mc', label: 'MC', lon: mcLon, deg: mcDeg, min: mcMin, signIdx: mcSignIdx, color: '#6BFF9F' },
             { key: 'ic', label: 'IC', lon: icLon, deg: icDeg, min: icMin, signIdx: icSignIdx, color: '#FFB86B' },
           ];
-          // Place angle icons at zodiacInner level (same as zodiac symbols)
-          const angleIconRadius = (zodiacOuter + zodiacInner) / 2;
           return angles.map(({ key, label, lon, deg, min, signIdx, color }) => {
             const scr = toScreen(lon, rot);
-            const pos = polar(cx, cy, angleIconRadius, scr);
+            // Place at angleRingRadius — one ring inside inner circle
+            const pos = polar(cx, cy, angleRingRadius, scr);
             const signSym = ZODIAC_SYMBOLS[signIdx] || '';
             const sym = PLANET_SYMBOLS[key] || label;
-            // Offset label radially outward from icon
+            // Offset label radially inward from icon
             const dx = pos.x - cx, dy = pos.y - cy;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             const nx = dx / dist, ny = dy / dist;
-            const labelX = pos.x + nx * size * 0.022;
-            const labelY = pos.y + ny * size * 0.022;
+            const labelX = pos.x - nx * size * 0.025;
+            const labelY = pos.y - ny * size * 0.025;
             return (
               <g key={`a-${label}`}>
-                {/* Icon circle at zodiac ring level */}
-                <circle cx={pos.x} cy={pos.y} r={size * 0.02}
+                {/* Icon circle one ring inside inner circle */}
+                <circle cx={pos.x} cy={pos.y} r={size * 0.022}
                   fill={color} stroke="#0d0a1a" strokeWidth="1.5" opacity={0.95} />
                 <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.018} fill="#FFF" fontWeight="bold">{sym}</text>
-                {/* Degree label radially offset from icon */}
+                  fontSize={size * 0.02} fill="#FFF" fontWeight="bold">{sym}</text>
+                {/* Degree label radially inward from icon */}
                 <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="central"
-                  fontSize={size * 0.014} fill={color} fontWeight="600">
+                  fontSize={size * 0.013} fill={color} fontWeight="600">
                   {label} {deg}°{String(min).padStart(2, '0')}'{signSym}
                 </text>
               </g>
