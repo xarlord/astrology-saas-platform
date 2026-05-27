@@ -306,4 +306,60 @@ async function fetchNominatim(query: string): Promise<any[]> {
   }
 }
 
+/**
+ * @route   GET /api/v1/location/timezone
+ * @desc    Get IANA timezone from lat/lon coordinates
+ * @access  Public
+ */
+router.get('/timezone', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const lat = parseFloat(req.query.lat as string);
+    const lon = parseFloat(req.query.lon as string);
+
+    if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+      res.status(400).json({ error: 'Valid lat and lon query parameters required' });
+      return;
+    }
+
+    // Try using Google Timezone API if key available
+    if (GOOGLE_PLACES_API_KEY) {
+      try {
+        const url = new URL('https://maps.googleapis.com/maps/api/timezone/json');
+        url.searchParams.set('location', `${lat},${lon}`);
+        url.searchParams.set('timestamp', Math.floor(Date.now() / 1000).toString());
+        url.searchParams.set('key', GOOGLE_PLACES_API_KEY);
+        const response = await fetch(url.toString());
+        const data = await response.json() as { status: string; timeZoneId?: string };
+        if (data.status === 'OK' && data.timeZoneId) {
+          res.json({ data: { timezone: data.timeZoneId } });
+          return;
+        }
+      } catch {
+        // Fall through to estimation
+      }
+    }
+
+    // Fallback: estimate timezone from longitude using Intl supported names
+    // This covers major timezones with rough boundary estimation
+    const offsetHours = Math.round(lon / 15);
+    const timezoneMap: Record<number, string> = {
+      '-12': 'Etc/GMT+12', '-11': 'Pacific/Midway', '-10': 'Pacific/Honolulu',
+      '-9': 'America/Anchorage', '-8': 'America/Los_Angeles', '-7': 'America/Denver',
+      '-6': 'America/Chicago', '-5': 'America/New_York', '-4': 'America/Halifax',
+      '-3': 'America/Sao_Paulo', '-2': 'Atlantic/South_Georgia', '-1': 'Atlantic/Azores',
+      '0': 'Europe/London', '1': 'Europe/Paris', '2': 'Europe/Helsinki',
+      '3': 'Europe/Istanbul', '4': 'Asia/Dubai', '5': 'Asia/Karachi',
+      '5.5': 'Asia/Kolkata', '6': 'Asia/Dhaka', '7': 'Asia/Bangkok',
+      '8': 'Asia/Shanghai', '9': 'Asia/Tokyo', '10': 'Australia/Sydney',
+      '11': 'Pacific/Noumea', '12': 'Pacific/Auckland',
+    };
+
+    const tz = timezoneMap[offsetHours] || `Etc/GMT${offsetHours > 0 ? '-' : '+'}${Math.abs(offsetHours)}`;
+    res.json({ data: { timezone: tz } });
+  } catch (error) {
+    logger.error('Timezone lookup error:', error);
+    res.status(500).json({ error: 'Timezone lookup failed' });
+  }
+});
+
 export { router as locationRoutes };

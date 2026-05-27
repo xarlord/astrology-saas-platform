@@ -137,12 +137,33 @@ export function BirthDataForm({
   }, []);
 
   // Select a place from suggestions — coordinates already available
-  const selectPlace = useCallback((place: { display_name: string; lat: string; lon: string }) => {
+  const selectPlace = useCallback(async (place: { display_name: string; lat: string; lon: string }) => {
+    const lat = parseFloat(place.lat);
+    const lon = parseFloat(place.lon);
+    
+    // Auto-detect timezone from coordinates
+    let timezone: string | undefined;
+    try {
+      const apiBase = import.meta.env.VITE_API_URL ?? '';
+      const tzResp = await fetch(
+        `${apiBase}/api/v1/location/timezone?lat=${lat}&lon=${lon}`,
+      );
+      if (tzResp.ok) {
+        const tzData = await tzResp.json() as { data?: { timezone?: string } };
+        timezone = tzData.data?.timezone;
+      }
+    } catch {
+      // fallback: compute rough timezone from longitude
+      const offset = Math.round(lon / 15);
+      timezone = offset >= 0 ? `Etc/GMT+${offset}` : `Etc/GMT${offset}`;
+    }
+
     setFormData((prev) => ({
       ...prev,
       birthPlace: place.display_name.split(',').slice(0, 3).join(',').trim(),
-      latitude: parseFloat(place.lat),
-      longitude: parseFloat(place.lon),
+      latitude: lat,
+      longitude: lon,
+      timezone: timezone || prev.timezone,
     }));
     setShowPlaceSearch(false);
     setPlaceSuggestions([]);
@@ -423,6 +444,14 @@ export function BirthDataForm({
                 <span>Lat: {formData.latitude.toFixed(4)}</span>
                 <span>•</span>
                 <span>Lon: {formData.longitude.toFixed(4)}</span>
+                {formData.timezone && (
+                  <>
+                    <span>•</span>
+                    <span className="text-indigo-300" title="Auto-detected IANA timezone (handles historical DST)">
+                      🕐 {formData.timezone}
+                    </span>
+                  </>
+                )}
               </div>
             )}
           </div>
