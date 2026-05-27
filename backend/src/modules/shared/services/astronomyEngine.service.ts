@@ -161,8 +161,7 @@ export class AstronomyEngineService {
    */
   calculateLunarNodes(date: Date): LunarNodePosition {
     const time = astronomy.MakeTime(date);
-    const jd = time.ut + 2451545.0;
-    const T = jd / 36525.0; // Julian centuries from J2000.0
+    const T = time.ut / 36525.0; // Julian centuries from J2000.0
 
     // Mean longitude of ascending node (Meeus formula)
     let omega = 125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000.0;
@@ -189,8 +188,7 @@ export class AstronomyEngineService {
    */
   calculateChiron(date: Date): ChironPosition {
     const time = astronomy.MakeTime(date);
-    const jd = time.ut + 2451545.0;
-    const T = jd / 36525.0; // Julian centuries from J2000.0
+    const T = time.ut / 36525.0; // Julian centuries from J2000.0
 
     // Chiron orbital elements (J2000 epoch, approximate)
     const a = 13.7196;       // Semi-major axis (AU)
@@ -234,15 +232,12 @@ export class AstronomyEngineService {
     // The parallax correction is small for Chiron (distant body)
     // But we need the correct sign and rough magnitude
     const r = a * (1 - e * Math.cos(E_rad)); // heliocentric distance
-    const R = 1.0; // Earth's distance (approximate)
-    const sinE = Math.sin((elongation * Math.PI) / 180);
-    const correction = (R / r) * (180 / Math.PI) * Math.sin((elongation * Math.PI) / 180) * 0.5;
+    const correction = (1.0 / r) * (180 / Math.PI) * Math.sin((elongation * Math.PI) / 180) * 0.5;
     let geoLon = this.normalizeAngle(helioLon - correction);
 
     // Calculate speed
     const prevTime = new astronomy.AstroTime(time.ut - 1);
-    const prevJd = prevTime.ut + 2451545.0;
-    const prevT = prevJd / 36525.0;
+    const prevT = prevTime.ut / 36525.0;
     const prevL = this.normalizeAngle(L0 + n * prevT * 100);
     const prevM = this.normalizeAngle(prevL - omega_bar);
     let prevE_rad = (prevM * Math.PI) / 180;
