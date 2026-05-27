@@ -55,7 +55,7 @@ export class HouseCalculationService {
       case 'Equal':
         return this.equalHouses(lst, latitude);
       case 'WholeSign':
-        return this.wholeSignHouses(ascendant ?? 0);
+        return this.wholeSignHouses(ascendant ?? 0, lst);
       default:
         return this.placidusHouses(lst, latitude);
     }
@@ -91,7 +91,7 @@ export class HouseCalculationService {
    */
   private placidusHouses(lst: number, latitude: number): HouseCusps {
     const ramc = lst; // RAMC = Local Sidereal Time in degrees
-    const mc = this.normalizeAngle(ramc);
+    const mc = this.calculateMidheaven(ramc);
     const asc = this.calculateAscendant(ramc, latitude);
     const desc = this.normalizeAngle(asc + 180);
     const ic = this.normalizeAngle(mc + 180);
@@ -232,7 +232,7 @@ export class HouseCalculationService {
    * Whole Sign House System
    * Each zodiac sign = one house, with the rising sign as the 1st house
    */
-  private wholeSignHouses(ascendant: number): HouseCusps {
+  private wholeSignHouses(ascendant: number, lst: number): HouseCusps {
     const signStart = Math.floor(ascendant / 30) * 30;
     const cusps: number[] = new Array(12);
 
@@ -240,8 +240,8 @@ export class HouseCalculationService {
       cusps[i] = (signStart + i * 30) % 360;
     }
 
-    // MC is not aligned with house cusps in Whole Sign
-    const mc = cusps[9]; // Approximate MC as 10th house cusp
+    // MC is calculated from RAMC (Local Sidereal Time), not from house cusps
+    const mc = this.calculateMidheaven(lst);
 
     return this.buildHouseCusps('WholeSign', cusps, ascendant, mc);
   }
