@@ -165,7 +165,9 @@ export class NatalChartService {
     );
 
     // Calculate houses
-    const houses = this.houseCalculator.calculateHouses(lst, latitude, houseSystem);
+    // Whole Sign system requires the ascendant to determine the 1st house sign
+    const ascendant = this.houseCalculator.calculateAscendant(lst, latitude);
+    const houses = this.houseCalculator.calculateHouses(lst, latitude, houseSystem, ascendant);
 
     // Assign planets to houses
     this.assignPlanetsToHouses(planets, houses);
