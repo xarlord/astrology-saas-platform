@@ -41,6 +41,7 @@ interface ChartSettings {
   chartType: 'natal' | 'synastry' | 'composite' | 'transit';
   houseSystem: 'placidus' | 'koch' | 'porphyry' | 'whole-sign';
   zodiacType: 'tropical' | 'sidereal';
+  useTrueAngles: boolean;
   isDefault: boolean;
 }
 
@@ -85,6 +86,7 @@ export const ChartCreationWizardPage: React.FC = () => {
     chartType: 'natal',
     houseSystem: 'placidus',
     zodiacType: 'tropical',
+    useTrueAngles: true,
     isDefault: false,
   });
 
@@ -137,6 +139,7 @@ export const ChartCreationWizardPage: React.FC = () => {
         house_system:
           chartSettings.houseSystem === 'whole-sign' ? 'whole' : chartSettings.houseSystem,
         zodiac: chartSettings.zodiacType,
+        use_true_angles: chartSettings.useTrueAngles,
       } as Parameters<typeof createChart>[0]);
 
       navigate('/charts');
@@ -155,6 +158,7 @@ export const ChartCreationWizardPage: React.FC = () => {
     chartSettings.chartType,
     chartSettings.houseSystem,
     chartSettings.zodiacType,
+    chartSettings.useTrueAngles,
     createChart,
     navigate,
   ]);
@@ -477,6 +481,32 @@ export const ChartCreationWizardPage: React.FC = () => {
                         </button>
                       ))}
                     </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-slate-300 text-sm font-medium ml-1">Angle Calculation</label>
+                    <div className="flex gap-3">
+                      {([true, false] as const).map((isTrue) => (
+                        <button
+                          key={isTrue ? 'true' : 'mean'}
+                          type="button"
+                          onClick={() =>
+                            setChartSettings((prev) => ({ ...prev, useTrueAngles: isTrue }))
+                          }
+                          className={clsx(
+                            'flex-1 px-4 py-3 rounded-xl border text-sm font-medium transition-all',
+                            chartSettings.useTrueAngles === isTrue
+                              ? 'bg-primary/20 border-primary text-white'
+                              : 'bg-surface-dark/50 border-white/10 text-slate-400 hover:border-white/20',
+                          )}
+                        >
+                          {isTrue ? 'True Angles' : 'Mean Angles'}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-500 ml-1">
+                      True angles include nutation correction for the date
+                    </p>
                   </div>
 
                   <Checkbox

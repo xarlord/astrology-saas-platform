@@ -13,7 +13,12 @@ import {
   calculateDescendant as calcDesc,
   calculateIC as calcIC,
   calculateAntiVertex as calcAntiVertex,
+  calculateTrueObliquity,
 } from './houses';
+
+interface AngleOptions {
+  useTrueAngles?: boolean;
+}
 
 /**
  * Calculate all chart angles
@@ -23,6 +28,7 @@ export function calculateAngles(
   time: string,
   latitude: number,
   longitude: number,
+  options?: AngleOptions,
 ): AngleData[] {
   // Parse time
   const [hours, minutes] = time.split(':').map(Number);
@@ -33,11 +39,13 @@ export function calculateAngles(
   const lst = calculateLST(jd, longitude);
   const ramc = lst; // RAMC equals LST in degrees
 
-  const ascendant = calcAsc(ramc, latitude);
-  const midheaven = calcMC(ramc);
+  const obliquity = options?.useTrueAngles ? calculateTrueObliquity(jd) : undefined;
+
+  const ascendant = calcAsc(ramc, latitude, obliquity);
+  const midheaven = calcMC(ramc, obliquity);
   const descendant = calcDesc(ascendant);
   const ic = calcIC(midheaven);
-  const vertex = calcVertex(ramc, latitude);
+  const vertex = calcVertex(ramc, latitude, obliquity);
   const antiVertex = calcAntiVertex(vertex);
 
   return [
@@ -98,6 +106,7 @@ export function calculateAscendant(
   time: string,
   latitude: number,
   longitude: number,
+  options?: AngleOptions,
 ): AngleData {
   const [hours, minutes] = time.split(':').map(Number);
   const dateTime = new Date(date);
@@ -105,7 +114,8 @@ export function calculateAscendant(
 
   const jd = dateToJulianDay(dateTime);
   const lst = calculateLST(jd, longitude);
-  const ascendant = calcAsc(lst, latitude);
+  const obliquity = options?.useTrueAngles ? calculateTrueObliquity(jd) : undefined;
+  const ascendant = calcAsc(lst, latitude, obliquity);
 
   return {
     name: 'Ascendant',
@@ -120,14 +130,15 @@ export function calculateAscendant(
 /**
  * Calculate Midheaven only
  */
-export function calculateMidheaven(date: Date, time: string, longitude: number): AngleData {
+export function calculateMidheaven(date: Date, time: string, longitude: number, options?: AngleOptions): AngleData {
   const [hours, minutes] = time.split(':').map(Number);
   const dateTime = new Date(date);
   dateTime.setUTCHours(hours, minutes, 0, 0);
 
   const jd = dateToJulianDay(dateTime);
   const lst = calculateLST(jd, longitude);
-  const mc = calcMC(lst);
+  const obliquity = options?.useTrueAngles ? calculateTrueObliquity(jd) : undefined;
+  const mc = calcMC(lst, obliquity);
 
   return {
     name: 'MC',
@@ -147,8 +158,9 @@ export function calculateDescendant(
   time: string,
   latitude: number,
   longitude: number,
+  options?: AngleOptions,
 ): AngleData {
-  const ascendant = calculateAscendant(date, time, latitude, longitude);
+  const ascendant = calculateAscendant(date, time, latitude, longitude, options);
   const descendant = normalizeAngle(ascendant.longitude + 180);
 
   return {
@@ -164,8 +176,8 @@ export function calculateDescendant(
 /**
  * Calculate IC (Imum Coeli) only
  */
-export function calculateIC(date: Date, time: string, longitude: number): AngleData {
-  const mc = calculateMidheaven(date, time, longitude);
+export function calculateIC(date: Date, time: string, longitude: number, options?: AngleOptions): AngleData {
+  const mc = calculateMidheaven(date, time, longitude, options);
   const ic = normalizeAngle(mc.longitude + 180);
 
   return {
@@ -186,6 +198,7 @@ export function calculateVertex(
   time: string,
   latitude: number,
   longitude: number,
+  options?: AngleOptions,
 ): AngleData {
   const [hours, minutes] = time.split(':').map(Number);
   const dateTime = new Date(date);
@@ -193,7 +206,8 @@ export function calculateVertex(
 
   const jd = dateToJulianDay(dateTime);
   const lst = calculateLST(jd, longitude);
-  const vertex = calcVertex(lst, latitude);
+  const obliquity = options?.useTrueAngles ? calculateTrueObliquity(jd) : undefined;
+  const vertex = calcVertex(lst, latitude, obliquity);
 
   return {
     name: 'Vertex',

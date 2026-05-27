@@ -35,8 +35,52 @@ export interface HouseData {
 }
 
 export class HouseCalculationService {
-  // Earth's axial tilt (obliquity of the ecliptic)
+  // Earth's axial tilt (mean obliquity of the ecliptic)
   private static readonly OBLIQUITY = 23.44;
+
+  /**
+   * Calculate true obliquity of the ecliptic for a given Julian Day.
+   *
+   * Uses IAU 2006 mean obliquity formula plus simplified nutation correction.
+   *
+   * @param jd Julian Day Number
+   * @returns True obliquity in degrees
+   */
+  static calculateTrueObliquity(jd: number): number {
+    const T = (jd - 2451545.0) / 36525.0; // Julian centuries from J2000.0
+
+    // Mean obliquity (IAU 2006) in arcseconds
+    const eps0 =
+      84381.406 -
+      46.836769 * T -
+      0.0001831 * T * T +
+      0.00200340 * T * T * T;
+
+    // Convert mean obliquity to degrees
+    const meanObliquity = eps0 / 3600;
+
+    // Nutation in obliquity (simplified)
+    // Moon's mean ascending node longitude Ω (degrees)
+    const omega = 125.04452 - 1934.136261 * T + 0.0020708 * T * T;
+    const omegaRad = (omega * Math.PI) / 180;
+
+    // Δε in arcseconds, converted to degrees
+    const deltaEps = (9.2025 * Math.cos(omegaRad)) / 3600;
+
+    return meanObliquity + deltaEps;
+  }
+
+  /**
+   * Resolve the effective obliquity to use for calculations.
+   * If useTrueAngles is true and jd is provided, returns true obliquity;
+   * otherwise returns the default mean obliquity (23.44°).
+   */
+  private resolveObliquity(useTrueAngles: boolean, jd?: number): number {
+    if (useTrueAngles && jd !== undefined) {
+      return HouseCalculationService.calculateTrueObliquity(jd);
+    }
+    return HouseCalculationService.OBLIQUITY;
+  }
 
   /**
    * Calculate houses using specified system
@@ -46,18 +90,22 @@ export class HouseCalculationService {
     latitude: number, // Geographic latitude
     system: HouseSystem = 'Placidus',
     ascendant?: number, // Required for WholeSign
+    useTrueAngles = false,
+    jd?: number,
   ): HouseCusps {
+    const obliquity = this.resolveObliquity(useTrueAngles, jd);
+
     switch (system) {
       case 'Placidus':
-        return this.placidusHouses(lst, latitude);
+        return this.placidusHouses(lst, latitude, obliquity);
       case 'Koch':
-        return this.kochHouses(lst, latitude);
+        return this.kochHouses(lst, latitude, obliquity);
       case 'Equal':
-        return this.equalHouses(lst, latitude);
+        return this.equalHouses(lst, latitude, obliquity);
       case 'WholeSign':
-        return this.wholeSignHouses(ascendant ?? 0, lst);
+        return this.wholeSignHouses(ascendant ?? 0, lst, obliquity);
       default:
-        return this.placidusHouses(lst, latitude);
+        return this.placidusHouses(lst, latitude, obliquity);
     }
   }
 
@@ -89,10 +137,10 @@ export class HouseCalculationService {
    * The most popular house system. Uses time-based interpolation.
    * Houses are calculated based on the time it takes for a degree to rise.
    */
-  private placidusHouses(lst: number, latitude: number): HouseCusps {
+  private placidusHouses(lst: number, latitude: number, obliquity?: number): HouseCusps {
     const ramc = lst; // RAMC = Local Sidereal Time in degrees
-    const mc = this.calculateMidheaven(ramc);
-    const asc = this.calculateAscendant(ramc, latitude);
+    const mc = this.calculateMidheaven(ramc, obliquity);
+    const asc = this.calculateAscendant(ramc, latitude, obliquity);
     const desc = this.normalizeAngle(asc + 180);
     const ic = this.normalizeAngle(mc + 180);
 
@@ -177,10 +225,10 @@ export class HouseCalculationService {
   /**
    * Koch House System (Birthplace houses)
    */
-  private kochHouses(lst: number, latitude: number): HouseCusps {
+  private kochHouses(lst: number, latitude: number, obliquity?: number): HouseCusps {
     const ramc = lst;
     const mc = this.normalizeAngle(ramc);
-    const asc = this.calculateAscendant(ramc, latitude);
+    const asc = this.calculateAscendant(ramc, latitude, obliquity);
 
     const cusps: number[] = new Array(12);
     cusps[0] = asc;
@@ -214,10 +262,10 @@ export class HouseCalculationService {
    * Equal House System
    * Each house is exactly 30°, starting from the Ascendant
    */
-  private equalHouses(lst: number, latitude: number): HouseCusps {
+  private equalHouses(lst: number, latitude: number, obliquity?: number): HouseCusps {
     const ramc = lst;
-    const mc = this.calculateMidheaven(ramc);
-    const asc = this.calculateAscendant(ramc, latitude);
+    const mc = this.calculateMidheaven(ramc, obliquity);
+    const asc = this.calculateAscendant(ramc, latitude, obliquity);
 
     const cusps: number[] = new Array(12);
 
@@ -232,7 +280,7 @@ export class HouseCalculationService {
    * Whole Sign House System
    * Each zodiac sign = one house, with the rising sign as the 1st house
    */
-  private wholeSignHouses(ascendant: number, lst: number): HouseCusps {
+  private wholeSignHouses(ascendant: number, lst: number, obliquity?: number): HouseCusps {
     const signStart = Math.floor(ascendant / 30) * 30;
     const cusps: number[] = new Array(12);
 
@@ -251,8 +299,8 @@ export class HouseCalculationService {
    *
    * The ascendant is the point of the ecliptic that is rising on the eastern horizon
    */
-  calculateAscendant(ramc: number, latitude: number): number {
-    const oblRad = this.toRadians(HouseCalculationService.OBLIQUITY);
+  calculateAscendant(ramc: number, latitude: number, obliquity?: number): number {
+    const oblRad = this.toRadians(obliquity ?? HouseCalculationService.OBLIQUITY);
     const ramcRad = this.toRadians(ramc);
     const latRad = this.toRadians(latitude);
 
@@ -276,8 +324,8 @@ export class HouseCalculationService {
    *
    * The MC is the point of the ecliptic that is at the highest point (culminating)
    */
-  calculateMidheaven(ramc: number): number {
-    const oblRad = this.toRadians(HouseCalculationService.OBLIQUITY);
+  calculateMidheaven(ramc: number, obliquity?: number): number {
+    const oblRad = this.toRadians(obliquity ?? HouseCalculationService.OBLIQUITY);
     const ramcRad = this.toRadians(ramc);
 
     // MC formula using obliquity

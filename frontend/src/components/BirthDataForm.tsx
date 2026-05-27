@@ -29,6 +29,7 @@ export interface BirthData {
   houseSystem: 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
   zodiac: 'tropical' | 'sidereal';
   siderealMode?: 'fagan-bradley' | 'lahiri' | 'raman' | 'fassbender';
+  useTrueAngles: boolean;
 }
 
 interface BirthDataFormProps {
@@ -75,6 +76,7 @@ export function BirthDataForm({
     houseSystem: initialData?.houseSystem ?? 'whole',
     zodiac: initialData?.zodiac ?? 'tropical',
     siderealMode: initialData?.siderealMode ?? 'lahiri',
+    useTrueAngles: initialData?.useTrueAngles ?? true,
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof BirthData, string>>>({});
@@ -244,6 +246,7 @@ export function BirthDataForm({
         house_system: formData.houseSystem,
         zodiac: formData.zodiac,
         sidereal_mode: formData.zodiac === 'sidereal' ? formData.siderealMode : undefined,
+        use_true_angles: formData.useTrueAngles,
       };
 
       await createChartMutation.mutateAsync(chartData);
@@ -513,6 +516,31 @@ export function BirthDataForm({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Angle Calculation Toggle */}
+          <div>
+            <label htmlFor="useTrueAngles" className="block text-sm font-medium text-slate-200">
+              Angle Calculation
+            </label>
+            <select
+              id="useTrueAngles"
+              name="useTrueAngles"
+              value={formData.useTrueAngles ? 'true' : 'mean'}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  useTrueAngles: e.target.value === 'true',
+                }));
+              }}
+              className="mt-1 block w-full rounded-lg border-cosmic-border ring-1 ring-inset ring-white/10 bg-cosmic-card-solid px-3 py-2 text-white focus:border-primary focus:ring-primary"
+            >
+              <option value="true">True Angles (with nutation correction)</option>
+              <option value="mean">Mean Angles (fixed obliquity)</option>
+            </select>
+            <p className="mt-1 text-xs text-slate-200">
+              True angles account for the date-specific Earth axial tilt; Mean uses fixed 23.44°
+            </p>
           </div>
 
           {/* Zodiac Type Selector */}

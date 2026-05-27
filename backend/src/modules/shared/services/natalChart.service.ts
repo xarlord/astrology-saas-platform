@@ -69,6 +69,8 @@ export interface NatalChartInput {
   houseSystem?: HouseSystem;
   includeChiron?: boolean;
   includeNodes?: boolean;
+  /** Use true obliquity (with nutation correction) instead of mean obliquity. Default: true */
+  useTrueAngles?: boolean;
 }
 
 // Aspect orbs (allowable deviation in degrees)
@@ -149,6 +151,7 @@ export class NatalChartService {
     const houseSystem = input.houseSystem || 'Placidus';
     const includeChiron = input.includeChiron ?? true;
     const includeNodes = input.includeNodes ?? true;
+    const useTrueAngles = input.useTrueAngles ?? true;
 
     // Convert birthDate to Date if it's a string
     const birthDateObj = typeof birthDate === 'string' ? new Date(birthDate) : birthDate;
@@ -181,14 +184,19 @@ export class NatalChartService {
 
     // Calculate houses
     // Whole Sign system requires the ascendant to determine the 1st house sign
-    const ascendant = this.houseCalculator.calculateAscendant(lst, latitude);
-    const houses = this.houseCalculator.calculateHouses(lst, latitude, houseSystem, ascendant);
+    const obliquity = useTrueAngles
+      ? HouseCalculationService.calculateTrueObliquity(julianDay)
+      : undefined;
+    const ascendant = this.houseCalculator.calculateAscendant(lst, latitude, obliquity);
+    const houses = this.houseCalculator.calculateHouses(
+      lst, latitude, houseSystem, ascendant, useTrueAngles, julianDay,
+    );
 
     // Assign planets to houses
     this.assignPlanetsToHouses(planets, houses);
 
     // Calculate aspects between planets (including ASC and MC as points)
-    const mc = this.houseCalculator.calculateMidheaven(lst);
+    const mc = this.houseCalculator.calculateMidheaven(lst, obliquity);
     const aspects = this.calculateAspects(planets, ascendant, mc);
 
     // Calculate Part of Fortune (always use day formula: ASC + Moon - Sun)

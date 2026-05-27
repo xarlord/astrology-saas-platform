@@ -140,6 +140,7 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
     house_system = 'placidus',
     zodiac = 'tropical',
     sidereal_mode,
+    use_true_angles = true,
   } = validatedData;
 
   // Map validation schema values to model enum values
@@ -275,6 +276,7 @@ export async function deleteChart(req: AuthenticatedRequest, res: Response): Pro
 export async function calculateChart(req: AuthenticatedRequest, res: Response): Promise<void> {
   const { id } = req.params;
   const force = req.query.force === 'true';
+  const useTrueAngles = req.query.use_true_angles !== 'false'; // default true
 
   const chart = await ChartModel.findByIdAndUserId(id, req.user.id);
 
@@ -304,6 +306,7 @@ export async function calculateChart(req: AuthenticatedRequest, res: Response): 
     location: chart.birth_place_name,
     timezone: chart.birth_timezone,
     houseSystem: toHouseSystemEnum(chart.house_system),
+    useTrueAngles,
   });
 
   // Adapt to the legacy response shape expected by the frontend

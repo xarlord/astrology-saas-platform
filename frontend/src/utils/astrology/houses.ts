@@ -13,6 +13,55 @@ import {
 } from './planetPosition';
 
 /**
+ * Default mean obliquity of the ecliptic (degrees)
+ */
+const MEAN_OBLIQUITY = 23.44;
+
+/**
+ * Calculate true obliquity of the ecliptic for a given Julian Day.
+ *
+ * Uses IAU 2006 mean obliquity formula plus simplified nutation correction.
+ *
+ * @param jd Julian Day Number
+ * @returns True obliquity in degrees
+ */
+export function calculateTrueObliquity(jd: number): number {
+  const T = julianCenturies(jd);
+
+  // Mean obliquity (IAU 2006) in arcseconds
+  const eps0 =
+    84381.406 -
+    46.836769 * T -
+    0.0001831 * T * T +
+    0.00200340 * T * T * T;
+
+  // Convert mean obliquity to degrees
+  const meanObliquity = eps0 / 3600;
+
+  // Nutation in obliquity (simplified)
+  // Moon's mean ascending node longitude Ω (degrees)
+  const omega = 125.04452 - 1934.136261 * T + 0.0020708 * T * T;
+  const omegaRad = (omega * Math.PI) / 180;
+
+  // Δε in arcseconds, converted to degrees
+  const deltaEps = (9.2025 * Math.cos(omegaRad)) / 3600;
+
+  return meanObliquity + deltaEps;
+}
+
+/**
+ * Resolve the effective obliquity to use for calculations.
+ * If useTrueAngles is true and jd is provided, returns true obliquity;
+ * otherwise returns the default mean obliquity (23.44°).
+ */
+function resolveObliquity(useTrueAngles?: boolean, jd?: number): number {
+  if (useTrueAngles && jd !== undefined) {
+    return calculateTrueObliquity(jd);
+  }
+  return MEAN_OBLIQUITY;
+}
+
+/**
  * Calculate Local Sidereal Time
  */
 export function calculateLST(jd: number, longitude: number): number {
@@ -47,20 +96,24 @@ export function calculateHouses(
   lst: number,
   latitude: number,
   system: HouseSystem = 'placidus',
+  useTrueAngles?: boolean,
+  jd?: number,
 ): HouseData[] {
+  const obliquity = resolveObliquity(useTrueAngles, jd);
+
   switch (system) {
     case 'placidus':
-      return calculatePlacidusHouses(lst, latitude);
+      return calculatePlacidusHouses(lst, latitude, obliquity);
     case 'koch':
-      return calculateKochHouses(lst, latitude);
+      return calculateKochHouses(lst, latitude, obliquity);
     case 'whole':
-      return calculateWholeSignHouses(lst, latitude);
+      return calculateWholeSignHouses(lst, latitude, obliquity);
     case 'equal':
-      return calculateEqualHouses(lst, latitude);
+      return calculateEqualHouses(lst, latitude, obliquity);
     case 'porphyry':
-      return calculatePorphyryHouses(lst, latitude);
+      return calculatePorphyryHouses(lst, latitude, obliquity);
     default:
-      return calculatePlacidusHouses(lst, latitude);
+      return calculatePlacidusHouses(lst, latitude, obliquity);
   }
 }
 
@@ -68,17 +121,14 @@ export function calculateHouses(
  * Calculate Placidus house cusps
  * The most common house system
  */
-export function calculatePlacidusHouses(lst: number, latitude: number): HouseData[] {
+export function calculatePlacidusHouses(lst: number, latitude: number, obliquity?: number): HouseData[] {
   const houses: HouseData[] = [];
   const ramc = calculateRAMC(lst);
+  const e = obliquity ?? MEAN_OBLIQUITY;
 
   // Calculate MC (10th house cusp)
-  const mc = calculateMC(ramc);
-  const asc = calculateAscendant(ramc, latitude);
-
-  // For Placidus, we need to interpolate between angles
-  // This is a simplified implementation
-  const _e = 23.44; // Obliquity of ecliptic (approximate)
+  const mc = calculateMC(ramc, e);
+  const asc = calculateAscendant(ramc, latitude, e);
 
   // Calculate intermediate house cusps using Placidus formulas
   // This is a simplified algorithm
@@ -133,12 +183,12 @@ function getPlacidusRatio(houseIndex: number, _latitude: number): number {
 /**
  * Calculate Koch house cusps
  */
-export function calculateKochHouses(lst: number, latitude: number): HouseData[] {
+export function calculateKochHouses(lst: number, latitude: number, obliquity?: number): HouseData[] {
   const houses: HouseData[] = [];
   const ramc = calculateRAMC(lst);
 
-  const mc = calculateMC(ramc);
-  const asc = calculateAscendant(ramc, latitude);
+  const mc = calculateMC(ramc, obliquity);
+  const asc = calculateAscendant(ramc, latitude, obliquity);
 
   // Koch uses a different interpolation method
   const ascMc = angularDistance(asc, mc);
@@ -188,10 +238,10 @@ export function calculateKochHouses(lst: number, latitude: number): HouseData[] 
  * Calculate Whole Sign house cusps
  * Each sign is a house, starting with the rising sign
  */
-export function calculateWholeSignHouses(lst: number, latitude: number): HouseData[] {
+export function calculateWholeSignHouses(lst: number, latitude: number, obliquity?: number): HouseData[] {
   const houses: HouseData[] = [];
   const ramc = calculateRAMC(lst);
-  const asc = calculateAscendant(ramc, latitude);
+  const asc = calculateAscendant(ramc, latitude, obliquity);
 
   // Get the sign of the Ascendant
   const ascSignIndex = Math.floor(asc / 30);
@@ -215,10 +265,10 @@ export function calculateWholeSignHouses(lst: number, latitude: number): HouseDa
  * Calculate Equal house cusps
  * Each house is exactly 30 degrees, starting from Ascendant
  */
-export function calculateEqualHouses(lst: number, latitude: number): HouseData[] {
+export function calculateEqualHouses(lst: number, latitude: number, obliquity?: number): HouseData[] {
   const houses: HouseData[] = [];
   const ramc = calculateRAMC(lst);
-  const asc = calculateAscendant(ramc, latitude);
+  const asc = calculateAscendant(ramc, latitude, obliquity);
 
   for (let i = 0; i < 12; i++) {
     const cusp = normalizeAngle(asc + i * 30);
@@ -238,12 +288,12 @@ export function calculateEqualHouses(lst: number, latitude: number): HouseData[]
  * Calculate Porphyry house cusps
  * Divides space between angles into equal parts
  */
-export function calculatePorphyryHouses(lst: number, latitude: number): HouseData[] {
+export function calculatePorphyryHouses(lst: number, latitude: number, obliquity?: number): HouseData[] {
   const houses: HouseData[] = [];
   const ramc = calculateRAMC(lst);
 
-  const mc = calculateMC(ramc);
-  const asc = calculateAscendant(ramc, latitude);
+  const mc = calculateMC(ramc, obliquity);
+  const asc = calculateAscendant(ramc, latitude, obliquity);
   const desc = normalizeAngle(asc + 180);
   const ic = normalizeAngle(mc + 180);
 
@@ -286,8 +336,8 @@ export function calculatePorphyryHouses(lst: number, latitude: number): HouseDat
 /**
  * Calculate Ascendant
  */
-export function calculateAscendant(ramc: number, latitude: number): number {
-  const e = 23.44; // Obliquity of ecliptic (approximate)
+export function calculateAscendant(ramc: number, latitude: number, obliquity?: number): number {
+  const e = obliquity ?? MEAN_OBLIQUITY;
   const latRad = (latitude * Math.PI) / 180;
   const eRad = (e * Math.PI) / 180;
   const ramcRad = (ramc * Math.PI) / 180;
@@ -305,8 +355,8 @@ export function calculateAscendant(ramc: number, latitude: number): number {
 /**
  * Calculate Midheaven (MC)
  */
-export function calculateMC(ramc: number): number {
-  const e = 23.44; // Obliquity of ecliptic
+export function calculateMC(ramc: number, obliquity?: number): number {
+  const e = obliquity ?? MEAN_OBLIQUITY;
   const eRad = (e * Math.PI) / 180;
   const ramcRad = (ramc * Math.PI) / 180;
 
@@ -333,8 +383,8 @@ export function calculateIC(midheaven: number): number {
 /**
  * Calculate Vertex
  */
-export function calculateVertex(ramc: number, latitude: number): number {
-  const e = 23.44; // Obliquity of ecliptic
+export function calculateVertex(ramc: number, latitude: number, obliquity?: number): number {
+  const e = obliquity ?? MEAN_OBLIQUITY;
   const latRad = (latitude * Math.PI) / 180;
   const eRad = (e * Math.PI) / 180;
   const ramcRad = ((ramc + 180) * Math.PI) / 180; // Add 180 for Vertex
@@ -376,6 +426,7 @@ export function calculateHousesFromData(
   latitude: number,
   longitude: number,
   system: HouseSystem = 'placidus',
+  useTrueAngles?: boolean,
 ): HouseData[] {
   // Parse time
   const [hours, minutes] = time.split(':').map(Number);
@@ -385,7 +436,7 @@ export function calculateHousesFromData(
   const jd = dateToJulianDay(dateTime);
   const lst = calculateLST(jd, longitude);
 
-  return calculateHouses(lst, latitude, system);
+  return calculateHouses(lst, latitude, system, useTrueAngles, jd);
 }
 
 /**
@@ -406,6 +457,7 @@ export default {
   calculateLST,
   calculateRAMC,
   calculateHouses,
+  calculateTrueObliquity,
   calculatePlacidusHouses,
   calculateKochHouses,
   calculateWholeSignHouses,

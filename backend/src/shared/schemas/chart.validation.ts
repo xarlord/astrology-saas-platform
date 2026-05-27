@@ -28,6 +28,7 @@ export const CreateNatalChartSchema = z
     house_system: z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign', 'whole', 'topocentric']).optional(),
     zodiac: z.enum(['tropical', 'sidereal']).optional(),
     sidereal_mode: z.string().optional(),
+    use_true_angles: z.boolean().optional(),
   })
   .strict();
 
