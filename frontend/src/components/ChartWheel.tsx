@@ -140,13 +140,12 @@ export function ChartWheel({
   const angleLabelRadius = outerEdge + 38;
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
-  // In SVG polar coords: 0°=TOP, 90°=RIGHT, 180°=BOTTOM, 270°=LEFT.
-  // ASC must map to 270° (LEFT/9-o'clock) → rot = 270 - ascendant.
-  const rot = 270 - ascendant;
-
-  // Whole Sign houses: each sign = one house, starting from ASC sign.
-  // ASC sign occupies house 1, next sign = house 2, etc.
-  const ascSignIndex = Math.floor(ascendant / 30); // e.g. Taurus = 1
+  // Whole Sign: rotate by the ASC SIGN START (not the degree within sign).
+  // This puts the ASC sign boundary exactly at 270° (LEFT/9-o'clock).
+  // Houses then progress CW: 270° → 300° → 330° → 0° → ... → 240°
+  const ascSignIndex = Math.floor(ascendant / 30);
+  const ascSignStart = ascSignIndex * 30;
+  const rot = 270 - ascSignStart;
 
   // Pre-compute house midpoint angles for number placement, then spread to avoid overlap
   const houseMidAngles = data.houses.map((house, i) => {
