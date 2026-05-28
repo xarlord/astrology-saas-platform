@@ -24,7 +24,7 @@ interface ChartsState {
   createChart: (data: BirthData) => Promise<void>;
   updateChart: (id: string, data: Partial<BirthData>) => Promise<void>;
   deleteChart: (id: string) => Promise<void>;
-  calculateChart: (id: string) => Promise<void>;
+  calculateChart: (id: string, options?: { useTrueAngles?: boolean }) => Promise<void>;
   clearError: () => void;
 }
 
@@ -135,10 +135,10 @@ export const useChartsStore = create<ChartsState>((set) => ({
     }
   },
 
-  calculateChart: async (id: string) => {
+  calculateChart: async (id: string, options?: { useTrueAngles?: boolean }) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await chartService.calculateChart(id);
+      const response = await chartService.calculateChart(id, options);
       set((state) => ({
         charts: state.charts.map((c) => (c.id === id ? response.chart : c)),
         currentChart: state.currentChart?.id === id ? response.chart : state.currentChart,

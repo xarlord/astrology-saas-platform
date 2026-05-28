@@ -95,8 +95,12 @@ export const chartService = {
   /**
    * Calculate chart
    */
-  async calculateChart(id: string): Promise<ChartResponse> {
-    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate?force=true`);
+  async calculateChart(id: string, options?: { useTrueAngles?: boolean }): Promise<ChartResponse> {
+    const params = new URLSearchParams({ force: 'true' });
+    if (options?.useTrueAngles !== undefined) {
+      params.set('use_true_angles', String(options.useTrueAngles));
+    }
+    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate?${params}`);
     return { chart: response.data.data.chart };
   },
 };

@@ -33,6 +33,7 @@ export default function ChartViewPage() {
   const { currentChart, isLoading, error, fetchChart, calculateChart } = useChartsStore();
   const [localError, setLocalError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [useTrueAngles, setUseTrueAngles] = useState(true);
   const calculatingRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function ChartViewPage() {
       // No data yet — calculate for first time
       calculatingRef.current = chartId;
       setIsCalculating(true);
-      calculateChart(chartId)
+      calculateChart(chartId, { useTrueAngles })
         .then(() => fetchChart(chartId))
         .catch((err: unknown) => {
           console.error('Auto-calculate failed:', err);
@@ -61,15 +62,16 @@ export default function ChartViewPage() {
         })
         .finally(() => setIsCalculating(false));
     }
-  }, [chartId, currentChart, isLoading, fetchChart, calculateChart]);
+  }, [chartId, currentChart, isLoading, fetchChart, calculateChart, useTrueAngles]);
 
   // Manual calculate handler
-  const handleCalculate = async () => {
+  const handleCalculate = async (trueAngles: boolean) => {
     if (!chartId) return;
     setLocalError(null);
+    setUseTrueAngles(trueAngles);
     setIsCalculating(true);
     try {
-      await calculateChart(chartId);
+      await calculateChart(chartId, { useTrueAngles: trueAngles });
       await fetchChart(chartId);
     } catch (err) {
       setLocalError('Failed to calculate chart. Please try again.');
@@ -182,15 +184,50 @@ export default function ChartViewPage() {
   return (
     <AppLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 gradient-text">
-          {currentChart ? currentChart.name : 'Natal Chart'}
-        </h1>
-        {currentChart && (
-          <p className="text-slate-200">
-            {currentChart.birth_date ?? currentChart.created_at} &middot; {currentChart.birth_time ?? ''} &middot;{' '}
-            {currentChart.birth_place_name ?? ''}
-          </p>
-        )}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-2 gradient-text">
+              {currentChart ? currentChart.name : 'Natal Chart'}
+            </h1>
+            {currentChart && (
+              <p className="text-slate-200">
+                {currentChart.birth_date ?? currentChart.created_at} &middot; {currentChart.birth_time ?? ''} &middot;{' '}
+                {currentChart.birth_place_name ?? ''}
+              </p>
+            )}
+          </div>
+
+          {/* True/Mean Angles Toggle */}
+          {chartData && (
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-xs text-slate-400">Mean</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={useTrueAngles}
+                aria-label="Toggle true angles"
+                onClick={() => void handleCalculate(!useTrueAngles)}
+                disabled={isCalculating}
+                className={`
+                  relative inline-flex h-7 w-12 items-center rounded-full transition-colors
+                  ${useTrueAngles ? 'bg-primary' : 'bg-white/20'}
+                  ${isCalculating ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
+                `}
+              >
+                <span
+                  className={`
+                    inline-block size-5 rounded-full bg-white shadow-sm transform transition-transform
+                    ${useTrueAngles ? 'translate-x-6' : 'translate-x-1'}
+                  `}
+                />
+              </button>
+              <span className="text-xs text-slate-400">True</span>
+              {isCalculating && (
+                <span className="ml-1 text-xs text-primary animate-pulse">Recalculating…</span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {displayLoading ? (
@@ -224,7 +261,7 @@ export default function ChartViewPage() {
             title="Chart not yet calculated"
             description="This chart has been created but not yet calculated. Click the button below to generate the full chart wheel and planetary positions."
             actionText="Calculate Chart"
-            onAction={handleCalculate}
+            onAction={() => void handleCalculate(useTrueAngles)}
             secondaryActionText="Back to Dashboard"
             onSecondaryAction={() => navigate('/dashboard')}
           />
