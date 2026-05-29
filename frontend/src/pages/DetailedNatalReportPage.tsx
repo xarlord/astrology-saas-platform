@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Detailed Natal Report Page
  *

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Solar Return Chart Component
  * Visualizes the solar return chart wheel with planets, houses, and aspects

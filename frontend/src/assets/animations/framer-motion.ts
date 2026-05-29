@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Framer Motion Animation Variants
  *

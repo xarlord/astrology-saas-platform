@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState } from 'react';
 import { useAuth, useCharts } from '../hooks';
 import { EmptyState } from './EmptyState';

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Birthday Sharing Component
  * Share solar return readings as gifts

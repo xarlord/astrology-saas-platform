@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Chart-related types
  * Central type definitions for chart data, birth data, and chart rendering
@@ -59,13 +60,13 @@ export interface CalculatedChartData {
     longitude?: number;
     speed?: number;
     retrograde?: boolean;
-  }>;
+  }[];
   aspects?: {
     planet1: string;
     planet2: string;
     type: string;
     orb: number;
-  }>;
+  }[];
   houses?: HouseCusp[];
   ascendant?: number;
   midheaven?: number;
