@@ -43,8 +43,8 @@ declare module 'recharts' {
     dataKey?: string;
     stroke?: string;
     strokeWidth?: number;
-    dot?: boolean | unknown;
-    activeDot?: boolean | unknown;
+    dot?: unknown;
+    activeDot?: unknown;
     name?: string;
     [key: string]: unknown;
   }
@@ -56,9 +56,7 @@ declare module 'recharts' {
   }
   export const XAxis: ComponentType<XAxisProps>;
 
-  interface YAxisProps {
-    [key: string]: unknown;
-  }
+  interface YAxisProps extends Record<string, unknown> {}
   export const YAxis: ComponentType<YAxisProps>;
 
   interface CartesianGridProps {
@@ -77,7 +75,7 @@ declare module 'recharts' {
     y?: string | number;
     stroke?: string;
     strokeDasharray?: string;
-    label?: string | unknown;
+    label?: unknown;
     [key: string]: unknown;
   }
   export const ReferenceLine: ComponentType<ReferenceLineProps>;

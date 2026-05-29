@@ -140,7 +140,6 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
     house_system = 'placidus',
     zodiac = 'tropical',
     sidereal_mode,
-    _use_true_angles = true,
   } = validatedData;
 
   // Map validation schema values to model enum values

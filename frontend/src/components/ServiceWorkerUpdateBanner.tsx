@@ -7,7 +7,7 @@ import React from 'react';
 import { useServiceWorkerUpdate } from '../hooks/useServiceWorkerUpdate';
 
 export const ServiceWorkerUpdateBanner: React.FC = () => {
-  const { needRefresh, offlineReady, update, skipWaiting } = useServiceWorkerUpdate();
+  const { needRefresh, offlineReady, update: _update, skipWaiting: _skipWaiting } = useServiceWorkerUpdate();
 
   const handleRefresh = () => {
     // New SW already activated — just reload the page

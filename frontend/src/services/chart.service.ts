@@ -6,7 +6,6 @@ import api from './api';
 import type { Chart, BirthData, ApiResponse } from './api.types';
 import {
   birthDataToAPI,
-  type APIChart,
   type BirthData as FrontendBirthData,
 } from '@/utils/apiTransformers';
 
@@ -100,7 +99,7 @@ export const chartService = {
     if (options?.useTrueAngles !== undefined) {
       params.set('use_true_angles', String(options.useTrueAngles));
     }
-    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate?${params}`);
+    const response = await api.post<ApiResponse<{ chart: Chart }>>(`/charts/${id}/calculate?${params.toString()}`);
     return { chart: response.data.data.chart };
   },
 };

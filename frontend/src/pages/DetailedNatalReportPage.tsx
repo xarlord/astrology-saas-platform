@@ -55,7 +55,7 @@ function transformApiChart(apiChart: Chart | null | undefined): NatalChart | nul
   if (!apiChart) return null;
 
   const bd = apiChart.birth_data;
-  const calc = apiChart.calculated_data;
+  const calc = apiChart.calculated_data as CalculatedChartData | undefined;
   const planets = calc?.planets ?? [];
 
   return {

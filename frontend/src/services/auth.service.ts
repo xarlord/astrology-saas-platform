@@ -48,7 +48,7 @@ export const authService = {
   },
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-    type RefreshResponse = { data: { accessToken: string } };
+    interface RefreshResponse { data: { accessToken: string } }
     const response = await api.post<RefreshResponse>(
       '/auth/refresh', {},
       { headers: { Authorization: `Bearer ${refreshToken}` } },

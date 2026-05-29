@@ -80,7 +80,7 @@ export function BirthDataForm({
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof BirthData, string>>>({});
-  const [placeSuggestions, setPlaceSuggestions] = useState<Array<{ display_name: string; lat: string; lon: string }>>([]);
+  const [placeSuggestions, setPlaceSuggestions] = useState<{ display_name: string; lat: string; lon: string }[]>([]);
   const [showPlaceSearch, setShowPlaceSearch] = useState(false);
   const placeInputRef = useRef<HTMLInputElement>(null);
 
@@ -91,7 +91,9 @@ export function BirthDataForm({
   const birthPlaceErrorId = 'birthPlace-error';
   const chartNameErrorId = 'chartName-error';
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const createChartMutation = useCreateChart();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const calculateChartMutation = useCalculateChart();
 
   // Handle geocoding — routed through backend proxy (avoids CORS/rate-limit issues with direct Nominatim calls)
@@ -165,7 +167,7 @@ export function BirthDataForm({
       birthPlace: place.display_name.split(',').slice(0, 3).join(',').trim(),
       latitude: lat,
       longitude: lon,
-      timezone: timezone || prev.timezone,
+      timezone: timezone ?? prev.timezone,
     }));
     setShowPlaceSearch(false);
     setPlaceSuggestions([]);
@@ -427,7 +429,7 @@ export function BirthDataForm({
                     key={index}
                     type="button"
                     role="option"
-                    onClick={() => selectPlace(place)}
+                    onClick={() => { void selectPlace(place); }}
                     className="w-full text-left px-3 py-2.5 text-sm text-slate-200 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2"
                   >
                     <span className="material-symbols-outlined text-slate-500 text-base" aria-hidden="true">

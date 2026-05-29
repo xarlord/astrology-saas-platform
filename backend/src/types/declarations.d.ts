@@ -10,6 +10,7 @@ declare module 'swagger-jsdoc' {
 }
 
 declare module 'bullmq' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export interface Job<T = unknown, R = unknown, N = string> {
     id: string | undefined;
     name: string;

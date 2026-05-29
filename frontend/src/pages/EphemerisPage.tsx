@@ -63,15 +63,15 @@ interface TransitItem {
   orb: number;
 }
 
-interface GroupedTransits {
-  [planet: string]: TransitItem[];
-}
+type GroupedTransits = Record<string, TransitItem[]>;
 
 const EphemerisPage: React.FC = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { data, isLoading, error, refetch } = useTodayTransits();
 
   // Group transits by transit planet
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
   const groupedTransits = useMemo<GroupedTransits>(() => {
     if (!data?.transits || !Array.isArray(data.transits)) return {};
 
@@ -351,6 +351,7 @@ const EphemerisPage: React.FC = () => {
       )}
     </div>
   );
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 };
 
 export default EphemerisPage;

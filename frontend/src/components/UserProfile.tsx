@@ -29,6 +29,7 @@ export interface UserProfile {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- union type cannot be an interface
 export type HouseSystem = 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
 
 export interface Chart {
@@ -100,6 +101,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     createdAt: typedUser.createdAt ?? new Date(),
     timezone: typedUser.timezone ?? 'UTC',
     subscription: {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- runtime type narrowing from API
       plan: (typedUser.plan as 'free' | 'premium' | 'professional') ?? 'free',
       status: 'active',
     },
@@ -138,6 +140,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
       houseSystem: 'placidus',
       zodiac: 'tropical',
     },
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- narrowing unknown from API
     calculatedData: chart.calculated_data as Record<string, unknown> | undefined,
     createdAt: new Date(chart.created_at ?? Date.now()),
     updatedAt: new Date(chart.created_at ?? Date.now()),

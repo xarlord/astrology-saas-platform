@@ -50,7 +50,7 @@ export default function ChartViewPage() {
     if (!chartId || isLoading || calculatingRef.current === chartId) return;
 
     // Always recalculate to ensure correct houses/planets after backend fixes
-    if (!currentChart || !currentChart.calculated_data) {
+    if (!currentChart?.calculated_data) {
       // No data yet — calculate for first time
       calculatingRef.current = chartId;
       setIsCalculating(true);
@@ -90,9 +90,9 @@ export default function ChartViewPage() {
     if (!hasPlanets || !hasHouses || !hasAspects) return { chartData: null as ChartData | null, planetList: [] as PlanetPosition[] };
 
     // Convert planets — backend may use { name } or { planet } as key, and may be array or object
-    const rawPlanets = calc.planets as Record<string, PlanetData> | PlanetPosition[] | Array<Record<string, unknown>>;
+    const rawPlanets = calc.planets as Record<string, PlanetData> | PlanetPosition[] | Record<string, unknown>[];
     const pList: PlanetPosition[] = Array.isArray(rawPlanets)
-      ? (rawPlanets as Array<Record<string, unknown>>).map((p) => ({
+      ? (rawPlanets as Record<string, unknown>[]).map((p) => ({
           planet: (p.planet as string) ?? (p.name as string) ?? '',
           sign: (p.sign as string) ?? '',
           degree: (p.degree as number) ?? 0,
@@ -104,7 +104,7 @@ export default function ChartViewPage() {
           longitude: (p.longitude as number) ?? 0,
           speed: (p.speed as number) ?? 0,
         }))
-      : Object.entries(rawPlanets as Record<string, PlanetData>).map(([name, p]) => ({
+      : Object.entries(rawPlanets).map(([name, p]) => ({
           planet: name,
           sign: p.sign,
           degree: p.degree,
@@ -311,7 +311,7 @@ export default function ChartViewPage() {
                       const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
                       // Build combined list: ASC first, then planets sorted by longitude, then MC
-                      type Row = { key: string; glyph: string; name: string; lon: number; sign: string; house: string };
+                      interface Row { key: string; glyph: string; name: string; lon: number; sign: string; house: string }
                       const rows: Row[] = [];
 
                       // ASC
@@ -389,8 +389,8 @@ export default function ChartViewPage() {
                       const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
                       const mcVal = chartData.midheaven ?? 0;
                       return [
-                        { label: 'ASC (Ascendant)', lon: chartData.ascendant! },
-                        { label: 'DSC (Descendant)', lon: (chartData.ascendant! + 180) % 360 },
+                        { label: 'ASC (Ascendant)', lon: chartData.ascendant },
+                        { label: 'DSC (Descendant)', lon: (chartData.ascendant + 180) % 360 },
                         { label: 'MC (Midheaven)', lon: mcVal },
                         { label: 'IC (Imum Coeli)', lon: (mcVal + 180) % 360 },
                       ].map(a => {
@@ -490,7 +490,7 @@ export default function ChartViewPage() {
                 { deg: 180, name: 'Opposition',  color: 'text-purple-400', symbol: '☍' },
               ];
               const orb = 8; // degree orb for house connections
-              type Conn = { h1: number; h2: number; type: string; color: string; symbol: string };
+              interface Conn { h1: number; h2: number; type: string; color: string; symbol: string }
               const connections: Conn[] = [];
               const cusps = chartData.houses.map(h => h.cusp ?? (h.house === 1 ? chartData.ascendant ?? 0 : h.degree + (Math.floor((chartData.ascendant ?? 0) / 30) + h.house - 1) * 30));
 

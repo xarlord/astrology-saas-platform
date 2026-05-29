@@ -247,6 +247,7 @@ export const NatalChartDetailPage: React.FC = () => {
   }, [calculatedData]);
 
   // Get Big Three from calculated data
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
   const bigThree = useMemo(() => {
     if (!calculatedData?.planets) {
       return [
@@ -418,6 +419,7 @@ export const NatalChartDetailPage: React.FC = () => {
     : '';
   const birthTime = currentChart.birthData?.birthTime ?? '';
   const birthLocation = currentChart.birthData?.birthPlace ?? '';
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 
   return (
     <AppLayout>

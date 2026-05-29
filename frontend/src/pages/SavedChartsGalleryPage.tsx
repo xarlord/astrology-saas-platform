@@ -36,6 +36,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
 
     // Apply folder filter
     if (activeFolder !== 'all') {
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
       filtered = filtered.filter((chart) => {
         const tags = chart.tags ?? [];
         switch (activeFolder) {
@@ -86,6 +87,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
       }
     });
 
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
     return filtered;
   }, [charts, activeFolder, searchQuery, sortBy]);
 

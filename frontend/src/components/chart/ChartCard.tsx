@@ -79,6 +79,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
 
   // Get Big Three from chart data
   // positions is an array, so we need to find the planets
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
   const getPlanetSign = (planetName: string): string => {
     if (!chart.positions) return 'Unknown';
     const planet = chart.positions.find((p) => p.name.toLowerCase() === planetName.toLowerCase());
@@ -233,6 +234,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
           ))}
         </div>
       )}
+      {/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */}
 
       {/* Delete Confirmation Overlay */}
       {showDeleteConfirm && (

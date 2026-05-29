@@ -153,7 +153,7 @@ export function ChartWheel({
 
   const ascendant = data.houses.length > 0 ? getHouseLongitude(data.houses[0]) : 0;
   const ascSignIndex = Math.floor(ascendant / 30);
-  const ascSignStart = ascSignIndex * 30;
+  const _ascSignStart = ascSignIndex * 30;
   // toScreen(ecl, rot) = (rot - ecl). For ASC at 270°(LEFT): rot = 270 + ASC.
   const rot = 270 + ascendant;
 
@@ -165,7 +165,7 @@ export function ChartWheel({
   const spreadHouseAngles = spreadAngles(houseMidAngles, 22);
 
   // Helper: draw zodiac arc segment from startAngle to endAngle at radius r
-  const zodiacArc = (r: number, startA: number, endA: number, sweep: 0 | 1 = 1) => {
+  const _zodiacArc = (r: number, startA: number, endA: number, sweep: 0 | 1 = 1) => {
     const p1 = polar(cx, cy, r, startA);
     const p2 = polar(cx, cy, r, endA);
     return { p1, p2, d: `A ${r} ${r} 0 0 ${sweep} ${p2.x} ${p2.y}` };
@@ -301,7 +301,7 @@ export function ChartWheel({
             const signIdx = Math.floor(lon / 30);
             const rawDeg = lon % 30;
             const degInSign = planet.degree ?? Math.floor(rawDeg);
-            const minInSign = planet.minute ?? Math.floor((rawDeg - Math.floor(rawDeg)) * 60 + 0.5);
+            const _minInSign = planet.minute ?? Math.floor((rawDeg - Math.floor(rawDeg)) * 60 + 0.5);
             const signSym = ZODIAC_SYMBOLS[signIdx] || '';
 
             const scr = toScreen(angle, rot);

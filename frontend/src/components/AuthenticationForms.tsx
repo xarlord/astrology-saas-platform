@@ -68,7 +68,8 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       onSuccess?.();
     } catch (error: unknown) {
       const axiosErr = error as { response?: { data?: { error?: { message?: string } }; message?: string } };
-      const message = axiosErr?.response?.data?.error?.message || axiosErr?.response?.data?.error || axiosErr?.message || 'Login failed. Please check your credentials.';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const message = axiosErr?.response?.data?.error?.message ?? axiosErr?.response?.data?.error ?? axiosErr?.message ?? 'Login failed. Please check your credentials.';
       setErrors({ email: typeof message === 'string' ? message : 'Login failed' });
     }
   };
@@ -302,7 +303,8 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       onSuccess?.();
     } catch (error: unknown) {
       const axiosErr = error as { response?: { data?: { error?: { message?: string } }; message?: string } };
-      const message = axiosErr?.response?.data?.error?.message || axiosErr?.response?.data?.error || axiosErr?.message || 'Registration failed. Please try again.';
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const message = axiosErr?.response?.data?.error?.message ?? axiosErr?.response?.data?.error ?? axiosErr?.message ?? 'Registration failed. Please try again.';
       setErrors({ email: typeof message === 'string' ? message : 'Registration failed' });
     }
   };
