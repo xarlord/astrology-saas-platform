@@ -130,7 +130,7 @@ describe('ChartWheel Accessibility', () => {
     it('should provide aria-label for each planet', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
       // Planet groups have aria-label like "Sun in aries 15°"
-      const sun = container.querySelector('g[aria-label*="Sun"]');
+      const sun = container.querySelector('g[aria-label*="Sun in"]');
       expect(sun).toBeInTheDocument();
 
       const moon = container.querySelector('g[aria-label*="Moon"]');
@@ -140,7 +140,7 @@ describe('ChartWheel Accessibility', () => {
     it('should include planet name, sign, and degree in aria-label', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
       // aria-label format: "Sun in aries 15°"
-      const sun = container.querySelector('g[aria-label*="Sun"]');
+      const sun = container.querySelector('g[aria-label*="Sun in"]');
 
       expect(sun).toBeDefined();
       const label = sun?.getAttribute('aria-label') || '';
@@ -151,7 +151,7 @@ describe('ChartWheel Accessibility', () => {
 
     it('should have role="img" on planet groups', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
-      const sun = container.querySelector('g[aria-label*="Sun"]');
+      const sun = container.querySelector('g[aria-label*="Sun in"]');
 
       expect(sun).toHaveAttribute('role', 'img');
     });
@@ -160,14 +160,14 @@ describe('ChartWheel Accessibility', () => {
   describe('Aspect Accessibility', () => {
     it('should provide aria-label for each aspect', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
-      const aspect = container.querySelector('g[aria-label*="trine"]');
+      const aspect = container.querySelector('g[aria-label*="Sun trine"]');
 
       expect(aspect).toBeInTheDocument();
     });
 
     it('should include both planets and aspect type in aria-label', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
-      const aspect = container.querySelector('g[aria-label*="trine"]');
+      const aspect = container.querySelector('g[aria-label*="Sun trine"]');
 
       expect(aspect?.getAttribute('aria-label')).toContain('Sun');
       expect(aspect?.getAttribute('aria-label')).toContain('Moon');
@@ -176,7 +176,7 @@ describe('ChartWheel Accessibility', () => {
 
     it('should have role="img" on aspect groups', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
-      const aspect = container.querySelector('g[aria-label*="trine"]');
+      const aspect = container.querySelector('g[aria-label*="Sun trine"]');
 
       expect(aspect).toHaveAttribute('role', 'img');
     });

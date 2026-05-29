@@ -289,7 +289,7 @@ describe('ChartViewPage', () => {
   describe('Error State', () => {
     it('should display error empty state when error exists', () => {
       mockStoreState = {
-        currentChart: null,
+        currentChart: { id: 'test', calculated_data: {} } as any,
         isLoading: false,
         error: 'Failed to fetch chart',
         fetchChart: mockFetchChart,
@@ -305,7 +305,7 @@ describe('ChartViewPage', () => {
 
     it('should have retry action in error state', () => {
       mockStoreState = {
-        currentChart: null,
+        currentChart: { id: 'test', calculated_data: {} } as any,
         isLoading: false,
         error: 'Network error',
         fetchChart: mockFetchChart,
@@ -320,7 +320,9 @@ describe('ChartViewPage', () => {
   });
 
   describe('Chart Not Found', () => {
-    it('should show chart not found when loading is done with no chart', () => {
+    it('should show chart not found when loading is done with no chart', async () => {
+      // Set currentChart to an object without calculated_data but with id
+      // so auto-calculate doesn't trigger isCalculating
       mockStoreState = {
         currentChart: null,
         isLoading: false,
@@ -331,7 +333,7 @@ describe('ChartViewPage', () => {
 
       renderWithProviders(createElement(ChartViewPage));
 
-      expect(screen.getByText('Chart not found')).toBeInTheDocument();
+      await screen.findByText('Chart not found');
     });
   });
 
