@@ -18,6 +18,8 @@ const mockRegistry = {
   create: null as jest.Mock<any, any> | null,
   delete: null as jest.Mock<any, any> | null,
   calculateMoonPhases: null as jest.Mock<any, any> | null,
+  getAllRetrogrades: null as jest.Mock<any, any> | null,
+  calculateEclipses: null as jest.Mock<any, any> | null,
 };
 
 jest.mock('../../modules/calendar/models/calendarEvent.model', () => ({
@@ -33,6 +35,8 @@ jest.mock('../../modules/calendar/services/globalEvents.service', () => ({
   __esModule: true,
   default: {
     calculateMoonPhases: (...args: any[]) => (mockRegistry.calculateMoonPhases as any)(...args),
+    getAllRetrogrades: (...args: any[]) => (mockRegistry.getAllRetrogrades as any)(...args),
+    calculateEclipses: (...args: any[]) => (mockRegistry.calculateEclipses as any)(...args),
   },
 }));
 
@@ -65,6 +69,8 @@ mockRegistry.findByMonth = jest.fn();
 mockRegistry.create = jest.fn();
 mockRegistry.delete = jest.fn();
 mockRegistry.calculateMoonPhases = jest.fn();
+mockRegistry.getAllRetrogrades = jest.fn();
+mockRegistry.calculateEclipses = jest.fn();
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -127,6 +133,10 @@ describe('Calendar Controller', () => {
     mockRegistry.findByMonth!.mockResolvedValue([]);
     // Default: no moon phases
     mockRegistry.calculateMoonPhases!.mockResolvedValue([]);
+    // Default: no retrogrades
+    mockRegistry.getAllRetrogrades!.mockResolvedValue([]);
+    // Default: no eclipses
+    mockRegistry.calculateEclipses!.mockResolvedValue([]);
   });
 
   // =========================================================================

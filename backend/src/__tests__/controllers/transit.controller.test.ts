@@ -271,23 +271,29 @@ describe('Transit Controller', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
-    it('should throw 404 if no charts found', async () => {
+    it('should return empty data if no charts found', async () => {
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
-      await expect(
-        getTodayTransits(mockRequest, mockResponse as Response, mockNext),
-      ).rejects.toThrow(AppError);
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      const jsonCall = (mockResponse.json as jest.Mock).mock.calls[0][0];
+      expect(jsonCall.success).toBe(true);
+      expect(jsonCall.data.chart).toBeNull();
+      expect(jsonCall.data.majorAspects).toEqual([]);
     });
 
-    it('should throw 400 if chart not calculated', async () => {
+    it('should return empty data if chart not calculated', async () => {
       const mockChart = {
         id: '456',
         calculated_data: null,
       };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
-      await expect(
-        getTodayTransits(mockRequest, mockResponse as Response, mockNext),
-      ).rejects.toThrow(AppError);
+      await getTodayTransits(mockRequest, mockResponse as Response, mockNext);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      const jsonCall = (mockResponse.json as jest.Mock).mock.calls[0][0];
+      expect(jsonCall.success).toBe(true);
+      expect(jsonCall.data.chart).toBeNull();
+      expect(jsonCall.data.majorAspects).toEqual([]);
     });
   });
 

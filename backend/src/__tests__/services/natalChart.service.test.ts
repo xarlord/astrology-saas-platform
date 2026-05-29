@@ -262,8 +262,8 @@ describe('NatalChartService', () => {
         longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
-      expect(chart.birthData.date.getHours()).toBe(12); // production code always sets hours to 12 local
-      expect(chart.birthData.date.getMinutes()).toBe(0); // production code always sets minutes to 0
+      expect(chart.birthData.date.getUTCHours()).toBe(14); // parseBirthTime sets UTC hours from time string
+      expect(chart.birthData.date.getUTCMinutes()).toBe(30); // parseBirthTime sets UTC minutes from time string
     });
 
     test('should default to noon when no birth time provided', () => {
@@ -273,7 +273,7 @@ describe('NatalChartService', () => {
         longitude: -74.006,
       };
       const chart = service.calculateNatalChart(input);
-      expect(chart.birthData.date.getHours()).toBe(12); // production code defaults to noon local
+      expect(chart.birthData.date.getUTCHours()).toBe(12); // production code defaults to noon UTC
     });
   });
 

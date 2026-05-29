@@ -67,12 +67,12 @@ describe('Plan Enforcement Middleware', () => {
       expect(mockNext).toHaveBeenCalledWith();
     });
 
-    it('should reject free user at chart limit (3 charts)', async () => {
+    it('should reject free user at chart limit (10 charts)', async () => {
       (UserModel.findById as jest.Mock).mockResolvedValue({
         id: 'user-1',
         plan: 'free',
       });
-      (ChartModel.countByUserId as jest.Mock).mockResolvedValue(3);
+      (ChartModel.countByUserId as jest.Mock).mockResolvedValue(10);
 
       const req = mockRequest('user-1');
       const res = mockResponse();
