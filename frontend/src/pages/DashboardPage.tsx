@@ -87,7 +87,7 @@ export default function DashboardPage() {
   }, [isAuthenticated, fetchCharts]);
 
   const moon = getMoonPhaseInfo();
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call */
   const transitPlanets = todayTransits?.transitPlanets;
   const planetEntries: [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][] = transitPlanets
     ? Object.entries(transitPlanets).slice(0, 4) as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][]
@@ -439,7 +439,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     ))}
-                    {/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */}
+                    {/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call */}
 
                     {/* Create New Chart Card */}
                     {charts.length > 0 && (

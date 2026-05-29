@@ -91,9 +91,7 @@ export function BirthDataForm({
   const birthPlaceErrorId = 'birthPlace-error';
   const chartNameErrorId = 'chartName-error';
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const createChartMutation = useCreateChart();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const calculateChartMutation = useCalculateChart();
 
   // Handle geocoding — routed through backend proxy (avoids CORS/rate-limit issues with direct Nominatim calls)
