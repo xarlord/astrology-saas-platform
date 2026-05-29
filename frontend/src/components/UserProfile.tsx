@@ -29,7 +29,6 @@ export interface UserProfile {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- union type cannot be an interface
 export type HouseSystem = 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric';
 
 export interface Chart {
@@ -124,8 +123,8 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     userId: '', // Not available in service Chart type
     name: chart.name,
     type: (chart.type ?? 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     birthData: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       date: new Date(chart.birth_data?.birth_date ?? Date.now()),
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       time: chart.birth_data?.birth_time ?? '00:00',
