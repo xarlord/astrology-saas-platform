@@ -373,7 +373,7 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123!@#');
+      await user.type(passwordInput, 'Password123!@$');
       await user.type(confirmPasswordInput, 'Password456!@#');
 
       const submitButton = screen.getByRole('button', { name: /create account/i });
@@ -396,8 +396,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123!@#');
-      await user.type(confirmPasswordInput, 'Password123!@#');
+      await user.type(passwordInput, 'Password123!@$');
+      await user.type(confirmPasswordInput, 'Password123!@$');
 
       await user.click(submitButton);
 
@@ -448,8 +448,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123!@#');
-      await user.type(confirmPasswordInput, 'Password123!@#');
+      await user.type(passwordInput, 'Password123!@$');
+      await user.type(confirmPasswordInput, 'Password123!@$');
 
       await user.click(submitButton);
 
@@ -475,8 +475,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'existing@example.com');
-      await user.type(passwordInput, 'Password123!@#');
-      await user.type(confirmPasswordInput, 'Password123!@#');
+      await user.type(passwordInput, 'Password123!@$');
+      await user.type(confirmPasswordInput, 'Password123!@$');
 
       await user.click(submitButton);
 

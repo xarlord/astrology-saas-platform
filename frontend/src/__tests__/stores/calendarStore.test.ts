@@ -343,7 +343,6 @@ describe('calendarStore', () => {
       expect(useCalendarStore.getState().error).toBe('Create failed');
     });
   });
-  });
 
   describe('updateEvent action', () => {
     it('should update event successfully', async () => {

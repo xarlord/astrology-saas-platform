@@ -24,35 +24,29 @@ vi.mock('../../services/calendar.service', () => ({
   exportCalendar: (...args: any[]) => mockExportCalendar(...args),
 }));
 
-// Note: The actual imports are replaced by mocks above
-// declare const mockGetCalendarMonth: any;
-// declare const mockSetReminder: any;
-// declare const mockExportCalendar: any;
+// Mock useFocusTrap (used by DailyWeatherModal)
+vi.mock('../../hooks/useFocusTrap', () => ({
+  useFocusTrap: () => ({ current: null }),
+}));
 
 describe('CalendarView Component', () => {
-  const mockCalendarData = {
-    meta: {
-      month: 2,
-      year: 2026,
-      total: 1,
-    },
-    data: [
-      {
-        id: 'evt_1',
-        user_id: null,
-        event_type: 'retrograde',
-        event_date: new Date('2026-02-15T00:00:00Z'),
-        end_date: new Date('2026-02-25T00:00:00Z'),
-        event_data: {
-          intensity: 7,
-          affectedPlanets: ['mercury'],
-          description: 'Communication challenges',
-          advice: ['Back up data'],
-        },
-        interpretation: null,
+  // getCalendarMonth returns CalendarEvent[] (the raw array from the service)
+  const mockCalendarData = [
+    {
+      id: 'evt_1',
+      user_id: null,
+      event_type: 'retrograde',
+      event_date: '2026-02-15',
+      end_date: '2026-02-25',
+      event_data: {
+        intensity: 7,
+        affectedPlanets: ['mercury'],
+        description: 'Communication challenges',
+        advice: ['Back up data'],
       },
-    ],
-  };
+      interpretation: null,
+    },
+  ];
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -108,7 +102,9 @@ describe('CalendarView Component', () => {
     mockGetCalendarMonth.mockResolvedValue(mockCalendarData);
 
     const today = new Date();
-    render(<CalendarView initialMonth={today.getMonth() + 2} initialYear={today.getFullYear()} />);
+    // Use a month that is guaranteed to not be the current month
+    const nonCurrentMonth = ((today.getMonth() + 1) % 12) + 1; // different from current
+    render(<CalendarView initialMonth={nonCurrentMonth} initialYear={today.getFullYear()} />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /today/i })).toBeInTheDocument();
@@ -139,7 +135,7 @@ describe('CalendarView Component', () => {
     render(<CalendarView initialMonth={2} initialYear={2026} />);
 
     await waitFor(() => {
-      expect(screen.getByText('1')).toBeInTheDocument();
+      expect(screen.getAllByText('1').length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -236,7 +232,8 @@ describe('DailyWeatherModal Component', () => {
       <DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />,
     );
 
-    const overlay = container.querySelector('.modal-overlay');
+    // The overlay is the outermost fixed div
+    const overlay = container.firstChild as HTMLElement;
     if (overlay) {
       fireEvent.click(overlay);
       expect(onClose).toHaveBeenCalledTimes(1);
@@ -247,7 +244,7 @@ describe('DailyWeatherModal Component', () => {
     const onClose = vi.fn();
     render(<DailyWeatherModal date="2026-02-15" weather={mockWeather} onClose={onClose} />);
 
-    const modalContent = screen.getByText(/february 15, 2026/i).closest('.modal-content');
+    const modalContent = screen.getByText(/february 15, 2026/i).closest('[role="dialog"]');
     if (modalContent) {
       fireEvent.click(modalContent);
       expect(onClose).not.toHaveBeenCalled();
@@ -347,7 +344,7 @@ describe('ReminderSettings Component', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Failed to save/i)).toBeInTheDocument();
+      expect(screen.getByText(/failed to save/i)).toBeInTheDocument();
     });
   });
 });

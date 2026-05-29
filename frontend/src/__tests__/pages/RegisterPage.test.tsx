@@ -202,15 +202,15 @@ describe('RegisterPage', () => {
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123!@#');
-      await user.type(confirmPasswordInput, 'SecurePassword123!@#');
+      await user.type(passwordInput, 'SecurePassword123!@$');
+      await user.type(confirmPasswordInput, 'SecurePassword123!@$');
       await user.click(submitButton);
 
       await waitFor(() => {
         expect(mockAuthHook.register).toHaveBeenCalledWith({
           name: 'John Doe',
           email: 'john@example.com',
-          password: 'SecurePassword123!@#',
+          password: 'SecurePassword123!@$',
         });
       });
     });
@@ -228,8 +228,8 @@ describe('RegisterPage', () => {
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123!@#');
-      await user.type(confirmPasswordInput, 'SecurePassword123!@#');
+      await user.type(passwordInput, 'SecurePassword123!@$');
+      await user.type(confirmPasswordInput, 'SecurePassword123!@$');
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -250,8 +250,8 @@ describe('RegisterPage', () => {
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123!@#');
-      await user.type(confirmPasswordInput, 'SecurePassword123!@#');
+      await user.type(passwordInput, 'SecurePassword123!@$');
+      await user.type(confirmPasswordInput, 'SecurePassword123!@$');
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -276,7 +276,7 @@ describe('RegisterPage', () => {
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123!@#');
+      await user.type(passwordInput, 'SecurePassword123!@$');
       await user.type(confirmPasswordInput, 'DifferentPassword456!@#');
       await user.click(submitButton);
 
@@ -298,7 +298,7 @@ describe('RegisterPage', () => {
 
       await user.type(nameInput, 'John Doe');
       await user.type(emailInput, 'john@example.com');
-      await user.type(passwordInput, 'SecurePassword123!@#');
+      await user.type(passwordInput, 'SecurePassword123!@$');
       await user.type(confirmPasswordInput, 'DifferentPassword456!@#');
       await user.click(submitButton);
 
@@ -575,15 +575,15 @@ describe('RegisterPage', () => {
 
       fireEvent.change(nameInput, { target: { value: 'John Doe' } });
       fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'SecurePassword123!@#' } });
-      fireEvent.change(confirmPasswordInput, { target: { value: 'SecurePassword123!@#' } });
+      fireEvent.change(passwordInput, { target: { value: 'SecurePassword123!@$' } });
+      fireEvent.change(confirmPasswordInput, { target: { value: 'SecurePassword123!@$' } });
       fireEvent.submit(form);
 
       await waitFor(() => {
         expect(mockAuthHook.register).toHaveBeenCalledWith({
           name: 'John Doe',
           email: 'john@example.com',
-          password: 'SecurePassword123!@#',
+          password: 'SecurePassword123!@$',
         });
       });
     });
@@ -608,8 +608,8 @@ describe('RegisterPage', () => {
 
       await user.type(nameInput, 'Jane Doe');
       await user.type(emailInput, 'jane@example.com');
-      await user.type(passwordInput, 'SecurePassword123!@#');
-      await user.type(confirmPasswordInput, 'SecurePassword123!@#');
+      await user.type(passwordInput, 'SecurePassword123!@$');
+      await user.type(confirmPasswordInput, 'SecurePassword123!@$');
       await user.click(submitButton);
 
       await waitFor(() => {

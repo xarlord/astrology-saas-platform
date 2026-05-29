@@ -13,11 +13,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Mock the Zustand store
 const mockFetchChart = vi.fn();
+const mockCalculateChart = vi.fn();
 let mockStoreState = {
   currentChart: null as Record<string, unknown> | null,
   isLoading: false,
   error: null as string | null,
   fetchChart: mockFetchChart,
+  calculateChart: mockCalculateChart,
 };
 
 vi.mock('../../store/chartsStore', () => ({
@@ -164,12 +166,17 @@ describe('ChartViewPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset store state to loading state for most tests
+    // Include calculateChart as the component destructures it
     mockStoreState = {
       currentChart: null,
       isLoading: true,
       error: null,
       fetchChart: mockFetchChart,
+      calculateChart: mockCalculateChart,
     };
+    // Default: calculateChart resolves successfully
+    mockCalculateChart.mockResolvedValue(undefined);
+    mockFetchChart.mockResolvedValue(undefined);
   });
 
   describe('Page Rendering', () => {
@@ -286,6 +293,7 @@ describe('ChartViewPage', () => {
         isLoading: false,
         error: 'Failed to fetch chart',
         fetchChart: mockFetchChart,
+        calculateChart: mockCalculateChart,
       };
 
       renderWithProviders(createElement(ChartViewPage));
@@ -301,6 +309,7 @@ describe('ChartViewPage', () => {
         isLoading: false,
         error: 'Network error',
         fetchChart: mockFetchChart,
+        calculateChart: mockCalculateChart,
       };
 
       renderWithProviders(createElement(ChartViewPage));
@@ -317,6 +326,7 @@ describe('ChartViewPage', () => {
         isLoading: false,
         error: null,
         fetchChart: mockFetchChart,
+        calculateChart: mockCalculateChart,
       };
 
       renderWithProviders(createElement(ChartViewPage));
