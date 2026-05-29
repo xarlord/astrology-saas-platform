@@ -51,7 +51,7 @@ interface NatalChart {
  * Accepts Chart | null so callers can safely pass the optional `chart` field
  * from a calculated-chart response without an extra null-check.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-redundant-type-constituents */
 function transformApiChart(apiChart: Chart | null | undefined): NatalChart | null {
   if (!apiChart) return null;
 
@@ -99,7 +99,7 @@ function transformApiChart(apiChart: Chart | null | undefined): NatalChart | nul
     ],
   };
 }
-/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents */
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-redundant-type-constituents */
 
 const DetailedNatalReportPage: React.FC = () => {
   const { chartId } = useParams<{ chartId: string }>();

@@ -13,6 +13,7 @@ module.exports = {
     'e2e',
     'tests',
     'playwright.config.ts',
+    'playwright.config.prod.ts',
     'playwright.config.local.ts',
     'vitest.config.ts',
     'scripts',
