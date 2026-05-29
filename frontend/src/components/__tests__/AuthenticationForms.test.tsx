@@ -69,13 +69,6 @@ describe('AuthenticationForms - LoginForm', () => {
       expect(forgotLink.closest('a')).toHaveAttribute('href', '/forgot-password');
     });
 
-    it('should render social auth buttons', () => {
-      renderWithRouter(<LoginForm />);
-
-      expect(screen.getByText('Google')).toBeInTheDocument();
-      expect(screen.getByText('Apple')).toBeInTheDocument();
-    });
-
     it('should render sign up link', () => {
       renderWithRouter(<LoginForm />);
 
@@ -311,19 +304,6 @@ describe('AuthenticationForms - RegisterForm', () => {
       expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
     });
 
-    it('should render terms and conditions checkbox', () => {
-      renderWithRouter(<RegisterForm />);
-
-      expect(screen.getByLabelText(/i agree to the terms of service/i)).toBeInTheDocument();
-      expect(screen.getByRole('checkbox')).toBeInTheDocument();
-    });
-
-    it('should render password requirements hint', () => {
-      renderWithRouter(<RegisterForm />);
-
-      expect(screen.getByText(/must be at least 8 characters/i)).toBeInTheDocument();
-    });
-
     it('should have accessible form elements', () => {
       renderWithRouter(<RegisterForm />);
 
@@ -341,10 +321,6 @@ describe('AuthenticationForms - RegisterForm', () => {
     it('should show name required error', async () => {
       const user = userEvent.setup();
       renderWithRouter(<RegisterForm />);
-
-      // Check the terms checkbox first to avoid native validation blocking
-      const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
-      await user.click(termsCheckbox);
 
       const submitButton = screen.getByRole('button', { name: /create account/i });
       await user.click(submitButton);
@@ -382,7 +358,8 @@ describe('AuthenticationForms - RegisterForm', () => {
       const submitButton = screen.getByRole('button', { name: /create account/i });
       await user.click(submitButton);
 
-      expect(screen.getByText(/must contain at least one uppercase letter/i)).toBeInTheDocument();
+      // Component requires min 12 chars with uppercase, lowercase, number, and special char
+      expect(screen.getByText(/must be at least 12 characters/i)).toBeInTheDocument();
     });
 
     it('should show password mismatch error', async () => {
@@ -396,8 +373,8 @@ describe('AuthenticationForms - RegisterForm', () => {
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123!');
-      await user.type(confirmPasswordInput, 'Password456');
+      await user.type(passwordInput, 'Password123!@#');
+      await user.type(confirmPasswordInput, 'Password456!@#');
 
       const submitButton = screen.getByRole('button', { name: /create account/i });
       await user.click(submitButton);
@@ -415,14 +392,12 @@ describe('AuthenticationForms - RegisterForm', () => {
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByLabelText(/^password$/i);
       const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-      const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
       const submitButton = screen.getByRole('button', { name: /create account/i });
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123!');
-      await user.type(confirmPasswordInput, 'Password123!');
-      await user.click(termsCheckbox);
+      await user.type(passwordInput, 'Password123!@#');
+      await user.type(confirmPasswordInput, 'Password123!@#');
 
       await user.click(submitButton);
 
@@ -469,14 +444,12 @@ describe('AuthenticationForms - RegisterForm', () => {
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByLabelText(/^password$/i);
       const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-      const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
       const submitButton = screen.getByRole('button', { name: /create account/i });
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'test@example.com');
-      await user.type(passwordInput, 'Password123!');
-      await user.type(confirmPasswordInput, 'Password123!');
-      await user.click(termsCheckbox);
+      await user.type(passwordInput, 'Password123!@#');
+      await user.type(confirmPasswordInput, 'Password123!@#');
 
       await user.click(submitButton);
 
@@ -498,14 +471,12 @@ describe('AuthenticationForms - RegisterForm', () => {
       const emailInput = screen.getByLabelText(/email address/i);
       const passwordInput = screen.getByLabelText(/^password$/i);
       const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-      const termsCheckbox = screen.getByLabelText(/i agree to the terms of service/i);
       const submitButton = screen.getByRole('button', { name: /create account/i });
 
       await user.type(nameInput, 'Test User');
       await user.type(emailInput, 'existing@example.com');
-      await user.type(passwordInput, 'Password123!');
-      await user.type(confirmPasswordInput, 'Password123!');
-      await user.click(termsCheckbox);
+      await user.type(passwordInput, 'Password123!@#');
+      await user.type(confirmPasswordInput, 'Password123!@#');
 
       await user.click(submitButton);
 

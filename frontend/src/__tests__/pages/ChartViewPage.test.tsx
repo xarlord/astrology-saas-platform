@@ -216,6 +216,7 @@ describe('ChartViewPage', () => {
     it('should have heading in mb-8 container', () => {
       renderWithProviders(createElement(ChartViewPage));
       const heading = screen.getByText('Natal Chart');
+      // h1 is inside <div> → <div class="flex..."> → <div class="mb-8">
       const container = heading.closest('.mb-8');
       expect(container).toBeInTheDocument();
     });
@@ -225,8 +226,10 @@ describe('ChartViewPage', () => {
     it('should have mb-8 spacing on header container', () => {
       renderWithProviders(createElement(ChartViewPage));
       const heading = screen.getByText('Natal Chart');
-      const container = heading.parentElement;
-      expect(container?.className).toContain('mb-8');
+      // The mb-8 class is on a grandparent div, not the immediate parentElement
+      const mb8Container = heading.closest('.mb-8');
+      expect(mb8Container).toBeInTheDocument();
+      expect(mb8Container?.className).toContain('mb-8');
     });
 
     it('should wrap content in AppLayout', () => {

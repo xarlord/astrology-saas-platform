@@ -88,14 +88,13 @@ describe('useAuth', () => {
       expect(typeof result.current.login).toBe('function');
     });
 
-    it('should call store login and return true on success', async () => {
+    it('should call store login and resolve on success', async () => {
       mockAuthStore.login.mockResolvedValueOnce(undefined);
 
       const { result } = renderHook(() => useAuth());
 
-      let loginResult: boolean | undefined;
       await act(async () => {
-        loginResult = await result.current.login({
+        await result.current.login({
           email: 'test@example.com',
           password: 'password123',
         });
@@ -105,23 +104,29 @@ describe('useAuth', () => {
         email: 'test@example.com',
         password: 'password123',
       });
-      expect(loginResult).toBe(true);
     });
 
-    it('should return false on login failure', async () => {
+    it('should propagate login failure', async () => {
       mockAuthStore.login.mockRejectedValueOnce(new Error('Invalid credentials'));
 
       const { result } = renderHook(() => useAuth());
 
-      let loginResult: boolean | undefined;
       await act(async () => {
-        loginResult = await result.current.login({
-          email: 'test@example.com',
-          password: 'wrong',
-        });
+        try {
+          await result.current.login({
+            email: 'test@example.com',
+            password: 'wrong',
+          });
+          expect.fail('Should have thrown');
+        } catch {
+          // Expected
+        }
       });
 
-      expect(loginResult).toBe(false);
+      expect(mockAuthStore.login).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'wrong',
+      });
     });
   });
 
@@ -132,14 +137,13 @@ describe('useAuth', () => {
       expect(typeof result.current.register).toBe('function');
     });
 
-    it('should call store register and return true on success', async () => {
+    it('should call store register and resolve on success', async () => {
       mockAuthStore.register.mockResolvedValueOnce(undefined);
 
       const { result } = renderHook(() => useAuth());
 
-      let registerResult: boolean | undefined;
       await act(async () => {
-        registerResult = await result.current.register({
+        await result.current.register({
           email: 'new@example.com',
           password: 'password123',
           name: 'New User',
@@ -151,24 +155,31 @@ describe('useAuth', () => {
         password: 'password123',
         name: 'New User',
       });
-      expect(registerResult).toBe(true);
     });
 
-    it('should return false on register failure', async () => {
+    it('should propagate register failure', async () => {
       mockAuthStore.register.mockRejectedValueOnce(new Error('Email exists'));
 
       const { result } = renderHook(() => useAuth());
 
-      let registerResult: boolean | undefined;
       await act(async () => {
-        registerResult = await result.current.register({
-          email: 'existing@example.com',
-          password: 'password123',
-          name: 'Existing User',
-        });
+        try {
+          await result.current.register({
+            email: 'existing@example.com',
+            password: 'password123',
+            name: 'Existing User',
+          });
+          expect.fail('Should have thrown');
+        } catch {
+          // Expected
+        }
       });
 
-      expect(registerResult).toBe(false);
+      expect(mockAuthStore.register).toHaveBeenCalledWith({
+        email: 'existing@example.com',
+        password: 'password123',
+        name: 'Existing User',
+      });
     });
   });
 

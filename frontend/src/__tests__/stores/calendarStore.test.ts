@@ -122,12 +122,10 @@ describe('calendarStore', () => {
 
   describe('loadEvents action', () => {
     it('should load events successfully', async () => {
-      const mockResponse = {
-        data: [
-          { ...mockEvent, type: 'transit' },
-          { ...mockEvent, id: 'event-2', type: 'lunar' },
-        ],
-      };
+      const mockResponse = [
+        { ...mockEvent, type: 'transit' },
+        { ...mockEvent, id: 'event-2', type: 'lunar' },
+      ];
 
       vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse);
 
@@ -143,13 +141,11 @@ describe('calendarStore', () => {
     });
 
     it('should filter events by type when filter is set', async () => {
-      const mockResponse = {
-        data: [
-          { ...mockEvent, id: 'event-1', type: 'transit' },
-          { ...mockEvent, id: 'event-2', type: 'lunar' },
-          { ...mockEvent, id: 'event-3', type: 'custom' },
-        ],
-      };
+      const mockResponse = [
+        { ...mockEvent, id: 'event-1', type: 'transit' },
+        { ...mockEvent, id: 'event-2', type: 'lunar' },
+        { ...mockEvent, id: 'event-3', type: 'custom' },
+      ];
 
       vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse);
 
@@ -169,7 +165,7 @@ describe('calendarStore', () => {
     });
 
     it('should pass showGlobal filter value', async () => {
-      const mockResponse = { data: [] };
+      const mockResponse: any[] = [];
       vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse);
 
       useCalendarStore.setState({
@@ -209,11 +205,11 @@ describe('calendarStore', () => {
 
   describe('loadLunarPhases action', () => {
     it('should load and transform lunar phases successfully', async () => {
-      const mockResponse = {
-        data: [mockLunarPhaseEvent],
-      };
+      const mockResponse = [
+        mockLunarPhaseEvent,
+      ];
 
-      vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse);
+      vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse as any);
 
       await act(async () => {
         await useCalendarStore.getState().loadLunarPhases(2024, 2);
@@ -235,15 +231,13 @@ describe('calendarStore', () => {
     });
 
     it('should filter only lunar-phase events', async () => {
-      const mockResponse = {
-        data: [
-          mockLunarPhaseEvent,
-          { id: 'other-1', event_type: 'transit', event_data: {} },
-          { id: 'other-2', event_type: 'custom', event_data: {} },
-        ],
-      };
+      const mockResponse = [
+        mockLunarPhaseEvent,
+        { id: 'other-1', event_type: 'transit', event_data: {} },
+        { id: 'other-2', event_type: 'custom', event_data: {} },
+      ];
 
-      vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse);
+      vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse as any);
 
       await act(async () => {
         await useCalendarStore.getState().loadLunarPhases(2024, 2);
@@ -255,17 +249,15 @@ describe('calendarStore', () => {
     });
 
     it('should handle missing event data gracefully', async () => {
-      const mockResponse = {
-        data: [
-          {
-            id: 'lunar-incomplete',
-            event_type: 'lunar-phase',
-            event_data: {}, // Missing fields
-          },
-        ],
-      };
+      const mockResponse = [
+        {
+          id: 'lunar-incomplete',
+          event_type: 'lunar-phase',
+          event_data: {}, // Missing fields
+        },
+      ];
 
-      vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse);
+      vi.mocked(calendarService.getMonthEvents).mockResolvedValueOnce(mockResponse as any);
 
       await act(async () => {
         await useCalendarStore.getState().loadLunarPhases(2024, 2);
@@ -300,14 +292,15 @@ describe('calendarStore', () => {
         description: 'New event description',
       };
 
+      const mockCreatedEvent = { id: 'new-event-1', ...newEvent };
       const mockResponse = {
-        data: { id: 'new-event-1', ...newEvent },
+        data: mockCreatedEvent,
       };
 
-      vi.mocked(calendarService.createCustomEvent).mockResolvedValueOnce(mockResponse);
+      vi.mocked(calendarService.createCustomEvent).mockResolvedValueOnce(mockResponse as any);
 
       await act(async () => {
-        await useCalendarStore.getState().createEvent(newEvent);
+        await useCalendarStore.getState().createEvent(newEvent as any);
       });
 
       const state = useCalendarStore.getState();
@@ -324,11 +317,10 @@ describe('calendarStore', () => {
       const mockResponse = {
         data: { id: 'new-2', ...newEvent },
       };
-
-      vi.mocked(calendarService.createCustomEvent).mockResolvedValueOnce(mockResponse);
+      vi.mocked(calendarService.createCustomEvent).mockResolvedValueOnce(mockResponse as any);
 
       await act(async () => {
-        await useCalendarStore.getState().createEvent(newEvent);
+        await useCalendarStore.getState().createEvent(newEvent as any);
       });
 
       expect(useCalendarStore.getState().events).toHaveLength(2);
@@ -341,7 +333,7 @@ describe('calendarStore', () => {
 
       await act(async () => {
         try {
-          await useCalendarStore.getState().createEvent({ type: 'custom' });
+          await useCalendarStore.getState().createEvent({ type: 'custom' } as any);
           expect.fail('Should have thrown');
         } catch {
           // Expected
@@ -350,6 +342,7 @@ describe('calendarStore', () => {
 
       expect(useCalendarStore.getState().error).toBe('Create failed');
     });
+  });
   });
 
   describe('updateEvent action', () => {
@@ -361,10 +354,10 @@ describe('calendarStore', () => {
         data: { ...mockEvent, title: 'Updated Title' },
       };
 
-      vi.mocked(calendarService.updateEvent).mockResolvedValueOnce(mockResponse);
+      vi.mocked(calendarService.updateEvent).mockResolvedValueOnce(mockResponse as any);
 
       await act(async () => {
-        await useCalendarStore.getState().updateEvent('event-1', updates);
+        await useCalendarStore.getState().updateEvent('event-1', updates as any);
       });
 
       const state = useCalendarStore.getState();

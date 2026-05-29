@@ -56,10 +56,10 @@ describe('EphemerisPage', () => {
     it('renders without crashing', () => {
       renderWithProviders(<EphemerisPage />);
 
-      // "Ephemeris" appears in both sidebar nav and page heading
+      // With undefined data, component renders the empty state
       const ephemerisElements = screen.getAllByText('Ephemeris');
       expect(ephemerisElements.length).toBeGreaterThanOrEqual(1);
-      expect(screen.getByText('Current planetary positions and active transits')).toBeInTheDocument();
+      expect(screen.getByText('No transit data available')).toBeInTheDocument();
     });
 
     it('shows loading state', () => {

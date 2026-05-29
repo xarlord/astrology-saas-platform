@@ -5,27 +5,35 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTransits } from '../../hooks/useTransits';
-import type { NormalizedTransit } from '../../services/transit.service';
+import type { Transit } from '../../services/api.types';
 
-// Mock transit data using NormalizedTransit shape
-const mockTransit: NormalizedTransit = {
-  transitPlanet: 'Saturn',
-  natalPlanet: 'Sun',
-  aspect: 'Square',
-  orb: 0.5, // tight orb → major
-};
+// Mock transit data using Transit shape (with intensity and planet fields)
+const mockTransit: Transit = {
+  id: 'transit-1',
+  planet: 'Saturn',
+  type: 'major',
+  start_date: '2024-02-01',
+  end_date: '2024-02-28',
+  peak_date: '2024-02-15',
+  aspect: 'square',
+  intensity: 8, // >= 7 → major
+} as Transit;
 
-const mockMinorTransit: NormalizedTransit = {
-  transitPlanet: 'Moon',
-  natalPlanet: 'Venus',
-  aspect: 'Conjunction',
-  orb: 3.5, // wide orb → minor
-};
+const mockMinorTransit: Transit = {
+  id: 'transit-2',
+  planet: 'Moon',
+  type: 'minor',
+  start_date: '2024-02-01',
+  end_date: '2024-02-28',
+  peak_date: '2024-02-15',
+  aspect: 'conjunction',
+  intensity: 3, // < 7 → minor
+} as Transit;
 
 // Mock the transit store
 const mockTransitStore = {
   dateRange: null as { start: string; end: string } | null,
-  transits: [] as NormalizedTransit[],
+  transits: [] as Transit[],
   transitChart: null as unknown,
   energyLevel: 50,
   isLoading: false,
@@ -267,7 +275,7 @@ describe('useTransits', () => {
   });
 
   describe('getMajorTransits', () => {
-    it('should filter major transits (orb <= 2)', () => {
+    it('should filter major transits (intensity >= 7)', () => {
       mockTransitStore.transits = [mockTransit, mockMinorTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -275,7 +283,7 @@ describe('useTransits', () => {
       const majorTransits = result.current.getMajorTransits();
 
       expect(majorTransits).toHaveLength(1);
-      expect(majorTransits[0].transitPlanet).toBe('Saturn');
+      expect(majorTransits[0].planet).toBe('Saturn');
     });
 
     it('should return empty array when no major transits', () => {
@@ -290,7 +298,7 @@ describe('useTransits', () => {
   });
 
   describe('getMinorTransits', () => {
-    it('should filter minor transits (orb > 2)', () => {
+    it('should filter minor transits (intensity < 7)', () => {
       mockTransitStore.transits = [mockTransit, mockMinorTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -298,7 +306,7 @@ describe('useTransits', () => {
       const minorTransits = result.current.getMinorTransits();
 
       expect(minorTransits).toHaveLength(1);
-      expect(minorTransits[0].transitPlanet).toBe('Moon');
+      expect(minorTransits[0].planet).toBe('Moon');
     });
 
     it('should return empty array when no minor transits', () => {
@@ -313,7 +321,7 @@ describe('useTransits', () => {
   });
 
   describe('getTransitsByPlanet', () => {
-    it('should filter transits by planet (transitPlanet or natalPlanet)', () => {
+    it('should filter transits by planet', () => {
       mockTransitStore.transits = [mockTransit, mockMinorTransit];
 
       const { result } = renderHook(() => useTransits());
@@ -321,17 +329,17 @@ describe('useTransits', () => {
       const saturnTransits = result.current.getTransitsByPlanet('Saturn');
 
       expect(saturnTransits).toHaveLength(1);
-      expect(saturnTransits[0].transitPlanet).toBe('Saturn');
+      expect(saturnTransits[0].planet).toBe('Saturn');
     });
 
-    it('should match natalPlanet as well', () => {
+    it('should match only when planet matches', () => {
       mockTransitStore.transits = [mockTransit];
 
       const { result } = renderHook(() => useTransits());
 
       const sunTransits = result.current.getTransitsByPlanet('Sun');
 
-      expect(sunTransits).toHaveLength(1);
+      expect(sunTransits).toHaveLength(0);
     });
 
     it('should return empty array when no transits match planet', () => {

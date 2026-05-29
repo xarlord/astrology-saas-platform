@@ -225,7 +225,7 @@ describe('Service Worker Registration', () => {
       );
     });
 
-    it('should reload page on controller change', async () => {
+    it('should dispatch sw-updated custom event on controller change', async () => {
       const mockRegistration = {
         update: vi.fn().mockResolvedValue(undefined),
         waiting: null,
@@ -246,12 +246,18 @@ describe('Service Worker Registration', () => {
       // @ts-ignore
       navigator.serviceWorker = mockServiceWorker;
 
+      // Listen for the custom event
+      const swUpdatedListener = vi.fn();
+      window.addEventListener('sw-updated', swUpdatedListener);
+
       await registerSW({
         onNeedRefresh: vi.fn(),
         onOfflineReady: vi.fn(),
       });
 
-      expect(reloadMock).toHaveBeenCalled();
+      expect(swUpdatedListener).toHaveBeenCalled();
+
+      window.removeEventListener('sw-updated', swUpdatedListener);
     });
 
     it('should detect offline events', async () => {

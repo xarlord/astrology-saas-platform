@@ -310,7 +310,7 @@ describe('chartService', () => {
 
       const result = await chartService.calculateChart('chart-123');
 
-      expect(api.post).toHaveBeenCalledWith('/charts/chart-123/calculate');
+      expect(api.post).toHaveBeenCalledWith('/charts/chart-123/calculate?force=true');
       expect(result.chart).toBeDefined();
     });
 

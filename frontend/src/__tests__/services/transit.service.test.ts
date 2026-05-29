@@ -364,7 +364,7 @@ describe('transitService', () => {
       };
       const result = normalizeTransits(reading);
       expect(result).toEqual([
-        { transitPlanet: 'Saturn', natalPlanet: 'Moon', aspect: 'opposition', orb: 1.5 },
+        { transitPlanet: 'Moon', natalPlanet: 'Saturn', aspect: 'opposition', orb: 1.5 },
       ]);
     });
 

@@ -107,8 +107,9 @@ describe('transitStore', () => {
   describe('loadTransits action', () => {
     it('should load transits successfully', async () => {
       vi.mocked(transitService.calculateTransits).mockResolvedValueOnce({
-        ...mockTransitChart,
-        transits: [mockTransit],
+        date: '2024-02-01',
+        transits: [{ transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'square', orb: 2.0 }],
+        energy_level: 75,
       } as any);
 
       await act(async () => {
@@ -124,13 +125,13 @@ describe('transitStore', () => {
       );
       expect(state.transits).toHaveLength(1);
       expect(state.dateRange).toEqual({ start: '2024-02-01', end: '2024-02-28' });
-      expect(state.energyLevel).toBe(50);
+      expect(state.energyLevel).toBe(75);
       expect(state.isLoading).toBe(false);
     });
 
     it('should handle null transits in response', async () => {
       vi.mocked(transitService.calculateTransits).mockResolvedValueOnce({
-        chartId: 'chart-1',
+        date: '2024-02-01',
         transits: null,
       } as any);
 
@@ -145,8 +146,8 @@ describe('transitStore', () => {
 
     it('should handle missing energy_level in response', async () => {
       vi.mocked(transitService.calculateTransits).mockResolvedValueOnce({
-        chartId: 'chart-1',
-        transits: [mockTransit],
+        date: '2024-02-01',
+        transits: [{ transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'square', orb: 2.0 }],
       } as any);
 
       await act(async () => {
@@ -214,7 +215,7 @@ describe('transitStore', () => {
     it('should load today transits successfully', async () => {
       vi.mocked(transitService.getTodayTransits).mockResolvedValueOnce({
         date: '2024-02-15',
-        transits: [mockTransit],
+        transits: [{ transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'square', orb: 2.0 }],
       });
 
       await act(async () => {
@@ -232,7 +233,7 @@ describe('transitStore', () => {
     it('should handle null transits in today response', async () => {
       vi.mocked(transitService.getTodayTransits).mockResolvedValueOnce({
         date: '2024-02-15',
-        transits: null,
+        transits: null as any,
       });
 
       await act(async () => {
@@ -246,7 +247,8 @@ describe('transitStore', () => {
 
     it('should handle missing energyLevel in today response', async () => {
       vi.mocked(transitService.getTodayTransits).mockResolvedValueOnce({
-        transits: [mockTransit],
+        date: '2024-02-15',
+        transits: [{ transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'square', orb: 2.0 }],
       });
 
       await act(async () => {
@@ -278,8 +280,9 @@ describe('transitStore', () => {
 
   describe('loadTransitCalendar action', () => {
     it('should load transit calendar successfully', async () => {
+      const calendarReading = { date: '2024-02-01', transits: [mockTransit] };
       vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce([
-        { date: '2024-02-01', transits: [mockTransit] },
+        calendarReading as any,
       ]);
 
       await act(async () => {
@@ -289,14 +292,13 @@ describe('transitStore', () => {
       const state = useTransitStore.getState();
 
       expect(transitService.getTransitCalendar).toHaveBeenCalledWith(2, 2024);
+      // loadTransitCalendar sets the whole TransitReading[] as transits
       expect(state.transits).toHaveLength(1);
       expect(state.isLoading).toBe(false);
     });
 
-    it('should handle null transits in calendar response', async () => {
-      vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce([
-        { date: '2024-02-01', transits: null },
-      ]);
+    it('should handle empty calendar response', async () => {
+      vi.mocked(transitService.getTransitCalendar).mockResolvedValueOnce([]);
 
       await act(async () => {
         await useTransitStore.getState().loadTransitCalendar(2, 2024);
@@ -326,8 +328,8 @@ describe('transitStore', () => {
   describe('loadTransitForecast action', () => {
     it('should load transit forecast for week', async () => {
       vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce([
-        { date: '2024-02-01', transits: [mockTransit] },
-      ]);
+        { date: '2024-02-01', transits: [{ transitPlanet: 'Saturn', natalPlanet: 'Sun', aspect: 'square', orb: 2.0 }] },
+      ] as any);
 
       await act(async () => {
         await useTransitStore.getState().loadTransitForecast('week');
@@ -351,7 +353,7 @@ describe('transitStore', () => {
       for (const duration of durations) {
         vi.mocked(transitService.getTransitForecast).mockResolvedValueOnce([
           { date: '2024-02-01', transits: [] },
-        ]);
+        ] as any);
 
         await act(async () => {
           await useTransitStore.getState().loadTransitForecast(duration);

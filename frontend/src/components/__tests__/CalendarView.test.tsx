@@ -17,11 +17,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CalendarView from '../CalendarView';
 
 // Mock the calendar service
-vi.mock('@/services/calendar.service', () => ({
+vi.mock('../../services/calendar.service', () => ({
   getCalendarMonth: vi.fn(),
 }));
 
-import { getCalendarMonth } from '@/services/calendar.service';
+import { getCalendarMonth } from '../../services/calendar.service';
 
 describe('CalendarView Component', () => {
   const mockCalendarData = {

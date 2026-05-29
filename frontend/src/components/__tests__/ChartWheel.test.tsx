@@ -109,16 +109,16 @@ describe('ChartWheel Component', () => {
 
       const svg = container.querySelector('svg');
       expect(svg).toBeInTheDocument();
-      expect(svg).toHaveAttribute('width', '600');
-      expect(svg).toHaveAttribute('height', '600');
+      expect(svg).toHaveAttribute('viewBox', '0 0 776 776');
+      expect(svg).not.toHaveAttribute('width');
     });
 
     it('should render custom size', () => {
       const { container } = render(<ChartWheel data={mockChartData} size={800} />);
 
       const svg = container.querySelector('svg');
-      expect(svg).toHaveAttribute('width', '800');
-      expect(svg).toHaveAttribute('height', '800');
+      expect(svg).toHaveAttribute('viewBox', '0 0 856 856');
+      expect(svg).not.toHaveAttribute('width');
     });
 
     it('should render all zodiac signs', () => {
@@ -334,14 +334,14 @@ describe('ChartWheel Component', () => {
       const { container } = render(<ChartWheel data={mockChartData} />);
 
       const svg = container.querySelector('svg');
-      expect(svg).toHaveClass('max-w-full');
+      expect(svg).toHaveClass('w-full');
     });
 
     it('should have proper viewBox for scaling', () => {
       const { container } = render(<ChartWheel data={mockChartData} size={600} />);
 
       const svg = container.querySelector('svg');
-      expect(svg).toHaveAttribute('viewBox', '0 0 600 600');
+      expect(svg).toHaveAttribute('viewBox', '0 0 776 776');
     });
 
     it('should render text with dominant-baseline for alignment', () => {
@@ -464,7 +464,7 @@ describe('ChartWheel Component', () => {
       const svg = container.querySelector('svg');
       expect(svg?.parentElement).toHaveClass('flex');
 
-      const wrapperDiv = container.querySelector('.max-w-full');
+      const wrapperDiv = container.querySelector('.w-full');
       expect(wrapperDiv).toBeInTheDocument();
     });
 

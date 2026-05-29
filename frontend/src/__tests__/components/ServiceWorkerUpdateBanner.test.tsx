@@ -13,6 +13,14 @@ vi.mock('../../hooks/useServiceWorkerUpdate', () => ({
   useServiceWorkerUpdate: vi.fn(),
 }));
 
+// Mock window.location.reload
+const reloadMock = vi.fn();
+Object.defineProperty(window, 'location', {
+  value: { reload: reloadMock },
+  writable: true,
+  configurable: true,
+});
+
 import { useServiceWorkerUpdate } from '../../hooks/useServiceWorkerUpdate';
 
 describe('ServiceWorkerUpdateBanner', () => {
@@ -49,14 +57,12 @@ describe('ServiceWorkerUpdateBanner', () => {
     expect(screen.getByText(/later/i)).toBeInTheDocument();
   });
 
-  it('should call skipWaiting when refresh now button is clicked', async () => {
-    const skipWaiting = vi.fn();
-
+  it('should reload the page when refresh now button is clicked', async () => {
     vi.mocked(useServiceWorkerUpdate).mockReturnValue({
       needRefresh: true,
       offlineReady: false,
       update: vi.fn(),
-      skipWaiting,
+      skipWaiting: vi.fn(),
     });
 
     render(<ServiceWorkerUpdateBanner />);
@@ -65,18 +71,19 @@ describe('ServiceWorkerUpdateBanner', () => {
     refreshButton.click();
 
     await waitFor(() => {
-      expect(skipWaiting).toHaveBeenCalledTimes(1);
+      expect(reloadMock).toHaveBeenCalledTimes(1);
     });
   });
 
-  it('should call update and close banner when later button is clicked', async () => {
+  it('should dismiss (no-op) when later button is clicked', async () => {
     const update = vi.fn();
+    const skipWaiting = vi.fn();
 
     vi.mocked(useServiceWorkerUpdate).mockReturnValue({
       needRefresh: true,
       offlineReady: false,
       update,
-      skipWaiting: vi.fn(),
+      skipWaiting,
     });
 
     render(<ServiceWorkerUpdateBanner />);
@@ -84,8 +91,10 @@ describe('ServiceWorkerUpdateBanner', () => {
     const laterButton = screen.getByText(/later/i);
     laterButton.click();
 
+    // "Later" is a no-op — neither update nor skipWaiting is called
     await waitFor(() => {
-      expect(update).toHaveBeenCalledTimes(1);
+      expect(update).not.toHaveBeenCalled();
+      expect(skipWaiting).not.toHaveBeenCalled();
     });
   });
 

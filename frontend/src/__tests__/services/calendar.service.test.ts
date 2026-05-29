@@ -58,8 +58,7 @@ describe('calendarService', () => {
           timeout: 30000,
         }),
       );
-      expect(result.data).toHaveLength(1);
-      expect(result.meta.year).toBe(2024);
+      expect(result).toHaveLength(1);
     });
 
     it('should pass includeGlobal parameter correctly', async () => {
@@ -110,7 +109,7 @@ describe('calendarService', () => {
 
       const result = await calendarService.getMonthEvents(2024, 2);
 
-      expect(result.data).toEqual([]);
+      expect(result).toEqual([]);
       expect(api.get).toHaveBeenCalledTimes(3);
     });
 

@@ -133,13 +133,14 @@ const mockCharts = [
   { id: 'chart-2', name: 'Partner Chart' },
 ];
 
-// Default mock transit data (NormalizedTransit format)
+// Default mock transit data (matches API Transit type used by transformTransitToEvent)
 const mockTransitData = {
   date: '2026-02-20',
+  energy_level: 65,
   transits: [
-    { transitPlanet: 'Venus', natalPlanet: 'Neptune', aspect: 'conjunction', orb: 1.5 },
-    { transitPlanet: 'Mercury', natalPlanet: 'Mars', aspect: 'square', orb: 3.0 },
-    { transitPlanet: 'Moon', natalPlanet: 'Sun', aspect: 'opposition', orb: 0.5 },
+    { id: 't1', planet: 'Venus', aspect: 'conjunction', type: 'major', impact: 'positive', peak_date: '2026-02-20', start_date: '2026-02-19', description: 'Venus conjunct Neptune transit', influence: { overall: 'Creative and romantic energy' }, intensity: 1.5 },
+    { id: 't2', planet: 'Mercury', aspect: 'square', type: 'minor', impact: 'negative', peak_date: '2026-02-21', start_date: '2026-02-20', description: 'Mercury square Mars transit', influence: { overall: 'Communication challenges' }, intensity: 3.0 },
+    { id: 't3', planet: 'Moon', aspect: 'opposition', type: 'major', impact: 'negative', peak_date: '2026-02-22', start_date: '2026-02-21', description: 'Moon opposition Sun transit', influence: { overall: 'Emotional tension' }, intensity: 0.5 },
   ],
 };
 
@@ -519,7 +520,8 @@ describe('TransitForecastPage', () => {
       renderWithProviders(createElement(TransitForecastPage));
 
       await waitFor(() => {
-        expect(screen.getByText('Venus conjunction Neptune')).toBeInTheDocument();
+        // transformTransitToEvent generates title from planet + aspect: "${planet} ${aspect}"
+        expect(screen.getByText('Venus conjunction')).toBeInTheDocument();
       });
     });
 

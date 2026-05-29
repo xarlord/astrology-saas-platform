@@ -616,7 +616,9 @@ describe('AppLayout Component', () => {
       );
 
       const sidebar = container.querySelector('aside');
-      expect(sidebar?.className).toContain('bg-cosmic-card-solid');
+      expect(sidebar).toBeInTheDocument();
+      // Sidebar uses inline style for background color
+      expect(sidebar).toHaveStyle({ backgroundColor: '#141627' });
     });
   });
 
