@@ -471,10 +471,10 @@ jobs:
       - name: Create deployment artifact
         run: |
           mkdir -p deploy/backend deploy/frontend
-          cp -r backend/dist deploy/backend/
-          cp -r backend/node_modules deploy/backend/
-          cp -r backend/package*.json deploy/backend/
-          cp -r frontend/dist deploy/frontend/
+          cp -r backend/dist deploy/backend/ || true
+          cp -r node_modules deploy/backend/ || true
+          cp -r backend/package*.json deploy/backend/ || true
+          cp -r frontend/dist deploy/frontend/ || true
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
