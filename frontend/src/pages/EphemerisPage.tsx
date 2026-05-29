@@ -343,7 +343,7 @@ const EphemerisPage: React.FC = () => {
       {data.date && (
         <div className="mt-8 text-center">
           <p className="text-slate-500 text-xs">
-            Last updated: {formattedDate || data.date}
+            Last updated: {formattedDate ?? data.date}
           </p>
         </div>
       )}

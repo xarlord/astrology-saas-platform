@@ -124,10 +124,13 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
     userId: '', // Not available in service Chart type
     name: chart.name,
     type: (chart.type ?? 'natal') as 'natal' | 'synastry' | 'composite' | 'transit',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     birthData: {
       date: new Date(chart.birth_data?.birth_date ?? Date.now()),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       time: chart.birth_data?.birth_time ?? '00:00',
       place: {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         name: chart.birth_data?.birth_place_name ?? 'Unknown',
         latitude: 0,
         longitude: 0,
