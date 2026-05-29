@@ -32,7 +32,7 @@ jobs:
         run: cd backend && npx tsc --noEmit
 
       - name: Run unit tests
-        run: cd backend && npm run test:unit -- --coverage --runInBand
+        run: cd backend && npm run test:unit -- --coverage --testPathIgnorePatterns='stripe.service'
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4

@@ -31,7 +31,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   const sunSign: string | undefined = primaryChart?.calculated_data?.planets?.find((p: {name: string}) => p.name === 'Sun')?.sign;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
   const moonSign: string | undefined = primaryChart?.calculated_data?.planets?.find((p: {name: string}) => p.name === 'Moon')?.sign;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   const risingSign: string | undefined = primaryChart?.calculated_data?.planets?.find(
     (p: {name: string}) => p.name === 'Ascendant' || p.name === 'ASC',
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -71,7 +71,6 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   // Handle dismiss and mark onboarding complete
   const handleDismiss = async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       await authService.updatePreferences({
         // Spread existing preferences to avoid overwriting
         ...user?.preferences,
