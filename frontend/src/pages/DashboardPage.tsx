@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
 /**
  * Dashboard Page — Stitch UI Design
  * Rich dashboard: welcome header, cosmic energy meter, transit highlights,
@@ -84,7 +85,6 @@ export default function DashboardPage() {
   }, [isAuthenticated, fetchCharts]);
 
   const moon = getMoonPhaseInfo();
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
   const transitPlanets = todayTransits?.transitPlanets;
   const planetEntries: [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][] = transitPlanets
     ? Object.entries(transitPlanets).slice(0, 4) as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][]

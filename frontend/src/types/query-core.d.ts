@@ -1,7 +1,7 @@
 declare module '@tanstack/query-core' {
   export class QueryClient {
     constructor(config?: Record<string, unknown>);
-    getQueryCache(): { getAll(): Array<{ queryKey: unknown; state: Record<string, unknown> }> };
+    getQueryCache(): { getAll(): { queryKey: unknown; state: Record<string, unknown> }[] };
     getMutationCache(): Record<string, unknown>;
     getDefaultOptions(): Record<string, unknown>;
     setDefaultOptions(options: Record<string, unknown>): void;
@@ -10,10 +10,10 @@ declare module '@tanstack/query-core' {
     setMutationDefaults(mutationKey: unknown, options: Record<string, unknown>): void;
     getMutationDefaults(mutationKey: unknown): Record<string, unknown> | undefined;
     clear(): void;
-    getQueriesData(filters: Record<string, unknown>): Array<[unknown, unknown]>;
+    getQueriesData(filters: Record<string, unknown>): [unknown, unknown][];
     getQueryData(queryKey: unknown): unknown;
     setQueryData(queryKey: unknown, updater: unknown): unknown;
-    setQueriesData(filters: Record<string, unknown>, updater: unknown): Array<[unknown, unknown]>;
+    setQueriesData(filters: Record<string, unknown>, updater: unknown): [unknown, unknown][];
     invalidateQueries(filters?: Record<string, unknown>): Promise<unknown>;
     refetchQueries(filters?: Record<string, unknown>): Promise<unknown>;
     cancelQueries(filters?: Record<string, unknown>): Promise<void>;

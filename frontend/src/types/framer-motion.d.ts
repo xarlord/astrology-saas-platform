@@ -97,7 +97,7 @@ declare module 'framer-motion' {
 
   export type Variants = Record<string, unknown>;
   export type Transition = Record<string, unknown>;
-  export type HTMLMotionProps<T = HTMLElement> = MotionProps;
+  export type HTMLMotionProps<_T = HTMLElement> = MotionProps;
 
   export function isValidMotionProp(key: string): boolean;
 }

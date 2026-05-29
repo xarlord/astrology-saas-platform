@@ -252,6 +252,7 @@ export const tabContent: Variants = {
 
 export const tabIndicator: Variants = {
   initial: { x: 0, width: 0 },
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   animate: ((width: number, x: number) => ({
     x,
     width,

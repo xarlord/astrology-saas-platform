@@ -48,7 +48,7 @@ export interface Chart {
 
 // Calculated chart data from API
 export interface CalculatedChartData {
-  planets?: Array<{
+  planets?: {
     name: string;
     planet?: string;
     sign: string;
@@ -60,7 +60,7 @@ export interface CalculatedChartData {
     speed?: number;
     retrograde?: boolean;
   }>;
-  aspects?: Array<{
+  aspects?: {
     planet1: string;
     planet2: string;
     type: string;
