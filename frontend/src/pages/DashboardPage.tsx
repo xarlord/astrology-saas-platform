@@ -73,12 +73,9 @@ const GRADIENT_PAIRS = [
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   const { charts, fetchCharts, isLoading } = useCharts();
   const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits();
   const { data: forecastData } = useTransitForecast('week', charts.length > 0);
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const transitsLoading = transitsFetching && !todayTransits;
 
   useEffect(() => {
@@ -87,7 +84,7 @@ export default function DashboardPage() {
   }, [isAuthenticated, fetchCharts]);
 
   const moon = getMoonPhaseInfo();
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call */
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
   const transitPlanets = todayTransits?.transitPlanets;
   const planetEntries: [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][] = transitPlanets
     ? Object.entries(transitPlanets).slice(0, 4) as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][]
@@ -439,7 +436,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     ))}
-                    {/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call */}
+                    {/* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */}
 
                     {/* Create New Chart Card */}
                     {charts.length > 0 && (
