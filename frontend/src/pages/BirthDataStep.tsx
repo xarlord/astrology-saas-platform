@@ -119,7 +119,7 @@ export default function BirthDataStep() {
         zodiac: 'tropical',
       };
 
-      const { chart } = await chartService.createChart(chartData);
+      const { chart } = await chartService.createChart(chartData as unknown as Record<string, unknown>);
 
       // Calculate the chart
       await chartService.calculateChart(chart.id);

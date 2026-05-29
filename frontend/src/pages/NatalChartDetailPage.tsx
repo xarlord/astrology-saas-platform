@@ -217,7 +217,7 @@ export const NatalChartDetailPage: React.FC = () => {
   }, [id, loadChart]);
 
   // Derive display data from chart's calculated_data
-  const calculatedData = currentChart?.calculated_data;
+  const calculatedData = currentChart?.calculated_data as CalculatedChartData | undefined;
 
   const planets = useMemo(() => {
     if (!calculatedData?.planets) return [];

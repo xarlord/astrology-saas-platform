@@ -86,7 +86,7 @@ export const useChartsStore = create<ChartsState>((set) => ({
   createChart: async (data: BirthData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await chartService.createChart(data);
+      const response = await chartService.createChart(data as unknown as Record<string, unknown>);
       set((state) => ({
         charts: [response.chart, ...state.charts],
         currentChart: response.chart,

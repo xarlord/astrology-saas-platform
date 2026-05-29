@@ -27,13 +27,14 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
 
   // Get first chart for preview
   const primaryChart = charts[0];
+  const calcPlanets = primaryChart?.calculated_data as import('../services/api.types').CalculatedChartData | undefined;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-  const sunSign: string | undefined = primaryChart?.calculated_data?.planets?.find((p: {name: string}) => p.name === 'Sun')?.sign;
+  const sunSign: string | undefined = calcPlanets?.planets?.find((p) => p.name === 'Sun')?.sign;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-  const moonSign: string | undefined = primaryChart?.calculated_data?.planets?.find((p: {name: string}) => p.name === 'Moon')?.sign;
+  const moonSign: string | undefined = calcPlanets?.planets?.find((p) => p.name === 'Moon')?.sign;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-  const risingSign: string | undefined = primaryChart?.calculated_data?.planets?.find(
-    (p: {name: string}) => p.name === 'Ascendant' || p.name === 'ASC',
+  const risingSign: string | undefined = calcPlanets?.planets?.find(
+    (p) => p.name === 'Ascendant' || p.name === 'ASC',
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   )?.sign;
   const hasChart = !!primaryChart;

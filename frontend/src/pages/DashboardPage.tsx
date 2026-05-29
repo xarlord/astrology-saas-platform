@@ -150,7 +150,7 @@ export default function DashboardPage() {
 
     // Flatten TransitReading[] into individual transit entries with date info
     const entries = forecastData.flatMap((reading) =>
-      (reading.transits ?? []).map((t) => ({
+      (reading.transits ?? []).map((t: any) => ({
         date: reading.date,
         type: t.aspect,
         planet1: t.transitPlanet,

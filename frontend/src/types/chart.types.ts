@@ -27,12 +27,49 @@ export interface Chart {
   birth_date: string;
   birth_time: string;
   birth_place_name: string;
-  calculated_data?: ChartCalculatedData;
+  birth_data?: {
+    birth_date: string;
+    birth_time: string;
+    birth_place_name: string;
+    birth_latitude?: number;
+    birth_longitude?: number;
+    birth_timezone?: string;
+  };
+  calculated_data?: CalculatedChartData;
+  positions?: Record<string, PlanetPosition>;
+  tags?: string[];
+  element?: string;
   created_at: string;
+  createdAt?: string;
+  birthData?: BirthData;
+  house_system?: string;
+  zodiac?: string;
 }
 
-// Calculated chart data (opaque)
-export type ChartCalculatedData = Record<string, unknown>;
+// Calculated chart data from API
+export interface CalculatedChartData {
+  planets?: Array<{
+    name: string;
+    planet?: string;
+    sign: string;
+    degree: number;
+    house: number;
+    element?: string;
+    quality?: string;
+    longitude?: number;
+    speed?: number;
+    retrograde?: boolean;
+  }>;
+  aspects?: Array<{
+    planet1: string;
+    planet2: string;
+    type: string;
+    orb: number;
+  }>;
+  houses?: HouseCusp[];
+  ascendant?: number;
+  midheaven?: number;
+}
 
 // Planet position in a chart wheel
 export interface PlanetPosition {

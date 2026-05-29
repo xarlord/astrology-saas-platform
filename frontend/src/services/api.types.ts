@@ -128,11 +128,30 @@ export interface Chart {
   house_system: string;
   zodiac: string;
   sidereal_mode?: string;
+  // Nested birth data object (returned by some API endpoints)
+  birth_data?: {
+    birth_date: string;
+    birth_time: string;
+    birth_place_name: string;
+    birth_latitude?: number;
+    birth_longitude?: number;
+    birth_timezone?: string;
+  };
   // Calculated data
   calculated_data?: CalculatedChartData | Record<string, unknown>;
+  // Planet positions (array form, returned by some endpoints)
+  positions?: PlanetPosition[];
+  // User-defined tags for categorisation
+  tags?: string[];
+  // Dominant element label (e.g. "fire")
+  element?: string;
+  // Timestamps
   created_at: string;
   updated_at: string;
   deleted_at?: string;
+  // CamelCase aliases used by some components
+  createdAt?: string;
+  birthData?: BirthData;
 }
 
 export interface CalculatedChartData {

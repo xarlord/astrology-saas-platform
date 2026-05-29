@@ -82,11 +82,11 @@ export default function ForecastPage() {
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      ? (todayReading.transits ?? []).map((t) => mapReadingToTransit(t, todayReading))
+      ? (todayReading.transits ?? []).map((t: any) => mapReadingToTransit(t, todayReading))
       : [];
 
     const monthTransits: Transit[] = monthReadings
-      ? monthReadings.flatMap((r) => (r.transits ?? []).map((t) => mapReadingToTransit(t, r)))
+      ? monthReadings.flatMap((r: any) => (r.transits ?? []).map((t: any) => mapReadingToTransit(t, r)))
       : [];
 
     const monthDays: TransitCalendarDay[] = calendarReadings

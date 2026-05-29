@@ -19,7 +19,7 @@ import AspectGrid, { AspectGridData } from '../components/astrology/AspectGrid';
 // Hooks & Services
 import { usePDFGeneration, generateReportFilename } from '../hooks/usePDFGeneration';
 import { chartService } from '../services/chart.service';
-import type { Chart } from '../services/api.types';
+import type { Chart, CalculatedChartData } from '../services/api.types';
 
 // Types
 interface NatalChart {

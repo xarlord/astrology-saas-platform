@@ -56,7 +56,7 @@ export default function TodayTransitsPage() {
   // Build TransitDashboardData from today's reading only.
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      ? (todayReading.transits ?? []).map((t) => mapReadingToTransit(t, todayReading))
+      ? (todayReading.transits ?? []).map((t: any) => mapReadingToTransit(t, todayReading))
       : [];
 
     const monthDays: TransitCalendarDay[] = buildSingleCalendarDay(todayReading);

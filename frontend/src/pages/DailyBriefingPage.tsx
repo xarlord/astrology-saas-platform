@@ -200,7 +200,7 @@ const DailyBriefingPage: React.FC = () => {
   // Derive transit cards from major aspects
   const transitCards: TransitCardData[] = useMemo(() => {
     if (!transitData?.majorAspects?.length) return DEFAULT_TRANSITS;
-    return transitData.majorAspects.slice(0, 5).map((a) => ({
+    return transitData.majorAspects.slice(0, 5).map((a: any) => ({
       time: 'Today',
       title: `${a.planet1} ${a.type} ${a.planet2}`,
       description: `${a.applying ? 'Applying' : 'Separating'} aspect with ${a.orb.toFixed(1)}° orb.`,

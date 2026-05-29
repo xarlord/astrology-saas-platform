@@ -61,9 +61,9 @@ export function AnalysisPage() {
           ? toPlanetSignInterpretation('ascendant', { sign: overview.ascendantSign.sign, degree: 0 })
           : undefined,
       },
-      planetsInSigns: (analysis.planetsInSigns ?? []).map((p) => toPlanetSignInterpretation(p.planet, { sign: p.sign, degree: 0 })),
+      planetsInSigns: (analysis.planetsInSigns ?? []).map((p: any) => toPlanetSignInterpretation(p.planet, { sign: p.sign, degree: 0 })),
       houses: [],
-      aspects: (analysis.aspects ?? []).map((a) => ({
+      aspects: (analysis.aspects ?? []).map((a: any) => ({
         planet1: a.planet1,
         planet2: a.planet2,
         aspect: a.aspect,
@@ -75,7 +75,7 @@ export function AnalysisPage() {
         advice: [],
       })),
       patterns: (analysis.patterns ?? []).length > 0
-        ? analysis.patterns.map((p) => ({ type: p.type, description: p.description, planets: p.planets }))
+        ? analysis.patterns.map((p: any) => ({ type: p.type, description: p.description, planets: p.planets }))
         : undefined,
     };
   };
