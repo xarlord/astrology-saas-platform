@@ -280,7 +280,7 @@ export class HouseCalculationService {
    * Whole Sign House System
    * Each zodiac sign = one house, with the rising sign as the 1st house
    */
-  private wholeSignHouses(ascendant: number, lst: number, obliquity?: number): HouseCusps {
+  private wholeSignHouses(ascendant: number, lst: number, _obliquity?: number): HouseCusps {
     const signStart = Math.floor(ascendant / 30) * 30;
     const cusps: number[] = new Array(12);
 
