@@ -56,10 +56,10 @@ export default function RetrogradePage() {
   const navigate = useNavigate();
   const { charts, fetchCharts, isLoading: chartsLoading } = useCharts();
 
-  // Current month/year for the calendar query
+  // Current month/year for the calendar query — stateful for navigation
   const now = new Date();
-  const [currentMonth] = useState(now.getMonth() + 1);
-  const [currentYear] = useState(now.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(now.getMonth() + 1);
+  const [currentYear, setCurrentYear] = useState(now.getFullYear());
 
   // Ensure charts are loaded so we know whether the user has any.
   useEffect(() => {
@@ -122,6 +122,12 @@ export default function RetrogradePage() {
         <TransitCalendar
           transits={transits}
           showRetrogrades={true}
+          initialMonth={currentMonth}
+          initialYear={currentYear}
+          onMonthChange={(month: number, year: number) => {
+            setCurrentMonth(month);
+            setCurrentYear(year);
+          }}
         />
       )}
     </AppLayout>

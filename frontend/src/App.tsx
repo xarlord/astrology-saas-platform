@@ -39,6 +39,7 @@ const EphemerisPage = lazy(() => import('./pages/EphemerisPage'));
 const LearnPage = lazy(() => import('./pages/LearnPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
+const SavedChartsGalleryPage = lazy(() => import('./pages/SavedChartsGalleryPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-cosmic-page">
@@ -104,7 +105,7 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
               {/* Redirects */}
-              <Route path="/charts" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/charts" element={<ProtectedRoute><SavedChartsGalleryPage /></ProtectedRoute>} />
               <Route path="/charts/natal" element={<ProtectedRoute><NatalChartRedirect /></ProtectedRoute>} />
               <Route path="/compatibility" element={<Navigate to="/synastry" replace />} />
 

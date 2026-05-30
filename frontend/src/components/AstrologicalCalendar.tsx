@@ -32,6 +32,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   month = new Date().getMonth() + 1,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month - 1, 1));
+  const [selectedDayEvents, setSelectedDayEvents] = useState<{ date: Date; events: any[] } | null>(null);
 
   const { data: events, isLoading, error, refetch } = useCalendarEvents(
     currentDate.getFullYear(),
@@ -70,7 +71,14 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
       const dayEvents = getEventForDate(date);
 
       calendar.push(
-        <div key={day} className="bg-cosmic-card-solid min-h-[100px] sm:min-h-[80px] p-2 sm:p-1 relative transition-colors hover:bg-white/15 border border-white/15">
+        <div
+          key={day}
+          className="bg-cosmic-card-solid min-h-[100px] sm:min-h-[80px] p-2 sm:p-1 relative transition-colors hover:bg-white/15 border border-white/15 cursor-pointer"
+          onClick={() => {
+            const dayEvts = getEventForDate(date);
+            setSelectedDayEvents(dayEvts.length > 0 ? { date, events: dayEvts } : null);
+          }}
+        >
           <span className="font-semibold text-slate-200 text-sm sm:text-xs block mb-1">{day}</span>
           {dayEvents.length > 0 && (
             <div className="flex flex-col gap-0.5">
@@ -171,7 +179,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
     <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
       <div className="flex justify-between items-center mb-5 gap-4 sm:flex-col sm:gap-2.5">
         <button onClick={goToPreviousMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Previous month">
-          \u2190 Previous
+          ← Previous
         </button>
 
         <div className="text-center flex-1 sm:flex-none">
@@ -182,7 +190,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
         </div>
 
         <button onClick={goToNextMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Next month">
-          Next \u2192
+          Next →
         </button>
       </div>
 
@@ -214,6 +222,44 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
           <span className="text-lg">{'\u{1F311}\u{1F315}'}</span> Eclipse
         </div>
       </div>
+
+      {/* Day event popup */}
+      {selectedDayEvents && (
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4" onClick={() => setSelectedDayEvents(null)}>
+          <div className="modal-content max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-white">
+                {selectedDayEvents.date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              </h3>
+              <button
+                onClick={() => setSelectedDayEvents(null)}
+                className="p-2 hover:bg-white/15 rounded-lg text-slate-200 hover:text-white transition-colors"
+                aria-label="Close"
+              >
+                <span className="material-symbols-outlined" aria-hidden="true">close</span>
+              </button>
+            </div>
+            <div className="space-y-3">
+              {selectedDayEvents.events.map((event: any) => (
+                <div key={event.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">
+                      {event.event_type === 'new_moon' ? '🌑' : event.event_type === 'full_moon' ? '🌕' : event.event_type.includes('retrograde') ? '↔' : event.event_type.includes('eclipse') ? '🌑' : '✨'}
+                    </span>
+                    <span className="font-medium text-white capitalize">{event.event_type.replace(/_/g, ' ')}</span>
+                  </div>
+                  {event.event_data?.sign && (
+                    <p className="text-sm text-slate-300">in {capitalize(event.event_data.sign)}</p>
+                  )}
+                  {event.interpretation && (
+                    <p className="text-sm text-slate-400 mt-1">{event.interpretation}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -21,6 +21,9 @@ export interface TransitCalendarProps {
   onDateSelect?: (date: Date, transits: Transit[]) => void;
   onTransitClick?: (transit: Transit) => void;
   initialDate?: Date;
+  initialMonth?: number;
+  initialYear?: number;
+  onMonthChange?: (month: number, year: number) => void;
   highlightDates?: Date[];
   showMoonPhases?: boolean;
   showRetrogrades?: boolean;
@@ -66,12 +69,16 @@ export function TransitCalendar({
   transits,
   onDateSelect,
   onTransitClick,
-  initialDate = new Date(),
+  initialDate,
+  initialMonth,
+  initialYear,
+  onMonthChange,
   highlightDates = [],
   showMoonPhases: _showMoonPhases = true,
   showRetrogrades = true,
 }: TransitCalendarProps) {
-  const [currentDate, setCurrentDate] = useState(initialDate);
+  const effectiveInitialDate = initialDate ?? (initialMonth && initialYear ? new Date(initialYear, initialMonth - 1, 1) : new Date());
+  const [currentDate, setCurrentDate] = useState(effectiveInitialDate);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
 
@@ -131,16 +138,22 @@ export function TransitCalendar({
 
   // Navigation handlers
   const goToPreviousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    setCurrentDate(newDate);
+    onMonthChange?.(newDate.getMonth() + 1, newDate.getFullYear());
   };
 
   const goToNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    setCurrentDate(newDate);
+    onMonthChange?.(newDate.getMonth() + 1, newDate.getFullYear());
   };
 
   const goToToday = () => {
-    setCurrentDate(new Date());
-    setSelectedDate(new Date());
+    const now = new Date();
+    setCurrentDate(now);
+    setSelectedDate(now);
+    onMonthChange?.(now.getMonth() + 1, now.getFullYear());
   };
 
   // Date click handler
