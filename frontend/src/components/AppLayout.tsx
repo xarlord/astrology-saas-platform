@@ -97,7 +97,14 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
           <Link to="/dashboard" className="flex items-center gap-2.5">
             <div className="size-9 bg-gradient-to-br from-primary to-cosmic-blue rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-xl" aria-hidden="true">auto_awesome</span>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="4" />
+                <line x1="12" y1="2" x2="12" y2="6" />
+                <line x1="12" y1="18" x2="12" y2="22" />
+                <line x1="2" y1="12" x2="6" y2="12" />
+                <line x1="18" y1="12" x2="22" y2="12" />
+              </svg>
             </div>
             <span className="text-xl font-bold tracking-tight text-white hidden sm:block">
               AstroVerse
@@ -216,7 +223,14 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
         <div className="flex items-center justify-between h-16 px-6 border-b border-white/5">
           <Link to="/dashboard" className="flex items-center gap-2.5">
             <div className="size-9 bg-gradient-to-br from-primary to-cosmic-blue rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-xl" aria-hidden="true">auto_awesome</span>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="4" />
+                <line x1="12" y1="2" x2="12" y2="6" />
+                <line x1="12" y1="18" x2="12" y2="22" />
+                <line x1="2" y1="12" x2="6" y2="12" />
+                <line x1="18" y1="12" x2="22" y2="12" />
+              </svg>
             </div>
             <span className="text-xl font-bold tracking-tight text-white">AstroVerse</span>
           </Link>
@@ -592,7 +606,14 @@ function Footer() {
         <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="size-6 bg-gradient-to-br from-primary to-cosmic-blue rounded flex items-center justify-center">
-              <span className="material-symbols-outlined text-white text-xs" aria-hidden="true">auto_awesome</span>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="4" />
+                <line x1="12" y1="2" x2="12" y2="6" />
+                <line x1="12" y1="18" x2="12" y2="22" />
+                <line x1="2" y1="12" x2="6" y2="12" />
+                <line x1="18" y1="12" x2="22" y2="12" />
+              </svg>
             </div>
             <span className="text-sm text-slate-200">
               © 2026 AstroVerse. All rights reserved.
