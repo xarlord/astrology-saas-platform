@@ -506,17 +506,31 @@ function HighlightCard({
   highlight: TransitHighlight;
   onClick?: () => void;
 }) {
+  // Type-specific styling
+  const typeStyles: Record<string, { icon: string; borderColor: string; bgColor: string }> = {
+    'major-transit': { icon: '⚡', borderColor: '#F59E0B', bgColor: 'rgba(245, 158, 11, 0.1)' },
+    'moon-phase': { icon: '🌙', borderColor: '#8B5CF6', bgColor: 'rgba(139, 92, 246, 0.1)' },
+    'eclipse': { icon: '🌑', borderColor: '#EF4444', bgColor: 'rgba(239, 68, 68, 0.1)' },
+    'retrograde': { icon: '🔄', borderColor: '#F97316', bgColor: 'rgba(249, 115, 22, 0.1)' },
+  };
+  const style = typeStyles[highlight.type] ?? { icon: highlight.icon ?? '✨', borderColor: highlight.color ?? '#6366F1', bgColor: 'rgba(99, 102, 241, 0.1)' };
+
   return (
     <div
       onClick={onClick}
       className={`
-        glass-panel rounded-2xl border-2 p-4 cursor-pointer transition-all
+        rounded-2xl border-2 p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
       `}
-      style={{ borderColor: highlight.color ?? '#6366F1' }}
+      style={{ borderColor: style.borderColor, backgroundColor: style.bgColor }}
     >
       {/* Icon */}
-      <div className="text-3xl mb-2">{highlight.icon ?? '✨'}</div>
+      <div className="text-3xl mb-2">{style.icon}</div>
+
+      {/* Type Badge */}
+      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium mb-2 bg-white/10 text-slate-200 capitalize">
+        {highlight.type.replace('-', ' ')}
+      </span>
 
       {/* Title */}
       <h4 className="font-semibold text-white mb-1">{highlight.title}</h4>
@@ -572,8 +586,8 @@ function formatDate(dateStr: string): string {
 // Transit Detail Modal Component (for full transit view)
 export function TransitDetailModal({ transit, onClose }: { transit: Transit; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="glass-panel rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="modal-content max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
@@ -584,9 +598,10 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/15 rounded-lg"
+              className="p-2 hover:bg-white/15 rounded-lg text-slate-200 hover:text-white transition-colors"
+              aria-label="Close"
             >
-              ✕
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
           </div>
 
