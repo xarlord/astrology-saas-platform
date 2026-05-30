@@ -10,7 +10,7 @@ import {
   planetPairSynastry,
   synastryAspectThemes,
   type PlanetPairInterpretation,
-} from '../../data/synastryInterpretations';
+} from '../../../data/synastryInterpretations';
 
 // Helper function: Calculate angular distance between two degrees
 function angularDistance(deg1: number, deg2: number): number {
