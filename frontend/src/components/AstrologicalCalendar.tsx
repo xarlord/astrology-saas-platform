@@ -13,6 +13,7 @@ import { SkeletonLoader, EmptyState } from './';
 interface AstrologicalCalendarProps {
   year?: number;
   month?: number;
+  moonOnly?: boolean;
 }
 
 const eventBadgeClasses: Record<string, string> = {
@@ -30,6 +31,7 @@ const eventBadgeClasses: Record<string, string> = {
 const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   year = new Date().getFullYear(),
   month = new Date().getMonth() + 1,
+  moonOnly = false,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month - 1, 1));
   const [selectedDayEvents, setSelectedDayEvents] = useState<{ date: Date; events: any[] } | null>(null);
@@ -39,10 +41,19 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
     currentDate.getMonth() + 1
   );
 
-  const getEventForDate = (date: Date) => {
+  // Filter events based on moonOnly prop
+  const filteredEvents = React.useMemo(() => {
     if (!events || !Array.isArray(events)) return [];
+    if (!moonOnly) return events;
+    return events.filter((event) =>
+      ['new_moon', 'full_moon', 'first_quarter', 'last_quarter', 'lunar_eclipse', 'solar_eclipse', 'supermoon', 'blue_moon'].includes(event.event_type)
+    );
+  }, [events, moonOnly]);
 
-    return events.filter((event) => {
+  const getEventForDate = (date: Date) => {
+    if (!filteredEvents || !Array.isArray(filteredEvents)) return [];
+
+    return filteredEvents.filter((event) => {
       const eventDate = new Date(event.event_date);
       return (
         eventDate.getDate() === date.getDate() &&

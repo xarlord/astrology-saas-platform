@@ -4,9 +4,10 @@ import { AppLayout } from '../components';
 interface CalendarPageShellProps {
   title: string;
   description: string;
+  moonOnly?: boolean;
 }
 
-export function CalendarPageShell({ title, description }: CalendarPageShellProps) {
+export function CalendarPageShell({ title, description, moonOnly = false }: CalendarPageShellProps) {
   return (
     <AppLayout>
       <div className="mb-8">
@@ -14,7 +15,7 @@ export function CalendarPageShell({ title, description }: CalendarPageShellProps
         <p className="text-slate-200">{description}</p>
       </div>
 
-      <AstrologicalCalendar />
+      <AstrologicalCalendar moonOnly={moonOnly} />
     </AppLayout>
   );
 }

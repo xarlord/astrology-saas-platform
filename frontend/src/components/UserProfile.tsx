@@ -364,34 +364,35 @@ function ProfileHeader({
                   onChange={(e) => onDataChange({ ...editData, timezone: e.target.value })}
                   aria-required="true"
                   className="px-4 py-2 rounded-xl bg-cosmic-card-solid border border-white/15 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                  style={{ colorScheme: 'dark' }}
                 >
-                  <option value="auto">Automatic (detect from location)</option>
-                  <option value="UTC-12">UTC-12</option>
-                  <option value="UTC-11">UTC-11</option>
-                  <option value="UTC-10">UTC-10 (Hawaii)</option>
-                  <option value="UTC-9">UTC-9 (Alaska)</option>
-                  <option value="UTC-8">UTC-8 (Pacific)</option>
-                  <option value="UTC-7">UTC-7 (Mountain)</option>
-                  <option value="UTC-6">UTC-6 (Central)</option>
-                  <option value="UTC-5">UTC-5 (Eastern)</option>
-                  <option value="UTC-4">UTC-4</option>
-                  <option value="UTC-3">UTC+3 (Turkey, Moscow)</option>
-                  <option value="UTC-2">UTC+2 (EET)</option>
-                  <option value="UTC-1">UTC+1 (CET)</option>
-                  <option value="UTC">UTC</option>
-                  <option value="UTC+1">UTC+1 (CET)</option>
-                  <option value="UTC+2">UTC+2 (EET)</option>
-                  <option value="UTC+3">UTC+3 (Turkey, Moscow)</option>
-                  <option value="UTC+4">UTC+4 (Gulf)</option>
-                  <option value="UTC+5">UTC+5 (Pakistan)</option>
-                  <option value="UTC+5:30">UTC+5:30 (India)</option>
-                  <option value="UTC+6">UTC+6 (Bangladesh)</option>
-                  <option value="UTC+7">UTC+7 (Bangkok)</option>
-                  <option value="UTC+8">UTC+8 (Singapore, China)</option>
-                  <option value="UTC+9">UTC+9 (Japan, Korea)</option>
-                  <option value="UTC+10">UTC+10 (Sydney)</option>
-                  <option value="UTC+11">UTC+11</option>
-                  <option value="UTC+12">UTC+12 (NZ)</option>
+                  <option value="auto" style={{ background: '#1a1c2e', color: '#fff' }}>Automatic (detect from location)</option>
+                  <option value="UTC-12" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-12</option>
+                  <option value="UTC-11" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-11</option>
+                  <option value="UTC-10" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-10 (Hawaii)</option>
+                  <option value="UTC-9" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-9 (Alaska)</option>
+                  <option value="UTC-8" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-8 (Pacific)</option>
+                  <option value="UTC-7" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-7 (Mountain)</option>
+                  <option value="UTC-6" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-6 (Central)</option>
+                  <option value="UTC-5" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-5 (Eastern)</option>
+                  <option value="UTC-4" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-4</option>
+                  <option value="UTC-3" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-3</option>
+                  <option value="UTC-2" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-2</option>
+                  <option value="UTC-1" style={{ background: '#1a1c2e', color: '#fff' }}>UTC-1</option>
+                  <option value="UTC" style={{ background: '#1a1c2e', color: '#fff' }}>UTC</option>
+                  <option value="UTC+1" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+1 (CET)</option>
+                  <option value="UTC+2" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+2 (EET)</option>
+                  <option value="UTC+3" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+3 (Turkey, Moscow)</option>
+                  <option value="UTC+4" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+4 (Gulf)</option>
+                  <option value="UTC+5" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+5 (Pakistan)</option>
+                  <option value="UTC+5:30" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+5:30 (India)</option>
+                  <option value="UTC+6" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+6 (Bangladesh)</option>
+                  <option value="UTC+7" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+7 (Bangkok)</option>
+                  <option value="UTC+8" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+8 (Singapore, China)</option>
+                  <option value="UTC+9" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+9 (Japan, Korea)</option>
+                  <option value="UTC+10" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+10 (Sydney)</option>
+                  <option value="UTC+11" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+11</option>
+                  <option value="UTC+12" style={{ background: '#1a1c2e', color: '#fff' }}>UTC+12 (NZ)</option>
                 </select>
               </div>
             </div>
@@ -786,18 +787,22 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
                 role="radio"
                 aria-checked={user.preferences.theme === theme.value}
                 onClick={() => {
-                  // Apply theme immediately
                   const root = document.documentElement;
                   if (theme.value === 'light') {
-                    root.classList.add('light-theme');
-                    root.classList.remove('dark-theme');
+                    root.classList.remove('dark');
+                    root.classList.add('light');
                   } else if (theme.value === 'dark') {
-                    root.classList.add('dark-theme');
-                    root.classList.remove('light-theme');
+                    root.classList.remove('light');
+                    root.classList.add('dark');
                   } else {
-                    root.classList.remove('light-theme', 'dark-theme');
+                    // auto — follow system
+                    root.classList.remove('light', 'dark');
+                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                      root.classList.add('dark');
+                    } else {
+                      root.classList.add('light');
+                    }
                   }
-                  // Update localStorage for persistence
                   localStorage.setItem('theme', theme.value);
                 }}
                 className={`

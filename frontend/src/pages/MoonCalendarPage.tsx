@@ -5,6 +5,7 @@ export default function MoonCalendarPage() {
     <CalendarPageShell
       title="Moon Calendar"
       description="Track lunar phases, eclipses, and moon-related events"
+      moonOnly
     />
   );
 }

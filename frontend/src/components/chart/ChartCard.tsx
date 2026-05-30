@@ -198,7 +198,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
       </div>
 
       {/* Big Three */}
-      <div className="grid grid-cols-3 gap-2 mb-6">
+      <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/50 border border-slate-800/50">
           <span className="text-[10px] uppercase font-bold text-slate-500 mb-1">Sun</span>
           <span className="text-xs font-bold text-cosmic-gold">
@@ -218,6 +218,30 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
           </span>
         </div>
       </div>
+
+      {/* Mini Chart Wheel Preview */}
+      {chart.positions && chart.positions.length > 0 && (
+        <div className="flex justify-center mb-4">
+          <svg viewBox="0 0 80 80" width="80" height="80" className="opacity-70">
+            {/* Outer zodiac ring */}
+            <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+            <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" />
+            {/* Planet dots */}
+            {chart.positions.slice(0, 10).map((p, i) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const raw = p as any;
+              const deg = (raw?.degree ?? raw?.longitude ?? i * 36) as number;
+              const rad = ((deg - 90) * Math.PI) / 180;
+              const x = 40 + 32 * Math.cos(rad);
+              const y = 40 + 32 * Math.sin(rad);
+              const colors = ['#ffd700','#c0c0c0','#ff6b6b','#ff69b4','#ff4500','#daa520','#deb887','#40e0d0','#4169e1','#8b008b'];
+              return <circle key={i} cx={x} cy={y} r="2.5" fill={colors[i % colors.length]} />;
+            })}
+            {/* Center dot */}
+            <circle cx="40" cy="40" r="2" fill="rgba(107,61,225,0.5)" />
+          </svg>
+        </div>
+      )}
 
       {/* Tags */}
       {chart.tags && chart.tags.length > 0 && (

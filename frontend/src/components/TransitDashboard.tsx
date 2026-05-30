@@ -207,9 +207,9 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
           size="small"
         />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {sortedTransits.map((transit, index) => (
-            <TransitCard key={index} transit={transit} onClick={() => onTransitClick?.(transit)} />
+            <TransitCard key={index} transit={transit} compact onClick={() => onTransitClick?.(transit)} />
           ))}
         </div>
       )}
