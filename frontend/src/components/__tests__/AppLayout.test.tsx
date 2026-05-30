@@ -21,12 +21,20 @@ import { AppLayout } from '../AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { useAuthStore } from '../../stores';
+import { useCharts } from '../../hooks';
 
 // Mock the auth store
 vi.mock('../../stores', () => ({
   useAuthStore: vi.fn(),
   useChartStore: vi.fn(),
 }));
+
+// Mock the useCharts hook used by SidebarChartList
+vi.mock('../../hooks', () => ({
+  useCharts: vi.fn(),
+}));
+
+const mockFetchCharts = vi.fn();
 
 const mockLogout = vi.fn();
 const mockUser = {
@@ -61,6 +69,12 @@ describe('AppLayout Component', () => {
       user: mockUser,
       isAuthenticated: true,
       logout: mockLogout,
+    });
+
+    // Mock useCharts hook for SidebarChartList
+    (useCharts as any).mockReturnValue({
+      charts: [],
+      fetchCharts: mockFetchCharts,
     });
 
     // Mock window.matchMedia for responsive tests
