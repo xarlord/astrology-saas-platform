@@ -228,7 +228,9 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
             <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" />
             {/* Planet dots */}
             {chart.positions.slice(0, 10).map((p, i) => {
-              const deg = (p.degree ?? (p as Record<string, unknown>).longitude ?? i * 36) as number;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const raw = p as any;
+              const deg = (raw?.degree ?? raw?.longitude ?? i * 36) as number;
               const rad = ((deg - 90) * Math.PI) / 180;
               const x = 40 + 32 * Math.cos(rad);
               const y = 40 + 32 * Math.sin(rad);
