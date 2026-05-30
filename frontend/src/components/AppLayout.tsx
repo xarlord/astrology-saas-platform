@@ -496,7 +496,7 @@ function MobileBottomNav() {
 // Footer Component
 function Footer() {
   return (
-    <footer className="mt-auto border-t border-white/5 py-12">
+    <footer className="mt-auto border-t border-white/5 py-12 bg-[#0d0f1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {/* Product */}
