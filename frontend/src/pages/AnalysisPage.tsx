@@ -8,21 +8,46 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AIInterpretationToggle, AIInterpretationDisplay, SkeletonLoader, EmptyState, AppLayout } from '../components';
 import { PersonalityAnalysis } from '../components';
-import type { PersonalityAnalysisData } from '../components/PersonalityAnalysis';
+import type { PersonalityAnalysisData, PlanetSignInterpretation, HouseInterpretation, AspectInterpretation as AspectInterp } from '../components/PersonalityAnalysis';
 import { useChartAnalysis } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 
 /**
- * Build a PlanetSignInterpretation from minimal API data (sign name only).
- * The API returns SignInfo { sign, degree } which lacks interpretation text,
- * so we provide empty defaults that the component can render gracefully.
+ * Map backend interpretation to frontend component shape.
+ * The backend returns full PlanetInSignInterpretation objects (keywords,
+ * strengths, challenges, advice) from the 132KB interpretations database.
+ * We use them directly — no more empty stubs.
  */
-function toPlanetSignInterpretation(planet: string, signInfo: { sign: string; degree: number }) {
+function toPlanetSignInterpretation(
+  planet: string,
+  signInfo: { sign: string; degree?: number },
+  interpretation?: {
+    keywords?: string[];
+    general?: string;
+    strengths?: string[];
+    challenges?: string[];
+    advice?: string[];
+  } | null,
+): PlanetSignInterpretation {
+  // If the backend returned a full interpretation, use it
+  if (interpretation && (interpretation.general || interpretation.strengths?.length)) {
+    return {
+      planet,
+      sign: signInfo.sign,
+      keywords: interpretation.keywords ?? [],
+      general: interpretation.general ?? `${planet} in ${signInfo.sign}`,
+      strengths: interpretation.strengths ?? [],
+      challenges: interpretation.challenges ?? [],
+      advice: interpretation.advice ?? [],
+    };
+  }
+
+  // Fallback: minimal info (shouldn't happen if backend data is correct)
   return {
     planet,
     sign: signInfo.sign,
     keywords: [],
-    general: `${planet} in ${signInfo.sign} (${signInfo.degree.toFixed(1)} degrees)`,
+    general: `${planet} in ${signInfo.sign}${signInfo.degree ? ` (${signInfo.degree.toFixed(1)}°)` : ''}`,
     strengths: [],
     challenges: [],
     advice: [],
@@ -49,35 +74,74 @@ export function AnalysisPage() {
   /**
    * Transform the raw API PersonalityAnalysis into the shape expected
    * by the PersonalityAnalysis display component (PersonalityAnalysisData).
+   *
+   * KEY FIX: Use the backend's interpretation objects (which contain
+   * keywords, strengths, challenges, advice) instead of empty stubs.
    */
   const buildComponentData = (): PersonalityAnalysisData | null => {
     if (!analysis) return null;
 
     const overview = analysis.overview;
+
+    // Overview: Sun, Moon, Ascendant — use interpretation objects directly
+    const sunSign = toPlanetSignInterpretation(
+      'sun',
+      { sign: overview.sunSign?.sign ?? 'Unknown', degree: 0 },
+      overview.sunSign,
+    );
+    const moonSign = toPlanetSignInterpretation(
+      'moon',
+      { sign: overview.moonSign?.sign ?? 'Unknown', degree: 0 },
+      overview.moonSign,
+    );
+    const ascendantSign = overview.ascendantSign
+      ? toPlanetSignInterpretation('ascendant', { sign: overview.ascendantSign.sign }, overview.ascendantSign)
+      : undefined;
+
+    // Planets in Signs: use the interpretation field from each entry
+    const planetsInSigns: PlanetSignInterpretation[] = (analysis.planetsInSigns ?? []).map(
+      (p: { planet: string; sign: string; house?: number; interpretation?: any }) =>
+        toPlanetSignInterpretation(p.planet, { sign: p.sign }, p.interpretation),
+    );
+
+    // Houses: map backend house analysis to frontend shape
+    const houses: HouseInterpretation[] = (analysis.houses ?? []).map((h: any) => ({
+      house: h.house,
+      signOnCusp: h.signOnCusp ?? h.sign ?? '',
+      planetsInHouse: h.planetsInHouse ?? [],
+      themes: h.themes ?? [],
+      interpretation: h.interpretation ?? '',
+      advice: h.advice ?? [],
+    }));
+
+    // Aspects: use the backend's aspect interpretation data
+    const aspects: AspectInterp[] = (analysis.aspects ?? []).map((a: any) => ({
+      planet1: a.planet1,
+      planet2: a.planet2,
+      aspect: a.aspect,
+      orb: a.orb,
+      harmonious: a.harmonious ?? false,
+      keywords: a.keywords ?? [],
+      interpretation: a.interpretation ?? `${a.planet1} ${a.aspect} ${a.planet2}`,
+      expression: a.expression ?? '',
+      advice: a.advice ?? [],
+    }));
+
+    // Aspect patterns (Grand Trine, T-Square, etc.)
+    const patterns = (analysis.patterns ?? []).length > 0
+      ? analysis.patterns.map((p: any) => ({
+          type: p.type,
+          description: p.description,
+          planets: p.planets,
+        }))
+      : undefined;
+
     return {
-      overview: {
-        sunSign: toPlanetSignInterpretation('sun', { sign: overview.sunSign?.sign ?? 'Unknown', degree: 0 }),
-        moonSign: toPlanetSignInterpretation('moon', { sign: overview.moonSign?.sign ?? 'Unknown', degree: 0 }),
-        ascendantSign: overview.ascendantSign
-          ? toPlanetSignInterpretation('ascendant', { sign: overview.ascendantSign.sign, degree: 0 })
-          : undefined,
-      },
-      planetsInSigns: (analysis.planetsInSigns ?? []).map((p: any) => toPlanetSignInterpretation(p.planet, { sign: p.sign, degree: 0 })),
-      houses: [],
-      aspects: (analysis.aspects ?? []).map((a: any) => ({
-        planet1: a.planet1,
-        planet2: a.planet2,
-        aspect: a.aspect,
-        orb: a.orb,
-        harmonious: false,
-        keywords: [],
-        interpretation: `${a.planet1} ${a.aspect} ${a.planet2}`,
-        expression: '',
-        advice: [],
-      })),
-      patterns: (analysis.patterns ?? []).length > 0
-        ? analysis.patterns.map((p: any) => ({ type: p.type, description: p.description, planets: p.planets }))
-        : undefined,
+      overview: { sunSign, moonSign, ascendantSign },
+      planetsInSigns,
+      houses,
+      aspects,
+      patterns,
     };
   };
 

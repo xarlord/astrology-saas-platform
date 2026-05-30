@@ -1560,6 +1560,125 @@ export const planetsInSigns: Record<string, Record<string, PlanetInSignInterpret
 };
 
 // ============================================================================
+// ASCENDANT (RISING SIGN) INTERPRETATIONS
+// ============================================================================
+
+export interface AscendantInterpretation {
+  sign: string;
+  keywords: string[];
+  general: string;
+  strengths: string[];
+  challenges: string[];
+  advice: string[];
+}
+
+export const ascendantInterpretations: Record<string, AscendantInterpretation> = {
+  aries: {
+    sign: 'aries',
+    keywords: ['bold appearance', 'energetic presence', 'direct approach', 'pioneering spirit'],
+    general: 'With Aries Rising, you project an image of confidence, energy, and initiative. People see you as bold, independent, and always ready to take on a challenge. Your natural leadership qualities are immediately apparent to others.',
+    strengths: ['Commands attention naturally', 'Appears confident and courageous', 'Makes strong first impressions', 'Energetic and enthusiastic demeanor', 'Direct and straightforward'],
+    challenges: ['Can come across as aggressive or pushy', 'May seem impatient or restless', 'Tendency to act before thinking', 'Others may find you intimidating', 'Difficulty appearing vulnerable'],
+    advice: ['Cultivate patience in your interactions with others', 'Practice active listening to balance your assertiveness', 'Allow others space to contribute', 'Channel your natural energy into inspiring others'],
+  },
+  taurus: {
+    sign: 'taurus',
+    keywords: ['calm presence', 'grounded demeanor', 'sensual appeal', 'stable appearance'],
+    general: 'With Taurus Rising, you present a calm, stable, and grounded presence. Others perceive you as reliable, patient, and someone who appreciates the finer things in life. Your unhurried demeanor puts people at ease.',
+    strengths: ['Projects calm and stability', 'Appears trustworthy and reliable', 'Natural aesthetic appeal', 'Patient and unhurried demeanor', 'Comforting presence to others'],
+    challenges: ['May seem stubborn or inflexible', 'Can appear materialistic or superficial', 'Resistance to change visible to others', 'May come across as passive', 'Difficulty appearing spontaneous'],
+    advice: ['Practice flexibility in your responses to new situations', 'Show your adventurous side more often', 'Avoid clinging to comfort zones in social settings', 'Demonstrate your willingness to evolve'],
+  },
+  gemini: {
+    sign: 'gemini',
+    keywords: ['youthful appearance', 'communicative', 'curious demeanor', 'witty presence'],
+    general: 'With Gemini Rising, you appear youthful, witty, and endlessly curious. People see you as articulate, sociable, and always brimming with ideas. Your animated communication style draws others in effortlessly.',
+    strengths: ['Naturally articulate and well-spoken', 'Appears intelligent and well-informed', 'Excellent social connector', 'Youthful and energetic appearance', 'Adaptable to any social situation'],
+    challenges: ['May seem scattered or inconsistent', 'Can appear superficial or flaky', 'Others may question your depth', 'Tendency to talk more than listen', 'Restless energy can be unsettling'],
+    advice: ['Practice depth over breadth in conversations', 'Show commitment to follow through on promises', 'Cultivate stillness and presence', 'Demonstrate consistency in your relationships'],
+  },
+  cancer: {
+    sign: 'cancer',
+    keywords: ['nurturing presence', 'protective demeanor', 'intuitive appearance', 'caring approach'],
+    general: 'With Cancer Rising, you project warmth, sensitivity, and approachability. People see you as nurturing, intuitive, and emotionally aware. Your empathetic nature makes others feel safe and understood.',
+    strengths: ['Naturally warm and approachable', 'Appears emotionally intelligent', 'Strong protective instincts toward others', 'Creates safe spaces for vulnerability', 'Intuitive understanding of others\' needs'],
+    challenges: ['May seem moody or emotionally reactive', 'Can appear defensive or guarded', 'Others may find you overly sensitive', 'Difficulty projecting authority', 'Tendency to retreat when hurt'],
+    advice: ['Practice setting clear emotional boundaries', 'Develop confidence in your natural leadership', 'Avoid taking others\' moods personally', 'Share your feelings more directly rather than retreating'],
+  },
+  leo: {
+    sign: 'leo',
+    keywords: ['regal presence', 'charismatic demeanor', 'dramatic flair', 'warm personality'],
+    general: 'With Leo Rising, you radiate warmth, confidence, and natural charisma. People see you as generous, creative, and born to shine. Your magnetic personality draws others in and makes you the center of attention.',
+    strengths: ['Magnetic and charismatic presence', 'Appears confident and self-assured', 'Generous and warm-hearted demeanor', 'Natural entertainer and leader', 'Inspires others with enthusiasm'],
+    challenges: ['Can appear self-centered or attention-seeking', 'May seem dramatic or over-the-top', 'Others may find you domineering', 'Difficulty being in the background', 'Pride can create barriers'],
+    advice: ['Practice humility and sharing the spotlight', 'Listen as much as you speak', 'Show vulnerability alongside strength', 'Use your warmth to uplift rather than dominate'],
+  },
+  virgo: {
+    sign: 'virgo',
+    keywords: ['refined appearance', 'analytical demeanor', 'helpful presence', 'modest approach'],
+    general: 'With Virgo Rising, you present a refined, intelligent, and helpful image. People see you as detail-oriented, practical, and someone who can always be counted on. Your modest demeanor hides a sharp and capable mind.',
+    strengths: ['Appears intelligent and competent', 'Naturally helpful and service-oriented', 'Refined and well-groomed appearance', 'Organized and put-together presence', 'Trustworthy and dependable'],
+    challenges: ['May seem critical or perfectionistic', 'Can appear overly cautious or reserved', 'Others may find you nitpicky', 'Difficulty relaxing and being spontaneous', 'Tendency toward self-criticism visible to others'],
+    advice: ['Practice self-compassion alongside your high standards', 'Allow yourself to be imperfect in front of others', 'Show your playful side more often', 'Focus on encouraging rather than correcting'],
+  },
+  libra: {
+    sign: 'libra',
+    keywords: ['graceful presence', 'diplomatic demeanor', 'charming appearance', 'harmonious approach'],
+    general: 'With Libra Rising, you project grace, charm, and natural diplomacy. People see you as refined, fair-minded, and aesthetically attuned. Your ability to create harmony in any situation is your greatest social gift.',
+    strengths: ['Naturally charming and diplomatic', 'Creates harmony in social situations', 'Refined sense of style and aesthetics', 'Fair and balanced approach to others', 'Excellent at making others feel valued'],
+    challenges: ['May seem indecisive or wishy-washy', 'Can appear superficial or people-pleasing', 'Others may sense conflict avoidance', 'Difficulty being assertive', 'Tendency to prioritize others\' needs over your own'],
+    advice: ['Practice making decisions confidently', 'Learn to embrace healthy conflict', 'Assert your own needs alongside others\'', 'Trust your judgment even when it displeases others'],
+  },
+  scorpio: {
+    sign: 'scorpio',
+    keywords: ['intense presence', 'magnetic demeanor', 'penetrating gaze', 'powerful approach'],
+    general: 'With Scorpio Rising, you project an aura of intensity, mystery, and power. People see you as magnetic, perceptive, and someone not to be trifled with. Your penetrating gaze and commanding presence leave a lasting impression.',
+    strengths: ['Powerful and magnetic presence', 'Appears deeply perceptive and aware', 'Commands respect without words', 'Intensely loyal and committed demeanor', 'Natural ability to see through facades'],
+    challenges: ['Can appear intimidating or unapproachable', 'Others may find you too intense', 'May seem secretive or suspicious', 'Difficulty appearing light-hearted', 'Tendency to test others\' loyalty'],
+    advice: ['Practice softness alongside your intensity', 'Allow yourself to be vulnerable with trusted others', 'Lighten your approach in casual interactions', 'Trust others more readily without testing them'],
+  },
+  sagittarius: {
+    sign: 'sagittarius',
+    keywords: ['adventurous presence', 'optimistic demeanor', 'philosophical appearance', 'enthusiastic approach'],
+    general: 'With Sagittarius Rising, you radiate optimism, adventure, and infectious enthusiasm. People see you as free-spirited, philosophical, and always seeking the next great experience. Your expansive personality inspires others to dream bigger.',
+    strengths: ['Infectiously optimistic and enthusiastic', 'Appears worldly and knowledgeable', 'Natural storyteller and entertainer', 'Open-minded and inclusive demeanor', 'Inspires adventure in others'],
+    challenges: ['May seem restless or noncommittal', 'Can appear tactless or overly blunt', 'Others may find you unreliable', 'Difficulty with routine and structure', 'Tendency to overpromise and underdeliver'],
+    advice: ['Practice following through on commitments', 'Cultivate sensitivity in your communication', 'Show others they can count on you', 'Balance your love of freedom with responsibility'],
+  },
+  capricorn: {
+    sign: 'capricorn',
+    keywords: ['authoritative presence', 'composed demeanor', 'mature appearance', 'ambitious approach'],
+    general: 'With Capricorn Rising, you project authority, competence, and quiet strength. People see you as mature, ambitious, and someone who has their life together. Your composed demeanor commands respect from the moment you enter a room.',
+    strengths: ['Projects authority and competence', 'Appears mature beyond your years', 'Composed under pressure', 'Naturally commands respect', 'Reliable and responsible demeanor'],
+    challenges: ['May seem cold or unapproachable', 'Can appear overly serious or rigid', 'Others may find you intimidating', 'Difficulty appearing playful or spontaneous', 'Tendency to seem like you\'re all work and no play'],
+    advice: ['Show your warm, humorous side more often', 'Practice vulnerability with trusted people', 'Allow yourself to relax and be playful', 'Don\'t let your image of competence prevent authentic connection'],
+  },
+  aquarius: {
+    sign: 'aquarius',
+    keywords: ['unique presence', 'eccentric demeanor', 'intellectual appearance', 'humanitarian approach'],
+    general: 'With Aquarius Rising, you project uniqueness, intellectual brilliance, and progressive ideals. People see you as unconventional, visionary, and marching to the beat of your own drum. Your individuality is your most striking feature.',
+    strengths: ['Appears unique and authentic', 'Naturally intellectual and forward-thinking', 'Inclusive and egalitarian demeanor', 'Innovative and creative presence', 'Inspires others to embrace their individuality'],
+    challenges: ['May seem aloof or emotionally detached', 'Can appear eccentric or unconventional', 'Others may find you unpredictable', 'Difficulty with traditional social norms', 'Tendency to seem more interested in ideas than people'],
+    advice: ['Cultivate emotional warmth alongside intellectual depth', 'Show genuine interest in individuals, not just ideas', 'Practice being present in emotional moments', 'Balance your independence with meaningful connections'],
+  },
+  pisces: {
+    sign: 'pisces',
+    keywords: ['mystical presence', 'compassionate demeanor', 'dreamy appearance', 'intuitive approach'],
+    general: 'With Pisces Rising, you project a gentle, compassionate, and otherworldly presence. People see you as dreamy, empathetic, and deeply artistic. Your intuitive nature allows you to connect with others on a soul level.',
+    strengths: ['Naturally compassionate and empathetic', 'Appears artistic and creative', 'Gentle and non-threatening presence', 'Strong intuitive and psychic abilities', 'Inspires compassion in others'],
+    challenges: ['May seem spacey or unfocused', 'Can appear overly passive or indecisive', 'Others may find you difficult to pin down', 'Difficulty with boundaries', 'Tendency to absorb others\' emotions'],
+    advice: ['Practice setting clear personal boundaries', 'Stay grounded through physical activity or routine', 'Learn to distinguish your emotions from others\'', 'Develop assertiveness alongside your compassion'],
+  },
+};
+
+/**
+ * Get interpretation for a rising sign (ascendant)
+ */
+export function getAscendantInterpretation(sign: string): AscendantInterpretation | null {
+  return ascendantInterpretations[sign.toLowerCase()] ?? null;
+}
+
+// ============================================================================
 // ASPECT INTERPRETATIONS
 // ============================================================================
 

@@ -10,6 +10,7 @@ import {
   getAspectInterpretation,
   getHouseInterpretation,
   getTransitInterpretation,
+  getAscendantInterpretation,
   type PlanetInSignInterpretation,
   type TransitInterpretation,
 } from '../../../data/interpretations';
@@ -140,15 +141,18 @@ export function generateCompletePersonalityAnalysis(
       sunSign,
       moonSign,
       ascendantSign: ascendantSign
-        ? {
-            planet: 'ascendant',
-            sign: ascendantSign.toLowerCase(),
-            keywords: ['outer personality', 'first impressions', 'approach to life'],
-            general: `The Ascendant in ${ascendantSign} colors your entire approach to life. It represents your outer personality and the mask you present to the world.`,
-            strengths: [],
-            challenges: [],
-            advice: [],
-          }
+        ? (() => {
+            const ascInterp = getAscendantInterpretation(ascendantSign);
+            return {
+              planet: 'ascendant',
+              sign: ascendantSign.toLowerCase(),
+              keywords: ascInterp?.keywords ?? ['outer personality', 'first impressions', 'approach to life'],
+              general: ascInterp?.general ?? `The Ascendant in ${ascendantSign} colors your entire approach to life. It represents your outer personality and the mask you present to the world.`,
+              strengths: ascInterp?.strengths ?? [],
+              challenges: ascInterp?.challenges ?? [],
+              advice: ascInterp?.advice ?? [],
+            };
+          })()
         : undefined,
     },
     planetsInSigns,
