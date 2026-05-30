@@ -133,11 +133,11 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               value={chart1}
               onChange={(e) => setChart1(e.target.value)}
               aria-required="true"
-              className="w-full p-3 border-2 border-white/15 rounded-lg text-base bg-white/15 text-white cursor-pointer focus:outline-none focus:border-primary transition-colors"
+              className="w-full p-3 border-2 border-white/15 rounded-lg text-base bg-cosmic-card-solid text-white cursor-pointer focus:outline-none focus:border-primary transition-colors"
             >
-              <option value="">Select a chart...</option>
+              <option value="" className="bg-gray-800">Select a chart...</option>
               {charts.map((chart) => (
-                <option key={chart.id} value={chart.id}>
+                <option key={chart.id} value={chart.id} className="bg-gray-800">
                   {chart.name}
                 </option>
               ))}
@@ -153,11 +153,11 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
               value={chart2}
               onChange={(e) => setChart2(e.target.value)}
               aria-required="true"
-              className="w-full p-3 border-2 border-white/15 rounded-lg text-base bg-white/15 text-white cursor-pointer focus:outline-none focus:border-primary transition-colors"
+              className="w-full p-3 border-2 border-white/15 rounded-lg text-base bg-cosmic-card-solid text-white cursor-pointer focus:outline-none focus:border-primary transition-colors"
             >
-              <option value="">Select a chart...</option>
+              <option value="" className="bg-gray-800">Select a chart...</option>
               {charts.map((chart) => (
-                <option key={chart.id} value={chart.id}>
+                <option key={chart.id} value={chart.id} className="bg-gray-800">
                   {chart.name}
                 </option>
               ))}
