@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks';
+import { useAuth, useCharts } from '../hooks';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 
 interface AppLayoutProps {
@@ -317,6 +317,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>schedule</span>
                 <span>Transits</span>
               </Link>
+
+              {/* Saved charts list */}
+              <div className="mt-2 pl-2 border-l border-white/10">
+                <SidebarChartList />
+              </div>
             </div>
           </section>
 
@@ -651,3 +656,41 @@ const mobileNavItems = [
   { name: 'transits', label: 'Transits', href: '/transits', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>dark_mode</span> },
   { name: 'learn', label: 'Learn', href: '/learn', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>bar_chart</span> },
 ];
+
+/** Renders the user's saved charts as sidebar links */
+function SidebarChartList() {
+  const { charts, fetchCharts } = useCharts();
+
+  useEffect(() => {
+    void fetchCharts();
+  }, [fetchCharts]);
+
+  if (!charts || charts.length === 0) {
+    return (
+      <p className="px-2 text-xs text-slate-500 italic">
+        No saved charts yet.{' '}
+        <Link to="/charts/new" className="text-primary hover:underline">Create one</Link>
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-0.5">
+      {charts.slice(0, 5).map((chart) => (
+        <Link
+          key={chart.id}
+          to={`/charts/${chart.id}`}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-200 hover:bg-white/5 hover:text-white transition-colors text-sm truncate"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chevron_right</span>
+          <span className="truncate">{chart.name}</span>
+        </Link>
+      ))}
+      {charts.length > 5 && (
+        <Link to="/charts" className="block px-3 py-1 text-xs text-primary hover:underline">
+          View all ({charts.length}) charts
+        </Link>
+      )}
+    </div>
+  );
+}
