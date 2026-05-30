@@ -20,8 +20,49 @@ import {
 } from '../services/synastry.service';
 import knex from '../../../config/database';
 
+// Build chart objects from calculated_data (JSON column with actual planet positions)
+const buildChartFromRow = (row: Record<string, unknown>): Chart => {
+  const calc = row.calculated_data as Record<string, unknown> | null;
+  const planets: Record<string, { name: string; degree: number; minute: number; second: number; sign: string }> = {};
+
+  if (calc?.planets && typeof calc.planets === 'object') {
+    const rawPlanets = calc.planets as Record<string, unknown>[] | Record<string, Record<string, unknown>>;
+    if (Array.isArray(rawPlanets)) {
+      for (const p of rawPlanets) {
+        const name = (p.planet as string ?? p.name as string ?? '').toLowerCase().replace(/\s+/g, '');
+        if (name) {
+          planets[name] = {
+            name,
+            degree: (p.degree as number) ?? 0,
+            minute: (p.minute as number) ?? 0,
+            second: (p.second as number) ?? 0,
+            sign: (p.sign as string) ?? '',
+          };
+        }
+      }
+    } else {
+      for (const [name, p] of Object.entries(rawPlanets)) {
+        const key = name.toLowerCase().replace(/\s+/g, '');
+        planets[key] = {
+          name: key,
+          degree: (p as Record<string, unknown>).degree as number ?? 0,
+          minute: (p as Record<string, unknown>).minute as number ?? 0,
+          second: (p as Record<string, unknown>).second as number ?? 0,
+          sign: ((p as Record<string, unknown>).sign as string) ?? '',
+        };
+      }
+    }
+  }
+
+  return {
+    id: row.id as string,
+    userId: row.userId as string,
+    planets,
+  };
+};
+
 /**
- * Compare two charts and calculate synastry
+ * Compare two natal charts
  * POST /synastry/compare
  */
 export const compareCharts = asyncHandler(
@@ -52,48 +93,7 @@ export const compareCharts = asyncHandler(
       throw new NotFoundError('One or both charts not found');
     }
 
-    // Build chart objects from calculated_data (JSON column with actual planet positions)
-    const buildChartFromRow = (row: Record<string, unknown>): Chart => {
-      const calc = row.calculated_data as Record<string, unknown> | null;
-      const planets: Record<string, { name: string; degree: number; minute: number; second: number; sign: string }> = {};
-
-      if (calc?.planets && typeof calc.planets === 'object') {
-        // calculated_data.planets is either an array or object with planet entries
-        const rawPlanets = calc.planets as Record<string, unknown>[] | Record<string, Record<string, unknown>>;
-        if (Array.isArray(rawPlanets)) {
-          for (const p of rawPlanets) {
-            const name = (p.planet as string ?? p.name as string ?? '').toLowerCase().replace(/\s+/g, '');
-            if (name) {
-              planets[name] = {
-                name,
-                degree: (p.degree as number) ?? 0,
-                minute: (p.minute as number) ?? 0,
-                second: (p.second as number) ?? 0,
-                sign: (p.sign as string) ?? '',
-              };
-            }
-          }
-        } else {
-          for (const [name, p] of Object.entries(rawPlanets)) {
-            const key = name.toLowerCase().replace(/\s+/g, '');
-            planets[key] = {
-              name: key,
-              degree: (p as Record<string, unknown>).degree as number ?? 0,
-              minute: (p as Record<string, unknown>).minute as number ?? 0,
-              second: (p as Record<string, unknown>).second as number ?? 0,
-              sign: ((p as Record<string, unknown>).sign as string) ?? '',
-            };
-          }
-        }
-      }
-
-      return {
-        id: row.id as string,
-        userId: row.userId as string,
-        planets,
-      };
-    };
-
+    // Build chart objects using module-level helper
     const chart1 = buildChartFromRow(chart1Data as unknown as Record<string, unknown>);
     const chart2 = buildChartFromRow(chart2Data as unknown as Record<string, unknown>);
 

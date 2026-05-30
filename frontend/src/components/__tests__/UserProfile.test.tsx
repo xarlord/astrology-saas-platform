@@ -274,9 +274,9 @@ describe('UserProfile Component', () => {
       await user.click(editButton);
 
       const timezoneSelect = screen.getByDisplayValue('UTC');
-      await user.selectOptions(timezoneSelect, 'America/New_York');
+      await user.selectOptions(timezoneSelect, 'UTC+3');
 
-      expect(timezoneSelect).toHaveValue('America/New_York');
+      expect(timezoneSelect).toHaveValue('UTC+3');
     });
 
     it('should save profile and call updateProfile', async () => {
