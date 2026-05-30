@@ -9,7 +9,6 @@ import type { ZodiacSign } from '../models/synastry.model';
 import {
   planetPairSynastry,
   synastryAspectThemes,
-  elementalCompatibilityAdvice,
   type PlanetPairInterpretation,
 } from '../../data/synastryInterpretations';
 
