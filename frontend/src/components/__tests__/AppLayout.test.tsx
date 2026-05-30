@@ -30,9 +30,13 @@ vi.mock('../../stores', () => ({
 }));
 
 // Mock the useCharts hook used by SidebarChartList
-vi.mock('../../hooks', () => ({
-  useCharts: vi.fn(),
-}));
+vi.mock('../../hooks', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../hooks')>();
+  return {
+    ...actual,
+    useCharts: vi.fn(),
+  };
+});
 
 const mockFetchCharts = vi.fn();
 
