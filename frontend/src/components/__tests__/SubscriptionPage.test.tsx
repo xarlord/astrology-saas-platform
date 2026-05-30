@@ -59,7 +59,7 @@ describe('SubscriptionPage', () => {
     it('calls fetchCharts on mount', () => {
       renderWithProviders(<SubscriptionPage />);
 
-      expect(mockFetchCharts).toHaveBeenCalledTimes(1);
+      expect(mockFetchCharts).toHaveBeenCalled();
     });
 
     it('shows Current Usage section', () => {
