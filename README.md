@@ -9,9 +9,9 @@ Full-stack astrology platform: natal charts with interactive chart wheel, AI-pow
 
 ## Project Status
 
-**Current Sprint:** Sprint 8 — UX Polish, Accessibility & Production Readiness
-**Completion:** ~90% MVP complete
-**CI Status:** All 8 pipeline jobs green + visual regression tests + mutation testing
+**Current Version:** v1.5.0
+**CI Status:** All 9 pipeline jobs green (backend, frontend, live, e2e, visual, integration, BDD, accessibility, verify-build) + mutation testing
+**Tests:** 1,375 backend (Jest) + 4,493 frontend (Vitest)
 
 ### What's Done
 - **80+ API endpoints** across 16 backend modules
@@ -24,10 +24,9 @@ Full-stack astrology platform: natal charts with interactive chart wheel, AI-pow
 - Chart sharing, solar/lunar returns, synastry reports
 - Full test suite: unit, integration, BDD, E2E, visual regression, mutation
 
-### What's Left (Sprint 8)
-- Production deployment (Docker Compose + SSL + domain)
-- UI polish — 40 issues from design review
-- Accessibility — WCAG 2.1 AA compliance
+### What's Next
+- Circular natal chart / ephemeris view enhancements
+- UI polish — remaining design review items
 - Onboarding flow optimization
 - Performance tuning
 
@@ -52,7 +51,7 @@ See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) for the full walkthrough.
 | AI | OpenAI GPT-4 Turbo (interpretations, transit analysis) |
 | Testing | Jest (backend), Vitest (frontend), Playwright (E2E), Playwright visual regression, Stryker (mutation) |
 | Infra | Docker, Redis, JWT auth, CSRF protection, Stripe billing, Resend email |
-| CI/CD | GitHub Actions — lint, typecheck, unit, integration, BDD, E2E, visual, accessibility, mutation |
+| Deployment | Fly.io (Docker), Docker Compose (staging), GitHub Actions CI/CD |
 
 ## Architecture
 
