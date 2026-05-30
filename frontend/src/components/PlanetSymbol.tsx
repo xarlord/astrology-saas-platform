@@ -23,6 +23,12 @@ export function PlanetSymbol({ planet, size = 'md', showName = false, className 
     pluto: '♇',
     meanNode: '☋',
     trueNode: '☊',
+    chiron: '⚷',
+    northnode: '☊',
+    southnode: '☋',
+    partoffortune: '⊗',
+    ascendant: '↑',
+    midheaven: 'MC',
   };
 
   const colors: Record<string, string> = {
@@ -38,6 +44,12 @@ export function PlanetSymbol({ planet, size = 'md', showName = false, className 
     pluto: 'text-rose-400',
     meanNode: 'text-slate-400',
     trueNode: 'text-slate-400',
+    chiron: 'text-indigo-400',
+    northnode: 'text-slate-400',
+    southnode: 'text-slate-400',
+    partoffortune: 'text-emerald-400',
+    ascendant: 'text-indigo-300',
+    midheaven: 'text-indigo-300',
   };
 
   const sizeClasses = {

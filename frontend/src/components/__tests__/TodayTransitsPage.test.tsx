@@ -264,7 +264,7 @@ describe('TodayTransitsPage', () => {
       });
 
       renderWithProviders(<TodayTransitsPage />);
-      expect(useTodayTransits).toHaveBeenCalledWith(true);
+      expect(useTodayTransits).toHaveBeenCalledWith(true, undefined);
     });
 
     it('disables useTodayTransits when user has no calculated charts', () => {
@@ -276,7 +276,7 @@ describe('TodayTransitsPage', () => {
       });
 
       renderWithProviders(<TodayTransitsPage />);
-      expect(useTodayTransits).toHaveBeenCalledWith(false);
+      expect(useTodayTransits).toHaveBeenCalledWith(false, undefined);
     });
   });
 

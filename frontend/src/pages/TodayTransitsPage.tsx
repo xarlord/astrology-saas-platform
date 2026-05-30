@@ -34,6 +34,7 @@ export default function TodayTransitsPage() {
   const navigate = useNavigate();
   const { charts, fetchCharts, isLoading: chartsLoading } = useCharts();
   const [selectedTransit, setSelectedTransit] = useState<Transit | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   // Ensure charts are loaded so we know whether the user has any.
   useEffect(() => {
@@ -43,12 +44,13 @@ export default function TodayTransitsPage() {
   const hasCharts = charts.length > 0;
   const hasCalculatedChart = charts.some((c) => c.calculated_data != null);
 
-  // React Query hook -- only enabled when user has a calculated chart.
+  // React Query hook — fetches transits for selected date (today by default)
+  const isToday = selectedDate === new Date().toISOString().split('T')[0];
   const {
     data: todayReading,
     isLoading: todayLoading,
     error: todayError,
-  } = useTodayTransits(hasCalculatedChart);
+  } = useTodayTransits(hasCalculatedChart, isToday ? undefined : selectedDate);
 
   const errorMessage = todayError
     ? getErrorMessage(todayError, 'Failed to load today\'s transits')
@@ -109,6 +111,8 @@ export default function TodayTransitsPage() {
           <TransitDashboard
             data={dashboardData}
             onTransitClick={(transit) => setSelectedTransit(transit)}
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
           />
           {selectedTransit && (
             <TransitDetailModal

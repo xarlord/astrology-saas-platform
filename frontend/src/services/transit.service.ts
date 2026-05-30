@@ -122,6 +122,16 @@ export const transitService = {
   },
 
   /**
+   * Get transits for a specific date
+   */
+  async getTransitForDate(date: string): Promise<TransitReading> {
+    const { data } = await api.get<TodayTransitsResponse>('/transits/today', {
+      params: { date },
+    });
+    return normalizeReading(data.data);
+  },
+
+  /**
    * Get transit calendar
    */
   async getTransitCalendar(month: number, year: number): Promise<TransitReading[]> {

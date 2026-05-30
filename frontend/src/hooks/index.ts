@@ -217,12 +217,14 @@ export function useHousesAnalysis(chartId: string, enabled = true) {
 }
 
 /**
- * Use Today's Transits Hook
+ * Use Today's Transits Hook — accepts optional date override
  */
-export function useTodayTransits(enabled = true) {
+export function useTodayTransits(enabled = true, date?: string) {
   return useQuery({
-    queryKey: ['transits', 'today'],
-    queryFn: () => transitService.getTodayTransits(),
+    queryKey: ['transits', date ? 'date' : 'today', date ?? 'today'],
+    queryFn: () => date
+      ? transitService.getTransitForDate(date)
+      : transitService.getTodayTransits(),
     enabled,
     refetchInterval: 60 * 60 * 1000, // Refetch every hour
   });

@@ -365,15 +365,33 @@ function ProfileHeader({
                   aria-required="true"
                   className="px-4 py-2 rounded-xl bg-cosmic-card-solid border border-white/15 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 >
+                  <option value="auto">Automatic (detect from location)</option>
+                  <option value="UTC-12">UTC-12</option>
+                  <option value="UTC-11">UTC-11</option>
+                  <option value="UTC-10">UTC-10 (Hawaii)</option>
+                  <option value="UTC-9">UTC-9 (Alaska)</option>
+                  <option value="UTC-8">UTC-8 (Pacific)</option>
+                  <option value="UTC-7">UTC-7 (Mountain)</option>
+                  <option value="UTC-6">UTC-6 (Central)</option>
+                  <option value="UTC-5">UTC-5 (Eastern)</option>
+                  <option value="UTC-4">UTC-4</option>
+                  <option value="UTC-3">UTC+3 (Turkey, Moscow)</option>
+                  <option value="UTC-2">UTC+2 (EET)</option>
+                  <option value="UTC-1">UTC+1 (CET)</option>
                   <option value="UTC">UTC</option>
-                  <option value="America/New_York">Eastern Time</option>
-                  <option value="America/Chicago">Central Time</option>
-                  <option value="America/Denver">Mountain Time</option>
-                  <option value="America/Los_Angeles">Pacific Time</option>
-                  <option value="Europe/London">London (GMT)</option>
-                  <option value="Europe/Paris">Central European</option>
-                  <option value="Asia/Tokyo">Japan</option>
-                  <option value="Asia/Singapore">Singapore</option>
+                  <option value="UTC+1">UTC+1 (CET)</option>
+                  <option value="UTC+2">UTC+2 (EET)</option>
+                  <option value="UTC+3">UTC+3 (Turkey, Moscow)</option>
+                  <option value="UTC+4">UTC+4 (Gulf)</option>
+                  <option value="UTC+5">UTC+5 (Pakistan)</option>
+                  <option value="UTC+5:30">UTC+5:30 (India)</option>
+                  <option value="UTC+6">UTC+6 (Bangladesh)</option>
+                  <option value="UTC+7">UTC+7 (Bangkok)</option>
+                  <option value="UTC+8">UTC+8 (Singapore, China)</option>
+                  <option value="UTC+9">UTC+9 (Japan, Korea)</option>
+                  <option value="UTC+10">UTC+10 (Sydney)</option>
+                  <option value="UTC+11">UTC+11</option>
+                  <option value="UTC+12">UTC+12 (NZ)</option>
                 </select>
               </div>
             </div>
@@ -767,6 +785,21 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
                 key={theme.value}
                 role="radio"
                 aria-checked={user.preferences.theme === theme.value}
+                onClick={() => {
+                  // Apply theme immediately
+                  const root = document.documentElement;
+                  if (theme.value === 'light') {
+                    root.classList.add('light-theme');
+                    root.classList.remove('dark-theme');
+                  } else if (theme.value === 'dark') {
+                    root.classList.add('dark-theme');
+                    root.classList.remove('light-theme');
+                  } else {
+                    root.classList.remove('light-theme', 'dark-theme');
+                  }
+                  // Update localStorage for persistence
+                  localStorage.setItem('theme', theme.value);
+                }}
                 className={`
                   p-4 rounded-lg border-2 text-center transition-all
                   ${

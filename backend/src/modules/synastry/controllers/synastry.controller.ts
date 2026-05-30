@@ -20,8 +20,49 @@ import {
 } from '../services/synastry.service';
 import knex from '../../../config/database';
 
+// Build chart objects from calculated_data (JSON column with actual planet positions)
+const buildChartFromRow = (row: Record<string, unknown>): Chart => {
+  const calc = row.calculated_data as Record<string, unknown> | null;
+  const planets: Record<string, { name: string; degree: number; minute: number; second: number; sign: string }> = {};
+
+  if (calc?.planets && typeof calc.planets === 'object') {
+    const rawPlanets = calc.planets as Record<string, unknown>[] | Record<string, Record<string, unknown>>;
+    if (Array.isArray(rawPlanets)) {
+      for (const p of rawPlanets) {
+        const name = (p.planet as string ?? p.name as string ?? '').toLowerCase().replace(/\s+/g, '');
+        if (name) {
+          planets[name] = {
+            name,
+            degree: (p.degree as number) ?? 0,
+            minute: (p.minute as number) ?? 0,
+            second: (p.second as number) ?? 0,
+            sign: (p.sign as string) ?? '',
+          };
+        }
+      }
+    } else {
+      for (const [name, p] of Object.entries(rawPlanets)) {
+        const key = name.toLowerCase().replace(/\s+/g, '');
+        planets[key] = {
+          name: key,
+          degree: (p as Record<string, unknown>).degree as number ?? 0,
+          minute: (p as Record<string, unknown>).minute as number ?? 0,
+          second: (p as Record<string, unknown>).second as number ?? 0,
+          sign: ((p as Record<string, unknown>).sign as string) ?? '',
+        };
+      }
+    }
+  }
+
+  return {
+    id: row.id as string,
+    userId: row.userId as string,
+    planets,
+  };
+};
+
 /**
- * Compare two charts and calculate synastry
+ * Compare two natal charts
  * POST /synastry/compare
  */
 export const compareCharts = asyncHandler(
@@ -52,160 +93,9 @@ export const compareCharts = asyncHandler(
       throw new NotFoundError('One or both charts not found');
     }
 
-    // Build chart objects
-    const chart1: Chart = {
-      id: chart1Data.id,
-      userId: chart1Data.userId,
-      planets: {
-        sun: chart1Data.sunSign ? {
-          name: 'sun',
-          degree: chart1Data.sunDegree || 0,
-          minute: chart1Data.sunMinute || 0,
-          second: chart1Data.sunSecond || 0,
-          sign: chart1Data.sunSign,
-        } : undefined,
-        moon: chart1Data.moonSign ? {
-          name: 'moon',
-          degree: chart1Data.moonDegree || 0,
-          minute: chart1Data.moonMinute || 0,
-          second: chart1Data.moonSecond || 0,
-          sign: chart1Data.moonSign,
-        } : undefined,
-        mercury: chart1Data.mercurySign ? {
-          name: 'mercury',
-          degree: chart1Data.mercuryDegree || 0,
-          minute: chart1Data.mercuryMinute || 0,
-          second: chart1Data.mercurySecond || 0,
-          sign: chart1Data.mercurySign,
-        } : undefined,
-        venus: chart1Data.venusSign ? {
-          name: 'venus',
-          degree: chart1Data.venusDegree || 0,
-          minute: chart1Data.venusMinute || 0,
-          second: chart1Data.venusSecond || 0,
-          sign: chart1Data.venusSign,
-        } : undefined,
-        mars: chart1Data.marsSign ? {
-          name: 'mars',
-          degree: chart1Data.marsDegree || 0,
-          minute: chart1Data.marsMinute || 0,
-          second: chart1Data.marsSecond || 0,
-          sign: chart1Data.marsSign,
-        } : undefined,
-        jupiter: chart1Data.jupiterSign ? {
-          name: 'jupiter',
-          degree: chart1Data.jupiterDegree || 0,
-          minute: chart1Data.jupiterMinute || 0,
-          second: chart1Data.jupiterSecond || 0,
-          sign: chart1Data.jupiterSign,
-        } : undefined,
-        saturn: chart1Data.saturnSign ? {
-          name: 'saturn',
-          degree: chart1Data.saturnDegree || 0,
-          minute: chart1Data.saturnMinute || 0,
-          second: chart1Data.saturnSecond || 0,
-          sign: chart1Data.saturnSign,
-        } : undefined,
-        uranus: chart1Data.uranusSign ? {
-          name: 'uranus',
-          degree: chart1Data.uranusDegree || 0,
-          minute: chart1Data.uranusMinute || 0,
-          second: chart1Data.uranusSecond || 0,
-          sign: chart1Data.uranusSign,
-        } : undefined,
-        neptune: chart1Data.neptuneSign ? {
-          name: 'neptune',
-          degree: chart1Data.neptuneDegree || 0,
-          minute: chart1Data.neptuneMinute || 0,
-          second: chart1Data.neptuneSecond || 0,
-          sign: chart1Data.neptuneSign,
-        } : undefined,
-        pluto: chart1Data.plutoSign ? {
-          name: 'pluto',
-          degree: chart1Data.plutoDegree || 0,
-          minute: chart1Data.plutoMinute || 0,
-          second: chart1Data.plutoSecond || 0,
-          sign: chart1Data.plutoSign,
-        } : undefined,
-      },
-    };
-
-    const chart2: Chart = {
-      id: chart2Data.id,
-      userId: chart2Data.userId,
-      planets: {
-        sun: chart2Data.sunSign ? {
-          name: 'sun',
-          degree: chart2Data.sunDegree || 0,
-          minute: chart2Data.sunMinute || 0,
-          second: chart2Data.sunSecond || 0,
-          sign: chart2Data.sunSign,
-        } : undefined,
-        moon: chart2Data.moonSign ? {
-          name: 'moon',
-          degree: chart2Data.moonDegree || 0,
-          minute: chart2Data.moonMinute || 0,
-          second: chart2Data.moonSecond || 0,
-          sign: chart2Data.moonSign,
-        } : undefined,
-        mercury: chart2Data.mercurySign ? {
-          name: 'mercury',
-          degree: chart2Data.mercuryDegree || 0,
-          minute: chart2Data.mercuryMinute || 0,
-          second: chart2Data.mercurySecond || 0,
-          sign: chart2Data.mercurySign,
-        } : undefined,
-        venus: chart2Data.venusSign ? {
-          name: 'venus',
-          degree: chart2Data.venusDegree || 0,
-          minute: chart2Data.venusMinute || 0,
-          second: chart2Data.venusSecond || 0,
-          sign: chart2Data.venusSign,
-        } : undefined,
-        mars: chart2Data.marsSign ? {
-          name: 'mars',
-          degree: chart2Data.marsDegree || 0,
-          minute: chart2Data.marsMinute || 0,
-          second: chart2Data.marsSecond || 0,
-          sign: chart2Data.marsSign,
-        } : undefined,
-        jupiter: chart2Data.jupiterSign ? {
-          name: 'jupiter',
-          degree: chart2Data.jupiterDegree || 0,
-          minute: chart2Data.jupiterMinute || 0,
-          second: chart2Data.jupiterSecond || 0,
-          sign: chart2Data.jupiterSign,
-        } : undefined,
-        saturn: chart2Data.saturnSign ? {
-          name: 'saturn',
-          degree: chart2Data.saturnDegree || 0,
-          minute: chart2Data.saturnMinute || 0,
-          second: chart2Data.saturnSecond || 0,
-          sign: chart2Data.saturnSign,
-        } : undefined,
-        uranus: chart2Data.uranusSign ? {
-          name: 'uranus',
-          degree: chart2Data.uranusDegree || 0,
-          minute: chart2Data.uranusMinute || 0,
-          second: chart2Data.uranusSecond || 0,
-          sign: chart2Data.uranusSign,
-        } : undefined,
-        neptune: chart2Data.neptuneSign ? {
-          name: 'neptune',
-          degree: chart2Data.neptuneDegree || 0,
-          minute: chart2Data.neptuneMinute || 0,
-          second: chart2Data.neptuneSecond || 0,
-          sign: chart2Data.neptuneSign,
-        } : undefined,
-        pluto: chart2Data.plutoSign ? {
-          name: 'pluto',
-          degree: chart2Data.plutoDegree || 0,
-          minute: chart2Data.plutoMinute || 0,
-          second: chart2Data.plutoSecond || 0,
-          sign: chart2Data.plutoSign,
-        } : undefined,
-      },
-    };
+    // Build chart objects using module-level helper
+    const chart1 = buildChartFromRow(chart1Data as unknown as Record<string, unknown>);
+    const chart2 = buildChartFromRow(chart2Data as unknown as Record<string, unknown>);
 
     // Calculate synastry
     const synastryChart = calculateSynastryChart(chart1, chart2);
@@ -284,58 +174,9 @@ export const getCompatibility = asyncHandler(
       throw new NotFoundError('One or both charts not found');
     }
 
-    // Build simplified chart objects for calculation
-    const chart1: Chart = {
-      id: chart1Data.id as string,
-      userId: chart1Data.userId as string,
-      planets: {},
-    };
-
-    const chart2: Chart = {
-      id: chart2Data.id as string,
-      userId: chart2Data.userId as string,
-      planets: {},
-    };
-
-    // Populate planets for both charts
-    const planets = [
-      'sun',
-      'moon',
-      'mercury',
-      'venus',
-      'mars',
-      'jupiter',
-      'saturn',
-      'uranus',
-      'neptune',
-      'pluto',
-    ] as const;
-    planets.forEach((planet) => {
-      const signField = `${planet}Sign` as keyof typeof chart1Data;
-      const degreeField = `${planet}Degree` as keyof typeof chart1Data;
-      const minuteField = `${planet}Minute` as keyof typeof chart1Data;
-      const secondField = `${planet}Second` as keyof typeof chart1Data;
-
-      if (chart1Data[signField]) {
-        chart1.planets[planet] = {
-          name: planet,
-          degree: (chart1Data[degreeField] as number) || 0,
-          minute: (chart1Data[minuteField] as number) || 0,
-          second: (chart1Data[secondField] as number) || 0,
-          sign: chart1Data[signField] as unknown as import('../models/synastry.model').ZodiacSign,
-        };
-      }
-
-      if (chart2Data[signField]) {
-        chart2.planets[planet] = {
-          name: planet,
-          degree: (chart2Data[degreeField] as number) || 0,
-          minute: (chart2Data[minuteField] as number) || 0,
-          second: (chart2Data[secondField] as number) || 0,
-          sign: chart2Data[signField] as unknown as import('../models/synastry.model').ZodiacSign,
-        };
-      }
-    });
+    // Build chart objects from calculated_data (same as compareCharts)
+    const chart1 = buildChartFromRow(chart1Data as unknown as Record<string, unknown>);
+    const chart2 = buildChartFromRow(chart2Data as unknown as Record<string, unknown>);
 
     // Calculate scores
     const scores = calculateCategoryScores(chart1, chart2);
