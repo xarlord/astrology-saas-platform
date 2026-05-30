@@ -6,6 +6,12 @@
 import { getZodiacSign, normalizeDegree } from '../../calendar/services/calendar.service';
 import type { Planet } from '../../calendar/models/calendar.model';
 import type { ZodiacSign } from '../models/synastry.model';
+import {
+  planetPairSynastry,
+  synastryAspectThemes,
+  elementalCompatibilityAdvice,
+  type PlanetPairInterpretation,
+} from '../../data/synastryInterpretations';
 
 // Helper function: Calculate angular distance between two degrees
 function angularDistance(deg1: number, deg2: number): number {
@@ -457,35 +463,54 @@ function getAspectAngle(aspect: string): number {
   return angles[aspect] || 0;
 }
 
+function findPlanetPairInterpretation(
+  planet1: string,
+  planet2: string,
+  aspect: string,
+): PlanetPairInterpretation | undefined {
+  return planetPairSynastry.find(
+    (entry) =>
+      entry.aspect === aspect &&
+      ((entry.planet1 === planet1 && entry.planet2 === planet2) ||
+        (entry.planet1 === planet2 && entry.planet2 === planet1)),
+  );
+}
+
 function getSynastryAspectInterpretation(
   planet1: string,
   planet2: string,
   aspect: string,
   _orb: number,
 ): string {
-  // Simplified interpretations - in production, use comprehensive database
-  const interpretations: Record<string, string> = {
-    'sun-moon-conjunction':
-      'A powerful emotional and conscious connection. You understand each other deeply.',
-    'sun-moon-opposition':
-      'Tension between your conscious needs and emotional desires creates growth opportunities.',
-    'sun-moon-trine':
-      'Natural harmony between your feelings and actions creates ease in the relationship.',
-    'venus-mars-conjunction':
-      'Strong romantic and sexual attraction. Your love and desire nature are aligned.',
-    'venus-mars-opposition':
-      'Passionate but potentially challenging dynamic between love and desire.',
-    'mercury-mercury-trine':
-      "Excellent communication. You understand each other's thinking patterns.",
-    'moon-moon-sextile':
-      'Emotional compatibility with room for growth. Your feelings flow well together.',
-  };
+  // 1. Try exact planet-pair match from database
+  const pairInterp = findPlanetPairInterpretation(planet1, planet2, aspect);
+  if (pairInterp) {
+    return pairInterp.interpretation;
+  }
 
-  const key = `${planet1}-${planet2}-${aspect}`;
-  return (
-    interpretations[key] ||
-    `This ${aspect} between ${planet1} and ${planet2} creates ${aspect === 'trine' || aspect === 'sextile' ? 'harmony' : aspect === 'square' || aspect === 'opposition' ? 'tension' : 'connection'} in your relationship.`
+  // 2. Try same planets with any aspect — use the aspect theme
+  const anyAspectEntry = planetPairSynastry.find(
+    (entry) =>
+      (entry.planet1 === planet1 && entry.planet2 === planet2) ||
+      (entry.planet1 === planet2 && entry.planet2 === planet1),
   );
+  const theme = synastryAspectThemes[aspect];
+
+  if (anyAspectEntry && theme) {
+    const qual = anyAspectEntry.strength === 'harmonious' ? 'harmonious' :
+                 anyAspectEntry.strength === 'challenging' ? 'challenging' : 'blended';
+    return `${theme.inRelationship} Between your ${planet1} and ${planet2}, this creates a ${qual} connection in the area of ${anyAspectEntry.relationshipArea.toLowerCase()}. ${theme.growthPotential}`;
+  }
+
+  // 3. Fallback: use aspect theme with generic planet context
+  if (theme) {
+    const aspectNature = aspect === 'trine' || aspect === 'sextile' ? 'harmonious' :
+                         aspect === 'square' || aspect === 'opposition' ? 'dynamic' : 'blended';
+    return `${theme.generalMeaning} between your ${planet1} and ${planet2}. ${theme.inRelationship} This ${aspectNature} connection ${theme.growthPotential.toLowerCase()}.`;
+  }
+
+  // 4. Final fallback
+  return `This ${aspect} between ${planet1} and ${planet2} creates a meaningful connection in your relationship.`;
 }
 
 function calculateAspectWeight(planet1: Planet, planet2: Planet, aspect: string): number {
@@ -538,7 +563,53 @@ function calculateCategoryScore(aspects: SynastryAspect[]): number {
   return Math.max(1, Math.min(10, Math.round(score * 10) / 10));
 }
 
-function getRelationshipTheme(_aspects: SynastryAspect[], compatibility: number): string {
+function getRelationshipTheme(aspects: SynastryAspect[], compatibility: number): string {
+  // Build a unique theme based on actual aspect patterns
+  const harmonious = aspects.filter(a => a.aspect === 'trine' || a.aspect === 'sextile');
+  const challenging = aspects.filter(a => a.aspect === 'square' || a.aspect === 'opposition');
+  const conjunctive = aspects.filter(a => a.aspect === 'conjunction');
+  const soulmates = aspects.filter(a => a.soulmateIndicator);
+
+  // Check for key patterns
+  const hasSunMoon = aspects.some(a =>
+    (a.planet1 === 'sun' && a.planet2 === 'moon') || (a.planet1 === 'moon' && a.planet2 === 'sun'));
+  const hasVenusMars = aspects.some(a =>
+    (a.planet1 === 'venus' && a.planet2 === 'mars') || (a.planet1 === 'mars' && a.planet2 === 'venus'));
+
+  const parts: string[] = [];
+
+  if (soulmates.length > 0) {
+    parts.push('A deeply karmic bond with profound soul-level recognition');
+  }
+
+  if (hasSunMoon && hasVenusMars) {
+    parts.push('Strong alignment of both emotional and romantic energies');
+  } else if (hasSunMoon) {
+    parts.push('Deep emotional understanding between your core identities');
+  } else if (hasVenusMars) {
+    parts.push('Powerful romantic and passionate connection');
+  }
+
+  if (harmonious.length > challenging.length + 2) {
+    parts.push('natural ease and flow in how you relate to each other');
+  } else if (challenging.length > harmonious.length + 2) {
+    parts.push('dynamic tension that fuels growth and transformation');
+  } else {
+    parts.push('a balance of harmony and challenge that keeps the relationship evolving');
+  }
+
+  if (conjunctive.length >= 3) {
+    parts.push('strong fusion of energies in multiple life areas');
+  }
+
+  if (parts.length > 0) {
+    const lastIdx = parts.length - 1;
+    if (parts.length === 1) return `${parts[0].charAt(0).toUpperCase() + parts[0].slice(1)}, scoring ${compatibility}/10 overall`;
+    const first = parts.slice(0, lastIdx).join(', ');
+    return `${first.charAt(0).toUpperCase() + first.slice(1)} and ${parts[lastIdx]}. Overall compatibility: ${compatibility}/10`;
+  }
+
+  // Final fallback based on score
   if (compatibility >= 8) {
     return 'Highly compatible relationship with strong potential for harmony and growth';
   } else if (compatibility >= 6) {
@@ -551,54 +622,100 @@ function getRelationshipTheme(_aspects: SynastryAspect[], compatibility: number)
 function getRelationshipStrengths(aspects: SynastryAspect[]): string[] {
   const strengths: string[] = [];
 
-  const trines = aspects.filter((a) => a.aspect === 'trine');
-  if (trines.length >= 3) {
-    strengths.push('Natural flow and ease in multiple areas of life');
+  // Generate specific strengths from each harmonious aspect
+  for (const aspect of aspects) {
+    const pairInterp = findPlanetPairInterpretation(aspect.planet1, aspect.planet2, aspect.aspect);
+
+    if (aspect.aspect === 'trine' || aspect.aspect === 'sextile') {
+      if (pairInterp) {
+        strengths.push(`${pairInterp.relationshipArea} — ${pairInterp.interpretation.split('.')[0]}`);
+      } else {
+        const theme = synastryAspectThemes[aspect.aspect];
+        strengths.push(`Natural flow between ${aspect.planet1} and ${aspect.planet2}: ${theme.inRelationship.split('.')[0]}`);
+      }
+    } else if (aspect.aspect === 'conjunction') {
+      if (pairInterp) {
+        strengths.push(`Powerful ${pairInterp.relationshipArea.toLowerCase()} alignment`);
+      } else {
+        strengths.push(`Strong fusion of ${aspect.planet1} and ${aspect.planet2} energies`);
+      }
+    }
+
+    if (aspect.soulmateIndicator) {
+      strengths.push(`Soulmate connection via ${aspect.planet1}-${aspect.planet2} ${aspect.aspect}`);
+    }
   }
 
-  const sextiles = aspects.filter((a) => a.aspect === 'sextile');
-  if (sextiles.length >= 3) {
-    strengths.push('Opportunities for growth and cooperation');
+  // Deduplicate
+  const unique = [...new Set(strengths)];
+
+  if (unique.length === 0) {
+    unique.push('Each person brings unique qualities to the relationship');
   }
 
-  const soulmateAspects = aspects.filter((a) => a.soulmateIndicator);
-  if (soulmateAspects.length > 0) {
-    strengths.push('Deep karmic or soul connections');
-  }
-
-  if (strengths.length === 0) {
-    strengths.push('Each person brings unique qualities to the relationship');
-  }
-
-  return strengths;
+  return unique.slice(0, 6);
 }
 
 function getRelationshipChallenges(aspects: SynastryAspect[]): string[] {
   const challenges: string[] = [];
 
-  const squares = aspects.filter((a) => a.aspect === 'square');
-  if (squares.length >= 2) {
-    challenges.push('Tension and friction that requires conscious navigation');
+  // Generate specific challenges from each hard aspect
+  for (const aspect of aspects) {
+    const pairInterp = findPlanetPairInterpretation(aspect.planet1, aspect.planet2, aspect.aspect);
+
+    if (aspect.aspect === 'square') {
+      if (pairInterp) {
+        challenges.push(`${pairInterp.relationshipArea} — ${pairInterp.interpretation.split('.')[0]}`);
+      } else {
+        const theme = synastryAspectThemes['square'];
+        challenges.push(`Friction between ${aspect.planet1} and ${aspect.planet2}: ${theme.inRelationship.split('.')[0]}`);
+      }
+    } else if (aspect.aspect === 'opposition') {
+      if (pairInterp) {
+        challenges.push(`Polarized ${pairInterp.relationshipArea.toLowerCase()} — need to find balance`);
+      } else {
+        challenges.push(`Opposing forces between ${aspect.planet1} and ${aspect.planet2} require integration`);
+      }
+    } else if (aspect.aspect === 'quincunx') {
+      challenges.push(`${aspect.planet1} and ${aspect.planet2} require mutual adjustment and understanding`);
+    }
   }
 
-  const oppositions = aspects.filter((a) => a.aspect === 'opposition');
-  if (oppositions.length >= 2) {
-    challenges.push('Balancing opposing needs and perspectives');
+  const unique = [...new Set(challenges)];
+
+  if (unique.length === 0) {
+    unique.push('Every relationship requires effort and understanding');
   }
 
-  const quincunxes = aspects.filter((a) => a.aspect === 'quincunx');
-  if (quincunxes.length >= 2) {
-    challenges.push('Need for adjustment and adaptation');
-  }
-
-  if (challenges.length === 0) {
-    challenges.push('Every relationship requires effort and understanding');
-  }
-
-  return challenges;
+  return unique.slice(0, 6);
 }
 
-function getRelationshipAdvice(_aspects: SynastryAspect[], compatibility: number): string {
+function getRelationshipAdvice(aspects: SynastryAspect[], compatibility: number): string {
+  // Collect specific advice from the interpretations database
+  const adviceParts: string[] = [];
+
+  for (const aspect of aspects) {
+    const pairInterp = findPlanetPairInterpretation(aspect.planet1, aspect.planet2, aspect.aspect);
+    if (pairInterp && pairInterp.advice.length > 0) {
+      // Pick the first advice from each relevant aspect
+      adviceParts.push(pairInterp.advice[0]);
+    }
+  }
+
+  const uniqueAdvice = [...new Set(adviceParts)].slice(0, 4);
+
+  if (uniqueAdvice.length > 0) {
+    const specifics = uniqueAdvice.map((a, i) => `${i + 1}. ${a}`).join(' ');
+    if (compatibility >= 7) {
+      return `Your strong compatibility provides a solid foundation. Key focus areas: ${specifics}`;
+    } else if (compatibility >= 5) {
+      return `Build on your shared strengths while addressing challenges: ${specifics}`;
+    } else {
+      return `This relationship requires patience and understanding. Prioritize: ${specifics}`;
+    }
+  }
+
+  // Fallback
   if (compatibility >= 8) {
     return 'Your high compatibility provides a strong foundation. Focus on maintaining appreciation and avoiding complacency.';
   } else if (compatibility >= 6) {
