@@ -56,11 +56,15 @@ interface TransitDashboardProps {
   data: TransitDashboardData;
   onDateSelect?: (date: string) => void;
   onTransitClick?: (transit: Transit) => void;
+  selectedDate?: string;
+  onDateChange?: (date: string) => void;
 }
 
-export function TransitDashboard({ data, onDateSelect, onTransitClick }: TransitDashboardProps) {
+export function TransitDashboard({ data, onDateSelect, onTransitClick, selectedDate: externalDate, onDateChange }: TransitDashboardProps) {
   const [viewMode, setViewMode] = useState<'today' | 'week' | 'calendar' | 'highlights'>('today');
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [internalDate, setInternalDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const selectedDate = externalDate ?? internalDate;
+  const setSelectedDate = onDateChange ?? setInternalDate;
 
   return (
     <div className="space-y-6">
