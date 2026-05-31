@@ -278,9 +278,9 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
   const housesAnalysis = {
     houses: houseArray,
     planetsInHouses: buildPlanetsInHouses(planets, houses),
-    houseRulers: {},        // TODO: implement house ruler calculation
-    emptyHouses: [] as number[],  // TODO: implement empty house identification
-    stelliums: [] as unknown[],   // TODO: implement stellium detection
+    houseRulers: {},        // TODO(#124): implement house ruler calculation
+    emptyHouses: [] as number[],  // TODO(#124): implement empty house identification
+    stelliums: [] as unknown[],   // TODO(#124): implement stellium detection
   };
 
   res.status(200).json({

@@ -9,7 +9,9 @@ const options: swaggerJsdoc.Options = {
       description:
         'Astrology SaaS Platform — natal charts, personality analysis, forecasting, synastry',
     },
-    servers: [{ url: 'http://localhost:3001', description: 'Local development' }],
+    servers: [
+      { url: process.env.API_URL || 'http://localhost:3001', description: 'Local development' },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {

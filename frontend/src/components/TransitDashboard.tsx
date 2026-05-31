@@ -99,7 +99,7 @@ export function TransitDashboard({ data, onDateSelect, onTransitClick, selectedD
           onHighlightClick={(_highlight) => {
             // TransitHighlight doesn't have all Transit fields, so we handle it separately
             // We can't directly pass onTransitClick since the types are incompatible
-            // TODO: Implement highlight click handler
+            // TODO(#98): Implement highlight click handler — show transit details popup
           }}
         />
       )}

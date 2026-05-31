@@ -360,7 +360,7 @@ export const NatalChartDetailPage: React.FC = () => {
   }, [calculatedData, currentChart]);
 
   const _handleDelete = useCallback(() => {
-    // TODO: Implement chart deletion API call
+    // TODO(charts): Implement chart deletion API call — requires backend DELETE endpoint
   }, [id]);
 
   const handleDownload = useCallback(() => {

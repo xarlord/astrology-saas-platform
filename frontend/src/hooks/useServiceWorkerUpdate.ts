@@ -38,7 +38,7 @@ export function useServiceWorkerUpdate(): UseServiceWorkerUpdateResult {
         }
       },
       onRegistered: (registration) => {
-        console.log('Service worker registered:', registration);
+        // Service worker registered successfully
       },
       onRegistrationError: (error) => {
         console.error('Service worker registration failed:', error);
