@@ -22,7 +22,7 @@ const calculatePasswordStrength = (
   if (password.length >= 12) score += 1;
   if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
   if (/\d/.test(password)) score += 1;
-  if (/[^a-zA-Z0-9]/.test(password)) score += 1;
+  if (/[@$!%*?&]/.test(password)) score += 1;
 
   if (score <= 1) {
     return { strength: 1, label: 'Weak', color: 'bg-red-500' };
@@ -353,6 +353,10 @@ export default function RegisterPageNew() {
                             className={`inline-block w-2 h-2 rounded-full ${passwordStrength.color}`}
                           ></span>
                           Password strength: {passwordStrength.label}
+                          </span>
+                          {password && password.length < 12 && (
+                            <p className="text-xs text-slate-400 mt-0.5">Min 12 chars: uppercase, lowercase, number, special (@$!%*?&)</p>
+                          )}
                         </>
                       )}
                     </p>
