@@ -32,7 +32,7 @@ export const getUsageHistory = asyncHandler(async (req: Request, res: Response) 
   const userId = (req as AuthenticatedRequest).user.id;
   const { limit } = req.query;
 
-  const history = await aiUsageService.getUsageHistory(userId, Number(limit) || 50);
+  const history = await aiUsageService.getUsageHistory(userId, limit != null ? Number(limit) : 50);
 
   res.json({
     success: true,
@@ -48,7 +48,7 @@ export const getDailyUsage = asyncHandler(async (req: Request, res: Response) =>
   const userId = (req as AuthenticatedRequest).user.id;
   const { days } = req.query;
 
-  const dailyUsage = await aiUsageService.getDailyUsage(userId, Number(days) || 30);
+  const dailyUsage = await aiUsageService.getDailyUsage(userId, days != null ? Number(days) : 30);
 
   res.json({
     success: true,
