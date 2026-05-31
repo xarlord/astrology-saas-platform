@@ -6,7 +6,7 @@
 import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } from '../components';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useChartsStore } from '../store/chartsStore';
+import { useChartStore } from '../stores/chartStore';
 import type { ChartData, HouseCusp, Aspect, PlanetData, PlanetPosition } from '../types/chart.types';
 
 const ZODIAC_SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
@@ -30,7 +30,7 @@ interface BackendAspect { orb: number; type: string; planet1: string; planet2: s
 export default function ChartViewPage() {
   const { id: chartId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { currentChart, isLoading, error, fetchChart, calculateChart } = useChartsStore();
+  const { currentChart, isLoading, error, loadChart, calculateChart } = useChartStore();
   const [localError, setLocalError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [useTrueAngles, setUseTrueAngles] = useState(true);
@@ -42,8 +42,8 @@ export default function ChartViewPage() {
       return;
     }
 
-    void fetchChart(chartId);
-  }, [chartId, fetchChart]);
+    void loadChart(chartId);
+  }, [chartId, loadChart]);
 
   // Auto-calculate chart on first view (force=true ensures fresh data after bug fixes)
   useEffect(() => {
@@ -55,14 +55,14 @@ export default function ChartViewPage() {
       calculatingRef.current = chartId;
       setIsCalculating(true);
       calculateChart(chartId, { useTrueAngles })
-        .then(() => fetchChart(chartId))
+        .then(() => loadChart(chartId))
         .catch((err: unknown) => {
           console.error('Auto-calculate failed:', err);
           calculatingRef.current = null;
         })
         .finally(() => setIsCalculating(false));
     }
-  }, [chartId, currentChart, isLoading, fetchChart, calculateChart, useTrueAngles]);
+  }, [chartId, currentChart, isLoading, loadChart, calculateChart, useTrueAngles]);
 
   // Manual calculate handler
   const handleCalculate = async (trueAngles: boolean) => {
@@ -72,7 +72,7 @@ export default function ChartViewPage() {
     setIsCalculating(true);
     try {
       await calculateChart(chartId, { useTrueAngles: trueAngles });
-      await fetchChart(chartId);
+      await loadChart(chartId);
     } catch (err) {
       setLocalError('Failed to calculate chart. Please try again.');
     } finally {
@@ -240,7 +240,7 @@ export default function ChartViewPage() {
           actionText="Retry"
           onAction={() => {
             setLocalError(null);
-            void fetchChart(chartId);
+            void loadChart(chartId);
           }}
           secondaryActionText="Back to Dashboard"
           onSecondaryAction={() => navigate('/dashboard')}

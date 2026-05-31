@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Icon sizing utilities */
+.material-symbols-outlined.icon-sm { font-size: 20px; }
+.material-symbols-outlined.icon-md { font-size: 24px; }
+.material-symbols-outlined.icon-lg { font-size: 28px; }
+
 /* Material Symbols Outlined — local class definition for mobile reliability.
    Google Fonts defines this class only in its remote CSS. On slow mobile networks
    that CSS may not load before paint, causing icon names to show as plain text.

@@ -37,8 +37,8 @@ vi.mock('../', () => ({
 }));
 
 // Mock the chartsStore for useChartsStore.getState() used in form submission
-vi.mock('../store/chartsStore', () => ({
-  useChartsStore: {
+vi.mock('../stores/chartStore', () => ({
+  useChartStore: {
     getState: () => ({ currentChart: mockCurrentChart }),
   },
 }));

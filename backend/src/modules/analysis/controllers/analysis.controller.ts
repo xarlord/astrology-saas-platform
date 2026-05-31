@@ -278,9 +278,9 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
   const housesAnalysis = {
     houses: houseArray,
     planetsInHouses: buildPlanetsInHouses(planets, houses),
-    houseRulers: calculateHouseRulers(planets, houses),
-    emptyHouses: identifyEmptyHouses(planets, houses),
-    stelliums: identifyStelliums(planets, houses),
+    houseRulers: {},        // TODO: implement house ruler calculation
+    emptyHouses: [] as number[],  // TODO: implement empty house identification
+    stelliums: [] as unknown[],   // TODO: implement stellium detection
   };
 
   res.status(200).json({
@@ -290,31 +290,6 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
 }
 
 // Helper functions
-
-// Helper function for future use
-export function _buildOverview(planets: Record<string, PlanetCalcData>) {
-  const sun = planets.sun;
-  const moon = planets.moon;
-  const ascendant = 'aries'; // Would get from houses
-
-  return {
-    sunSign: {
-      sign: sun.sign,
-      position: sun.position,
-      interpretation: `Your Sun in ${sun.sign} indicates your core identity and life purpose.`,
-    },
-    moonSign: {
-      sign: moon.sign,
-      position: moon.position,
-      retrograde: moon.retrograde,
-      interpretation: `Your Moon in ${moon.sign} reveals your emotional nature and inner needs.`,
-    },
-    risingSign: {
-      sign: ascendant,
-      interpretation: 'Your Rising sign influences your outer personality and first impressions.',
-    },
-  };
-}
 
 function buildPlanetsInSigns(planets: Record<string, PlanetCalcData>) {
   return Object.entries(planets).map(([key, planet]: [string, PlanetCalcData]) => ({
@@ -355,40 +330,6 @@ function findHouseForPosition(longitude: number, houseCusps: Array<{cusp: number
   return 1; // Default
 }
 
-// Helper function for future use
-export function _buildMajorAspects(_aspects: AspectData[]) {
-  return _aspects.filter((a: AspectData) =>
-    ['conjunction', 'opposition', 'trine', 'square'].includes(a.aspect)
-  ).slice(0, 10); // Top 10
-}
-
-// Helper function for future use
-export function _calculateDominantElements(planets: Record<string, PlanetCalcData>) {
-  const elements = { fire: 0, earth: 0, air: 0, water: 0 };
-
-  Object.entries(planets).forEach(([/*key*/, planet]: [string, PlanetCalcData]) => {
-    const sign = planet.sign;
-    if (['aries', 'leo', 'sagittarius'].includes(sign)) elements.fire++;
-    else if (['taurus', 'virgo', 'capricorn'].includes(sign)) elements.earth++;
-    else if (['gemini', 'libra', 'aquarius'].includes(sign)) elements.air++;
-    else if (['cancer', 'scorpio', 'pisces'].includes(sign)) elements.water++;
-  });
-
-  return elements;
-}
-
-// Helper function for future use
-export function _identifyChartPattern(_aspects: AspectData[]) {
-  // TODO: Implement T-Square, Grand Cross, Grand Trine, Yod detection
-  return {
-    hasGrandTrine: false,
-    hasTSquare: false,
-    hasGrandCross: false,
-    hasYod: false,
-    hasKite: false,
-  };
-}
-
 function groupAspectsByType(aspects: AspectData[]) {
   const grouped: Record<string, AspectData[]> = {};
 
@@ -415,32 +356,4 @@ function getHarmoniousAspects(_aspects: AspectData[]) {
 
 function getChallengingAspects(_aspects: AspectData[]) {
   return _aspects.filter(a => ['square', 'opposition', 'quincunx'].includes(a.aspect));
-}
-
-// Helper function for future use
-export function _identifyPatterns(_planets: Record<string, PlanetCalcData>, _aspects: AspectData[]) {
-  return {
-    stelliums: [],
-    grandTrines: [],
-    tSquares: [],
-    grandCrosses: [],
-    yods: [],
-    kites: [],
-  };
-}
-
-function calculateHouseRulers(_planets: Record<string, PlanetCalcData>, _houses: { houses: HouseCalcData[] }) {
-  // TODO: Calculate rulers of each house
-  return {};
-}
-
-function identifyEmptyHouses(_planets: Record<string, PlanetCalcData>, _houses: { houses: HouseCalcData[] }) {
-  const emptyHouses: number[] = [];
-  // TODO: Identify houses with no planets
-  return emptyHouses;
-}
-
-function identifyStelliums(_planets: Record<string, PlanetCalcData>, _houses: { houses: HouseCalcData[] }) {
-  // TODO: Identify 3+ planets in same sign/house
-  return [];
 }

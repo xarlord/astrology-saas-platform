@@ -22,8 +22,8 @@ let mockStoreState = {
   calculateChart: mockCalculateChart,
 };
 
-vi.mock('../../store/chartsStore', () => ({
-  useChartsStore: () => mockStoreState,
+vi.mock('../../stores/chartStore', () => ({
+  useChartStore: () => mockStoreState,
 }));
 
 // Mock child components synchronously

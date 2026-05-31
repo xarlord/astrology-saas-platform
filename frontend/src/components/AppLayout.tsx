@@ -92,7 +92,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
             className="lg:hidden p-2 rounded-lg hover:bg-white/5"
             aria-label="Open main menu"
           >
-            <span className="material-symbols-outlined text-slate-200" style={{ fontSize: '24px' }}>menu</span>
+            <span className="material-symbols-outlined text-slate-200 icon-md">menu</span>
           </button>
 
           <Link to="/dashboard" className="flex items-center gap-2.5">
@@ -175,7 +175,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                   onClick={() => setDropdownOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-sm text-slate-200 hover:bg-white/5 rounded-t-xl"
                 >
-                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>person</span>
+                  <span className="material-symbols-outlined icon-sm" aria-hidden="true">person</span>
                   Profile
                 </Link>
                 <Link
@@ -184,7 +184,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                   onClick={() => setDropdownOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-sm text-slate-200 hover:bg-white/5"
                 >
-                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>settings</span>
+                  <span className="material-symbols-outlined icon-sm" aria-hidden="true">settings</span>
                   Settings
                 </Link>
                 <hr className="border-white/5" />
@@ -194,7 +194,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
                   onClick={() => { setDropdownOpen(false); void logout(); }}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-red-900/20 rounded-b-xl"
                 >
-                  <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>logout</span>
+                  <span className="material-symbols-outlined icon-sm" aria-hidden="true">logout</span>
                   Logout
                 </button>
               </div>
@@ -239,7 +239,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             className="lg:hidden p-2 rounded-lg hover:bg-white/5"
             aria-label="Close sidebar"
           >
-            <span className="material-symbols-outlined text-slate-200" style={{ fontSize: '24px' }}>close</span>
+            <span className="material-symbols-outlined text-slate-200 icon-md">close</span>
           </button>
         </div>
 
@@ -261,7 +261,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                   }`
                 }
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>dashboard</span>
+                <span className="material-symbols-outlined icon-sm">dashboard</span>
                 <span className="font-medium">Dashboard</span>
               </NavLink>
             </div>
@@ -277,14 +277,14 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/charts/new"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-cosmic-gradient text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>add</span>
+                <span className="material-symbols-outlined icon-sm">add</span>
                 <span className="font-medium">New Chart</span>
               </Link>
               <Link
                 to="/transits/today"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-200 hover:bg-white/5 transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>calendar_today</span>
+                <span className="material-symbols-outlined icon-sm">calendar_today</span>
                 <span>Today&apos;s Transits</span>
               </Link>
             </div>
@@ -300,21 +300,21 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/charts/natal"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>star</span>
+                <span className="material-symbols-outlined icon-sm">star</span>
                 <span>Natal Chart</span>
               </Link>
               <Link
                 to="/compatibility"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>favorite_border</span>
+                <span className="material-symbols-outlined icon-sm">favorite_border</span>
                 <span>Compatibility</span>
               </Link>
               <Link
                 to="/transits"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>schedule</span>
+                <span className="material-symbols-outlined icon-sm">schedule</span>
                 <span>Transits</span>
               </Link>
 
@@ -335,35 +335,35 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to="/ephemeris"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>table</span>
+                <span className="material-symbols-outlined icon-sm">table</span>
                 <span>Ephemeris</span>
               </Link>
               <Link
                 to="/moon-calendar"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>dark_mode</span>
+                <span className="material-symbols-outlined icon-sm">dark_mode</span>
                 <span>Moon Calendar</span>
               </Link>
               <Link
                 to="/retrograde"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>undo</span>
+                <span className="material-symbols-outlined icon-sm">undo</span>
                 <span>Retrograde Calendar</span>
               </Link>
               <Link
                 to="/calendar"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>calendar_month</span>
+                <span className="material-symbols-outlined icon-sm">calendar_month</span>
                 <span>Calendar</span>
               </Link>
               <Link
                 to="/lunar-returns"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>nightlight</span>
+                <span className="material-symbols-outlined icon-sm">nightlight</span>
                 <span>Lunar Returns</span>
               </Link>
             </div>
@@ -651,10 +651,10 @@ const navItems = [
 ];
 
 const mobileNavItems = [
-  { name: 'home', label: 'Home', href: '/dashboard', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>home</span> },
-  { name: 'charts', label: 'Charts', href: '/charts', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>star</span> },
-  { name: 'transits', label: 'Transits', href: '/transits', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>dark_mode</span> },
-  { name: 'learn', label: 'Learn', href: '/learn', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>bar_chart</span> },
+  { name: 'home', label: 'Home', href: '/dashboard', icon: () => <span className="material-symbols-outlined icon-md">home</span> },
+  { name: 'charts', label: 'Charts', href: '/charts', icon: () => <span className="material-symbols-outlined icon-md">star</span> },
+  { name: 'transits', label: 'Transits', href: '/transits', icon: () => <span className="material-symbols-outlined icon-md">dark_mode</span> },
+  { name: 'learn', label: 'Learn', href: '/learn', icon: () => <span className="material-symbols-outlined icon-md">bar_chart</span> },
 ];
 
 /** Renders the user's saved charts as sidebar links */
@@ -682,7 +682,7 @@ function SidebarChartList() {
           to={`/charts/${chart.id}`}
           className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-200 hover:bg-white/5 hover:text-white transition-colors text-sm truncate"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chevron_right</span>
+          <span className="material-symbols-outlined icon-sm">chevron_right</span>
           <span className="truncate">{chart.name}</span>
         </Link>
       ))}

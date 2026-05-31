@@ -10,7 +10,7 @@ import { QueryClient } from '@tanstack/query-core';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ServiceWorkerUpdateBanner } from './components/ServiceWorkerUpdateBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { useChartsStore } from './store/chartsStore';
+import { useChartStore } from './stores/chartStore';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPageNew';
@@ -40,6 +40,8 @@ const LearnPage = lazy(() => import('./pages/LearnPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const SavedChartsGalleryPage = lazy(() => import('./pages/SavedChartsGalleryPage'));
+const DailyBriefingPage = lazy(() => import('./pages/DailyBriefingPage'));
+const ChartCreationWizardPage = lazy(() => import('./pages/ChartCreationWizardPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-cosmic-page">
@@ -62,9 +64,9 @@ const queryClient = new QueryClient({
  * or to the creation form if they have none.
  */
 function NatalChartRedirect() {
-  const charts = useChartsStore((s) => s.charts);
-  const fetchCharts = useChartsStore((s) => s.fetchCharts);
-  const isLoading = useChartsStore((s) => s.isLoading);
+  const charts = useChartStore((s) => s.charts);
+  const loadCharts = useChartStore((s) => s.loadCharts);
+  const isLoading = useChartStore((s) => s.isLoading);
   const navigate = useNavigate();
   const [resolved, setResolved] = useState(false);
   const [fetched, setFetched] = useState(false);
@@ -72,9 +74,9 @@ function NatalChartRedirect() {
   // Fetch charts on mount
   useEffect(() => {
     if (!fetched) {
-      void fetchCharts().finally(() => setFetched(true));
+      void loadCharts().finally(() => setFetched(true));
     }
-  }, [fetched, fetchCharts]);
+  }, [fetched, loadCharts]);
 
   useEffect(() => {
     if (!fetched || isLoading) return;
@@ -185,6 +187,14 @@ function App() {
               <Route
                 path="/lunar-returns"
                 element={<ProtectedRoute><LunarReturnsPage /></ProtectedRoute>}
+              />
+              <Route
+                path="/daily-briefing"
+                element={<ProtectedRoute><DailyBriefingPage /></ProtectedRoute>}
+              />
+              <Route
+                path="/charts/wizard"
+                element={<ProtectedRoute><ChartCreationWizardPage /></ProtectedRoute>}
               />
 
               {/* Static pages */}

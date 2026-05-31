@@ -7,13 +7,13 @@ import { renderWithProviders } from '../../__tests__/test-utils';
 import SubscriptionPage from '../../pages/SubscriptionPage';
 
 // Mock the store so AppLayout's useAuth doesn't crash
-vi.mock('../../store', () => ({
+vi.mock('../../stores', () => ({
   useAuthStore: vi.fn(() => ({
     user: { id: '1', name: 'Test', email: 'test@test.com' },
     isAuthenticated: true,
     logout: vi.fn(),
   })),
-  useChartsStore: vi.fn(),
+  useChartStore: vi.fn(),
 }));
 
 // Mock useCharts hook specifically

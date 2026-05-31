@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useCreateChart, useCalculateChart } from '../hooks';
-import { useChartsStore } from '../store/chartsStore';
+import { useChartStore } from '../stores/chartStore';
 
 // Error Message Component with Icon
 interface ErrorMessageProps {
@@ -253,7 +253,7 @@ export function BirthDataForm({
       await createChartMutation.mutateAsync(chartData);
 
       // Read currentChart directly from the store to avoid stale closure
-      const chart = useChartsStore.getState().currentChart;
+      const chart = useChartStore.getState().currentChart;
       if (chart?.id) {
         await calculateChartMutation.mutateAsync(chart.id);
         onSuccess?.(chart.id);
