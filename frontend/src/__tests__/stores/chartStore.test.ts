@@ -380,7 +380,7 @@ describe('chartStore', () => {
 
       const state = useChartStore.getState();
 
-      expect(chartService.calculateChart).toHaveBeenCalledWith('chart-1');
+      expect(chartService.calculateChart).toHaveBeenCalledWith('chart-1', undefined);
       expect(state.charts[0]).toEqual(calculatedChart);
     });
 
