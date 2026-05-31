@@ -215,7 +215,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}
-      style={{ backgroundColor: '#141627' }}
+      style={{ backgroundColor: 'var(--color-bg-card-solid, #141627)' }}
       aria-label="Main navigation"
     >
       <div className="flex flex-col h-full">
@@ -515,7 +515,7 @@ function MobileBottomNav() {
 // Footer Component
 function Footer() {
   return (
-    <footer className="mt-auto border-t border-white/5 py-12 bg-[#0d0f1a]">
+    <footer className="mt-auto border-t border-white/5 py-12 bg-[var(--color-bg-page,#0d0f1a)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {/* Product */}
@@ -651,7 +651,7 @@ const navItems = [
 ];
 
 const mobileNavItems = [
-  { name: 'home', label: 'Home', href: '/', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>home</span> },
+  { name: 'home', label: 'Home', href: '/dashboard', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>home</span> },
   { name: 'charts', label: 'Charts', href: '/charts', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>star</span> },
   { name: 'transits', label: 'Transits', href: '/transits', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>dark_mode</span> },
   { name: 'learn', label: 'Learn', href: '/learn', icon: () => <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>bar_chart</span> },

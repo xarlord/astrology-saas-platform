@@ -510,13 +510,16 @@ describe('Lunar Return Service', () => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const knexModule = require('../../config/database');
       mockKnex = knexModule.default;
-      // The mock returns an object with `where` which returns an object with `first`
-      // We need to track calls through the chain
+      // The mock returns a chain: .where().whereNull().whereNotNull().first()
       mockFirst = jest.fn();
       mockKnex.mockImplementation((table: string) => {
         if (table === 'charts') {
           return {
-            where: jest.fn(() => ({ first: mockFirst })),
+            where: jest.fn(() => ({
+              whereNull: jest.fn().mockReturnThis(),
+              whereNotNull: jest.fn().mockReturnThis(),
+              first: mockFirst,
+            })),
           };
         }
         return { where: jest.fn().mockReturnThis() };
@@ -528,12 +531,13 @@ describe('Lunar Return Service', () => {
     });
 
     test('should return next lunar return date', async () => {
-      // Mock chart data for user_1
+      // Mock chart data with calculated_data containing moon position
       mockFirst.mockResolvedValue({
-        moonSign: 'leo',
-        moonDegree: 15,
-        moonMinute: 30,
-        moonSecond: 0,
+        calculated_data: {
+          planets: {
+            moon: { sign: 'leo', degree: 15, minute: 30, second: 0 },
+          },
+        },
       });
 
       const result = await getCurrentLunarReturn('user_1');
@@ -544,12 +548,13 @@ describe('Lunar Return Service', () => {
     });
 
     test('should calculate days until return', async () => {
-      // Mock chart data for user_1
+      // Mock chart data with calculated_data containing moon position
       mockFirst.mockResolvedValue({
-        moonSign: 'leo',
-        moonDegree: 15,
-        moonMinute: 30,
-        moonSecond: 0,
+        calculated_data: {
+          planets: {
+            moon: { sign: 'leo', degree: 15, minute: 30, second: 0 },
+          },
+        },
       });
 
       const result = await getCurrentLunarReturn('user_1');
@@ -562,16 +567,18 @@ describe('Lunar Return Service', () => {
       // Mock different moon positions for different users
       mockFirst
         .mockResolvedValueOnce({
-          moonSign: 'leo',
-          moonDegree: 15,
-          moonMinute: 30,
-          moonSecond: 0,
+          calculated_data: {
+            planets: {
+              moon: { sign: 'leo', degree: 15, minute: 30, second: 0 },
+            },
+          },
         })
         .mockResolvedValueOnce({
-          moonSign: 'scorpio',
-          moonDegree: 5,
-          moonMinute: 15,
-          moonSecond: 0,
+          calculated_data: {
+            planets: {
+              moon: { sign: 'scorpio', degree: 5, minute: 15, second: 0 },
+            },
+          },
         });
 
       const result1 = await getCurrentLunarReturn('user_1');
@@ -583,15 +590,13 @@ describe('Lunar Return Service', () => {
       expect(result2.natalMoon.sign).toBe('scorpio');
     });
 
-    test('should return default values when no chart exists', async () => {
+    test('should throw when no chart exists', async () => {
       // Mock no chart found
       mockFirst.mockResolvedValue(null);
 
-      const result = await getCurrentLunarReturn('no_chart_user');
-
-      expect(result.returnDate).toBeInstanceOf(Date);
-      expect(result.daysUntil).toBe(28); // Default when no chart
-      expect(result.natalMoon.sign).toBe('aries'); // Default sign
+      await expect(getCurrentLunarReturn('no_chart_user')).rejects.toThrow(
+        'No natal chart found',
+      );
     });
   });
 });

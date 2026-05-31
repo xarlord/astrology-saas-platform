@@ -76,8 +76,17 @@ test.afterAll(async ({}, testInfo) => {
   if (!fs.existsSync(reportDir)) {
     fs.mkdirSync(reportDir, { recursive: true });
   }
+  // Extract only serializable fields to avoid circular reference crash
+  const summary = {
+    totalTests: testInfo.totalTests,
+    status: testInfo.status,
+    duration: testInfo.duration,
+    errors: testInfo.errors?.map(String),
+    projectName: testInfo.project?.name ?? 'unknown',
+    file: testInfo.file,
+  };
   fs.writeFileSync(
     path.join(reportDir, 'visual-report.json'),
-    JSON.stringify({ results: testInfo }, null, 2),
+    JSON.stringify({ results: summary }, null, 2),
   );
 });

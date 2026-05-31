@@ -8,7 +8,7 @@ import { test, expect, request } from '@playwright/test';
 
 const API_BASE = process.env.BASE_URL || 'http://localhost:3001';
 
-test.describe('Backend API Integration @integration', () => {
+test.describe('Backend API Integration', { tag: '@integration' }, () => {
   test('health endpoint returns 200', async () => {
     const context = await request.newContext({ baseURL: API_BASE });
     const res = await context.get('/health');

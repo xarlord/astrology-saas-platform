@@ -46,7 +46,7 @@ export const ZODIAC_COLORS = {
   Libra: '#0074D9',
   Scorpio: '#85144b',
   Sagittarius: '#FF6347',
-  Capricorn: '#001f3f',
+  Capricorn: '#5dade2',
   Aquarius: '#7FDBFF',
   Pisces: '#39CCCC',
 } as const;

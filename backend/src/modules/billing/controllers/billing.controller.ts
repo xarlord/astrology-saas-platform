@@ -20,6 +20,24 @@ import { logger } from '../../../utils/logger';
 import { sendSubscriptionConfirmationEmail } from '../../../services/email.service';
 
 /**
+ * Validate that a URL starts with an allowed origin (prevents open redirect attacks).
+ */
+function isValidRedirectUrl(url: string): boolean {
+  const allowedOrigins = [
+    config.frontendUrl,
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:3001',
+  ];
+  try {
+    const parsed = new URL(url);
+    return allowedOrigins.some(origin => url.startsWith(origin));
+  } catch {
+    return false;
+  }
+}
+
+/**
  * POST /api/v1/billing/checkout
  * Create a Stripe Checkout session
  */
@@ -29,11 +47,18 @@ export async function createCheckout(req: AuthenticatedRequest, res: Response): 
   const { priceId, successUrl, cancelUrl } = req.body;
   if (!priceId) throw new AppError('priceId is required', 400);
 
-  const user = await UserModel.findById(req.user.id);
-  if (!user) throw new AppError('User not found', 404);
-
   const success = successUrl || `${config.frontendUrl}/subscription?status=success`;
   const cancel = cancelUrl || `${config.frontendUrl}/subscription?status=cancel`;
+
+  if (!isValidRedirectUrl(success)) {
+    throw new AppError('Invalid successUrl origin', 400);
+  }
+  if (!isValidRedirectUrl(cancel)) {
+    throw new AppError('Invalid cancelUrl origin', 400);
+  }
+
+  const user = await UserModel.findById(req.user.id);
+  if (!user) throw new AppError('User not found', 404);
 
   const session = await createCheckoutSession(user.id, user.email, priceId, success, cancel);
 
@@ -55,6 +80,10 @@ export async function createPortal(req: AuthenticatedRequest, res: Response): Pr
 
   const { returnUrl } = req.body;
   const returnTo = returnUrl || `${config.frontendUrl}/subscription`;
+
+  if (!isValidRedirectUrl(returnTo)) {
+    throw new AppError('Invalid returnUrl origin', 400);
+  }
 
   const user = await UserModel.findById(req.user.id);
   if (!user) throw new AppError('User not found', 404);

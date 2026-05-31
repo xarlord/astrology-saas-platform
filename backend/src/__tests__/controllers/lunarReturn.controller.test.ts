@@ -224,35 +224,62 @@ describe('Lunar Return Controller', () => {
         expect.objectContaining({ statusCode: 401, message: 'User authentication required' }),
       );
       expect(mockResponse.status).not.toHaveBeenCalled();
-      expect(mockRegistry.getCurrentLunarReturn).not.toHaveBeenCalled();
+      expect(mockKnex).not.toHaveBeenCalled();
     });
 
-    it('should return current lunar return data on happy path', async () => {
-      const mockResult = {
-        returnDate: new Date('2024-06-15'),
-        daysUntil: 42,
-      };
-      mockRegistry.getCurrentLunarReturn!.mockResolvedValue(mockResult);
+    it('should return 404 if no natal chart found', async () => {
+      mockKnexChain.first.mockResolvedValue(undefined);
 
       await getCurrentLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
-      expect(mockRegistry.getCurrentLunarReturn).toHaveBeenCalledWith('user-123');
+      expect(mockKnex).toHaveBeenCalledWith('charts');
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'Natal chart not found. Please create a birth chart first.',
+        }),
+      );
+      expect(mockResponse.status).not.toHaveBeenCalled();
+    });
+
+    it('should return current lunar return data on happy path', async () => {
+      mockKnexChain.first.mockResolvedValue(natalChartRow);
+      const mockNextReturn = new Date('2026-06-15');
+      mockRegistry.calculateNextLunarReturn!.mockReturnValue(mockNextReturn);
+
+      await getCurrentLunarReturn(mockRequest, mockResponse as Response, mockNext);
+
+      expect(mockRegistry.calculateNextLunarReturn).toHaveBeenCalledWith({
+        sign: 'taurus',
+        degree: 15,
+        minute: 30,
+        second: 0,
+      });
       expect(mockResponse.json).toHaveBeenCalledWith({
         success: true,
-        data: mockResult,
+        data: {
+          returnDate: mockNextReturn,
+          daysUntil: expect.any(Number),
+          natalMoon: {
+            sign: 'taurus',
+            degree: 15,
+            minute: 30,
+            second: 0,
+          },
+        },
       });
     });
 
-    it('should call next on service error', async () => {
-      const error = new Error('Service failure');
-      mockRegistry.getCurrentLunarReturn!.mockRejectedValue(error);
+    it('should call next on unexpected error', async () => {
+      const error = new Error('DB down');
+      mockKnexChain.first.mockRejectedValue(error);
 
       await getCurrentLunarReturn(mockRequest, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
       const calledError = mockNext.mock.calls[0][0];
       expect(calledError).toBeInstanceOf(Error);
-      expect(calledError.message).toContain('Service failure');
+      expect(calledError.message).toContain('DB down');
     });
   });
 

@@ -42,7 +42,7 @@ const PLANET_SYMBOLS: Record<string, string> = {
 };
 const PLANET_NAMES: Record<string, string> = {
   sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
-  jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranium', neptune: 'Neptune', pluto: 'Pluto',
+  jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune', pluto: 'Pluto',
   chiron: 'Chiron', northnode: 'North Node', southnode: 'South Node',
 };
 const PLANET_COLORS_MAP: Record<string, string> = {};

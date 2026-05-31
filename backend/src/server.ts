@@ -36,7 +36,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      scriptSrc: ["'self'", "'unsafe-eval'"],
+      scriptSrc: process.env.NODE_ENV === 'development' ? ["'self'", "'unsafe-eval'"] : ["'self'"],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: [
         "'self'",
