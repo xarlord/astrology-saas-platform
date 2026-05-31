@@ -353,7 +353,6 @@ export default function RegisterPageNew() {
                             className={`inline-block w-2 h-2 rounded-full ${passwordStrength.color}`}
                           ></span>
                           Password strength: {passwordStrength.label}
-                          </span>
                           {password && password.length < 12 && (
                             <p className="text-xs text-slate-400 mt-0.5">Min 12 chars: uppercase, lowercase, number, special (@$!%*?&)</p>
                           )}

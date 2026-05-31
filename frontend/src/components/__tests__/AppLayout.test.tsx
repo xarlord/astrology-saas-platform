@@ -634,9 +634,11 @@ describe('AppLayout Component', () => {
       );
 
       const sidebar = container.querySelector('aside');
+      // Sidebar uses CSS variable with fallback for background color
+      expect(sidebar).toHaveAttribute("style", expect.stringContaining("var(--color-bg-card-solid, #141627)"));
       expect(sidebar).toBeInTheDocument();
-      // Sidebar uses inline style for background color
-      expect(sidebar).toHaveStyle({ backgroundColor: '#141627' });
+
+
     });
   });
 
