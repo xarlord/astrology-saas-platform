@@ -25,7 +25,7 @@ describe('Mobile Bottom Navigation Active States', () => {
 
   describe('Active Route Detection', () => {
     it('should highlight Home as active on root path', async () => {
-      renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
+      renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/dashboard']);
 
       const homeLink = screen.getByLabelText('Home');
       await waitFor(() => {
@@ -81,7 +81,7 @@ describe('Mobile Bottom Navigation Active States', () => {
 
   describe('Visual Feedback', () => {
     it('should render active indicator bar for active route', () => {
-      const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
+      const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/dashboard']);
 
       // Check for the active indicator bar (rounded bar at top)
       const activeBars = container.querySelectorAll('.bg-primary.h-0\\.5');
@@ -89,7 +89,7 @@ describe('Mobile Bottom Navigation Active States', () => {
     });
 
     it('should apply active styling to icon container', () => {
-      const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
+      const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/dashboard']);
 
       // Active icon container should have primary background tint
       const activeContainer = container.querySelector('[class*="bg-primary"]');
@@ -97,7 +97,7 @@ describe('Mobile Bottom Navigation Active States', () => {
     });
 
     it('should apply active styling to label text', () => {
-      const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/']);
+      const { container } = renderWithRouter(<AppLayout>Test Content</AppLayout>, ['/dashboard']);
 
       // Active label should have primary color
       const activeLabel = container.querySelector('.text-primary');
