@@ -3,8 +3,7 @@
  * All astrology-specific visualization components
  */
 
-export { default as ChartWheel } from './ChartWheel';
-export type { Planet, Aspect, House, ChartAngles, ChartData, ChartWheelProps } from './ChartWheel';
+// ChartWheel is in components/ChartWheel.tsx (not this directory)
 
 export { default as EnergyMeter } from './EnergyMeter';
 export type { EnergyMeterProps } from './EnergyMeter';

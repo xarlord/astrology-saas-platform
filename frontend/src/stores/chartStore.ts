@@ -28,7 +28,7 @@ interface ChartState {
   createChart: (data: BirthData) => Promise<Chart>;
   updateChart: (id: string, data: Partial<BirthData>) => Promise<void>;
   deleteChart: (id: string) => Promise<void>;
-  calculateChart: (id: string) => Promise<void>;
+  calculateChart: (id: string, options?: { useTrueAngles?: boolean }) => Promise<void>;
   setCurrentChart: (chart: Chart | null) => void;
   clearCurrentChart: () => void;
   clearError: () => void;
@@ -147,10 +147,10 @@ export const useChartStore = create<ChartState>()(
       },
 
       // Calculate chart
-      calculateChart: async (id: string) => {
+      calculateChart: async (id: string, options?: { useTrueAngles?: boolean }) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await chartService.calculateChart(id);
+          const response = await chartService.calculateChart(id, options);
           const calculatedChart = response.chart;
 
           // Update in charts list
