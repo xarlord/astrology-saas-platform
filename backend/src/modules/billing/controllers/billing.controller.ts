@@ -30,7 +30,7 @@ function isValidRedirectUrl(url: string): boolean {
     'http://localhost:3001',
   ];
   try {
-    const parsed = new URL(url);
+    new URL(url);
     return allowedOrigins.some(origin => url.startsWith(origin));
   } catch {
     return false;
