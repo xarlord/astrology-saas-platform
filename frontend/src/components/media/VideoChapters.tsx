@@ -133,7 +133,7 @@ export const VideoChapters: React.FC<VideoChaptersProps> = ({
                 {chapter.thumbnail ? (
                   <img
                     src={chapter.thumbnail}
-                    alt=""
+                    alt={`${chapter.title} thumbnail`}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />

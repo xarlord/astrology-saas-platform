@@ -292,7 +292,7 @@ export class CardImageService {
       return null;
     } finally {
       if (page) {
-        await page.close().catch(() => {});
+        await page.close().catch(() => { /* page cleanup — ignore errors */ });
       }
     }
   }
