@@ -89,15 +89,6 @@ jest.mock('bullmq', () => {
   return { Queue, Worker, QueueEvents };
 }, { virtual: true });
 
-jest.mock('replicate', () => {
-  const Replicate = jest.fn().mockImplementation(() => ({
-    run: jest.fn().mockResolvedValue([]),
-    predictions: { create: jest.fn().mockResolvedValue({ id: 'mock' }) },
-  }));
-  (Replicate as any).default = Replicate;
-  return Replicate;
-}, { virtual: true });
-
 jest.mock('stripe', () => {
   const Stripe = jest.fn().mockImplementation(() => ({
     customers: { create: jest.fn(), retrieve: jest.fn(), update: jest.fn() },

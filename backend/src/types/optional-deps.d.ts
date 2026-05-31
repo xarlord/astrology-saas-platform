@@ -14,17 +14,6 @@ declare module 'swagger-jsdoc' {
   export = swaggerJsdoc;
 }
 
-declare module 'replicate' {
-  interface ReplicateConfig {
-    auth?: string;
-  }
-  class Replicate {
-    constructor(config?: ReplicateConfig);
-    run(model: string, options: Record<string, unknown>): Promise<unknown>;
-  }
-  export = Replicate;
-}
-
 declare module 'stripe' {
   namespace Stripe {
     interface ChargeCreateParams {
