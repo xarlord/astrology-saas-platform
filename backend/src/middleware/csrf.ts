@@ -91,8 +91,9 @@ export const csrfMiddleware = (req: Request, res: Response, next: NextFunction):
     return;
   }
 
-  // Skip CSRF for auth refresh endpoint — uses httpOnly cookie, not form data
-  if (req.path === '/v1/auth/refresh' || req.path === '/auth/refresh' || req.path.endsWith('/auth/refresh')) {
+  // Skip CSRF for auth endpoints — login/register are unauthenticated
+  const authPaths = ['/auth/refresh', '/auth/login', '/auth/register', '/auth/social'];
+  if (authPaths.some(p => req.path === '/v1' + p || req.path === p || req.path.endsWith(p))) {
     next();
     return;
   }
