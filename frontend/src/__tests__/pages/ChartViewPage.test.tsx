@@ -12,13 +12,13 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Mock the Zustand store
-const mockFetchChart = vi.fn();
+const mockLoadChart = vi.fn();
 const mockCalculateChart = vi.fn();
 let mockStoreState = {
   currentChart: null as Record<string, unknown> | null,
   isLoading: false,
   error: null as string | null,
-  fetchChart: mockFetchChart,
+  loadChart: mockLoadChart,
   calculateChart: mockCalculateChart,
 };
 
@@ -171,12 +171,12 @@ describe('ChartViewPage', () => {
       currentChart: null,
       isLoading: true,
       error: null,
-      fetchChart: mockFetchChart,
+      loadChart: mockLoadChart,
       calculateChart: mockCalculateChart,
     };
     // Default: calculateChart resolves successfully
     mockCalculateChart.mockResolvedValue(undefined);
-    mockFetchChart.mockResolvedValue(undefined);
+    mockLoadChart.mockResolvedValue(undefined);
   });
 
   describe('Page Rendering', () => {
@@ -292,7 +292,7 @@ describe('ChartViewPage', () => {
         currentChart: { id: 'test', calculated_data: {} } as any,
         isLoading: false,
         error: 'Failed to fetch chart',
-        fetchChart: mockFetchChart,
+        loadChart: mockLoadChart,
         calculateChart: mockCalculateChart,
       };
 
@@ -308,7 +308,7 @@ describe('ChartViewPage', () => {
         currentChart: { id: 'test', calculated_data: {} } as any,
         isLoading: false,
         error: 'Network error',
-        fetchChart: mockFetchChart,
+        loadChart: mockLoadChart,
         calculateChart: mockCalculateChart,
       };
 
@@ -327,7 +327,7 @@ describe('ChartViewPage', () => {
         currentChart: null,
         isLoading: false,
         error: null,
-        fetchChart: mockFetchChart,
+        loadChart: mockLoadChart,
         calculateChart: mockCalculateChart,
       };
 
@@ -337,11 +337,11 @@ describe('ChartViewPage', () => {
     });
   });
 
-  describe('fetchChart called', () => {
-    it('should call fetchChart with chartId on mount', () => {
+  describe('loadChart called', () => {
+    it('should call loadChart with chartId on mount', () => {
       renderWithProviders(createElement(ChartViewPage), '/charts/my-chart-123');
 
-      expect(mockFetchChart).toHaveBeenCalledWith('my-chart-123');
+      expect(mockLoadChart).toHaveBeenCalledWith('my-chart-123');
     });
   });
 });
