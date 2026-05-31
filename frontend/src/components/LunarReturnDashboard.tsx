@@ -46,8 +46,8 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
       setNextReturn(nextData);
     } catch (err: unknown) {
       console.error('Error loading lunar return data:', err);
-      const errorObj = err as { response?: { data?: { error?: string; message?: string } }; message?: string };
-      setError(errorObj.response?.data?.message ?? errorObj.response?.data?.error ?? (typeof err === 'string' ? err : errorObj.message ?? 'Failed to load lunar return data'));
+      const msg = err instanceof Error ? err.message : (typeof err === 'string' ? err : 'Failed to load lunar return data');
+      setError(msg);
     } finally {
       setLoading(false);
     }

@@ -788,24 +788,28 @@ export async function getCurrentLunarReturn(userId: string): Promise<{
     second: number;
   };
 }> {
-  // Get user's primary birth chart from database
-  const userChart = await knex('charts').where({ userId, isBirthChart: true }).first();
+  // Get user's primary natal chart from database (matching controller schema)
+  const userChart = await knex('charts')
+    .where({ user_id: userId, type: 'natal' })
+    .whereNull('deleted_at')
+    .whereNotNull('calculated_data')
+    .first();
 
   if (!userChart) {
-    // Return default values if no birth chart exists
-    const today = new Date();
-    return {
-      returnDate: new Date(today.getTime() + 28 * 24 * 60 * 60 * 1000), // ~28 days from now
-      daysUntil: 28,
-      natalMoon: { sign: 'aries', degree: 0, minute: 0, second: 0 },
-    };
+    // No natal chart — throw so the controller catches it as NotFoundError
+    throw new Error('No natal chart found. Please create a birth chart first.');
   }
 
+  // Extract moon position from calculated_data JSONB (same as controller helper)
+  const calculatedData = userChart.calculated_data as Record<string, unknown> | null;
+  const planets = calculatedData?.planets as Record<string, Record<string, unknown>> | undefined;
+  const moon = planets?.moon ?? planets?.Moon;
+
   const natalMoon = {
-    sign: userChart.moonSign || 'aries',
-    degree: userChart.moonDegree || 0,
-    minute: userChart.moonMinute || 0,
-    second: userChart.moonSecond || 0,
+    sign: (moon?.sign as string) ?? 'aries',
+    degree: (moon?.degree as number) ?? 0,
+    minute: (moon?.minute as number) ?? 0,
+    second: (moon?.second as number) ?? 0,
   };
 
   const nextReturn = calculateNextLunarReturn(natalMoon);

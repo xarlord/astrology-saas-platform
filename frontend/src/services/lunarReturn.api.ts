@@ -19,8 +19,25 @@ import type {
 /** Extract a human-readable error message from Axios errors */
 function extractErrorMessage(err: unknown): string {
   if (typeof err === 'string') return err;
-  const e = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
-  return e.response?.data?.message ?? e.response?.data?.error ?? e.message ?? 'Request failed';
+  const e = err as {
+    response?: {
+      data?: {
+        message?: string;
+        error?: { message?: string } | string;
+      };
+    };
+    message?: string;
+  };
+  const data = e.response?.data;
+  if (data) {
+    // Backend returns { success: false, error: { message: "...", statusCode: N } }
+    if (typeof data.error === 'object' && data.error?.message) {
+      return data.error.message;
+    }
+    if (typeof data.error === 'string') return data.error;
+    if (data.message) return data.message;
+  }
+  return e.message ?? 'Request failed';
 }
 
 export type {

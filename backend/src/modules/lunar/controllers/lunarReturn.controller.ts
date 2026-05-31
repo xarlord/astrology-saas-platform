@@ -15,7 +15,6 @@ import {
   calculateNextLunarReturn,
   calculateLunarReturnChart,
   generateLunarMonthForecast,
-  getCurrentLunarReturn as getServiceCurrentLunarReturn,
 } from '../services/lunarReturn.service';
 import { NatalChart } from '../models/lunarReturn.model';
 import knex from '../../../config/database';
@@ -101,11 +100,25 @@ export const getCurrentLunarReturn = asyncHandler(
       throw new UnauthorizedError('User authentication required');
     }
 
-    const result = await getServiceCurrentLunarReturn(userId);
+    const natalChart = await getUserNatalChart(userId);
+
+    if (!natalChart) {
+      throw new NotFoundError('Natal chart not found. Please create a birth chart first.');
+    }
+
+    const nextReturn = calculateNextLunarReturn(natalChart.moon);
+    const today = new Date();
+    const daysUntil = Math.ceil(
+      (nextReturn.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+    );
 
     res.json({
       success: true,
-      data: result,
+      data: {
+        returnDate: nextReturn,
+        daysUntil,
+        natalMoon: natalChart.moon,
+      },
     });
   },
 );
