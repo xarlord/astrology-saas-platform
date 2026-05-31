@@ -732,6 +732,14 @@ export const designTokens = {
   animations,
 };
 
+
+/**
+ * Lunar cycle constants
+ */
+/** Average synodic month duration in days (new moon to new moon) */
+export const SYNODIC_MONTH_DAYS = 29.53058867;
+/** Reference new moon: January 6, 2000 at 18:14 UTC (epoch ms) */
+export const KNOWN_NEW_MOON_MS = Date.UTC(2000, 0, 6, 18, 14);
 export default {
   colors,
   typography,

@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useCharts, useTodayTransits, useTransitForecast } from '../hooks';
 import { deriveHighlights } from '../utils/transitHelpers';
 import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
+import { SYNODIC_MONTH_DAYS, KNOWN_NEW_MOON_MS } from '../utils/constants';
 
 const PLANET_META: Record<string, { icon: string; color: string }> = {
   Sun: { icon: 'sunny', color: 'text-gold' },
@@ -32,8 +33,8 @@ function getMoonPhaseInfo() {
   const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
   // Simple moon phase approximation
-  const synodicMonth = 29.53059;
-  const knownNewMoon = new Date(2000, 0, 6, 18, 14).getTime();
+  const synodicMonth = SYNODIC_MONTH_DAYS;
+  const knownNewMoon = KNOWN_NEW_MOON_MS;
   const diff = (now.getTime() - knownNewMoon) / 86400000;
   const phase = ((diff % synodicMonth) + synodicMonth) % synodicMonth;
 

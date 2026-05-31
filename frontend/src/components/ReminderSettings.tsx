@@ -33,7 +33,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
 
     try {
       // TODO: Implement actual API call for reminder settings
-      await setReminder('event-id', new Date());
+      await setReminder(formData.eventType, new Date()); // Use selected event type instead of hardcoded placeholder
       setSuccess(true);
 
       // Reset success message after 3 seconds
