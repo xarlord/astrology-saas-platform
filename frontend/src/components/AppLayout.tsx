@@ -647,6 +647,8 @@ function Footer() {
 const navItems = [
   { name: 'charts', label: 'Charts', href: '/charts' },
   { name: 'forecast', label: 'Forecast', href: '/forecast' },
+  { name: 'solar-returns', label: 'Solar Returns', href: '/solar-returns' },
+  { name: 'lunar-returns', label: 'Lunar Returns', href: '/lunar-returns' },
   { name: 'learn', label: 'Learn', href: '/learn' },
 ];
 
@@ -654,6 +656,7 @@ const mobileNavItems = [
   { name: 'home', label: 'Home', href: '/dashboard', icon: () => <span className="material-symbols-outlined icon-md">home</span> },
   { name: 'charts', label: 'Charts', href: '/charts', icon: () => <span className="material-symbols-outlined icon-md">star</span> },
   { name: 'transits', label: 'Transits', href: '/transits', icon: () => <span className="material-symbols-outlined icon-md">dark_mode</span> },
+  { name: 'solar-returns', label: 'Solar', href: '/solar-returns', icon: () => <span className="material-symbols-outlined icon-md">light_mode</span> },
   { name: 'learn', label: 'Learn', href: '/learn', icon: () => <span className="material-symbols-outlined icon-md">bar_chart</span> },
 ];
 
