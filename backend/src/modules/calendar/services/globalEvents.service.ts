@@ -45,7 +45,6 @@ class GlobalEventsService {
    * Mercury goes retrograde 3-4 times per year, ~3 weeks each
    */
   async calculateMercuryRetrograde(_year: number): Promise<RetrogradePeriod[]> {
-    // const retrogrades: RetrogradePeriod[] = []; // Not needed - returning mapped array directly
 
     // For MVP: Use known astronomical patterns for Mercury retrograde
     // Mercury goes retrograde when:
@@ -99,7 +98,6 @@ class GlobalEventsService {
    * Venus goes retrograde every 18 months for ~6 weeks
    */
   async calculateVenusRetrograde(_year: number): Promise<RetrogradePeriod[]> {
-    // const retrogrades: RetrogradePeriod[] = []; // Not needed - returning mapped array directly
 
     // Venus retrograde 2026 (if applicable)
     const venusRetrograde2026: Array<{
@@ -130,7 +128,6 @@ class GlobalEventsService {
    * Mars goes retrograde every 26 months for ~2-3 months
    */
   async calculateMarsRetrograde(_year: number): Promise<RetrogradePeriod[]> {
-    // const retrogrades: RetrogradePeriod[] = []; // Not needed - returning mapped array directly
 
     // Mars retrograde occurs approximately every 26 months
     // Last major Mars retrograde was 2024 (in Gemini), next will be 2026-2027
@@ -351,7 +348,6 @@ class GlobalEventsService {
    * 4-7 eclipses per year (solar + lunar)
    */
   async calculateEclipses(_year: number): Promise<Eclipse[]> {
-    // const eclipses: Eclipse[] = []; // Not needed - returning mapped array directly
 
     // For MVP: Use NASA eclipse catalog data (simplified)
     const eclipses2026: Array<{
