@@ -16,6 +16,13 @@ import type {
   LunarMonthForecast,
 } from '../types/lunar-return.types';
 
+/** Extract a human-readable error message from Axios errors */
+function extractErrorMessage(err: unknown): string {
+  if (typeof err === 'string') return err;
+  const e = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
+  return e.response?.data?.message ?? e.response?.data?.error ?? e.message ?? 'Request failed';
+}
+
 export type {
   NatalMoon,
   MoonPosition,
@@ -75,10 +82,14 @@ export async function getNextLunarReturn(): Promise<{
   nextReturn: Date;
   natalMoon: NatalMoon;
 }> {
-  const response = await api.get<{ data: { nextReturn: Date; natalMoon: NatalMoon } }>(
-    '/lunar-return/next',
-  );
-  return response.data.data;
+  try {
+    const response = await api.get<{ data: { nextReturn: Date; natalMoon: NatalMoon } }>(
+      '/lunar-return/next',
+    );
+    return response.data.data;
+  } catch (err: unknown) {
+    throw new Error(extractErrorMessage(err));
+  }
 }
 
 /**
@@ -88,20 +99,28 @@ export async function getCurrentLunarReturn(): Promise<{
   returnDate: Date;
   daysUntil: number;
 }> {
-  const response = await api.get<{ data: { returnDate: Date; daysUntil: number } }>(
-    '/lunar-return/current',
-  );
-  return response.data.data;
+  try {
+    const response = await api.get<{ data: { returnDate: Date; daysUntil: number } }>(
+      '/lunar-return/current',
+    );
+    return response.data.data;
+  } catch (err: unknown) {
+    throw new Error(extractErrorMessage(err));
+  }
 }
 
 /**
  * Calculate lunar return chart for specific date
  */
 export async function calculateLunarReturnChart(returnDate: Date): Promise<LunarReturnChart> {
-  const response = await api.post<{ data: LunarReturnChart }>('/lunar-return/chart', {
-    returnDate,
-  });
-  return response.data.data;
+  try {
+    const response = await api.post<{ data: LunarReturnChart }>('/lunar-return/chart', {
+      returnDate,
+    });
+    return response.data.data;
+  } catch (err: unknown) {
+    throw new Error(extractErrorMessage(err));
+  }
 }
 
 /**
