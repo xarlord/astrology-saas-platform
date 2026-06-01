@@ -46,7 +46,6 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
   personA,
   personB,
   aspectArcs,
-  compatibilityScore,
   autoPlay = false,
   onMergeComplete,
   'aria-label': ariaLabel,
