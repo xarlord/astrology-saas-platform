@@ -103,8 +103,6 @@ export type {
 } from './ErrorRecovery';
 
 // Error Boundary
-export { ErrorBoundary, withErrorBoundary } from './ErrorBoundary';
-export type { ErrorBoundaryProps, ErrorBoundaryState } from './ErrorBoundary';
 
 // Card
 export { Card } from './Card';
