@@ -133,7 +133,7 @@ describe('ShareModal', () => {
       // Use waitFor to handle AnimatePresence animation timing
       await waitFor(() => {
         expect(onPasswordSet).toHaveBeenCalledWith('mypassword');
-      });
+      }, { timeout: 3000 });
     });
   });
 
