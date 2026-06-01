@@ -52,8 +52,6 @@ export function deriveHighlights(reading: TransitReading | undefined): TransitHi
   const OUTER_PLANETS = new Set(['saturn', 'uranus', 'neptune', 'pluto', 'chiron', 'north_node', 'south_node']);
   // Luminaries: personal, high-impact
   const LUMINARIES = new Set(['sun', 'moon']);
-  // Inner planets: fast-moving, moderate impact
-  const INNER_PLANETS = new Set(['mercury', 'venus', 'mars', 'jupiter']);
 
   function classifyTransit(planet: string): 'major-transit' | 'minor-transit' | 'personal-transit' {
     const p = planet.toLowerCase();
