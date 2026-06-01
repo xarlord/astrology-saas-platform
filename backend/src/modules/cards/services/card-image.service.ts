@@ -8,6 +8,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import logger from '../../../utils/logger';
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export interface CardImageOptions {
   template: string;
   planetPlacements: string[];
@@ -263,8 +265,34 @@ export class CardImageService {
         clip: { x: 0, y: 0, width: dims.width, height: dims.height },
       });
 
+      // Defense-in-depth: validate userId is a proper UUID before using in file path
+      if (!UUID_REGEX.test(opts.userId)) {
+        logger.error('Invalid userId format — possible path traversal attempt', {
+          userId: opts.userId,
+          cardId: opts.cardId,
+        });
+        return null;
+      }
+
+      if (!UUID_REGEX.test(opts.cardId)) {
+        logger.error('Invalid cardId format', {
+          cardId: opts.cardId,
+        });
+        return null;
+      }
+
       // Store to uploads/cards/{userId}/{cardId}.png
       const userDir = path.join(UPLOADS_DIR, opts.userId);
+      const resolvedUserDir = path.resolve(userDir);
+      const resolvedUploadsDir = path.resolve(UPLOADS_DIR);
+      if (!resolvedUserDir.startsWith(resolvedUploadsDir + path.sep)) {
+        logger.error('Path traversal detected — resolved path outside uploads', {
+          userId: opts.userId,
+          cardId: opts.cardId,
+        });
+        return null;
+      }
+
       if (!fs.existsSync(userDir)) {
         fs.mkdirSync(userDir, { recursive: true });
       }

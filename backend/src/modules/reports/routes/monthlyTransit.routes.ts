@@ -6,8 +6,10 @@
  */
 
 import { Router, RequestHandler } from 'express';
+import Joi from 'joi';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { validateBody } from '../../../utils/validators';
 import {
   getMonthlyTransitReport,
   getCurrentMonthlyReport,
@@ -26,6 +28,16 @@ router.use(authenticate);
  */
 router.post(
   '/',
+  validateBody(
+    Joi.object({
+      month: Joi.string()
+        .pattern(/^\d{4}-\d{2}$/)
+        .optional()
+        .messages({
+          'string.pattern.base': 'Month must be in YYYY-MM format',
+        }),
+    }),
+  ),
   asyncHandler(async (req, res) => {
     await getMonthlyTransitReport(req as AuthenticatedRequest, res);
   }) as RequestHandler,

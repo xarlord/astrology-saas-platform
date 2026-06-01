@@ -4,8 +4,16 @@
  */
 
 import { Router, RequestHandler } from 'express';
+import Joi from 'joi';
 import * as synastryController from '../controllers/synastry.controller';
 import { authenticate } from '../../../middleware/auth';
+import {
+  validateBody,
+  validateQuery,
+  validateParams,
+  paginationSchema,
+  uuidParamSchema,
+} from '../../../utils/validators';
 
 const router = Router();
 
@@ -18,7 +26,16 @@ router.use(authenticate);
  * @access  Private
  * @body    { chart1Id: string, chart2Id: string }
  */
-router.post('/compare', synastryController.compareCharts as RequestHandler);
+router.post(
+  '/compare',
+  validateBody(
+    Joi.object({
+      chart1Id: Joi.string().uuid().required(),
+      chart2Id: Joi.string().uuid().required(),
+    }),
+  ),
+  synastryController.compareCharts as RequestHandler,
+);
 
 /**
  * @route   POST /api/synastry/compatibility
@@ -26,7 +43,17 @@ router.post('/compare', synastryController.compareCharts as RequestHandler);
  * @access  Private
  * @body    { chart1Id: string, chart2Id: string, includeComposite?: boolean }
  */
-router.post('/compatibility', synastryController.getCompatibility as RequestHandler);
+router.post(
+  '/compatibility',
+  validateBody(
+    Joi.object({
+      chart1Id: Joi.string().uuid().required(),
+      chart2Id: Joi.string().uuid().required(),
+      includeComposite: Joi.boolean().optional(),
+    }),
+  ),
+  synastryController.getCompatibility as RequestHandler,
+);
 
 /**
  * @route   GET /api/synastry/reports
@@ -34,14 +61,14 @@ router.post('/compatibility', synastryController.getCompatibility as RequestHand
  * @access  Private
  * @query   page, limit
  */
-router.get('/reports', synastryController.getSynastryReports);
+router.get('/reports', validateQuery(paginationSchema), synastryController.getSynastryReports);
 
 /**
  * @route   GET /api/synastry/reports/:id
  * @desc    Get specific synastry report
  * @access  Private
  */
-router.get('/reports/:id', synastryController.getSynastryReport);
+router.get('/reports/:id', validateParams(uuidParamSchema), synastryController.getSynastryReport);
 
 /**
  * @route   PATCH /api/synastry/reports/:id
@@ -49,13 +76,23 @@ router.get('/reports/:id', synastryController.getSynastryReport);
  * @access  Private
  * @body    { isFavorite?: boolean, notes?: string }
  */
-router.patch('/reports/:id', synastryController.updateSynastryReport);
+router.patch(
+  '/reports/:id',
+  validateParams(uuidParamSchema),
+  validateBody(
+    Joi.object({
+      isFavorite: Joi.boolean().optional(),
+      notes: Joi.string().max(5000).optional(),
+    }),
+  ),
+  synastryController.updateSynastryReport,
+);
 
 /**
  * @route   DELETE /api/synastry/reports/:id
  * @desc    Delete a synastry report
  * @access  Private
  */
-router.delete('/reports/:id', synastryController.deleteSynastryReport);
+router.delete('/reports/:id', validateParams(uuidParamSchema), synastryController.deleteSynastryReport);
 
 export { router };

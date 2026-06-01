@@ -43,15 +43,29 @@ export function mapReadingToTransit(
 
 /**
  * Derive highlights from today's reading -- the most intense transits
- * are treated as highlights.
+ * are treated as highlights, classified by planet category.
  */
 export function deriveHighlights(reading: TransitReading | undefined): TransitHighlight[] {
   if (!reading) return [];
 
+  // Outer planets: slow-moving, generational — always major
+  const OUTER_PLANETS = new Set(['saturn', 'uranus', 'neptune', 'pluto', 'chiron', 'north_node', 'south_node']);
+  // Luminaries: personal, high-impact
+  const LUMINARIES = new Set(['sun', 'moon']);
+  // Inner planets: fast-moving, moderate impact
+  const INNER_PLANETS = new Set(['mercury', 'venus', 'mars', 'jupiter']);
+
+  function classifyTransit(planet: string): 'major-transit' | 'minor-transit' | 'personal-transit' {
+    const p = planet.toLowerCase();
+    if (OUTER_PLANETS.has(p)) return 'major-transit';
+    if (LUMINARIES.has(p)) return 'personal-transit';
+    return 'minor-transit';
+  }
+
   return (reading.transits ?? [])
     .filter((t) => Math.abs(t.orb) <= 2)
     .map((t) => ({
-      type: 'major-transit' as const,
+      type: classifyTransit(t.transitPlanet),
       title: `${t.transitPlanet} ${t.aspect} ${t.natalPlanet}`,
       date: reading.date,
       description: `${t.transitPlanet} forms a ${t.aspect} with your natal ${t.natalPlanet}`,

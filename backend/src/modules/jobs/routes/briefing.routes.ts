@@ -7,6 +7,7 @@
 
 import { Router, RequestHandler } from 'express';
 import { authenticate } from '../../../middleware/auth';
+import { validateParams, dateParamSchema } from '../../../utils/validators';
 import { getBriefing, getBriefingByDate } from '../controllers/briefing.controller';
 
 const router = Router();
@@ -26,6 +27,6 @@ router.get('/', getBriefing as RequestHandler);
  * @desc    Get briefing for a specific date
  * @access  Private
  */
-router.get('/:date', getBriefingByDate as RequestHandler);
+router.get('/:date', validateParams(dateParamSchema), getBriefingByDate as RequestHandler);
 
 export { router as briefingRoutes };

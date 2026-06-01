@@ -4,8 +4,16 @@
  */
 
 import { Router } from 'express';
+import Joi from 'joi';
 import * as lunarReturnController from '../controllers/lunarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
+import {
+  validateBody,
+  validateQuery,
+  validateParams,
+  paginationSchema,
+  uuidParamSchema,
+} from '../../../utils/validators';
 
 const router = Router();
 
@@ -32,7 +40,11 @@ router.get('/current', lunarReturnController.getCurrentLunarReturn);
  * @access  Private
  * @body    { returnDate: string }
  */
-router.post('/chart', lunarReturnController.getLunarReturnChart);
+router.post(
+  '/chart',
+  validateBody(Joi.object({ returnDate: Joi.string().isoDate().required() })),
+  lunarReturnController.getLunarReturnChart,
+);
 
 /**
  * @route   POST /api/lunar-return/forecast
@@ -40,7 +52,11 @@ router.post('/chart', lunarReturnController.getLunarReturnChart);
  * @access  Private
  * @body    { returnDate?: string }
  */
-router.post('/forecast', lunarReturnController.getLunarMonthForecast);
+router.post(
+  '/forecast',
+  validateBody(Joi.object({ returnDate: Joi.string().isoDate().optional() })),
+  lunarReturnController.getLunarMonthForecast,
+);
 
 /**
  * @route   GET /api/lunar-return/history
@@ -48,14 +64,14 @@ router.post('/forecast', lunarReturnController.getLunarMonthForecast);
  * @access  Private
  * @query   page, limit
  */
-router.get('/history', lunarReturnController.getLunarReturnHistory);
+router.get('/history', validateQuery(paginationSchema), lunarReturnController.getLunarReturnHistory);
 
 /**
  * @route   DELETE /api/lunar-return/:id
  * @desc    Delete a saved lunar return
  * @access  Private
  */
-router.delete('/:id', lunarReturnController.deleteLunarReturn);
+router.delete('/:id', validateParams(uuidParamSchema), lunarReturnController.deleteLunarReturn);
 
 /**
  * @route   POST /api/lunar-return/calculate
@@ -63,6 +79,15 @@ router.delete('/:id', lunarReturnController.deleteLunarReturn);
  * @access  Private
  * @body    { returnDate: string, includeForecast?: boolean }
  */
-router.post('/calculate', lunarReturnController.calculateCustomLunarReturn);
+router.post(
+  '/calculate',
+  validateBody(
+    Joi.object({
+      returnDate: Joi.string().isoDate().required(),
+      includeForecast: Joi.boolean().optional(),
+    }),
+  ),
+  lunarReturnController.calculateCustomLunarReturn,
+);
 
 export { router };

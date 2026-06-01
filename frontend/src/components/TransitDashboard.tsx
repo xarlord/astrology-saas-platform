@@ -24,7 +24,7 @@ export interface Transit {
 }
 
 export interface TransitHighlight {
-  type: 'major-transit' | 'moon-phase' | 'eclipse' | 'retrograde';
+  type: 'major-transit' | 'minor-transit' | 'personal-transit' | 'moon-phase' | 'eclipse' | 'retrograde';
   title: string;
   date: string;
   description: string;

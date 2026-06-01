@@ -161,3 +161,46 @@ export function validateQuery(schema: Joi.ObjectSchema) {
     next();
   };
 }
+
+/**
+ * Validate route params against schema
+ */
+export function validateParams(schema: Joi.ObjectSchema) {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const { error, value } = schema.validate(req.params, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+
+    if (error) {
+      const errors = error.details.map((detail) => detail.message);
+      res.status(400).json({
+        success: false,
+        error: {
+          message: 'Validation failed',
+          statusCode: 400,
+          details: errors,
+        },
+      });
+      return;
+    }
+
+    req.params = value;
+    next();
+  };
+}
+
+// Reusable param schemas
+export const uuidParamSchema = Joi.object({
+  id: Joi.string().uuid().required(),
+});
+
+export const shareTokenParamSchema = Joi.object({
+  shareToken: Joi.string().min(1).max(256).required(),
+});
+
+export const dateParamSchema = Joi.object({
+  date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).required().messages({
+    'string.pattern.base': 'Date must be in YYYY-MM-DD format',
+  }),
+});

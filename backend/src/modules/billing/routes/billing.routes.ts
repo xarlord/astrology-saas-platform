@@ -3,8 +3,10 @@
  */
 
 import { Router } from 'express';
+import Joi from 'joi';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { validateBody } from '../../../utils/validators';
 import * as BillingController from '../controllers/billing.controller';
 
 const router = Router();
@@ -79,6 +81,7 @@ router.post(
 router.post(
   '/checkout',
   authenticate,
+  validateBody(Joi.object({ priceId: Joi.string().min(1).max(256).required() })),
   asyncHandler(async (req, res) => {
     await BillingController.createCheckout(req as AuthenticatedRequest, res);
   }),
@@ -105,6 +108,7 @@ router.post(
 router.post(
   '/portal',
   authenticate,
+  validateBody(Joi.object({ returnUrl: Joi.string().uri().optional() })),
   asyncHandler(async (req, res) => {
     await BillingController.createPortal(req as AuthenticatedRequest, res);
   }),
