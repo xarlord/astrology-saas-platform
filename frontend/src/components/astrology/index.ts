@@ -20,8 +20,6 @@ export type { TransitTimelineCardProps, TransitType, TransitIconType } from './T
 export { default as CalendarCell } from './CalendarCell';
 export type { CalendarCellProps, CalendarEvent } from './CalendarCell';
 
-export { default as ZodiacBadge } from './ZodiacBadge';
-export type { ZodiacBadgeProps } from './ZodiacBadge';
 
 export { default as CompatibilityGauge } from './CompatibilityGauge';
 export type { CompatibilityGaugeProps, CompatibilityCategory } from './CompatibilityGauge';
