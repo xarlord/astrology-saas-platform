@@ -39,8 +39,6 @@ const PLANET_SYMBOLS: Record<string, string> = {
   ...BASE_PLANET_SYMBOLS,
   asc: '\u2191', dsc: '\u2193', mc: '\u2297', ic: '\u2258',
 };
-  asc: '↑', dsc: '↓', mc: '⊗', ic: '≘',
-};
 const PLANET_NAMES: Record<string, string> = {
   sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
   jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune', pluto: 'Pluto',
