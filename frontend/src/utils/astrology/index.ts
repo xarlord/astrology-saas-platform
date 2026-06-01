@@ -22,6 +22,7 @@ export {
   getPlanetSymbol,
   isRetrograde,
   PLANET_SYMBOLS,
+  PLANET_SYMBOLS_LOWER,
 } from './planetPosition';
 
 // Aspect Calculator

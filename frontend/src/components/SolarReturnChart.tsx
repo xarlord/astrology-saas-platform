@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { PLANET_SYMBOLS_LOWER } from '../utils/astrology/planetPosition';
 
 
 
@@ -75,18 +76,7 @@ const ZODIAC_SYMBOLS: Record<string, string> = {
   pisces: '♓',
 };
 
-const PLANET_SYMBOLS: Record<string, string> = {
-  sun: '☉',
-  moon: '☽',
-  mercury: '☿',
-  venus: '♀',
-  mars: '♂',
-  jupiter: '♃',
-  saturn: '♄',
-  uranus: '♅',
-  neptune: '♆',
-  pluto: '♇',
-};
+const PLANET_SYMBOLS = PLANET_SYMBOLS_LOWER;
 
 const PLANET_COLORS: Record<string, string> = {
   sun: '#FFD700',

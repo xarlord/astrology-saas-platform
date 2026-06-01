@@ -15,6 +15,7 @@
 
 import type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
 import { PLANET_COLORS, ASPECT_COLORS as ASPECT_COLORS_TOKEN, ZODIAC_COLORS } from '../utils/design-tokens';
+import { PLANET_SYMBOLS_LOWER as BASE_PLANET_SYMBOLS } from '../utils/astrology/planetPosition';
 export type { PlanetPosition, HouseCusp, Aspect, ChartData } from '../types/chart.types';
 
 function normalizePlanets(planets: ChartData['planets']): PlanetPosition[] {
@@ -35,10 +36,8 @@ interface ChartWheelProps {
 }
 
 const PLANET_SYMBOLS: Record<string, string> = {
-  sun: '☉', moon: '☽', mercury: '☿', venus: '♀', mars: '♂',
-  jupiter: '♃', saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇',
-  chiron: '⚷', northnode: '☊', southnode: '☋',
-  asc: '↑', dsc: '↓', mc: '⊗', ic: '≘',
+  ...BASE_PLANET_SYMBOLS,
+  asc: '\u2191', dsc: '\u2193', mc: '\u2297', ic: '\u2258',
 };
 const PLANET_NAMES: Record<string, string> = {
   sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
