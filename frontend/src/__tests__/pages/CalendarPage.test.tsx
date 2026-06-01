@@ -120,6 +120,9 @@ const renderWithProviders = (ui: React.ReactElement) => {
 describe('CalendarPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Lock time to May 1, 2026 so month assertions stay deterministic
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(2026, 4, 1));
   });
 
   describe('Page Rendering', () => {
