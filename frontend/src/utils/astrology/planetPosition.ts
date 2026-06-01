@@ -51,6 +51,11 @@ export const PLANET_SYMBOLS: Record<string, string> = {
   Lilith: '\u26b8',
 };
 
+/** Lowercase-keyed version for chart rendering components */
+export const PLANET_SYMBOLS_LOWER: Record<string, string> = Object.fromEntries(
+  Object.entries(PLANET_SYMBOLS).map(([k, v]) => [k.toLowerCase(), v])
+);
+
 // Retrograde periods (approximate days per year)
 const RETROGRADE_DAYS: Record<string, number> = {
   Mercury: 21,
@@ -395,4 +400,5 @@ export default {
   getPlanetSymbol,
   isRetrograde,
   PLANET_SYMBOLS,
+  PLANET_SYMBOLS_LOWER,
 };

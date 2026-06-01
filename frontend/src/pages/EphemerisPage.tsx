@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTodayTransits } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
+import { PLANET_SYMBOLS_LOWER } from '../utils/astrology/planetPosition';
 
 // Aspect label mapping
 const ASPECT_LABELS: Record<string, string> = {
@@ -24,21 +25,8 @@ const ASPECT_LABELS: Record<string, string> = {
 };
 
 // Planet symbol mapping (for display in transit cards)
-const PLANET_SYMBOLS: Record<string, string> = {
-  sun: '☉',
-  moon: '☽',
-  mercury: '☿',
-  venus: '♀',
-  mars: '♂',
-  jupiter: '♃',
-  saturn: '♄',
-  uranus: '♅',
-  neptune: '♆',
-  pluto: '♇',
-  northnode: '☊',
-  southnode: '☋',
-  chiron: '⚷',
-};
+// Use lowercase-keyed planet symbols from shared module
+const PLANET_SYMBOLS = PLANET_SYMBOLS_LOWER;
 
 // Planet colors for display
 const PLANET_COLORS: Record<string, string> = {
