@@ -11,7 +11,7 @@ Full-stack astrology platform: natal charts with interactive chart wheel, AI-pow
 
 **Current Version:** v1.5.0
 **CI Status:** All 9 pipeline jobs green (backend, frontend, live, e2e, visual, integration, BDD, accessibility, verify-build) + mutation testing
-**Tests:** 1,375 backend (Jest) + 4,493 frontend (Vitest)
+**Tests:** 1,354 backend (Jest) + 4,463 frontend (Vitest)
 
 ### What's Done
 - **80+ API endpoints** across 16 backend modules
@@ -118,7 +118,6 @@ Interactive Swagger UI at `/api/docs` when the backend is running. JSON spec at 
 
 | Doc | Description |
 |-----|-------------|
-| [Sprint 8 Plan](.planning/plans/SPRINT_8_PLAN.md) | Current sprint plan — UX, accessibility, deployment |
 | [MVP Sprint Plan](.planning/mvp-scope-sprint-plan.md) | Full MVP scope & 4-sprint plan |
 | [GETTING_STARTED.md](docs/GETTING_STARTED.md) | New contributor guide |
 | [backend/README.md](backend/README.md) | Backend setup, architecture, env vars |
