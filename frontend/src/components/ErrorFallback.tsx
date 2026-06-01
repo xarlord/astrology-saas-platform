@@ -42,7 +42,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, retry }) => {
         </p>
 
         {/* Technical Details (collapsible in production) */}
-        {process.env.NODE_ENV === 'development' && error.message && (
+        {import.meta.env.DEV && error.message && (
           <details className="mb-6">
             <summary className="text-sm text-purple-300 cursor-pointer hover:text-purple-200 transition-colors">
               Technical Details
