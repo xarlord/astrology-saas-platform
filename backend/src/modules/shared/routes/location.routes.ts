@@ -29,6 +29,27 @@ function validateQueryParams(
   return null;
 }
 
+
+
+/**
+ * Fetch with timeout - prevents hanging on external API calls
+ * @param url - URL to fetch
+ * @param options - fetch options
+ * @param timeoutMs - timeout in milliseconds (default: 8000)
+ */
+async function fetchWithTimeout(
+  url: string,
+  options?: RequestInit,
+  timeoutMs: number = 8000,
+): Promise<globalThis.Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 interface GooglePlacesResponse {
   status: string;
   error_message?: string;
@@ -121,7 +142,7 @@ router.get('/autocomplete', async (req: Request, res: Response): Promise<void> =
       url.searchParams.set('sessiontoken', sessiontoken as string);
     }
 
-    const response = await fetch(url.toString());
+    const response = await fetchWithTimeout(url.toString());
     const data = (await response.json()) as GooglePlacesResponse;
 
     if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
@@ -217,7 +238,7 @@ router.get('/details/:placeId', async (req: Request, res: Response): Promise<voi
       url.searchParams.set('sessiontoken', sessiontoken as string);
     }
 
-    const response = await fetch(url.toString());
+    const response = await fetchWithTimeout(url.toString());
     const data = (await response.json()) as GooglePlacesResponse;
 
     if (data.status !== 'OK') {
@@ -278,7 +299,7 @@ async function fetchNominatim(query: string): Promise<any[]> {
     // Respect Nominatim rate limit (1 req/sec)
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const response = await fetch(url.toString(), {
+    const response = await fetchWithTimeout(url.toString(), {
       headers: {
         'User-Agent': 'AstroVerse/1.0',
         'Accept-Language': 'en',
@@ -328,7 +349,7 @@ router.get('/timezone', async (req: Request, res: Response): Promise<void> => {
         url.searchParams.set('location', `${lat},${lon}`);
         url.searchParams.set('timestamp', Math.floor(Date.now() / 1000).toString());
         url.searchParams.set('key', GOOGLE_PLACES_API_KEY);
-        const response = await fetch(url.toString());
+        const response = await fetchWithTimeout(url.toString());
         const data = await response.json() as { status: string; timeZoneId?: string };
         if (data.status === 'OK' && data.timeZoneId) {
           res.json({ data: { timezone: data.timeZoneId } });

@@ -231,11 +231,16 @@ export function getRetrogradePeriod(planet: Planet, year: number): RetrogradePer
     }
   } else if (planet === 'venus') {
     // Venus retrograde occurs every 18 months (584 days)
-    // Last Venus retrograde started July 2023, next in 2025, then 2027
-    const venusRetroYears = [2025, 2027];
+    // Calculate Venus retrograde years dynamically from known base (2025)
+    const venusRetroBaseYear = 2025;
+    const venusRetroPeriodYears = 2; // ~every 2 years
+    const venusRetroYears = [];
+    for (let y = venusRetroBaseYear; y <= year + venusRetroPeriodYears; y += venusRetroPeriodYears) {
+      venusRetroYears.push(y);
+    }
 
     if (venusRetroYears.includes(year)) {
-      const startMonth = year === 2025 ? 6 : 7;
+      const startMonth = (year - venusRetroBaseYear) % (venusRetroPeriodYears * 2) === 0 ? 6 : 7;
       retros.push({
         planet: 'venus',
         startDate: new Date(`${year}-${String(startMonth).padStart(2, '0')}-15T00:00:00Z`),
@@ -245,16 +250,20 @@ export function getRetrogradePeriod(planet: Planet, year: number): RetrogradePer
       });
     }
   } else if (planet === 'mars') {
-    // Mars retrograde every 26 months
-    // const marsRetroYears = [2024, 2026]; // Removed unused
+    // Mars retrograde every 26 months (~2.17 years)
+    // Calculate Mars retrograde years dynamically from known base (2026)
+    const marsRetroBaseYear = 2026;
+    const marsRetroPeriodYears = 2.17;
+    const yearsSinceBase = year - marsRetroBaseYear;
+    const isMarsRetroYear = Math.abs(yearsSinceBase % marsRetroPeriodYears) < 1 || Math.abs(yearsSinceBase) < marsRetroPeriodYears * 1.5;
 
-    if (year === 2026) {
+    if (isMarsRetroYear && year >= marsRetroBaseYear - 3) {
       retros.push({
         planet: 'mars',
-        startDate: new Date('2026-12-06T00:00:00Z'),
-        endDate: new Date('2027-02-23T00:00:00Z'),
-        shadowStartDate: new Date('2026-10-25T00:00:00Z'),
-        shadowEndDate: new Date('2027-04-15T00:00:00Z'),
+        startDate: new Date(`${year}-12-06T00:00:00Z`),
+        endDate: new Date(`${year + 1}-02-23T00:00:00Z`),
+        shadowStartDate: new Date(`${year}-10-25T00:00:00Z`),
+        shadowEndDate: new Date(`${year + 1}-04-15T00:00:00Z`),
       });
     }
   } else if (planet === 'jupiter') {
