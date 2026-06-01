@@ -121,7 +121,8 @@ describe('CalendarPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Lock time to May 1, 2026 so month assertions stay deterministic
-    vi.useFakeTimers({ now: new Date(2026, 4, 1).getTime() });
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(2026, 4, 1));
   });
 
   describe('Page Rendering', () => {
