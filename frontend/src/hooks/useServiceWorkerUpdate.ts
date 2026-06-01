@@ -37,7 +37,7 @@ export function useServiceWorkerUpdate(): UseServiceWorkerUpdateResult {
           setOfflineReady(true);
         }
       },
-      onRegistered: (registration) => {
+      onRegistered: (_registration) => {
         // Service worker registered successfully
       },
       onRegistrationError: (error) => {
