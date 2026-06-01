@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@astrology-saas/shared-types": "*",
-    "@astrology-saas/shared-utils": "*",
     "@tanstack/react-query": "^5.17.19",
     "@types/google.accounts": "^0.0.18",
     "axios": "^1.6.5",

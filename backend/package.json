@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@astrology-saas/shared-types": "*",
-    "@astrology-saas/shared-utils": "*",
     "astronomy-engine": "^2.1.19",
     "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
