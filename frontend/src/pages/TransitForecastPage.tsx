@@ -364,8 +364,9 @@ const TransitForecastPage: React.FC = () => {
         {/* Chart Selector & Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-grow">
-            <label className="block text-sm text-slate-400 mb-2">Select Chart</label>
+            <label htmlFor="chart-selector" className="block text-sm text-slate-400 mb-2">Select Chart</label>
             <select
+              id="chart-selector"
               value={selectedChartId}
               onChange={(e) => setSelectedChartId(e.target.value)}
               className="w-full px-4 py-2 bg-surface border border-glass-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -381,8 +382,9 @@ const TransitForecastPage: React.FC = () => {
 
           <div className="flex gap-4 items-end">
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Start Date</label>
+              <label htmlFor="start-date-input" className="block text-sm text-slate-400 mb-2">Start Date</label>
               <input
+                id="start-date-input"
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -391,8 +393,9 @@ const TransitForecastPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-2">End Date</label>
+              <label htmlFor="end-date-input" className="block text-sm text-slate-400 mb-2">End Date</label>
               <input
+                id="end-date-input"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
