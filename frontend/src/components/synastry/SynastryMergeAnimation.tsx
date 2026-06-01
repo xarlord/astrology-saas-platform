@@ -4,7 +4,7 @@
  * Inter-chart aspects fire as glowing arcs.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface AspectArc {
@@ -22,12 +22,12 @@ export interface SynastryMergeAnimationProps {
   /** Person A chart data */
   personA: {
     name: string;
-    planets: Array<{ name: string; symbol: string; angle: number; color: string }>;
+    planets: { name: string; symbol: string; angle: number; color: string }[];
   };
   /** Person B chart data */
   personB: {
     name: string;
-    planets: Array<{ name: string; symbol: string; angle: number; color: string }>;
+    planets: { name: string; symbol: string; angle: number; color: string }[];
   };
   /** Inter-chart aspect arcs */
   aspectArcs: AspectArc[];
@@ -46,7 +46,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
   personA,
   personB,
   aspectArcs,
-  compatibilityScore,
+  _compatibilityScore,
   autoPlay = false,
   onMergeComplete,
   'aria-label': ariaLabel,
@@ -67,6 +67,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
       const timer = setTimeout(triggerMerge, 500);
       return () => clearTimeout(timer);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlay, mergeState]);
 
   // Calculate planet positions on wheel

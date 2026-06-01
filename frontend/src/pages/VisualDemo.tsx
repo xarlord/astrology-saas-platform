@@ -16,7 +16,7 @@ const TimeTravelSliderDemo: React.FC = () => {
   const [speed, setSpeed] = React.useState(1);
 
   const startDate = new Date('2026-01-01');
-  const endDate = new Date('2026-12-31');
+  const _endDate = new Date('2026-12-31');
   const totalDays = 365;
   const currentDate = new Date(startDate.getTime() + dayOffset * 86400000);
 
@@ -234,7 +234,7 @@ const TransitOverlayDemo: React.FC = () => {
 
 // ─── CosmicIdentityCard (inline mock) ──────────────────────────────
 const CosmicIdentityCardDemo: React.FC = () => {
-  const [isAnimating, setIsAnimating] = React.useState(true);
+  const [_isAnimating, _setIsAnimating] = React.useState(true);
   const signs = [
     { label: 'Sun', sign: 'Gemini', emoji: '♊', element: 'Air', color: '#60a5fa' },
     { label: 'Moon', sign: 'Pisces', emoji: '♓', element: 'Water', color: '#818cf8' },
@@ -330,7 +330,7 @@ const CosmicIdentityCardDemo: React.FC = () => {
 
 // ─── OnboardingFlow (inline mock) ─────────────────────────────────
 const OnboardingFlowDemo: React.FC = () => {
-  const [step, setStep] = React.useState(2); // Show reveal step
+  const [step, _setStep] = React.useState(2); // Show reveal step
 
   return (
     <div style={{
