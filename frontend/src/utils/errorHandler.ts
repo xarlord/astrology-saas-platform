@@ -154,7 +154,7 @@ export function logError(error: AppError, context?: string): void {
     console.error(`${contextPrefix}Details:`, error.details);
   }
 
-  // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
+  // TODO(#77): Send to error tracking service (Sentry) — tracked in issue #77
   // Example with Sentry:
   // Sentry.captureException(error, {
   //   tags: { context },
@@ -191,7 +191,7 @@ export function useErrorHandler() {
     const appError = parseAPIError(error);
     logError(appError, context);
 
-    // TODO: Show error notification to user
+    // TODO(#77): Show error notification to user via toast
     // Example with toast notification:
     // toast.error(getUserFriendlyError(appError));
   };

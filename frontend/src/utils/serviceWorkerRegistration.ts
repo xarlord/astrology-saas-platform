@@ -70,11 +70,11 @@ export async function registerSW(
 
     // Listen for offline/online events
     window.addEventListener('online', () => {
-      console.log('App is online');
+      // App came back online — UI reacts to navigator.onLine
     });
 
     window.addEventListener('offline', () => {
-      console.log('App is offline');
+      // App went offline — UI reacts to navigator.onLine
       onOfflineReady?.();
     });
 

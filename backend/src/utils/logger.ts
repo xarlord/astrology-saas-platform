@@ -21,7 +21,7 @@ const customLevels = {
 };
 
 // Custom log format for development
-// TODO: use this format in development mode
+// TODO(#77): use this format in development mode — tracked in issue #77
 // const devFormat = printf(({ level, message, timestamp, stack, ...metadata }) => {
 //   let msg = `${timestamp as string} [${level}]: ${message}`;
 //

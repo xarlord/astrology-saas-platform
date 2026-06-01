@@ -171,7 +171,7 @@ registerRoute(navigationRoute);
       (() => {
         try {
           // Implement sync logic
-          console.log('Syncing chart data...');
+          // TODO(#126): Replace with structured sync log when logger is available in SW context
           // TODO: Implement actual sync with backend
           return Promise.resolve();
         } catch (error) {

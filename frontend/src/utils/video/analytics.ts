@@ -300,7 +300,7 @@ class VideoAnalytics {
 
     // In production, this would send to an analytics server
     // For now, we just log and clear
-    console.debug('[VideoAnalytics] Flushing events:', this.eventQueue.length);
+    // Flushing analytics events
     this.eventQueue = [];
   }
 
