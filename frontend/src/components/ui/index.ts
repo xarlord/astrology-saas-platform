@@ -144,8 +144,6 @@ export { Avatar, AvatarGroup } from './Avatar';
 export type { AvatarProps, AvatarSize, AvatarStatus, AvatarGroupProps } from './Avatar';
 
 // Video Modal
-export { VideoModal } from './VideoModal';
-export type { VideoModalProps, VideoChapter, TranscriptEntry } from './VideoModal';
 
 // Share Modal
 export { ShareModal } from './ShareModal';
