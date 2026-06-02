@@ -23,12 +23,14 @@ import { sendSubscriptionConfirmationEmail } from '../../../services/email.servi
  * Validate that a URL starts with an allowed origin (prevents open redirect attacks).
  */
 function isValidRedirectUrl(url: string): boolean {
-  const allowedOrigins = [
-    config.frontendUrl,
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:3001',
-  ];
+  const allowedOrigins = [config.frontendUrl];
+  if (process.env.NODE_ENV !== 'production') {
+    allowedOrigins.push(
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:3001',
+    );
+  }
   try {
     new URL(url);
     return allowedOrigins.some(origin => url.startsWith(origin));

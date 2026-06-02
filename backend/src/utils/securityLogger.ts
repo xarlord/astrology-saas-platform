@@ -226,7 +226,7 @@ function getSeverityForType(type: SecurityEventType): 'low' | 'medium' | 'high' 
  * Placeholder for production SIEM integration
  */
 function sendToSIEM(metadata: SecurityEventMetadata): void {
-  // TODO: Integrate with SIEM (Datadog, Sentry, Splunk, etc.)
+  // TODO(#77): Integrate with SIEM (Datadog, Sentry, Splunk, etc.) — tracked in issue #77
   // Examples:
   // - Datadog: ddSecurityEvent(metadata)
   // - Sentry: Sentry.captureMessage('[SECURITY]', { extra: metadata })
