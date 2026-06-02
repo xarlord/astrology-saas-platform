@@ -548,7 +548,6 @@ class PDFService {
    * Add houses summary
    */
   private addHousesSummary(houses: House[]): void {
-    const _doc = this.getDoc();
     if (houses.length === 0) return;
 
     this.addHeading('House cusps');

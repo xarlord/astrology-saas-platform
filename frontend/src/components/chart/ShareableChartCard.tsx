@@ -116,11 +116,6 @@ function getZodiacSymbol(sign: string): string {
   return ZODIAC_SYMBOLS[sign.toLowerCase()] ?? '⚪';
 }
 
-function _formatDegree(degree?: number): string {
-  if (degree === undefined) return '';
-  return `${degree}°`;
-}
-
 // ============================================================================
 // SUB-COMPONENTS
 // ============================================================================

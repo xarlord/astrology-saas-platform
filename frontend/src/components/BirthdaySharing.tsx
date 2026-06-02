@@ -20,13 +20,6 @@ interface SolarReturnData {
   interpretation: SolarReturnInterpretation;
 }
 
-interface _SharedLink {
-  id: string;
-  url: string;
-  expiresAt: string;
-  accessCount: number;
-  maxAccesses: number;
-}
 
 interface BirthdaySharingProps {
   solarReturn: SolarReturnData;

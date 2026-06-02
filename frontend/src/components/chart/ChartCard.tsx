@@ -116,8 +116,6 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
   };
 
   const chartIcon = getChartIcon();
-  const primaryTag = chart.tags?.find((tag) => TAG_COLORS[tag]) ?? chart.tags?.[0];
-  const _tagColor = primaryTag ? TAG_COLORS[primaryTag] : TAG_COLORS.Default;
 
   return (
     <div
