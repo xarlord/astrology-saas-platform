@@ -86,22 +86,31 @@ class LocationService {
 
   /**
    * Reverse geocoding - get location name from coordinates
+   * Uses Nominatim (OpenStreetMap) for free reverse geocoding
    */
   async reverseGeocode(latitude: number, longitude: number): Promise<Location | null> {
     try {
-      // Use Open-Meteo's reverse geocoding if available, or fall back to a default
-      const response = await fetch(`${this.GEOCODING_API_URL}/search?name=&count=1`);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=10&accept-language=en`,
+        { headers: { 'User-Agent': 'AstroVerse/1.0' } },
+      );
 
       if (!response.ok) {
         throw new Error('Failed to reverse geocode');
       }
 
-      // Since reverse geocoding is not always available, return basic info
+      const data = (await response.json()) as {
+        name?: string;
+        address?: { country?: string; city?: string; town?: string; village?: string; state?: string };
+      };
+
+      const city = data.address?.city || data.address?.town || data.address?.village || data.name || 'Unknown Location';
+      const country = data.address?.country || 'Unknown';
       const timezone = await this.getTimezone(latitude, longitude);
 
       return {
-        name: 'Unknown Location',
-        country: 'Unknown',
+        name: `${city}, ${country}`,
+        country,
         latitude,
         longitude,
         timezone,
