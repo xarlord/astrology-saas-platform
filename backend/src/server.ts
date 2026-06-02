@@ -53,8 +53,12 @@ app.use(helmet({
 }));
 
 // CORS - Cross-Origin Resource Sharing
+const corsOrigins = [FRONTEND_URL];
+if (process.env.NODE_ENV !== 'production') {
+  corsOrigins.push('http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001', 'http://localhost:3002');
+}
 app.use(cors({
-  origin: [FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001', 'http://localhost:3002'],
+  origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
