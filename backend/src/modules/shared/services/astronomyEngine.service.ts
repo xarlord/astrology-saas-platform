@@ -62,19 +62,19 @@ export type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
 
 // Planet symbols for display
 export const PLANET_SYMBOLS: Record<string, string> = {
-  Sun: '☉',
-  Moon: '☽',
-  Mercury: '☿',
-  Venus: '♀',
-  Mars: '♂',
-  Jupiter: '♃',
-  Saturn: '♄',
-  Uranus: '♅',
-  Neptune: '♆',
-  Pluto: '♇',
-  Chiron: '⚷',
-  NorthNode: '☊',
-  SouthNode: '☋',
+  sun: '☉',
+  moon: '☽',
+  mercury: '☿',
+  venus: '♀',
+  mars: '♂',
+  jupiter: '♃',
+  saturn: '♄',
+  uranus: '♅',
+  neptune: '♆',
+  pluto: '♇',
+  chiron: '⚷',
+  northNode: '☊',
+  southNode: '☋',
 };
 
 export class AstronomyEngineService {
