@@ -104,8 +104,8 @@ class LocationService {
         address?: { country?: string; city?: string; town?: string; village?: string; state?: string };
       };
 
-      const city = data.address?.city || data.address?.town || data.address?.village || data.name || 'Unknown Location';
-      const country = data.address?.country || 'Unknown';
+      const city = data.address?.city ?? data.address?.town ?? data.address?.village ?? data.name ?? 'Unknown Location';
+      const country = data.address?.country ?? 'Unknown';
       const timezone = await this.getTimezone(latitude, longitude);
 
       return {
