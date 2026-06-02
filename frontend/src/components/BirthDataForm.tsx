@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useCreateChart, useCalculateChart } from '../hooks';
+import api from '../services/api';
 import { useChartStore } from '../stores/chartStore';
 
 // Error Message Component with Icon
@@ -104,21 +105,16 @@ export function BirthDataForm({
     }
 
     try {
-      const apiBase = import.meta.env.VITE_API_URL ?? '';
-      const response = await fetch(
-        `${apiBase}/api/v1/location/autocomplete?input=${encodeURIComponent(query)}`,
-      );
+      const result = await api.get<{
+        predictions: { description: string; lat?: number; lon?: number; mainText?: string; secondaryText?: string }[];
+      }>('/v1/location/autocomplete', { params: { input: query } });
 
-      if (!response.ok) {
+      if (!result.data) {
         setPlaceSuggestions([]);
         return;
       }
 
-      const result = await response.json() as {
-        predictions: { description: string; lat?: number; lon?: number; mainText?: string; secondaryText?: string }[];
-      };
-
-      const predictions = result.predictions ?? [];
+      const predictions = result.data?.predictions ?? [];
       if (predictions.length > 0) {
         // Map backend prediction format to the component's expected format
         const mapped = predictions.map((p) => ({
@@ -147,13 +143,11 @@ export function BirthDataForm({
     // Auto-detect timezone from coordinates
     let timezone: string | undefined;
     try {
-      const apiBase = import.meta.env.VITE_API_URL ?? '';
-      const tzResp = await fetch(
-        `${apiBase}/api/v1/location/timezone?lat=${lat}&lon=${lon}`,
+      const tzResp = await api.get<{ data?: { timezone?: string } }>(
+        '/v1/location/timezone', { params: { lat, lon } },
       );
-      if (tzResp.ok) {
-        const tzData = await tzResp.json() as { data?: { timezone?: string } };
-        timezone = tzData.data?.timezone;
+      if (tzResp.data?.data?.timezone) {
+        timezone = tzResp.data.data.timezone;
       }
     } catch {
       // fallback: compute rough timezone from longitude

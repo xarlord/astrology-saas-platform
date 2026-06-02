@@ -43,8 +43,11 @@ vi.mock('../stores/chartStore', () => ({
   },
 }));
 
-// Mock fetch for geocoding API
-global.fetch = vi.fn();
+// Mock api client
+const mockApiGet = vi.fn();
+vi.mock('../../services/api', () => ({
+  default: { get: (...args: any[]) => mockApiGet(...args) },
+}));
 
 // Create a test wrapper with QueryClientProvider
 const createTestWrapper = () => {
@@ -68,10 +71,9 @@ const renderWithQueryClient = (ui: React.ReactElement) => {
 describe('BirthDataForm Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock successful fetch responses for place autocomplete
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ predictions: [] }),
+    // Mock successful api responses for place autocomplete
+    mockApiGet.mockResolvedValue({
+      data: { predictions: [] },
     });
   });
 
@@ -296,18 +298,16 @@ describe('BirthDataForm Component', () => {
     it('should show place suggestions when typing valid place name', async () => {
       const user = userEvent.setup();
       // The component fetches from /api/v1/location/autocomplete which returns { predictions: [...] }
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            predictions: [
-              {
-                description: 'New York, NY, USA',
-                lat: 40.7128,
-                lon: -74.006,
-              },
-            ],
-          }),
+      mockApiGet.mockResolvedValue({
+        data: {
+          predictions: [
+            {
+              description: 'New York, NY, USA',
+              lat: 40.7128,
+              lon: -74.006,
+            },
+          ],
+        },
       });
 
       renderWithQueryClient(<BirthDataForm />);
@@ -344,31 +344,27 @@ describe('BirthDataForm Component', () => {
       const user = userEvent.setup();
       // First call: autocomplete returns predictions
       // Second call: timezone lookup (we'll mock both)
-      (global.fetch as any).mockImplementation((url: string) => {
+      mockApiGet.mockImplementation((url: string) => {
         if (url.includes('autocomplete')) {
           return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                predictions: [
-                  {
-                    description: 'London, UK',
-                    lat: 51.5074,
-                    lon: -0.1278,
-                  },
-                ],
-              }),
+            data: {
+              predictions: [
+                {
+                  description: 'London, UK',
+                  lat: 51.5074,
+                  lon: -0.1278,
+                },
+              ],
+            },
           });
         }
         if (url.includes('timezone')) {
           return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({ data: { timezone: 'Europe/London' } }),
+            data: { data: { timezone: 'Europe/London' } },
           });
         }
         return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ predictions: [] }),
+          data: { predictions: [] },
         });
       });
 
@@ -395,7 +391,7 @@ describe('BirthDataForm Component', () => {
 
     it('should handle geocoding API errors gracefully', async () => {
       const user = userEvent.setup();
-      (global.fetch as any).mockRejectedValue(new Error('API Error'));
+      mockApiGet.mockRejectedValue(new Error('API Error'));
 
       renderWithQueryClient(<BirthDataForm />);
 
