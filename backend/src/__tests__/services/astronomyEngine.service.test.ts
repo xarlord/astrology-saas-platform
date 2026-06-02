@@ -27,19 +27,19 @@ describe('Astronomy Engine Service', () => {
 
     test('should export planet symbols', () => {
       expect(PLANET_SYMBOLS).toBeDefined();
-      expect(PLANET_SYMBOLS.Sun).toBe('☉');
-      expect(PLANET_SYMBOLS.Moon).toBe('☽');
-      expect(PLANET_SYMBOLS.Mercury).toBe('☿');
-      expect(PLANET_SYMBOLS.Venus).toBe('♀');
-      expect(PLANET_SYMBOLS.Mars).toBe('♂');
-      expect(PLANET_SYMBOLS.Jupiter).toBe('♃');
-      expect(PLANET_SYMBOLS.Saturn).toBe('♄');
-      expect(PLANET_SYMBOLS.Uranus).toBe('♅');
-      expect(PLANET_SYMBOLS.Neptune).toBe('♆');
-      expect(PLANET_SYMBOLS.Pluto).toBe('♇');
-      expect(PLANET_SYMBOLS.Chiron).toBe('⚷');
-      expect(PLANET_SYMBOLS.NorthNode).toBe('☊');
-      expect(PLANET_SYMBOLS.SouthNode).toBe('☋');
+      expect(PLANET_SYMBOLS.sun).toBe('☉');
+      expect(PLANET_SYMBOLS.moon).toBe('☽');
+      expect(PLANET_SYMBOLS.mercury).toBe('☿');
+      expect(PLANET_SYMBOLS.venus).toBe('♀');
+      expect(PLANET_SYMBOLS.mars).toBe('♂');
+      expect(PLANET_SYMBOLS.jupiter).toBe('♃');
+      expect(PLANET_SYMBOLS.saturn).toBe('♄');
+      expect(PLANET_SYMBOLS.uranus).toBe('♅');
+      expect(PLANET_SYMBOLS.neptune).toBe('♆');
+      expect(PLANET_SYMBOLS.pluto).toBe('♇');
+      expect(PLANET_SYMBOLS.chiron).toBe('⚷');
+      expect(PLANET_SYMBOLS.northNode).toBe('☊');
+      expect(PLANET_SYMBOLS.southNode).toBe('☋');
     });
   });
 
