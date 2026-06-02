@@ -165,7 +165,7 @@ router.get('/autocomplete', asyncHandler(async (req: Request, res: Response, _ne
     logger.error('Autocomplete error:', error);
     res.status(500).json({ error: 'Location search failed' });
   }
-});
+}));
 
 /**
  * @openapi
@@ -282,7 +282,7 @@ router.get('/details/:placeId', asyncHandler(async (req: Request, res: Response,
     logger.error('Place details error:', error);
     res.status(500).json({ error: 'Failed to get place details' });
   }
-});
+}));
 
 /**
  * Fallback: Nominatim (OpenStreetMap) autocomplete
@@ -381,6 +381,6 @@ router.get('/timezone', asyncHandler(async (req: Request, res: Response, _next: 
     logger.error('Timezone lookup error:', error);
     res.status(500).json({ error: 'Timezone lookup failed' });
   }
-});
+}));
 
 export { router as locationRoutes };
