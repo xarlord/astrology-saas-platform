@@ -6,8 +6,9 @@
  * @security API key is stored server-side, not exposed to frontend
  */
 
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { logger } from '../../../utils/logger';
+import { asyncHandler } from '../../../middleware/errorHandler';
 
 // Manual validation helpers (replacing express-validator)
 function validateQueryParams(
@@ -112,7 +113,7 @@ const GOOGLE_PLACES_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
  * @desc    Proxy for Google Places Autocomplete
  * @access  Public (rate limited)
  */
-router.get('/autocomplete', async (req: Request, res: Response): Promise<void> => {
+router.get('/autocomplete', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const validationError = validateQueryParams(req, {
       input: { minLen: 2, maxLen: 100 },
@@ -165,7 +166,7 @@ router.get('/autocomplete', async (req: Request, res: Response): Promise<void> =
     logger.error('Autocomplete error:', error);
     res.status(500).json({ error: 'Location search failed' });
   }
-});
+}));
 
 /**
  * @openapi
@@ -204,7 +205,7 @@ router.get('/autocomplete', async (req: Request, res: Response): Promise<void> =
  * @desc    Get place details including coordinates
  * @access  Public (rate limited)
  */
-router.get('/details/:placeId', async (req: Request, res: Response): Promise<void> => {
+router.get('/details/:placeId', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const validationError = validateQueryParams(req, {
       sessiontoken: { optional: true, isString: true },
@@ -282,7 +283,7 @@ router.get('/details/:placeId', async (req: Request, res: Response): Promise<voi
     logger.error('Place details error:', error);
     res.status(500).json({ error: 'Failed to get place details' });
   }
-});
+}));
 
 /**
  * Fallback: Nominatim (OpenStreetMap) autocomplete
@@ -332,7 +333,7 @@ async function fetchNominatim(query: string): Promise<any[]> {
  * @desc    Get IANA timezone from lat/lon coordinates
  * @access  Public
  */
-router.get('/timezone', async (req: Request, res: Response): Promise<void> => {
+router.get('/timezone', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const lat = parseFloat(req.query.lat as string);
     const lon = parseFloat(req.query.lon as string);
@@ -381,6 +382,6 @@ router.get('/timezone', async (req: Request, res: Response): Promise<void> => {
     logger.error('Timezone lookup error:', error);
     res.status(500).json({ error: 'Timezone lookup failed' });
   }
-});
+}));
 
 export { router as locationRoutes };
