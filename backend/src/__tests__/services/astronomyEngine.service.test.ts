@@ -37,9 +37,9 @@ describe('Astronomy Engine Service', () => {
       expect(PLANET_SYMBOLS.uranus).toBe('♅');
       expect(PLANET_SYMBOLS.neptune).toBe('♆');
       expect(PLANET_SYMBOLS.pluto).toBe('♇');
-      expect(PLANET_SYMBOLS.Chiron).toBe('⚷');
-      expect(PLANET_SYMBOLS.NorthNode).toBe('☊');
-      expect(PLANET_SYMBOLS.SouthNode).toBe('☋');
+      expect(PLANET_SYMBOLS.chiron).toBe('⚷');
+      expect(PLANET_SYMBOLS.northNode).toBe('☊');
+      expect(PLANET_SYMBOLS.southNode).toBe('☋');
     });
   });
 
