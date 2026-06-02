@@ -66,21 +66,6 @@ export {
   type UseFormValidationReturn,
 } from './useFormValidation';
 
-// Video Player Hooks
-export {
-  useVideoPlayer,
-  PLAYBACK_RATES,
-  SEEK_JUMP_SECONDS,
-  VOLUME_STEP,
-  COMPLETION_THRESHOLD,
-} from './useVideoPlayer';
-export type {
-  VideoPlayerState,
-  VideoPlayerControls,
-  VideoPlayerOptions,
-  VideoProgress,
-} from './useVideoPlayer';
-
 // Real-Time Optimization Hooks
 export {
   useRealTimeUpdates,
