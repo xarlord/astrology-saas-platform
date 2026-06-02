@@ -342,7 +342,7 @@ function groupAspectsByType(aspects: AspectData[]) {
 }
 
 function buildAspectGrid(_aspects: AspectData[]) {
-  // TODO: Build matrix grid of aspects between planets
+  // TODO(#185): Build matrix grid of aspects between planets — tracked in issue #185
   return {};
 }
 
