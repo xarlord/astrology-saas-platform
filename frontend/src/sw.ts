@@ -172,7 +172,7 @@ registerRoute(navigationRoute);
         try {
           // Implement sync logic
           // TODO(#126): Replace with structured sync log when logger is available in SW context
-          // TODO: Implement actual sync with backend
+          // TODO(#92): Implement actual sync with backend — tracked in issue #92 (timezone/sync)
           return Promise.resolve();
         } catch (error) {
           console.error('Sync failed:', error);
