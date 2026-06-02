@@ -68,7 +68,13 @@ app.use(cors({
 // Body Parser Middleware
 // ============================================
 
-app.use(express.json({ limit: '10mb' }));
+// Preserve raw body for Stripe webhook signature verification
+app.use(express.json({
+  limit: '10mb',
+  verify: (req: express.Request, _res: express.Response, buf: Buffer) => {
+    (req as express.Request & { rawBody?: Buffer }).rawBody = buf;
+  },
+}));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
