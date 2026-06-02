@@ -352,7 +352,7 @@ function detectGrandTrine(
  * Detect T-Square (2 planets in opposition, both squaring a third)
  */
 function detectTSquare(
-  planets: PlanetData[],
+  _planets: PlanetData[],
   aspects: AspectData[],
   maxOrb: number,
 ): AspectPattern[] {
@@ -410,7 +410,7 @@ function detectTSquare(
  * Detect Grand Cross (2 oppositions at right angles)
  */
 function detectGrandCross(
-  planets: PlanetData[],
+  _planets: PlanetData[],
   aspects: AspectData[],
   maxOrb: number,
 ): AspectPattern[] {
@@ -458,7 +458,7 @@ function detectGrandCross(
 /**
  * Detect Yod (2 planets sextile, both quincunx a third)
  */
-function detectYod(planets: PlanetData[], aspects: AspectData[], maxOrb: number): AspectPattern[] {
+function detectYod(_planets: PlanetData[], aspects: AspectData[], maxOrb: number): AspectPattern[] {
   const patterns: AspectPattern[] = [];
   const sextiles = aspects.filter((a) => a.type === 'sextile' && a.orb <= maxOrb);
   const quincunxes = aspects.filter((a) => a.type === 'quincunx' && a.orb <= maxOrb);
@@ -528,7 +528,7 @@ function detectKite(planets: PlanetData[], aspects: AspectData[], maxOrb: number
  * Detect Mystic Rectangle (2 oppositions with sextile/trine connections)
  */
 function detectMysticRectangle(
-  planets: PlanetData[],
+  _planets: PlanetData[],
   aspects: AspectData[],
   maxOrb: number,
 ): AspectPattern[] {

@@ -238,7 +238,7 @@ export class ChartCalculator {
    * Calculate progressed chart
    */
   calculateProgressedChart(
-    natalChart: CalculatedChart,
+    _natalChart: CalculatedChart,
     targetDate: Date,
     birthDate: Date,
   ): CalculatedChart {
@@ -485,7 +485,6 @@ export class ChartCalculator {
     }
 
     // Moon returns to same position every ~27.3 days
-    const _natalDegree = natalMoon.longitude;
 
     // Approximate lunar return
     const lunarCycle = 27.3 * 24 * 60 * 60 * 1000; // milliseconds

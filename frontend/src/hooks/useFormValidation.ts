@@ -485,7 +485,7 @@ export function useFormValidation(config: FormValidationConfig): UseFormValidati
  * Hook for validating a single field with debouncing
  */
 export function useFieldValidation(
-  name: string,
+  _name: string,
   value: unknown,
   validators: Validator[],
   options: {

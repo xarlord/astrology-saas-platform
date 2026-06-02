@@ -136,10 +136,6 @@ export const SavedChartsGalleryPage: React.FC = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareChartId, setShareChartId] = useState<string | null>(null);
 
-  const _openShareModal = useCallback((id: string) => {
-    setShareChartId(id);
-    setShareModalOpen(true);
-  }, []);
 
   const closeShareModal = useCallback(() => {
     setShareModalOpen(false);

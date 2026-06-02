@@ -299,7 +299,6 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   });
 
   const previewRef = useRef<HTMLDivElement>(null);
-  const _hiddenCardRef = useRef<HTMLDivElement>(null);
 
   // Check for Web Share API support
   const hasShareAPI = typeof navigator !== 'undefined' && 'share' in navigator;

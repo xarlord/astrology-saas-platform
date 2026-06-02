@@ -162,14 +162,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     [controls, videoId, analytics],
   );
 
-  // Handle chapter click
-  const _handleChapterClick = useCallback(
-    (startTime: number) => {
-      controls.seek(startTime);
-    },
-    [controls],
-  );
-
   // Handle caption toggle
   const handleCaptionsToggle = useCallback(() => {
     setCaptionsEnabled((prev) => {
