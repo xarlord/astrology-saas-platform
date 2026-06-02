@@ -112,7 +112,7 @@ const GOOGLE_PLACES_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
  * @desc    Proxy for Google Places Autocomplete
  * @access  Public (rate limited)
  */
-router.get('/autocomplete', async (req: Request, res: Response): Promise<void> => {
+router.get('/autocomplete', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const validationError = validateQueryParams(req, {
       input: { minLen: 2, maxLen: 100 },
@@ -204,7 +204,7 @@ router.get('/autocomplete', async (req: Request, res: Response): Promise<void> =
  * @desc    Get place details including coordinates
  * @access  Public (rate limited)
  */
-router.get('/details/:placeId', async (req: Request, res: Response): Promise<void> => {
+router.get('/details/:placeId', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const validationError = validateQueryParams(req, {
       sessiontoken: { optional: true, isString: true },
@@ -332,7 +332,7 @@ async function fetchNominatim(query: string): Promise<any[]> {
  * @desc    Get IANA timezone from lat/lon coordinates
  * @access  Public
  */
-router.get('/timezone', async (req: Request, res: Response): Promise<void> => {
+router.get('/timezone', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const lat = parseFloat(req.query.lat as string);
     const lon = parseFloat(req.query.lon as string);
