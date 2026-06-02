@@ -6,8 +6,9 @@
  * @security API key is stored server-side, not exposed to frontend
  */
 
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { logger } from '../../../utils/logger';
+import { asyncHandler } from '../../../middleware/errorHandler';
 
 // Manual validation helpers (replacing express-validator)
 function validateQueryParams(
