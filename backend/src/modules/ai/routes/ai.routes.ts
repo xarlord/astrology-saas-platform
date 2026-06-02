@@ -24,6 +24,7 @@ import {
   checkUsageLimit,
 } from '../controllers/aiUsage.controller';
 import { authenticate } from '../../../middleware/auth';
+import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
 
@@ -58,7 +59,7 @@ const aiRateLimiter = chartCreationRateLimiter;
  *                 data:
  *                   type: object
  */
-router.get('/status', checkStatus);
+router.get('/status', asyncHandler(async (req, res, next) => { await checkStatus(req, res, next); }));
 
 // Protected endpoints (authentication required)
 router.use(authenticate);
@@ -90,7 +91,7 @@ router.post(
   '/natal',
   aiRateLimiter,
   enforceAILimit as RequestHandler,
-  generateNatal as RequestHandler,
+  asyncHandler(async (req, res, next) => { await generateNatal(req, res, next); }),
 );
 
 /**
@@ -114,7 +115,7 @@ router.post(
   '/transit',
   aiRateLimiter,
   enforceAILimit as RequestHandler,
-  generateTransit as RequestHandler,
+  asyncHandler(async (req, res, next) => { await generateTransit(req, res, next); }),
 );
 
 /**
@@ -138,7 +139,7 @@ router.post(
   '/compatibility',
   aiRateLimiter,
   enforceAILimit as RequestHandler,
-  generateCompatibility as RequestHandler,
+  asyncHandler(async (req, res, next) => { await generateCompatibility(req, res, next); }),
 );
 
 /**
@@ -162,7 +163,7 @@ router.post(
   '/lunar-return',
   aiRateLimiter,
   enforceAILimit as RequestHandler,
-  generateLunarReturn as RequestHandler,
+  asyncHandler(async (req, res, next) => { await generateLunarReturn(req, res, next); }),
 );
 
 /**
@@ -186,7 +187,7 @@ router.post(
   '/solar-return',
   aiRateLimiter,
   enforceAILimit as RequestHandler,
-  generateSolarReturn as RequestHandler,
+  asyncHandler(async (req, res, next) => { await generateSolarReturn(req, res, next); }),
 );
 
 // Usage tracking endpoints
@@ -328,7 +329,7 @@ router.post('/usage/estimate', estimateCost);
  *       200:
  *         description: Usage statistics
  */
-router.get('/usage', getUsageStats);
+router.get('/usage', asyncHandler(async (req, res, next) => { await getUsageStats(req, res, next); }));
 
 /**
  * @route   POST /api/v1/ai/cache/clear
@@ -345,6 +346,6 @@ router.get('/usage', getUsageStats);
  *       200:
  *         description: Cache cleared
  */
-router.post('/cache/clear', clearCache);
+router.post('/cache/clear', asyncHandler(async (req, res, next) => { await clearCache(req, res, next); }));
 
 export { router as aiRoutes };

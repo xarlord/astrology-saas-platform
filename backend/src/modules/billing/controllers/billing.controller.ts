@@ -152,7 +152,9 @@ export async function handleWebhook(req: Request, res: Response): Promise<void> 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let event: any;
   try {
-    event = verifyWebhookSignature(req.body, signature);
+    // Use rawBody preserved by express.json verify callback for signature verification
+    const rawBody = (req as typeof req & { rawBody?: Buffer }).rawBody;
+    event = verifyWebhookSignature(rawBody ?? req.body, signature);
   } catch (err) {
     logger.error('Stripe webhook signature verification failed', { error: err });
     throw new AppError('Invalid signature', 400);

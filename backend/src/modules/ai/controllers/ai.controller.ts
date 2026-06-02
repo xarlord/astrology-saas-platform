@@ -3,7 +3,7 @@
  * Handles AI-powered interpretation requests
  */
 
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../../../utils/appError';
 import aiInterpretationService from '../services/aiInterpretation.service';
 import openaiService from '../services/openai.service';
@@ -13,7 +13,7 @@ import logger from '../../../utils/logger';
  * Generate AI-powered natal chart interpretation
  * POST /api/v1/ai/natal
  */
-export async function generateNatal(req: Request, res: Response): Promise<void> {
+export async function generateNatal(req: Request, res: Response, _next: NextFunction): Promise<void> {
   const chartData = req.body;
 
   // Validate input
@@ -35,7 +35,7 @@ export async function generateNatal(req: Request, res: Response): Promise<void> 
  * Generate AI-powered transit forecast
  * POST /api/v1/ai/transit
  */
-export async function generateTransit(req: Request, res: Response): Promise<void> {
+export async function generateTransit(req: Request, res: Response, _next: NextFunction): Promise<void> {
   const transitData = req.body;
 
   // Validate input
@@ -57,7 +57,7 @@ export async function generateTransit(req: Request, res: Response): Promise<void
  * Generate AI-powered compatibility analysis
  * POST /api/v1/ai/compatibility
  */
-export async function generateCompatibility(req: Request, res: Response): Promise<void> {
+export async function generateCompatibility(req: Request, res: Response, _next: NextFunction): Promise<void> {
   const { chartA, chartB } = req.body;
 
   // Validate input
@@ -87,7 +87,7 @@ export async function generateCompatibility(req: Request, res: Response): Promis
  * Generate AI-powered lunar return interpretation
  * POST /api/v1/ai/lunar-return
  */
-export async function generateLunarReturn(req: Request, res: Response): Promise<void> {
+export async function generateLunarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
   const chartData = req.body;
 
   // Validate input
@@ -109,7 +109,7 @@ export async function generateLunarReturn(req: Request, res: Response): Promise<
  * Generate AI-powered solar return interpretation
  * POST /api/v1/ai/solar-return
  */
-export async function generateSolarReturn(req: Request, res: Response): Promise<void> {
+export async function generateSolarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
   const chartData = req.body;
 
   // Validate input
@@ -131,7 +131,7 @@ export async function generateSolarReturn(req: Request, res: Response): Promise<
  * Check AI service status
  * GET /api/v1/ai/status
  */
-export async function checkStatus(_req: Request, res: Response): Promise<void> {
+export async function checkStatus(_req: Request, res: Response, _next: NextFunction): Promise<void> {
   const configured = openaiService.isConfigured();
   const configStatus = openaiService.getConfigStatus();
 
@@ -149,7 +149,7 @@ export async function checkStatus(_req: Request, res: Response): Promise<void> {
  * Get AI usage statistics
  * GET /api/v1/ai/usage
  */
-export async function getUsageStats(_req: Request, res: Response): Promise<void> {
+export async function getUsageStats(_req: Request, res: Response, _next: NextFunction): Promise<void> {
   const stats = await openaiService.getUsageStats();
 
   res.json({
@@ -162,7 +162,7 @@ export async function getUsageStats(_req: Request, res: Response): Promise<void>
  * Clear AI interpretation cache
  * POST /api/v1/ai/cache/clear
  */
-export async function clearCache(req: Request, res: Response): Promise<void> {
+export async function clearCache(req: Request, res: Response, _next: NextFunction): Promise<void> {
   await aiInterpretationService.clearCache();
 
   logger.info('AI interpretation cache cleared', { userId: req.user?.id });
