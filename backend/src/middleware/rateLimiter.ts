@@ -105,10 +105,29 @@ export const passwordResetRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/**
+ * Webhook Rate Limiter
+ * Dedicated rate limiter for Stripe webhook endpoint
+ * - 100 requests per minute per IP (Stripe sends retries)
+ * - Must be applied directly to the webhook route
+ */
+export const webhookRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV !== 'production' ? 500 : 100,
+  message: {
+    success: false,
+    error: 'Too many webhook requests. Please try again later.',
+    code: 'RATE_LIMIT_WEBHOOK',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,
   auth: authRateLimiter,
   chartCreation: chartCreationRateLimiter,
   passwordReset: passwordResetRateLimiter,
+  webhook: webhookRateLimiter,
 };

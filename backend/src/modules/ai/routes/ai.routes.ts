@@ -27,6 +27,14 @@ import { authenticate } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
+import { validateRequest } from '../../../middleware/validateRequest';
+import {
+  AiNatalSchema,
+  AiTransitSchema,
+  AiCompatibilitySchema,
+  AiLunarReturnSchema,
+  AiSolarReturnSchema,
+} from '../validations/ai.validation';
 
 const router = Router();
 
@@ -90,6 +98,7 @@ router.use(authenticate);
 router.post(
   '/natal',
   aiRateLimiter,
+  validateRequest(AiNatalSchema),
   enforceAILimit as RequestHandler,
   asyncHandler(async (req, res, next) => { await generateNatal(req, res, next); }),
 );
@@ -114,6 +123,7 @@ router.post(
 router.post(
   '/transit',
   aiRateLimiter,
+  validateRequest(AiTransitSchema),
   enforceAILimit as RequestHandler,
   asyncHandler(async (req, res, next) => { await generateTransit(req, res, next); }),
 );
@@ -138,6 +148,7 @@ router.post(
 router.post(
   '/compatibility',
   aiRateLimiter,
+  validateRequest(AiCompatibilitySchema),
   enforceAILimit as RequestHandler,
   asyncHandler(async (req, res, next) => { await generateCompatibility(req, res, next); }),
 );
@@ -162,6 +173,7 @@ router.post(
 router.post(
   '/lunar-return',
   aiRateLimiter,
+  validateRequest(AiLunarReturnSchema),
   enforceAILimit as RequestHandler,
   asyncHandler(async (req, res, next) => { await generateLunarReturn(req, res, next); }),
 );
@@ -186,6 +198,7 @@ router.post(
 router.post(
   '/solar-return',
   aiRateLimiter,
+  validateRequest(AiSolarReturnSchema),
   enforceAILimit as RequestHandler,
   asyncHandler(async (req, res, next) => { await generateSolarReturn(req, res, next); }),
 );

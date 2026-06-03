@@ -101,7 +101,7 @@ const limiter = rateLimit({
   skip: (req) => {
     // req.path includes /v1/ prefix since limiter is mounted at /api/
     const path = req.path; // e.g. /v1/csrf-token or /v1/auth/login
-    const skipSuffixes = ['/csrf-token', '/auth/login', '/auth/register', '/auth/refresh', '/auth/logout', '/auth/me', '/auth/social'];
+    const skipSuffixes = ['/csrf-token', '/auth/login', '/auth/register', '/auth/refresh', '/auth/logout', '/auth/me', '/auth/social', '/billing/webhook'];
     return skipSuffixes.some(p => path === p || path.endsWith(p) || path.startsWith('/v1' + p));
   },
 });
