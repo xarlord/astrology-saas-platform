@@ -7,6 +7,7 @@ import Joi from 'joi';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
+import { webhookRateLimiter } from '../../../middleware/rateLimiter';
 import * as BillingController from '../controllers/billing.controller';
 
 const router = Router();
@@ -55,6 +56,7 @@ router.get(
  */
 router.post(
   '/webhook',
+  webhookRateLimiter,
   asyncHandler(async (req, res) => {
     await BillingController.handleWebhook(req, res);
   }),
