@@ -11,7 +11,7 @@ import {
   generateRefreshToken,
   AuthenticatedRequest,
 } from '../../../middleware/auth';
-import { hashPassword, comparePassword, sanitizeUser } from '../../../utils/helpers';
+import { hashPassword, comparePassword, sanitizeUser, validatePassword } from '../../../utils/helpers';
 import * as RefreshTokenModel from '../models/refreshToken.model';
 import * as PasswordResetService from '../services/passwordReset.service';
 import { sendWelcomeEmail } from '../../../services/email.service';
@@ -291,6 +291,17 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
  */
 export async function resetPassword(req: Request, res: Response): Promise<void> {
   const { token, password } = (req as any).validated || req.body;
+
+  // Validate password strength before resetting
+  const validation = validatePassword(password);
+  if (!validation.valid) {
+    res.status(400).json({
+      success: false,
+      error: 'Password does not meet requirements',
+      details: validation.errors,
+    });
+    return;
+  }
 
   await PasswordResetService.resetPassword(token, password);
 

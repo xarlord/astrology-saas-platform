@@ -5,17 +5,15 @@
 import Stripe from 'stripe';
 import config from '../../../config';
 
-let _stripe: any = null;
+let _stripe: any = null;  // eslint-disable-line @typescript-eslint/no-explicit-any -- Stripe v22 CJS types don't expose instance type cleanly
 
-function getStripe(): any {
+function getStripe(): any {  // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!_stripe) {
     if (!config.stripe.secretKey) {
       throw new Error('STRIPE_SECRET_KEY is not configured');
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    _stripe = Stripe.default(config.stripe.secretKey, {
-      apiVersion: '2024-11-20.acacia',
+    _stripe = new Stripe(config.stripe.secretKey, {
+      apiVersion: '2026-04-22.dahlia',
     });
   }
   return _stripe;
