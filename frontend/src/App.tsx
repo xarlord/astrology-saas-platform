@@ -37,6 +37,7 @@ const LunarReturnsPage = lazy(() => import('./pages/LunarReturnsPage'));
 const RetrogradePage = lazy(() => import('./pages/RetrogradePage'));
 const EphemerisPage = lazy(() => import('./pages/EphemerisPage'));
 const LearnPage = lazy(() => import('./pages/LearnPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const SavedChartsGalleryPage = lazy(() => import('./pages/SavedChartsGalleryPage'));
@@ -202,7 +203,7 @@ function App() {
               <Route path="/features" element={<StaticPage pageKey="features" />} />
               <Route path="/pricing" element={<StaticPage pageKey="pricing" />} />
               <Route path="/api" element={<StaticPage pageKey="api" />} />
-              <Route path="/blog" element={<StaticPage pageKey="blog" />} />
+              <Route path="/blog" element={<BlogPage />} />
               <Route path="/support" element={<StaticPage pageKey="support" />} />
               <Route path="/careers" element={<StaticPage pageKey="careers" />} />
               <Route path="/contact" element={<StaticPage pageKey="contact" />} />
