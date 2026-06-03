@@ -25,6 +25,12 @@ import apiRouter from './api';
 const app: Application = express();
 const PORT = process.env.PORT || 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const STRIPE_CSP = {
+  scriptSrc: ['https://js.stripe.com'],
+  frameSrc: ['https://js.stripe.com', 'https://checkout.stripe.com'],
+  connectSrc: ['https://api.stripe.com'],
+  imgSrc: ['https://*.stripe.com'],
+};
 
 // ============================================
 // Security Middleware
@@ -36,17 +42,21 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      scriptSrc: process.env.NODE_ENV === 'development' ? ["'self'", "'unsafe-eval'"] : ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc:
+        process.env.NODE_ENV === 'development'
+          ? ["'self'", "'unsafe-eval'", ...STRIPE_CSP.scriptSrc]
+          : ["'self'", ...STRIPE_CSP.scriptSrc],
+      imgSrc: ["'self'", "data:", "https:", ...STRIPE_CSP.imgSrc],
       connectSrc: [
         "'self'",
         "https://fonts.googleapis.com",
         "https://fonts.gstatic.com",
+        ...STRIPE_CSP.connectSrc,
       ],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
-      frameSrc: ["'self'"],
+      frameSrc: ["'self'", ...STRIPE_CSP.frameSrc],
     },
   },
   crossOriginEmbedderPolicy: false,
