@@ -10,7 +10,9 @@ import {
   UpdateUserProfileSchema,
   UpdateUserPreferencesSchema,
   UpdateEmailPreferencesSchema,
+  ChangePasswordSchema,
 } from '../../../shared/schemas/user.validation';
+import { requirePasswordConfirmation } from '../../../middleware/requirePassword';
 import * as UserController from '../controllers/user.controller';
 
 const router = Router();
@@ -218,8 +220,23 @@ router.put(
  */
 router.delete(
   '/me',
+  requirePasswordConfirmation,
   asyncHandler(async (req, res) => {
     await UserController.deleteAccount(req as AuthenticatedRequest, res);
+  }),
+);
+
+/**
+ * @route   POST /api/users/me/change-password
+ * @desc    Change user password (requires current password confirmation)
+ * @access  Private (#240)
+ */
+router.post(
+  '/me/change-password',
+  requirePasswordConfirmation,
+  validateRequest(ChangePasswordSchema),
+  asyncHandler(async (req, res) => {
+    await UserController.changePassword(req as AuthenticatedRequest, res);
   }),
 );
 
