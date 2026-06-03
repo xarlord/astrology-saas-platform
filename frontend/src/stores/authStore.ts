@@ -87,7 +87,7 @@ export const useAuthStore = create<AuthState>()(
           try {
             await authService.logout();
           } catch (error) {
-            console.error('Logout error:', error);
+            // Logout error: session cleared on client side regardless
           } finally {
             clearCsrfToken();
             set({

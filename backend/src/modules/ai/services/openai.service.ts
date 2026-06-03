@@ -9,12 +9,17 @@ import logger from '../../../utils/logger';
 import aiUsageService from './aiUsage.service';
 
 /**
- * Get or create OpenAI client instance
+ * Singleton OpenAI client instance — reused across requests
+ * Fixes per-request instantiation that created unnecessary overhead
  */
-const getOpenAIClient = () => {
-  return new OpenAI({
-    apiKey: openaiConfig.apiKey,
-  });
+let openAIClient: OpenAI | null = null;
+const getOpenAIClient = (): OpenAI => {
+  if (!openAIClient) {
+    openAIClient = new OpenAI({
+      apiKey: openaiConfig.apiKey,
+    });
+  }
+  return openAIClient;
 };
 
 /**

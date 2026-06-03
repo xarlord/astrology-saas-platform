@@ -100,17 +100,17 @@ describe('Helper Utilities', () => {
 
   describe('validatePassword', () => {
     it('should return valid for strong password', () => {
-      const result = validatePassword('StrongPass123');
+      const result = validatePassword('StrongPassword123');
 
       expect(result.valid).toBe(true);
       expect(result.errors).toHaveLength(0);
     });
 
-    it('should require minimum 8 characters', () => {
-      const result = validatePassword('Short1A');
+    it('should require minimum 12 characters', () => {
+      const result = validatePassword('Short1Abc');
 
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('Password must be at least 8 characters long');
+      expect(result.errors).toContain('Password must be at least 12 characters long');
     });
 
     it('should require uppercase letter', () => {
