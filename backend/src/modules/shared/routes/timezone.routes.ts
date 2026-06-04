@@ -4,9 +4,13 @@
 
 import { Router } from 'express';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { publicApiRateLimiter } from '../../../middleware/rateLimiter';
 import { timezoneService } from '../services/timezone.service';
 
 const router = Router();
+
+// Apply rate limiting to all timezone routes
+router.use(publicApiRateLimiter);
 
 /**
  * @route   GET /api/timezone/search

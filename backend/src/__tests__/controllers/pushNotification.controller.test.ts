@@ -122,7 +122,7 @@ describe('Push Notification Controller', () => {
     it('should return 401 if user is not authenticated', async () => {
       mockRequest.user = undefined;
       mockRequest.body = {
-        endpoint: 'https://push.example.com/sub',
+        endpoint: 'https://fcm.googleapis.com/fcm/send/sub',
         keys: { p256dh: 'k', auth: 'a' },
       };
 
@@ -136,7 +136,7 @@ describe('Push Notification Controller', () => {
 
     it('should save subscription and return 201', async () => {
       mockRequest.body = {
-        endpoint: 'https://push.example.com/subscribe/abc123',
+        endpoint: 'https://fcm.googleapis.com/fcm/send/abc123',
         keys: { p256dh: 'key123', auth: 'auth456' },
       };
       mockRequest.headers = { 'user-agent': 'Mozilla/5.0' };
@@ -147,7 +147,7 @@ describe('Push Notification Controller', () => {
 
       expect(mockRegistry.saveSubscription).toHaveBeenCalledWith({
         userId: 'user-123',
-        endpoint: 'https://push.example.com/subscribe/abc123',
+        endpoint: 'https://fcm.googleapis.com/fcm/send/abc123',
         keys: { p256dh: 'key123', auth: 'auth456' },
         userAgent: 'Mozilla/5.0',
       });
@@ -160,7 +160,7 @@ describe('Push Notification Controller', () => {
 
     it('should pass undefined userAgent when header not present', async () => {
       mockRequest.body = {
-        endpoint: 'https://push.example.com/sub',
+        endpoint: 'https://fcm.googleapis.com/fcm/send/sub',
         keys: { p256dh: 'k', auth: 'a' },
       };
       // headers exist but no user-agent key
@@ -177,7 +177,7 @@ describe('Push Notification Controller', () => {
 
     it('should call next on service error', async () => {
       mockRequest.body = {
-        endpoint: 'https://push.example.com/sub',
+        endpoint: 'https://fcm.googleapis.com/fcm/send/sub',
         keys: { p256dh: 'k', auth: 'a' },
       };
 

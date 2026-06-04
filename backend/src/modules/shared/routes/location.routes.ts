@@ -9,6 +9,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { logger } from '../../../utils/logger';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { publicApiRateLimiter } from '../../../middleware/rateLimiter';
 
 // Manual validation helpers (replacing express-validator)
 function validateQueryParams(
@@ -75,6 +76,9 @@ const router = Router();
 // Google Places API configuration
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const GOOGLE_PLACES_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
+
+// Apply rate limiting to all location routes
+router.use(publicApiRateLimiter);
 
 /**
  * @openapi

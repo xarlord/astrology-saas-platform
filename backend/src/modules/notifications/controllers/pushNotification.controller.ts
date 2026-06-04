@@ -21,6 +21,26 @@ export const saveSubscription = asyncHandler(async (req: Request, res: Response)
     throw new AppError('keys.p256dh and keys.auth are required strings', 400);
   }
 
+  // Validate endpoint is a known push service URL (prevent SSRF)
+  const ALLOWED_PUSH_DOMAINS = [
+    'fcm.googleapis.com',
+    'updates.push.services.mozilla.com',
+    'push.apple.com',
+    'web.push.apple.com',
+  ];
+  try {
+    const url = new URL(endpoint);
+    const isAllowed = ALLOWED_PUSH_DOMAINS.some(
+      (domain) => url.hostname === domain || url.hostname.endsWith('.' + domain),
+    );
+    if (!isAllowed) {
+      throw new AppError('Endpoint URL must be from a supported push service provider', 400);
+    }
+  } catch (e) {
+    if (e instanceof AppError) throw e;
+    throw new AppError('Invalid endpoint URL format', 400);
+  }
+
   const subscription = await pushNotificationService.saveSubscription({
     userId,
     endpoint,

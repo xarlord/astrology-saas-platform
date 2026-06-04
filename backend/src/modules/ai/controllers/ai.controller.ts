@@ -14,7 +14,7 @@ import logger from '../../../utils/logger';
  * POST /api/v1/ai/natal
  */
 export async function generateNatal(req: Request, res: Response, _next: NextFunction): Promise<void> {
-  const chartData = req.validated || req.body;
+  const chartData = req.validated as any;
 
   // Validate input
   if (!chartData || !chartData.planets || chartData.planets.length === 0) {
@@ -36,7 +36,7 @@ export async function generateNatal(req: Request, res: Response, _next: NextFunc
  * POST /api/v1/ai/transit
  */
 export async function generateTransit(req: Request, res: Response, _next: NextFunction): Promise<void> {
-  const transitData = req.validated || req.body;
+  const transitData = req.validated as any;
 
   // Validate input
   if (!transitData || !transitData.currentTransits || transitData.currentTransits.length === 0) {
@@ -58,7 +58,7 @@ export async function generateTransit(req: Request, res: Response, _next: NextFu
  * POST /api/v1/ai/compatibility
  */
 export async function generateCompatibility(req: Request, res: Response, _next: NextFunction): Promise<void> {
-  const validated = req.validated || req.body;
+  const validated = req.validated as any;
   const { chartA, chartB } = validated;
 
   // Validate input
@@ -89,7 +89,7 @@ export async function generateCompatibility(req: Request, res: Response, _next: 
  * POST /api/v1/ai/lunar-return
  */
 export async function generateLunarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
-  const chartData = req.validated || req.body;
+  const chartData = req.validated as any;
 
   // Validate input
   if (!chartData || !chartData.planets || chartData.planets.length === 0) {
@@ -111,7 +111,7 @@ export async function generateLunarReturn(req: Request, res: Response, _next: Ne
  * POST /api/v1/ai/solar-return
  */
 export async function generateSolarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
-  const chartData = req.validated || req.body;
+  const chartData = req.validated as any;
 
   // Validate input
   if (!chartData || !chartData.planets || chartData.planets.length === 0) {

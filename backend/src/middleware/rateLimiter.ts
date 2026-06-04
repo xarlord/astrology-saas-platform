@@ -144,6 +144,23 @@ export const webhookRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/**
+ * Public API Rate Limiter
+ * For public endpoints that don't require auth but need abuse protection
+ * - 100 requests per 15 minutes per IP
+ */
+export const publicApiRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 500 : 100,
+  message: {
+    success: false,
+    error: 'Too many requests. Please try again later.',
+    code: 'RATE_LIMIT_PUBLIC_API',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,
@@ -151,4 +168,5 @@ export default {
   chartCreation: chartCreationRateLimiter,
   passwordReset: passwordResetRateLimiter,
   webhook: webhookRateLimiter,
+  publicApi: publicApiRateLimiter,
 };

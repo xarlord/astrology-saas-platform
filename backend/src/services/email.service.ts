@@ -152,7 +152,7 @@ function subscriptionConfirmationHtml(userName: string, planName: string): strin
 // Core send helper (used by all public functions)
 // ---------------------------------------------------------------------------
 
-async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+async function sendEmail(to: string, subject: string, html: string, options?: { silent?: boolean }): Promise<void> {
   const resend = await getResend();
   if (!resend) {
     logger.info('Email (dev mode — no RESEND_API_KEY)', { to, subject });
@@ -168,12 +168,14 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
     });
     logger.info('Email sent', { to, subject });
   } catch (error) {
-    logger.error('Failed to send email', {
-      to,
-      subject,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    // Don't throw — never leak whether an email address exists
+    const errMsg = error instanceof Error ? error.message : String(error);
+    logger.error('Failed to send email', { to, subject, error: errMsg });
+
+    // Silent mode: don't throw — used for password reset to prevent email enumeration
+    // Transactional emails (welcome, subscription, reports): throw so callers can alert/retry
+    if (!options?.silent) {
+      throw new Error(`Email send failed: ${errMsg}`);
+    }
   }
 }
 
@@ -188,14 +190,14 @@ export interface SendResetEmailParams {
 }
 
 /**
- * Send a password reset email (transactional — always sent)
+ * Send a password reset email (silent — prevents email enumeration)
  */
 export function sendPasswordResetEmail(params: SendResetEmailParams): void {
   const resetUrl = `${frontendUrl}/reset-password?token=${params.resetToken}`;
   const name = params.userName || 'there';
 
   enqueue(() =>
-    sendEmail(params.to, 'Reset your AstroVerse password', passwordResetHtml(resetUrl, name)),
+    sendEmail(params.to, 'Reset your AstroVerse password', passwordResetHtml(resetUrl, name), { silent: true }),
   );
 }
 
