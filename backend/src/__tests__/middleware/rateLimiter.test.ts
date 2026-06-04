@@ -117,31 +117,57 @@ describe('Rate Limiter Middleware', () => {
     });
   });
 
+  // ===== Auth Total Rate Limiter =====
+
+  describe('Auth Total Rate Limiter', () => {
+    it('should configure rate limit with correct window and max requests', () => {
+      const authTotalConfig = configs[3];
+      expect(authTotalConfig.windowMs).toBe(15 * 60 * 1000);
+      // Non-production env gets the higher limit
+      expect(authTotalConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 500 : 50);
+    });
+
+    it('should return correct error message and code', () => {
+      const authTotalConfig = configs[3];
+      expect(authTotalConfig.message).toEqual({
+        success: false,
+        error: 'Too many authentication requests. Please try again later.',
+        code: 'RATE_LIMIT_AUTH_TOTAL',
+      });
+    });
+
+    it('should count all requests (not skip successful)', () => {
+      const authTotalConfig = configs[3];
+      // Unlike authRateLimiter, this one counts ALL requests
+      expect(authTotalConfig.skipSuccessfulRequests).toBeFalsy();
+    });
+  });
+
   // ===== Chart Creation Rate Limiter =====
 
   describe('Chart Creation Rate Limiter', () => {
     it('should configure rate limit with correct window and max requests', () => {
-      const chartConfig = configs[3];
+      const chartConfig = configs[4];
       expect(chartConfig.windowMs).toBe(60 * 60 * 1000);
       // Non-production env gets the higher limit
       expect(chartConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 200 : 20);
     });
 
     it('should use user ID for rate limiting', () => {
-      const chartConfig = configs[3];
+      const chartConfig = configs[4];
       const mockReq = { user: { id: 'user-123' } };
       const generatedKey = chartConfig.keyGenerator(mockReq as any);
       expect(generatedKey).toBe('chart:user-123');
     });
 
     it('should throw error when user is not authenticated', () => {
-      const chartConfig = configs[3];
+      const chartConfig = configs[4];
       const mockReq = {};
       expect(() => chartConfig.keyGenerator(mockReq as any)).toThrow('User must be authenticated');
     });
 
     it('should return correct error message and code', () => {
-      const chartConfig = configs[3];
+      const chartConfig = configs[4];
       expect(chartConfig.message).toEqual({
         success: false,
         error: 'Chart creation limit reached. Please try again later.',
@@ -154,20 +180,20 @@ describe('Rate Limiter Middleware', () => {
 
   describe('Password Reset Rate Limiter', () => {
     it('should configure rate limit with correct window and max requests', () => {
-      const passwordResetConfig = configs[4];
+      const passwordResetConfig = configs[5];
       expect(passwordResetConfig.windowMs).toBe(60 * 60 * 1000);
       // Non-production env gets the higher limit
       expect(passwordResetConfig.max).toBe(process.env.NODE_ENV !== 'production' ? 50 : 3);
     });
 
     it('should have very strict limits compared to other limiters', () => {
-      const passwordResetConfig = configs[4];
+      const passwordResetConfig = configs[5];
       const pdfConfig = configs[0];
       expect(passwordResetConfig.max).toBeLessThan(pdfConfig.max);
     });
 
     it('should return correct error message and code', () => {
-      const passwordResetConfig = configs[4];
+      const passwordResetConfig = configs[5];
       expect(passwordResetConfig.message).toEqual({
         success: false,
         error: 'Too many password reset requests. Please check your email or try again later.',
