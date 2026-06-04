@@ -290,6 +290,8 @@ export default function BlogPage() {
       {/* Create/Edit Modal */}
       {(showForm || editingPost) && (
         <div
+          role="dialog"
+          aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={(e) => e.target === e.currentTarget && closeAll()}
         >
@@ -428,6 +430,8 @@ export default function BlogPage() {
       {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div
+          role="alertdialog"
+          aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={(e) => e.target === e.currentTarget && setDeleteTarget(null)}
         >

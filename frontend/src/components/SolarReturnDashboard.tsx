@@ -152,7 +152,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
       {error && (
         <div role="alert" className="flex items-center justify-between p-4 bg-red-500/20 text-red-400 rounded-lg">
           {error}
-          <button type="button" onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-300">&#10005;</button>
+          <button type="button" onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-300" aria-label="Dismiss error">&#10005;</button>
         </div>
       )}
 

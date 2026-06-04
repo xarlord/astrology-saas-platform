@@ -204,7 +204,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-md py-3 px-4 mt-4 flex justify-between items-center text-red-400 text-sm" role="alert">
             {error}
-            <button type="button" onClick={() => setError(null)} className="bg-transparent border-none text-xl cursor-pointer p-0 ml-2">✕</button>
+            <button type="button" onClick={() => setError(null)} className="bg-transparent border-none text-xl cursor-pointer p-0 ml-2" aria-label="Dismiss error">✕</button>
           </div>
         )}
       </div>

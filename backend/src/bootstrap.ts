@@ -4,11 +4,12 @@
  * require.main === module guard which doesn't work under tsx ESM.
  */
 import app from './server';
+import logger from './utils/logger';
 
 const PORT = process.env.PORT || 3001;
 
 const server = app.listen(PORT, () => {
-  console.log(`🚀 E2E bootstrap: Server running on port ${PORT}`);
+  logger.info(`E2E bootstrap: Server running on port ${PORT}`);
 });
 
 process.on('SIGTERM', () => { server.close(() => process.exit(0)); });

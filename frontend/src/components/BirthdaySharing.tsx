@@ -200,7 +200,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       {error && (
         <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-4 mb-4 text-red-400">
           <span>{error}</span>
-          <button type="button" onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300 font-bold">✕</button>
+          <button type="button" onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300 font-bold" aria-label="Dismiss error">✕</button>
         </div>
       )}
 

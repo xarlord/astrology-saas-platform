@@ -592,6 +592,8 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+            role="dialog"
+            aria-modal="true"
             onClick={() => setShowPreviewModal(false)}
           >
             <motion.div

@@ -236,7 +236,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
 
       {/* Day event popup */}
       {selectedDayEvents && (
-        <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4" onClick={() => setSelectedDayEvents(null)}>
+        <div role="dialog" aria-modal="true" className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4" onClick={() => setSelectedDayEvents(null)}>
           <div className="modal-content max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">

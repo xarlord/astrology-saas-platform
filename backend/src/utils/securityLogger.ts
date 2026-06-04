@@ -232,9 +232,9 @@ function sendToSIEM(metadata: SecurityEventMetadata): void {
   // - Sentry: Sentry.captureMessage('[SECURITY]', { extra: metadata })
   // - Splunk HTTP Event Collector: sendToSplunk(metadata)
 
-  // For now, log to console in production for visibility
+  // For now, log via structured logger in production for visibility
   if (process.env.NODE_ENV === 'production') {
-    console.log('[SIEM]', JSON.stringify(metadata));
+    logger.info('[SIEM]', JSON.stringify(metadata));
   }
 }
 

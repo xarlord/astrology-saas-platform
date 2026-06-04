@@ -402,13 +402,14 @@ export const SavedChartsGalleryPage: React.FC = () => {
 
       {/* Share Modal */}
       {shareModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+        <div role="dialog" aria-modal="true" className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
           <div className="bg-[#1e1b2e] rounded-2xl p-6 max-w-md w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">Share Chart</h3>
               <button type="button"
                 onClick={closeShareModal}
                 className="p-2 text-slate-400 hover:text-white transition-colors"
+                aria-label="Close"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
