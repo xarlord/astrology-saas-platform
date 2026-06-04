@@ -4,6 +4,7 @@
  */
 
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import Joi from 'joi';
 import { requireAdmin } from '../../../middleware/admin';
 import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
@@ -18,9 +19,18 @@ import {
 
 const router = Router();
 
+// Rate limiter for blog public GET routes
+const blogReadRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // 200 requests per window per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests to blog endpoints, please try again later.',
+});
+
 // Public routes
-router.get('/', getPosts);
-router.get('/:id', validateParams(uuidParamSchema), getPost);
+router.get('/', blogReadRateLimiter, getPosts);
+router.get('/:id', blogReadRateLimiter, validateParams(uuidParamSchema), getPost);
 
 // Admin routes
 router.post(
