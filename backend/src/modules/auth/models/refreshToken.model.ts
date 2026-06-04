@@ -51,13 +51,23 @@ export async function createRefreshToken(
  * Find a refresh token by comparing plaintext token against stored hash
  */
 export async function findRefreshToken(token: string): Promise<RefreshToken | null> {
-  // First get all non-expired, non-revoked tokens for potential matching
-  const candidates = await db<RefreshToken>('refresh_tokens')
+  // First try non-expired, non-revoked tokens
+  const activeCandidates = await db<RefreshToken>('refresh_tokens')
     .where({ revoked: false })
     .where('expires_at', '>', new Date())
     .limit(50);
 
-  for (const candidate of candidates) {
+  for (const candidate of activeCandidates) {
+    const match = await bcrypt.compare(token, candidate.token);
+    if (match) return candidate;
+  }
+
+  // Also check revoked tokens (for reuse detection — indicates token theft)
+  const revokedCandidates = await db<RefreshToken>('refresh_tokens')
+    .where({ revoked: true })
+    .limit(50);
+
+  for (const candidate of revokedCandidates) {
     const match = await bcrypt.compare(token, candidate.token);
     if (match) return candidate;
   }

@@ -180,9 +180,11 @@ export const useAuthStore = create<AuthState>()(
       }),
       {
         name: 'auth-storage',
+        // NOTE: access token is intentionally excluded from persistence.
+        // It stays in-memory only and is restored via httpOnly refresh token on reload.
+        // Persisting the access token to localStorage is a security risk (XSS exfiltration).
         partialize: (state) => ({
           user: state.user,
-          token: state.token,
           isAuthenticated: state.isAuthenticated,
         }),
       },

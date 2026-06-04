@@ -12,7 +12,7 @@ import {
   ForgotPasswordSchema,
   ResetPasswordSchema,
 } from '../../../shared/schemas/auth.validation';
-import { authRateLimiter, passwordResetRateLimiter } from '../../../middleware/rateLimiter';
+import { authRateLimiter, authTotalRateLimiter, passwordResetRateLimiter } from '../../../middleware/rateLimiter';
 import * as AuthController from '../controllers/auth.controller';
 
 const router = Router();
@@ -39,6 +39,7 @@ const router = Router();
  */
 router.post(
   '/register',
+  authTotalRateLimiter,
   authRateLimiter,
   validateRequest(RegisterSchema),
   asyncHandler(async (req, res) => {
@@ -70,6 +71,7 @@ router.post(
  */
 router.post(
   '/login',
+  authTotalRateLimiter,
   authRateLimiter,
   validateRequest(LoginSchema),
   asyncHandler(async (req, res) => {
@@ -179,6 +181,7 @@ router.put(
  */
 router.post(
   '/refresh',
+  authTotalRateLimiter,
   authRateLimiter,
   asyncHandler(async (req, res) => {
     await AuthController.refreshToken(req, res);

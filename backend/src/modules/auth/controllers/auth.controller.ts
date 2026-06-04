@@ -16,6 +16,7 @@ import * as RefreshTokenModel from '../models/refreshToken.model';
 import * as PasswordResetService from '../services/passwordReset.service';
 import { sendWelcomeEmail } from '../../../services/email.service';
 import { logAuthFailure } from '../../../utils/securityLogger';
+import logger from '../../../utils/logger';
 
 /**
  * Register new user
@@ -246,6 +247,15 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
   }
 
   if (tokenRecord.revoked) {
+    // Reuse detection: an already-revoked token was presented.
+    // This indicates token theft — revoke ALL tokens for this user.
+    logger.warn('Refresh token reuse detected — possible token theft', {
+      userId: tokenRecord.user_id,
+      tokenId: tokenRecord.id,
+    });
+    await db('refresh_tokens')
+      .where({ user_id: tokenRecord.user_id })
+      .update({ revoked: true, revoked_at: new Date() });
     throw new AppError('Refresh token has been revoked', 401);
   }
 

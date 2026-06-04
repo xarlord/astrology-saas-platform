@@ -50,6 +50,10 @@ export const shareRateLimiter = rateLimit({
  * Stricter limits for authentication endpoints
  * - 5 requests per 15 minutes per IP
  */
+/**
+ * Auth Rate Limiter — Failed Attempts Only
+ * Tracks only failed login attempts (5 per 15 min)
+ */
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: process.env.NODE_ENV !== 'production' ? 500 : 5,
@@ -61,6 +65,23 @@ export const authRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Only count failed attempts
+});
+
+/**
+ * Auth Total Request Limiter — All Auth Requests
+ * Caps total auth requests per IP (50 per 15 min) to prevent credential stuffing
+ * even with high-quality password lists.
+ */
+export const authTotalRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 500 : 50,
+  message: {
+    success: false,
+    error: 'Too many authentication requests. Please try again later.',
+    code: 'RATE_LIMIT_AUTH_TOTAL',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 /**

@@ -5,9 +5,35 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import sanitizeHtml from 'sanitize-html';
 import logger from '../../../utils/logger';
 import blogModel from '../models/blog.model';
 import type { BlogPost, CreateBlogPostData, UpdateBlogPostData } from '../models/blog.model';
+
+/**
+ * Sanitize HTML body to prevent XSS while preserving safe formatting tags.
+ */
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: [
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'p', 'br', 'hr', 'blockquote', 'pre', 'code',
+    'ul', 'ol', 'li', 'a', 'strong', 'em', 'b', 'i', 'u', 's',
+    'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+  ],
+  allowedAttributes: {
+    a: ['href', 'title', 'target', 'rel'],
+    img: ['src', 'alt', 'title', 'width', 'height'],
+    code: ['class'],
+    pre: ['class'],
+    td: ['colspan', 'rowspan'],
+    th: ['colspan', 'rowspan'],
+  },
+  allowedSchemes: ['http', 'https', 'mailto'],
+};
+
+function sanitizeBody(body: string): string {
+  return sanitizeHtml(body, SANITIZE_OPTIONS);
+}
 
 const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads', 'blog');
 
@@ -19,7 +45,8 @@ function ensureUploadsDir(): void {
 
 export class BlogService {
   async createPost(data: CreateBlogPostData): Promise<BlogPost> {
-    const post = await blogModel.create(data);
+    const sanitizedData = { ...data, body: sanitizeBody(data.body) };
+    const post = await blogModel.create(sanitizedData);
     logger.info('Blog post created', { postId: post.id, authorId: data.author_id });
     return post;
   }
@@ -47,7 +74,10 @@ export class BlogService {
     id: string,
     data: UpdateBlogPostData,
   ): Promise<BlogPost | null> {
-    const post = await blogModel.update(id, data);
+    const sanitizedData = data.body
+      ? { ...data, body: sanitizeBody(data.body) }
+      : data;
+    const post = await blogModel.update(id, sanitizedData);
     if (!post) {
       return null;
     }
