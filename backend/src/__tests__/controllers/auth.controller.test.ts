@@ -22,6 +22,9 @@ jest.mock('../../modules/users/models/user.model', () => ({
     create: jest.fn(),
     update: jest.fn(),
     updatePreferences: jest.fn(),
+    isAccountLocked: jest.fn().mockReturnValue(false),
+    incrementFailedLoginAttempts: jest.fn(),
+    resetLoginAttempts: jest.fn(),
   },
 }));
 
