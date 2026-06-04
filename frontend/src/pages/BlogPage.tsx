@@ -8,7 +8,7 @@ import { useAuth } from '../hooks';
 import { useBlogStore } from '../stores/blogStore';
 import type { BlogPost } from '../services/blog.service';
 
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '')
+const ADMIN_EMAILS: string[] = String(import.meta.env.VITE_ADMIN_EMAILS ?? '')
   .split(',')
   .map((e: string) => e.trim().toLowerCase())
   .filter(Boolean);
@@ -361,7 +361,7 @@ export default function BlogPage() {
                   ref={fileInputRef}
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
-                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
                   className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/30 file:cursor-pointer file:transition-colors"
                 />
                 <p className="mt-1 text-xs text-slate-500">
@@ -401,7 +401,7 @@ export default function BlogPage() {
                 Cancel
               </button>
               <button
-                onClick={editingPost ? handleUpdate : handleCreate}
+                onClick={() => { void (editingPost ? handleUpdate() : handleCreate()); }}
                 disabled={isSubmitting}
                 className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-[#8b5cf6] text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
