@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Ephemeris Page
  *

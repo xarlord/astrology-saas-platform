@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
 import { AppError } from '../utils/appError';
+import { sentry } from '../config/monitoring';
 
 interface ErrorWithStatusCode extends Error {
   statusCode?: number;
@@ -39,6 +40,15 @@ export const errorHandler = (
     params: req.params,
     isOperational,
     stack: err.stack,
+    userId: (req as { user?: { id?: string } }).user?.id,
+  });
+
+  // Send to Sentry (no-op when Sentry is not configured)
+  sentry.captureException(err, {
+    path: req.path,
+    method: req.method,
+    statusCode,
+    isOperational,
     userId: (req as { user?: { id?: string } }).user?.id,
   });
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * useFocusTrap Hook
  *

@@ -5,7 +5,7 @@
 
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import Joi from 'joi';
+import { z } from 'zod';
 import { requireAdmin } from '../../../middleware/admin';
 import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
 import {
@@ -18,6 +18,19 @@ import {
 } from '../controllers/blog.controller';
 
 const router = Router();
+
+const createPostSchema = z.object({
+  title: z.string().min(1).max(200),
+  body: z.string().min(1),
+  is_published: z.boolean().optional(),
+});
+
+const updatePostSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  body: z.string().min(1).optional(),
+  is_published: z.boolean().optional(),
+  image_url: z.string().max(500).nullable().optional(),
+});
 
 // Rate limiter for blog public GET routes
 const blogReadRateLimiter = rateLimit({
@@ -36,13 +49,7 @@ router.get('/:id', blogReadRateLimiter, validateParams(uuidParamSchema), getPost
 router.post(
   '/',
   requireAdmin,
-  validateBody(
-    Joi.object({
-      title: Joi.string().min(1).max(200).required(),
-      body: Joi.string().min(1).required(),
-      is_published: Joi.boolean().optional(),
-    }),
-  ),
+  validateBody(createPostSchema),
   createPost,
 );
 
@@ -50,14 +57,7 @@ router.put(
   '/:id',
   requireAdmin,
   validateParams(uuidParamSchema),
-  validateBody(
-    Joi.object({
-      title: Joi.string().min(1).max(200).optional(),
-      body: Joi.string().min(1).optional(),
-      is_published: Joi.boolean().optional(),
-      image_url: Joi.string().max(500).allow(null).optional(),
-    }),
-  ),
+  validateBody(updatePostSchema),
   updatePost,
 );
 

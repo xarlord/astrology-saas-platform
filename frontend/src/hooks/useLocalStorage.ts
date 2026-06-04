@@ -4,6 +4,7 @@
  * Custom hook for localStorage with type safety and SSR support
  * Handles JSON serialization/deserialization automatically
  */
+import { logger } from '@/utils/logger';
 
 import { useState, useEffect, useCallback } from 'react';
 
@@ -21,7 +22,7 @@ export function useLocalStorage<T>(
       const item = window.localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
-      console.error(`Error loading localStorage key "${key}":`, error);
+      logger.error(`Error loading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -37,7 +38,7 @@ export function useLocalStorage<T>(
           window.localStorage.setItem(key, JSON.stringify(valueToStore));
         }
       } catch (error) {
-        console.error(`Error setting localStorage key "${key}":`, error);
+        logger.error(`Error setting localStorage key "${key}":`, error);
       }
     },
     [key, storedValue],
@@ -51,7 +52,7 @@ export function useLocalStorage<T>(
         window.localStorage.removeItem(key);
       }
     } catch (error) {
-      console.error(`Error removing localStorage key "${key}":`, error);
+      logger.error(`Error removing localStorage key "${key}":`, error);
     }
   }, [key, initialValue]);
 
@@ -62,7 +63,7 @@ export function useLocalStorage<T>(
         try {
           setStoredValue(JSON.parse(e.newValue) as T);
         } catch (error) {
-          console.error(`Error parsing localStorage value for key "${key}":`, error);
+          logger.error(`Error parsing localStorage value for key "${key}":`, error);
         }
       }
     };

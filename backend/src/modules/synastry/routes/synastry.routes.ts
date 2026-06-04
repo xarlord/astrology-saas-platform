@@ -4,7 +4,7 @@
  */
 
 import { Router, RequestHandler } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import * as synastryController from '../controllers/synastry.controller';
 import { authenticate } from '../../../middleware/auth';
 import {
@@ -20,6 +20,22 @@ const router = Router();
 // All routes require authentication
 router.use(authenticate);
 
+const compareSchema = z.object({
+  chart1Id: z.string().uuid(),
+  chart2Id: z.string().uuid(),
+});
+
+const compatibilitySchema = z.object({
+  chart1Id: z.string().uuid(),
+  chart2Id: z.string().uuid(),
+  includeComposite: z.boolean().optional(),
+});
+
+const updateReportSchema = z.object({
+  isFavorite: z.boolean().optional(),
+  notes: z.string().max(5000).optional(),
+});
+
 /**
  * @route   POST /api/synastry/compare
  * @desc    Compare two charts and calculate synastry
@@ -28,12 +44,7 @@ router.use(authenticate);
  */
 router.post(
   '/compare',
-  validateBody(
-    Joi.object({
-      chart1Id: Joi.string().uuid().required(),
-      chart2Id: Joi.string().uuid().required(),
-    }),
-  ),
+  validateBody(compareSchema),
   synastryController.compareCharts as RequestHandler,
 );
 
@@ -45,13 +56,7 @@ router.post(
  */
 router.post(
   '/compatibility',
-  validateBody(
-    Joi.object({
-      chart1Id: Joi.string().uuid().required(),
-      chart2Id: Joi.string().uuid().required(),
-      includeComposite: Joi.boolean().optional(),
-    }),
-  ),
+  validateBody(compatibilitySchema),
   synastryController.getCompatibility as RequestHandler,
 );
 
@@ -79,12 +84,7 @@ router.get('/reports/:id', validateParams(uuidParamSchema), synastryController.g
 router.patch(
   '/reports/:id',
   validateParams(uuidParamSchema),
-  validateBody(
-    Joi.object({
-      isFavorite: Joi.boolean().optional(),
-      notes: Joi.string().max(5000).optional(),
-    }),
-  ),
+  validateBody(updateReportSchema),
   synastryController.updateSynastryReport,
 );
 

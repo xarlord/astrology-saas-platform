@@ -2,6 +2,7 @@
  * Lazy Loading Utilities
  * Utilities for code splitting and lazy loading
  */
+import { logger } from './logger';
 
 import { lazy, ComponentType } from 'react';
 import { createElement } from 'react';
@@ -14,7 +15,7 @@ export function lazyLoadComponent<T extends ComponentType<Record<string, unknown
 ): T {
   return lazy(() =>
     importFn().catch((error) => {
-      console.error('Failed to load component:', error);
+      logger.error('Failed to load component:', error);
 
       // Return a fallback component
       return {
@@ -43,7 +44,7 @@ export function lazyLoadWithRetry<T extends ComponentType<Record<string, unknown
       retries++;
 
       if (retries < maxRetries) {
-        console.warn(`Retry ${retries}/${maxRetries} for component`);
+        logger.warn(`Retry ${retries}/${maxRetries} for component`);
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(loadWithRetry());

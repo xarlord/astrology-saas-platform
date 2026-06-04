@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Transit Forecast Page Component
  *

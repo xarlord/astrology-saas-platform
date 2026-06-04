@@ -4,6 +4,7 @@
  * Core validation utilities including composeValidators, validateField,
  * validateForm, and async validation support.
  */
+import { logger } from '../logger';
 
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
@@ -187,7 +188,7 @@ export async function validateFieldAsync(
         syncErrors.push('Validation timed out');
       }
       // For other errors, log and continue
-      console.error('Async validation error:', err);
+      logger.error('Async validation error:', err);
     }
   }
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Astrological Calendar Component
  * Displays monthly astrological events (moon phases, retrogrades, eclipses)

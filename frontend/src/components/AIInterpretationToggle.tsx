@@ -2,6 +2,7 @@
  * AI Interpretation Toggle Component
  * Allows users to enable/disable AI enhancements
  */
+import { logger } from '@/utils/logger';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
@@ -41,7 +42,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
         onInterpretationGenerated(interpretation as unknown as Record<string, unknown>);
       }
     } catch (err) {
-      console.error('AI generation failed:', err);
+      logger.error('AI generation failed:', err);
     }
   };
 

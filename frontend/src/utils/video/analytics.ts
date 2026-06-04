@@ -4,6 +4,7 @@
  * Tracks video engagement metrics including play progress,
  * watch time, completion rate, and user interactions
  */
+import { logger } from '../logger';
 
 export interface VideoAnalyticsEvent {
   type: VideoEventType;
@@ -326,7 +327,7 @@ class VideoAnalytics {
       };
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      console.warn('[VideoAnalytics] Failed to save to storage:', error);
+      logger.warn('[VideoAnalytics] Failed to save to storage:', error);
     }
   }
 
@@ -344,7 +345,7 @@ class VideoAnalytics {
         this.sessions = new Map(data.sessions);
       }
     } catch (error) {
-      console.warn('[VideoAnalytics] Failed to load from storage:', error);
+      logger.warn('[VideoAnalytics] Failed to load from storage:', error);
     }
   }
 

@@ -1,8 +1,8 @@
-/* eslint-disable */
 /**
  * Birthday Sharing Component
  * Share solar return readings as gifts
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState } from 'react';
 import api from '../services/api';
@@ -103,7 +103,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Failed to copy link:', err);
+        logger.error('Failed to copy link:', err);
       }
     }
   };

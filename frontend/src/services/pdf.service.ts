@@ -6,6 +6,7 @@
  *
  * @see docs/design/DESIGN_SPECIFICATIONS.md section 9
  */
+import { logger } from '@/utils/logger';
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -223,7 +224,7 @@ class PDFService {
         blob,
       };
     } catch (error) {
-      console.error('PDF generation error:', error);
+      logger.error('PDF generation error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate PDF',
@@ -298,7 +299,7 @@ class PDFService {
       doc.addImage(imgData, 'PNG', x, this.currentY, finalWidth, finalHeight);
       this.currentY += finalHeight + 10;
     } catch (error) {
-      console.error('Failed to capture chart image:', error);
+      logger.error('Failed to capture chart image:', error);
     }
   }
 

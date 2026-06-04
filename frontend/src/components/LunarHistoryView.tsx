@@ -2,6 +2,7 @@
  * Lunar History View Component
  * Displays past lunar returns
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '@/services/lunarReturn.api';
@@ -27,7 +28,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
       setReturns(response.returns);
       setTotalPages(response.pagination.totalPages);
     } catch (err: unknown) {
-      console.error('Error loading history:', err);
+      logger.error('Error loading history:', err);
       const axiosErr = err as { response?: { data?: { error?: string } } };
       setError(axiosErr.response?.data?.error ?? 'Failed to load history');
     } finally {
@@ -50,7 +51,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
       // Reload the current page
       await loadHistory();
     } catch (err: unknown) {
-      console.error('Error deleting lunar return:', err);
+      logger.error('Error deleting lunar return:', err);
       const axiosErr = err as { response?: { data?: { error?: string } } };
       alert(axiosErr.response?.data?.error ?? 'Failed to delete lunar return');
     } finally {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Chart-related types
  * Central type definitions for chart data, birth data, and chart rendering

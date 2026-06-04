@@ -4,6 +4,7 @@
  * Provides efficient caching for real-time data with automatic expiration
  * and background refresh capabilities.
  */
+import { logger } from '../logger';
 
 export interface CacheEntry<T> {
   data: T;
@@ -295,7 +296,7 @@ export class CacheManager<T = unknown> {
         return data;
       })
       .catch((error) => {
-        console.error(`Cache fetch error for key "${key}":`, error);
+        logger.error(`Cache fetch error for key "${key}":`, error);
         return null;
       })
       .finally(() => {
@@ -323,7 +324,7 @@ export class CacheManager<T = unknown> {
         return data;
       })
       .catch((error) => {
-        console.error(`Background revalidation error for key "${key}":`, error);
+        logger.error(`Background revalidation error for key "${key}":`, error);
         return null;
       })
       .finally(() => {

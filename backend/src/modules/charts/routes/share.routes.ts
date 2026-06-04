@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
@@ -18,12 +18,16 @@ const natalChartService = new NatalChartService();
 
 const router = Router();
 
+const shareTokenSchema = z.object({
+  token: z.string().min(1).max(256),
+});
+
 /**
  * @route   GET /api/share/:token
  * @desc    Access shared chart by token
  * @access  Public (with optional password check)
  */
-router.get('/:token', validateParams(Joi.object({ token: Joi.string().min(1).max(256).required() })), asyncHandler(async (req, res) => {
+router.get('/:token', validateParams(shareTokenSchema), asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.query;
 
@@ -96,7 +100,7 @@ router.get('/:token', validateParams(Joi.object({ token: Joi.string().min(1).max
  * @desc    Get share link statistics
  * @access  Private (requires authentication — only share owner should view stats)
  */
-router.get('/:token/stats', validateParams(Joi.object({ token: Joi.string().min(1).max(256).required() })), authenticate, asyncHandler(async (req: AuthenticatedRequest, res) => {
+router.get('/:token/stats', validateParams(shareTokenSchema), authenticate, asyncHandler(async (req: AuthenticatedRequest, res) => {
   const { token } = req.params;
 
   const share = await chartSharingService.getShareByToken(token);

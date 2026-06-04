@@ -8,27 +8,68 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import './assets/styles/globals.css';
+import { logger, setSentryCapture } from './utils/logger';
 
-// Global error handlers
+/* -------------------------------------------------------------------------- */
+/*  Sentry initialisation (conditional — only when DSN is set)                */
+/* -------------------------------------------------------------------------- */
+
+async function initSentry(): Promise<void> {
+  const dsn = import.meta.env.VITE_SENTRY_DSN;
+  if (!dsn) return;
+
+  try {
+    // @ts-expect-error — @sentry/react is an optional dependency; dynamic import avoids hard failure
+    const Sentry = await import('@sentry/react');
+
+    Sentry.init({
+      dsn,
+      environment: import.meta.env.MODE,
+      tracesSampleRate: import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE
+        ? parseFloat(import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE as string)
+        : 0.1,
+      replaysSessionSampleRate: 0,
+      replaysOnErrorSampleRate: 1.0,
+    });
+
+    setSentryCapture((err, extras) => {
+      Sentry.captureException(err instanceof Error ? err : new Error(String(err)), {
+        extra: extras,
+      });
+    });
+  } catch {
+    // @sentry/react not installed — logger falls back to console only
+  }
+}
+
+void initSentry();
+
+/* -------------------------------------------------------------------------- */
+/*  Global error handlers                                                     */
+/* -------------------------------------------------------------------------- */
+
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  // TODO(#77): Send to error reporting service (Sentry) — issue #77 tracks Sentry integration
-  // Prevent default browser error handling
+  logger.error('Unhandled promise rejection:', event.reason);
   event.preventDefault();
 });
 
 window.addEventListener('error', (event) => {
-  console.error('Global error:', event.error);
-  // TODO(#77): Send to error reporting service (Sentry)
+  logger.error('Global error:', event.error);
 });
 
-// Import service worker hook only in production
+/* -------------------------------------------------------------------------- */
+/*  Service worker (production only)                                          */
+/* -------------------------------------------------------------------------- */
+
 if (import.meta.env.PROD) {
   void import('./hooks/useServiceWorkerUpdate').then(() => {
     // Service worker registration initialized
   });
-
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Mount                                                                     */
+/* -------------------------------------------------------------------------- */
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -2,6 +2,7 @@
  * Synastry Calculator Component
  * Main component for comparing two charts and calculating compatibility
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState } from 'react';
 import {
@@ -62,7 +63,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
       setSynastryData(synastry);
       setCompatibilityData(compatibility);
     } catch (err: unknown) {
-      console.error('Error calculating synastry:', err);
+      logger.error('Error calculating synastry:', err);
       const axiosErr = err as { response?: { data?: { error?: string; message?: string } } };
       const msg = axiosErr.response?.data?.error ?? axiosErr.response?.data?.message;
       setError(typeof msg === 'string' ? msg : 'Failed to calculate compatibility');

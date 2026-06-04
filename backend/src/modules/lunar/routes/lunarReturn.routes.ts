@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import * as lunarReturnController from '../controllers/lunarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
 import {
@@ -19,6 +19,19 @@ const router = Router();
 
 // All routes require authentication
 router.use(authenticate);
+
+const lunarReturnChartSchema = z.object({
+  returnDate: z.string().min(1),
+});
+
+const lunarForecastSchema = z.object({
+  returnDate: z.string().min(1).optional(),
+});
+
+const lunarCalculateSchema = z.object({
+  returnDate: z.string().min(1),
+  includeForecast: z.boolean().optional(),
+});
 
 /**
  * @route   GET /api/lunar-return/next
@@ -42,7 +55,7 @@ router.get('/current', lunarReturnController.getCurrentLunarReturn);
  */
 router.post(
   '/chart',
-  validateBody(Joi.object({ returnDate: Joi.string().isoDate().required() })),
+  validateBody(lunarReturnChartSchema),
   lunarReturnController.getLunarReturnChart,
 );
 
@@ -54,7 +67,7 @@ router.post(
  */
 router.post(
   '/forecast',
-  validateBody(Joi.object({ returnDate: Joi.string().isoDate().optional() })),
+  validateBody(lunarForecastSchema),
   lunarReturnController.getLunarMonthForecast,
 );
 
@@ -81,12 +94,7 @@ router.delete('/:id', validateParams(uuidParamSchema), lunarReturnController.del
  */
 router.post(
   '/calculate',
-  validateBody(
-    Joi.object({
-      returnDate: Joi.string().isoDate().required(),
-      includeForecast: Joi.boolean().optional(),
-    }),
-  ),
+  validateBody(lunarCalculateSchema),
   lunarReturnController.calculateCustomLunarReturn,
 );
 

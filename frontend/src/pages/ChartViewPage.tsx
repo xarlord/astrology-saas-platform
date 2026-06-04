@@ -2,6 +2,7 @@
  * Chart View Page Component
  * Displays a single natal chart with wheel visualization, planetary positions, and analysis link.
  */
+import { logger } from '@/utils/logger';
 
 import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } from '../components';
 import { useEffect, useState, useRef } from 'react';
@@ -57,7 +58,7 @@ export default function ChartViewPage() {
       calculateChart(chartId, { useTrueAngles })
         .then(() => loadChart(chartId))
         .catch((err: unknown) => {
-          console.error('Auto-calculate failed:', err);
+          logger.error('Auto-calculate failed:', err);
           calculatingRef.current = null;
         })
         .finally(() => setIsCalculating(false));

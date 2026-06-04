@@ -2,6 +2,7 @@
  * CalendarView Component
  * Displays monthly astrological calendar with event badges
  */
+import { logger } from '@/utils/logger';
 
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
@@ -57,7 +58,7 @@ export function CalendarView({
       setCalendarData(calendarMonth);
     } catch (err) {
       setError('Failed to load calendar. Please try again.');
-      console.error('Error fetching calendar:', err);
+      logger.error('Error fetching calendar:', err);
     } finally {
       setLoading(false);
     }

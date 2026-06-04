@@ -8,6 +8,7 @@
  *
  * @see https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html
  */
+import { logger } from '@/utils/logger';
 
 import { useEffect, useCallback, useRef, useState } from 'react';
 
@@ -147,7 +148,7 @@ export function useShortcut(
       // Check for conflicts
       if (preventConflicts && globalShortcutContext.shortcuts.has(key)) {
         const existing = globalShortcutContext.shortcuts.get(key);
-        console.warn(
+        logger.warn(
           `Shortcut conflict: "${key}" is already registered (${existing?.description ?? 'no description'}). ` +
             `Use scope to manage multiple shortcuts with the same key.`,
         );

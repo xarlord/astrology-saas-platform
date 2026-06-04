@@ -1,10 +1,10 @@
-/* eslint-disable */
 /**
  * useRealTimeUpdates Hook
  *
  * WebSocket connection management with auto-reconnect,
  * connection status tracking, and subscription management.
  */
+import { logger } from '@/utils/logger';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 
@@ -202,7 +202,7 @@ export function useRealTimeUpdates(
 
         onMessage?.(message);
       } catch (err) {
-        console.error('Failed to parse WebSocket message:', err);
+        logger.error('Failed to parse WebSocket message:', err);
       }
     },
     [onMessage],
@@ -373,7 +373,7 @@ export function useRealTimeUpdates(
    */
   const send = useCallback(<T>(type: string, payload: T): boolean => {
     if (wsRef.current?.readyState !== WebSocket.OPEN) {
-      console.warn('WebSocket is not connected');
+      logger.warn('WebSocket is not connected');
       return false;
     }
 
@@ -387,7 +387,7 @@ export function useRealTimeUpdates(
       );
       return true;
     } catch (err) {
-      console.error('Failed to send WebSocket message:', err);
+      logger.error('Failed to send WebSocket message:', err);
       return false;
     }
   }, []);

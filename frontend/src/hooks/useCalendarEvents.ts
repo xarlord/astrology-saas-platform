@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Calendar Events Hook
  * Custom React Query hook for fetching calendar events

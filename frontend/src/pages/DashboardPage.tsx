@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Dashboard Page — Stitch UI Design
  * Rich dashboard: welcome header, cosmic energy meter, transit highlights,

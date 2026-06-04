@@ -6,7 +6,7 @@
  */
 
 import { Router, RequestHandler } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
@@ -16,6 +16,13 @@ import {
 } from '../controllers/monthlyTransit.controller';
 
 const router = Router();
+
+const monthlyReportSchema = z.object({
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, 'Month must be in YYYY-MM format')
+    .optional(),
+});
 
 // All monthly transit report routes require authentication
 router.use(authenticate);
@@ -28,16 +35,7 @@ router.use(authenticate);
  */
 router.post(
   '/',
-  validateBody(
-    Joi.object({
-      month: Joi.string()
-        .pattern(/^\d{4}-\d{2}$/)
-        .optional()
-        .messages({
-          'string.pattern.base': 'Month must be in YYYY-MM format',
-        }),
-    }),
-  ),
+  validateBody(monthlyReportSchema),
   asyncHandler(async (req, res) => {
     await getMonthlyTransitReport(req as AuthenticatedRequest, res);
   }) as RequestHandler,

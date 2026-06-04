@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Today's Transits Page Component
  *

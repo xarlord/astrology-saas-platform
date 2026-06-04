@@ -2,6 +2,7 @@
  * Service Worker Registration Utilities
  * Handles service worker registration, updates, and lifecycle
  */
+import { logger } from './logger';
 
 export interface ServiceWorkerRegistrationOptions {
   onNeedRefresh?: () => void;
@@ -25,7 +26,7 @@ export async function registerSW(
 
   // Check if service workers are supported
   if (!('serviceWorker' in navigator)) {
-    console.warn('Service workers are not supported in this browser');
+    logger.warn('Service workers are not supported in this browser');
     return null;
   }
 
@@ -87,7 +88,7 @@ export async function registerSW(
       },
     };
   } catch (error) {
-    console.error('Service worker registration failed:', error);
+    logger.error('Service worker registration failed:', error);
     onRegistrationError?.(error as Error);
     return null;
   }

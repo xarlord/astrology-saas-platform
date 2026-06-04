@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * TransitChart Component
  * Line chart showing energy levels over time

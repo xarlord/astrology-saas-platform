@@ -2,6 +2,7 @@
  * Lunar Forecast View Component
  * Displays the complete monthly lunar forecast
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -29,7 +30,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
       const data = await getLunarMonthForecast(returnDate);
       setForecast(data);
     } catch (err: unknown) {
-      console.error('Error loading forecast:', err);
+      logger.error('Error loading forecast:', err);
       const errorObj = err as { response?: { data?: { error?: string } } };
       setError(errorObj.response?.data?.error ?? 'Failed to load forecast');
     } finally {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Transit Page Component
  *

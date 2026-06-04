@@ -32,6 +32,12 @@ import bcrypt from 'bcryptjs';
 const mockDb = db as jest.MockedFunction<typeof db>;
 const mockBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 
+// Helper to compute SHA-256 lookup hash the same way the model does
+import crypto from 'crypto';
+function computeLookupHash(rawToken: string): string {
+  return crypto.createHash('sha256').update(rawToken).digest('hex');
+}
+
 // Helper to build a mock query builder with the specified chain methods
 function createMockQueryBuilder(overrides: Record<string, unknown> = {}) {
   // Internal resolve value for when the chain is awaited directly
@@ -79,7 +85,7 @@ describe('Refresh Token Model', () => {
   // createRefreshToken
   // ------------------------------------------------------------------ //
   describe('createRefreshToken', () => {
-    it('should create a refresh token with required fields', async () => {
+    it('should create a refresh token with required fields and lookup hash', async () => {
       const expiresAt = new Date('2026-12-31');
       const input: CreateRefreshTokenInput = {
         user_id: 'user-1',
@@ -90,6 +96,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-1',
         user_id: 'user-1',
         token: 'refresh-token-abc',
+        token_lookup_hash: computeLookupHash('refresh-token-abc'),
         expires_at: expiresAt,
         revoked: false,
         revoked_at: null,
@@ -111,6 +118,7 @@ describe('Refresh Token Model', () => {
       expect(qb.insert).toHaveBeenCalledWith({
         user_id: 'user-1',
         token: 'hashed-token-value',
+        token_lookup_hash: computeLookupHash('refresh-token-abc'),
         expires_at: expiresAt,
         user_agent: null,
         ip_address: null,
@@ -131,6 +139,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-2',
         user_id: 'user-2',
         token: 'hashed-token-value',
+        token_lookup_hash: computeLookupHash('refresh-token-def'),
         expires_at: expiresAt,
         revoked: false,
         revoked_at: null,
@@ -151,6 +160,7 @@ describe('Refresh Token Model', () => {
       expect(qb.insert).toHaveBeenCalledWith({
         user_id: 'user-2',
         token: 'hashed-token-value',
+        token_lookup_hash: computeLookupHash('refresh-token-def'),
         expires_at: expiresAt,
         user_agent: 'Mozilla/5.0',
         ip_address: '192.168.1.1',
@@ -169,6 +179,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-3',
         user_id: 'user-3',
         token: 'refresh-token-ghi',
+        token_lookup_hash: computeLookupHash('refresh-token-ghi'),
         expires_at: expiresAt,
         revoked: false,
         revoked_at: null,
@@ -192,6 +203,7 @@ describe('Refresh Token Model', () => {
       expect(trxQb.insert).toHaveBeenCalledWith({
         user_id: 'user-3',
         token: 'hashed-token-value',
+        token_lookup_hash: computeLookupHash('refresh-token-ghi'),
         expires_at: expiresAt,
         user_agent: null,
         ip_address: null,
@@ -215,6 +227,7 @@ describe('Refresh Token Model', () => {
               id: 'rt-4',
               user_id: 'user-4',
               token: 'refresh-token-jkl',
+              token_lookup_hash: computeLookupHash('refresh-token-jkl'),
               expires_at: expiresAt,
               revoked: false,
               revoked_at: null,
@@ -233,6 +246,7 @@ describe('Refresh Token Model', () => {
         expect.objectContaining({
           user_agent: null,
           ip_address: null,
+          token_lookup_hash: computeLookupHash('refresh-token-jkl'),
         }),
       );
     });
@@ -242,11 +256,12 @@ describe('Refresh Token Model', () => {
   // findRefreshToken
   // ------------------------------------------------------------------ //
   describe('findRefreshToken', () => {
-    it('should return token when found', async () => {
+    it('should return token when found via lookup hash (fast path)', async () => {
       const foundToken: RefreshToken = {
         id: 'rt-10',
         user_id: 'user-10',
         token: 'hashed-found-token',
+        token_lookup_hash: computeLookupHash('found-token'),
         expires_at: new Date('2026-12-31'),
         revoked: false,
         revoked_at: null,
@@ -255,29 +270,115 @@ describe('Refresh Token Model', () => {
         created_at: new Date(),
       };
 
-      const qb = createMockQueryBuilder();
-      (qb as any)._setResolveValue([foundToken]);
-      mockDb.mockReturnValue(qb as ReturnType<typeof db>);
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(foundToken),
+      });
+      mockDb.mockReturnValue(firstQb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);
 
       const result = await findRefreshToken('found-token');
 
       expect(mockDb).toHaveBeenCalledWith('refresh_tokens');
-      expect(qb.where).toHaveBeenCalledWith({ revoked: false });
-      expect(qb.where).toHaveBeenCalledWith('expires_at', '>', expect.any(Date));
-      expect(qb.limit).toHaveBeenCalledWith(50);
+      expect(firstQb.where).toHaveBeenCalledWith({
+        token_lookup_hash: computeLookupHash('found-token'),
+      });
       expect(mockBcrypt.compare).toHaveBeenCalledWith('found-token', 'hashed-found-token');
       expect(result).toEqual(foundToken);
     });
 
-    it('should return null when token not found', async () => {
-      const qb = createMockQueryBuilder();
-      (qb as any)._setResolveValue([]);
-      mockDb.mockReturnValue(qb as ReturnType<typeof db>);
+    it('should return null when token not found via lookup hash and no legacy rows', async () => {
+      // Fast path: first() returns undefined
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(undefined),
+      });
+      // Legacy active: returns []
+      const legacyActiveQb = createMockQueryBuilder();
+      (legacyActiveQb as any)._setResolveValue([]);
+      // Legacy revoked: returns []
+      const legacyRevokedQb = createMockQueryBuilder();
+      (legacyRevokedQb as any)._setResolveValue([]);
+
+      mockDb
+        .mockReturnValueOnce(firstQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyActiveQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyRevokedQb as ReturnType<typeof db>);
 
       const result = await findRefreshToken('nonexistent-token');
 
       expect(result).toBeNull();
+    });
+
+    it('should fall back to legacy scan when lookup hash returns no match', async () => {
+      const foundToken: RefreshToken = {
+        id: 'rt-legacy',
+        user_id: 'user-legacy',
+        token: 'hashed-legacy-token',
+        token_lookup_hash: null,
+        expires_at: new Date('2026-12-31'),
+        revoked: false,
+        revoked_at: null,
+        user_agent: null,
+        ip_address: null,
+        created_at: new Date(),
+      };
+
+      // Fast path: no match
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(undefined),
+      });
+      // Legacy active: returns the row
+      const legacyActiveQb = createMockQueryBuilder();
+      (legacyActiveQb as any)._setResolveValue([foundToken]);
+
+      mockDb
+        .mockReturnValueOnce(firstQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyActiveQb as ReturnType<typeof db>);
+
+      mockBcrypt.compare.mockResolvedValueOnce(true);
+
+      const result = await findRefreshToken('legacy-token');
+
+      expect(result).toEqual(foundToken);
+      expect(legacyActiveQb.whereNull).toHaveBeenCalledWith('token_lookup_hash');
+    });
+
+    it('should check revoked legacy tokens when active legacy scan finds nothing', async () => {
+      const foundToken: RefreshToken = {
+        id: 'rt-revoked-legacy',
+        user_id: 'user-1',
+        token: 'hashed-revoked-legacy',
+        token_lookup_hash: null,
+        expires_at: new Date('2026-12-31'),
+        revoked: true,
+        revoked_at: new Date(),
+        user_agent: null,
+        ip_address: null,
+        created_at: new Date(),
+      };
+
+      // Fast path: no match
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(undefined),
+      });
+      // Legacy active: empty
+      const legacyActiveQb = createMockQueryBuilder();
+      (legacyActiveQb as any)._setResolveValue([]);
+      // Legacy revoked: finds the revoked row
+      const legacyRevokedQb = createMockQueryBuilder();
+      (legacyRevokedQb as any)._setResolveValue([foundToken]);
+
+      mockDb
+        .mockReturnValueOnce(firstQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyActiveQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyRevokedQb as ReturnType<typeof db>);
+
+      mockBcrypt.compare.mockResolvedValueOnce(true);
+
+      const result = await findRefreshToken('revoked-legacy-token');
+
+      expect(result).toEqual(foundToken);
+      expect(legacyRevokedQb.where).toHaveBeenCalledWith({ revoked: true });
+      expect(legacyRevokedQb.whereNull).toHaveBeenCalledWith('token_lookup_hash');
     });
   });
 
@@ -291,6 +392,7 @@ describe('Refresh Token Model', () => {
           id: 'rt-20',
           user_id: 'user-20',
           token: 'valid-token-1',
+          token_lookup_hash: computeLookupHash('valid-token-1'),
           expires_at: new Date('2026-12-31'),
           revoked: false,
           revoked_at: null,
@@ -302,6 +404,7 @@ describe('Refresh Token Model', () => {
           id: 'rt-21',
           user_id: 'user-20',
           token: 'valid-token-2',
+          token_lookup_hash: computeLookupHash('valid-token-2'),
           expires_at: new Date('2027-01-15'),
           revoked: false,
           revoked_at: null,
@@ -351,6 +454,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-found',
         user_id: 'user-1',
         token: 'hashed-token',
+        token_lookup_hash: computeLookupHash('token-to-revoke'),
         expires_at: new Date('2026-12-31'),
         revoked: false,
         revoked_at: null,
@@ -359,19 +463,25 @@ describe('Refresh Token Model', () => {
         created_at: new Date(),
       };
 
-      const qb = createMockQueryBuilder({
+      // findRefreshToken fast-path returns the record
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(foundRecord),
+      });
+      // revokeRefreshToken update query
+      const updateQb = createMockQueryBuilder({
         update: jest.fn().mockResolvedValue(1),
       });
-      (qb as any)._setResolveValue([foundRecord]);
-      mockDb.mockReturnValue(qb as ReturnType<typeof db>);
+
+      mockDb
+        .mockReturnValueOnce(firstQb as ReturnType<typeof db>)   // findRefreshToken: first()
+        .mockReturnValueOnce(updateQb as ReturnType<typeof db>);  // revoke: update()
+
       mockBcrypt.compare.mockResolvedValueOnce(true);
 
       const result = await revokeRefreshToken('token-to-revoke');
 
       expect(mockDb).toHaveBeenCalledWith('refresh_tokens');
-      // findRefreshToken calls: where({revoked:false}), where('expires_at',...), limit(50)
-      // then revokeRefreshToken calls: where({id: 'rt-found'}), update({...})
-      expect(qb.update).toHaveBeenCalledWith({
+      expect(updateQb.update).toHaveBeenCalledWith({
         revoked: true,
         revoked_at: expect.any(Date),
       });
@@ -379,9 +489,19 @@ describe('Refresh Token Model', () => {
     });
 
     it('should return false when token not found', async () => {
-      const qb = createMockQueryBuilder();
-      (qb as any)._setResolveValue([]);
-      mockDb.mockReturnValue(qb as ReturnType<typeof db>);
+      // findRefreshToken: fast path returns nothing, legacy scans return nothing
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(undefined),
+      });
+      const legacyActiveQb = createMockQueryBuilder();
+      (legacyActiveQb as any)._setResolveValue([]);
+      const legacyRevokedQb = createMockQueryBuilder();
+      (legacyRevokedQb as any)._setResolveValue([]);
+
+      mockDb
+        .mockReturnValueOnce(firstQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyActiveQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(legacyRevokedQb as ReturnType<typeof db>);
 
       const result = await revokeRefreshToken('nonexistent-token');
 
@@ -393,6 +513,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-trx',
         user_id: 'user-1',
         token: 'hashed-trx-token',
+        token_lookup_hash: computeLookupHash('token-with-trx'),
         expires_at: new Date('2026-12-31'),
         revoked: false,
         revoked_at: null,
@@ -401,9 +522,11 @@ describe('Refresh Token Model', () => {
         created_at: new Date(),
       };
 
-      const findQb = createMockQueryBuilder();
-      (findQb as any)._setResolveValue([foundRecord]);
-      mockDb.mockReturnValueOnce(findQb as ReturnType<typeof db>);
+      // findRefreshToken fast-path
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(foundRecord),
+      });
+      mockDb.mockReturnValueOnce(firstQb as ReturnType<typeof db>);
       mockBcrypt.compare.mockResolvedValueOnce(true);
 
       const trxQb = createMockQueryBuilder({
@@ -428,6 +551,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-date',
         user_id: 'user-1',
         token: 'hashed-token',
+        token_lookup_hash: computeLookupHash('some-token'),
         expires_at: new Date('2026-12-31'),
         revoked: false,
         revoked_at: null,
@@ -436,18 +560,24 @@ describe('Refresh Token Model', () => {
         created_at: new Date(),
       };
 
-      const qb = createMockQueryBuilder({
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(foundRecord),
+      });
+      const updateQb = createMockQueryBuilder({
         update: jest.fn().mockResolvedValue(1),
       });
-      (qb as any)._setResolveValue([foundRecord]);
-      mockDb.mockReturnValue(qb as ReturnType<typeof db>);
+
+      mockDb
+        .mockReturnValueOnce(firstQb as ReturnType<typeof db>)
+        .mockReturnValueOnce(updateQb as ReturnType<typeof db>);
+
       mockBcrypt.compare.mockResolvedValueOnce(true);
 
       const beforeRevoke = new Date();
       await revokeRefreshToken('some-token');
       const afterRevoke = new Date();
 
-      const updateCall = (qb.update as jest.Mock).mock.calls[0][0];
+      const updateCall = (updateQb.update as jest.Mock).mock.calls[0][0];
       expect(updateCall.revoked).toBe(true);
       expect(updateCall.revoked_at.getTime()).toBeGreaterThanOrEqual(beforeRevoke.getTime());
       expect(updateCall.revoked_at.getTime()).toBeLessThanOrEqual(afterRevoke.getTime());
@@ -487,6 +617,7 @@ describe('Refresh Token Model', () => {
         id: 'rt-except',
         user_id: 'user-31',
         token: 'hashed-keep-token',
+        token_lookup_hash: computeLookupHash('keep-this-token'),
         expires_at: new Date('2026-12-31'),
         revoked: false,
         revoked_at: null,
@@ -495,19 +626,26 @@ describe('Refresh Token Model', () => {
         created_at: new Date(),
       };
 
+      // findRefreshToken fast-path
+      const firstQb = createMockQueryBuilder({
+        first: jest.fn().mockResolvedValue(exceptRecord),
+      });
+      mockDb.mockReturnValueOnce(firstQb as ReturnType<typeof db>);
+      mockBcrypt.compare.mockResolvedValueOnce(true);
+
       const mockWhereNot = jest.fn().mockReturnThis();
       const qb = createMockQueryBuilder({
         whereNot: mockWhereNot,
         update: jest.fn().mockResolvedValue(2),
       });
-      (qb as any)._setResolveValue([exceptRecord]);
-      mockDb.mockReturnValue(qb as ReturnType<typeof db>);
-      mockBcrypt.compare.mockResolvedValueOnce(true);
+      mockDb.mockReturnValueOnce(qb as ReturnType<typeof db>);
 
       const result = await revokeAllUserRefreshTokens('user-31', 'keep-this-token');
 
-      // findRefreshToken was called for the exceptToken
-      expect(mockBcrypt.compare).toHaveBeenCalledWith('keep-this-token', 'hashed-keep-token');
+      // findRefreshToken was called for the exceptToken via fast path
+      expect(firstQb.where).toHaveBeenCalledWith({
+        token_lookup_hash: computeLookupHash('keep-this-token'),
+      });
       // Main revoke query
       expect(qb.whereNot).toHaveBeenCalledWith('id', 'rt-except');
       expect(qb.update).toHaveBeenCalledWith({

@@ -2,6 +2,7 @@
  * ShareManagement Component
  * UI for managing shared chart links
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useCallback } from 'react';
 import { useFocusTrap } from '../hooks/useFocusTrap';
@@ -58,7 +59,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
       setShowCreateModal(false);
       setPassword('');
     } catch (error) {
-      console.error('Failed to create share:', error);
+      logger.error('Failed to create share:', error);
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +73,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
     try {
       await onRevokeShare(shareId);
     } catch (error) {
-      console.error('Failed to revoke share:', error);
+      logger.error('Failed to revoke share:', error);
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +86,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
       setCopiedToken(token);
       setTimeout(() => setCopiedToken(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      logger.error('Failed to copy:', error);
     }
   }, []);
 

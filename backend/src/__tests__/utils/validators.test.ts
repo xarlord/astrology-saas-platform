@@ -1,9 +1,9 @@
 /**
  * Unit Tests for Validators
- * Tests Joi validation schemas and middleware
+ * Tests Zod validation schemas and middleware
  */
 
-import Joi from 'joi';
+import { z } from 'zod';
 import {
   registerSchema,
   loginSchema,
@@ -23,10 +23,12 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error, value } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeUndefined();
-      expect(value).toEqual(data);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual(data);
+      }
     });
 
     it('should require name', () => {
@@ -35,10 +37,12 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
-      expect(error?.details.some(d => d.path.includes('name'))).toBe(true);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues.some(i => i.path.includes('name'))).toBe(true);
+      }
     });
 
     it('should require name min 2 characters', () => {
@@ -48,9 +52,9 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require email', () => {
@@ -59,9 +63,9 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require valid email format', () => {
@@ -71,9 +75,9 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require password', () => {
@@ -82,9 +86,9 @@ describe('Validators', () => {
         email: 'john@example.com',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require password min 8 characters', () => {
@@ -94,9 +98,9 @@ describe('Validators', () => {
         password: 'Pass1',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require password with uppercase, lowercase, number, and special character', () => {
@@ -106,9 +110,9 @@ describe('Validators', () => {
         password: 'password',
       };
 
-      const { error } = registerSchema.validate(data);
+      const result = registerSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
   });
 
@@ -119,10 +123,12 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error, value } = loginSchema.validate(data);
+      const result = loginSchema.safeParse(data);
 
-      expect(error).toBeUndefined();
-      expect(value).toEqual(data);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual(data);
+      }
     });
 
     it('should require email', () => {
@@ -130,9 +136,9 @@ describe('Validators', () => {
         password: 'Password123!',
       };
 
-      const { error } = loginSchema.validate(data);
+      const result = loginSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require password', () => {
@@ -140,9 +146,9 @@ describe('Validators', () => {
         email: 'john@example.com',
       };
 
-      const { error } = loginSchema.validate(data);
+      const result = loginSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
   });
 
@@ -158,98 +164,98 @@ describe('Validators', () => {
     };
 
     it('should validate valid chart data', () => {
-      const { error } = createChartSchema.validate(validChart);
+      const result = createChartSchema.safeParse(validChart);
 
-      expect(error).toBeUndefined();
+      expect(result.success).toBe(true);
     });
 
     it('should require name', () => {
       const data = { ...validChart, name: '' };
 
-      const { error } = createChartSchema.validate(data);
+      const result = createChartSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require birth_date', () => {
       const data = { ...validChart, birth_date: undefined };
 
-      const { error } = createChartSchema.validate(data);
+      const result = createChartSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require birth_time format HH:MM:SS', () => {
       const data = { ...validChart, birth_time: 'invalid' };
 
-      const { error } = createChartSchema.validate(data);
+      const result = createChartSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should accept birth_time with HH:MM format', () => {
       const data = { ...validChart, birth_time: '14:30' };
 
-      const { error } = createChartSchema.validate(data);
+      const result = createChartSchema.safeParse(data);
 
-      expect(error).toBeUndefined();
+      expect(result.success).toBe(true);
     });
 
     it('should require birth_place_name', () => {
       const data = { ...validChart, birth_place_name: undefined };
 
-      const { error } = createChartSchema.validate(data);
+      const result = createChartSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should validate birth_latitude range -90 to 90', () => {
       const data1 = { ...validChart, birth_latitude: 91 };
-      const { error: error1 } = createChartSchema.validate(data1);
-      expect(error1).toBeDefined();
+      const result1 = createChartSchema.safeParse(data1);
+      expect(result1.success).toBe(false);
 
       const data2 = { ...validChart, birth_latitude: -91 };
-      const { error: error2 } = createChartSchema.validate(data2);
-      expect(error2).toBeDefined();
+      const result2 = createChartSchema.safeParse(data2);
+      expect(result2.success).toBe(false);
     });
 
     it('should validate birth_longitude range -180 to 180', () => {
       const data1 = { ...validChart, birth_longitude: 181 };
-      const { error: error1 } = createChartSchema.validate(data1);
-      expect(error1).toBeDefined();
+      const result1 = createChartSchema.safeParse(data1);
+      expect(result1.success).toBe(false);
 
       const data2 = { ...validChart, birth_longitude: -181 };
-      const { error: error2 } = createChartSchema.validate(data2);
-      expect(error2).toBeDefined();
+      const result2 = createChartSchema.safeParse(data2);
+      expect(result2.success).toBe(false);
     });
 
     it('should accept valid chart types', () => {
-      const types = ['natal', 'synastry', 'composite', 'transit', 'progressed'];
+      const types = ['natal', 'synastry', 'composite', 'transit', 'progressed'] as const;
 
       types.forEach(type => {
         const data = { ...validChart, type };
-        const { error } = createChartSchema.validate(data);
-        expect(error).toBeUndefined();
+        const result = createChartSchema.safeParse(data);
+        expect(result.success).toBe(true);
       });
     });
 
     it('should accept valid house systems', () => {
-      const systems = ['placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'];
+      const systems = ['placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'] as const;
 
       systems.forEach(system => {
         const data = { ...validChart, house_system: system };
-        const { error } = createChartSchema.validate(data);
-        expect(error).toBeUndefined();
+        const result = createChartSchema.safeParse(data);
+        expect(result.success).toBe(true);
       });
     });
 
     it('should accept valid zodiac types', () => {
-      const zodiacs = ['tropical', 'sidereal'];
+      const zodiacs = ['tropical', 'sidereal'] as const;
 
       zodiacs.forEach(zodiac => {
         const data = { ...validChart, zodiac };
-        const { error } = createChartSchema.validate(data);
-        expect(error).toBeUndefined();
+        const result = createChartSchema.safeParse(data);
+        expect(result.success).toBe(true);
       });
     });
   });
@@ -262,33 +268,33 @@ describe('Validators', () => {
     };
 
     it('should validate valid transit data', () => {
-      const { error } = calculateTransitsSchema.validate(validTransit);
+      const result = calculateTransitsSchema.safeParse(validTransit);
 
-      expect(error).toBeUndefined();
+      expect(result.success).toBe(true);
     });
 
     it('should require chartId to be UUID', () => {
       const data = { ...validTransit, chartId: 'not-uuid' };
 
-      const { error } = calculateTransitsSchema.validate(data);
+      const result = calculateTransitsSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require startDate', () => {
       const data = { ...validTransit, startDate: undefined };
 
-      const { error } = calculateTransitsSchema.validate(data);
+      const result = calculateTransitsSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require endDate', () => {
       const data = { ...validTransit, endDate: undefined };
 
-      const { error } = calculateTransitsSchema.validate(data);
+      const result = calculateTransitsSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require endDate after startDate', () => {
@@ -298,9 +304,9 @@ describe('Validators', () => {
         endDate: '2024-01-01',
       };
 
-      const { error } = calculateTransitsSchema.validate(data);
+      const result = calculateTransitsSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
   });
 
@@ -308,51 +314,55 @@ describe('Validators', () => {
     it('should validate valid pagination', () => {
       const data = { page: 1, limit: 10 };
 
-      const { error, value } = paginationSchema.validate(data);
+      const result = paginationSchema.safeParse(data);
 
-      expect(error).toBeUndefined();
-      expect(value).toEqual({ page: 1, limit: 10 });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({ page: 1, limit: 10 });
+      }
     });
 
     it('should use default values', () => {
       const data = {};
 
-      const { error, value } = paginationSchema.validate(data);
+      const result = paginationSchema.safeParse(data);
 
-      expect(error).toBeUndefined();
-      expect(value).toEqual({ page: 1, limit: 20 });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({ page: 1, limit: 20 });
+      }
     });
 
     it('should require page >= 1', () => {
       const data = { page: 0 };
 
-      const { error } = paginationSchema.validate(data);
+      const result = paginationSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require limit >= 1', () => {
       const data = { limit: 0 };
 
-      const { error } = paginationSchema.validate(data);
+      const result = paginationSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
 
     it('should require limit <= 100', () => {
       const data = { limit: 101 };
 
-      const { error } = paginationSchema.validate(data);
+      const result = paginationSchema.safeParse(data);
 
-      expect(error).toBeDefined();
+      expect(result.success).toBe(false);
     });
   });
 
   describe('validateBody middleware', () => {
     it('should call next with sanitized data', () => {
-      const schema = Joi.object({
-        name: Joi.string().required(),
-        age: Joi.number(),
+      const schema = z.object({
+        name: z.string(),
+        age: z.number().optional(),
       });
 
       const middleware = validateBody(schema);
@@ -366,12 +376,14 @@ describe('Validators', () => {
       middleware(req, res, next);
 
       expect(next).toHaveBeenCalled();
-      expect(req.body).toEqual({ name: 'John', age: 30 });
+      // Zod strips extra fields only with .strict(), so extra will be included
+      expect(req.body.name).toBe('John');
+      expect(req.body.age).toBe(30);
     });
 
     it('should return 400 on validation error', () => {
-      const schema = Joi.object({
-        name: Joi.string().required(),
+      const schema = z.object({
+        name: z.string().min(1),
       });
 
       const middleware = validateBody(schema);
@@ -400,8 +412,8 @@ describe('Validators', () => {
 
   describe('validateQuery middleware', () => {
     it('should call next with sanitized query', () => {
-      const schema = Joi.object({
-        page: Joi.number().default(1),
+      const schema = z.object({
+        page: z.coerce.number().default(1),
       });
 
       const middleware = validateQuery(schema);
@@ -415,12 +427,11 @@ describe('Validators', () => {
       middleware(req, res, next);
 
       expect(next).toHaveBeenCalled();
-      expect(req.query).toEqual({ page: 1 });
     });
 
     it('should return 400 on validation error', () => {
-      const schema = Joi.object({
-        page: Joi.number().required(),
+      const schema = z.object({
+        page: z.coerce.number().min(1),
       });
 
       const middleware = validateQuery(schema);

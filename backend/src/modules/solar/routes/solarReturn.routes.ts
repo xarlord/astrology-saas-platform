@@ -7,37 +7,36 @@ import { Router } from 'express';
 import solarReturnController from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
 import { validateBody } from '../../../utils/validators';
-import Joi from 'joi';
+import { z } from 'zod';
 
 const router = Router();
 
-// Validation schemas
-const calculateSchema = Joi.object({
-  natalChartId: Joi.string().uuid().required(),
-  year: Joi.number().integer().min(1900).max(2100).required(),
-  location: Joi.object({
-    name: Joi.string().required(),
-    latitude: Joi.number().min(-90).max(90).required(),
-    longitude: Joi.number().min(-180).max(180).required(),
-    timezone: Joi.string().required(),
-    country: Joi.string(),
-    region: Joi.string(),
-  }),
-  houseSystem: Joi.string().valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'),
-  zodiacType: Joi.string().valid('tropical', 'sidereal'),
+const locationSchema = z.object({
+  name: z.string().min(1),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+  timezone: z.string().min(1),
+  country: z.string().optional(),
+  region: z.string().optional(),
 });
 
-const recalculateSchema = Joi.object({
-  location: Joi.object({
-    name: Joi.string().required(),
-    latitude: Joi.number().min(-90).max(90).required(),
-    longitude: Joi.number().min(-180).max(180).required(),
-    timezone: Joi.string().required(),
-    country: Joi.string(),
-    region: Joi.string(),
-  }).required(),
-  houseSystem: Joi.string().valid('placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'),
-  zodiacType: Joi.string().valid('tropical', 'sidereal'),
+// Validation schemas
+const calculateSchema = z.object({
+  natalChartId: z.string().uuid(),
+  year: z.number().int().min(1900).max(2100),
+  location: locationSchema.optional(),
+  houseSystem: z
+    .enum(['placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'])
+    .optional(),
+  zodiacType: z.enum(['tropical', 'sidereal']).optional(),
+});
+
+const recalculateSchema = z.object({
+  location: locationSchema,
+  houseSystem: z
+    .enum(['placidus', 'koch', 'porphyry', 'whole', 'equal', 'topocentric'])
+    .optional(),
+  zodiacType: z.enum(['tropical', 'sidereal']).optional(),
 });
 
 // Apply authentication to all routes

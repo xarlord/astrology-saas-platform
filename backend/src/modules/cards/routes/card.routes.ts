@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import { authenticate } from '../../../middleware/auth';
 import {
   validateBody,
@@ -25,6 +25,16 @@ import {
 
 const router = Router();
 
+const generateCardSchema = z.object({
+  chartId: z.string().uuid(),
+  template: z
+    .enum(['instagram_story', 'twitter_x', 'pinterest', 'square', 'linkedin'])
+    .optional(),
+  planetPlacements: z.array(z.string()).optional(),
+  insightText: z.string().max(500).optional(),
+  showInsight: z.boolean().optional(),
+});
+
 // Public routes (no auth required)
 router.get('/public/:shareToken', validateParams(shareTokenParamSchema), getPublicCard);
 router.get('/public/:shareToken/og', validateParams(shareTokenParamSchema), getOgData);
@@ -33,17 +43,7 @@ router.get('/public/:shareToken/og', validateParams(shareTokenParamSchema), getO
 router.post(
   '/generate',
   authenticate,
-  validateBody(
-    Joi.object({
-      chartId: Joi.string().uuid().required(),
-      template: Joi.string()
-        .valid('instagram_story', 'twitter_x', 'pinterest', 'square', 'linkedin')
-        .optional(),
-      planetPlacements: Joi.array().items(Joi.string()).optional(),
-      insightText: Joi.string().max(500).optional(),
-      showInsight: Joi.boolean().optional(),
-    }),
-  ),
+  validateBody(generateCardSchema),
   generateCard,
 );
 router.get('/history', authenticate, validateQuery(paginationSchema), getCardHistory);

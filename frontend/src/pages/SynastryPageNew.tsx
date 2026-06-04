@@ -2,6 +2,7 @@
  * Enhanced Synastry Page
  * Modern synastry/compatibility page with beautiful UI matching the design specs
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -52,7 +53,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
       const { charts: loadedCharts } = await chartService.getCharts();
       setCharts(loadedCharts);
     } catch (err) {
-      console.error('Error loading charts:', err);
+      logger.error('Error loading charts:', err);
       setError('Failed to load charts');
     } finally {
       setLoading(false);
@@ -101,7 +102,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
         challenges: synastry.challenges,
       });
     } catch (err) {
-      console.error('Error calculating synastry:', err);
+      logger.error('Error calculating synastry:', err);
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to calculate compatibility. Please try again.';
       setError(errorMessage);

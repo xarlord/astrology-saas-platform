@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * ElementMeter Component
  * Displays the elemental distribution (Fire/Earth/Air/Water) of a chart

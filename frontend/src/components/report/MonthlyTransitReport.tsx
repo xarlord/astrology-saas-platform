@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Monthly Transit Report Layout Component
  *

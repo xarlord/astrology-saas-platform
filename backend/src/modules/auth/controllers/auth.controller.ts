@@ -2,6 +2,7 @@
  * Authentication Controller
  */
 
+import crypto from 'crypto';
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
 import db from '../../../db';
@@ -276,21 +277,30 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
   expiresAt.setDate(expiresAt.getDate() + 7);
 
   await db.transaction(async (trx) => {
+    // Revoke old token via lookup hash (O(1))
+    const lookupHash = crypto
+      .createHash('sha256')
+      .update(oldRefreshToken)
+      .digest('hex');
     const revoked = await trx('refresh_tokens')
-      .where({ token: oldRefreshToken })
+      .where({ token_lookup_hash: lookupHash })
       .update({ revoked: true, revoked_at: new Date() });
 
     if (revoked === 0) {
       throw new AppError('Refresh token has been revoked', 401);
     }
 
-    await trx('refresh_tokens').insert({
-      user_id: user.id,
-      token: newRefreshToken,
-      expires_at: expiresAt,
-      user_agent: req.get('user-agent') || null,
-      ip_address: req.ip || null,
-    });
+    // Create new token via model (handles bcrypt hash + lookup hash)
+    await RefreshTokenModel.createRefreshToken(
+      {
+        user_id: user.id,
+        token: newRefreshToken,
+        expires_at: expiresAt,
+        user_agent: req.get('user-agent') || undefined,
+        ip_address: req.ip || undefined,
+      },
+      trx,
+    );
   });
 
   res.cookie('refreshToken', newRefreshToken, {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Retrograde Tracker Page Component
  *

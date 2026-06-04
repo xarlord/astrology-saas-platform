@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * AI Interpretation Hook
  * Manages AI-powered interpretation generation

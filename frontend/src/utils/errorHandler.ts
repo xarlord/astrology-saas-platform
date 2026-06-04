@@ -3,6 +3,7 @@
  *
  * Provides centralized error handling utilities for the application.
  */
+import { logger } from './logger';
 
 export interface AppError {
   message: string;
@@ -140,18 +141,18 @@ export function getUserFriendlyError(error: AppError): string {
 export function logError(error: AppError, context?: string): void {
   const contextPrefix = context ? `[${context}] ` : '';
 
-  console.error(`${contextPrefix}Error:`, error.message);
+  logger.error(`${contextPrefix}Error:`, error.message);
 
   if (error.code) {
-    console.error(`${contextPrefix}Error Code:`, error.code);
+    logger.error(`${contextPrefix}Error Code:`, error.code);
   }
 
   if (error.statusCode) {
-    console.error(`${contextPrefix}Status Code:`, error.statusCode);
+    logger.error(`${contextPrefix}Status Code:`, error.statusCode);
   }
 
   if (error.details && import.meta.env.DEV) {
-    console.error(`${contextPrefix}Details:`, error.details);
+    logger.error(`${contextPrefix}Details:`, error.details);
   }
 
   // TODO(#77): Send to error tracking service (Sentry) — tracked in issue #77

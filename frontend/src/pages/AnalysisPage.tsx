@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Analysis Page Component
  * Displays chart personality analysis with AI-enhanced interpretations

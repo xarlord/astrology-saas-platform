@@ -1,8 +1,8 @@
-/* eslint-disable */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useCreateChart, useCalculateChart } from '../hooks';
 import api from '../services/api';
 import { useChartStore } from '../stores/chartStore';
+import { logger } from '@/utils/logger';
 
 // Error Message Component with Icon
 interface ErrorMessageProps {
@@ -129,7 +129,7 @@ export function BirthDataForm({
         setShowPlaceSearch(false);
       }
     } catch (error) {
-      console.error('Place search error:', error);
+      logger.error('Place search error:', error);
       setPlaceSuggestions([]);
       setShowPlaceSearch(false);
     }
@@ -253,7 +253,7 @@ export function BirthDataForm({
         onSuccess?.(chart.id);
       }
     } catch (error: unknown) {
-      console.error('Form submission error:', error);
+      logger.error('Form submission error:', error);
       const err = error as { message?: string };
       setErrors({
         birthDate: err.message ?? 'Failed to create chart. Please try again.',

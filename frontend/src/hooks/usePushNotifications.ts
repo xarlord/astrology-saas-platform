@@ -2,6 +2,7 @@
  * Push Notifications Hook
  * Manages push notification subscription and permissions
  */
+import { logger } from '@/utils/logger';
 
 import { useState, useEffect } from 'react';
 import pushNotificationService from '../services/pushNotification.service';
@@ -30,7 +31,7 @@ export function usePushNotifications(): UsePushNotificationsResult {
       const subscriptions = await pushNotificationService.getSubscriptions();
       setIsSubscribed(subscriptions.length > 0);
     } catch (error) {
-      console.error('Failed to check subscription status:', error);
+      logger.error('Failed to check subscription status:', error);
     }
   };
 
@@ -90,7 +91,7 @@ export function usePushNotifications(): UsePushNotificationsResult {
 
       setIsSubscribed(true);
     } catch (error: unknown) {
-      console.error('Failed to subscribe to push notifications:', error);
+      logger.error('Failed to subscribe to push notifications:', error);
       throw error;
     } finally {
       setSubscribing(false);
@@ -102,7 +103,7 @@ export function usePushNotifications(): UsePushNotificationsResult {
       await pushNotificationService.unsubscribe(subscriptionId);
       await checkSubscriptionStatus();
     } catch (error) {
-      console.error('Failed to unsubscribe:', error);
+      logger.error('Failed to unsubscribe:', error);
       throw error;
     }
   };
@@ -111,7 +112,7 @@ export function usePushNotifications(): UsePushNotificationsResult {
     try {
       await pushNotificationService.sendTest();
     } catch (error) {
-      console.error('Failed to send test notification:', error);
+      logger.error('Failed to send test notification:', error);
       throw error;
     }
   };

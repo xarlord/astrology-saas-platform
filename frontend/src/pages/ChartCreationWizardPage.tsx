@@ -270,7 +270,7 @@ export const ChartCreationWizardPage: React.FC = () => {
           <div className="flex-1 flex flex-col bg-card-dark/80 backdrop-blur-md rounded-2xl overflow-hidden">
             <div className="p-8 pb-4">
               <div className="flex items-center gap-3 mb-2">
-                <h2 className="text-3xl font-bold text-white tracking-tight">Create New Chart</h2>
+                <h1 className="text-3xl font-bold text-white tracking-tight">Create New Chart</h1>
                 <span className="text-2xl animate-pulse">✨</span>
               </div>
               <p className="text-slate-400 text-sm">

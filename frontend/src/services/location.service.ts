@@ -4,6 +4,7 @@
  * Handles geocoding and location management
  * Uses geocoding API to convert place names to coordinates
  */
+import { logger } from '@/utils/logger';
 
 import api from './api';
 import type { Location, GeocodingResult, ApiResponse } from './api.types';
@@ -58,7 +59,7 @@ class LocationService {
 
       return { locations, query };
     } catch (error: unknown) {
-      console.error('Location search error:', error);
+      logger.error('Location search error:', error);
       return { locations: [], query };
     }
   }
@@ -79,7 +80,7 @@ class LocationService {
       const data = (await response.json()) as { timezone?: string };
       return data.timezone ?? 'UTC';
     } catch (error: unknown) {
-      console.error('Timezone lookup error:', error);
+      logger.error('Timezone lookup error:', error);
       return 'UTC';
     }
   }
@@ -116,7 +117,7 @@ class LocationService {
         timezone,
       };
     } catch (error: unknown) {
-      console.error('Reverse geocoding error:', error);
+      logger.error('Reverse geocoding error:', error);
       return null;
     }
   }
@@ -153,7 +154,7 @@ class LocationService {
       });
       return response.data.data.locations;
     } catch (error: unknown) {
-      console.error('Failed to get saved locations:', error);
+      logger.error('Failed to get saved locations:', error);
       return [];
     }
   }
@@ -222,7 +223,7 @@ class LocationService {
 
       localStorage.setItem('recentLocationSearches', JSON.stringify(updated));
     } catch (error) {
-      console.error('Failed to save recent search:', error);
+      logger.error('Failed to save recent search:', error);
     }
   }
 
@@ -233,7 +234,7 @@ class LocationService {
     try {
       localStorage.removeItem('recentLocationSearches');
     } catch (error) {
-      console.error('Failed to clear recent searches:', error);
+      logger.error('Failed to clear recent searches:', error);
     }
   }
 }

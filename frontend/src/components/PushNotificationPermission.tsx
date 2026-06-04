@@ -2,6 +2,7 @@
  * Push Notification Permission Component
  * Prompts users to enable push notifications
  */
+import { logger } from '@/utils/logger';
 
 import React from 'react';
 import { usePushNotifications } from '../hooks/usePushNotifications';
@@ -23,7 +24,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
     try {
       await subscribe();
     } catch (error) {
-      console.error('Failed to subscribe:', error);
+      logger.error('Failed to subscribe:', error);
     }
   };
 
@@ -35,7 +36,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
     try {
       await sendTest();
     } catch (error) {
-      console.error('Failed to send test:', error);
+      logger.error('Failed to send test:', error);
     }
   };
 

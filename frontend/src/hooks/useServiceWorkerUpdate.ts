@@ -2,6 +2,7 @@
  * Service Worker Update Hook
  * Detects and handles service worker updates
  */
+import { logger } from '@/utils/logger';
 
 import { useState, useEffect } from 'react';
 import { registerSW, ServiceWorkerControls } from '../utils/serviceWorkerRegistration';
@@ -41,7 +42,7 @@ export function useServiceWorkerUpdate(): UseServiceWorkerUpdateResult {
         // Service worker registered successfully
       },
       onRegistrationError: (error) => {
-        console.error('Service worker registration failed:', error);
+        logger.error('Service worker registration failed:', error);
       },
     }).then((swControls) => {
       if (mounted && swControls) {

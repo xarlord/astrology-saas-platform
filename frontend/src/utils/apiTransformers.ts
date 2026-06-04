@@ -4,6 +4,7 @@
  * Transforms backend API responses (snake_case) to frontend domain models (camelCase).
  * This isolates the contract mismatch and provides type-safe transformations.
  */
+import { logger } from './logger';
 
 // ============================================================================
 // BACKEND API TYPES (snake_case) - What the backend actually sends
@@ -346,7 +347,7 @@ export function safeTransform<T, R>(
   try {
     return transformer(data);
   } catch (error) {
-    console.error('Transform error:', error);
+    logger.error('Transform error:', error);
     return defaultValue;
   }
 }

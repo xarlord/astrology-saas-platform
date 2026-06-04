@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Daily Briefing Page Component
  *

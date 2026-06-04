@@ -10,6 +10,7 @@
  * - Preview updates with smooth crossfade
  * - Download shows checkmark feedback
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -365,7 +366,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       setExportState('success');
       setTimeout(() => setExportState('idle'), 2000);
     } catch (error) {
-      console.error('Failed to generate image:', error);
+      logger.error('Failed to generate image:', error);
       setExportState('error');
       setTimeout(() => setExportState('idle'), 3000);
     }
@@ -406,7 +407,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       onClose();
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
-        console.error('Failed to share:', error);
+        logger.error('Failed to share:', error);
         setShareState('error');
         setTimeout(() => setShareState('idle'), 3000);
       }

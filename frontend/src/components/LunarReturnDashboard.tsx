@@ -2,6 +2,7 @@
  * Lunar Return Dashboard Component
  * Main dashboard showing current lunar return and countdown
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect } from 'react';
 import { LunarReturnChart, getCurrentLunarReturn, getNextLunarReturn, calculateLunarReturnChart } from '@/services/lunarReturn.api';
@@ -45,7 +46,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
       setCurrentReturn(currentData);
       setNextReturn(nextData);
     } catch (err: unknown) {
-      console.error('Error loading lunar return data:', err);
+      logger.error('Error loading lunar return data:', err);
       const msg = err instanceof Error ? err.message : (typeof err === 'string' ? err : 'Failed to load lunar return data');
       setError(msg);
     } finally {
@@ -139,7 +140,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
           if (currentReturn) {
             calculateLunarReturnChart(currentReturn.returnDate)
               .then(onChartClick)
-              .catch(console.error);
+              .catch((err: unknown) => logger.error('Failed to calculate lunar return chart:', err));
           }
         })} type="button" className="flex items-center gap-3 p-5 border-2 border-primary rounded-xl text-base font-semibold cursor-pointer transition-all duration-200 bg-cosmic-card-solid/70 text-primary hover:bg-primary/10">
           <span className="text-2xl">🌗</span>

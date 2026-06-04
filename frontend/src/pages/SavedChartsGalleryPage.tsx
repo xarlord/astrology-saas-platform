@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * SavedChartsGalleryPage Component
  *
@@ -8,6 +7,7 @@
  * - Gallery grid of chart cards
  * - Empty state
  */
+import { logger } from '@/utils/logger';
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -149,7 +149,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
       await navigator.clipboard.writeText(shareUrl);
       alert('Link copied to clipboard!');
     } catch {
-      console.error('Failed to copy link');
+      logger.error('Failed to copy link');
     }
   }, [shareChartId]);
 
@@ -250,9 +250,9 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 <span className="material-symbols-outlined text-accent-gold text-3xl">
                   collections_bookmark
                 </span>
-                <h2 className="text-4xl font-bold tracking-tight text-slate-100">
+                <h1 className="text-4xl font-bold tracking-tight text-slate-100">
                   My Cosmic Library
-                </h2>
+                </h1>
               </div>
               <p className="text-slate-400 text-lg">
                 Manage and explore your collection of birth charts

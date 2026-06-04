@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
@@ -11,6 +11,14 @@ import { webhookRateLimiter } from '../../../middleware/rateLimiter';
 import * as BillingController from '../controllers/billing.controller';
 
 const router = Router();
+
+const checkoutSchema = z.object({
+  priceId: z.string().min(1).max(256),
+});
+
+const portalSchema = z.object({
+  returnUrl: z.string().url().optional(),
+});
 
 /**
  * @route   GET /api/v1/billing/plans
@@ -83,7 +91,7 @@ router.post(
 router.post(
   '/checkout',
   authenticate,
-  validateBody(Joi.object({ priceId: Joi.string().min(1).max(256).required() })),
+  validateBody(checkoutSchema),
   asyncHandler(async (req, res) => {
     await BillingController.createCheckout(req as AuthenticatedRequest, res);
   }),
@@ -110,7 +118,7 @@ router.post(
 router.post(
   '/portal',
   authenticate,
-  validateBody(Joi.object({ returnUrl: Joi.string().uri().optional() })),
+  validateBody(portalSchema),
   asyncHandler(async (req, res) => {
     await BillingController.createPortal(req as AuthenticatedRequest, res);
   }),
