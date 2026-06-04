@@ -117,6 +117,7 @@ const ReportActions: React.FC<ReportActionsProps> = ({
               <button type="button"
                 onClick={() => setShowTransit(false)}
                 className="text-slate-500 hover:text-white transition-colors"
+                aria-label="Close"
               >
                 <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
