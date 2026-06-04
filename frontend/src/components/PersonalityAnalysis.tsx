@@ -69,7 +69,7 @@ export function PersonalityAnalysis({ data }: PersonalityAnalysisProps) {
       <div className="border-b border-white/15">
         <nav className="flex -mb-px overflow-x-auto">
           {tabs.map((tab) => (
-            <button
+            <button type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`
@@ -357,7 +357,7 @@ function PlanetAccordion({
 }) {
   return (
     <div className="border border-white/15 rounded-lg overflow-hidden">
-      <button
+      <button type="button"
         onClick={onToggle}
         className="w-full flex items-center justify-between p-4 bg-cosmic-card/70 backdrop-blur-md hover:bg-white/15 transition-colors"
       >

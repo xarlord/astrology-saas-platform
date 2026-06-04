@@ -110,7 +110,7 @@ const LunarReturnsPage: React.FC = () => {
           </p>
         </div>
         {viewMode !== 'dashboard' && (
-          <button
+          <button type="button"
             onClick={handleBackToDashboard}
             className="px-4 py-2 bg-primary text-white rounded-xl text-sm hover:bg-primary/90 transition-colors"
           >

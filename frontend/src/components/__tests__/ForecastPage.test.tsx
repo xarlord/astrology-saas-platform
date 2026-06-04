@@ -39,8 +39,8 @@ vi.mock('../../components/EmptyState', () => ({
     <div data-testid="empty-state">
       <span>{title}</span>
       {description && <p>{description}</p>}
-      {actionText && <button onClick={onAction}>{actionText}</button>}
-      {secondaryActionText && <button onClick={onSecondaryAction}>{secondaryActionText}</button>}
+      {actionText && <button type="button" onClick={onAction}>{actionText}</button>}
+      {secondaryActionText && <button type="button" onClick={onSecondaryAction}>{secondaryActionText}</button>}
     </div>
   ),
 }));
@@ -61,7 +61,7 @@ vi.mock('../../components/TransitDashboard', () => ({
   TransitDetailModal: ({ transit, onClose }: any) => (
     <div data-testid="transit-detail-modal">
       <span>Detail: {transit?.transitingPlanet}</span>
-      <button onClick={onClose}>Close</button>
+      <button type="button" onClick={onClose}>Close</button>
     </div>
   ),
 }));

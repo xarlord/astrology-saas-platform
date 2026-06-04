@@ -281,7 +281,7 @@ const DailyBriefingPage: React.FC = () => {
           transition={{ duration: 0.35 }}
           data-testid="briefing-top-nav"
         >
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm"
             data-testid="briefing-back-button"
@@ -517,7 +517,7 @@ const DailyBriefingPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.9 }}
         >
-          <button
+          <button type="button"
             onClick={() => navigate('/transits')}
             className="flex-1 flex items-center justify-center gap-2 bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-3.5 text-slate-300 hover:text-white hover:border-primary/40 transition-all group"
             data-testid="briefing-view-transits"
@@ -528,7 +528,7 @@ const DailyBriefingPage: React.FC = () => {
               arrow_forward
             </span>
           </button>
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 rounded-2xl px-5 py-3.5 text-white font-semibold text-sm transition-colors"
             data-testid="briefing-go-dashboard"

@@ -189,18 +189,18 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   return (
     <div className="max-w-[800px] mx-auto p-5 sm:p-2.5">
       <div className="flex justify-between items-center mb-5 gap-4 sm:flex-col sm:gap-2.5">
-        <button onClick={goToPreviousMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Previous month">
+        <button type="button" onClick={goToPreviousMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Previous month">
           ← Previous
         </button>
 
         <div className="text-center flex-1 sm:flex-none">
           <h2 className="m-0 text-white">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
-          <button onClick={goToToday} className="ml-2.5 py-1.5 px-3 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90">
+          <button type="button" onClick={goToToday} className="ml-2.5 py-1.5 px-3 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90">
             Today
           </button>
         </div>
 
-        <button onClick={goToNextMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Next month">
+        <button type="button" onClick={goToNextMonth} className="py-2 px-4 bg-primary text-white border-none rounded-xl cursor-pointer text-sm transition-colors hover:bg-primary/90 sm:w-full" aria-label="Next month">
           Next →
         </button>
       </div>
@@ -242,7 +242,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
               <h3 className="text-lg font-bold text-white">
                 {selectedDayEvents.date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </h3>
-              <button
+              <button type="button"
                 onClick={() => setSelectedDayEvents(null)}
                 className="p-2 hover:bg-white/15 rounded-lg text-slate-200 hover:text-white transition-colors"
                 aria-label="Close"

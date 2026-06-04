@@ -24,7 +24,7 @@ function ToggleSwitch({ enabled, onChange, label, description }: ToggleSwitchPro
           <p className="text-sm text-slate-200 mt-0.5">{description}</p>
         )}
       </div>
-      <button
+      <button type="button"
         role="switch"
         aria-checked={enabled}
         aria-label={label}
@@ -160,7 +160,7 @@ export default function SettingsPage() {
             <p className="text-sm font-medium text-white">
               Edit profile
             </p>
-            <button onClick={() => navigate('/profile')} className="flex items-center gap-1 text-sm text-primary hover:text-lavender cursor-pointer">
+            <button type="button" onClick={() => navigate('/profile')} className="flex items-center gap-1 text-sm text-primary hover:text-lavender cursor-pointer">
               Go to Profile
               <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>arrow_forward</span>
             </button>
@@ -201,7 +201,7 @@ export default function SettingsPage() {
 
         {/* Save Button */}
         <div className="flex items-center gap-4 pt-2">
-          <button
+          <button type="button"
             onClick={() => void handleSave()}
             className="px-6 py-2.5 bg-cosmic-gradient text-white text-sm font-medium rounded-xl shadow-lg shadow-primary/25 hover:opacity-90 transition-opacity cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >

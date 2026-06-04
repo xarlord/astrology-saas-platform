@@ -149,14 +149,14 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
 
         {/* Hover Actions */}
         <div className={clsx('flex gap-1 transition-opacity', 'opacity-0 group-hover:opacity-100')}>
-          <button
+          <button type="button"
             onClick={handleEdit}
             className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-slate-100 transition-colors"
             aria-label="Edit chart"
           >
             <span className="material-symbols-outlined text-lg">edit</span>
           </button>
-          <button
+          <button type="button"
             onClick={(e) => {
               void handleShare(e);
             }}
@@ -165,7 +165,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
           >
             <span className="material-symbols-outlined text-lg">share</span>
           </button>
-          <button
+          <button type="button"
             onClick={(e) => {
               void handleDelete(e);
             }}
@@ -266,7 +266,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
             <p className="text-white font-bold mb-2">Delete chart?</p>
             <p className="text-white/80 text-sm mb-4">This cannot be undone</p>
             <div className="flex gap-2 justify-center">
-              <button
+              <button type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowDeleteConfirm(false);
@@ -275,7 +275,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
               >
                 Cancel
               </button>
-              <button
+              <button type="button"
                 onClick={(e) => {
                   void handleDelete(e);
                 }}

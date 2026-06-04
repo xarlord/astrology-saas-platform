@@ -136,7 +136,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         }}
       >
         {/* Close button */}
-        <button
+        <button type="button"
           className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
           onClick={() => void handleDismiss()}
           aria-label="Close welcome dialog"
@@ -199,7 +199,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             <p className="text-slate-300 text-sm mb-3">
               Complete your birth data to unlock your chart
             </p>
-            <button
+            <button type="button"
               className="text-primary text-sm font-medium hover:text-white transition-colors flex items-center gap-1 mx-auto"
               onClick={() => {
                 void handleDismiss();
@@ -230,7 +230,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         </div>
 
         {/* CTA Button */}
-        <button
+        <button type="button"
           ref={ctaRef}
           className="w-full py-3 px-4 text-white font-bold rounded-lg shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
           style={{

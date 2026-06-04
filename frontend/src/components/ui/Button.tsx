@@ -84,7 +84,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        type={type}
+        type={type ?? 'button'}
         disabled={isDisabled}
         onClick={handleClick}
         className={clsx(

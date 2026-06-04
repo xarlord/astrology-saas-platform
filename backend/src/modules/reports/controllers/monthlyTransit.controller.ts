@@ -49,7 +49,10 @@ export async function getMonthlyTransitReport(
 ): Promise<void> {
   await requirePremiumUser(req);
 
-  const userId = req.user!.id!;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new BadRequestError('User authentication required');
+  }
   const { month } = req.body;
 
   // Validate month format if provided
@@ -76,7 +79,10 @@ export async function getCurrentMonthlyReport(
 ): Promise<void> {
   await requirePremiumUser(req);
 
-  const userId = req.user!.id!;
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new BadRequestError('User authentication required');
+  }
 
   // Generate current month's report
   const report = await generateMonthlyTransitReport(userId);

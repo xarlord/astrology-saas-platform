@@ -169,7 +169,7 @@ export const Tab: React.FC<TabProps> = ({ value, children, disabled = false, cla
   };
 
   return (
-    <button
+    <button type="button"
       ref={tabRef}
       role="tab"
       aria-selected={isSelected}

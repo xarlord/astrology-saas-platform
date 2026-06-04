@@ -80,7 +80,7 @@ const LessonCard: React.FC<LessonCardProps> = ({
             <span>{category}</span>
           </div>
         </div>
-        <button
+        <button type="button"
           className="text-slate-500 hover:text-primary transition-colors flex justify-start"
           onClick={handleBookmark}
           aria-label="Bookmark lesson"

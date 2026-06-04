@@ -133,7 +133,7 @@ function DateSelector({
         {viewModes.map((mode) => {
           const Icon = mode.icon;
           return (
-            <button
+            <button type="button"
               key={mode.id}
               onClick={() => onViewChange(mode.id)}
               className={`
@@ -154,7 +154,7 @@ function DateSelector({
 
       {/* Date Navigator */}
       <div className="flex items-center gap-2">
-        <button
+        <button type="button"
           onClick={() => {
             const date = new Date(selectedDate);
             date.setDate(date.getDate() - 1);
@@ -172,7 +172,7 @@ function DateSelector({
           aria-label="Select date"
           className="px-4 py-2 bg-cosmic-card-solid border border-white/15 rounded-lg text-sm text-white"
         />
-        <button
+        <button type="button"
           onClick={() => {
             const date = new Date(selectedDate);
             date.setDate(date.getDate() + 1);
@@ -368,7 +368,7 @@ function CalendarDay({
   onClick: () => void;
 }) {
   return (
-    <button
+    <button type="button"
       onClick={onClick}
       className={`
         h-24 rounded-lg p-2 text-left transition-all hover:shadow-md
@@ -600,7 +600,7 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               <AspectSymbol aspect={transit.type} size="lg" />
               <PlanetSymbol planet={transit.natalPlanet} size="lg" />
             </div>
-            <button
+            <button type="button"
               onClick={onClose}
               className="p-2 hover:bg-white/15 rounded-lg text-slate-200 hover:text-white transition-colors"
               aria-label="Close"

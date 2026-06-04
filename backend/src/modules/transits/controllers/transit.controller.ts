@@ -9,7 +9,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
-import ChartModel from '../../charts/models/chart.model';
+import ChartModel, { Chart } from '../../charts/models/chart.model';
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
 import knex from '../../../config/database';
@@ -31,7 +31,7 @@ async function findCalculatedChart(userId: string, chartId?: string) {
 
   // Find first chart with calculated_data
   const charts = await ChartModel.findByUserId(userId);
-  const calculated = charts.find((c: any) => c.calculated_data != null);
+  const calculated = charts.find((c: Chart) => c.calculated_data != null);
   if (!calculated) {
     if (charts.length === 0) throw new AppError('No charts found. Please create a natal chart first.', 404);
     throw new AppError('Chart must be calculated first', 400);

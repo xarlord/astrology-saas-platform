@@ -184,7 +184,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
             <strong className="text-green-300">Success!</strong>
             <p className="text-sm text-green-400">{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
           </div>
-          <button
+          <button type="button"
             onClick={() => {
               setSuccess(false);
               if (onShare) onShare();
@@ -200,7 +200,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       {error && (
         <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-4 mb-4 text-red-400">
           <span>{error}</span>
-          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300 font-bold">✕</button>
+          <button type="button" onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300 font-bold">✕</button>
         </div>
       )}
 
@@ -208,7 +208,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       {!success && (
         <>
           <div className="flex gap-2 mb-6">
-            <button
+            <button type="button"
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 shareMethod === 'link'
                   ? 'bg-primary text-white'
@@ -219,7 +219,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>link</span>
               Share Link
             </button>
-            <button
+            <button type="button"
               className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 shareMethod === 'email'
                   ? 'bg-primary text-white'
@@ -295,7 +295,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 </div>
               )}
 
-              <button
+              <button type="button"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleGenerateLink}
                 disabled={loading}
@@ -319,7 +319,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                       className="flex-1 rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm text-white"
                     />
                     {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                    <button onClick={handleCopyLink} className="flex items-center gap-1 rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm font-medium text-slate-200 hover:bg-white/15 transition-colors">
+                    <button type="button" onClick={handleCopyLink} className="flex items-center gap-1 rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm font-medium text-slate-200 hover:bg-white/15 transition-colors">
                       {copied ? <span className="material-symbols-outlined text-green-400" aria-hidden="true" style={{ fontSize: '18px' }}>check</span> : <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>content_copy</span>}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
@@ -386,7 +386,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 <label htmlFor="includeChart" className="text-sm text-slate-200">Include chart visualization</label>
               </div>
 
-              <button
+              <button type="button"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleSendEmail}
                 disabled={loading || !emailSettings.to}

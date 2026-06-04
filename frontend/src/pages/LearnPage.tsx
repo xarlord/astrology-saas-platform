@@ -18,7 +18,7 @@ function ExpandableCard({ title, subtitle, accentColor, children }: ExpandableCa
 
   return (
     <div className="glass-panel rounded-2xl border border-white/15 overflow-hidden">
-      <button
+      <button type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-5 text-left hover:bg-white/15 transition-colors cursor-pointer"
         aria-expanded={isOpen}

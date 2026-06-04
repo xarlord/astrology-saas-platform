@@ -141,7 +141,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
       {/* Header */}
       <div className="chart-header">
         {onBack && (
-          <button onClick={onBack} className="back-button">
+          <button type="button" onClick={onBack} className="back-button">
             ← Back
           </button>
         )}

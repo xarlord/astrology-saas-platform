@@ -215,7 +215,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
 
         {/* Export Button */}
         <div className="pt-2 border-t border-white/15">
-          <button onClick={handleExport} className="flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-primary text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed" disabled={loading}>
+          <button type="button" onClick={handleExport} className="flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-primary text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed" disabled={loading}>
             {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

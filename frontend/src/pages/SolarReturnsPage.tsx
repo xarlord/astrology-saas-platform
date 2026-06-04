@@ -105,7 +105,7 @@ export const SolarReturnsPage: React.FC = () => {
   const renderBreadcrumb = () => {
     return (
       <div className="flex items-center gap-2 mb-4 text-sm">
-        <button
+        <button type="button"
           onClick={() => navigate('/solar-returns')}
           className="flex items-center gap-1 text-primary/80 hover:text-primary"
         >
@@ -180,7 +180,7 @@ export const SolarReturnsPage: React.FC = () => {
       {error && (
         <div role="alert" aria-live="assertive" className="mb-4 p-3 bg-red-900/30 text-red-400 rounded-xl text-sm flex items-center justify-between">
           {error}
-          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2" aria-label="Dismiss error">✕</button>
+          <button type="button" onClick={() => setError(null)} className="text-red-500 hover:text-red-700 ml-2" aria-label="Dismiss error">✕</button>
         </div>
       )}
 

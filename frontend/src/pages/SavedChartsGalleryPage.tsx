@@ -205,7 +205,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
             </h3>
             <nav className="flex flex-col gap-1">
               {folders.map((folder) => (
-                <button
+                <button type="button"
                   key={folder.id}
                   onClick={() => setActiveFolder(folder.id)}
                   className={clsx(
@@ -303,7 +303,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
               </div>
 
               <div className="flex items-center bg-slate-900/50 border border-slate-700 rounded-xl p-1">
-                <button
+                <button type="button"
                   onClick={() => setViewMode('grid')}
                   className={clsx(
                     'p-2 rounded-lg transition-colors',
@@ -314,7 +314,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 >
                   <span className="material-symbols-outlined">grid_view</span>
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setViewMode('list')}
                   className={clsx(
                     'p-2 rounded-lg transition-colors',
@@ -377,7 +377,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
               ))}
 
               {/* Add New Chart Card */}
-              <button
+              <button type="button"
                 onClick={() => navigate('/charts/create')}
                 className={clsx(
                   'group relative bg-transparent rounded-2xl border-2 border-dashed border-slate-700 p-6',
@@ -406,7 +406,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
           <div className="bg-[#1e1b2e] rounded-2xl p-6 max-w-md w-full shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">Share Chart</h3>
-              <button
+              <button type="button"
                 onClick={closeShareModal}
                 className="p-2 text-slate-400 hover:text-white transition-colors"
               >
@@ -424,7 +424,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   readOnly
                   className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
                 />
-                <button
+                <button type="button"
                   onClick={() => void copyShareLink()}
                   className="px-3 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg transition-colors"
                 >
@@ -437,19 +437,19 @@ export const SavedChartsGalleryPage: React.FC = () => {
             <div className="border-t border-white/10 pt-4 mb-4">
               <p className="text-sm text-slate-400 mb-2">Share via</p>
               <div className="flex gap-3">
-                <button
+                <button type="button"
                   onClick={() => void handleNativeShare()}
                   className="flex-1 flex items-center justify-center gap-2 bg-[#1877f2]/20 hover:bg-[#1e1b2e] text-white py-2 rounded-lg transition-colors"
                 >
                   <span className="material-symbols-outlined text-lg">facebook</span>
                 </button>
-                <button
+                <button type="button"
                   onClick={() => void handleNativeShare()}
                   className="flex-1 flex items-center justify-center gap-2 bg-[#1da4dd] hover:bg-[#1da4dd] text-white py-2 rounded-lg transition-colors"
                 >
                   <span className="material-symbols-outlined text-lg">group</span>
                 </button>
-                <button
+                <button type="button"
                   onClick={() => void handleNativeShare()}
                   className="flex-1 flex items-center justify-center gap-2 bg-[#00c6ff] hover:bg-[#00c6ff] text-white py-2 rounded-lg transition-colors"
                 >

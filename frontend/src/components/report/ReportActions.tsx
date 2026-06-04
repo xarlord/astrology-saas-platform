@@ -114,7 +114,7 @@ const ReportActions: React.FC<ReportActionsProps> = ({
               <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">
                 Current Transit
               </p>
-              <button
+              <button type="button"
                 onClick={() => setShowTransit(false)}
                 className="text-slate-500 hover:text-white transition-colors"
               >

@@ -192,7 +192,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             aria-label="Search for a city"
             className="flex-1 border-none outline-none text-base bg-transparent"
           />
-          <button
+          <button type="button"
             onClick={() => void handleSearch()}
             disabled={loading || !searchQuery}
             className="bg-primary text-white border-none py-2.5 px-5 rounded-md cursor-pointer font-medium transition-colors duration-200 hover:not-disabled:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -204,7 +204,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-md py-3 px-4 mt-4 flex justify-between items-center text-red-400 text-sm" role="alert">
             {error}
-            <button onClick={() => setError(null)} className="bg-transparent border-none text-xl cursor-pointer p-0 ml-2">✕</button>
+            <button type="button" onClick={() => setError(null)} className="bg-transparent border-none text-xl cursor-pointer p-0 ml-2">✕</button>
           </div>
         )}
       </div>
@@ -214,7 +214,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         <h3 className="text-xl font-semibold text-slate-200 mb-4">Popular Locations</h3>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 md:grid-cols-1" aria-label="Popular locations">
           {popularLocations.map((location, index) => (
-            <button
+            <button type="button"
               key={index}
               aria-label={`Select ${location.name}`}
               className="glass-panel rounded-xl p-3.5 cursor-pointer flex items-center gap-3 transition-all duration-200 hover:border-primary hover:shadow-[0_2px_8px_rgba(99,102,241,0.2)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
@@ -324,13 +324,13 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
 
           {/* Actions */}
           <div className="flex justify-center gap-4 pt-6 border-t border-white/15 md:flex-col">
-            <button
+            <button type="button"
               onClick={() => setShowComparison(false)}
               className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-white/15 text-slate-200 border border-white/15 hover:bg-white/15 md:w-full"
             >
               Close Comparison
             </button>
-            <button
+            <button type="button"
               onClick={() => window.print()}
               className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-primary text-white border-none hover:bg-primary/90 md:w-full"
             >

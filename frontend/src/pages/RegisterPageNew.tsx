@@ -478,9 +478,9 @@ export default function RegisterPageNew() {
 
               {/* Social Buttons */}
               <div className="grid grid-cols-2 gap-4">
-                <button
+                <button type="button"
                   className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white transition-colors duration-200"
-                  type="button"
+
                   onClick={() => handleSocialLogin('google')}
                   aria-label="Continue with Google"
                 >
@@ -504,9 +504,9 @@ export default function RegisterPageNew() {
                   </svg>
                   <span className="text-sm font-medium">Google</span>
                 </button>
-                <button
+                <button type="button"
                   className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white transition-colors duration-200"
-                  type="button"
+
                   onClick={() => handleSocialLogin('apple')}
                   aria-label="Continue with Apple"
                 >

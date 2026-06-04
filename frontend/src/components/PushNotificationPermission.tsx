@@ -47,7 +47,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
     <div className="fixed bottom-5 right-5 z-[1000] max-w-[400px] w-full sm:bottom-2.5 sm:right-2.5 sm:left-2.5 sm:max-w-none">
       {shouldShow && (
         <div className="glass-panel rounded-2xl p-5 relative animate-slide-in sm:p-4">
-          <button
+          <button type="button"
             className="absolute top-3 right-3 bg-transparent border-none text-slate-200 cursor-pointer p-1 rounded flex items-center justify-center transition-all duration-200 hover:bg-white/15 hover:text-white"
             onClick={handleDismiss}
             aria-label="Dismiss notification"
@@ -71,14 +71,14 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
             </div>
 
             <div className="flex gap-2 sm:flex-col">
-              <button
+              <button type="button"
                 className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 border-none bg-primary text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed sm:w-full"
                 onClick={() => { void handleSubscribe(); }}
                 disabled={subscribing}
               >
                 {subscribing ? 'Enabling...' : 'Enable Notifications'}
               </button>
-              <button
+              <button type="button"
                 className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 border-none bg-white/15 text-slate-200 hover:bg-white/15 sm:w-full"
                 onClick={handleDismiss}
               >
@@ -92,7 +92,7 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
       {isSubscribed && (
         <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-4 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.3)] flex items-center justify-between gap-3 animate-slide-in">
           <span>Notifications enabled</span>
-          <button
+          <button type="button"
             className="bg-white text-emerald-500 py-2 px-4 rounded-md text-[13px] font-medium border-none cursor-pointer transition-all duration-200 hover:-translate-y-px hover:shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
             onClick={() => { void handleTest(); }}
           >

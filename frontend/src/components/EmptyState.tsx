@@ -121,7 +121,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         {(actionText ?? secondaryActionText) && (
           <div className="flex flex-col gap-3 items-center sm:flex-row sm:justify-center">
             {actionText && onAction && (
-              <button
+              <button type="button"
                 onClick={onAction}
                 className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 border-none whitespace-nowrap bg-primary text-white hover:bg-primary/90 hover:-translate-y-px hover:shadow-primary/10 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
@@ -129,7 +129,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               </button>
             )}
             {secondaryActionText && onSecondaryAction && (
-              <button
+              <button type="button"
                 onClick={onSecondaryAction}
                 className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 whitespace-nowrap bg-white/15 text-white border border-white/15 hover:bg-white/15 hover:border-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >

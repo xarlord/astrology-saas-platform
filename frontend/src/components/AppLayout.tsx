@@ -87,7 +87,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
       <div className="flex items-center justify-between h-16 px-4">
         {/* Left: Menu button + Logo */}
         <div className="flex items-center gap-4">
-          <button
+          <button type="button"
             onClick={onMenuClick}
             className="lg:hidden p-2 rounded-lg hover:bg-white/5"
             aria-label="Open main menu"
@@ -133,7 +133,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-4">
-          <button className="relative p-2 text-slate-200 hover:text-white transition-colors rounded-full hover:bg-white/5" aria-label="Notifications">
+          <button type="button" className="relative p-2 text-slate-200 hover:text-white transition-colors rounded-full hover:bg-white/5" aria-label="Notifications">
             <span className="material-symbols-outlined" aria-hidden="true">notifications</span>
             <span aria-hidden="true" className="absolute top-2 right-2 size-2 bg-red-500 rounded-full border border-cosmic-page" />
           </button>
@@ -149,7 +149,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
           </Link>
 
           <div className="relative" ref={dropdownRef}>
-            <button
+            <button type="button"
               className="flex items-center gap-3 pl-2 cursor-pointer group"
               onClick={() => setDropdownOpen((prev) => !prev)}
               onKeyDown={handleDropdownKey}
@@ -234,7 +234,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             </div>
             <span className="text-xl font-bold tracking-tight text-white">AstroVerse</span>
           </Link>
-          <button
+          <button type="button"
             onClick={onClose}
             className="lg:hidden p-2 rounded-lg hover:bg-white/5"
             aria-label="Close sidebar"

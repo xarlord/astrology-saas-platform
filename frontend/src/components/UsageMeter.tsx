@@ -131,7 +131,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
           <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">warning</span>
           <span>Approaching storage limit</span>
           {onUpgradeClick && (
-            <button
+            <button type="button"
               className="ml-auto text-sm text-amber-300 hover:text-white underline hover:opacity-80 transition-opacity cursor-pointer"
               onClick={onUpgradeClick}
               aria-label="Upgrade plan for more storage"
@@ -147,7 +147,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
           <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">warning</span>
           <span>Storage limit reached</span>
           {onUpgradeClick && (
-            <button
+            <button type="button"
               className="ml-auto text-sm text-red-300 hover:text-white underline hover:opacity-80 transition-opacity cursor-pointer"
               onClick={onUpgradeClick}
               aria-label="Upgrade plan to create more charts"

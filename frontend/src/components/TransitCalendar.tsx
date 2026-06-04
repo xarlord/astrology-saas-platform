@@ -190,7 +190,7 @@ export function TransitCalendar({
       {/* Calendar Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 border-b border-white/15">
         <div className="flex items-center justify-between sm:justify-start gap-2">
-          <button
+          <button type="button"
             onClick={goToPreviousMonth}
             className="p-2 rounded-lg hover:bg-white/15 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
@@ -200,7 +200,7 @@ export function TransitCalendar({
           <h2 className="text-lg font-semibold text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
-          <button
+          <button type="button"
             onClick={goToNextMonth}
             className="p-2 rounded-lg hover:bg-white/15 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
@@ -210,7 +210,7 @@ export function TransitCalendar({
         </div>
 
         <div className="flex items-center justify-between sm:justify-start gap-2">
-          <button
+          <button type="button"
             onClick={goToToday}
             className="px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
           >
@@ -219,7 +219,7 @@ export function TransitCalendar({
 
           {/* View Mode Toggle */}
           <div className="flex rounded-lg border border-white/15 overflow-hidden">
-            <button
+            <button type="button"
               onClick={() => setViewMode('month')}
               className={`px-3 py-1.5 text-sm font-medium transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current ${
                 viewMode === 'month'
@@ -230,7 +230,7 @@ export function TransitCalendar({
             >
               Month
             </button>
-            <button
+            <button type="button"
               onClick={() => setViewMode('week')}
               className={`px-3 py-1.5 text-sm font-medium transition-colors min-h-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current ${
                 viewMode === 'week'

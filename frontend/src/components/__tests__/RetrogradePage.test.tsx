@@ -37,8 +37,8 @@ vi.mock('../../components/EmptyState', () => ({
     <div data-testid="empty-state">
       <span>{title}</span>
       {description && <p>{description}</p>}
-      {actionText && <button onClick={onAction}>{actionText}</button>}
-      {secondaryActionText && <button onClick={onSecondaryAction}>{secondaryActionText}</button>}
+      {actionText && <button type="button" onClick={onAction}>{actionText}</button>}
+      {secondaryActionText && <button type="button" onClick={onSecondaryAction}>{secondaryActionText}</button>}
     </div>
   ),
 }));

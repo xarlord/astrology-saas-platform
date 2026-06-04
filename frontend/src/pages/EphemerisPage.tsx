@@ -95,7 +95,7 @@ const EphemerisPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-cosmic-page p-6">
         <div className="flex items-center mb-4">
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
             aria-label="Go back to dashboard"
@@ -124,7 +124,7 @@ const EphemerisPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-cosmic-page p-6">
         <div className="flex items-center mb-4">
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
             aria-label="Go back to dashboard"
@@ -141,7 +141,7 @@ const EphemerisPage: React.FC = () => {
           <p className="text-red-300/70 text-sm mb-4">
             {getErrorMessage(error, "Failed to fetch today's transits")}
           </p>
-          <button
+          <button type="button"
             onClick={() => void refetch()}
             className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors text-sm font-medium"
           >
@@ -157,7 +157,7 @@ const EphemerisPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-cosmic-page p-6">
         <div className="flex items-center mb-4">
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
             aria-label="Go back to dashboard"
@@ -187,7 +187,7 @@ const EphemerisPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors mr-2"
             aria-label="Go back to dashboard"
@@ -199,7 +199,7 @@ const EphemerisPage: React.FC = () => {
             <p className="text-slate-400 text-sm">Current planetary positions and active transits</p>
           </div>
         </div>
-        <button
+        <button type="button"
           onClick={() => void refetch()}
           aria-label="Refresh transit data"
           className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"

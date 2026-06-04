@@ -24,7 +24,7 @@ const InstallButton: React.FC<InstallButtonProps> = ({ variant = 'default', clas
 
   if (variant === 'compact') {
     return (
-      <button
+      <button type="button"
         onClick={handleClick}
         className={`flex items-center gap-1.5 text-primary hover:text-primary/80 text-sm font-medium transition-colors ${className}`}
         aria-label="Install AstroVerse app"
@@ -36,7 +36,7 @@ const InstallButton: React.FC<InstallButtonProps> = ({ variant = 'default', clas
   }
 
   return (
-    <button
+    <button type="button"
       onClick={handleClick}
       className={`flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-colors ${className}`}
       aria-label="Install AstroVerse app"

@@ -154,7 +154,7 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
           )}
 
           {!chart && onCreateNew && (
-            <button
+            <button type="button"
               onClick={onCreateNew}
               className="text-primary text-sm hover:text-white transition-colors underline"
             >
@@ -181,6 +181,7 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
       {onSwap && (
         <div className="relative z-20 flex justify-center">
           <motion.button
+            type="button"
             onClick={onSwap}
             className="relative group cursor-pointer"
             whileHover={{ scale: 1.1 }}

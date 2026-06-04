@@ -60,14 +60,14 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, retry }) => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
+          <button type="button"
             onClick={retry}
             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95"
           >
             <span className="material-symbols-outlined text-[16px]">sync</span>
             Try Again
           </button>
-          <button
+          <button type="button"
             onClick={handleGoHome}
             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95"
           >

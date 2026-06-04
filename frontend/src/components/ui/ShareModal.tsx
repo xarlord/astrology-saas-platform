@@ -243,7 +243,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   Share {itemType.charAt(0).toUpperCase() + itemType.slice(1)}
                 </h2>
               </div>
-              <button
+              <button type="button"
                 onClick={onClose}
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                 aria-label="Close modal"
@@ -282,7 +282,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   }}
                 >
                   {/* Public */}
-                  <button
+                  <button type="button"
                     role="radio"
                     aria-checked={visibility === 'public'}
                     tabIndex={visibility === 'public' ? 0 : -1}
@@ -330,7 +330,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   </button>
 
                   {/* Private */}
-                  <button
+                  <button type="button"
                     role="radio"
                     aria-checked={visibility === 'private'}
                     tabIndex={visibility === 'private' ? 0 : -1}
@@ -378,7 +378,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                   </button>
 
                   {/* Password Protected */}
-                  <button
+                  <button type="button"
                     role="radio"
                     aria-checked={visibility === 'password'}
                     tabIndex={visibility === 'password' ? 0 : -1}
@@ -466,7 +466,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-800 border border-white/10 text-white text-sm truncate focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => void handleCopy()}
                     className={clsx(
                       'flex items-center px-4 py-2.5 rounded-lg font-medium text-sm transition-all',
@@ -502,7 +502,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
                 <div className="flex justify-center space-x-2">
                   {socialButtons.map((social) => (
-                    <button
+                    <button type="button"
                       key={social.name}
                       onClick={() => handleSocialShare(social)}
                       className={clsx(
@@ -519,7 +519,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
               {/* QR Code Option */}
               <div>
-                <button
+                <button type="button"
                   onClick={() => setShowQR(!showQR)}
                   className="flex items-center justify-between w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300"
                 >
@@ -573,7 +573,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     </span>
                     Link expires:
                   </span>
-                  <button
+                  <button type="button"
                     onClick={() => setShowExpiryDropdown(!showExpiryDropdown)}
                     className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
                   >
@@ -611,7 +611,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                       }}
                     >
                       {expiryOptions.map((option) => (
-                        <button
+                        <button type="button"
                           key={option.value}
                           role="option"
                           aria-selected={expiry === option.value}
@@ -635,13 +635,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
             {/* Footer */}
             <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-white/10 bg-gray-900/50">
-              <button
+              <button type="button"
                 onClick={onClose}
                 className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 Cancel
               </button>
-              <button
+              <button type="button"
                 onClick={() => void handleCopy()}
                 className="flex items-center px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-colors"
               >

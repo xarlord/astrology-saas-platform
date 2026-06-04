@@ -26,7 +26,7 @@ vi.mock('../DailyWeatherModal', () => ({
   DailyWeatherModal: ({ date, onClose }: any) => (
     <div data-testid="daily-weather-modal">
       <span>Weather for {date}</span>
-      <button onClick={onClose}>Close Modal</button>
+      <button type="button" onClick={onClose}>Close Modal</button>
     </div>
   ),
 }));

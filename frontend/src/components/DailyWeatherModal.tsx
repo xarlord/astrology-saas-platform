@@ -93,7 +93,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {/* Header */}
         <div className="flex items-center justify-between p-6 sm:p-4 border-b border-cosmic-border">
           <h2 id="modal-title" className="m-0 text-xl sm:text-lg font-semibold text-white">{formatDate(date)}</h2>
-          <button
+          <button type="button"
             onClick={onClose}
             className="flex items-center justify-center w-8 h-8 border-none bg-transparent text-slate-200 cursor-pointer rounded-lg transition-all duration-200 hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:bg-white/15"
             aria-label="Close modal"

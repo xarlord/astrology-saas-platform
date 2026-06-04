@@ -44,6 +44,7 @@ const CalendarCell: React.FC<CalendarCellProps> = ({
 
   return (
     <motion.button
+      type="button"
       className={`
         relative aspect-square p-1 rounded-lg border transition-all
         ${isSelected ? 'bg-primary/20 border-primary' : 'border-transparent hover:bg-white/5'}

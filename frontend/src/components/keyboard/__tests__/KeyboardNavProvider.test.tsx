@@ -92,7 +92,7 @@ describe('KeyboardNavProvider', () => {
         const announce = useAnnounce();
 
         return (
-          <button onClick={() => announce('Test announcement')} data-testid="announce-button">
+          <button type="button" onClick={() => announce('Test announcement')} data-testid="announce-button">
             Announce
           </button>
         );
@@ -117,7 +117,7 @@ describe('KeyboardNavProvider', () => {
         const announce = useAnnounce();
 
         return (
-          <button onClick={() => announce('Alert!', 'assertive')} data-testid="alert-button">
+          <button type="button" onClick={() => announce('Alert!', 'assertive')} data-testid="alert-button">
             Alert
           </button>
         );
@@ -204,8 +204,8 @@ describe('KeyboardNavProvider', () => {
       render(
         <TestWrapper onContext={(ctx) => (capturedContext = ctx)}>
           <div>
-            <button data-testid="button-1">Button 1</button>
-            <button data-testid="button-2">Button 2</button>
+            <button type="button" data-testid="button-1">Button 1</button>
+            <button type="button" data-testid="button-2">Button 2</button>
           </div>
         </TestWrapper>,
       );
@@ -234,8 +234,8 @@ describe('KeyboardNavProvider', () => {
       render(
         <TestWrapper onContext={(ctx) => (capturedContext = ctx)}>
           <div>
-            <button data-testid="button-1">Button 1</button>
-            <button data-testid="button-2">Button 2</button>
+            <button type="button" data-testid="button-1">Button 1</button>
+            <button type="button" data-testid="button-2">Button 2</button>
           </div>
         </TestWrapper>,
       );
@@ -366,8 +366,8 @@ describe('FocusLock', () => {
     render(
       <KeyboardNavProvider>
         <FocusLock>
-          <button data-testid="first">First</button>
-          <button data-testid="second">Second</button>
+          <button type="button" data-testid="first">First</button>
+          <button type="button" data-testid="second">Second</button>
         </FocusLock>
       </KeyboardNavProvider>,
     );
@@ -389,8 +389,8 @@ describe('FocusLock', () => {
     render(
       <KeyboardNavProvider>
         <FocusLock>
-          <button data-testid="first">First</button>
-          <button data-testid="second">Second</button>
+          <button type="button" data-testid="first">First</button>
+          <button type="button" data-testid="second">Second</button>
         </FocusLock>
       </KeyboardNavProvider>,
     );

@@ -114,7 +114,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
             <p className="text-sm text-slate-200 mt-1">{chartName}</p>
           </div>
         </div>
-        <button
+        <button type="button"
           className="inline-flex items-center gap-2 py-2.5 px-4 text-sm font-medium rounded-md border-none cursor-pointer transition-all bg-primary text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
           onClick={() => setShowCreateModal(true)}
           aria-label="Create new share link"
@@ -164,7 +164,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                   </div>
                 </div>
                 <div className="flex gap-2 sm:w-auto w-full">
-                  <button
+                  <button type="button"
                     className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/15 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
                     onClick={() => { void copyToClipboard(link.shareToken); }}
                     aria-label={`Copy share link ${copiedToken === link.shareToken ? '(copied!)' : ''}`}
@@ -178,7 +178,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                       </>
                     )}
                   </button>
-                  <button
+                  <button type="button"
                     className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
                     onClick={() => { void handleRevokeShare(link.id); }}
                     disabled={isLoading}
@@ -213,7 +213,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
           <div className="glass-card rounded-xl w-full max-w-[400px] border border-cosmic-border-subtle">
             <div className="flex justify-between items-center px-6 py-4 border-b border-cosmic-border-subtle">
               <h3 id="modal-title" className="m-0 text-lg">Create Share Link</h3>
-              <button
+              <button type="button"
                 className="bg-transparent border-none text-slate-200 text-2xl cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center leading-none hover:text-white"
                 onClick={() => setShowCreateModal(false)}
                 aria-label="Close modal"
@@ -262,13 +262,13 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
               </div>
             </div>
             <div className="flex justify-end gap-3 px-6 py-4 border-t border-cosmic-border-subtle">
-              <button
+              <button type="button"
                 className="inline-flex items-center gap-2 py-2.5 px-4 text-sm font-medium rounded-md border-none cursor-pointer transition-all bg-white/15 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={() => setShowCreateModal(false)}
               >
                 Cancel
               </button>
-              <button
+              <button type="button"
                 className="inline-flex items-center gap-2 py-2.5 px-4 text-sm font-medium rounded-md border-none cursor-pointer transition-all bg-primary text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={() => { void handleCreateShare(); }}
                 disabled={isLoading}

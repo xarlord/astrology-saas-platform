@@ -293,7 +293,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <button
+            <button type="button"
               onClick={() => void handleCompare()}
               disabled={!chart1Id || !chart2Id || chart1Id === chart2Id}
               className="relative group px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all text-white font-bold text-lg shadow-glow hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -516,7 +516,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row justify-center gap-4 pb-10">
-                <button
+                <button type="button"
                   onClick={() => { void handleSaveReport(); }}
                   className="flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all text-white font-bold text-lg shadow-glow hover:scale-[1.02]"
                 >
@@ -524,14 +524,14 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                   Generate Full Report
                 </button>
                 <div className="flex gap-4">
-                  <button
+                  <button type="button"
                     onClick={() => { void handleShareResults(); }}
                     className="flex items-center justify-center gap-2 h-14 px-6 rounded-xl bg-surface border border-glass-border hover:bg-white/5 transition-colors text-white font-medium"
                   >
                     <span className="material-symbols-outlined">share</span>
                     Share
                   </button>
-                  <button
+                  <button type="button"
                     onClick={handleStartNew}
                     className="flex items-center justify-center gap-2 h-14 px-6 rounded-xl bg-surface border border-glass-border hover:bg-white/5 transition-colors text-white font-medium"
                   >

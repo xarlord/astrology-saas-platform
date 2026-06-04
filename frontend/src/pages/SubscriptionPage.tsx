@@ -95,7 +95,7 @@ function PricingTierCard({
             Current Plan
           </div>
         ) : (
-          <button
+          <button type="button"
             onClick={onUpgrade}
             className={`w-full py-2.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
               isPopular

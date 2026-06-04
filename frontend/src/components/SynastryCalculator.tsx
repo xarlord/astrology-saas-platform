@@ -165,7 +165,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
           </div>
         </div>
 
-        <button
+        <button type="button"
           onClick={() => { void handleCalculate(); }}
           className="w-full p-4 bg-primary text-white border-none rounded-lg text-lg font-semibold cursor-pointer transition-all hover:bg-primary/90 active:scale-[0.98] disabled:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={!chart1 || !chart2 || chart1 === chart2}
@@ -193,25 +193,25 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
 
           {/* Tabs */}
           <div className="flex gap-2 px-8 pt-4 glass-panel border-b border-white/15 overflow-x-auto">
-            <button
+            <button type="button"
               className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'overview' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('overview')}
             >
               Overview
             </button>
-            <button
+            <button type="button"
               className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'scores' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('scores')}
             >
               Category Scores
             </button>
-            <button
+            <button type="button"
               className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'aspects' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('aspects')}
             >
               Aspects
             </button>
-            <button
+            <button type="button"
               className={`px-6 py-3 bg-transparent border-none border-b-3 text-base font-medium cursor-pointer whitespace-nowrap transition-colors ${activeTab === 'composite' ? 'text-primary border-b-3 border-primary' : 'text-slate-200 hover:text-white border-b-3 border-transparent'}`}
               onClick={() => setActiveTab('composite')}
             >

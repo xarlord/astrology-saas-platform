@@ -333,9 +333,9 @@ export default function LoginPageNew() {
 
                 {/* Social Logins */}
                 <div className="mt-8 grid grid-cols-2 gap-4">
-                  <button
+                  <button type="button"
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
-                    type="button"
+
                     onClick={() => handleSocialLogin('google')}
                     aria-label="Continue with Google"
                   >
@@ -347,9 +347,9 @@ export default function LoginPageNew() {
                     </svg>
                     <span className="text-sm font-semibold leading-6">Google</span>
                   </button>
-                  <button
+                  <button type="button"
                     className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
-                    type="button"
+
                     onClick={() => handleSocialLogin('apple')}
                     aria-label="Continue with Apple"
                   >

@@ -219,7 +219,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   {title}
                 </h2>
               </div>
-              <button
+              <button type="button"
                 onClick={onClose}
                 disabled={isSubmitting || isLoading}
                 className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -335,14 +335,14 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               <div className="sr-only" aria-live="polite" role="status">
                 {isConfirmed && 'Confirmation text entered. Delete button is now enabled.'}
               </div>
-              <button
+              <button type="button"
                 onClick={onClose}
                 disabled={isSubmitting || isLoading}
                 className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
-              <button
+              <button type="button"
                 ref={confirmButtonRef}
                 onClick={() => void handleConfirm()}
                 disabled={!isConfirmed || isSubmitting || isLoading}
