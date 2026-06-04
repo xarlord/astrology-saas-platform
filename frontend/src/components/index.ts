@@ -93,6 +93,9 @@ export { MeteorEffect, TextGenerateEffect, ShimmerButton, Sparkles } from './eff
 export { default as AstrologicalCalendar } from './AstrologicalCalendar';
 export { TransitCalendar } from './TransitCalendar';
 
+// Education
+export { AspectGuide } from './AspectGuide';
+
 // Utility
 export { ErrorBoundary } from './ErrorBoundary';
 export { UsageMeter } from './UsageMeter';

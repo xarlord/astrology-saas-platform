@@ -4,7 +4,7 @@
  */
 import { logger } from '@/utils/logger';
 
-import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend } from '../components';
+import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend, AspectGuide } from '../components';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useChartStore } from '../stores/chartStore';
@@ -409,6 +409,9 @@ export default function ChartViewPage() {
               )}
             </div>
           </div>
+
+          {/* Aspect Guide — educational intro */}
+          <AspectGuide />
 
           {/* Aspects Table */}
           {chartData.aspects.length > 0 && (
