@@ -82,11 +82,38 @@ export async function login(req: Request, res: Response): Promise<void> {
     throw new AppError('Invalid email or password', 401);
   }
 
+  // Check if account is locked (#226)
+  if (UserModel.isAccountLocked(user)) {
+    logAuthFailure('Account locked', req as Request, { email, userId: user.id });
+    throw new AppError(
+      'Account is temporarily locked due to too many failed login attempts. Please try again later.',
+      423,
+    );
+  }
+
   const isPasswordValid = await comparePassword(password, user.password_hash);
   if (!isPasswordValid) {
     logAuthFailure('Invalid password', req as Request, { email, userId: user.id });
-    throw new AppError('Invalid email or password', 401);
+
+    // Increment failed attempts and potentially lock (#226)
+    const updatedUser = await UserModel.incrementFailedLoginAttempts(user.id);
+    const attempts = updatedUser?.failed_login_attempts || 1;
+
+    if (attempts >= 5) {
+      throw new AppError(
+        'Account locked due to too many failed login attempts. Please try again in 30 minutes.',
+        423,
+      );
+    }
+
+    throw new AppError(
+      `Invalid email or password. ${5 - attempts} attempt(s) remaining before account lock.`,
+      401,
+    );
   }
+
+  // Reset failed login attempts on successful login (#226)
+  await UserModel.resetLoginAttempts(user.id);
 
   const tokenPayload = { id: user.id, email: user.email };
   const accessToken = generateToken(tokenPayload);

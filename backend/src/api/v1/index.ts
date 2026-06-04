@@ -23,6 +23,7 @@ import { billingRoutes } from '../../modules/billing';
 import { briefingRoutes } from '../../modules/jobs';
 import { cardRoutes } from '../../modules/cards';
 import { monthlyTransitRoutes } from '../../modules/reports';
+import { blogRoutes } from '../../modules/blog';
 
 const router = Router();
 
@@ -104,5 +105,8 @@ router.use('/cards', cardRoutes);
 
 // Monthly transit report endpoints (premium only)
 router.use('/reports', monthlyTransitRoutes);
+
+// Blog endpoints
+router.use('/blog', blogRoutes);
 
 export default router;

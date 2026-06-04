@@ -1,8 +1,11 @@
 /**
  * Password Reset Token Model
+ * Tokens are stored hashed using SHA-256 for lookup efficiency.
+ * Issue #254.
  */
 
 import db from '../../../config/database';
+import * as crypto from 'crypto';
 
 export interface PasswordResetToken {
   id: string;
@@ -15,17 +18,28 @@ export interface PasswordResetToken {
 }
 
 /**
- * Create a password reset token
+ * Hash a token using SHA-256 for storage.
+ * Uses HMAC with a server secret for additional security.
+ */
+function hashToken(token: string): string {
+  const secret = process.env.PASSWORD_RESET_HASH_SECRET || 'astroverse-reset-secret-change-in-prod';
+  return crypto.createHmac('sha256', secret).update(token).digest('hex');
+}
+
+/**
+ * Create a password reset token (stored hashed).
  */
 export async function createResetToken(
   userId: string,
   token: string,
   expiresAt: Date,
 ): Promise<PasswordResetToken> {
+  const hashedToken = hashToken(token);
+
   const [record] = await db('password_reset_tokens')
     .insert({
       user_id: userId,
-      token,
+      token: hashedToken,
       expires_at: expiresAt,
     })
     .returning('*');
@@ -34,16 +48,20 @@ export async function createResetToken(
 }
 
 /**
- * Find a reset token by token value
+ * Find a reset token by plaintext token value (hashes for lookup).
  */
 export async function findResetToken(token: string): Promise<PasswordResetToken | null> {
-  const record = await db('password_reset_tokens').where({ token }).first();
+  const hashedToken = hashToken(token);
+
+  const record = await db('password_reset_tokens')
+    .where({ token: hashedToken })
+    .first();
 
   return record || null;
 }
 
 /**
- * Mark a reset token as used
+ * Mark a reset token as used.
  */
 export async function markTokenUsed(tokenId: string): Promise<void> {
   await db('password_reset_tokens').where({ id: tokenId }).update({
@@ -53,7 +71,7 @@ export async function markTokenUsed(tokenId: string): Promise<void> {
 }
 
 /**
- * Invalidate all unused reset tokens for a user
+ * Invalidate all unused reset tokens for a user.
  */
 export async function invalidateUserTokens(userId: string): Promise<number> {
   return db('password_reset_tokens')
@@ -65,7 +83,7 @@ export async function invalidateUserTokens(userId: string): Promise<number> {
 }
 
 /**
- * Delete expired reset tokens (cleanup)
+ * Delete expired reset tokens (cleanup).
  */
 export async function deleteExpiredTokens(): Promise<number> {
   return db('password_reset_tokens').where('expires_at', '<', new Date()).delete();

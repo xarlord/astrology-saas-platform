@@ -366,6 +366,13 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 <span className="material-symbols-outlined icon-sm">nightlight</span>
                 <span>Lunar Returns</span>
               </Link>
+              <Link
+                to="/blog"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-200 hover:bg-white/5 hover:text-white transition-colors"
+              >
+                <span className="material-symbols-outlined icon-sm">article</span>
+                <span>Blog</span>
+              </Link>
             </div>
           </section>
         </div>

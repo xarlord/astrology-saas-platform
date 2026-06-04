@@ -15,6 +15,8 @@ export interface User {
   subscription_status: 'active' | 'canceled' | 'expired';
   subscription_renews_at?: Date;
   preferences: Record<string, unknown>;
+  failed_login_attempts: number;
+  locked_until?: Date | null;
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date;
@@ -165,6 +167,56 @@ class UserModel {
     });
 
     return count > 0;
+  }
+
+  /**
+   * Increment failed login attempts and lock account if threshold reached.
+   * Returns the updated user.
+   */
+  async incrementFailedLoginAttempts(id: string): Promise<User | null> {
+    const user = await this.findById(id);
+    if (!user) return null;
+
+    const newCount = (user.failed_login_attempts || 0) + 1;
+    const updates: Record<string, unknown> = {
+      failed_login_attempts: newCount,
+      updated_at: new Date(),
+    };
+
+    // Lock account after 5 failed attempts for 30 minutes
+    if (newCount >= 5) {
+      const lockedUntil = new Date();
+      lockedUntil.setMinutes(lockedUntil.getMinutes() + 30);
+      updates.locked_until = lockedUntil;
+    }
+
+    const [updated] = await knex(this.tableName)
+      .where({ id })
+      .update(updates)
+      .returning('*');
+
+    return updated || null;
+  }
+
+  /**
+   * Reset failed login attempts and clear lock (called on successful login).
+   */
+  async resetLoginAttempts(id: string): Promise<void> {
+    await knex(this.tableName)
+      .where({ id })
+      .update({
+        failed_login_attempts: 0,
+        locked_until: null,
+        updated_at: new Date(),
+      });
+  }
+
+  /**
+   * Check if the account is currently locked.
+   */
+  isAccountLocked(user: User): boolean {
+    if (!user.locked_until) return false;
+    return new Date() < new Date(user.locked_until);
   }
 }
 

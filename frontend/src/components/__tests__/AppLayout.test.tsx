@@ -400,7 +400,7 @@ describe('AppLayout Component', () => {
       );
 
       expect(screen.getByText('Learn Astrology')).toBeInTheDocument();
-      expect(screen.getByText('Blog')).toBeInTheDocument();
+      expect(screen.getAllByText('Blog')[0]).toBeInTheDocument();
       expect(screen.getByText('Support')).toBeInTheDocument();
     });
 

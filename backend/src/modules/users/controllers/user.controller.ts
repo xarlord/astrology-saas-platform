@@ -6,7 +6,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import { UserModel } from '../models';
-import { sanitizeUser } from '../../../utils/helpers';
+import { sanitizeUser, hashPassword, validatePassword } from '../../../utils/helpers';
 import { DEFAULT_EMAIL_PREFS, EmailPreferences } from '../../../services/email.service';
 
 /**
@@ -184,5 +184,35 @@ export async function updateEmailPreferences(
   res.status(200).json({
     success: true,
     data: { emailNotifications: emailPrefs },
+  });
+}
+
+/**
+ * Change user password (#240)
+ * Requires current password confirmation via requirePasswordConfirmation middleware.
+ */
+export async function changePassword(
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> {
+  const userId = req.user.id;
+  const { new_password } = req.validated as { new_password: string };
+
+  // Validate new password strength
+  const validation = validatePassword(new_password);
+  if (!validation.valid) {
+    throw new AppError(`Password does not meet requirements: ${validation.errors.join(', ')}`, 400);
+  }
+
+  const newHash = await hashPassword(new_password);
+  const success = await UserModel.updatePassword(userId, newHash);
+
+  if (!success) {
+    throw new AppError('Failed to update password', 500);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Password changed successfully',
   });
 }

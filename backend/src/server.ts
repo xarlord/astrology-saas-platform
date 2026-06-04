@@ -165,6 +165,13 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api', apiRouter);
 
 // ============================================
+// Serve Uploaded Files (blog images, card images)
+// ============================================
+
+app.use('/uploads/blog', express.static(path.join(process.cwd(), 'uploads', 'blog')));
+app.use('/uploads/cards', express.static(path.join(process.cwd(), 'uploads', 'cards')));
+
+// ============================================
 // Serve Frontend Static Files (production only)
 // ============================================
 
