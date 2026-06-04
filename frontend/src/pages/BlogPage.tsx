@@ -318,10 +318,11 @@ export default function BlogPage() {
 
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                <label htmlFor="blog-title" className="block text-sm font-medium text-slate-300 mb-1.5">
                   Title
                 </label>
                 <input
+                  id="blog-title"
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData((f) => ({ ...f, title: e.target.value }))}
@@ -336,10 +337,11 @@ export default function BlogPage() {
 
               {/* Body */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                <label htmlFor="blog-body" className="block text-sm font-medium text-slate-300 mb-1.5">
                   Body
                 </label>
                 <textarea
+                  id="blog-body"
                   value={formData.body}
                   onChange={(e) => setFormData((f) => ({ ...f, body: e.target.value }))}
                   placeholder="Write your blog post content..."
@@ -350,7 +352,7 @@ export default function BlogPage() {
 
               {/* Image Upload */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                <label htmlFor="blog-cover-image" className="block text-sm font-medium text-slate-300 mb-1.5">
                   Cover Image
                 </label>
                 {editingPost?.image_url && !imageFile && (
@@ -363,8 +365,10 @@ export default function BlogPage() {
                   </div>
                 )}
                 <input
+                  id="blog-cover-image"
                   ref={fileInputRef}
                   type="file"
+                  aria-label="Upload blog cover image"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
                   className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/30 file:cursor-pointer file:transition-colors"
