@@ -163,6 +163,7 @@ export default function BlogPage() {
             {admin && (
               <button
                 onClick={openCreate}
+                aria-label="Create new blog post"
                 className="flex items-center gap-2 bg-gradient-to-r from-primary to-[#8b5cf6] hover:from-primary hover:to-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]"
               >
                 <span className="material-symbols-outlined text-lg">add</span>
@@ -180,7 +181,7 @@ export default function BlogPage() {
           <div className="mb-6 p-4 bg-red-900/30 border border-red-500/30 rounded-xl text-red-300 text-sm flex items-center gap-2">
             <span className="material-symbols-outlined">error</span>
             {error}
-            <button onClick={clearError} className="ml-auto text-red-400 hover:text-white">
+            <button onClick={clearError} aria-label="Dismiss error" className="ml-auto text-red-400 hover:text-white">
               ×
             </button>
           </div>
@@ -201,6 +202,7 @@ export default function BlogPage() {
             {admin && (
               <button
                 onClick={openCreate}
+                aria-label="Write the first blog post"
                 className="mt-4 px-6 py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/80 transition-colors"
               >
                 Write the first post
@@ -256,6 +258,7 @@ export default function BlogPage() {
                   <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5">
                     <button
                       onClick={() => openEdit(post)}
+                      aria-label={`Edit post: ${post.title}`}
                       className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm">edit</span>
@@ -263,6 +266,7 @@ export default function BlogPage() {
                     </button>
                     <button
                       onClick={() => setDeleteTarget(post)}
+                      aria-label={`Delete post: ${post.title}`}
                       className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-red-400 hover:text-red-300 bg-red-900/20 hover:bg-red-900/30 rounded-lg transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>
@@ -297,6 +301,7 @@ export default function BlogPage() {
               </h2>
               <button
                 onClick={closeAll}
+                aria-label="Close modal"
                 className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
               >
                 <span className="material-symbols-outlined">close</span>
@@ -374,6 +379,7 @@ export default function BlogPage() {
                 <button
                   type="button"
                   role="switch"
+                  aria-label="Toggle published status"
                   aria-checked={formData.is_published}
                   onClick={() => setFormData((f) => ({ ...f, is_published: !f.is_published }))}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
