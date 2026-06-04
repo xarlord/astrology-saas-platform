@@ -99,6 +99,7 @@ export interface InterpretationResult {
  */
 const interpretationCache = new Map<string, { data: ParsedInterpretation; timestamp: number }>();
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+const MAX_CACHE_SIZE = 1000; // Prevent unbounded memory growth
 
 class OpenAIService {
   /**
@@ -684,6 +685,15 @@ class OpenAIService {
    * Cache result with timestamp
    */
   private setCachedResult(key: string, data: ParsedInterpretation): void {
+    // Evict oldest entries when cache exceeds max size
+    if (interpretationCache.size >= MAX_CACHE_SIZE) {
+      const keysIter = interpretationCache.keys();
+      const evictCount = Math.ceil(MAX_CACHE_SIZE * 0.2); // Evict 20%
+      for (let i = 0; i < evictCount; i++) {
+        const oldest = keysIter.next().value;
+        if (oldest) interpretationCache.delete(oldest);
+      }
+    }
     interpretationCache.set(key, { data, timestamp: Date.now() });
   }
 

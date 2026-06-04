@@ -22,7 +22,10 @@ export interface PasswordResetToken {
  * Uses HMAC with a server secret for additional security.
  */
 function hashToken(token: string): string {
-  const secret = process.env.PASSWORD_RESET_HASH_SECRET || 'astroverse-reset-secret-change-in-prod';
+  const secret = process.env.PASSWORD_RESET_HASH_SECRET;
+  if (!secret) {
+    throw new Error('PASSWORD_RESET_HASH_SECRET environment variable is required');
+  }
   return crypto.createHmac('sha256', secret).update(token).digest('hex');
 }
 

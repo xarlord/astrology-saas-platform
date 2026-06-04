@@ -15,6 +15,7 @@ process.env.DATABASE_PASSWORD = 'astrology123';
 process.env.JWT_SECRET = 'test-jwt-secret-key';
 process.env.JWT_EXPIRES_IN = '1h';
 process.env.JWT_REFRESH_EXPIRES_IN = '7d';
+process.env.PASSWORD_RESET_HASH_SECRET = 'test-password-reset-hash-secret';
 
 // Mock console methods to reduce noise in tests
 global.console = {

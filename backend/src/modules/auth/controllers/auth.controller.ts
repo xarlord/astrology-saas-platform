@@ -107,7 +107,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     }
 
     throw new AppError(
-      `Invalid email or password. ${5 - attempts} attempt(s) remaining before account lock.`,
+      'Invalid email or password.',
       401,
     );
   }

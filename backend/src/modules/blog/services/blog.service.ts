@@ -72,6 +72,11 @@ export class BlogService {
   ): Promise<string> {
     ensureUploadsDir();
 
+    // Validate postId to prevent path traversal (e.g., "../../etc/passwd")
+    if (!/^[a-zA-Z0-9_-]+$/.test(postId)) {
+      throw new Error('Invalid post ID format');
+    }
+
     const ext = path.extname(file.originalname).toLowerCase();
     if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
       throw new Error('Invalid image format. Allowed: jpg, jpeg, png, webp');
@@ -79,7 +84,13 @@ export class BlogService {
 
     const filename = `${postId}${ext}`;
     const filePath = path.join(UPLOADS_DIR, filename);
-    fs.writeFileSync(filePath, file.buffer);
+
+    // Verify resolved path is still within UPLOADS_DIR
+    if (!filePath.startsWith(UPLOADS_DIR)) {
+      throw new Error('Invalid file path');
+    }
+
+    fs.promises.writeFile(filePath, file.buffer);
 
     const imageUrl = `/uploads/blog/${filename}`;
     await blogModel.updateImageUrl(postId, imageUrl);

@@ -24,6 +24,7 @@ import {
   checkUsageLimit,
 } from '../controllers/aiUsage.controller';
 import { authenticate } from '../../../middleware/auth';
+import { requireAdmin } from '../../../middleware/admin';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
@@ -359,6 +360,7 @@ router.get('/usage', asyncHandler(async (req, res, next) => { await getUsageStat
  *       200:
  *         description: Cache cleared
  */
-router.post('/cache/clear', asyncHandler(async (req, res, next) => { await clearCache(req, res, next); }));
+// Cache clear requires admin — requireAdmin includes authenticate
+router.post('/cache/clear', requireAdmin[0], requireAdmin[1], asyncHandler(async (req, res, next) => { await clearCache(req, res, next); }));
 
 export { router as aiRoutes };

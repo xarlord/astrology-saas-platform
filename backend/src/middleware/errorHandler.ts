@@ -55,7 +55,10 @@ export const errorHandler = (
   } = {
     success: false,
     error: {
-      message: err.message || 'Internal Server Error',
+      // Hide internal error details for non-operational 500 errors in production
+      message: (!isOperational && statusCode === 500 && process.env.NODE_ENV === 'production')
+        ? 'Internal Server Error'
+        : err.message || 'Internal Server Error',
       statusCode,
       ...(isAppError && {
         errorCode: (err as AppError).errorCode,

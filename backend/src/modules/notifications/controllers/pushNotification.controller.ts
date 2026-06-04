@@ -13,6 +13,14 @@ export const saveSubscription = asyncHandler(async (req: Request, res: Response)
   const { endpoint, keys } = req.body;
   const userId = (req as AuthenticatedRequest).user.id;
 
+  // Validate required subscription fields
+  if (!endpoint || typeof endpoint !== 'string') {
+    throw new AppError('endpoint is required and must be a string', 400);
+  }
+  if (!keys || typeof keys !== 'object' || typeof keys.p256dh !== 'string' || typeof keys.auth !== 'string') {
+    throw new AppError('keys.p256dh and keys.auth are required strings', 400);
+  }
+
   const subscription = await pushNotificationService.saveSubscription({
     userId,
     endpoint,
