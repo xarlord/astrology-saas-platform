@@ -56,6 +56,7 @@ describe('AI Controller', () => {
       };
 
       mockRequest.body = chartData;
+      mockRequest.validated = chartData;
 
       const mockInterpretation = {
         ai: true,
@@ -106,6 +107,7 @@ describe('AI Controller', () => {
       };
 
       mockRequest.body = transitData;
+      mockRequest.validated = transitData;
 
       const mockForecast = {
         ai: true,
@@ -147,6 +149,7 @@ describe('AI Controller', () => {
       };
 
       mockRequest.body = synastryData;
+      mockRequest.validated = synastryData;
 
       const mockAnalysis = {
         ai: true,
@@ -167,9 +170,11 @@ describe('AI Controller', () => {
     });
 
     it('should return 400 when chartA is missing', async () => {
-      mockRequest.body = {
+      const body = {
         chartB: { planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }] },
       };
+      mockRequest.body = body;
+      mockRequest.validated = body;
 
       await expect(
         generateCompatibility(mockRequest as Request, mockResponse as Response)
@@ -177,9 +182,11 @@ describe('AI Controller', () => {
     });
 
     it('should return 400 when chartB is missing', async () => {
-      mockRequest.body = {
+      const body = {
         chartA: { planets: [{ planet: 'sun', sign: 'aries', degree: 15, house: 1 }] },
       };
+      mockRequest.body = body;
+      mockRequest.validated = body;
 
       await expect(
         generateCompatibility(mockRequest as Request, mockResponse as Response)
@@ -196,6 +203,7 @@ describe('AI Controller', () => {
       };
 
       mockRequest.body = chartData;
+      mockRequest.validated = chartData;
 
       const mockInterpretation = {
         ai: true,
@@ -232,6 +240,7 @@ describe('AI Controller', () => {
       };
 
       mockRequest.body = chartData;
+      mockRequest.validated = chartData;
 
       const mockInterpretation = {
         ai: true,
