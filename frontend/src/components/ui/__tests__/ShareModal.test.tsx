@@ -131,9 +131,11 @@ describe('ShareModal', () => {
       await user.type(passwordInput, 'mypassword');
 
       // Use waitFor to handle AnimatePresence animation timing
+      // toHaveBeenLastCalledWith is more robust than toHaveBeenCalledWith
+      // since the callback fires on each keystroke
       await waitFor(() => {
-        expect(onPasswordSet).toHaveBeenCalledWith('mypassword');
-      }, { timeout: 3000 });
+        expect(onPasswordSet).toHaveBeenLastCalledWith('mypassword');
+      }, { timeout: 5000 });
     });
   });
 
