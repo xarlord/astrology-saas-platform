@@ -780,7 +780,7 @@ describe('SavedChartsGalleryPage', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
       // Main title
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     });
 
     it('should have accessible search input', () => {

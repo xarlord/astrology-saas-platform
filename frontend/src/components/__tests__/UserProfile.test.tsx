@@ -273,10 +273,11 @@ describe('UserProfile Component', () => {
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
 
-      const timezoneSelect = screen.getByDisplayValue('UTC');
-      await user.selectOptions(timezoneSelect, 'UTC+3');
+      // The __custom__ option displays "UTC (current)" with potential whitespace
+      const timezoneSelect = screen.getByRole('combobox');
+      await user.selectOptions(timezoneSelect, 'Europe/Istanbul');
 
-      expect(timezoneSelect).toHaveValue('UTC+3');
+      expect(timezoneSelect).toHaveValue('Europe/Istanbul');
     });
 
     it('should save profile and call updateProfile', async () => {
