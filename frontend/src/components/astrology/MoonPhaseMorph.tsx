@@ -192,10 +192,10 @@ const MoonPhaseMorph: React.FC<MoonPhaseMorphProps> = ({
               fontWeight: 500,
             }}
           >
-            <div style={{ textTransform: 'capitalize' }}>
+            <div className="capitalize">
               {phaseName.replace(/-/g, ' ')}
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+            <div className="text-xs text-slate-400">
               {illumination}% illuminated
             </div>
           </motion.div>

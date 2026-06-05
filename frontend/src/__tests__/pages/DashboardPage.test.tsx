@@ -169,7 +169,7 @@ vi.mock('../../components/astrology/TransitTimelineCard', () => ({
       data-testid={`transit-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
       className="transit-card"
     >
-      <h4>{title}</h4>
+      <h3>{title}</h3>
       <p>{description}</p>
       <span className="type-badge">{type}</span>
     </div>

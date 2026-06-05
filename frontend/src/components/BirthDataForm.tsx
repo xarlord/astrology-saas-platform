@@ -415,7 +415,7 @@ export function BirthDataForm({
                 id="place-suggestions"
                 role="listbox"
                 className="absolute z-50 mt-1 w-full rounded-lg shadow-2xl max-h-60 overflow-auto border border-cosmic-border"
-                style={{ backgroundColor: '#1a1d2e' }}
+                style={{ backgroundColor: 'var(--color-bg-card-solid, #141627)' }}
               >
                 {placeSuggestions.map((place, index) => (
                   <button

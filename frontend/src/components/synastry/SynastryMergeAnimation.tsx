@@ -276,15 +276,9 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
               </svg>
 
               {/* Names */}
-              <div style={{
-                display: 'flex',
-                gap: '12px',
-                marginTop: '8px',
-                fontSize: '0.8rem',
-                color: '#94a3b8',
-              }}>
+              <div className="flex gap-3 mt-2 text-sm text-slate-400">
                 <span>{personA.name}</span>
-                <span style={{ color: '#8b5cf6' }}>×</span>
+                <span className="text-purple-500">×</span>
                 <span>{personB.name}</span>
               </div>
             </motion.div>
@@ -292,8 +286,8 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
         </AnimatePresence>
       </div>
 
-      <div style={{ textAlign: 'center' }}>
-        <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+      <div className="text-center">
+        <span className="text-xs text-slate-500">
           State: {mergeState}
         </span>
       </div>
@@ -314,8 +308,8 @@ const WheelSVG: React.FC<{
   });
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <svg viewBox="0 0 100 100" style={{ width: '120px' }} aria-hidden="true">
+    <div className="text-center">
+      <svg viewBox="0 0 100 100" className="w-[120px]" aria-hidden="true">
         <circle
           cx="50" cy="50" r={radius}
           fill="none" stroke="rgba(100,116,139,0.3)" strokeWidth="0.5"
@@ -338,7 +332,7 @@ const WheelSVG: React.FC<{
           );
         })}
       </svg>
-      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>
+      <div className="text-xs text-slate-400 mt-1">
         {label}
       </div>
     </div>

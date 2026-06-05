@@ -217,6 +217,7 @@ export function CalendarView({
               key={day}
               role="button"
               tabIndex={0}
+              aria-label={new Date(date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleDateClick(date); } }}
               className={`bg-cosmic-card-solid/70 min-h-[100px] md:min-h-[70px] p-2 md:p-1 cursor-pointer transition-colors duration-200 relative hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary ${isToday ? '!bg-primary/10' : ''}`}
               onClick={() => handleDateClick(date)}

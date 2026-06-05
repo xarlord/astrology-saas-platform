@@ -113,7 +113,7 @@ const TransitTimeline: React.FC<TransitTimelineProps> = ({
   if (events.length === 0) {
     return (
       <div
-        style={{ textAlign: 'center', padding: '24px', color: '#64748b' }}
+        className="text-center p-6 text-slate-500"
         aria-label="No transit events"
       >
         No upcoming transits
@@ -228,7 +228,7 @@ const TransitTimeline: React.FC<TransitTimelineProps> = ({
                     <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {event.planet1}–{event.planet2}
                     </span>
-                    <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                    <span className="text-[0.7rem] text-slate-500">
                       {event.orb.toFixed(1)}°
                     </span>
                   </motion.button>

@@ -415,6 +415,7 @@ export function TransitCalendar({
                     onClick={() => onTransitClick?.(transit)}
                     role="button"
                     tabIndex={0}
+                    aria-label={`${config.name ?? 'Transit'} ${transit.retrograde ? 'retrograde' : ''}`}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();

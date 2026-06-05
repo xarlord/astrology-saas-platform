@@ -366,7 +366,7 @@ export default function DashboardPage() {
                       <span className={`material-symbols-outlined text-xl ${transit.iconColor}`} aria-hidden="true">{transit.icon}</span>
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-white font-semibold text-sm">{transit.name}</h4>
+                      <h3 className="text-white font-semibold text-sm">{transit.name}</h3>
                       <p className="text-slate-200 text-xs">{transit.desc}</p>
                     </div>
                     <span className={`px-2 py-1 ${transit.badgeBg} ${transit.badgeText} text-[10px] font-bold uppercase tracking-wide rounded border ${transit.badgeBorder}`}>
@@ -418,7 +418,7 @@ export default function DashboardPage() {
                               {getInitials(chart.name)}
                             </div>
                             <div>
-                              <h4 className="text-white font-bold text-sm">{chart.name}</h4>
+                              <h3 className="text-white font-bold text-sm">{chart.name}</h3>
                               <span className="text-[10px] uppercase text-primary font-bold tracking-wide">
                                 {chart.type ?? 'Birth Chart'}
                               </span>
@@ -473,7 +473,7 @@ export default function DashboardPage() {
                     <span className="material-symbols-outlined" aria-hidden="true">{action.icon}</span>
                   </div>
                   <div>
-                    <h4 className="text-white font-bold text-sm">{action.title}</h4>
+                    <h3 className="text-white font-bold text-sm">{action.title}</h3>
                     <p className="text-slate-200 text-xs">{action.desc}</p>
                   </div>
                 </Link>
