@@ -74,7 +74,7 @@ export function extractUserIdFromToken(token: string): number {
   try {
     const decoded = jwt.verify(token, secret) as { userId: number; email: string };
     return decoded.userId;
-  } catch (error) {
+  } catch {
     throw new Error('Invalid token');
   }
 }

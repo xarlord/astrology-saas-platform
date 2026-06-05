@@ -586,6 +586,7 @@ export function BirthDataForm({
       <div className="flex gap-3">
         <button
           type="submit"
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           disabled={createChartMutation.isPending || calculateChartMutation.isPending}
           className="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-primary hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >

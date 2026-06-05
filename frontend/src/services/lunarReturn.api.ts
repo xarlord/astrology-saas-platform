@@ -51,6 +51,7 @@ export type {
   LunarMonthForecast,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface LunarReturnHistoryResponse {
   returns: SavedLunarReturn[];
   pagination: {
@@ -147,8 +148,7 @@ export async function getLunarMonthForecast(returnDate?: Date): Promise<LunarMon
   const response = await api.post<{ data: LunarMonthForecast }>('/lunar-return/forecast', {
     returnDate: returnDate ?? null,
   });
-  const responseData = response.data as { data: LunarMonthForecast };
-  return responseData.data;
+  return response.data.data;
 }
 
 /**
@@ -174,8 +174,7 @@ export async function getLunarReturnHistory(
   }>('/lunar-return/history', {
     params: { page, limit },
   });
-  const responseData = response.data as { data: LunarReturnHistoryResponse };
-  return responseData.data;
+  return response.data.data;
 }
 
 /**

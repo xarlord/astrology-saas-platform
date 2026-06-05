@@ -104,6 +104,7 @@ export default function ForecastPage() {
   }, [todayReading, monthReadings, calendarReadings, currentYear, currentMonth]);
 
   // Loading state -- wait for charts and at least the primary query.
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const isLoading = chartsLoading || (hasCharts && (todayLoading || monthLoading || calendarLoading));
 
   return (

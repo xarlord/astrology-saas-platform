@@ -200,7 +200,7 @@ export class ChartSharingService {
     if (chartDataProvider) {
       try {
         chartData = await chartDataProvider(sharedChart.chartId);
-      } catch (error) {
+      } catch {
         return { success: false, error: 'Failed to retrieve chart data' };
       }
     }

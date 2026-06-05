@@ -604,7 +604,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                           return;
                         }
                         handleExpiryChange(expiryOptions[nextIdx].value);
-                        const opts = (e.currentTarget as HTMLElement).querySelectorAll(
+                        const opts = (e.currentTarget).querySelectorAll(
                           '[role="option"]',
                         );
                         (opts[nextIdx] as HTMLElement)?.focus();

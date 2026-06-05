@@ -4,9 +4,7 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import { BlogService } from '../../modules/blog/services/blog.service';
-import { AppError } from '../../utils/appError';
 
 // Mock the blog model — define mocks inline inside the factory
 jest.mock('../../modules/blog/models/blog.model', () => ({
@@ -305,7 +303,7 @@ describe('BlogService', () => {
     it('should update is_published status', async () => {
       mockUpdate.mockResolvedValue({ ...mockPost, is_published: false });
 
-      const result = await service.updatePost('post-uuid-123', {
+      await service.updatePost('post-uuid-123', {
         is_published: false,
       });
 

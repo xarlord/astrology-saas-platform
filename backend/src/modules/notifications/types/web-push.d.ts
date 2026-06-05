@@ -14,11 +14,6 @@ declare module 'web-push' {
     privateKey: string;
   }
 
-  interface RequestQueueLengthResult {
-    statusCode: number;
-    headers: Record<string, string>;
-  }
-
   interface SendResult {
     statusCode: number;
     body: string;

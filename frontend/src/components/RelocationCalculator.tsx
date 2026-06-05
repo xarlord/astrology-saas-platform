@@ -115,7 +115,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       });
 
       setLocations(response.data.results);
-    } catch (_err) {
+    } catch {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');
     } finally {

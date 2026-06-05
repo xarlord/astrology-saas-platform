@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 
 // Auth validators
 const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:'"\\|,.<>\/?])/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};:'"\\|,.<>/?])/;
 
 export const registerSchema = z
   .object({

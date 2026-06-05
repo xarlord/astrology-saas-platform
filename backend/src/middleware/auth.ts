@@ -88,7 +88,7 @@ export const optionalAuthenticate = (
     }
 
     next();
-  } catch (error) {
+  } catch {
     // Silently fail for optional auth
     next();
   }

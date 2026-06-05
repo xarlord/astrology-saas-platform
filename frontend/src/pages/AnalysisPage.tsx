@@ -179,7 +179,7 @@ export function AnalysisPage() {
           {/* AI Toggle Section */}
           <div className="mb-6">
             <AIInterpretationToggle
-              chartData={analysis as unknown as Record<string, unknown>}
+              chartData={analysis}
               onInterpretationGenerated={handleAIInterpretation}
             />
           </div>

@@ -56,7 +56,7 @@ declare module 'recharts' {
   }
   export const XAxis: ComponentType<XAxisProps>;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface YAxisProps extends Record<string, unknown> {}
   export const YAxis: ComponentType<YAxisProps>;
 

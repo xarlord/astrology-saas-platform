@@ -74,7 +74,7 @@ export default function ChartViewPage() {
     try {
       await calculateChart(chartId, { useTrueAngles: trueAngles });
       await loadChart(chartId);
-    } catch (err) {
+    } catch {
       setLocalError('Failed to calculate chart. Please try again.');
     } finally {
       setIsCalculating(false);

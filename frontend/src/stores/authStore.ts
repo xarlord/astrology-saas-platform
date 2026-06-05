@@ -86,7 +86,7 @@ export const useAuthStore = create<AuthState>()(
         logout: async () => {
           try {
             await authService.logout();
-          } catch (error) {
+          } catch {
             // Logout error: session cleared on client side regardless
           } finally {
             clearCsrfToken();

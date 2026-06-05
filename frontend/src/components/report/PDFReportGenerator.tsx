@@ -19,11 +19,6 @@ import pdfService, {
   type ReportType,
   type ReportData,
   type PDFGenerationOptions,
-  type NatalReportData,
-  type TransitReportData,
-  type SynastryReportData,
-  type SolarReturnReportData,
-  type LunarReturnReportData,
 } from '../../services/pdf.service';
 import type {
   CalculatedChart,
@@ -214,14 +209,14 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
               'Your emotional nature is influenced by your Moon sign and its house placement.',
             mentalStyle: "Your mental style is reflected by Mercury's position in your chart.",
           },
-        } as NatalReportData;
+        };
 
       case 'transit':
         if (!transits) return null;
         return {
           transits,
           chartName,
-        } as TransitReportData;
+        };
 
       case 'synastry':
         if (!synastry) return null;
@@ -229,21 +224,21 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
           synastry,
           person1Name,
           person2Name,
-        } as SynastryReportData;
+        };
 
       case 'solar-return':
         if (!solarReturn) return null;
         return {
           solarReturn,
           chartName,
-        } as SolarReturnReportData;
+        };
 
       case 'lunar-return':
         if (!lunarReturn) return null;
         return {
           lunarReturn,
           chartName,
-        } as LunarReturnReportData;
+        };
 
       default:
         return null;

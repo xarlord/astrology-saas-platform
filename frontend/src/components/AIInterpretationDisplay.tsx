@@ -17,7 +17,7 @@ interface AIInterpretationDisplayProps {
 export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = ({
   interpretation,
 }) => {
-  if (!interpretation || !interpretation.ai) {
+  if (!interpretation?.ai) {
     return null;
   }
 

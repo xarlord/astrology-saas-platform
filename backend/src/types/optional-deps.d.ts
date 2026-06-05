@@ -53,6 +53,7 @@ declare module 'bullmq' {
       duration: number;
     };
   }
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface QueueEventsOptions extends QueueBaseOptions {}
   interface WorkerOptions extends QueueBaseOptions {
     concurrency?: number;

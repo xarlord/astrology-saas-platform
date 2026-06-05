@@ -21,6 +21,7 @@ import type {
   TransitCalendarDay,
   TransitDashboardData,
 } from '../components/TransitDashboard';
+import type { TransitReading } from '../services/transit.service';
 import {
   useCharts,
   useTodayTransits,
@@ -79,18 +80,19 @@ export default function TransitPage() {
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      ? (todayReading.transits ?? []).map((t: any) => mapReadingToTransit(t, todayReading))
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      ? (todayReading.transits ?? []).map((t: NonNullable<TransitReading['transits']>[number]) => mapReadingToTransit(t, todayReading as TransitReading))
       : [];
 
     const weekTransits: Transit[] = weekReadings
-      ? weekReadings.flatMap((r: any) => (r.transits ?? []).map((t: any) => mapReadingToTransit(t, r)))
+      ? (weekReadings as TransitReading[]).flatMap((r) => (r.transits ?? []).map((t) => mapReadingToTransit(t, r)))
       : [];
 
     const monthDays: TransitCalendarDay[] = calendarReadings
       ? buildCalendarDays(calendarReadings, currentYear, currentMonth)
       : [];
 
-    const highlights: TransitHighlight[] = deriveHighlights(todayReading);
+    const highlights: TransitHighlight[] = deriveHighlights(todayReading as TransitReading | undefined);
 
     return {
       today: todayTransits,
@@ -101,6 +103,7 @@ export default function TransitPage() {
   }, [todayReading, weekReadings, calendarReadings, currentYear, currentMonth]);
 
   // Loading state -- wait for charts and at least the primary query.
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const isLoading = chartsLoading || (hasCharts && (todayLoading || weekLoading || calendarLoading));
 
   return (

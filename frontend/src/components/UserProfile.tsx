@@ -151,7 +151,7 @@ export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserPro
   // Extract birth coordinates from first chart (natal) for timezone detection
   const birthCoordinates = (charts ?? []).length > 0
     ? (() => {
-        const firstChart = charts![0];
+        const firstChart = charts[0];
         const lat = firstChart.birth_latitude ?? firstChart.birth_data?.birth_latitude;
         const lon = firstChart.birth_longitude ?? firstChart.birth_data?.birth_longitude;
         if (typeof lat === 'number' && typeof lon === 'number') {

@@ -47,7 +47,7 @@ export async function cleanDatabase(database: Knex) {
   for (const table of tables) {
     try {
       await database(table).del();
-    } catch (error) {
+    } catch {
       // Table might not exist, ignore
     }
   }

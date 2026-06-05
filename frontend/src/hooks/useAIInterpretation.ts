@@ -81,6 +81,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
     generateTransit: transitMutation.mutateAsync,
     generateCompatibility: compatibilityMutation.mutateAsync,
     isGenerating:
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       natalMutation.isPending || transitMutation.isPending || compatibilityMutation.isPending,
     error,
     isAvailable: status?.available ?? false,
