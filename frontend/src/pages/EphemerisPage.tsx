@@ -137,7 +137,7 @@ const EphemerisPage: React.FC = () => {
           <span className="material-symbols-outlined text-red-400 text-4xl mb-2 block">
             cloud_off
           </span>
-          <h3 className="text-red-400 font-semibold mb-1">Unable to load transit data</h3>
+          <h2 className="text-red-400 font-semibold mb-1">Unable to load transit data</h2>
           <p className="text-red-300/70 text-sm mb-4">
             {getErrorMessage(error, "Failed to fetch today's transits")}
           </p>
@@ -170,7 +170,7 @@ const EphemerisPage: React.FC = () => {
           <span className="material-symbols-outlined text-slate-500 text-5xl block mb-3">
             planet
           </span>
-          <h3 className="text-white font-semibold mb-2">No transit data available</h3>
+          <h2 className="text-white font-semibold mb-2">No transit data available</h2>
           <p className="text-slate-400 text-sm max-w-md mx-auto">
             Create a natal chart first to see how current planetary positions affect your birth chart.
           </p>

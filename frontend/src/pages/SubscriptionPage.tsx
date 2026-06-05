@@ -198,9 +198,9 @@ export default function SubscriptionPage() {
 
       {/* Current Usage */}
       <div className="max-w-xl mb-10">
-        <h3 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-white mb-4">
           Current Usage
-        </h3>
+        </h2>
         <UsageMeter
           currentCount={chartCount}
           limit={tierLimit}
@@ -214,9 +214,9 @@ export default function SubscriptionPage() {
 
       {/* Pricing Tiers */}
       <div id="pricing-tiers" className="mb-12">
-        <h3 className="text-lg font-semibold text-white mb-6">
+        <h2 className="text-lg font-semibold text-white mb-6">
           Choose Your Plan
-        </h3>
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TIERS.map((t) => (
             <PricingTierCard
@@ -238,9 +238,9 @@ export default function SubscriptionPage() {
 
       {/* Feature Comparison */}
       <div className="mb-12">
-        <h3 className="text-lg font-semibold text-white mb-6">
+        <h2 className="text-lg font-semibold text-white mb-6">
           Feature Comparison
-        </h3>
+        </h2>
         <div className="glass-panel rounded-2xl border border-white/15 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

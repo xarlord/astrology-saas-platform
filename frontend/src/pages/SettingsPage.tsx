@@ -58,7 +58,7 @@ function SettingsSection({ icon, title, children }: SettingsSectionProps) {
         <div className="p-1.5 bg-primary/10 text-primary rounded-lg">
           {icon}
         </div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
       </div>
       <div className="px-6 py-2 divide-y divide-white/5">
         {children}

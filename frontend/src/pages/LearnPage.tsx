@@ -29,7 +29,7 @@ function ExpandableCard({ title, subtitle, accentColor, children }: ExpandableCa
             style={{ backgroundColor: accentColor }}
           />
           <div>
-            <h4 className="font-semibold text-white">{title}</h4>
+            <h3 className="font-semibold text-white">{title}</h3>
             {subtitle && (
               <p className="text-sm text-slate-200 mt-0.5">{subtitle}</p>
             )}
@@ -132,7 +132,7 @@ export default function LearnPage() {
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
           <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#f59e0b' }}>auto_awesome</span>
-          <h3 className="text-xl font-bold text-white">The Planets</h3>
+          <h2 className="text-xl font-bold text-white">The Planets</h2>
           <span className="text-sm text-slate-200 ml-2">
             The celestial bodies that shape your chart
           </span>
@@ -156,7 +156,7 @@ export default function LearnPage() {
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
           <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#f43f5e' }}>auto_awesome</span>
-          <h3 className="text-xl font-bold text-white">The Zodiac Signs</h3>
+          <h2 className="text-xl font-bold text-white">The Zodiac Signs</h2>
           <span className="text-sm text-slate-200 ml-2">
             Twelve archetypes of expression
           </span>
@@ -192,7 +192,7 @@ export default function LearnPage() {
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
           <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#10b981' }}>auto_awesome</span>
-          <h3 className="text-xl font-bold text-white">The Houses</h3>
+          <h2 className="text-xl font-bold text-white">The Houses</h2>
           <span className="text-sm text-slate-200 ml-2">
             Twelve domains of life experience
           </span>
@@ -216,7 +216,7 @@ export default function LearnPage() {
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
           <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#3b82f6' }}>auto_awesome</span>
-          <h3 className="text-xl font-bold text-white">The Aspects</h3>
+          <h2 className="text-xl font-bold text-white">The Aspects</h2>
           <span className="text-sm text-slate-200 ml-2">
             Angular relationships between planets
           </span>

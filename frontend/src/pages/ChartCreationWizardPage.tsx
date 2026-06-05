@@ -570,9 +570,9 @@ export const ChartCreationWizardPage: React.FC = () => {
           {/* RIGHT: Preview Panel */}
           <div className="w-full lg:w-80 bg-card-dark/80 backdrop-blur-md rounded-2xl p-6 flex flex-col gap-6 hidden md:flex sticky top-0 self-start">
             <div className="flex items-center justify-between">
-              <h3 className="text-white font-bold text-sm tracking-wide uppercase opacity-80">
+              <h2 className="text-white font-bold text-sm tracking-wide uppercase opacity-80">
                 Chart Preview
-              </h3>
+              </h2>
               {birthData.date && (
                 <div className="bg-accent-gold/10 text-accent-gold border border-accent-gold/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                   <span className="material-symbols-outlined text-[12px]">sunny</span>

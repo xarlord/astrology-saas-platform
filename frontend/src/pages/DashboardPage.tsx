@@ -240,7 +240,7 @@ export default function DashboardPage() {
               ) : (
               <div className="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group">
                 <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
-                <h3 className="text-slate-200 text-sm font-medium mb-2 z-10">Cosmic Energy</h3>
+                <h2 className="text-slate-200 text-sm font-medium mb-2 z-10">Cosmic Energy</h2>
                 <div className="relative size-32 z-10">
                   <svg className="text-primary" viewBox="0 0 36 36" aria-hidden="true">
                     <path
@@ -276,7 +276,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="relative z-10 mt-auto">
-                  <h3 className="text-2xl font-bold text-white mb-1">{majorTransit ? majorTransit.name : 'No major transits today'}</h3>
+                  <h2 className="text-2xl font-bold text-white mb-1">{majorTransit ? majorTransit.name : 'No major transits today'}</h2>
                   <p className="text-slate-200 text-sm mb-4 line-clamp-2">
                     {majorTransit ? majorTransit.desc : 'The skies are quiet. A good day for rest and reflection.'}
                   </p>
@@ -299,7 +299,7 @@ export default function DashboardPage() {
             ) : (
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">Current Positions</h3>
+                <h2 className="text-lg font-bold text-white">Current Positions</h2>
                 <Link to="/ephemeris" className="text-xs font-medium text-primary hover:text-lavender transition-colors">
                   View Ephemeris
                 </Link>
@@ -336,7 +336,7 @@ export default function DashboardPage() {
             )}
             <div className="glass-panel rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">Upcoming Transits</h3>
+                <h2 className="text-lg font-bold text-white">Upcoming Transits</h2>
                 <Link to="/transits" className="text-sm text-slate-200 hover:text-white transition-colors">
                   View All Transits
                 </Link>
@@ -384,7 +384,7 @@ export default function DashboardPage() {
             {/* Your Charts Section */}
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6 flex flex-col h-full">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">Your Charts</h3>
+                <h2 className="text-lg font-bold text-white">Your Charts</h2>
                 <Link
                   to="/charts/new"
                   className="size-8 rounded-lg bg-white/15 flex items-center justify-center text-slate-200 hover:text-white hover:bg-white/15 transition-all"
