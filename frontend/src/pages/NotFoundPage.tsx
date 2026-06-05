@@ -6,7 +6,7 @@ export function NotFoundPage() {
     <PublicPageLayout>
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="text-center">
-          <span className="material-symbols-outlined text-primary mb-6" style={{ fontSize: '80px' }} aria-hidden="true">
+          <span className="material-symbols-outlined text-primary mb-6 text-8xl" aria-hidden="true">
             explore_off
           </span>
           <h1 className="text-4xl font-bold text-white mb-4">Page Not Found</h1>
