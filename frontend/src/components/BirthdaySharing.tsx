@@ -115,7 +115,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     return (
       <div className="rounded-xl border border-cosmic-border bg-white/15 p-4">
         <div className="flex items-center gap-3 mb-3">
-          <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '24px' }}>card_giftcard</span>
+          <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true" style={{ fontSize: '24px' }}>card_giftcard</span>
           <div>
             <h3 className="font-semibold text-slate-200 text-lg">Solar Return Reading for {year}</h3>
             <p className="text-sm text-slate-200">
@@ -153,7 +153,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
         <div className="mt-3 pt-3 border-t border-cosmic-border">
           <p className="flex items-center gap-2 text-xs text-slate-200">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span>
+            <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span>
             This is a gift from a friend who cares about your journey.
           </p>
         </div>
@@ -164,7 +164,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
   return (
     <div role="region" aria-label="Birthday Sharing" className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
-        <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '32px' }}>card_giftcard</span>
+        <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true">card_giftcard</span>
         <div>
           <h2 className="text-xl font-bold text-slate-200">Share as Gift</h2>
           <p className="text-sm text-slate-200">Send this solar return reading to someone special</p>
@@ -180,7 +180,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
       {/* Success Message */}
       {success && !generatedLink && (
         <div aria-live="polite" className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 p-4 mb-4">
-          <span className="material-symbols-outlined text-green-400 flex-shrink-0" aria-hidden="true" style={{ fontSize: '20px' }}>check</span>
+          <span className="material-symbols-outlined text-4xl text-green-400 flex-shrink-0" aria-hidden="true">check</span>
           <div>
             <strong className="text-green-300">Success!</strong>
             <p className="text-sm text-green-400">{shareMethod === 'email' ? 'Email sent successfully!' : 'Link generated!'}</p>
@@ -217,7 +217,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               }`}
               onClick={() => setShareMethod('link')}
             >
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>link</span>
+              <span className="material-symbols-outlined text-4xl" aria-hidden="true">link</span>
               Share Link
             </button>
             <button type="button"
@@ -228,7 +228,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               }`}
               onClick={() => setShareMethod('email')}
             >
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>mail</span>
+              <span className="material-symbols-outlined text-4xl" aria-hidden="true">mail</span>
               Send Email
             </button>
           </div>
@@ -302,7 +302,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 disabled={loading}
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>share</span>
+                <span className="material-symbols-outlined text-4xl" aria-hidden="true">share</span>
                 <span aria-live="polite">{loading ? 'Generating...' : 'Generate Link'}</span>
               </button>
 
@@ -321,14 +321,14 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                     />
                     {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                     <button type="button" onClick={handleCopyLink} className="flex items-center gap-1 rounded-lg border border-cosmic-border bg-cosmic-card px-3 py-2 text-sm font-medium text-slate-200 hover:bg-white/15 transition-colors">
-                      {copied ? <span className="material-symbols-outlined text-green-400" aria-hidden="true" style={{ fontSize: '18px' }}>check</span> : <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>content_copy</span>}
+                      {copied ? <span className="material-symbols-outlined text-4xl text-green-400" aria-hidden="true">check</span> : <span className="material-symbols-outlined text-4xl" aria-hidden="true">content_copy</span>}
                       {copied ? 'Copied!' : 'Copy'}
                     </button>
                   </div>
 
                   <div className="space-y-1 text-xs text-slate-200">
-                    <p className="flex items-center gap-1"><span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>calendar_today</span> Expires: {linkSettings.expiresIn} days</p>
-                    <p className="flex items-center gap-1"><span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
+                    <p className="flex items-center gap-1"><span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>calendar_today</span> Expires: {linkSettings.expiresIn} days</p>
+                    <p className="flex items-center gap-1"><span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
                   </div>
                 </div>
               )}
@@ -393,7 +393,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                 disabled={loading || !emailSettings.to}
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>mail</span>
+                <span className="material-symbols-outlined text-4xl" aria-hidden="true">mail</span>
                 <span aria-live="polite">{loading ? 'Sending...' : 'Send Email'}</span>
               </button>
             </div>

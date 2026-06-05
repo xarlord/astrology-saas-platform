@@ -117,7 +117,7 @@ export default function LearnPage() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2.5 bg-primary/10 rounded-xl">
-            <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '22px' }}>menu_book</span>
+            <span className="material-symbols-outlined text-primary text-xl" aria-hidden="true">menu_book</span>
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Learn Astrology</h1>

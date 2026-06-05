@@ -37,7 +37,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey }) => {
         <header className="mb-10">
           <div className="flex items-center gap-3 mb-3">
             {pageData.icon && (
-              <span className="material-symbols-outlined text-primary" style={{ fontSize: '32px' }} aria-hidden="true">
+              <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true">
                 {pageData.icon}
               </span>
             )}

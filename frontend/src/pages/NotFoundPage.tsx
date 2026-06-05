@@ -18,7 +18,7 @@ export function NotFoundPage() {
               to="/"
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '20px' }} aria-hidden="true">home</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">home</span>
               Go Home
             </Link>
             <Link

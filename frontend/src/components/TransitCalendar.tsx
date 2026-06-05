@@ -32,16 +32,16 @@ export interface TransitCalendarProps {
 
 // Material Symbol icon factories for planets (accept optional size in px)
 const PLANET_CONFIG = {
-  sun: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FFD700' }}>light_mode</span>, color: '#FFD700', name: 'Sun' },
-  moon: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#C0C0C0' }}>dark_mode</span>, color: '#C0C0C0', name: 'Moon' },
-  mercury: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#8B4513' }}>circle</span>, color: '#8B4513', name: 'Mercury' },
-  venus: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FF69B4' }}>circle</span>, color: '#FF69B4', name: 'Venus' },
-  mars: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FF0000' }}>circle</span>, color: '#FF0000', name: 'Mars' },
-  jupiter: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#FFA500' }}>circle</span>, color: '#FFA500', name: 'Jupiter' },
-  saturn: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#696969' }}>circle</span>, color: '#696969', name: 'Saturn' },
-  uranus: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#40E0D0' }}>circle</span>, color: '#40E0D0', name: 'Uranus' },
-  neptune: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#4169E1' }}>circle</span>, color: '#4169E1', name: 'Neptune' },
-  pluto: { icon: (size = 12) => <span className="material-symbols-outlined" style={{ fontSize: `${size}px`, color: '#8B0000' }}>circle</span>, color: '#8B0000', name: 'Pluto' },
+  sun: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#FFD700' }}>light_mode</span>, color: '#FFD700', name: 'Sun' },
+  moon: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#C0C0C0' }}>dark_mode</span>, color: '#C0C0C0', name: 'Moon' },
+  mercury: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#8B4513' }}>circle</span>, color: '#8B4513', name: 'Mercury' },
+  venus: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#FF69B4' }}>circle</span>, color: '#FF69B4', name: 'Venus' },
+  mars: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#FF0000' }}>circle</span>, color: '#FF0000', name: 'Mars' },
+  jupiter: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#FFA500' }}>circle</span>, color: '#FFA500', name: 'Jupiter' },
+  saturn: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#696969' }}>circle</span>, color: '#696969', name: 'Saturn' },
+  uranus: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#40E0D0' }}>circle</span>, color: '#40E0D0', name: 'Uranus' },
+  neptune: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#4169E1' }}>circle</span>, color: '#4169E1', name: 'Neptune' },
+  pluto: { icon: (size = 12) => <span className="material-symbols-outlined text-xl" style={{ fontSize: `${size}px`, color: '#8B0000' }}>circle</span>, color: '#8B0000', name: 'Pluto' },
 };
 
 // Zodiac signs
@@ -196,7 +196,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-white/15 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Previous month"
           >
-            <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
+            <span className="material-symbols-outlined text-slate-200" aria-hidden="true">chevron_left</span>
           </button>
           <h2 className="text-lg font-semibold text-white min-w-[180px] text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -206,7 +206,7 @@ export function TransitCalendar({
             className="p-2 rounded-lg hover:bg-white/15 transition-colors min-h-[44px] min-w-[44px] pointer-coarse:min-h-[44px] pointer-coarse:min-w-[44px] focus-visible:outline-2 focus-visible:outline-current high-contrast:focus-visible:outline-3 high-contrast:focus-visible:outline-current"
             aria-label="Next month"
           >
-            <span className="material-symbols-outlined text-slate-200" style={{ fontSize: '20px' }}>chevron_right</span>
+            <span className="material-symbols-outlined text-slate-200">chevron_right</span>
           </button>
         </div>
 

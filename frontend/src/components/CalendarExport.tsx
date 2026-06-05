@@ -113,7 +113,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
     <div className="max-w-[600px] mx-auto p-6 sm:p-4 glass-panel rounded-2xl">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-amber-100 text-amber-500 rounded-xl shrink-0">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '24px' }}>file_download</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '24px' }}>file_download</span>
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-white">Export Calendar</h2>
@@ -192,7 +192,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
             <span className="text-sm text-slate-200">Include my personal transits</span>
           </label>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-emerald-500/10 border-l-[3px] border-emerald-500 rounded text-[13px] text-emerald-300 leading-snug">
-            <span className="material-symbols-outlined shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>error</span>
+            <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>error</span>
             <span>Uncheck to export only global astrological events (retrogrades, eclipses, moon phases)</span>
           </div>
         </div>
@@ -200,7 +200,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         {/* Success Message */}
         {success && (
           <div className="flex items-center gap-2 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-sm">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>check_circle</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">check_circle</span>
             <span>Calendar exported successfully!</span>
           </div>
         )}
@@ -208,7 +208,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         {/* Error Message */}
         {error && (
           <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>error</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">error</span>
             <span>{error}</span>
           </div>
         )}
@@ -223,7 +223,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>download</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">download</span>
                 Export as iCal
               </>
             )}
@@ -233,7 +233,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
         {/* Info */}
         <div className="p-4 bg-primary/5 rounded-xl border border-primary/20">
           <div className="flex items-center gap-2 text-[13px] text-primary">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
             <span>Compatible with Google Calendar, Outlook, Apple Calendar, and more</span>
           </div>
         </div>

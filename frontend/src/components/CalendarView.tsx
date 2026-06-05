@@ -166,7 +166,7 @@ export function CalendarView({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button type="button" onClick={handlePrevMonth} className="flex items-center justify-center w-10 h-10 border border-white/15 bg-transparent rounded-lg cursor-pointer transition-all duration-200 text-slate-200 hover:bg-white/15 hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary" aria-label="Previous month">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true">chevron_left</span>
         </button>
 
         <h2 className="m-0 text-2xl md:text-lg font-semibold text-white">
@@ -174,7 +174,7 @@ export function CalendarView({
         </h2>
 
         <button type="button" onClick={handleNextMonth} className="flex items-center justify-center w-10 h-10 border border-white/15 bg-transparent rounded-lg cursor-pointer transition-all duration-200 text-slate-200 hover:bg-white/15 hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary" aria-label="Next month">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_right</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true">chevron_right</span>
         </button>
       </div>
 

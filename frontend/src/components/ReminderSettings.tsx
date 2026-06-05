@@ -99,7 +99,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
     <div className="max-w-[600px] mx-auto p-6 sm:p-4 glass-panel rounded-2xl">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-primary/15 text-primary rounded-xl shrink-0">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '24px' }}>notifications</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '24px' }}>notifications</span>
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-white">Event Reminders</h2>
@@ -149,7 +149,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 onChange={() => handleReminderTypeChange('email')}
                 className="hidden"
               />
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>mail</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">mail</span>
               <span className="text-sm font-medium">Email</span>
             </label>
 
@@ -164,7 +164,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 onChange={() => handleReminderTypeChange('push')}
                 className="hidden"
               />
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>smartphone</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">smartphone</span>
               <span className="text-sm font-medium">Push Notification</span>
             </label>
           </div>
@@ -193,7 +193,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
             ))}
           </div>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-amber-500/10 border-l-[3px] border-amber-500 rounded text-[13px] text-amber-300 leading-snug">
-            <span className="material-symbols-outlined shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>info</span>
+            <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>info</span>
             <span>Select multiple timing options to receive reminders at different intervals</span>
           </div>
         </div>
@@ -219,7 +219,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
         {/* Success Message */}
         {success && (
           <div className="flex items-center gap-2 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-sm">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>check</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">check</span>
             <span>Reminder settings saved successfully!</span>
           </div>
         )}

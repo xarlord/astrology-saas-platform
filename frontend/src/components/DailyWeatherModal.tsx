@@ -99,7 +99,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
             className="flex items-center justify-center w-8 h-8 border-none bg-transparent text-slate-200 cursor-pointer rounded-lg transition-all duration-200 hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:bg-white/15"
             aria-label="Close modal"
           >
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '24px' }}>close</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '24px' }}>close</span>
           </button>
         </div>
 
@@ -119,7 +119,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {/* Moon Phase */}
         <div className="p-4 px-6 bg-white/15 rounded-xl mx-6 mb-4">
           <div className="flex items-center gap-2 mb-3">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>dark_mode</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">dark_mode</span>
             <h3 className="m-0 text-base font-semibold text-white">Moon Phase</h3>
           </div>
           <div className="flex items-center gap-4 sm:flex-col sm:text-center">
@@ -143,7 +143,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {weather.globalEvents.length > 0 && (
           <div className="px-6 pb-4">
             <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>star</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">star</span>
               <h3 className="m-0 text-base font-semibold text-white">Astrological Events</h3>
             </div>
             <div className="flex flex-col gap-3">
@@ -158,7 +158,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
         {weather.personalTransits.length > 0 && (
           <div className="px-6 pb-4">
             <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>auto_awesome</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">auto_awesome</span>
               <h3 className="m-0 text-base font-semibold text-white">Your Transits</h3>
             </div>
             <div className="flex flex-col gap-3">

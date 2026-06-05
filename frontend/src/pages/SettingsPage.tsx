@@ -137,7 +137,7 @@ export default function SettingsPage() {
       <div className="max-w-2xl space-y-6">
         {/* Profile Section */}
         <SettingsSection
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>person</span>}
+          icon={<span className="material-symbols-outlined text-xl" aria-hidden="true">person</span>}
           title="Profile"
         >
           <div className="py-4">
@@ -162,14 +162,14 @@ export default function SettingsPage() {
             </p>
             <button type="button" onClick={() => navigate('/profile')} className="flex items-center gap-1 text-sm text-primary hover:text-lavender cursor-pointer">
               Go to Profile
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>arrow_forward</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
         </SettingsSection>
 
         {/* Display Section */}
         <SettingsSection
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>light_mode</span>}
+          icon={<span className="material-symbols-outlined text-xl" aria-hidden="true">light_mode</span>}
           title="Display"
         >
           <ToggleSwitch
@@ -182,7 +182,7 @@ export default function SettingsPage() {
 
         {/* Notifications Section */}
         <SettingsSection
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>notifications</span>}
+          icon={<span className="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>}
           title="Notifications"
         >
           <ToggleSwitch

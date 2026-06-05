@@ -105,7 +105,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <div>
           <h2 className="text-2xl font-bold text-white m-0">Your {year} Solar Return</h2>
           <p className="flex items-center gap-2 mt-1 text-sm text-slate-200 m-0">
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
             Solar Return: {new Date(returnDate).toLocaleDateString(APP_LOCALE, {
               weekday: 'long',
               year: 'numeric',
@@ -118,13 +118,13 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <div className="flex gap-2">
           {onDownload && (
             <button type="button" onClick={onDownload} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/15 text-slate-200 hover:bg-white/15 text-sm font-medium transition-colors">
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>download</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">download</span>
               Save
             </button>
           )}
           {onShare && (
             <button type="button" onClick={onShare} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 text-sm font-medium transition-colors">
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>share</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">share</span>
               Share
             </button>
           )}
@@ -237,7 +237,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
                 </div>
                 <p className="text-sm text-slate-200 m-0 mb-3">{challenge.description}</p>
                 <div className="flex items-start gap-2 text-sm text-slate-200">
-                  <span className="material-symbols-outlined shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '16px' }}>lightbulb</span>
+                  <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '16px' }}>lightbulb</span>
                   <span><strong>Advice:</strong> {challenge.advice}</span>
                 </div>
               </div>
@@ -258,7 +258,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
             {interpretation.opportunities.map((opportunity, index) => (
               <div key={index} className="p-4 bg-green-500/10 border-l-4 border-green-500 rounded-r-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="material-symbols-outlined text-green-500" aria-hidden="true" style={{ fontSize: '20px' }}>card_giftcard</span>
+                  <span className="material-symbols-outlined text-green-500" aria-hidden="true">card_giftcard</span>
                   <h4 className="text-base font-semibold text-white m-0">{opportunity.area}</h4>
                 </div>
                 <p className="text-sm text-slate-200 m-0 mb-2">{opportunity.description}</p>

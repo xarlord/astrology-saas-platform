@@ -57,7 +57,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
     <div role="region" aria-label="AI interpretation controls" aria-busy={isGenerating} className="bg-gradient-to-r from-primary/20 to-cosmic-blue/20 backdrop-blur-md border border-primary/20 rounded-xl p-5 text-white mb-5">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2 font-semibold text-base">
-          <span className="material-symbols-outlined animate-pulse" aria-hidden="true" style={{ fontSize: '18px' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-lg animate-pulse" aria-hidden="true">auto_awesome</span>
           <span>AI-Enhanced Interpretations</span>
         </div>
         <button
@@ -66,7 +66,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
           onClick={() => setShowInfo(!showInfo)}
           aria-label="Toggle AI info"
         >
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>info</span>
+          <span className="material-symbols-outlined text-lg" aria-hidden="true" style={{ fontSize: '16px' }}>info</span>
         </button>
       </div>
 

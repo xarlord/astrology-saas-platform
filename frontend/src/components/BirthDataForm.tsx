@@ -13,7 +13,7 @@ interface ErrorMessageProps {
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
     <p id={id} className="error-message" role="alert" aria-live="assertive">
-      <span className="material-symbols-outlined error-icon" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+      <span className="material-symbols-outlined text-xl error-icon" aria-hidden="true">error</span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -312,7 +312,7 @@ export function BirthDataForm({
               />
               {errors.birthDate && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -343,7 +343,7 @@ export function BirthDataForm({
               />
               {errors.birthTime && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -403,7 +403,7 @@ export function BirthDataForm({
               />
               {errors.birthPlace && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -486,7 +486,7 @@ export function BirthDataForm({
               />
               {errors.chartName && (
                 <div className="error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>

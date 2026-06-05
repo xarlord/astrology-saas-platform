@@ -121,10 +121,10 @@ function DateSelector({
   onDateChange: (date: string) => void;
 }) {
   const viewModes = [
-    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>light_mode</span> },
-    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
-    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
-    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>dark_mode</span> },
+    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>light_mode</span> },
+    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>dark_mode</span> },
   ];
 
   return (
@@ -164,7 +164,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-cosmic-card-solid border border-white/15 hover:bg-white/15"
           aria-label="Previous day"
         >
-          <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
+          <span className="material-symbols-outlined text-slate-200" aria-hidden="true">chevron_left</span>
         </button>
         <input
           type="date"
@@ -182,7 +182,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-cosmic-card-solid border border-white/15 hover:bg-white/15"
           aria-label="Next day"
         >
-          <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_right</span>
+          <span className="material-symbols-outlined text-slate-200" aria-hidden="true">chevron_right</span>
         </button>
       </div>
     </div>
@@ -606,7 +606,7 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               className="p-2 hover:bg-white/15 rounded-lg text-slate-200 hover:text-white transition-colors"
               aria-label="Close"
             >
-              <span className="material-symbols-outlined" aria-hidden="true">close</span>
+              <span className="material-symbols-outlined text-xl" aria-hidden="true">close</span>
             </button>
           </div>
 

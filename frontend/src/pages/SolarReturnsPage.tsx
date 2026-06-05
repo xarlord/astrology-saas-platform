@@ -109,7 +109,7 @@ export const SolarReturnsPage: React.FC = () => {
           onClick={() => navigate('/solar-returns')}
           className="flex items-center gap-1 text-primary/80 hover:text-primary"
         >
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>arrow_back</span>
+          <span className="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
           Back to Dashboard
         </button>
 
@@ -127,10 +127,10 @@ export const SolarReturnsPage: React.FC = () => {
     if (!selectedReturn) return null;
 
     const tabs: { mode: ViewMode; label: string; icon: React.ReactNode }[] = [
-      { mode: 'chart', label: 'Chart', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>calendar_today</span> },
-      { mode: 'interpretation', label: 'Interpretation', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>calendar_today</span> },
-      { mode: 'relocate', label: 'Relocate', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>settings</span> },
-      { mode: 'share', label: 'Share', icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>share</span> },
+      { mode: 'chart', label: 'Chart', icon: <span className="material-symbols-outlined text-lg" aria-hidden="true">calendar_today</span> },
+      { mode: 'interpretation', label: 'Interpretation', icon: <span className="material-symbols-outlined text-lg" aria-hidden="true">calendar_today</span> },
+      { mode: 'relocate', label: 'Relocate', icon: <span className="material-symbols-outlined text-lg" aria-hidden="true">settings</span> },
+      { mode: 'share', label: 'Share', icon: <span className="material-symbols-outlined text-lg" aria-hidden="true">share</span> },
     ];
 
     return (

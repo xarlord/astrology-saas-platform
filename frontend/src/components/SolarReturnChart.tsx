@@ -367,15 +367,15 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
 
       <div className="flex items-center justify-center gap-2">
         <button type="button" title="Zoom out" onClick={handleZoomOut} disabled={zoom <= 0.5} className="p-2 rounded-lg bg-white/15 hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>zoom_out</span>
+          <span className="material-symbols-outlined text-4xl" aria-hidden="true">zoom_out</span>
         </button>
         <span className="text-sm text-slate-200 min-w-[3rem] text-center">{Math.round(zoom * 100)}%</span>
         <button type="button" title="Zoom in" onClick={handleZoomIn} disabled={zoom >= 2} className="p-2 rounded-lg bg-white/15 hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>zoom_in</span>
+          <span className="material-symbols-outlined text-4xl" aria-hidden="true">zoom_in</span>
         </button>
 
         <button type="button" onClick={handleDownload} title="Download as PNG" className="flex items-center gap-1 ml-4 px-3 py-2 rounded-lg bg-white/15 hover:bg-white/15 text-sm text-slate-200 transition-colors">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>download</span>
+          <span className="material-symbols-outlined text-4xl" aria-hidden="true">download</span>
           Download
         </button>
       </div>
@@ -383,7 +383,7 @@ export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({
       <div className="relative flex justify-center">
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-cosmic-page/80 z-10">
-            <span className="material-symbols-outlined animate-spin text-primary" aria-hidden="true" style={{ fontSize: '32px' }}>progress_activity</span>
+            <span className="material-symbols-outlined text-4xl animate-spin text-primary" aria-hidden="true">progress_activity</span>
             <p aria-live="polite" className="mt-2 text-slate-200">Calculating chart...</p>
           </div>
         )}

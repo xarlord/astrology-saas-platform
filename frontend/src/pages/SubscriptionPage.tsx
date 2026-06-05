@@ -83,7 +83,7 @@ function PricingTierCard({
         <ul className="space-y-3 mb-8 flex-1">
           {features.map((feature) => (
             <li key={feature} className="flex items-start gap-2.5">
-              <span className="material-symbols-outlined text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '20px' }}>check</span>
+              <span className="material-symbols-outlined text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true">check</span>
               <span className="text-sm text-slate-200">{feature}</span>
             </li>
           ))}
@@ -128,7 +128,7 @@ const TIERS = [
       'Limited AI interpretations',
       'Standard house systems',
     ],
-    icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>star</span>,
+    icon: <span className="material-symbols-outlined text-xl" aria-hidden="true">star</span>,
     accentColor: '#6b7280',
   },
   {
@@ -145,7 +145,7 @@ const TIERS = [
       'All house systems',
       'Unlimited AI interpretations',
     ],
-    icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>workspace_premium</span>,
+    icon: <span className="material-symbols-outlined text-xl" aria-hidden="true">workspace_premium</span>,
     accentColor: '#8b5cf6',
   },
   {
@@ -163,7 +163,7 @@ const TIERS = [
       'Early access to new features',
       'API access',
     ],
-    icon: <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px' }}>bolt</span>,
+    icon: <span className="material-symbols-outlined text-xl" aria-hidden="true">bolt</span>,
     accentColor: '#f59e0b',
   },
 ];
@@ -283,7 +283,7 @@ export default function SubscriptionPage() {
                         <td key={tier} className="px-6 py-3.5 text-center">
                           {typeof val === 'boolean' ? (
                             val ? (
-                              <span className="material-symbols-outlined text-green-500" aria-hidden="true" style={{ fontSize: '20px' }} aria-label="Included">check</span>
+                              <span className="material-symbols-outlined text-green-500" aria-hidden="true" aria-label="Included">check</span>
                             ) : (
                               <span className="text-slate-400" aria-label="Not included">--</span>
                             )

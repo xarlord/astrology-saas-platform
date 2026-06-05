@@ -53,12 +53,12 @@ export const PushNotificationPermission: React.FC<PushNotificationPermissionProp
             onClick={handleDismiss}
             aria-label="Dismiss notification"
           >
-            <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '18px' }}>close</span>
+            <span className="material-symbols-outlined text-4xl" aria-hidden="true">close</span>
           </button>
 
           <div className="flex flex-col gap-4">
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white self-start">
-              <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '32px' }}>notifications</span>
+              <span className="material-symbols-outlined text-4xl" aria-hidden="true">notifications</span>
             </div>
 
             <div>

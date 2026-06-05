@@ -20,7 +20,7 @@ interface ErrorMessageProps {
 function ErrorMessage({ message, id }: ErrorMessageProps) {
   return (
     <p id={id} data-testid="error-message" className="error-message" role="alert" aria-live="assertive">
-      <span className="material-symbols-outlined error-icon" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+      <span className="material-symbols-outlined text-xl error-icon" aria-hidden="true">error</span>
       <span className="error-text">{message}</span>
     </p>
   );
@@ -118,7 +118,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-lavender/60">
-                <span className="material-symbols-outlined" aria-hidden="true">mail</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">mail</span>
               </div>
               <input
                 type="email"
@@ -140,7 +140,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               />
               {errors.email && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -153,7 +153,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-lavender/60">
-                <span className="material-symbols-outlined" aria-hidden="true">lock</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -175,7 +175,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               />
               {errors.password && (
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
               <button
@@ -185,9 +185,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility_off</span>
+                  <span className="material-symbols-outlined text-xl">visibility_off</span>
                 ) : (
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility</span>
+                  <span className="material-symbols-outlined text-xl">visibility</span>
                 )}
               </button>
             </div>
@@ -363,7 +363,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-lavender/60">
-                <span className="material-symbols-outlined" aria-hidden="true">person</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">person</span>
               </div>
               <input
                 type="text"
@@ -385,7 +385,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.name && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -398,7 +398,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-lavender/60">
-                <span className="material-symbols-outlined" aria-hidden="true">mail</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">mail</span>
               </div>
               <input
                 type="email"
@@ -420,7 +420,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
               />
               {errors.email && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 error-icon-wrapper">
-                  <span className="material-symbols-outlined text-red-500" style={{ fontSize: '20px' }} aria-hidden="true">error</span>
+                  <span className="material-symbols-outlined text-red-500" aria-hidden="true">error</span>
                 </div>
               )}
             </div>
@@ -433,7 +433,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-lavender/60">
-                <span className="material-symbols-outlined" aria-hidden="true">lock</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -460,9 +460,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility_off</span>
+                  <span className="material-symbols-outlined text-xl">visibility_off</span>
                 ) : (
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility</span>
+                  <span className="material-symbols-outlined text-xl">visibility</span>
                 )}
               </button>
             </div>
@@ -475,7 +475,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-lavender/60">
-                <span className="material-symbols-outlined" aria-hidden="true">lock</span>
+                <span className="material-symbols-outlined text-xl" aria-hidden="true">lock</span>
               </div>
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -502,9 +502,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
                 {showConfirmPassword ? (
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility_off</span>
+                  <span className="material-symbols-outlined text-xl">visibility_off</span>
                 ) : (
-                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>visibility</span>
+                  <span className="material-symbols-outlined text-xl">visibility</span>
                 )}
               </button>
             </div>
