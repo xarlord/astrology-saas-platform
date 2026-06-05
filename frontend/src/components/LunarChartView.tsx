@@ -7,6 +7,7 @@
 import { LunarReturnChart, LunarAspect } from '@/services/lunarReturn.api';
 import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
+import { APP_LOCALE } from '../utils/constants';
 
 interface LunarChartViewProps {
   chart: LunarReturnChart;
@@ -147,7 +148,7 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
         )}
         <h2>Lunar Return Chart</h2>
         <p className="return-date">
-          {new Date(chart.returnDate).toLocaleDateString('en-US', {
+          {new Date(chart.returnDate).toLocaleDateString(APP_LOCALE, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',

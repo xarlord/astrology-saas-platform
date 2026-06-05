@@ -3,6 +3,7 @@ import { useAuth, useCharts } from '../hooks';
 import { EmptyState } from './EmptyState';
 import { logger } from '@/utils/logger';
 import locationService from '@/services/location.service';
+import { APP_LOCALE } from '../utils/constants';
 
 // Types based on findings.md
 export interface UserProfile {
@@ -495,7 +496,7 @@ function ProfileHeader({
                 Timezone: <span className="text-primary">{user.timezone}</span>
               </p>
               <p className="text-sm text-slate-200 mt-1">
-                Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                Member since {new Date(user.createdAt).toLocaleDateString(APP_LOCALE, { month: 'long', year: 'numeric' })}
               </p>
             </div>
           )}
@@ -596,7 +597,7 @@ function AccountTab({ user }: { user?: UserProfile }) {
           </label>
           <input
             type="text"
-            value={new Date(user.createdAt).toLocaleDateString('en-US', {
+            value={new Date(user.createdAt).toLocaleDateString(APP_LOCALE, {
               month: 'long',
               day: 'numeric',
               year: 'numeric',
@@ -707,7 +708,7 @@ function ChartCard({
       <div className="p-4">
         <h4 className="font-semibold text-white mb-1">{chart.name}</h4>
         <p className="text-sm text-slate-200 mb-2">
-          {new Date(chart.birthData.date).toLocaleDateString('en-US', {
+          {new Date(chart.birthData.date).toLocaleDateString(APP_LOCALE, {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
@@ -984,7 +985,7 @@ function SubscriptionTab({ user }: { user?: UserProfile }) {
             </p>
             {user.subscription.renewalDate && (
               <p className="text-xs text-primary mt-1">
-                Renews on {new Date(user.subscription.renewalDate).toLocaleDateString('en-US', {
+                Renews on {new Date(user.subscription.renewalDate).toLocaleDateString(APP_LOCALE, {
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric',

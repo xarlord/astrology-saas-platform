@@ -10,6 +10,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useReports } from '../../hooks/useReports';
 import type { Report } from '../../stores/reportStore';
+import { APP_LOCALE } from '../../utils/constants';
 
 // ============================================================================
 // TYPES
@@ -29,12 +30,12 @@ interface TransitReportHistoryProps {
 /** Format a report's created date as "Mon YYYY" */
 function formatMonth(report: Report): string {
   const date = report.completedAt ?? report.createdAt;
-  return new Date(date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  return new Date(date).toLocaleDateString(APP_LOCALE, { month: 'long', year: 'numeric' });
 }
 
 /** Format a date as "Mon DD, YYYY" */
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
+  return new Date(dateStr).toLocaleDateString(APP_LOCALE, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

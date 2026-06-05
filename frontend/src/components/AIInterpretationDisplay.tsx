@@ -4,6 +4,7 @@
  */
 
 import { TextGenerateEffect } from './effects';
+import { APP_LOCALE } from '../utils/constants';
 
 interface AIInterpretationDisplayProps {
   interpretation: {
@@ -23,7 +24,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString(APP_LOCALE, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

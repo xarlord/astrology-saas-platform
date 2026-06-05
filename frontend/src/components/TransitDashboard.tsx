@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PlanetSymbol, AspectSymbol, EmptyState } from './';
+import { APP_LOCALE } from '../utils/constants';
 
 // Types based on findings.md
 export interface Transit {
@@ -240,7 +241,7 @@ function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onT
       {sortedDates.map((date) => (
         <div key={date}>
           <h4 className="text-sm font-medium text-slate-200 mb-3">
-            {new Date(date).toLocaleDateString('en-US', {
+            {new Date(date).toLocaleDateString(APP_LOCALE, {
               weekday: 'long',
               month: 'short',
               day: 'numeric',
@@ -319,7 +320,7 @@ function TransitCalendar({
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-white">
-        Transit Calendar - {today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+        Transit Calendar - {today.toLocaleDateString(APP_LOCALE, { month: 'long', year: 'numeric' })}
       </h3>
 
       {/* Day headers */}
@@ -581,7 +582,7 @@ function getIntensityColor(intensity: number): string {
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(APP_LOCALE, {
     month: 'short',
     day: 'numeric',
   });

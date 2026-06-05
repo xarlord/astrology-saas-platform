@@ -9,6 +9,7 @@
 
 import type { Validator, ValidationResult, ValidationRuleOptions } from './rules';
 import { ValidationMessageKeys, getValidationMessage, isEmpty } from './rules';
+import { APP_LOCALE } from '../constants';
 
 // ============================================================================
 // Types
@@ -314,8 +315,8 @@ export function birthTimezone(options: ValidationRuleOptions = {}): Validator<st
  */
 export function getTimezoneOffset(timezone: string, date: Date = new Date()): number {
   try {
-    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
-    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+    const utcDate = new Date(date.toLocaleString(APP_LOCALE, { timeZone: 'UTC' }));
+    const tzDate = new Date(date.toLocaleString(APP_LOCALE, { timeZone: timezone }));
     return (tzDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60);
   } catch {
     return 0;

@@ -8,6 +8,7 @@
 import { useEffect } from 'react';
 import { DailyWeather as DailyWeatherType, AstrologicalEvent } from '../types/calendar.types';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { APP_LOCALE } from '../utils/constants';
 
 interface DailyWeatherModalProps {
   date: string;
@@ -68,7 +69,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(APP_LOCALE, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',

@@ -6,6 +6,7 @@ import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '@/services/lunarReturn.api';
+import { APP_LOCALE } from '../utils/constants';
 
 interface LunarHistoryViewProps {
   onBack?: () => void;
@@ -82,7 +83,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
       <div className="flex justify-between items-start p-5 bg-gradient-to-br from-primary to-purple-600 text-white">
         <div>
           <h4 className="m-0 mb-2 text-xl">
-            {new Date(lunarReturn.returnDate).toLocaleDateString('en-US', {
+            {new Date(lunarReturn.returnDate).toLocaleDateString(APP_LOCALE, {
               month: 'long',
               day: 'numeric',
               year: 'numeric',

@@ -20,6 +20,7 @@ import type {
   Aspect,
   House,
 } from '../types/api.types';
+import { APP_LOCALE } from '../utils/constants';
 
 // ============================================================================
 // TYPES
@@ -591,7 +592,7 @@ class PDFService {
     doc.setFontSize(FONT_SIZES.footer);
     doc.setTextColor(...COLORS.textLight);
 
-    const generatedDate = new Date().toLocaleDateString('en-US', {
+    const generatedDate = new Date().toLocaleDateString(APP_LOCALE, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

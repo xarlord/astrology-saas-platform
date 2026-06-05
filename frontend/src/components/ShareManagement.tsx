@@ -6,6 +6,7 @@ import { logger } from '@/utils/logger';
 
 import React, { useState, useCallback } from 'react';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { APP_LOCALE } from '../utils/constants';
 
 interface SharedLink {
   id: string;
@@ -91,7 +92,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
   }, []);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(APP_LOCALE, {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

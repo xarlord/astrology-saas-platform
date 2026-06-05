@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { useBlogStore } from '../stores/blogStore';
 import type { BlogPost } from '../services/blog.service';
+import { APP_LOCALE } from '../utils/constants';
 
 const ADMIN_EMAILS: string[] = String(import.meta.env.VITE_ADMIN_EMAILS ?? '')
   .split(',')
@@ -139,7 +140,7 @@ export default function BlogPage() {
   }
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return new Date(dateStr).toLocaleDateString(APP_LOCALE, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

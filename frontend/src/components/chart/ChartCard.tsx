@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import type { Chart } from '../../services/api.types';
+import { APP_LOCALE } from '../../utils/constants';
 
 export interface ChartCardProps {
   chart: Chart;
@@ -96,7 +97,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
 
   // Format date
   const formattedDate = chart.birthData?.birthDate
-    ? new Date(chart.birthData.birthDate).toLocaleDateString('en-US', {
+    ? new Date(chart.birthData.birthDate).toLocaleDateString(APP_LOCALE, {
         month: 'short',
         day: 'numeric',
         year: 'numeric',

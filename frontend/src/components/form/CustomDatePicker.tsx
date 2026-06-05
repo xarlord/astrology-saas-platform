@@ -7,6 +7,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { clsx } from 'clsx';
+import { APP_LOCALE } from '../../utils/constants';
 
 export interface DatePickerProps {
   value?: Date;
@@ -96,7 +97,7 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
   }, [isOpen]);
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(APP_LOCALE, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -148,7 +149,7 @@ export const CustomDatePicker: React.FC<DatePickerProps> = ({
             </button>
 
             <div className="text-white font-semibold">
-              {currentMonth.toLocaleDateString('en-US', {
+              {currentMonth.toLocaleDateString(APP_LOCALE, {
                 month: 'long',
                 year: 'numeric',
               })}

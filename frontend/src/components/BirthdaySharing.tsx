@@ -6,6 +6,7 @@ import { logger } from '@/utils/logger';
 
 import React, { useState } from 'react';
 import api from '../services/api';
+import { APP_LOCALE } from '../utils/constants';
 
 interface SolarReturnInterpretation {
   themes?: string[];
@@ -118,7 +119,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
           <div>
             <h3 className="font-semibold text-slate-200 text-lg">Solar Return Reading for {year}</h3>
             <p className="text-sm text-slate-200">
-              {new Date(returnDate).toLocaleDateString('en-US', {
+              {new Date(returnDate).toLocaleDateString(APP_LOCALE, {
                 month: 'long',
                 day: 'numeric',
                 year: 'numeric',

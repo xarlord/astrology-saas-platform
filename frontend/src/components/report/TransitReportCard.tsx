@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { useReports } from '../../hooks/useReports';
 import { Button } from '../ui/Button';
+import { APP_LOCALE } from '../../utils/constants';
 
 // ============================================================================
 // TYPES
@@ -149,7 +150,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
 
       {/* Current month label */}
       <p className="text-slate-400 text-sm mb-4">
-        {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+        {new Date().toLocaleDateString(APP_LOCALE, { month: 'long', year: 'numeric' })}
       </p>
 
       {/* Generating state */}
@@ -174,7 +175,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
                 <p className="text-white text-sm font-medium">Report Ready</p>
                 <p className="text-slate-500 text-xs">
                   {latestReport.completedAt
-                    ? new Date(latestReport.completedAt).toLocaleDateString('en-US', {
+                    ? new Date(latestReport.completedAt).toLocaleDateString(APP_LOCALE, {
                         month: 'short',
                         day: 'numeric',
                       })

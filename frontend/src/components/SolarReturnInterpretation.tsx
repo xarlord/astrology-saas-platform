@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { APP_LOCALE } from '../utils/constants';
 
 
 interface LuckyDay {
@@ -105,7 +106,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           <h2 className="text-2xl font-bold text-white m-0">Your {year} Solar Return</h2>
           <p className="flex items-center gap-2 mt-1 text-sm text-slate-200 m-0">
             <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
-            Solar Return: {new Date(returnDate).toLocaleDateString('en-US', {
+            Solar Return: {new Date(returnDate).toLocaleDateString(APP_LOCALE, {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
@@ -201,7 +202,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
             {interpretation.luckyDays.slice(0, 10).map((day, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-white/15 rounded-lg">
                 <div className="text-sm font-medium text-white">
-                  {new Date(day.date).toLocaleDateString('en-US', {
+                  {new Date(day.date).toLocaleDateString(APP_LOCALE, {
                     month: 'short',
                     day: 'numeric',
                   })}

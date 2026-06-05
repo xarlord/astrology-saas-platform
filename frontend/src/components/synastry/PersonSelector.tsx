@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { APP_LOCALE } from '../../utils/constants';
 
 export interface Chart {
   id: string;
@@ -113,7 +114,7 @@ const PersonSelector: React.FC<PersonSelectorProps> = ({
               <h3 className="text-xl font-bold text-white">{chart.name}</h3>
               {chart.birthDate && (
                 <p className="text-slate-400 text-sm">
-                  {new Date(chart.birthDate).toLocaleDateString('en-US', {
+                  {new Date(chart.birthDate).toLocaleDateString(APP_LOCALE, {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',

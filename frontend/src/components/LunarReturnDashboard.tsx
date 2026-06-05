@@ -6,6 +6,7 @@ import { logger } from '@/utils/logger';
 
 import React, { useState, useEffect } from 'react';
 import { LunarReturnChart, getCurrentLunarReturn, getNextLunarReturn, calculateLunarReturnChart } from '@/services/lunarReturn.api';
+import { APP_LOCALE } from '../utils/constants';
 
 interface LunarReturnDashboardProps {
   onChartClick?: (chart: LunarReturnChart) => void;
@@ -96,7 +97,7 @@ const LunarReturnDashboard: React.FC<LunarReturnDashboardProps> = ({
               <span className="text-xl opacity-90 mt-2">days until return</span>
             </div>
             <div className="text-2xl font-medium opacity-95">
-              {new Date(currentReturn.returnDate).toLocaleDateString('en-US', {
+              {new Date(currentReturn.returnDate).toLocaleDateString(APP_LOCALE, {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',

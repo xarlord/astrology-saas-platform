@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { useTodayTransits } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 import { PLANET_SYMBOLS_LOWER } from '../utils/astrology/planetPosition';
+import { APP_LOCALE } from '../utils/constants';
 
 // Aspect label mapping
 const ASPECT_LABELS: Record<string, string> = {
@@ -78,7 +79,7 @@ const EphemerisPage: React.FC = () => {
     try {
       const dateStr = data.date.includes('T') ? data.date : `${data.date}T12:00:00Z`;
       const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', {
+      return date.toLocaleDateString(APP_LOCALE, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',

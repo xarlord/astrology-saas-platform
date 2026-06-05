@@ -15,6 +15,7 @@ import {
   ReferenceLine,
   DotProps,
 } from 'recharts';
+import { APP_LOCALE } from '../../utils/constants';
 
 export interface TransitDataPoint {
   date: string;
@@ -47,7 +48,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
     return (
       <div className="bg-surface-dark border border-glass-border rounded-lg p-3 shadow-xl">
         <p className="text-white text-sm font-semibold">
-          {new Date(data.date).toLocaleDateString('en-US', {
+          {new Date(data.date).toLocaleDateString(APP_LOCALE, {
             month: 'short',
             day: 'numeric',
           })}
@@ -111,7 +112,7 @@ const TransitChart: React.FC<TransitChartProps> = ({
   // Format date for X-axis
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString(APP_LOCALE, { month: 'short', day: 'numeric' });
   };
 
   // Generate chart data

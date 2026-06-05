@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { APP_LOCALE } from '../utils/constants';
 
 // Types
 export interface Transit {
@@ -387,7 +388,7 @@ export function TransitCalendar({
           aria-label={`Transits for ${selectedDate.toDateString()}`}
         >
           <h3 className="font-semibold text-white mb-3">
-            {selectedDate.toLocaleDateString('en-US', {
+            {selectedDate.toLocaleDateString(APP_LOCALE, {
               weekday: 'long',
               year: 'numeric',
               month: 'long',

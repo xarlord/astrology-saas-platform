@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { APP_LOCALE } from '../../utils/constants';
 
 // ============================================================================
 // TYPES
@@ -139,7 +140,7 @@ export const MonthlyTransitReport: React.FC<MonthlyTransitReportProps> = ({
   onPremiumCta,
   className = '',
 }) => {
-  const generatedDate = new Date().toLocaleDateString('en-US', {
+  const generatedDate = new Date().toLocaleDateString(APP_LOCALE, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

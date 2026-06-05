@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { useCalendarEvents } from '../hooks/useCalendarEvents';
 import type { CalendarEvent } from '../services/calendar.service';
 import { SkeletonLoader, EmptyState } from './';
+import { APP_LOCALE } from '../utils/constants';
 
 interface AstrologicalCalendarProps {
   year?: number;
@@ -240,7 +241,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
           <div className="modal-content max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">
-                {selectedDayEvents.date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                {selectedDayEvents.date.toLocaleDateString(APP_LOCALE, { weekday: 'long', month: 'long', day: 'numeric' })}
               </h3>
               <button type="button"
                 onClick={() => setSelectedDayEvents(null)}

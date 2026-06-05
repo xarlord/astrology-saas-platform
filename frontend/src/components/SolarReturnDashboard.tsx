@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
+import { APP_LOCALE } from '../utils/constants';
 
 interface SolarReturn {
   id: string;
@@ -230,7 +231,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
             <div className="p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm text-slate-200">
                 <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
-                {new Date(solarReturn.returnDate).toLocaleDateString('en-US', {
+                {new Date(solarReturn.returnDate).toLocaleDateString(APP_LOCALE, {
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric',

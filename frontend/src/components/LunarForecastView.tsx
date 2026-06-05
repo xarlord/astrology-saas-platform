@@ -11,6 +11,7 @@ import {
   MonthlyPrediction,
   MonthlyRitual,
 } from '@/services/lunarReturn.api';
+import { APP_LOCALE } from '../utils/constants';
 
 interface LunarForecastViewProps {
   returnDate?: Date;
@@ -164,7 +165,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         {onBack && <button onClick={onBack} type="button" className="inline-block px-4 py-2 bg-white/15 border border-white/15 rounded-md text-slate-200 cursor-pointer mb-4 text-sm hover:bg-white/15 transition-colors">&larr; Back</button>}
         <h2 className="text-3xl text-white m-0 mb-2">Lunar Month Forecast</h2>
         <p className="text-slate-200 text-lg">
-          {new Date(forecast.returnDate).toLocaleDateString('en-US', {
+          {new Date(forecast.returnDate).toLocaleDateString(APP_LOCALE, {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
@@ -253,7 +254,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
                     <div key={i} className="flex flex-col gap-2 p-4 bg-white/15 rounded-lg border-l-4 border-primary">
                       <span className="inline-block w-fit px-3 py-1 bg-primary text-white rounded-full text-sm font-semibold">{date.type.replace('-', ' ')}</span>
                       <span className="text-primary font-semibold">
-                        {new Date(date.date).toLocaleDateString('en-US', {
+                        {new Date(date.date).toLocaleDateString(APP_LOCALE, {
                           month: 'short',
                           day: 'numeric',
                         })}
