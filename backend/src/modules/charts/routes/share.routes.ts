@@ -26,6 +26,30 @@ const shareTokenSchema = z.object({
  * @route   GET /api/share/:token
  * @desc    Access shared chart by token
  * @access  Public (with optional password check)
+ *
+ * @openapi
+ * /api/share/{token}:
+ *   get:
+ *     tags: [Sharing]
+ *     summary: Access a shared chart by token
+ *     security: []
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: password
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shared chart data
+ *       401:
+ *         description: Password required
+ *       404:
+ *         description: Share link not found
  */
 router.get('/:token', validateParams(shareTokenSchema), asyncHandler(async (req, res) => {
   const { token } = req.params;
@@ -99,6 +123,25 @@ router.get('/:token', validateParams(shareTokenSchema), asyncHandler(async (req,
  * @route   GET /api/share/:token/stats
  * @desc    Get share link statistics
  * @access  Private (requires authentication — only share owner should view stats)
+ *
+ * @openapi
+ * /api/share/{token}/stats:
+ *   get:
+ *     tags: [Sharing]
+ *     summary: Get share link view statistics
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Share statistics
+ *       403:
+ *         description: Not the share owner
+ *       404:
+ *         description: Share link not found
  */
 router.get('/:token/stats', validateParams(shareTokenSchema), authenticate, asyncHandler(async (req: AuthenticatedRequest, res) => {
   const { token } = req.params;

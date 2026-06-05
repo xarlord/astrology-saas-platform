@@ -32,6 +32,27 @@ router.use(authenticate);
  * @desc    Generate a monthly transit report for a specific month
  * @access  Private (Premium only)
  * @body    { month?: string } - Optional month in YYYY-MM format
+ *
+ * @openapi
+ * /api/v1/reports/monthly:
+ *   post:
+ *     tags: [Reports]
+ *     summary: Generate a monthly transit report
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               month:
+ *                 type: string
+ *                 pattern: '^\d{4}-\d{2}$'
+ *                 description: Month in YYYY-MM format
+ *     responses:
+ *       200:
+ *         description: Monthly transit report
+ *       402:
+ *         description: Premium subscription required
  */
 router.post(
   '/',
@@ -45,6 +66,19 @@ router.post(
  * @route   GET /api/v1/reports/monthly/current
  * @desc    Get the current month's transit report
  * @access  Private (Premium only)
+ *
+ * @openapi
+ * /api/v1/reports/monthly/current:
+ *   get:
+ *     tags: [Reports]
+ *     summary: Get the current month's transit report
+ *     responses:
+ *       200:
+ *         description: Current monthly transit report
+ *       402:
+ *         description: Premium subscription required
+ *       404:
+ *         description: No report found for current month
  */
 router.get(
   '/current',
