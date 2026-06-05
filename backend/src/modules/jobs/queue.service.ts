@@ -77,17 +77,17 @@ export function registerProcessor(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   worker.on('completed', ((job: Job<unknown>, result: any) => {
     logger.info(`[Queue] Job ${job.id} (${type}) completed in ${result?.durationMs ?? '?'}ms`);
-  }) as any);
+  }) as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   worker.on('failed', ((job: Job<unknown> | undefined, err: Error) => {
     logger.error(`[Queue] Job ${job?.id ?? 'unknown'} (${type}) failed: ${err.message}`);
-  }) as any);
+  }) as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   worker.on('error', ((err: Error) => {
     logger.error(`[Queue] Worker error (${type}): ${err.message}`);
-  }) as any);
+  }) as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
   workers.set(type, worker);
   logger.info(`[Queue] Registered processor for: ${type} (concurrency: ${config.concurrency})`);

@@ -491,7 +491,9 @@ export class PDFGenerationService {
         </thead>
         <tbody>
           ${synastry.aspects.slice(0, 15).map((aspect: AspectData & { harmonious?: boolean }) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const p1 = typeof aspect.planet1 === 'string' ? aspect.planet1 : (aspect.planet1 as any)?.planet ?? String(aspect.planet1);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const p2 = typeof aspect.planet2 === 'string' ? aspect.planet2 : (aspect.planet2 as any)?.planet ?? String(aspect.planet2);
               return `
             <tr>

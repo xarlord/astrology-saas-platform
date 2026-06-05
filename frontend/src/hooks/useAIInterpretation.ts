@@ -46,7 +46,7 @@ export function useAIInterpretation(): UseAIInterpretationResult {
   const [error, setError] = useState<Error | null>(null);
 
   // Check AI availability
-  const { data: status } = useQuery({
+  const { data: status } = useQuery<{ available: boolean; service: string | null }>({
     queryKey: ['ai-status'],
     queryFn: () => aiService.checkStatus(),
     retry: false,

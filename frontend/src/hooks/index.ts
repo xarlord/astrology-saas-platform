@@ -4,6 +4,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { chartService, analysisService, transitService, type BirthData } from '../services';
+import type { PersonalityAnalysisResponse } from '../services/analysis.service';
+import type { TransitReading } from '../services/transit.service';
 import { useAuthStore, useChartStore } from '../stores';
 
 // PWA Hooks
@@ -171,7 +173,7 @@ export function useCharts() {
  * Use Chart Analysis Hook
  */
 export function useChartAnalysis(chartId: string, enabled = true) {
-  return useQuery({
+  return useQuery<{ analysis: PersonalityAnalysisResponse }>({
     queryKey: ['analysis', chartId],
     queryFn: () => analysisService.getPersonalityAnalysis(chartId),
     enabled: enabled && !!chartId,
@@ -204,7 +206,7 @@ export function useHousesAnalysis(chartId: string, enabled = true) {
  * Use Today's Transits Hook — accepts optional date override
  */
 export function useTodayTransits(enabled = true, date?: string) {
-  return useQuery({
+  return useQuery<TransitReading>({
     queryKey: ['transits', date ? 'date' : 'today', date ?? 'today'],
     queryFn: () => date
       ? transitService.getTransitForDate(date)
@@ -218,7 +220,7 @@ export function useTodayTransits(enabled = true, date?: string) {
  * Use Transit Calendar Hook
  */
 export function useTransitCalendar(month: number, year: number, enabled = true) {
-  return useQuery({
+  return useQuery<TransitReading[]>({
     queryKey: ['transits', 'calendar', month, year],
     queryFn: () => transitService.getTransitCalendar(month, year),
     enabled,
@@ -232,7 +234,7 @@ export function useTransitForecast(
   duration: 'week' | 'month' | 'quarter' | 'year' = 'month',
   enabled = true,
 ) {
-  return useQuery({
+  return useQuery<TransitReading[]>({
     queryKey: ['transits', 'forecast', duration],
     queryFn: () => transitService.getTransitForecast(duration),
     enabled,

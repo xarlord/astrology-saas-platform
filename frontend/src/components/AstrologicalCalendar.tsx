@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { useCalendarEvents } from '../hooks/useCalendarEvents';
+import type { CalendarEvent } from '../services/calendar.service';
 import { SkeletonLoader, EmptyState } from './';
 
 interface AstrologicalCalendarProps {
@@ -33,7 +34,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
   moonOnly = false,
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month - 1, 1));
-  const [selectedDayEvents, setSelectedDayEvents] = useState<{ date: Date; events: any[] } | null>(null);
+  const [selectedDayEvents, setSelectedDayEvents] = useState<{ date: Date; events: CalendarEvent[] } | null>(null);
 
   const { data: events, isLoading, error, refetch } = useCalendarEvents(
     currentDate.getFullYear(),
@@ -250,7 +251,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
               </button>
             </div>
             <div className="space-y-3">
-              {selectedDayEvents.events.map((event: any) => (
+              {selectedDayEvents.events.map((event: CalendarEvent) => (
                 <div key={event.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg">
@@ -258,7 +259,7 @@ const AstrologicalCalendar: React.FC<AstrologicalCalendarProps> = ({
                     </span>
                     <span className="font-medium text-white capitalize">{event.event_type.replace(/_/g, ' ')}</span>
                   </div>
-                  {event.event_data?.sign && (
+                  {typeof event.event_data?.sign === 'string' && (
                     <p className="text-sm text-slate-300">in {capitalize(event.event_data.sign)}</p>
                   )}
                   {event.interpretation && (

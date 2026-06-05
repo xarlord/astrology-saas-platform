@@ -23,6 +23,7 @@ import logger from '../../../utils/logger';
  * Register new user
  */
 export async function register(req: Request, res: Response): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { name, email, password } = (req as any).validated || req.body;
 
   const existingUser = await UserModel.findByEmail(email);
@@ -76,6 +77,7 @@ export async function register(req: Request, res: Response): Promise<void> {
  * Login user
  */
 export async function login(req: Request, res: Response): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { email, password } = (req as any).validated || req.body;
 
   const user = await UserModel.findByEmail(email);
@@ -173,7 +175,7 @@ export async function getProfile(req: AuthenticatedRequest, res: Response): Prom
 export async function updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const { name, avatar_url, timezone } = (req as any).validated || req.body;
+  const { name, avatar_url, timezone } = (req as any).validated || req.body; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const user = await UserModel.update(userId, {
     name,
@@ -197,7 +199,7 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
 export async function updatePreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const preferences = (req as any).validated || req.body;
+  const preferences = (req as any).validated || req.body; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const user = await UserModel.updatePreferences(userId, preferences);
 
@@ -323,6 +325,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
  * Forgot password
  */
 export async function forgotPassword(req: Request, res: Response): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { email } = (req as any).validated || req.body;
 
   await PasswordResetService.requestPasswordReset(email);
@@ -337,6 +340,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
  * Reset password
  */
 export async function resetPassword(req: Request, res: Response): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { token, password } = (req as any).validated || req.body;
 
   // Validate password strength before resetting

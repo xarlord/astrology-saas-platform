@@ -5,9 +5,10 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import calendarService from '../services/calendar.service';
+import type { CalendarEvent } from '../services/calendar.service';
 
 export function useCalendarEvents(year: number, month: number, enabled = true) {
-  return useQuery({
+  return useQuery<CalendarEvent[]>({
     queryKey: ['calendar', 'month', year, month],
     queryFn: () => calendarService.getMonthEvents(year, month),
     enabled,

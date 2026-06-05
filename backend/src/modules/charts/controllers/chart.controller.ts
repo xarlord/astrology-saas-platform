@@ -144,21 +144,21 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
 
   // Map validation schema values to model enum values
   const mappedHouseSystem: CreateNatalChartInput['house_system'] =
-    house_system === 'whole-sign' ? ('whole' as any) : house_system;
+    house_system === 'whole-sign' ? ('whole' as any) : house_system; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   // Map type to supported model values (validation allows solar-return, lunar-return but model expects transit/progressed)
   const mappedType: CreateNatalChartInput['type'] =
     type === 'solar-return'
-      ? ('progressed' as any)
+      ? ('progressed' as any) // eslint-disable-line @typescript-eslint/no-explicit-any
       : type === 'lunar-return'
-        ? ('transit' as any)
+        ? ('transit' as any) // eslint-disable-line @typescript-eslint/no-explicit-any
         : type;
 
   // Create chart
   const chart = await ChartModel.create({
     user_id: req.user.id,
     name,
-    type: mappedType as any,
+    type: mappedType as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     birth_date: new Date(birth_date),
     birth_time: birth_time || '12:00:00',
     birth_time_unknown,
@@ -166,7 +166,7 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
     birth_latitude,
     birth_longitude,
     birth_timezone,
-    house_system: mappedHouseSystem as any,
+    house_system: mappedHouseSystem as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     zodiac,
     sidereal_mode,
   });
@@ -232,11 +232,11 @@ export async function updateChart(req: AuthenticatedRequest, res: Response): Pro
   const { name, house_system, zodiac, sidereal_mode } = validatedData;
 
   // Map validation schema values to model enum values
-  const mappedHouseSystem = house_system === 'whole-sign' ? ('whole' as any) : house_system;
+  const mappedHouseSystem = house_system === 'whole-sign' ? ('whole' as any) : house_system; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const chart = await ChartModel.update(id, req.user.id, {
     name,
-    house_system: mappedHouseSystem as any,
+    house_system: mappedHouseSystem as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     zodiac,
     sidereal_mode,
   });

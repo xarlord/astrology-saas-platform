@@ -14,6 +14,7 @@ import logger from '../../../utils/logger';
  * POST /api/v1/ai/natal
  */
 export async function generateNatal(req: Request, res: Response, _next: NextFunction): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = req.validated as any;
 
   // Validate input
@@ -36,6 +37,7 @@ export async function generateNatal(req: Request, res: Response, _next: NextFunc
  * POST /api/v1/ai/transit
  */
 export async function generateTransit(req: Request, res: Response, _next: NextFunction): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transitData = req.validated as any;
 
   // Validate input
@@ -58,6 +60,7 @@ export async function generateTransit(req: Request, res: Response, _next: NextFu
  * POST /api/v1/ai/compatibility
  */
 export async function generateCompatibility(req: Request, res: Response, _next: NextFunction): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validated = req.validated as any;
   const { chartA, chartB } = validated;
 
@@ -89,6 +92,7 @@ export async function generateCompatibility(req: Request, res: Response, _next: 
  * POST /api/v1/ai/lunar-return
  */
 export async function generateLunarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = req.validated as any;
 
   // Validate input
@@ -111,6 +115,7 @@ export async function generateLunarReturn(req: Request, res: Response, _next: Ne
  * POST /api/v1/ai/solar-return
  */
 export async function generateSolarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = req.validated as any;
 
   // Validate input
