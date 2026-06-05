@@ -262,7 +262,7 @@ export function useCalculateChart() {
 
   return useMutation({
     mutationFn: (chartId: string) => chartService.calculateChart(chartId),
-    onSuccess: (_: any, chartId: any) => {
+    onSuccess: (_data: unknown, chartId: string) => {
       void queryClient.invalidateQueries({ queryKey: ['charts'] });
       void queryClient.invalidateQueries({ queryKey: ['chart', chartId] });
       void queryClient.invalidateQueries({ queryKey: ['analysis', chartId] });

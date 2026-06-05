@@ -14,6 +14,7 @@ import { Helmet } from 'react-helmet-async';
 // Hooks
 import { useAuth } from '../hooks/useAuth';
 import { useTodayTransits } from '../hooks';
+import type { TransitReading } from '../services/transit.service';
 
 // Components
 import { AppLayout } from '../components';
@@ -174,7 +175,7 @@ const DailyBriefingPage: React.FC = () => {
   const hasMarkedViewed = useRef(false);
 
   // Fetch real transit data
-  const { data: transitData, isLoading: _isLoading } = useTodayTransits();
+  const { data: transitData, isLoading: _isLoading } = useTodayTransits() as { data: TransitReading | undefined; isLoading: boolean };
 
   // Derive moon phase from transit data
   const moonPhase: MoonPhaseData = useMemo(() => {
@@ -200,11 +201,11 @@ const DailyBriefingPage: React.FC = () => {
   // Derive transit cards from major aspects
   const transitCards: TransitCardData[] = useMemo(() => {
     if (!transitData?.majorAspects?.length) return DEFAULT_TRANSITS;
-    return transitData.majorAspects.slice(0, 5).map((a: any) => ({
+    return transitData.majorAspects.slice(0, 5).map((a) => ({
       time: 'Today',
       title: `${a.planet1} ${a.type} ${a.planet2}`,
       description: `${a.applying ? 'Applying' : 'Separating'} aspect with ${a.orb.toFixed(1)}° orb.`,
-      type: (['trine', 'sextile'].includes(a.type) ? 'favorable' : ['square', 'opposition'].includes(a.type) ? 'challenging' : 'major') as TransitType,
+      type: (['trine', 'sextile'].includes(a.type) ? 'favorable' : ['square', 'opposition'].includes(a.type) ? 'challenging' : 'major') satisfies TransitType,
       tags: [a.planet1, a.planet2],
     }));
   }, [transitData]);

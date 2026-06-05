@@ -21,6 +21,7 @@ import type {
   TransitCalendarDay,
   TransitDashboardData,
 } from '../components/TransitDashboard';
+import type { TransitReading } from '../services/transit.service';
 import { useCharts, useTodayTransits } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 import {
@@ -49,7 +50,7 @@ export default function TodayTransitsPage() {
     data: todayReading,
     isLoading: todayLoading,
     error: todayError,
-  } = useTodayTransits(hasCalculatedChart, isToday ? undefined : selectedDate);
+  } = useTodayTransits(hasCalculatedChart, isToday ? undefined : selectedDate) as { data: TransitReading | undefined; isLoading: boolean; error: Error | null };
 
   const errorMessage = todayError
     ? getErrorMessage(todayError, 'Failed to load today\'s transits')
@@ -58,7 +59,7 @@ export default function TodayTransitsPage() {
   // Build TransitDashboardData from today's reading only.
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      ? (todayReading.transits ?? []).map((t: any) => mapReadingToTransit(t, todayReading))
+      ? (todayReading.transits ?? []).map((t) => mapReadingToTransit(t, todayReading))
       : [];
 
     const monthDays: TransitCalendarDay[] = buildSingleCalendarDay(todayReading);

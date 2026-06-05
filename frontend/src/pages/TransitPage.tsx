@@ -58,19 +58,19 @@ export default function TransitPage() {
     data: todayReading,
     isLoading: todayLoading,
     error: todayError,
-  } = useTodayTransits(hasCalculatedChart);
+  } = useTodayTransits(hasCalculatedChart) as { data: TransitReading | undefined; isLoading: boolean; error: Error | null };
 
   const {
     data: weekReadings,
     isLoading: weekLoading,
     error: weekError,
-  } = useTransitForecast('week', hasCalculatedChart);
+  } = useTransitForecast('week', hasCalculatedChart) as { data: TransitReading[] | undefined; isLoading: boolean; error: Error | null };
 
   const {
     data: calendarReadings,
     isLoading: calendarLoading,
     error: calendarError,
-  } = useTransitCalendar(currentMonth, currentYear, hasCalculatedChart);
+  } = useTransitCalendar(currentMonth, currentYear, hasCalculatedChart) as { data: TransitReading[] | undefined; isLoading: boolean; error: Error | null };
 
   // Aggregate error from any query
   const queryError =
@@ -80,19 +80,18 @@ export default function TransitPage() {
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      ? (todayReading.transits ?? []).map((t: NonNullable<TransitReading['transits']>[number]) => mapReadingToTransit(t, todayReading as TransitReading))
+      ? (todayReading.transits ?? []).map((t) => mapReadingToTransit(t, todayReading))
       : [];
 
     const weekTransits: Transit[] = weekReadings
-      ? (weekReadings as TransitReading[]).flatMap((r) => (r.transits ?? []).map((t) => mapReadingToTransit(t, r)))
+      ? weekReadings.flatMap((r) => (r.transits ?? []).map((t) => mapReadingToTransit(t, r)))
       : [];
 
     const monthDays: TransitCalendarDay[] = calendarReadings
       ? buildCalendarDays(calendarReadings, currentYear, currentMonth)
       : [];
 
-    const highlights: TransitHighlight[] = deriveHighlights(todayReading as TransitReading | undefined);
+    const highlights: TransitHighlight[] = deriveHighlights(todayReading);
 
     return {
       today: todayTransits,

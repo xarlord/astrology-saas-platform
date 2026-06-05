@@ -7,6 +7,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useCharts, useTodayTransits, useTransitForecast } from '../hooks';
+import type { TransitReading } from '../services/transit.service';
 import { deriveHighlights } from '../utils/transitHelpers';
 import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
 import { SYNODIC_MONTH_DAYS, KNOWN_NEW_MOON_MS } from '../utils/constants';
@@ -75,8 +76,8 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const { charts, fetchCharts, isLoading } = useCharts();
-  const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits();
-  const { data: forecastData } = useTransitForecast('week', charts.length > 0);
+  const { data: todayTransits, isFetching: transitsFetching } = useTodayTransits() as { data: TransitReading | undefined; isFetching: boolean };
+  const { data: forecastData } = useTransitForecast('week', charts.length > 0) as { data: TransitReading[] | undefined };
   const transitsLoading = transitsFetching && !todayTransits;
 
   useEffect(() => {
@@ -87,7 +88,7 @@ export default function DashboardPage() {
   const moon = getMoonPhaseInfo();
   const transitPlanets = todayTransits?.transitPlanets;
   const planetEntries: [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][] = transitPlanets
-    ? Object.entries(transitPlanets).slice(0, 4) as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][]
+    ? Object.entries(transitPlanets).slice(0, 4).map(([name, data]) => [name, { ...data, degree: data.longitude % 30 }] as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }])
     : [
         ['Sun', { sign: 'Scorpio', degree: 2.24, longitude: 212, speed: 1, retrograde: false }],
         ['Moon', { sign: 'Taurus', degree: 14.09, longitude: 44, speed: 13, retrograde: false }],
@@ -150,7 +151,7 @@ export default function DashboardPage() {
 
     // Flatten TransitReading[] into individual transit entries with date info
     const entries = forecastData.flatMap((reading) =>
-      (reading.transits ?? []).map((t: any) => ({
+      (reading.transits ?? []).map((t) => ({
         date: reading.date,
         type: t.aspect,
         planet1: t.transitPlanet,

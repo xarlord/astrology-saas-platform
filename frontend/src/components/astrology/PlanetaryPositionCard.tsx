@@ -71,6 +71,12 @@ const PlanetaryPositionCard: React.FC<PlanetaryPositionCardProps> = ({
     <motion.div
       className={`bg-background-dark/50 border border-white/5 rounded-xl hover:border-primary/50 transition-all cursor-pointer group ${sizeClasses[size]}`}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       aria-label={ariaLabel ?? `${planet.name} in ${planet.sign}`}

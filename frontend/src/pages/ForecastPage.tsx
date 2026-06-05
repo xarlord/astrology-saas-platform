@@ -21,6 +21,7 @@ import type {
   TransitCalendarDay,
   TransitDashboardData,
 } from '../components/TransitDashboard';
+import type { TransitReading } from '../services/transit.service';
 import {
   useCharts,
   useTodayTransits,
@@ -59,19 +60,19 @@ export default function ForecastPage() {
     data: todayReading,
     isLoading: todayLoading,
     error: todayError,
-  } = useTodayTransits(hasCalculatedChart);
+  } = useTodayTransits(hasCalculatedChart) as { data: TransitReading | undefined; isLoading: boolean; error: Error | null };
 
   const {
     data: monthReadings,
     isLoading: monthLoading,
     error: monthError,
-  } = useTransitForecast('month', hasCalculatedChart);
+  } = useTransitForecast('month', hasCalculatedChart) as { data: TransitReading[] | undefined; isLoading: boolean; error: Error | null };
 
   const {
     data: calendarReadings,
     isLoading: calendarLoading,
     error: calendarError,
-  } = useTransitCalendar(currentMonth, currentYear, hasCalculatedChart);
+  } = useTransitCalendar(currentMonth, currentYear, hasCalculatedChart) as { data: TransitReading[] | undefined; isLoading: boolean; error: Error | null };
 
   // Aggregate error from any query
   const queryError = todayError ?? monthError ?? calendarError;
@@ -82,11 +83,11 @@ export default function ForecastPage() {
   // Build TransitDashboardData from raw readings
   const dashboardData: TransitDashboardData | null = useMemo(() => {
     const todayTransits: Transit[] = todayReading
-      ? (todayReading.transits ?? []).map((t: any) => mapReadingToTransit(t, todayReading))
+      ? (todayReading.transits ?? []).map((t) => mapReadingToTransit(t, todayReading))
       : [];
 
     const monthTransits: Transit[] = monthReadings
-      ? monthReadings.flatMap((r: any) => (r.transits ?? []).map((t: any) => mapReadingToTransit(t, r)))
+      ? monthReadings.flatMap((r) => (r.transits ?? []).map((t) => mapReadingToTransit(t, r)))
       : [];
 
     const monthDays: TransitCalendarDay[] = calendarReadings

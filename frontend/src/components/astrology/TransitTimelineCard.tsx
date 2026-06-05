@@ -61,6 +61,12 @@ const TransitTimelineCard: React.FC<TransitTimelineCardProps> = ({
     <motion.div
       className="flex items-center gap-4 p-3 hover:bg-white/5 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-white/5"
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       whileHover={{ x: 4 }}
       aria-label={ariaLabel ?? title}
       role="button"
