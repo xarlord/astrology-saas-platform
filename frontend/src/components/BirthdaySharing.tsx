@@ -115,7 +115,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
     return (
       <div className="rounded-xl border border-cosmic-border bg-white/15 p-4">
         <div className="flex items-center gap-3 mb-3">
-          <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true" style={{ fontSize: '24px' }}>card_giftcard</span>
+          <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true">card_giftcard</span>
           <div>
             <h3 className="font-semibold text-slate-200 text-lg">Solar Return Reading for {year}</h3>
             <p className="text-sm text-slate-200">
@@ -153,7 +153,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
         <div className="mt-3 pt-3 border-t border-cosmic-border">
           <p className="flex items-center gap-2 text-xs text-slate-200">
-            <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span>
+            <span className="material-symbols-outlined text-4xl" aria-hidden="true">lock</span>
             This is a gift from a friend who cares about your journey.
           </p>
         </div>
@@ -327,8 +327,8 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
                   </div>
 
                   <div className="space-y-1 text-xs text-slate-200">
-                    <p className="flex items-center gap-1"><span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>calendar_today</span> Expires: {linkSettings.expiresIn} days</p>
-                    <p className="flex items-center gap-1"><span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>lock</span> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
+                    <p className="flex items-center gap-1"><span className="material-symbols-outlined text-4xl" aria-hidden="true">calendar_today</span> Expires: {linkSettings.expiresIn} days</p>
+                    <p className="flex items-center gap-1"><span className="material-symbols-outlined text-4xl" aria-hidden="true">lock</span> Max accesses: {linkSettings.maxAccesses === 999 ? 'Unlimited' : linkSettings.maxAccesses}</p>
                   </div>
                 </div>
               )}

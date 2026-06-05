@@ -89,13 +89,13 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       {/* Header */}
       <div className="flex justify-between items-center mb-4 sm:flex-row flex-col sm:items-start gap-2">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined" style={{ fontSize: '16px', color: tierConfig.color }} aria-hidden="true">workspace_premium</span>
+          <span className="material-symbols-outlined text-sm" style={{ fontSize: '16px', color: tierConfig.color }} aria-hidden="true">workspace_premium</span>
           <span className="font-semibold text-sm" style={{ color: tierConfig.color }}>
             {tierConfig.name} Plan
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-sm text-slate-200">
-          <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">bar_chart</span>
+          <span className="material-symbols-outlined text-sm" aria-hidden="true">bar_chart</span>
           <span>
             {currentCount} / {limit} charts
           </span>
@@ -128,7 +128,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       {/* Warning/Limit Messages */}
       {isAtWarning && (
         <div className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-wrap" role="alert">
-          <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">warning</span>
+          <span className="material-symbols-outlined text-sm" aria-hidden="true">warning</span>
           <span>Approaching storage limit</span>
           {onUpgradeClick && (
             <button type="button"
@@ -144,7 +144,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
 
       {isAtLimit && (
         <div className="flex items-center gap-2 py-2.5 px-3 rounded-md text-[13px] mb-3 bg-red-500/15 text-red-400 border border-red-500/30 flex-wrap" role="alert">
-          <span className="material-symbols-outlined" style={{ fontSize: '14px' }} aria-hidden="true">warning</span>
+          <span className="material-symbols-outlined text-sm" aria-hidden="true">warning</span>
           <span>Storage limit reached</span>
           {onUpgradeClick && (
             <button type="button"

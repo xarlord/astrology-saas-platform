@@ -399,7 +399,7 @@ function ProfileHeader({
             aria-label="Change avatar"
             title="Change avatar"
           >
-            <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true" style={{ fontSize: '16px' }}>photo_camera</span>
+            <span className="material-symbols-outlined text-4xl text-primary" aria-hidden="true">photo_camera</span>
           </button>
         </div>
 
@@ -430,7 +430,7 @@ function ProfileHeader({
                   <span className="text-sm text-slate-200">Timezone:</span>
                   {editData.timezone && editData.timezone !== 'UTC' && !editData.timezone.startsWith('UTC') && (
                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/15 text-primary text-sm font-medium">
-                      <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>language</span>
+                      <span className="material-symbols-outlined text-4xl" aria-hidden="true">language</span>
                       {editData.timezone}
                     </span>
                   )}
@@ -441,7 +441,7 @@ function ProfileHeader({
                     className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-white/15 border border-white/15 text-slate-200 hover:bg-white/20 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     title={birthCoordinates ? 'Detect timezone from your birth location' : 'No birth location data available'}
                   >
-                    <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '14px' }}>
+                    <span className="material-symbols-outlined text-4xl" aria-hidden="true">
                       {detectingTimezone ? 'hourglass_empty' : 'my_location'}
                     </span>
                     {detectingTimezone ? 'Detecting…' : 'Detect from birth location'}
@@ -737,7 +737,7 @@ function ChartCard({
           className="px-3 py-2 border border-white/15 text-slate-200 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
           aria-label="Edit chart"
         >
-          <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '16px' }}>edit</span>
+          <span className="material-symbols-outlined text-4xl" aria-hidden="true">edit</span>
         </button>
         <button
           type="button"
@@ -745,7 +745,7 @@ function ChartCard({
           className="px-3 py-2 border border-red-800 text-red-400 text-sm font-medium rounded-lg hover:bg-red-900/20 transition-colors"
           aria-label="Delete chart"
         >
-          <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '16px' }}>delete</span>
+          <span className="material-symbols-outlined text-4xl" aria-hidden="true">delete</span>
         </button>
       </div>
     </div>

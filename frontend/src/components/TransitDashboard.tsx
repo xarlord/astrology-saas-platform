@@ -121,10 +121,10 @@ function DateSelector({
   onDateChange: (date: string) => void;
 }) {
   const viewModes = [
-    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>light_mode</span> },
-    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
-    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
-    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>dark_mode</span> },
+    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">light_mode</span> },
+    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">calendar_today</span> },
+    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">calendar_today</span> },
+    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">dark_mode</span> },
   ];
 
   return (

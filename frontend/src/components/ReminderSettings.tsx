@@ -99,7 +99,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
     <div className="max-w-[600px] mx-auto p-6 sm:p-4 glass-panel rounded-2xl">
       <div className="flex gap-4 mb-8 items-start sm:flex-col sm:items-center sm:text-center">
         <div className="w-12 h-12 flex items-center justify-center bg-primary/15 text-primary rounded-xl shrink-0">
-          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '24px' }}>notifications</span>
+          <span className="material-symbols-outlined text-xl" aria-hidden="true">notifications</span>
         </div>
         <div>
           <h2 className="m-0 mb-1 text-2xl font-semibold text-white">Event Reminders</h2>
@@ -187,13 +187,13 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 />
                 <span className="flex-1 text-sm text-slate-200">{option.label}</span>
                 {formData.reminderAdvanceHours.includes(option.value) && (
-                  <span className="material-symbols-outlined text-emerald-500 shrink-0" aria-hidden="true" style={{ fontSize: '16px' }}>check</span>
+                  <span className="material-symbols-outlined text-emerald-500 shrink-0" aria-hidden="true">check</span>
                 )}
               </label>
             ))}
           </div>
           <div className="flex items-start gap-1.5 px-3 py-2 bg-amber-500/10 border-l-[3px] border-amber-500 rounded text-[13px] text-amber-300 leading-snug">
-            <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>info</span>
+            <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true">info</span>
             <span>Select multiple timing options to receive reminders at different intervals</span>
           </div>
         </div>

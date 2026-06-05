@@ -68,7 +68,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
     <div role="article" aria-label="AI-enhanced interpretation" className="bg-cosmic-card backdrop-blur-md border border-cosmic-border rounded-xl p-4 sm:p-6 my-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center items-start gap-2 mb-4">
         <div className="flex items-center gap-2 bg-primary text-white py-2 px-4 rounded-full font-semibold text-sm w-full sm:w-auto justify-center">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-sm" aria-hidden="true">auto_awesome</span>
           <span>AI-Enhanced</span>
         </div>
         <div className="flex gap-4 text-sm text-slate-200 flex-wrap flex-col sm:flex-row">
@@ -94,7 +94,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
       )}
 
       <div className="flex items-start gap-2 p-3 bg-primary/5 rounded-md text-slate-200 text-sm leading-relaxed">
-        <span className="material-symbols-outlined shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '14px' }}>error</span>
+        <span className="material-symbols-outlined text-sm shrink-0 mt-0.5" aria-hidden="true">error</span>
         <small className="flex-1">
           AI interpretations are generated using GPT-4 and may vary. Use as guidance alongside traditional astrological wisdom.
         </small>

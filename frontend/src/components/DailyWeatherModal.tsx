@@ -99,7 +99,7 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
             className="flex items-center justify-center w-8 h-8 border-none bg-transparent text-slate-200 cursor-pointer rounded-lg transition-all duration-200 hover:bg-white/15 hover:text-white focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:bg-white/15"
             aria-label="Close modal"
           >
-            <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '24px' }}>close</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">close</span>
           </button>
         </div>
 

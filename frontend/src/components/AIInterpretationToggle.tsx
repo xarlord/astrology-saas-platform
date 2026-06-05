@@ -66,7 +66,7 @@ export const AIInterpretationToggle: React.FC<AIInterpretationToggleProps> = ({
           onClick={() => setShowInfo(!showInfo)}
           aria-label="Toggle AI info"
         >
-          <span className="material-symbols-outlined text-lg" aria-hidden="true" style={{ fontSize: '16px' }}>info</span>
+          <span className="material-symbols-outlined text-lg" aria-hidden="true">info</span>
         </button>
       </div>
 

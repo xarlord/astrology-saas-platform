@@ -288,7 +288,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                 <div key={index} className="flex items-center gap-3 p-3 bg-white/15 rounded-md">
                   <span className="font-semibold text-slate-200 min-w-[80px]">{change.planet}</span>
                   <span className="text-slate-200">House {change.originalHouse}</span>
-                  <span className="material-symbols-outlined text-4xl" aria-hidden="true" style={{ fontSize: '16px' }}>arrow_forward</span>
+                  <span className="material-symbols-outlined text-4xl" aria-hidden="true">arrow_forward</span>
                   <span className="text-primary font-semibold">House {change.relocatedHouse}</span>
                 </div>
               ))}

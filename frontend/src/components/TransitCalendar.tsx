@@ -443,7 +443,7 @@ export function TransitCalendar({
                         {getZodiacSymbol(transit.sign)} {transit.sign} {transit.degree}°
                       </div>
                     </div>
-                    <span className="material-symbols-outlined text-slate-200" style={{ fontSize: '16px' }}>info</span>
+                    <span className="material-symbols-outlined text-slate-200">info</span>
                   </div>
                 );
               })}

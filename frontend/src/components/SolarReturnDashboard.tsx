@@ -222,7 +222,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
               <h3 className="text-xl font-bold text-white m-0">{solarReturn.year}</h3>
               {solarReturn.isRelocated && (
                 <span className="flex items-center gap-1 px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-medium">
-                  <span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ fontSize: '14px' }}>location_on</span>
+                  <span className="material-symbols-outlined text-5xl" aria-hidden="true">location_on</span>
                   Relocated
                 </span>
               )}
@@ -230,7 +230,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
             <div className="p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm text-slate-200">
-                <span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
+                <span className="material-symbols-outlined text-5xl" aria-hidden="true">calendar_today</span>
                 {new Date(solarReturn.returnDate).toLocaleDateString(APP_LOCALE, {
                   month: 'long',
                   day: 'numeric',
@@ -240,7 +240,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
               {solarReturn.returnLocation && (
                 <div className="flex items-center gap-2 text-sm text-slate-200">
-                  <span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ fontSize: '16px' }}>location_on</span>
+                  <span className="material-symbols-outlined text-5xl" aria-hidden="true">location_on</span>
                   {solarReturn.returnLocation.name}
                 </div>
               )}
@@ -274,10 +274,10 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
             <div className="flex items-center justify-between p-4 border-t border-white/15 bg-white/15">
               <button type="button" className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium">
                 View Details
-                <span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ fontSize: '16px' }}>trending_up</span>
+                <span className="material-symbols-outlined text-5xl" aria-hidden="true">trending_up</span>
               </button>
               <button type="button" className="p-2 text-slate-200 hover:text-pink-500 hover:bg-pink-500/20 rounded-lg transition-colors" title="Share as gift">
-                <span className="material-symbols-outlined text-5xl" aria-hidden="true" style={{ fontSize: '16px' }}>card_giftcard</span>
+                <span className="material-symbols-outlined text-5xl" aria-hidden="true">card_giftcard</span>
               </button>
             </div>
           </div>

@@ -105,7 +105,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <div>
           <h2 className="text-2xl font-bold text-white m-0">Your {year} Solar Return</h2>
           <p className="flex items-center gap-2 mt-1 text-sm text-slate-200 m-0">
-            <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">calendar_today</span>
             Solar Return: {new Date(returnDate).toLocaleDateString(APP_LOCALE, {
               weekday: 'long',
               year: 'numeric',
@@ -134,7 +134,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {/* Sun House Interpretation */}
       <section className="glass-panel rounded-2xl p-6">
         <div className="flex items-center gap-3 mb-4">
-          <span className="material-symbols-outlined text-amber-500" aria-hidden="true" style={{ fontSize: '24px' }}>star</span>
+          <span className="material-symbols-outlined text-amber-500" aria-hidden="true">star</span>
           <h3 className="text-lg font-semibold text-white m-0">Sun in {HOUSE_NAMES[interpretation.sunHouse.house]}</h3>
         </div>
 
@@ -194,7 +194,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.luckyDays && interpretation.luckyDays.length > 0 && (
         <section className="glass-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="material-symbols-outlined text-amber-500" aria-hidden="true" style={{ fontSize: '24px' }}>star</span>
+            <span className="material-symbols-outlined text-amber-500" aria-hidden="true">star</span>
             <h3 className="text-lg font-semibold text-white m-0">Lucky Days</h3>
           </div>
 
@@ -225,7 +225,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.challenges && interpretation.challenges.length > 0 && (
         <section className="glass-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="material-symbols-outlined text-amber-500" aria-hidden="true" style={{ fontSize: '24px' }}>warning</span>
+            <span className="material-symbols-outlined text-amber-500" aria-hidden="true">warning</span>
             <h3 className="text-lg font-semibold text-white m-0">Challenges & Growth Opportunities</h3>
           </div>
 
@@ -237,7 +237,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
                 </div>
                 <p className="text-sm text-slate-200 m-0 mb-3">{challenge.description}</p>
                 <div className="flex items-start gap-2 text-sm text-slate-200">
-                  <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true" style={{ fontSize: '16px' }}>lightbulb</span>
+                  <span className="material-symbols-outlined text-xl shrink-0 mt-0.5" aria-hidden="true">lightbulb</span>
                   <span><strong>Advice:</strong> {challenge.advice}</span>
                 </div>
               </div>
@@ -250,7 +250,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.opportunities && interpretation.opportunities.length > 0 && (
         <section className="glass-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="material-symbols-outlined text-green-500" aria-hidden="true" style={{ fontSize: '24px' }}>trending_up</span>
+            <span className="material-symbols-outlined text-green-500" aria-hidden="true">trending_up</span>
             <h3 className="text-lg font-semibold text-white m-0">Opportunities</h3>
           </div>
 
@@ -275,7 +275,7 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
       {interpretation.advice && interpretation.advice.length > 0 && (
         <section className="glass-panel rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="material-symbols-outlined text-primary" aria-hidden="true" style={{ fontSize: '24px' }}>lightbulb</span>
+            <span className="material-symbols-outlined text-primary" aria-hidden="true">lightbulb</span>
             <h3 className="text-lg font-semibold text-white m-0">Your Advice for {year}</h3>
           </div>
 
