@@ -51,17 +51,6 @@ export type {
   LunarMonthForecast,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface LunarReturnHistoryResponse {
-  returns: SavedLunarReturn[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
 interface CustomLunarReturnResponse {
   chart: LunarReturnChart;
   returnDate: Date;

@@ -326,7 +326,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
           const filename = generateReportFilename(selectedReportType, chartName);
           pdfService.downloadPDF(result.blob, filename);
         }
-      });
+      }).catch(() => { /* error tracked in hook state */ });
     } else {
       const filename = generateReportFilename(selectedReportType, chartName);
       pdfService.downloadPDF(lastGeneratedBlob, filename);
@@ -361,7 +361,7 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
         if (result.success && result.blob) {
           pdfService.printPDF(result.blob);
         }
-      });
+      }).catch(() => { /* error tracked in hook state */ });
     } else {
       pdfService.printPDF(lastGeneratedBlob);
     }

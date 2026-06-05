@@ -66,7 +66,7 @@ window.addEventListener('error', (event) => {
 if (import.meta.env.PROD) {
   void import('./hooks/useServiceWorkerUpdate').then(() => {
     // Service worker registration initialized
-  });
+  }).catch(() => { /* SW registration is optional */ });
 }
 
 /* -------------------------------------------------------------------------- */

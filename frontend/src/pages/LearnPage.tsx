@@ -131,7 +131,7 @@ export default function LearnPage() {
       {/* Section 1: The Planets */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#f59e0b' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl text-amber-500" aria-hidden="true">auto_awesome</span>
           <h2 className="text-xl font-bold text-white">The Planets</h2>
           <span className="text-sm text-slate-200 ml-2">
             The celestial bodies that shape your chart
@@ -155,7 +155,7 @@ export default function LearnPage() {
       {/* Section 2: The Signs */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#f43f5e' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl text-rose-500" aria-hidden="true">auto_awesome</span>
           <h2 className="text-xl font-bold text-white">The Zodiac Signs</h2>
           <span className="text-sm text-slate-200 ml-2">
             Twelve archetypes of expression
@@ -191,7 +191,7 @@ export default function LearnPage() {
       {/* Section 3: The Houses */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined text-xl" aria-hidden="true" style={{ color: '#10b981' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl text-emerald-500" aria-hidden="true">auto_awesome</span>
           <h2 className="text-xl font-bold text-white">The Houses</h2>
           <span className="text-sm text-slate-200 ml-2">
             Twelve domains of life experience
@@ -215,7 +215,7 @@ export default function LearnPage() {
       {/* Section 4: The Aspects */}
       <section className="mb-12">
         <div className="flex items-center gap-2 mb-5">
-          <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '20px', color: '#3b82f6' }}>auto_awesome</span>
+          <span className="material-symbols-outlined text-xl text-blue-500" aria-hidden="true">auto_awesome</span>
           <h2 className="text-xl font-bold text-white">The Aspects</h2>
           <span className="text-sm text-slate-200 ml-2">
             Angular relationships between planets

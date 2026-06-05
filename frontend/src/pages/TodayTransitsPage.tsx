@@ -90,7 +90,7 @@ export default function TodayTransitsPage() {
         <SkeletonLoader variant="list" count={5} />
       ) : errorMessage ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
+          icon={<span className="material-symbols-outlined text-5xl text-red-500" aria-hidden="true">warning</span>}
           title="Unable to load transits"
           description={errorMessage}
           actionText="Retry"
@@ -98,7 +98,7 @@ export default function TodayTransitsPage() {
         />
       ) : !hasCharts ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#8b5cf6' }}>dark_mode</span>}
+          icon={<span className="material-symbols-outlined text-5xl text-violet-500" aria-hidden="true">dark_mode</span>}
           title="No transit data available"
           description="Transit calculations require a natal chart. Please create a chart first to view your transits."
           actionText="Create Chart"

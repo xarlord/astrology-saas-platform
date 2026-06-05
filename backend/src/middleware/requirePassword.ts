@@ -14,6 +14,9 @@ import { comparePassword } from '../utils/helpers';
  * Middleware that requires password re-entry.
  * Expects `current_password` in the request body.
  * Must be used after `authenticate` middleware.
+ *
+ * Uses return type assertion to work around Express RequestHandler typing
+ * (AuthenticatedRequest.user is required, but Express Request.user is optional).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const requirePasswordConfirmation: any = async (

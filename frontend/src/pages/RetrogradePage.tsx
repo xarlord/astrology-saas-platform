@@ -101,7 +101,7 @@ export default function RetrogradePage() {
         <SkeletonLoader variant="list" count={5} />
       ) : errorMessage ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
+          icon={<span className="material-symbols-outlined text-5xl text-red-500" aria-hidden="true">warning</span>}
           title="Unable to load retrograde data"
           description={errorMessage}
           actionText="Retry"
@@ -109,7 +109,7 @@ export default function RetrogradePage() {
         />
       ) : !hasCharts ? (
         <EmptyState
-          icon={<span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '48px', color: '#8b5cf6' }}>dark_mode</span>}
+          icon={<span className="material-symbols-outlined text-5xl text-violet-500" aria-hidden="true">dark_mode</span>}
           title="No retrograde data available"
           description="Retrograde tracking requires a natal chart. Please create a chart first to view retrograde information."
           actionText="Create Chart"
