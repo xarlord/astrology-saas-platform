@@ -89,7 +89,7 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       {/* Header */}
       <div className="flex justify-between items-center mb-4 sm:flex-row flex-col sm:items-start gap-2">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-sm" style={{ fontSize: '16px', color: tierConfig.color }} aria-hidden="true">workspace_premium</span>
+          <span className="material-symbols-outlined text-base" style={{ color: tierConfig.color }} aria-hidden="true">workspace_premium</span>
           <span className="font-semibold text-sm" style={{ color: tierConfig.color }}>
             {tierConfig.name} Plan
           </span>
