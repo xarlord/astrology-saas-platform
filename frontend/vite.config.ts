@@ -64,6 +64,11 @@ export default defineConfig({
       filename: 'sw.ts',
     }),
   ],
+  optimizeDeps: {
+    // @sentry/react is an optional dependency — exclude from pre-bundling
+    // to prevent "Failed to resolve import" errors when it's not installed (CI, visual tests)
+    exclude: ['@sentry/react'],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

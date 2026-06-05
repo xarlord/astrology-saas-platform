@@ -15,12 +15,14 @@ import { logger, setSentryCapture } from './utils/logger';
 /* -------------------------------------------------------------------------- */
 
 async function initSentry(): Promise<void> {
-  const dsn = import.meta.env.VITE_SENTRY_DSN;
+  const dsn = String(import.meta.env.VITE_SENTRY_DSN ?? '');
   if (!dsn) return;
 
   try {
-    // @ts-expect-error — @sentry/react is an optional dependency; dynamic import avoids hard failure
-    const Sentry = await import('@sentry/react');
+    // Dynamic import via variable prevents Vite from statically resolving @sentry/react
+    // during dependency scanning. @sentry/react is an optional dependency — not installed in CI.
+    const sentryModule = '@sentry/react';
+    const Sentry = await import(/* @vite-ignore */ sentryModule);
 
     Sentry.init({
       dsn,
