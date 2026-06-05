@@ -148,7 +148,7 @@ export const EmptyStates = {
   // No charts
   NoCharts: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#f59e0b' }}>auto_awesome</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >auto_awesome</span>}
       title="No charts yet"
       description="Create your first natal chart to get started with your astrological journey"
       actionText="Create Your First Chart"
@@ -159,7 +159,7 @@ export const EmptyStates = {
   // No transits
   NoTransits: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#8b5cf6' }}>dark_mode</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >dark_mode</span>}
       title="No major transits today"
       description="The cosmos is relatively quiet. Check back later for upcoming astrological events."
       {...props}
@@ -169,7 +169,7 @@ export const EmptyStates = {
   // No calendar events
   NoCalendarEvents: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#6366f1' }}>calendar_month</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >calendar_month</span>}
       title="No events this month"
       description="There are no major astrological events scheduled for this month."
       {...props}
@@ -179,7 +179,7 @@ export const EmptyStates = {
   // No search results
   NoSearchResults: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#94a3b8' }}>search</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >search</span>}
       title="No results found"
       description="Try adjusting your search terms or filters to find what you're looking for."
       {...props}
@@ -189,7 +189,7 @@ export const EmptyStates = {
   // Error state
   Error: (props: Omit<EmptyStateProps, 'icon' | 'title'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#ef4444' }}>warning</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >warning</span>}
       title="Something went wrong"
       description="We encountered an error loading your data. Please try again."
       actionText="Retry"
@@ -200,7 +200,7 @@ export const EmptyStates = {
   // Network error
   NetworkError: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#ef4444' }}>wifi_off</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >wifi_off</span>}
       title="Connection error"
       description="Unable to connect to the server. Please check your internet connection and try again."
       actionText="Retry"
@@ -211,7 +211,7 @@ export const EmptyStates = {
   // Not found
   NotFound: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#94a3b8' }}>help</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >help</span>}
       title="Page not found"
       description="The page you're looking for doesn't exist or has been moved."
       actionText="Go to Dashboard"
@@ -222,7 +222,7 @@ export const EmptyStates = {
   // No analyses
   NoAnalyses: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#6366f1' }}>analytics</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >analytics</span>}
       title="No analyses yet"
       description="Generate your first astrological analysis to discover insights about your chart."
       actionText="Generate Analysis"
@@ -233,7 +233,7 @@ export const EmptyStates = {
   // No reminders
   NoReminders: (props: Omit<EmptyStateProps, 'icon' | 'title' | 'description'>) => (
     <EmptyState
-      icon={<span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#f59e0b' }}>notifications</span>}
+      icon={<span className="material-symbols-outlined text-5xl text-amber-500" >notifications</span>}
       title="No reminders set"
       description="Set up reminders for important astrological events so you never miss them."
       actionText="Set Reminder"
