@@ -18,8 +18,8 @@ const CHART4_ID = 'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c';
 
 export async function seed(knex: Knex): Promise<void> {
   // --- Demo Users ---
-  const demoPasswordHash = await bcrypt.hash('Demo1234!', 10);
-  const demo2PasswordHash = await bcrypt.hash('Demo5678!', 10);
+  const demoPasswordHash = await bcrypt.hash('Demo1234!@ab', 10);
+  const demo2PasswordHash = await bcrypt.hash('Demo5678!@ab', 10);
 
   await knex('users').insert([
     {

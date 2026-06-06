@@ -476,7 +476,7 @@ export interface RegisterData {
 export interface AuthResponse {
   user: User;
   accessToken: string;
-  refreshToken: string;
+  // refreshToken is sent as httpOnly cookie, not in response body
 }
 
 export interface RefreshTokenResponse {
