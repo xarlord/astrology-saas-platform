@@ -50,4 +50,6 @@ export type AspectType =
   | 'square'
   | 'sextile'
   | 'quincunx'
-  | 'semi-sextile';
+  | 'semi-sextile'
+  | 'semisquare'
+  | 'sesquisquare';

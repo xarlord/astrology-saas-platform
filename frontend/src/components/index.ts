@@ -30,6 +30,7 @@ export type { BirthData } from './BirthDataForm';
 export {
   TransitDashboard,
   TransitDetailModal,
+  transitToForecastData,
 } from './TransitDashboard';
 export type {
   Transit,
@@ -37,6 +38,8 @@ export type {
   TransitCalendarDay,
   TransitDashboardData,
 } from './TransitDashboard';
+export { TransitForecastCard } from './transit/TransitForecastCard';
+export type { TransitForecastCardData, TransitInterpretationDetail } from './transit/TransitForecastCard';
 
 // User Profile
 export { UserProfile } from './UserProfile';

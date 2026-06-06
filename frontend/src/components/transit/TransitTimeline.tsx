@@ -8,7 +8,7 @@ import React, { useRef, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 /** Aspect type symbols */
-export type AspectType = 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx';
+export type AspectType = 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semisquare' | 'sesquisquare';
 
 /** A single transit event on the timeline */
 export interface TransitEvent {
@@ -45,8 +45,10 @@ export function getAspectSymbol(type: AspectType): string {
     opposition: '☍',
     trine: '△',
     square: '□',
-    sextile: '⚹',
-    quincunx: '⚗',
+    sextile: '✶',
+    quincunx: '⚩',
+    semisquare: '∠',
+    sesquisquare: '⊾',
   };
   return symbols[type];
 }
@@ -58,7 +60,7 @@ export function getAspectColor(
   challenging = '#f87171',
 ): string {
   const harmoniousTypes: AspectType[] = ['trine', 'sextile'];
-  const challengingTypes: AspectType[] = ['square', 'opposition', 'quincunx'];
+  const challengingTypes: AspectType[] = ['square', 'opposition', 'quincunx', 'semisquare', 'sesquisquare'];
   if (harmoniousTypes.includes(type)) return harmonious;
   if (challengingTypes.includes(type)) return challenging;
   return '#fbbf24'; // conjunction = gold

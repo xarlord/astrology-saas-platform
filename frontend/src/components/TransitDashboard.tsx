@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { PlanetSymbol, AspectSymbol, EmptyState } from './';
-import { APP_LOCALE } from '../utils/constants';
+import { TransitForecastCard } from './transit/TransitForecastCard';
+import type { TransitForecastCardData } from './transit/TransitForecastCard';
+import type { TransitInterpretationOutput } from '../utils/transitHelpers';
 
 // Types based on findings.md
 export interface Transit {
@@ -16,11 +18,43 @@ export interface Transit {
   interpretation: {
     general: string;
     themes: string[];
+    coreMeaning?: string;
+    psychologicalPattern?: string;
+    realLifeExpression?: string;
+    reflectionQuestion?: string;
+    beginnerTip?: string;
     advice: {
       positive: string[];
       challenges: string[];
       suggestions: string[];
     };
+    /** Full structured interpretation from transitInterpretation.ts */
+    _structured?: TransitInterpretationOutput;
+  };
+}
+
+/** Convert a Transit (legacy) to TransitForecastCardData */
+export function transitToForecastData(t: Transit): TransitForecastCardData {
+  return {
+    transitingPlanet: t.transitingPlanet,
+    natalPlanet: t.natalPlanet,
+    aspect: t.type,
+    orb: t.orb,
+    applying: t.applying,
+    startDate: t.startDate,
+    endDate: t.endDate,
+    peakDate: t.peakDate,
+    intensity: t.intensity,
+    interpretation: {
+      general: t.interpretation.general,
+      themes: t.interpretation.themes,
+      coreMeaning: t.interpretation.coreMeaning ?? '',
+      psychologicalPattern: t.interpretation.psychologicalPattern ?? '',
+      realLifeExpression: t.interpretation.realLifeExpression ?? '',
+      reflectionQuestion: t.interpretation.reflectionQuestion ?? '',
+      beginnerTip: t.interpretation.beginnerTip ?? '',
+      advice: t.interpretation.advice,
+    },
   };
 }
 
@@ -121,10 +155,10 @@ function DateSelector({
   onDateChange: (date: string) => void;
 }) {
   const viewModes = [
-    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">light_mode</span> },
-    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">calendar_today</span> },
-    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">calendar_today</span> },
-    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined text-xl" aria-hidden="true">dark_mode</span> },
+    { id: 'today', label: 'Today', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>light_mode</span> },
+    { id: 'week', label: 'This Week', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'calendar', label: 'This Month', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>calendar_today</span> },
+    { id: 'highlights', label: 'Highlights', icon: () => <span className="material-symbols-outlined" aria-hidden="true" style={{ fontSize: '16px' }}>dark_mode</span> },
   ];
 
   return (
@@ -134,7 +168,7 @@ function DateSelector({
         {viewModes.map((mode) => {
           const Icon = mode.icon;
           return (
-            <button type="button"
+            <button
               key={mode.id}
               onClick={() => onViewChange(mode.id)}
               className={`
@@ -155,7 +189,7 @@ function DateSelector({
 
       {/* Date Navigator */}
       <div className="flex items-center gap-2">
-        <button type="button"
+        <button
           onClick={() => {
             const date = new Date(selectedDate);
             date.setDate(date.getDate() - 1);
@@ -164,7 +198,7 @@ function DateSelector({
           className="p-2 rounded-lg bg-cosmic-card-solid border border-white/15 hover:bg-white/15"
           aria-label="Previous day"
         >
-          <span className="material-symbols-outlined text-slate-200" aria-hidden="true">chevron_left</span>
+          <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_left</span>
         </button>
         <input
           type="date"
@@ -173,7 +207,7 @@ function DateSelector({
           aria-label="Select date"
           className="px-4 py-2 bg-cosmic-card-solid border border-white/15 rounded-lg text-sm text-white"
         />
-        <button type="button"
+        <button
           onClick={() => {
             const date = new Date(selectedDate);
             date.setDate(date.getDate() + 1);
@@ -182,14 +216,14 @@ function DateSelector({
           className="p-2 rounded-lg bg-cosmic-card-solid border border-white/15 hover:bg-white/15"
           aria-label="Next day"
         >
-          <span className="material-symbols-outlined text-slate-200" aria-hidden="true">chevron_right</span>
+          <span className="material-symbols-outlined text-slate-200" aria-hidden="true" style={{ fontSize: '20px' }}>chevron_right</span>
         </button>
       </div>
     </div>
   );
 }
 
-// Today's Transits Component
+// Today's Transits Component — uses TransitForecastCard
 function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onTransitClick?: (transit: Transit) => void }) {
   // Sort by intensity
   const sortedTransits = [...transits].sort((a, b) => b.intensity - a.intensity);
@@ -208,9 +242,13 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
           size="small"
         />
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {sortedTransits.map((transit, index) => (
-            <TransitCard key={index} transit={transit} compact onClick={() => onTransitClick?.(transit)} />
+            <TransitForecastCard
+              key={index}
+              transit={transitToForecastData(transit)}
+              onTransitClick={() => onTransitClick?.(transit)}
+            />
           ))}
         </div>
       )}
@@ -218,7 +256,7 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
   );
 }
 
-// Weekly Transits Component
+// Weekly Transits Component — uses TransitForecastCard
 function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onTransitClick?: (transit: Transit) => void }) {
   // Group by date
   const transitsByDate = transits.reduce((acc, transit) => {
@@ -241,7 +279,7 @@ function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onT
       {sortedDates.map((date) => (
         <div key={date}>
           <h4 className="text-sm font-medium text-slate-200 mb-3">
-            {new Date(date).toLocaleDateString(APP_LOCALE, {
+            {new Date(date).toLocaleDateString('en-US', {
               weekday: 'long',
               month: 'short',
               day: 'numeric',
@@ -249,11 +287,10 @@ function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onT
           </h4>
           <div className="space-y-3">
             {transitsByDate[date].map((transit, index) => (
-              <TransitCard
+              <TransitForecastCard
                 key={index}
-                transit={transit}
-                compact
-                onClick={() => onTransitClick?.(transit)}
+                transit={transitToForecastData(transit)}
+                onTransitClick={() => onTransitClick?.(transit)}
               />
             ))}
           </div>
@@ -320,7 +357,7 @@ function TransitCalendar({
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-white">
-        Transit Calendar - {today.toLocaleDateString(APP_LOCALE, { month: 'long', year: 'numeric' })}
+        Transit Calendar - {today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
       </h3>
 
       {/* Day headers */}
@@ -369,7 +406,7 @@ function CalendarDay({
   onClick: () => void;
 }) {
   return (
-    <button type="button"
+    <button
       onClick={onClick}
       className={`
         h-24 rounded-lg p-2 text-left transition-all hover:shadow-md
@@ -432,79 +469,6 @@ function UpcomingHighlights({
   );
 }
 
-// Transit Card Component
-function TransitCard({
-  transit,
-  compact = false,
-  onClick,
-}: {
-  transit: Transit;
-  compact?: boolean;
-  onClick?: () => void;
-}) {
-  const intensityColor = getIntensityColor(transit.intensity);
-
-  return (
-    <div
-      onClick={onClick}
-      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { onClick(); } } : undefined}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      className={`
-        glass-panel rounded-2xl border p-4 cursor-pointer transition-all
-        ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
-      `}
-      style={{
-        borderColor: intensityColor,
-        borderWidth: transit.intensity >= 8 ? '2px' : '1px',
-      }}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <PlanetSymbol planet={transit.transitingPlanet} size={compact ? 'sm' : 'md'} />
-          <AspectSymbol aspect={transit.type} size={compact ? 'sm' : 'md'} />
-          <PlanetSymbol planet={transit.natalPlanet} size={compact ? 'sm' : 'md'} />
-        </div>
-
-        {/* Intensity Badge */}
-        <div
-          className="px-2 py-1 rounded text-xs font-medium text-white"
-          style={{ backgroundColor: intensityColor }}
-        >
-          {transit.intensity}/10
-        </div>
-      </div>
-
-      {!compact && (
-        <>
-          {/* Date Range */}
-          <div className="mt-3 text-sm text-slate-200">
-            {formatDate(transit.startDate)} - {formatDate(transit.endDate)}
-          </div>
-
-          {/* Themes */}
-          {transit.interpretation.themes && transit.interpretation.themes.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1">
-              {transit.interpretation.themes.slice(0, 3).map((theme, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-0.5 bg-white/15 rounded text-xs text-slate-200"
-                >
-                  {theme}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Interpretation */}
-          <p className="mt-3 text-sm text-slate-200 line-clamp-2">
-            {transit.interpretation.general}
-          </p>
-        </>
-      )}
-    </div>
-  );
-}
 
 // Highlight Card Component
 function HighlightCard({
@@ -586,16 +550,29 @@ function getIntensityColor(intensity: number): string {
   return '#10B981'; // green
 }
 
+/** Alias for TransitDetailModal usage */
+const getIntensityColorModal = getIntensityColor;
+
+function formatOrbModal(orb: number): string {
+  const abs = Math.abs(orb);
+  const degrees = Math.floor(abs);
+  const minutes = Math.round((abs - degrees) * 60);
+  return `${degrees}°${String(minutes).padStart(2, '0')}'`;
+}
+
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString(APP_LOCALE, {
+  return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
   });
 }
 
-// Transit Detail Modal Component (for full transit view)
+// Transit Detail Modal Component (full-screen overlay with expanded detail)
 export function TransitDetailModal({ transit, onClose }: { transit: Transit; onClose: () => void }) {
+  const interp = transit.interpretation;
+  const status = Math.abs(transit.orb) <= 0.08 ? 'Exact' : transit.applying ? 'Applying' : 'Separating';
+
   return (
     <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="modal-content max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -607,48 +584,73 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               <AspectSymbol aspect={transit.type} size="lg" />
               <PlanetSymbol planet={transit.natalPlanet} size="lg" />
             </div>
-            <button type="button"
+            <button
               onClick={onClose}
               className="p-2 hover:bg-white/15 rounded-lg text-slate-200 hover:text-white transition-colors"
               aria-label="Close"
             >
-              <span className="material-symbols-outlined text-xl" aria-hidden="true">close</span>
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
           </div>
 
-          {/* Date Range */}
-          <div className="mb-6">
-            <h4 className="text-sm font-medium text-slate-200 mb-2">
-              Duration
-            </h4>
-            <p className="text-slate-200">
-              {formatDate(transit.startDate)} - {formatDate(transit.endDate)}
-            </p>
-            <p className="text-xs text-slate-200 mt-1">
+          {/* Title */}
+          <h3 className="text-xl font-bold text-white mb-3">
+            Transiting {transit.transitingPlanet} {transit.type} Natal {transit.natalPlanet}
+          </h3>
+
+          {/* Metadata Row */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 text-slate-200 text-xs">
+              <span className="material-symbols-outlined text-[12px]">date_range</span>
+              {formatDate(transit.startDate)} – {formatDate(transit.endDate)}
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 text-slate-200 text-xs">
+              <span className="material-symbols-outlined text-[12px]">today</span>
               Peak: {formatDate(transit.peakDate)}
-            </p>
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 text-slate-200 text-xs">
+              Orb: {formatOrbModal(transit.orb)}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-medium ${
+              status === 'Exact' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
+              status === 'Applying' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
+              'text-blue-400 bg-blue-500/10 border-blue-500/20'
+            }`}>
+              {status}
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-white text-xs font-bold"
+              style={{ backgroundColor: getIntensityColorModal(transit.intensity) }}>
+              Intensity: {transit.intensity}/10
+            </span>
           </div>
 
-          {/* Interpretation */}
+          {/* Intensity Bar */}
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-slate-200 mb-2">
-              Interpretation
-            </h4>
-            <p className="text-slate-200">{transit.interpretation.general}</p>
+            <div className="h-2 bg-white/15 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${transit.intensity * 10}%`,
+                  backgroundColor: getIntensityColorModal(transit.intensity),
+                }}
+              />
+            </div>
           </div>
+
+          {/* Short Summary */}
+          {interp.general && (
+            <div className="mb-6">
+              <p className="text-slate-200 text-sm leading-relaxed">{interp.general}</p>
+            </div>
+          )}
 
           {/* Themes */}
-          {transit.interpretation.themes && transit.interpretation.themes.length > 0 && (
+          {interp.themes.length > 0 && (
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-slate-200 mb-2">
-                Key Themes
-              </h4>
+              <h4 className="text-sm font-medium text-slate-200 mb-2">Key Themes</h4>
               <div className="flex flex-wrap gap-2">
-                {transit.interpretation.themes.map((theme, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
-                  >
+                {interp.themes.map((theme, index) => (
+                  <span key={index} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
                     {theme}
                   </span>
                 ))}
@@ -656,14 +658,48 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
             </div>
           )}
 
-          {/* Advice */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Core Meaning */}
+          {interp.coreMeaning && (
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-[#6b3de1] mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+                Core Meaning
+              </h4>
+              <p className="text-slate-200 text-sm">{interp.coreMeaning}</p>
+            </div>
+          )}
+
+          {/* Psychological Pattern */}
+          {interp.psychologicalPattern && (
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-[#3b82f6] mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">psychology</span>
+                Psychological Pattern
+              </h4>
+              <p className="text-slate-200 text-sm">{interp.psychologicalPattern}</p>
+            </div>
+          )}
+
+          {/* Real-Life Expression */}
+          {interp.realLifeExpression && (
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-[#10b981] mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">theater_comedy</span>
+                Real-Life Expression
+              </h4>
+              <p className="text-slate-200 text-sm">{interp.realLifeExpression}</p>
+            </div>
+          )}
+
+          {/* Best Practices + Challenges grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <h4 className="text-sm font-medium text-green-400 mb-2">
+              <h4 className="text-sm font-medium text-green-400 mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">check_circle</span>
                 Best Practices
               </h4>
               <ul className="space-y-1">
-                {transit.interpretation.advice.positive.map((item, index) => (
+                {interp.advice.positive.map((item, index) => (
                   <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-green-500 mt-0.5">✓</span>
                     {item}
@@ -672,11 +708,12 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-orange-400 mb-2">
+              <h4 className="text-sm font-medium text-orange-400 mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">warning</span>
                 Challenges to Navigate
               </h4>
               <ul className="space-y-1">
-                {transit.interpretation.advice.challenges.map((item, index) => (
+                {interp.advice.challenges.map((item, index) => (
                   <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-orange-500 mt-0.5">!</span>
                     {item}
@@ -686,26 +723,46 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
             </div>
           </div>
 
-          {/* Suggestions */}
-          {transit.interpretation.advice.suggestions &&
-            transit.interpretation.advice.suggestions.length > 0 && (
-              <div className="mt-4 p-4 bg-primary/5 rounded-lg">
-                <h4 className="text-sm font-medium text-primary mb-2">
-                  Suggestions
-                </h4>
-                <ul className="space-y-1">
-                  {transit.interpretation.advice.suggestions.map((item, index) => (
-                    <li
-                      key={index}
-                      className="text-xs text-slate-200 flex items-start gap-2"
-                    >
-                      <span className="text-primary">💡</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+          {/* Reflection Question */}
+          {interp.reflectionQuestion && (
+            <div className="mb-6 bg-purple-500/5 border border-purple-500/15 rounded-xl p-4">
+              <h4 className="text-sm font-medium text-purple-400 mb-2 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px]">help</span>
+                Reflection Question
+              </h4>
+              <p className="text-slate-100 text-sm italic">&ldquo;{interp.reflectionQuestion}&rdquo;</p>
+            </div>
+          )}
+
+          {/* Beginner Tip */}
+          {interp.beginnerTip && (
+            <div className="mb-4 bg-primary/5 border border-primary/15 rounded-xl p-4">
+              <div className="flex items-start gap-2">
+                <span className="material-symbols-outlined text-primary text-[16px] mt-0.5">lightbulb</span>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary/70 block mb-1">
+                    Beginner Tip
+                  </span>
+                  <p className="text-slate-200 text-sm">{interp.beginnerTip}</p>
+                </div>
               </div>
-            )}
+            </div>
+          )}
+
+          {/* Suggestions */}
+          {interp.advice.suggestions && interp.advice.suggestions.length > 0 && (
+            <div className="p-4 bg-primary/5 rounded-lg">
+              <h4 className="text-sm font-medium text-primary mb-2">Suggestions</h4>
+              <ul className="space-y-1">
+                {interp.advice.suggestions.map((item, index) => (
+                  <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+                    <span className="text-primary">💡</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

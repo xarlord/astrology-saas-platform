@@ -27,5 +27,8 @@ export type { CompatibilityGaugeProps, CompatibilityCategory } from './Compatibi
 export { default as AspectGrid } from './AspectGrid';
 export type { AspectGridProps, AspectGridData } from './AspectGrid';
 
-export { default as ElementalBalance } from './ElementalBalance';
+export { AspectDetailPanel } from './AspectDetailPanel';
+export type { AspectDetailData, AspectDetailPanelProps } from './AspectDetailPanel';
+
+export { ElementalBalance } from './ElementalBalance';
 export type { ElementalBalanceProps } from './ElementalBalance';

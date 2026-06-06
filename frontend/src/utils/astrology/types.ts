@@ -92,6 +92,8 @@ export const MINOR_ASPECTS = [
   'sesquisquare',
   'quintile',
   'biquintile',
+  'septile',
+  'novile',
 ] as const;
 
 export type AspectType = (typeof MAJOR_ASPECTS)[number] | (typeof MINOR_ASPECTS)[number];
@@ -163,6 +165,22 @@ export const ASPECT_DEFINITIONS: Record<AspectType, AspectDefinition> = {
     angle: 144,
     orb: 1,
     symbol: 'bQ',
+    harmonious: true,
+    major: false,
+  },
+  septile: {
+    name: 'Septile',
+    angle: 51.43, // 360/7 ≈ 51.4286°
+    orb: 1,
+    symbol: '⌇',
+    harmonious: false,
+    major: false,
+  },
+  novile: {
+    name: 'Novile',
+    angle: 40, // 360/9 = 40°
+    orb: 1,
+    symbol: '☉',
     harmonious: true,
     major: false,
   },
@@ -320,6 +338,8 @@ export interface OrbConfig {
   sesquisquare: number;
   quintile: number;
   biquintile: number;
+  septile: number;
+  novile: number;
 }
 
 export const DEFAULT_ORBS: OrbConfig = {
@@ -334,4 +354,6 @@ export const DEFAULT_ORBS: OrbConfig = {
   sesquisquare: 2,
   quintile: 1,
   biquintile: 1,
+  septile: 1,
+  novile: 1,
 };

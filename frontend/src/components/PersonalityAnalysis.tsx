@@ -494,9 +494,15 @@ function getAspectSymbol(aspect: string): string {
     opposition: '☍',
     trine: '△',
     square: '□',
-    sextile: '⚹',
+    sextile: '✶',
     quincunx: '⚻',
-    'semi-sextile': '⚺',
+    semisextile: '⚺',
+    semisquare: '∠',
+    sesquisquare: '⊾',
+    quintile: 'Q',
+    biquintile: 'bQ',
+    septile: '7',
+    novile: '9',
   };
   return symbols[aspect] || aspect;
 }

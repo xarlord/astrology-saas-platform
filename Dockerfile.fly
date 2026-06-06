@@ -11,14 +11,12 @@ COPY package*.json ./
 COPY frontend/package*.json ./frontend/
 COPY backend/package*.json ./backend/
 COPY packages/shared-types/package*.json ./packages/shared-types/
-COPY packages/shared-utils/package*.json ./packages/shared-utils/
 COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
 RUN npm ci --ignore-scripts
 
 COPY packages/ ./packages/
 RUN cd packages/shared-types && npm run build || true
-RUN cd packages/shared-utils && npm run build || true
 RUN cd packages/shared-constants && npm run build || true
 
 COPY frontend/ ./frontend/
@@ -38,14 +36,12 @@ COPY package*.json ./
 COPY backend/package*.json ./backend/
 COPY backend/tsconfig.json ./backend/
 COPY packages/shared-types/package*.json ./packages/shared-types/
-COPY packages/shared-utils/package*.json ./packages/shared-utils/
 COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
 RUN npm ci --ignore-scripts
 
 COPY packages/ ./packages/
 RUN cd packages/shared-types && npm run build || true
-RUN cd packages/shared-utils && npm run build || true
 RUN cd packages/shared-constants && npm run build || true
 
 COPY backend/ ./backend/

@@ -4,10 +4,11 @@
  */
 import { logger } from '@/utils/logger';
 
-import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend, AspectGuide } from '../components';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { SkeletonLoader, EmptyState, AppLayout, ChartWheel, ChartWheelLegend, AspectGuide } from '../components';
 import { useChartStore } from '../stores/chartStore';
+import NatalAspectRow from '../components/astrology/NatalAspectRow';
 import type { ChartData, HouseCusp, Aspect, PlanetData, PlanetPosition } from '../types/chart.types';
 
 const ZODIAC_SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
@@ -36,6 +37,7 @@ export default function ChartViewPage() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [useTrueAngles, setUseTrueAngles] = useState(true);
   const calculatingRef = useRef<string | null>(null);
+
 
   useEffect(() => {
     if (!chartId) {
@@ -413,58 +415,19 @@ export default function ChartViewPage() {
           {/* Aspect Guide — educational intro */}
           <AspectGuide />
 
-          {/* Aspects Table */}
+          {/* Aspects Table — expandable with planet meanings */}
           {chartData.aspects.length > 0 && (
-            <div className="mt-8 bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-4">Natal Aspects ({chartData.aspects.length})</h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-white/20 text-slate-400">
-                      <th className="text-left py-2 px-2">Point 1</th>
-                      <th className="text-left py-2 px-2">Aspect</th>
-                      <th className="text-left py-2 px-2">Point 2</th>
-                      <th className="text-right py-2 px-2">Orb</th>
-                      <th className="text-right py-2 px-2">Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {chartData.aspects
-                      .sort((a, b) => a.orb - b.orb)
-                      .map((a, i) => {
-                        const nameMap: Record<string, string> = {
-                          ascendant: 'Ascendant', midheaven: 'Midheaven',
-                          northnode: 'North Node', southnode: 'South Node',
-                          partoffortune: 'Part of Fortune',
-                        };
-                        const p1 = nameMap[a.planet1] || a.planet1.charAt(0).toUpperCase() + a.planet1.slice(1);
-                        const p2 = nameMap[a.planet2] || a.planet2.charAt(0).toUpperCase() + a.planet2.slice(1);
-                        const typeLabel = a.applying ? 'Applying' : 'Separating';
-                        const typeColor = a.applying ? 'text-emerald-400' : 'text-amber-400';
-                        const aspectSymbols: Record<string, string> = {
-                          conjunction: '☌', opposition: '☍', trine: '△', square: '□',
-                          sextile: '⚹', quincunx: '$_[', semisextile: '⚐',
-                          semisquare: '∠', sesquiquadrate: '⋱', biquintile: '⋆',
-                        };
-                        const orbDeg = Math.floor(a.orb);
-                        const orbMin = Math.floor((a.orb - orbDeg) * 60 + 0.5);
-                        return (
-                          <tr key={i} className="border-b border-white/5 hover:bg-white/5">
-                            <td className="py-1.5 px-2 font-medium">{p1}</td>
-                            <td className="py-1.5 px-2 text-slate-300">
-                              <span className="mr-1">{aspectSymbols[a.type] || ''}</span>
-                              {a.type.charAt(0).toUpperCase() + a.type.slice(1)}
-                            </td>
-                            <td className="py-1.5 px-2 font-medium">{p2}</td>
-                            <td className="py-1.5 px-2 text-right text-slate-400">{orbDeg}°{orbMin}'</td>
-                            <td className={`py-1.5 px-2 text-right ${typeColor}`}>{typeLabel}</td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <NatalAspectRow
+              aspects={chartData.aspects.map((a) => ({
+                planet1: a.planet1,
+                planet2: a.planet2,
+                type: a.type,
+                orb: a.orb,
+                applying: a.applying,
+              }))}
+              title="Natal Aspects"
+              className="mt-8"
+            />
           )}
 
           {/* House Cusps */}

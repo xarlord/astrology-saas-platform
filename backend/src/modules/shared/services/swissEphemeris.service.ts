@@ -46,6 +46,11 @@ export const ASPECT_TYPES = {
   sextile: { angle: 60, orb: 6, symbol: '⚹', harmonious: true },
   quincunx: { angle: 150, orb: 3, symbol: '⚻', harmonious: false },
   semiSextile: { angle: 30, orb: 2, symbol: '⚼', harmonious: true },
+  quintile: { angle: 72, orb: 2, symbol: 'Q', harmonious: true },
+  biquintile: { angle: 144, orb: 2, symbol: '⋆', harmonious: true },
+  semiquintile: { angle: 36, orb: 1, symbol: '_decile', harmonious: true },
+  septile: { angle: 51.43, orb: 1.5, symbol: '⌇', harmonious: false },
+  novile: { angle: 40, orb: 1.5, symbol: '☉', harmonious: true },
 } as const;
 
 export type AspectType = keyof typeof ASPECT_TYPES;

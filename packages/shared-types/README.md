@@ -18,7 +18,7 @@ npm install @astrology-saas/shared-types
 | `PlanetPosition` | interface | Planet placement: planet, sign, degree, minute, second, house, retrograde, optional lat/lon/speed |
 | `HouseCusp` | interface | House cusp: house number, sign, degree, minute, second |
 | `Aspect` | interface | Aspect between planets: planet1, planet2, type, degree, orb, applying/separating |
-| `AspectType` | type | `'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile'` |
+| `AspectType` | type | `'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | 'semi-sextile' | 'semisquare' | 'sesquisquare'` |
 
 ## Usage
 
