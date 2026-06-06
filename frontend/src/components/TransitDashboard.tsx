@@ -459,9 +459,9 @@ function UpcomingHighlights({
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {highlights.map((highlight, index) => (
+          {highlights.map((highlight) => (
             <HighlightCard
-              key={index}
+              key={`${highlight.type}-${highlight.date}`}
               highlight={highlight}
               onClick={() => onHighlightClick?.(highlight)}
             />
@@ -496,6 +496,7 @@ function HighlightCard({
       onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { onClick(); } } : undefined}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `${highlight.title} — ${highlight.type.replace('-', ' ')}` : undefined}
       className={`
         rounded-2xl border-2 p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
