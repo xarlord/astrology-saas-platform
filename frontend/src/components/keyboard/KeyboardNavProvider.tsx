@@ -285,17 +285,6 @@ export const KeyboardNavProvider: React.FC<KeyboardNavProviderProps> = ({
         className={clsx('sr-only', announcementClassName)}
         aria-live="polite"
         aria-atomic="true"
-        style={{
-          position: 'absolute',
-          width: '1px',
-          height: '1px',
-          padding: 0,
-          margin: '-1px',
-          overflow: 'hidden',
-          clip: 'rect(0, 0, 0, 0)',
-          whiteSpace: 'nowrap',
-          border: 0,
-        }}
       >
         {announcements
           .filter((a) => a.priority === 'polite')
@@ -308,17 +297,6 @@ export const KeyboardNavProvider: React.FC<KeyboardNavProviderProps> = ({
         className={clsx('sr-only', announcementClassName)}
         aria-live="assertive"
         aria-atomic="true"
-        style={{
-          position: 'absolute',
-          width: '1px',
-          height: '1px',
-          padding: 0,
-          margin: '-1px',
-          overflow: 'hidden',
-          clip: 'rect(0, 0, 0, 0)',
-          whiteSpace: 'nowrap',
-          border: 0,
-        }}
       >
         {announcements
           .filter((a) => a.priority === 'assertive')
@@ -497,23 +475,8 @@ export const VisuallyHidden: React.FC<VisuallyHiddenProps> = ({
     <Component
       className={clsx(
         'sr-only',
-        {
-          'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0': true,
-          '[clip:rect(0,0,0,0)]': true,
-        },
         className,
       )}
-      style={{
-        position: 'absolute',
-        width: '1px',
-        height: '1px',
-        padding: 0,
-        margin: '-1px',
-        overflow: 'hidden',
-        clip: 'rect(0, 0, 0, 0)',
-        whiteSpace: 'nowrap',
-        border: 0,
-      }}
     >
       {children}
     </Component>
