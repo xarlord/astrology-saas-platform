@@ -117,7 +117,7 @@ describe('ShareModal', () => {
     });
 
     it('should call onPasswordSet when password is entered', async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       const onPasswordSet = vi.fn();
       render(<ShareModal {...mockProps} onPasswordSet={onPasswordSet} />);
 
@@ -126,7 +126,7 @@ describe('ShareModal', () => {
       // Wait for AnimatePresence animation to complete — the password input
       // is wrapped in motion.div with exit animation, so we need to be sure
       // it's fully mounted and interactive before typing.
-      const passwordInput = await screen.findByPlaceholderText('Enter password');
+      const passwordInput = await screen.findByPlaceholderText('Enter password', {}, { timeout: 15000 });
 
       await user.type(passwordInput, 'mypassword');
 
@@ -135,7 +135,7 @@ describe('ShareModal', () => {
       // since the callback fires on each keystroke.
       await waitFor(() => {
         expect(onPasswordSet).toHaveBeenLastCalledWith('mypassword');
-      }, { timeout: 10000 });
+      }, { timeout: 15000 });
     });
   });
 

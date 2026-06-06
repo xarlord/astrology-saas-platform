@@ -642,21 +642,21 @@ describe('SavedChartsGalleryPage', () => {
     it('should render grid view button', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const gridButton = screen.getByRole('button', { name: /grid_view/i });
+      const gridButton = screen.getByRole('button', { name: /grid view/i });
       expect(gridButton).toBeInTheDocument();
     });
 
     it('should render list view button', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const listButton = screen.getByRole('button', { name: /view_list/i });
+      const listButton = screen.getByRole('button', { name: /list view/i });
       expect(listButton).toBeInTheDocument();
     });
 
     it('should have grid view active by default', () => {
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const gridButton = screen.getByRole('button', { name: /grid_view/i });
+      const gridButton = screen.getByRole('button', { name: /grid view/i });
       expect(gridButton).toHaveClass('bg-slate-800');
     });
 
@@ -664,7 +664,7 @@ describe('SavedChartsGalleryPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const listButton = screen.getByRole('button', { name: /view_list/i });
+      const listButton = screen.getByRole('button', { name: /list view/i });
       await user.click(listButton);
 
       expect(listButton).toHaveClass('bg-slate-800');
@@ -674,10 +674,10 @@ describe('SavedChartsGalleryPage', () => {
       const user = userEvent.setup();
       renderWithProviders(createElement(SavedChartsGalleryPage));
 
-      const listButton = screen.getByRole('button', { name: /view_list/i });
+      const listButton = screen.getByRole('button', { name: /list view/i });
       await user.click(listButton);
 
-      const gridButton = screen.getByRole('button', { name: /grid_view/i });
+      const gridButton = screen.getByRole('button', { name: /grid view/i });
       await user.click(gridButton);
 
       expect(gridButton).toHaveClass('bg-slate-800');
