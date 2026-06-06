@@ -447,6 +447,9 @@ function TransitCard({
   return (
     <div
       onClick={onClick}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { onClick(); } } : undefined}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
       className={`
         glass-panel rounded-2xl border p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}
@@ -523,6 +526,9 @@ function HighlightCard({
   return (
     <div
       onClick={onClick}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { onClick(); } } : undefined}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
       className={`
         rounded-2xl border-2 p-4 cursor-pointer transition-all
         ${onClick ? 'hover:shadow-lg hover:scale-[1.02]' : ''}

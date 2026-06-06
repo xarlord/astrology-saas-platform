@@ -203,9 +203,9 @@ export default function RegisterPageNew() {
                 </span>
                 <span className="text-sm text-slate-400 font-medium">Step 1 of 2</span>
               </div>
-              <a className="text-sm text-slate-400 hover:text-white transition-colors" href="#">
+              <Link to="/support" className="text-sm text-slate-400 hover:text-white transition-colors">
                 Help?
-              </a>
+              </Link>
             </div>
 
             {/* Form Header */}
@@ -416,19 +416,23 @@ export default function RegisterPageNew() {
                 </div>
                 <label className="text-sm text-slate-400" htmlFor="terms">
                   I agree to the{' '}
-                  <a
+                  <Link
+                    to="/terms"
                     className="text-primary hover:text-primary-dark underline underline-offset-2"
-                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Terms of Service
-                  </a>{' '}
+                  </Link>{' '}
                   and{' '}
-                  <a
+                  <Link
+                    to="/privacy"
                     className="text-primary hover:text-primary-dark underline underline-offset-2"
-                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Privacy Policy
-                  </a>
+                  </Link>
                   .
                 </label>
               </div>
