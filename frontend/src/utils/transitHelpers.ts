@@ -19,7 +19,6 @@ import {
   getOrbInterpretation,
   getApplyingSeparatingText,
   getPlanetPointMeaning,
-  displayName,
   ASPECT_TYPE_INFO,
 } from '../data/astrology/aspectMeanings';
 
@@ -401,7 +400,7 @@ export function deriveHighlights(reading: TransitReading | undefined): TransitHi
         t.transitPlanet, t.aspect, t.natalPlanet, Math.abs(t.orb), t.orb > 0,
       );
       return {
-        type: classifyTransit(t.transitPlanet) as TransitHighlight['type'],
+        type: classifyTransit(t.transitPlanet),
         title: `${synth.p1Name} ${synth.aspectSymbol} ${synth.p2Name}`,
         date: reading.date,
         description: synth.coreMeaning,

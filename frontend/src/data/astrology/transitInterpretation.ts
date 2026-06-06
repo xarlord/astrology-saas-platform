@@ -17,17 +17,13 @@
  */
 
 import {
-  planetPointMeaningMap,
   getPlanetPointMeaning,
-  getPlanetPointDisplayName,
   type PlanetPointMeaning,
 } from './planetPointMeanings';
 import {
   ASPECT_TYPE_INFO,
   type AspectTypeInfo,
   displayName,
-  PLANET_KEYWORDS,
-  PLANET_FUNCTIONS,
   getOrbInterpretation,
   getApplyingSeparatingText,
 } from '../../components/astrology/aspectInterpretations';
@@ -137,7 +133,7 @@ function fmtDate(iso: string): string {
 
 // ─── Aspect nature label ──────────────────────────────────────────────────────
 
-function natureLabel(nature: string): string {
+function _natureLabel(nature: string): string {
   switch (nature) {
     case 'harmonious':
       return 'Harmonious — flows naturally';
@@ -298,8 +294,6 @@ function buildManifestations(
   np: PlanetPointMeaning,
   nature: string,
 ): string[] {
-  const tpName = tp.name;
-  const npName = np.name;
   const tpKw = tp.keywords;
   const npKw = np.keywords;
 
@@ -352,8 +346,6 @@ function buildAdvice(
   nature: string,
   isApplying: boolean,
 ): string {
-  const tpName = tp.name;
-  const npName = np.name;
   const tpKw = tp.keywords;
   const npKw = np.keywords;
 

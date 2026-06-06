@@ -15,7 +15,6 @@ import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   synthesizeAspectInterpretation,
-  ASPECT_SYMBOLS,
   ASPECT_NATURE_COLORS,
   type AspectInterpretation,
 } from '../../data/astrology/aspectMeanings';

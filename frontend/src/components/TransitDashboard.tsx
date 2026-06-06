@@ -36,6 +36,7 @@ export interface Transit {
 }
 
 /** Convert a Transit (legacy) to TransitForecastCardData */
+// eslint-disable-next-line react-refresh/only-export-components
 export function transitToForecastData(t: Transit): TransitForecastCardData {
   return {
     transitingPlanet: t.transitingPlanet,

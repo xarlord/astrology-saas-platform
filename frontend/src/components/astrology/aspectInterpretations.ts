@@ -556,7 +556,7 @@ export function buildBeginnerTip(planet1: string, aspectType: string, planet2: s
     `In simple terms: ${p1} and ${p2} are connected in your chart through a ${info?.label ?? aspectType}. ` +
     `When you notice themes of ${PLANET_KEYWORDS[p1]?.[0] ?? p1.toLowerCase()} coming up in your life, ` +
     `look for ${PLANET_KEYWORDS[p2]?.[0] ?? p2.toLowerCase()} themes showing up at the same time — ` +
-    `they\'re linked. Understanding this connection gives you a practical tool for self-awareness.`
+    `they're linked. Understanding this connection gives you a practical tool for self-awareness.`
   );
 }
 
