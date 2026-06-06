@@ -183,13 +183,7 @@ export default function LoginPageNew() {
 
               {/* Form Container */}
               <div
-                className="rounded-2xl p-8 shadow-2xl shadow-primary/5"
-                style={{
-                  background: 'rgba(22, 18, 33, 0.4)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                }}
+                className="rounded-2xl p-8 shadow-2xl shadow-primary/5 bg-[rgba(22,18,33,0.4)] backdrop-blur-xl border border-white/[0.08]"
               >
                 <form
                   className="space-y-6"
@@ -300,10 +294,7 @@ export default function LoginPageNew() {
                   {/* Submit Button */}
                   <div>
                     <button
-                      className="group relative flex w-full justify-center rounded-xl py-3.5 px-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-primary/40 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-                      style={{
-                        background: 'linear-gradient(135deg, #6b3de1 0%, #2563EB 100%)',
-                      }}
+                      className="group relative flex w-full justify-center rounded-xl py-3.5 px-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-primary/40 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 bg-gradient-to-br from-[#6b3de1] to-[#2563EB]"
                       type="submit"
                       data-testid="submit-button"
                       disabled={isLoading}

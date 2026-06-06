@@ -79,27 +79,15 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
 
   return (
     <div
-      className="synastry-merge-animation"
+      className="synastry-merge-animation relative w-full max-w-[600px] mx-auto"
       aria-label={ariaLabel ?? `Synastry merge: ${personA.name} and ${personB.name}`}
-      style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}
     >
       {/* Merge trigger button */}
       {mergeState === 'side-by-side' && !autoPlay && (
         <motion.button
           type="button"
           onClick={triggerMerge}
-          style={{
-            display: 'block',
-            margin: '0 auto 16px',
-            padding: '10px 24px',
-            borderRadius: '9999px',
-            border: '1px solid rgba(139, 92, 246, 0.5)',
-            background: 'rgba(139, 92, 246, 0.1)',
-            color: '#c4b5fd',
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            fontWeight: 600,
-          }}
+          className="block mx-auto mb-4 px-6 py-2.5 rounded-full border border-violet-500/50 bg-violet-500/10 text-violet-300 cursor-pointer text-sm font-semibold"
           whileHover={{ backgroundColor: 'rgba(139, 92, 246, 0.2)' }}
           whileTap={{ scale: 0.95 }}
         >
@@ -108,7 +96,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
       )}
 
       {/* Animation area */}
-      <div style={{ position: 'relative', width: '100%', paddingBottom: '50%' }}>
+      <div className="relative w-full pb-[50%]">
         <AnimatePresence mode="wait">
           {mergeState === 'side-by-side' && (
             <motion.div

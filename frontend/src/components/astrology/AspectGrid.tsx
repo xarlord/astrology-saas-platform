@@ -82,8 +82,7 @@ const AspectGrid: React.FC<AspectGridProps> = ({
             {planets.map((planet) => (
               <th
                 key={planet}
-                className="p-2 text-xs text-slate-400 font-medium rotate-45 whitespace-nowrap"
-                style={{ height: '60px' }}
+                className="p-2 text-xs text-slate-400 font-medium rotate-45 whitespace-nowrap h-[60px]"
               >
                 <div className="transform rotate-0">
                   <span className="mr-1">{PLANET_SYMBOLS[planet] ?? planet[0]}</span>

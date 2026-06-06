@@ -84,10 +84,7 @@ export default function RegisterPageNew() {
       <div className="flex flex-col lg:flex-row min-h-screen w-full">
         {/* Left Panel: Brand & Features */}
         <div
-          className="relative w-full lg:w-5/12 xl:w-1/2 flex flex-col p-8 lg:p-12 overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, #0B0D17 0%, #1a103c 50%, #2e1065 100%)',
-          }}
+          className="relative w-full lg:w-5/12 xl:w-1/2 flex flex-col p-8 lg:p-12 overflow-hidden bg-gradient-to-br from-[#0B0D17] via-[#1a103c] to-[#2e1065]"
         >
           {/* Decorative Background Elements */}
           <div
@@ -234,14 +231,7 @@ export default function RegisterPageNew() {
 
             {/* Form */}
             <form
-              className="rounded-2xl p-8 space-y-5"
-              style={{
-                background: 'rgba(19, 21, 36, 0.6)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-              }}
+              className="rounded-2xl p-8 space-y-5 bg-[rgba(19,21,36,0.6)] backdrop-blur-xl border border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
               onSubmit={(e) => {
                 e.preventDefault();
                 void handleSubmit(e);
@@ -445,10 +435,7 @@ export default function RegisterPageNew() {
 
               {/* Submit Button */}
               <button
-                className="w-full py-3.5 px-4 text-white font-bold rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mt-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                style={{
-                  background: 'linear-gradient(90deg, #b23de1 0%, #2563EB 100%)',
-                }}
+                className="w-full py-3.5 px-4 text-white font-bold rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mt-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 bg-gradient-to-r from-[#b23de1] to-[#2563EB]"
                 type="submit"
                 disabled={isLoading || !agreeToTerms || !passwordsMatch}
                 data-testid="register-submit-button"

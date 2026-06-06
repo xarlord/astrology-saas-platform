@@ -383,17 +383,6 @@ export function useAnnouncer(): {
         aria-live="polite"
         aria-atomic="true"
         className="sr-only"
-        style={{
-          position: 'absolute',
-          width: '1px',
-          height: '1px',
-          padding: 0,
-          margin: '-1px',
-          overflow: 'hidden',
-          clip: 'rect(0, 0, 0, 0)',
-          whiteSpace: 'nowrap',
-          border: 0,
-        }}
       >
         {politeMessages.map((msg) => (
           <span key={msg.split(':')[0]}>{msg.split(':').slice(1).join(':')}</span>
@@ -409,17 +398,6 @@ export function useAnnouncer(): {
         aria-live="assertive"
         aria-atomic="true"
         className="sr-only"
-        style={{
-          position: 'absolute',
-          width: '1px',
-          height: '1px',
-          padding: 0,
-          margin: '-1px',
-          overflow: 'hidden',
-          clip: 'rect(0, 0, 0, 0)',
-          whiteSpace: 'nowrap',
-          border: 0,
-        }}
       >
         {assertiveMessages.map((msg) => (
           <span key={msg.split(':')[0]}>{msg.split(':').slice(1).join(':')}</span>
