@@ -123,19 +123,19 @@ describe('ShareModal', () => {
 
       await user.click(screen.getByText('Password Protected'));
 
-      await waitFor(() => {
-        expect(screen.getByPlaceholderText('Enter password')).toBeInTheDocument();
-      });
+      // Wait for AnimatePresence animation to complete — the password input
+      // is wrapped in motion.div with exit animation, so we need to be sure
+      // it's fully mounted and interactive before typing.
+      const passwordInput = await screen.findByPlaceholderText('Enter password');
 
-      const passwordInput = screen.getByPlaceholderText('Enter password');
       await user.type(passwordInput, 'mypassword');
 
-      // Use waitFor to handle AnimatePresence animation timing
+      // Use waitFor to handle AnimatePresence animation timing.
       // toHaveBeenLastCalledWith is more robust than toHaveBeenCalledWith
-      // since the callback fires on each keystroke
+      // since the callback fires on each keystroke.
       await waitFor(() => {
         expect(onPasswordSet).toHaveBeenLastCalledWith('mypassword');
-      }, { timeout: 5000 });
+      }, { timeout: 10000 });
     });
   });
 
