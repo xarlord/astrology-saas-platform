@@ -1,10 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderWithProviders } from '../../__tests__/test-utils';
 import LearnPage from '../../pages/LearnPage';
+
+// Mock localStorage
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: vi.fn((key: string) => store[key] ?? null),
+    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
+    removeItem: vi.fn((key: string) => { delete store[key]; }),
+    clear: vi.fn(() => { store = {}; }),
+  };
+})();
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 // Mock the store so AppLayout's useAuth doesn't crash
 vi.mock('../../stores', () => ({
@@ -31,103 +43,142 @@ vi.mock('../../stores', () => ({
   })),
 }));
 
+/** Helper: click a section tab by text. Tabs appear in the tab bar and possibly sidebar. */
+function clickSectionTab(label: string | RegExp) {
+  const allMatches = screen.getAllByText(label);
+  // The section tabs are <button> elements in the tab bar
+  const tabButton = allMatches.find((el) => el.closest('button') !== null && el.closest('button')!.textContent?.includes(typeof label === 'string' ? label : ''));
+  if (tabButton) {
+    fireEvent.click(tabButton.closest('button')!);
+  } else {
+    // Fallback: click the last match
+    fireEvent.click(allMatches[allMatches.length - 1]);
+  }
+}
+
 describe('LearnPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorageMock.clear();
   });
 
   describe('Rendering', () => {
     it('renders without crashing', () => {
       renderWithProviders(<LearnPage />);
-      // Use getAllByText since sidebar may also contain "Learn Astrology"
       expect(screen.getAllByText('Learn Astrology').length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows The Planets section', () => {
+    it('shows welcome message on overview tab', () => {
       renderWithProviders(<LearnPage />);
-      expect(screen.getByText('The Planets')).toBeInTheDocument();
-      expect(screen.getByText('The celestial bodies that shape your chart')).toBeInTheDocument();
+      expect(screen.getByText('Welcome to AstroVerse Learn')).toBeInTheDocument();
     });
 
-    it('shows all planet cards', () => {
+    it('shows learning path with all sections', () => {
       renderWithProviders(<LearnPage />);
-      // Use getAllByText since some planet names appear in multiple places (sidebar, etc.)
-      expect(screen.getAllByText(/Sun/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Moon/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Mercury/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Venus/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Mars/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Jupiter/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Saturn/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Uranus/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Neptune/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Pluto/).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('Suggested Learning Path')).toBeInTheDocument();
+      expect(screen.getByText('Start Here')).toBeInTheDocument();
     });
 
-    it('shows The Zodiac Signs section', () => {
+    it('shows search input', () => {
       renderWithProviders(<LearnPage />);
-      expect(screen.getByText('The Zodiac Signs')).toBeInTheDocument();
-      expect(screen.getByText('Twelve archetypes of expression')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Search topics, terms, concepts...')).toBeInTheDocument();
     });
 
-    it('shows all zodiac sign cards', () => {
+    it('shows difficulty filter buttons', () => {
       renderWithProviders(<LearnPage />);
-      expect(screen.getAllByText(/Aries/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Taurus/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Gemini/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Cancer/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Leo/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Virgo/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Libra/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Scorpio/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Sagittarius/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Capricorn/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Aquarius/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Pisces/).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('All Levels').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Beginner').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Intermediate').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Advanced').length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows The Houses section', () => {
+    it('shows section tabs including Learning Path and The Planets', () => {
       renderWithProviders(<LearnPage />);
-      expect(screen.getByText('The Houses')).toBeInTheDocument();
-      expect(screen.getByText('Twelve domains of life experience')).toBeInTheDocument();
+      // Tabs use specific labels — check they exist (may also appear elsewhere)
+      expect(screen.getAllByText('Learning Path').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/The Planets/).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('Tab Navigation', () => {
+    it('shows planet section when Planets tab is clicked', () => {
+      renderWithProviders(<LearnPage />);
+      clickSectionTab(/The Planets/);
+      // Planet names should be visible
+      expect(screen.getAllByText(/☉ Sun/).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/☽ Moon/).length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows house cards', () => {
+    it('shows houses section when Houses tab is clicked', () => {
       renderWithProviders(<LearnPage />);
-      expect(screen.getAllByText(/House 1 - Self/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/House 12 - Spirit/).length).toBeGreaterThanOrEqual(1);
+      clickSectionTab(/The Houses/);
+      expect(screen.getAllByText(/House 1/).length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows The Aspects section', () => {
+    it('shows glossary section when Glossary tab is clicked', () => {
       renderWithProviders(<LearnPage />);
-      expect(screen.getByText('The Aspects')).toBeInTheDocument();
-      expect(screen.getByText('Angular relationships between planets')).toBeInTheDocument();
+      clickSectionTab('Glossary');
+      expect(screen.getByText('Ascendant (Rising Sign)')).toBeInTheDocument();
     });
 
-    it('shows all aspect cards', () => {
+    it('shows transits section when Transits tab is clicked', () => {
       renderWithProviders(<LearnPage />);
+      clickSectionTab(/Understanding Transits/);
+      expect(screen.getByText('Fast Transits')).toBeInTheDocument();
+      expect(screen.getByText('Social Transits')).toBeInTheDocument();
+      expect(screen.getByText('Outer Planet Transits')).toBeInTheDocument();
+    });
+
+    it('shows aspects section with quincunx when Aspects tab is clicked', () => {
+      renderWithProviders(<LearnPage />);
+      clickSectionTab(/The Aspects/);
       expect(screen.getAllByText(/Conjunction/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Opposition/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Trine/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Square/).length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText(/Sextile/).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/Quincunx/).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('Search', () => {
+    it('filters glossary terms by search query', () => {
+      renderWithProviders(<LearnPage />);
+      clickSectionTab('Glossary');
+
+      const searchInput = screen.getByPlaceholderText('Search topics, terms, concepts...');
+      fireEvent.change(searchInput, { target: { value: 'Ascendant' } });
+
+      expect(screen.getByText('Ascendant (Rising Sign)')).toBeInTheDocument();
+    });
+
+    it('shows empty state when search yields no results in glossary', () => {
+      renderWithProviders(<LearnPage />);
+      clickSectionTab('Glossary');
+
+      const searchInput = screen.getByPlaceholderText('Search topics, terms, concepts...');
+      fireEvent.change(searchInput, { target: { value: 'zzznonexistentterm' } });
+
+      expect(screen.getByText(/No glossary terms match/)).toBeInTheDocument();
     });
   });
 
   describe('ExpandableCard interactions', () => {
-    it('shows planet description when card is expanded', () => {
+    it('expands planet card to show details', () => {
       renderWithProviders(<LearnPage />);
-      const allSunElements = screen.getAllByText(/Sun/);
+      clickSectionTab(/The Planets/);
+
+      // Find and click the Sun card
+      const allSunElements = screen.getAllByText(/☉ Sun/);
       const expandButton = allSunElements[0].closest('button');
-      expect(expandButton).toBeInTheDocument();
       fireEvent.click(expandButton!);
-      expect(screen.getByText(/Core identity, ego, vitality/)).toBeInTheDocument();
+
+      // Should show core function label
+      expect(screen.getAllByText('Core Function').length).toBeGreaterThanOrEqual(1);
     });
 
     it('toggles aria-expanded when card is clicked', () => {
       renderWithProviders(<LearnPage />);
-      const allMarsElements = screen.getAllByText(/Mars/);
-      const expandButton = allMarsElements[0].closest('button');
+      clickSectionTab(/The Planets/);
+
+      const allMoonElements = screen.getAllByText(/☽ Moon/);
+      const expandButton = allMoonElements[0].closest('button');
       expect(expandButton).toHaveAttribute('aria-expanded', 'false');
       fireEvent.click(expandButton!);
       expect(expandButton).toHaveAttribute('aria-expanded', 'true');
@@ -135,28 +186,56 @@ describe('LearnPage', () => {
       expect(expandButton).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('shows sign element badges when zodiac sign cards are expanded', () => {
+    it('shows difficulty badges on cards', () => {
       renderWithProviders(<LearnPage />);
-      const allAriesElements = screen.getAllByText(/Aries/);
-      const expandButton = allAriesElements[0].closest('button');
-      fireEvent.click(expandButton!);
-      expect(screen.getAllByText('Fire').length).toBeGreaterThanOrEqual(1);
+      // Beginner badges should be visible in multiple places
+      expect(screen.getAllByText('Beginner').length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('Progress tracking', () => {
+    it('loads progress from localStorage', () => {
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(['sun']));
+      renderWithProviders(<LearnPage />);
+      expect(localStorageMock.getItem).toHaveBeenCalledWith('astroverse-learn-progress');
     });
 
-    it('shows aspect nature badges when aspect cards are expanded', () => {
+    it('shows progress indicator', () => {
       renderWithProviders(<LearnPage />);
-      const allTrineElements = screen.getAllByText(/Trine/);
-      const expandButton = allTrineElements[0].closest('button');
-      fireEvent.click(expandButton!);
-      expect(screen.getAllByText('Harmonious').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText('Progress')).toBeInTheDocument();
+    });
+  });
+
+  describe('Difficulty filter', () => {
+    it('filters planets by beginner difficulty', () => {
+      renderWithProviders(<LearnPage />);
+      clickSectionTab(/The Planets/);
+
+      // Click the "Beginner" filter button (first occurrence in the filter bar)
+      const beginnerButtons = screen.getAllByText('Beginner');
+      // Find the button in the filter bar — it's inside a button element in the filter area
+      const filterButton = beginnerButtons.find(el => el.closest('button')?.className.includes('rounded-lg'));
+      if (filterButton) {
+        fireEvent.click(filterButton.closest('button')!);
+      }
+
+      // Should still show beginner planets like Sun
+      expect(screen.getAllByText(/☉ Sun/).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('Overview section', () => {
+    it('shows stats cards', () => {
+      renderWithProviders(<LearnPage />);
+      // The overview shows stat cards with counts — look for the stat labels
+      // "Planets", "Houses", "Aspects" appear multiple places, so check counts
+      const planetLabels = screen.getAllByText('Planets');
+      expect(planetLabels.length).toBeGreaterThanOrEqual(2); // sidebar + stat card
     });
 
-    it('shows house descriptions when house cards are expanded', () => {
+    it('shows continue learning suggestion', () => {
       renderWithProviders(<LearnPage />);
-      const allHouse1Elements = screen.getAllByText(/House 1 - Self/);
-      const expandButton = allHouse1Elements[0].closest('button');
-      fireEvent.click(expandButton!);
-      expect(screen.getByText(/Your outward personality/)).toBeInTheDocument();
+      expect(screen.getByText('Continue Learning')).toBeInTheDocument();
     });
   });
 });

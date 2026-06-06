@@ -36,6 +36,9 @@ const STRIPE_CSP = {
 // Security Middleware
 // ============================================
 
+// Trust proxy (required behind Fly.io / load balancers for rate limiting)
+app.set('trust proxy', 1);
+
 // Helmet - Security headers
 app.use(helmet({
   contentSecurityPolicy: {

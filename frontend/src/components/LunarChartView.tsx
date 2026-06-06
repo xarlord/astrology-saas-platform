@@ -28,7 +28,10 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
       opposition: '☍',
       trine: '△',
       square: '□',
-      sextile: '⚹',
+      sextile: '✶',
+      quincunx: '⚩',
+      semisextile: '⚩',
+      semisquare: '∠',
     };
     return icons[type] || '●';
   };

@@ -5,11 +5,12 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ASPECTS, ASPECT_KEYS, type AspectKey } from '@/constants/aspects';
 
 export interface AspectGridData {
   planet1: string;
   planet2: string;
-  aspect: 'conjunction' | 'opposition' | 'trine' | 'square' | 'sextile' | 'quincunx' | null;
+  aspect: AspectKey | null;
   orb?: number;
   applying?: boolean;
 }
@@ -22,15 +23,6 @@ export interface AspectGridProps {
   onAspectClick?: (aspect: AspectGridData) => void;
   'aria-label'?: string;
 }
-
-const ASPECT_SYMBOLS: Record<string, { symbol: string; color: string; label: string }> = {
-  conjunction: { symbol: '☌', color: '#fbbf24', label: 'Conjunction' },
-  opposition: { symbol: '☍', color: '#ef4444', label: 'Opposition' },
-  trine: { symbol: '△', color: '#3b82f6', label: 'Trine' },
-  square: { symbol: '□', color: '#f87171', label: 'Square' },
-  sextile: { symbol: '⚹', color: '#22c55e', label: 'Sextile' },
-  quincunx: { symbol: '⚺', color: '#a78bfa', label: 'Quincunx' },
-};
 
 const PLANET_SYMBOLS: Record<string, string> = {
   Sun: '☉',
@@ -115,7 +107,7 @@ const AspectGrid: React.FC<AspectGridProps> = ({
                   );
                 }
 
-                const aspectInfo = aspect?.aspect ? ASPECT_SYMBOLS[aspect.aspect] : null;
+                const aspectInfo = aspect?.aspect ? ASPECTS[aspect.aspect] : null;
 
                 return (
                   <td
@@ -133,7 +125,7 @@ const AspectGrid: React.FC<AspectGridProps> = ({
                   >
                     {aspectInfo ? (
                       <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-lg" style={{ color: aspectInfo.color }}>
+                        <span className="text-lg" style={{ color: aspectInfo.colorHex }}>
                           {aspectInfo.symbol}
                         </span>
                         {showOrbs && aspect?.orb !== undefined && (
@@ -152,16 +144,19 @@ const AspectGrid: React.FC<AspectGridProps> = ({
         </tbody>
       </motion.table>
 
-      {/* Legend */}
+      {/* Legend — shows symbol + readable name */}
       <div className="mt-4 flex flex-wrap gap-3 text-xs">
-        {Object.entries(ASPECT_SYMBOLS).map(([key, { symbol, color, label }]) => (
-          <div key={key} className="flex items-center gap-1.5">
-            <span className="text-base" style={{ color }}>
-              {symbol}
-            </span>
-            <span className="text-slate-400">{label}</span>
-          </div>
-        ))}
+        {ASPECT_KEYS.map((key) => {
+          const info = ASPECTS[key];
+          return (
+            <div key={key} className="flex items-center gap-1.5">
+              <span className="text-base" style={{ color: info.colorHex }}>
+                {info.symbol}
+              </span>
+              <span className="text-slate-400">{info.label}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

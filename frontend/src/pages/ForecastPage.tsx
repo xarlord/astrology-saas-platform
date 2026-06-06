@@ -12,9 +12,11 @@ import {
   SkeletonLoader,
   EmptyState,
   AppLayout,
+} from '../components';
+import {
   TransitDashboard,
   TransitDetailModal,
-} from '../components';
+} from '../components/TransitDashboard';
 import type {
   Transit,
   TransitHighlight,

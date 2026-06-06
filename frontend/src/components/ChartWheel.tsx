@@ -52,6 +52,7 @@ for (const key of Object.keys(PLANET_SYMBOLS)) {
 const ASPECT_COLORS: Record<string, string> = {
   ...ASPECT_COLORS_TOKEN, 'semi-sextile': '#888888', 'semisextile': '#888888',
   square: '#FF6600', sextile: '#00BFFF', quincunx: '#9932CC',
+  semisquare: '#CC6600', sesquisquare: '#B8860B',
   conjunction: '#FFD700', opposition: '#FF4444', trine: '#00FF88',
 };
 const ZODIAC_SYMBOLS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
@@ -249,7 +250,7 @@ export function ChartWheel({
           const inner1 = polar(cx, cy, aspectRadius, scr1);
           const inner2 = polar(cx, cy, aspectRadius, scr2);
           const color = ASPECT_COLORS[aspect.type] || '#888';
-          const isDashed = ['quincunx', 'semi-sextile', 'semisextile'].includes(aspect.type);
+          const isDashed = ['quincunx', 'semi-sextile', 'semisextile', 'semisquare', 'sesquisquare'].includes(aspect.type);
           const w = ['conjunction', 'opposition'].includes(aspect.type) ? 1.5 : 1;
           return (
             <g key={`as${idx}`}
@@ -415,6 +416,9 @@ export function ChartWheelLegend() {
           <li className="flex items-center gap-2"><span className="text-lg" style={{ color: ASPECT_COLORS.trine }}>△</span><span className="text-slate-200">Trine (8°)</span></li>
           <li className="flex items-center gap-2"><span className="text-lg" style={{ color: ASPECT_COLORS.square }}>□</span><span className="text-slate-200">Square (8°)</span></li>
           <li className="flex items-center gap-2"><span className="text-lg" style={{ color: ASPECT_COLORS.sextile }}>⚹</span><span className="text-slate-200">Sextile (6°)</span></li>
+          <li className="flex items-center gap-2"><span className="text-lg" style={{ color: ASPECT_COLORS.quincunx }}>∘</span><span className="text-slate-200">Quincunx (3°)</span></li>
+          <li className="flex items-center gap-2"><span className="text-lg" style={{ color: ASPECT_COLORS.semisquare }}>∠</span><span className="text-slate-200">Semi-square (2°)</span></li>
+          <li className="flex items-center gap-2"><span className="text-lg" style={{ color: ASPECT_COLORS.sesquisquare }}>⚼</span><span className="text-slate-200">Sesquisquare (2°)</span></li>
         </ul>
       </div>
       <div>

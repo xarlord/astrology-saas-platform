@@ -10,7 +10,7 @@ export type { LoginCredentials, RegisterData, AuthResponse } from './api.types';
 export interface AuthServiceResponse {
   user: User;
   accessToken: string;
-  refreshToken: string;
+  // refreshToken is sent as httpOnly cookie, not in response body
 }
 
 export const authService = {

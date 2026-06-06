@@ -1917,6 +1917,15 @@ export interface AspectInterpretation {
   harmonious: boolean;
   expression: string;
   advice: string[];
+  // Enhanced fields — aspect type classification
+  aspectType?: string;
+  coreMeaning?: string;
+  psychologicalPattern?: string;
+  realLifeExpression?: string;
+  birthChartMeaning?: string;
+  transitMeaning?: string;
+  constructiveUse?: string;
+  beginnerTip?: string;
 }
 
 export const aspectInterpretations: Record<string, AspectInterpretation> = {
@@ -1933,6 +1942,14 @@ export const aspectInterpretations: Record<string, AspectInterpretation> = {
       'This aspect requires self-awareness and integration',
       'The energy flows naturally once understood',
     ],
+    aspectType: 'Intensifying / Blending Aspect',
+    coreMeaning: 'A conjunction occurs when two planets or points are close together. Their energies merge and act as a combined force.',
+    psychologicalPattern: 'The person may experience the two planetary functions as inseparable. This can create focus, intensity, talent, pressure, or over-identification with that combination.',
+    realLifeExpression: 'The themes of the two planets often appear together. For example, Venus conjunct Mars may combine affection with desire, attraction with action, or relationship with passion.',
+    birthChartMeaning: 'In a natal chart, a conjunction shows a strong life theme. It can become a major part of identity or behavior, depending on the planets and house involved.',
+    transitMeaning: 'In transit, a conjunction activates a natal planet or point directly. It can mark a new cycle, strong awareness, or a concentrated event/theme.',
+    constructiveUse: 'Use the combined energy consciously instead of letting one planet dominate the other.',
+    beginnerTip: 'A conjunction is powerful, but not automatically positive or negative. Always interpret the planets, sign, house, and orb.',
   },
   opposition: {
     type: 'opposition',
@@ -1947,6 +1964,14 @@ export const aspectInterpretations: Record<string, AspectInterpretation> = {
       'Find the middle path between extremes',
       'Relationships often mirror this dynamic back to you',
     ],
+    aspectType: 'Polarizing / Awareness Aspect',
+    coreMeaning: 'An opposition occurs when two planets face each other across the chart. It creates contrast, tension, projection, and the need for balance.',
+    psychologicalPattern: 'The person may swing between two different needs or see one side of the aspect through other people. Oppositions often become visible through relationships, conflict, comparison, or external situations.',
+    realLifeExpression: 'The person may feel pulled between two life areas, two desires, or two roles. For example, Moon opposite Saturn may create tension between emotional needs and responsibility.',
+    birthChartMeaning: 'In a natal chart, an opposition asks for integration. The person must learn to hold both sides instead of rejecting one and over-identifying with the other.',
+    transitMeaning: 'In transit, an opposition may bring confrontation, clarity, relationship events, decisions, or external circumstances that reveal an imbalance.',
+    constructiveUse: 'Practice balance, negotiation, and conscious awareness of projection.',
+    beginnerTip: 'An opposition does not mean one side must win. The goal is integration.',
   },
   trine: {
     type: 'trine',
@@ -1961,6 +1986,14 @@ export const aspectInterpretations: Record<string, AspectInterpretation> = {
       'Balance ease with effort for true mastery',
       'Recognize not everyone has these natural advantages',
     ],
+    aspectType: 'Harmonious / Flowing Aspect',
+    coreMeaning: 'A trine shows natural flow between two planets. Their energies support each other easily.',
+    psychologicalPattern: 'The person may have a natural ability, comfort, or ease connected with the planets involved.',
+    realLifeExpression: 'Trines may appear as talent, support, confidence, ease, creativity, or circumstances that develop without too much resistance.',
+    birthChartMeaning: 'In a natal chart, a trine shows a natural resource. However, because it feels easy, the person may take it for granted.',
+    transitMeaning: 'In transit, a trine may bring support, opportunity, ease, emotional relief, or smoother progress.',
+    constructiveUse: 'Use the natural talent actively. Do not assume ease means automatic success.',
+    beginnerTip: 'A trine is helpful, but it can become passive if not consciously used.',
   },
   square: {
     type: 'square',
@@ -1975,6 +2008,14 @@ export const aspectInterpretations: Record<string, AspectInterpretation> = {
       'Patience and persistence are key',
       'The discomfort is productive - it builds strength',
     ],
+    aspectType: 'Dynamic / Challenging Aspect',
+    coreMeaning: 'A square creates friction between two planets. It shows tension, pressure, conflict, and the need for action.',
+    psychologicalPattern: 'The person may feel blocked, irritated, motivated, or forced to grow. Squares often describe inner conflicts that push development.',
+    realLifeExpression: 'Squares may appear as repeated challenges, frustration, urgency, ambition, conflict, or situations that demand effort.',
+    birthChartMeaning: 'In a natal chart, a square shows an area of life that requires work and conscious development. It may feel difficult early in life but can become a source of strength.',
+    transitMeaning: 'In transit, a square often brings pressure, decisions, conflict, deadlines, or turning points.',
+    constructiveUse: 'Use the pressure as fuel. Squares become productive when the person stops avoiding the tension and works with it directly.',
+    beginnerTip: 'Squares are not "bad." They are engines of growth. Many achievements come from square aspects.',
   },
   sextile: {
     type: 'sextile',
@@ -1989,6 +2030,14 @@ export const aspectInterpretations: Record<string, AspectInterpretation> = {
       'Stay alert to possibilities in these areas',
       'Your actions will unlock this potential',
     ],
+    aspectType: 'Supportive / Opportunity Aspect',
+    coreMeaning: 'A sextile shows cooperation and potential between two planets. It is helpful, but it usually requires conscious effort to activate.',
+    psychologicalPattern: 'The person may have a skill or opportunity that develops through practice, choice, and awareness.',
+    realLifeExpression: 'Sextiles may appear as useful contacts, learnable talents, productive conversations, practical support, or opportunities that need action.',
+    birthChartMeaning: 'In a natal chart, a sextile shows an area where the person can develop competence with effort.',
+    transitMeaning: 'In transit, a sextile may bring openings, helpful timing, constructive choices, or manageable opportunities.',
+    constructiveUse: 'Take action. A sextile works best when the person participates.',
+    beginnerTip: 'A sextile is potential, not a guarantee.',
   },
   quincunx: {
     type: 'quincunx',

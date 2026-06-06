@@ -98,6 +98,8 @@ const ASPECT_COLORS: Record<string, string> = {
   sextile: '#00BFFF',
   'semi-sextile': '#9370DB',
   quincunx: '#9932CC',
+  semisquare: '#CC6600',
+  sesquisquare: '#B8860B',
 };
 
 export const SolarReturnChart: React.FC<SolarReturnChartProps> = ({

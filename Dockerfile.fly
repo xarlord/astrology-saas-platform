@@ -11,14 +11,12 @@ COPY package*.json ./
 COPY frontend/package*.json ./frontend/
 COPY backend/package*.json ./backend/
 COPY packages/shared-types/package*.json ./packages/shared-types/
-COPY packages/shared-utils/package*.json ./packages/shared-utils/
 COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
 RUN npm ci --ignore-scripts
 
 COPY packages/ ./packages/
 RUN cd packages/shared-types && npm run build || true
-RUN cd packages/shared-utils && npm run build || true
 RUN cd packages/shared-constants && npm run build || true
 
 COPY frontend/ ./frontend/
@@ -38,14 +36,12 @@ COPY package*.json ./
 COPY backend/package*.json ./backend/
 COPY backend/tsconfig.json ./backend/
 COPY packages/shared-types/package*.json ./packages/shared-types/
-COPY packages/shared-utils/package*.json ./packages/shared-utils/
 COPY packages/shared-constants/package*.json ./packages/shared-constants/
 
 RUN npm ci --ignore-scripts
 
 COPY packages/ ./packages/
 RUN cd packages/shared-types && npm run build || true
-RUN cd packages/shared-utils && npm run build || true
 RUN cd packages/shared-constants && npm run build || true
 
 COPY backend/ ./backend/
@@ -67,6 +63,9 @@ COPY --from=backend-builder /app/backend/package.json ./backend/package.json
 # Copy built backend
 COPY --from=backend-builder /app/backend/dist ./backend/dist
 
+# Copy migrations for auto-migration on startup
+COPY --from=backend-builder /app/backend/migrations ./backend/migrations
+
 # Copy frontend dist
 COPY --from=frontend-builder /app/frontend/dist ./backend/public
 
@@ -75,4 +74,5 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["node", "backend/dist/server.js"]
+# Run auto-migration then start server
+CMD ["sh", "-c", "node backend/dist/scripts/run-migrations.js && node backend/dist/server.js"]
