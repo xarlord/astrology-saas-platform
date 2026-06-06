@@ -21,7 +21,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlanetSymbol, AspectSymbol } from '../';
+import { PlanetSymbol } from '../PlanetSymbol';
+import { AspectSymbol } from '../AspectSymbol';
 
 // ============================================================================
 // TYPES
