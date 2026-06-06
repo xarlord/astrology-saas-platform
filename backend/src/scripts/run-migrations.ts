@@ -31,14 +31,13 @@ async function runMigrations(): Promise<void> {
       directory: migrationsDir,
       tableName: 'knex_migrations',
     },
+    // Don't fail when already-applied migrations are missing from disk
+    disableMigrationsListValidation: true,
   });
 
   try {
     console.log('[migrations] Running pending migrations...');
-    const [batchNo, log] = await db.migrate.latest({
-      // Don't fail if already-applied migrations are missing from disk
-      disableMigrationsListValidation: true,
-    });
+    const [batchNo, log] = await db.migrate.latest();
     if (log.length === 0) {
       console.log('[migrations] Already up to date.');
     } else {
@@ -46,7 +45,7 @@ async function runMigrations(): Promise<void> {
     }
   } catch (err) {
     console.error('[migrations] FAILED:', err);
-    // Don't crash the server — log the error and continue
+    // Non-fatal: log error but let server continue starting
     console.error('[migrations] Continuing server startup despite migration failure.');
   }
 
