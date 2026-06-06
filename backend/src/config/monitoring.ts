@@ -6,6 +6,8 @@
  * without the package.
  */
 
+import { logger } from '@/utils/logger.js';
+
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
 /* -------------------------------------------------------------------------- */
@@ -90,8 +92,7 @@ async function loadSentry(): Promise<SentryWrapper> {
       },
     };
 
-    // eslint-disable-next-line no-console
-    console.log(`[monitoring] Sentry initialised (env=${process.env.NODE_ENV})`);
+    logger.info(`Sentry initialised (env=${process.env.NODE_ENV})`);
   } catch {
     // @sentry/node not installed — fall back to no-op
     _sentry = createNoopWrapper();

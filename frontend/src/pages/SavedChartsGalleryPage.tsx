@@ -305,6 +305,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
               <div className="flex items-center bg-slate-900/50 border border-slate-700 rounded-xl p-1">
                 <button type="button"
                   onClick={() => setViewMode('grid')}
+                  aria-label="Grid view"
                   className={clsx(
                     'p-2 rounded-lg transition-colors',
                     viewMode === 'grid'
@@ -312,10 +313,11 @@ export const SavedChartsGalleryPage: React.FC = () => {
                       : 'text-slate-500 hover:text-slate-300',
                   )}
                 >
-                  <span className="material-symbols-outlined">grid_view</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">grid_view</span>
                 </button>
                 <button type="button"
                   onClick={() => setViewMode('list')}
+                  aria-label="List view"
                   className={clsx(
                     'p-2 rounded-lg transition-colors',
                     viewMode === 'list'
@@ -323,7 +325,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                       : 'text-slate-500 hover:text-slate-300',
                   )}
                 >
-                  <span className="material-symbols-outlined">view_list</span>
+                  <span className="material-symbols-outlined" aria-hidden="true">view_list</span>
                 </button>
               </div>
             </div>
@@ -427,9 +429,10 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 />
                 <button type="button"
                   onClick={() => void copyShareLink()}
+                  aria-label="Copy share link"
                   className="px-3 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[18px]">content_copy</span>
+                  <span className="material-symbols-outlined text-[18px]" aria-hidden="true">content_copy</span>
                 </button>
               </div>
             </div>
@@ -440,21 +443,24 @@ export const SavedChartsGalleryPage: React.FC = () => {
               <div className="flex gap-3">
                 <button type="button"
                   onClick={() => void handleNativeShare()}
+                  aria-label="Share on Facebook"
                   className="flex-1 flex items-center justify-center gap-2 bg-[#1877f2]/20 hover:bg-[#1e1b2e] text-white py-2 rounded-lg transition-colors"
                 >
-                  <span className="material-symbols-outlined text-lg">facebook</span>
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">facebook</span>
                 </button>
                 <button type="button"
                   onClick={() => void handleNativeShare()}
+                  aria-label="Share on Twitter"
                   className="flex-1 flex items-center justify-center gap-2 bg-[#1da4dd] hover:bg-[#1da4dd] text-white py-2 rounded-lg transition-colors"
                 >
-                  <span className="material-symbols-outlined text-lg">group</span>
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">group</span>
                 </button>
                 <button type="button"
                   onClick={() => void handleNativeShare()}
+                  aria-label="Share via email"
                   className="flex-1 flex items-center justify-center gap-2 bg-[#00c6ff] hover:bg-[#00c6ff] text-white py-2 rounded-lg transition-colors"
                 >
-                  <span className="material-symbols-outlined text-lg">alternate_email</span>
+                  <span className="material-symbols-outlined text-lg" aria-hidden="true">alternate_email</span>
                 </button>
               </div>
             </div>

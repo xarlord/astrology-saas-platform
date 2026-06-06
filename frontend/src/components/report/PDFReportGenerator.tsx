@@ -604,9 +604,10 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowPreviewModal(false)}
+                  aria-label="Close preview"
                   className="text-slate-400 hover:text-white transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[20px]">cancel</span>
+                  <span className="material-symbols-outlined text-[20px]" aria-hidden="true">cancel</span>
                 </button>
               </div>
               <div className="flex-1 overflow-auto p-4">

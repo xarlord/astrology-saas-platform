@@ -276,7 +276,7 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
                 View Details
                 <span className="material-symbols-outlined text-5xl" aria-hidden="true">trending_up</span>
               </button>
-              <button type="button" className="p-2 text-slate-200 hover:text-pink-500 hover:bg-pink-500/20 rounded-lg transition-colors" title="Share as gift">
+              <button type="button" className="p-2 text-slate-200 hover:text-pink-500 hover:bg-pink-500/20 rounded-lg transition-colors" aria-label="Share as gift" title="Share as gift">
                 <span className="material-symbols-outlined text-5xl" aria-hidden="true">card_giftcard</span>
               </button>
             </div>
