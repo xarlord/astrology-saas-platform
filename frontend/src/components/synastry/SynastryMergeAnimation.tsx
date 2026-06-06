@@ -101,13 +101,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
           {mergeState === 'side-by-side' && (
             <motion.div
               key="side-by-side"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}
+              className="absolute inset-0 flex justify-around items-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -132,19 +126,13 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
           {mergeState === 'merging' && (
             <motion.div
               key="merging"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+              className="absolute inset-0 flex justify-center items-center"
               initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
               <motion.div
-                style={{ position: 'relative' }}
+                className="relative"
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 1.2, ease: 'easeInOut' }}
               >
@@ -156,7 +144,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
                 />
               </motion.div>
               <motion.div
-                style={{ position: 'relative', marginLeft: '-40%' }}
+                className="relative -ml-[40%]"
                 animate={{ rotate: [0, -360] }}
                 transition={{ duration: 1.2, ease: 'easeInOut' }}
               >
@@ -173,14 +161,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
           {mergeState === 'merged' && (
             <motion.div
               key="merged"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className="absolute inset-0 flex flex-col items-center justify-center"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -188,7 +169,7 @@ const SynastryMergeAnimation: React.FC<SynastryMergeAnimationProps> = ({
               {/* Merged wheel with aspect arcs */}
               <svg
                 viewBox="0 0 100 100"
-                style={{ width: '80%', maxWidth: '300px' }}
+                className="w-4/5 max-w-[300px]"
                 aria-hidden="true"
               >
                 {/* Outer ring */}

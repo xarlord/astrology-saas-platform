@@ -111,14 +111,6 @@ export function swe_julday(year: number, month: number, day: number, hour: numbe
   return year * 365 + month * 30 + day + hour / 24;
 }
 
-/**
- * Get zodiac sign from longitude
- */
-// function _getZodiacSign(longitude: number): string {
-//   const index = Math.floor(longitude / 30) % 12;
-//   return ZODIAC_SIGNS[index];
-// }
-
 // Export all functions as a single object
 export const swisseph = {
   SE_SUN,
