@@ -417,9 +417,9 @@ export function BirthDataForm({
                 className="absolute z-50 mt-1 w-full rounded-lg shadow-2xl max-h-60 overflow-auto border border-cosmic-border"
                 style={{ backgroundColor: 'var(--color-bg-card-solid, #141627)' }}
               >
-                {placeSuggestions.map((place, index) => (
+                {placeSuggestions.map((place) => (
                   <button
-                    key={index}
+                    key={`${place.lat}-${place.lon}`}
                     type="button"
                     role="option"
                     onClick={() => { void selectPlace(place); }}

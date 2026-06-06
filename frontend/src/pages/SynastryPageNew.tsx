@@ -446,7 +446,7 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
 
                       return (
                         <div
-                          key={index}
+                          key={`${aspect.aspect}-${index}`}
                           className="flex gap-3 items-start pb-4 border-b border-white/5 last:border-0 last:pb-0"
                         >
                           <div

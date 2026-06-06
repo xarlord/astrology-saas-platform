@@ -78,7 +78,7 @@ const CustomDot = (
   }
 
   return (
-    <g>
+    <g role="button" aria-label={`Major transit event on ${dataPoint.date ?? 'unknown date'}`}>
       <circle
         cx={cx}
         cy={cy}

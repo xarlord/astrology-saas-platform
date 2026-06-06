@@ -52,8 +52,8 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey }) => {
         </header>
 
         <div className="space-y-10">
-          {pageData.sections.map((section, index) => (
-            <section key={index}>
+          {pageData.sections.map((section) => (
+            <section key={section.heading}>
               <h2 className="text-xl font-semibold text-white mb-3">
                 {section.heading}
               </h2>

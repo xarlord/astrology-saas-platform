@@ -68,6 +68,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
           : 'bg-white/5 backdrop-blur-sm border-l-slate-700 opacity-70'
       }`}
       onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`${title} course — ${status === 'in-progress' ? 'in progress' : status}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}

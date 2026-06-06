@@ -1052,8 +1052,8 @@ function PlanCard({
         <p className="text-3xl font-bold text-primary">{plan.price}</p>
       </div>
       <ul className="space-y-3 mb-6">
-        {plan.features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-2 text-sm text-slate-200">
+        {plan.features.map((feature) => (
+          <li key={feature} className="flex items-start gap-2 text-sm text-slate-200">
             <span className="material-symbols-outlined text-4xl text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true">check</span>
             {feature}
           </li>

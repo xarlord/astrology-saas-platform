@@ -44,6 +44,15 @@ const LessonCard: React.FC<LessonCardProps> = ({
     <motion.div
       className="flex gap-4 group cursor-pointer"
       onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`${title} — ${type === 'video' ? 'video lesson' : type === 'article' ? 'article lesson' : 'lesson'}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
