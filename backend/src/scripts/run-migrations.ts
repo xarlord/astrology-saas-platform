@@ -30,9 +30,9 @@ async function runMigrations(): Promise<void> {
     migrations: {
       directory: migrationsDir,
       tableName: 'knex_migrations',
+      // Don't fail when already-applied migrations are missing from disk
+      disableMigrationsListValidation: true,
     },
-    // Don't fail when already-applied migrations are missing from disk
-    disableMigrationsListValidation: true,
   });
 
   try {
