@@ -56,36 +56,44 @@ const DIFFICULTY_COLORS: Record<DifficultyLevel, string> = {
 const SECTION_ICONS: Record<LearnSection, string> = {
   overview: 'school',
   planets: 'auto_awesome',
+  signs: 'star',
   houses: 'grid_view',
   aspects: 'hexagon',
   transits: 'motion_photos_on',
+  reading: 'menu_book',
   glossary: 'book_5',
 };
 
 const SECTION_TITLES: Record<LearnSection, string> = {
   overview: 'Learning Path',
   planets: 'The Planets',
+  signs: 'The Signs',
   houses: 'The Houses',
   aspects: 'The Aspects',
   transits: 'Understanding Transits',
+  reading: 'Chart Reading',
   glossary: 'Glossary',
 };
 
 const SECTION_SUBTITLES: Record<LearnSection, string> = {
   overview: 'Your journey into astrology starts here',
   planets: 'The celestial bodies that shape your chart',
+  signs: 'The twelve zodiac signs and their qualities',
   houses: 'Twelve domains of life experience',
   aspects: 'Angular relationships between planets',
   transits: 'How current planetary movements activate your chart',
+  reading: 'How to read and interpret a birth chart',
   glossary: 'Key astrological terms and definitions',
 };
 
 const SECTION_COLORS: Record<LearnSection, string> = {
   overview: '#6366f1',
   planets: '#f59e0b',
+  signs: '#f97316',
   houses: '#10b981',
   aspects: '#3b82f6',
   transits: '#8b5cf6',
+  reading: '#06b6d4',
   glossary: '#ec4899',
 };
 
@@ -210,7 +218,7 @@ function ExpandableCard({
 // Section Renderers
 // ────────────────────────────────────────────
 
-function PlanetSection({ completedTopics, onToggleComplete }: { completedTopics: Set<string>; onToggleComplete: (id: string) => void }) {
+function _PlanetSection({ completedTopics, onToggleComplete }: { completedTopics: Set<string>; onToggleComplete: (id: string) => void }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {planets.map((p: PlanetCard) => (
@@ -273,7 +281,7 @@ function PlanetSection({ completedTopics, onToggleComplete }: { completedTopics:
   );
 }
 
-function HouseSection({ completedTopics, onToggleComplete }: { completedTopics: Set<string>; onToggleComplete: (id: string) => void }) {
+function _HouseSection({ completedTopics, onToggleComplete }: { completedTopics: Set<string>; onToggleComplete: (id: string) => void }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {houses.map((h: HouseCard) => (
@@ -333,7 +341,7 @@ function HouseSection({ completedTopics, onToggleComplete }: { completedTopics: 
   );
 }
 
-function AspectSection({ completedTopics, onToggleComplete }: { completedTopics: Set<string>; onToggleComplete: (id: string) => void }) {
+function _AspectSection({ completedTopics, onToggleComplete }: { completedTopics: Set<string>; onToggleComplete: (id: string) => void }) {
   const natureColor = (nature: string) => {
     if (nature === 'Harmonious') return '#22c55e';
     if (nature === 'Challenging') return '#ef4444';
@@ -529,7 +537,7 @@ function loadProgress(): Set<string> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const arr: string[] = JSON.parse(raw);
+      const arr: string[] = JSON.parse(raw) as string[];
       return new Set(arr);
     }
   } catch {

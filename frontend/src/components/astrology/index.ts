@@ -30,5 +30,5 @@ export type { AspectGridProps, AspectGridData } from './AspectGrid';
 export { AspectDetailPanel } from './AspectDetailPanel';
 export type { AspectDetailData, AspectDetailPanelProps } from './AspectDetailPanel';
 
-export { ElementalBalance } from './ElementalBalance';
+export { default as ElementalBalance } from './ElementalBalance';
 export type { ElementalBalanceProps } from './ElementalBalance';
