@@ -490,8 +490,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                     Strengths
                   </h3>
                   <ul className="space-y-2">
-                    {results.strengths.map((strength, index) => (
-                      <li key={index} className="flex gap-3 text-sm text-slate-300">
+                    {results.strengths.map((strength) => (
+                      <li key={strength} className="flex gap-3 text-sm text-slate-300">
                         <span className="text-accent-green mt-1">●</span>
                         {strength}
                       </li>
@@ -505,8 +505,8 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
                     Challenges
                   </h3>
                   <ul className="space-y-2">
-                    {results.challenges.map((challenge, index) => (
-                      <li key={index} className="flex gap-3 text-sm text-slate-300">
+                    {results.challenges.map((challenge) => (
+                      <li key={challenge} className="flex gap-3 text-sm text-slate-300">
                         <span className="text-accent-red mt-1">●</span>
                         {challenge}
                       </li>

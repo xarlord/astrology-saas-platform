@@ -162,8 +162,8 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
       <div className="pt-3 border-t border-white/[0.08]">
         <span className="text-xs text-slate-200 block mb-2">Plan includes:</span>
         <ul className="list-none p-0 m-0 flex flex-wrap gap-1.5 gap-x-3">
-          {tierConfig.features.map((feature, index) => (
-            <li key={index} className="text-xs text-slate-200 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500">{feature}</li>
+          {tierConfig.features.map((feature) => (
+            <li key={feature} className="text-xs text-slate-200 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500">{feature}</li>
           ))}
         </ul>
       </div>

@@ -143,8 +143,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <div className="mb-4">
           <h4 className="text-sm font-semibold text-white mb-2">Your Focus This Year:</h4>
           <div className="flex flex-wrap gap-2">
-            {interpretation.sunHouse.focus.map((focus, index) => (
-              <span key={index} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+            {interpretation.sunHouse.focus.map((focus) => (
+              <span key={focus} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
                 {focus}
               </span>
             ))}
@@ -155,8 +155,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           <div>
             <h4 className="text-sm font-semibold text-white mb-2">Yearly Themes:</h4>
             <div className="flex flex-wrap gap-2">
-              {interpretation.themes.map((theme, index) => (
-                <div key={index} className="px-3 py-1.5 bg-white/15 rounded-lg text-sm text-slate-200">
+              {interpretation.themes.map((theme) => (
+                <div key={theme} className="px-3 py-1.5 bg-white/15 rounded-lg text-sm text-slate-200">
                   {theme}
                 </div>
               ))}
@@ -182,8 +182,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           <div>
             <h4 className="text-sm font-semibold text-white mb-2">Moon Phase Advice:</h4>
             <ul className="list-disc list-inside space-y-1 text-sm text-slate-200">
-              {interpretation.moonPhase.advice.map((advice, index) => (
-                <li key={index}>{advice}</li>
+              {interpretation.moonPhase.advice.map((advice) => (
+                <li key={advice}>{advice}</li>
               ))}
             </ul>
           </div>
@@ -199,8 +199,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {interpretation.luckyDays.slice(0, 10).map((day, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-white/15 rounded-lg">
+            {interpretation.luckyDays.slice(0, 10).map((day) => (
+              <div key={day.date} className="flex items-center justify-between p-3 bg-white/15 rounded-lg">
                 <div className="text-sm font-medium text-white">
                   {new Date(day.date).toLocaleDateString(APP_LOCALE, {
                     month: 'short',
@@ -230,8 +230,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           </div>
 
           <div className="space-y-4">
-            {interpretation.challenges.map((challenge, index) => (
-              <div key={index} className="p-4 bg-orange-500/10 border-l-4 border-amber-500 rounded-r-lg">
+            {interpretation.challenges.map((challenge) => (
+              <div key={challenge.area} className="p-4 bg-orange-500/10 border-l-4 border-amber-500 rounded-r-lg">
                 <div className="mb-2">
                   <h4 className="text-base font-semibold text-white m-0">{challenge.area}</h4>
                 </div>
@@ -255,8 +255,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           </div>
 
           <div className="space-y-4">
-            {interpretation.opportunities.map((opportunity, index) => (
-              <div key={index} className="p-4 bg-green-500/10 border-l-4 border-green-500 rounded-r-lg">
+            {interpretation.opportunities.map((opportunity) => (
+              <div key={opportunity.area} className="p-4 bg-green-500/10 border-l-4 border-green-500 rounded-r-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="material-symbols-outlined text-green-500" aria-hidden="true">card_giftcard</span>
                   <h4 className="text-base font-semibold text-white m-0">{opportunity.area}</h4>
@@ -280,8 +280,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
           </div>
 
           <ul className="list-disc list-inside space-y-2 text-slate-200">
-            {interpretation.advice.map((advice, index) => (
-              <li key={index}>{advice}</li>
+            {interpretation.advice.map((advice) => (
+              <li key={advice}>{advice}</li>
             ))}
           </ul>
         </section>
@@ -292,8 +292,8 @@ export const SolarReturnInterpretation: React.FC<SolarReturnInterpretationProps>
         <section className="glass-panel rounded-2xl p-6">
           <h3 className="text-lg font-semibold text-white m-0 mb-3">Keywords for {year}</h3>
           <div className="flex flex-wrap gap-2">
-            {interpretation.keywords.map((keyword, index) => (
-              <span key={index} className="px-3 py-1 bg-white/15 text-slate-200 rounded-full text-sm">
+            {interpretation.keywords.map((keyword) => (
+              <span key={keyword} className="px-3 py-1 bg-white/15 text-slate-200 rounded-full text-sm">
                 {keyword}
               </span>
             ))}

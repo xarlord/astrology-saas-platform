@@ -102,9 +102,9 @@ const TransitTimelineCard: React.FC<TransitTimelineCardProps> = ({
         {/* Tags */}
         {tags.length > 0 && (
           <div className="flex gap-1 mt-2 flex-wrap">
-            {tags.map((tag, index) => (
+            {tags.map((tag) => (
               <span
-                key={index}
+                key={tag}
                 className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-slate-400"
               >
                 {tag}

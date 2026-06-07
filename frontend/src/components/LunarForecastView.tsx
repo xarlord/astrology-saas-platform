@@ -77,7 +77,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
     const likelihoodBars = Array.from({ length: 10 }, (_, i) => i < prediction.likelihood);
 
     return (
-      <div key={index} className="bg-white/15 p-5 rounded-xl border-l-4 border-primary">
+      <div key={`${prediction.category}-${index}`} className="bg-white/15 p-5 rounded-xl border-l-4 border-primary">
         <div className="flex items-center gap-3 mb-3 flex-wrap">
           <span className="text-2xl">{getCategoryIcon(prediction.category)}</span>
           <h4 className="m-0 text-white capitalize">{prediction.category}</h4>
@@ -94,8 +94,8 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <p className="text-slate-200 leading-relaxed m-0 mb-3">{prediction.prediction}</p>
         {prediction.advice && prediction.advice.length > 0 && (
           <ul className="m-0 pl-5">
-            {prediction.advice.map((advice, i) => (
-              <li key={i} className="text-slate-200 leading-relaxed mb-1.5">{advice}</li>
+            {prediction.advice.map((advice) => (
+              <li key={advice} className="text-slate-200 leading-relaxed mb-1.5">{advice}</li>
             ))}
           </ul>
         )}
@@ -104,7 +104,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
   };
 
   const renderRitualCard = (ritual: MonthlyRitual, index: number) => (
-    <div key={index} className="bg-white/15 p-6 rounded-xl">
+    <div key={`${ritual.title}-${index}`} className="bg-white/15 p-6 rounded-xl">
       <div className="flex items-center gap-3 mb-3">
         <span className="text-4xl">{ritual.phase === 'new-moon' ? '🌑' : ritual.phase === 'full-moon' ? '🌕' : '🌓'}</span>
         <h4 className="m-0 text-white grow">{ritual.title}</h4>
@@ -115,8 +115,8 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
         <div className="mb-4">
           <strong>Materials needed:</strong>
           <ul className="mt-2 pl-5 m-0">
-            {ritual.materials.map((material, i) => (
-              <li key={i} className="text-slate-200 leading-relaxed">{material}</li>
+            {ritual.materials.map((material) => (
+              <li key={material} className="text-slate-200 leading-relaxed">{material}</li>
             ))}
           </ul>
         </div>
@@ -124,8 +124,8 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
       <div className="mt-4">
         <strong>Steps:</strong>
         <ol className="mt-2 pl-5 m-0">
-          {ritual.steps.map((step, i) => (
-            <li key={i} className="text-slate-200 leading-loose mb-2">{step}</li>
+          {ritual.steps.map((step) => (
+            <li key={step} className="text-slate-200 leading-loose mb-2">{step}</li>
           ))}
         </ol>
       </div>
@@ -238,8 +238,8 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
               <div className="bg-white/15 p-5 rounded-xl">
                 <h3 className="m-0 mb-3 text-white">Actions to Take This Month</h3>
                 <ul className="m-0 pl-5">
-                  {forecast.actionAdvice.map((advice, i) => (
-                    <li key={i} className="text-slate-200 leading-loose mb-2">{advice}</li>
+                  {forecast.actionAdvice.map((advice) => (
+                    <li key={advice} className="text-slate-200 leading-loose mb-2">{advice}</li>
                   ))}
                 </ul>
               </div>
@@ -250,8 +250,8 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
               <div>
                 <h3 className="m-0 mb-4 text-white">Key Dates</h3>
                 <div className="flex flex-col gap-3">
-                  {forecast.keyDates.map((date, i) => (
-                    <div key={i} className="flex flex-col gap-2 p-4 bg-white/15 rounded-lg border-l-4 border-primary">
+                  {forecast.keyDates.map((date) => (
+                    <div key={`${String(date.date)}-${date.type}`} className="flex flex-col gap-2 p-4 bg-white/15 rounded-lg border-l-4 border-primary">
                       <span className="inline-block w-fit px-3 py-1 bg-primary text-white rounded-full text-sm font-semibold">{date.type.replace('-', ' ')}</span>
                       <span className="text-primary font-semibold">
                         {new Date(date.date).toLocaleDateString(APP_LOCALE, {

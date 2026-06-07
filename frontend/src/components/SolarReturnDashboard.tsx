@@ -247,8 +247,8 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
               {solarReturn.interpretation?.themes && (
                 <div className="flex flex-wrap gap-1.5">
-                  {solarReturn.interpretation.themes.slice(0, 3).map((theme, index) => (
-                    <span key={index} className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full text-xs">
+                  {solarReturn.interpretation.themes.slice(0, 3).map((theme) => (
+                    <span key={theme} className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded-full text-xs">
                       {theme}
                     </span>
                   ))}
@@ -262,8 +262,8 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
 
               {solarReturn.interpretation?.keywords && (
                 <div className="flex flex-wrap gap-1.5">
-                  {solarReturn.interpretation.keywords.slice(0, 4).map((keyword, index) => (
-                    <span key={index} className="px-2 py-0.5 bg-white/15 text-slate-200 rounded text-xs">
+                  {solarReturn.interpretation.keywords.slice(0, 4).map((keyword) => (
+                    <span key={keyword} className="px-2 py-0.5 bg-white/15 text-slate-200 rounded text-xs">
                       {keyword}
                     </span>
                   ))}
