@@ -1,0 +1,156 @@
+name: Nightly E2E — Live Scenarios
+
+on:
+  schedule:
+    # Run every night at 2 AM UTC (5 AM Istanbul)
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Base URL to test against'
+        required: false
+        default: ''
+
+env:
+  # Default: test against local server. Override for staging/prod.
+  BASE_URL: ${{ github.event.inputs.base_url || 'http://localhost:3000' }}
+
+jobs:
+  e2e-live-scenarios:
+    name: 🎭 E2E Live Scenario Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: astrology_saas
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5434
+      DATABASE_NAME: astrology_saas
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      JWT_SECRET: test-jwt-secret-for-e2e
+      RATE_LIMIT_MAX_REQUESTS: 10000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: cd frontend && npx playwright install --with-deps chromium
+
+      - name: Run database migrations
+        run: cd backend && npx tsx ../node_modules/knex/bin/cli.js migrate:latest
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5434/astrology_saas
+
+      - name: Seed test data
+        run: |
+          # Create test user via API after server starts
+          echo "Test data will be created by E2E test setup"
+
+      - name: Run E2E tests — Critical User Flows
+        run: |
+          cd frontend
+          npx playwright test \
+            01-authentication.spec.ts \
+            02-chart-creation.spec.ts \
+            03-transits.spec.ts \
+            06-full-user-journey.spec.ts \
+            smoke-core-flows.spec.ts \
+            --reporter=html,json \
+            --output=test-results/
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: Run E2E tests — Console Error Audit
+        run: |
+          cd frontend
+          npx playwright test \
+            00-console-audit.spec.ts \
+            console-error-check.spec.ts \
+            13-full-user-flow-console-monitored.spec.ts \
+            --reporter=html,json \
+            --output=test-results/
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: Run E2E tests — Accessibility Audit
+        run: |
+          cd frontend
+          npx playwright test \
+            accessibility-audit.spec.ts \
+            --reporter=html,json \
+            --output=test-results/
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-results
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/
+            frontend/test-results.json
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## 🎭 E2E Live Scenario Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f frontend/test-results.json ]; then
+            PASSED=$(python3 -c "import json; d=json.load(open('frontend/test-results.json')); print(sum(1 for s in d.get('suites',[]) for t in s.get('specifications',[]) if t.get('status')=='passed'))")
+            FAILED=$(python3 -c "import json; d=json.load(open('frontend/test-results.json')); print(sum(1 for s in d.get('suites',[]) for t in s.get('specifications',[]) if t.get('status')=='failed'))")
+            echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| ✅ Passed | ${PASSED:-?} |" >> $GITHUB_STEP_SUMMARY
+            echo "| ❌ Failed | ${FAILED:-?} |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No test results JSON found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          payload: |
+            {
+              "text": "❌ AstroVerse Nightly E2E Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "❌ *AstroVerse Nightly E2E tests failed*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
