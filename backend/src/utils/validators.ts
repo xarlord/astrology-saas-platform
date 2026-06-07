@@ -3,7 +3,7 @@
  */
 
 import { z, ZodSchema } from 'zod';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 // ─── Shared reusable schemas ──────────────────────────────────────────
 
@@ -130,7 +130,7 @@ export const dateParamSchema = z.object({
 /**
  * Validate request body against schema
  */
-export function validateBody(schema: ZodSchema) {
+export function validateBody(schema: ZodSchema): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
@@ -156,7 +156,7 @@ export function validateBody(schema: ZodSchema) {
 /**
  * Validate request query against schema
  */
-export function validateQuery(schema: ZodSchema) {
+export function validateQuery(schema: ZodSchema): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.query);
     if (!result.success) {
@@ -183,7 +183,7 @@ export function validateQuery(schema: ZodSchema) {
 /**
  * Validate route params against schema
  */
-export function validateParams(schema: ZodSchema) {
+export function validateParams(schema: ZodSchema): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.params);
     if (!result.success) {
