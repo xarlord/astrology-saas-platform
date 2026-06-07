@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { AppLayout } from '../components/AppLayout';
 import {
   planets,
@@ -649,6 +650,10 @@ export default function LearnPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Learn Astrology — AstroVerse</title>
+        <meta name="description" content="Learn astrology with interactive guides covering planets, houses, aspects, transits, and more." />
+      </Helmet>
       {/* Page Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">

@@ -190,6 +190,19 @@ export const createCustomEvent = asyncHandler(
       throw new AppError('event_type and event_date are required', 400);
     }
 
+    // Validate event_type against allowed values
+    const ALLOWED_EVENT_TYPES = [
+      'personal', 'reminder', 'appointment', 'retrograde', 'new_moon',
+      'full_moon', 'solar_eclipse', 'lunar_eclipse', 'ingress', 'custom',
+    ] as const;
+    const normalizedType = String(event_type).toLowerCase();
+    if (!ALLOWED_EVENT_TYPES.includes(normalizedType as typeof ALLOWED_EVENT_TYPES[number])) {
+      throw new AppError(
+        `Invalid event_type "${event_type}". Allowed: ${ALLOWED_EVENT_TYPES.join(', ')}`,
+        400,
+      );
+    }
+
     // Create event
     const event = await calendarEventModel.create(userId, {
       event_type,

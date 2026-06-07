@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   SkeletonLoader,
   EmptyState,
@@ -112,6 +113,10 @@ export default function ForecastPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Transit Forecast — AstroVerse</title>
+        <meta name="description" content="View your personalized transit forecast with daily and monthly planetary influences." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Transit Forecast</h1>
         <p className="text-slate-200">

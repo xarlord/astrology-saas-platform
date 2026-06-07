@@ -6,6 +6,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useAuth, useCharts, useTodayTransits, useTransitForecast } from '../hooks';
 import type { TransitReading } from '../services/transit.service';
 import { deriveHighlights } from '../utils/transitHelpers';
@@ -198,6 +199,10 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Dashboard — AstroVerse</title>
+        <meta name="description" content="Your daily astrological dashboard with cosmic energy, transits, and chart overview." />
+      </Helmet>
       <div data-testid="dashboard" className="relative pb-8">
         {/* ===== Welcome Section ===== */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">

@@ -7,7 +7,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { getAccessToken } from '../utils/tokenStorage';
+import api from '../services/api';
 
 export interface GeocodeResult {
   id: string;
@@ -92,20 +92,11 @@ export const useLocationStore = create<LocationState>()(
           }
 
           // Call geocoding API
-          const response = await fetch(
-            `/api/v1/location/geocode?query=${encodeURIComponent(query)}&limit=10`,
-            {
-              headers: {
-                Authorization: `Bearer ${getAccessToken()}`,
-              },
-            },
+          const response = await api.get<{ data: GeocodeResult[] }>(
+            `/v1/location/geocode?query=${encodeURIComponent(query)}&limit=10`,
           );
 
-          if (!response.ok) {
-            throw new Error('Failed to search locations');
-          }
-
-          const data = (await response.json()) as { data: GeocodeResult[] };
+          const data = response.data;
           const results: GeocodeResult[] = data.data;
 
           // Update state and cache
@@ -163,17 +154,11 @@ export const useLocationStore = create<LocationState>()(
             params.append('date', date);
           }
 
-          const response = await fetch(`/api/v1/location/timezone?${params.toString()}`, {
-            headers: {
-              Authorization: `Bearer ${getAccessToken()}`,
-            },
-          });
+          const response = await api.get<{ data: TimezoneInfo }>(
+            `/v1/location/timezone?${params.toString()}`,
+          );
 
-          if (!response.ok) {
-            throw new Error('Failed to get timezone information');
-          }
-
-          const data = (await response.json()) as { data: TimezoneInfo };
+          const data = response.data;
           const timezoneInfo: TimezoneInfo = data.data;
 
           set((state) => ({
@@ -196,21 +181,10 @@ export const useLocationStore = create<LocationState>()(
       },
 
       reverseGeocode: async (latitude, longitude) => {
-        const response = await fetch(
-          `/api/v1/location/reverse-geocode?latitude=${latitude}&longitude=${longitude}`,
-          {
-            headers: {
-              Authorization: `Bearer ${getAccessToken()}`,
-            },
-          },
+        const response = await api.get<{ data: GeocodeResult }>(
+          `/v1/location/reverse-geocode?latitude=${latitude}&longitude=${longitude}`,
         );
-
-        if (!response.ok) {
-          throw new Error('Failed to reverse geocode');
-        }
-
-        const data = (await response.json()) as { data: GeocodeResult };
-        return data.data;
+        return response.data.data;
       },
 
       clearCache: () => {

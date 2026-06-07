@@ -7,7 +7,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { getAccessToken } from '../utils/tokenStorage';
+import api from '../services/api';
 
 export type ReportType = 'personality' | 'transit' | 'synastry' | 'solar-return' | 'lunar-return';
 export type ReportFormat = 'pdf' | 'json';
@@ -131,22 +131,12 @@ export const useReportStore = create<ReportState>()(
           });
 
           // Call API to generate report
-          const response = await fetch('/api/v1/reports', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${getAccessToken()}`,
-            },
-            body: JSON.stringify(request),
-          });
+          const response = await api.post<{ data: { downloadUrl?: string; expiresAt?: string } }>(
+            '/v1/reports',
+            request,
+          );
 
-          if (!response.ok) {
-            throw new Error(`Report generation failed: ${response.statusText}`);
-          }
-
-          const data = (await response.json()) as {
-            data: { downloadUrl?: string; expiresAt?: string };
-          };
+          const data = response.data;
 
           // Update with completed report
           const completedReport: Report = {
