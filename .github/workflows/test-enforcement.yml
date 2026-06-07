@@ -33,6 +33,7 @@ jobs:
     name: "📊 Coverage Must Not Decrease"
     runs-on: ubuntu-latest
     needs: []  # Runs in parallel with other CI jobs
+    fail-fast: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,7 +68,7 @@ jobs:
             python scripts/test-enforcement/coverage-diff-check.py \
               --coverage-file backend/coverage/coverage-summary.json \
               --format jest \
-              --min-coverage 70 || true
+              --min-coverage 70
           fi
 
           # Check frontend coverage
@@ -76,5 +77,5 @@ jobs:
             python scripts/test-enforcement/coverage-diff-check.py \
               --coverage-file frontend/coverage/coverage-summary.json \
               --format jest \
-              --min-coverage 60 || true
+              --min-coverage 60
           fi
