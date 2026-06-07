@@ -489,8 +489,8 @@ export default function ChartViewPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {connections.map((c, i) => (
-                        <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                      {connections.map((c) => (
+                        <tr key={`${c.h1}-${c.h2}-${c.type}`} className="border-b border-white/5 hover:bg-white/5">
                           <td className="py-1.5 px-2 font-medium text-indigo-300">House {c.h1}</td>
                           <td className={`py-1.5 px-2 ${c.color}`}>
                             <span className="mr-1">{c.symbol}</span>
