@@ -91,7 +91,6 @@ interface UserData {
 }
 
 export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserProfileProps) {
-  const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const { charts, deleteChart } = useCharts();
 
@@ -644,6 +643,7 @@ function ChartsTab({
   onViewChart?: (chartId: string) => void;
   onDeleteChart?: (chartId: string) => void;
 }) {
+  const navigate = useNavigate();
   if (!charts || charts.length === 0) {
     return (
       <div className="text-center py-12">
