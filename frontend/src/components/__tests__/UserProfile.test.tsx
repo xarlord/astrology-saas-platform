@@ -14,6 +14,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { UserProfile } from '../UserProfile';
 
 // Mock hooks - the component imports from '../hooks' (src/hooks from components dir)
@@ -111,6 +112,9 @@ const mockCharts = [
 ];
 
 describe('UserProfile Component', () => {
+  const renderWithRouter = (ui: React.ReactElement) =>
+    render(<MemoryRouter>{ui}</MemoryRouter>);
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useAuth).mockReturnValue({
@@ -143,14 +147,14 @@ describe('UserProfile Component', () => {
 
   describe('Rendering', () => {
     it('should render profile header with user info', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByText('Test User')).toBeInTheDocument();
       expect(screen.getByText('test@example.com')).toBeInTheDocument();
     });
 
     it('should render all tabs', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByText('Account')).toBeInTheDocument();
       expect(screen.getByText('My Charts')).toBeInTheDocument();
@@ -159,20 +163,20 @@ describe('UserProfile Component', () => {
     });
 
     it('should render avatar with user initial', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByText('T')).toBeInTheDocument(); // First letter of "Test"
     });
 
     it('should default to account tab', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const accountTab = screen.getByTestId('tab-account');
       expect(accountTab).toHaveClass('border-primary');
     });
 
     it('should have accessible tab navigation', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const tabs = screen.getAllByRole('tab');
 
@@ -185,7 +189,7 @@ describe('UserProfile Component', () => {
   describe('Tab Navigation', () => {
     it('should switch to charts tab when clicked', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -195,7 +199,7 @@ describe('UserProfile Component', () => {
 
     it('should switch to preferences tab when clicked', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
@@ -205,7 +209,7 @@ describe('UserProfile Component', () => {
 
     it('should switch to subscription tab when clicked', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const subscriptionTab = screen.getByTestId('tab-subscription');
       await user.click(subscriptionTab);
@@ -215,7 +219,7 @@ describe('UserProfile Component', () => {
 
     it('should update active tab styling', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const accountTab = screen.getByTestId('tab-account');
       const chartsTab = screen.getByTestId('tab-charts');
@@ -233,7 +237,7 @@ describe('UserProfile Component', () => {
   describe('Profile Editing', () => {
     it('should enter edit mode when edit button is clicked', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -243,7 +247,7 @@ describe('UserProfile Component', () => {
 
     it('should show save and cancel buttons in edit mode', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -254,7 +258,7 @@ describe('UserProfile Component', () => {
 
     it('should allow changing name in edit mode', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -268,7 +272,7 @@ describe('UserProfile Component', () => {
 
     it('should allow changing timezone in edit mode', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -283,7 +287,7 @@ describe('UserProfile Component', () => {
     it('should save profile and call updateProfile', async () => {
       const user = userEvent.setup();
       mockUpdateProfile.mockResolvedValue({ success: true });
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -305,7 +309,7 @@ describe('UserProfile Component', () => {
 
     it('should cancel edit mode when cancel button is clicked', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -324,7 +328,7 @@ describe('UserProfile Component', () => {
 
   describe('Account Tab', () => {
     it('should display account details', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByDisplayValue('Test User')).toBeInTheDocument();
       expect(screen.getByDisplayValue('test@example.com')).toBeInTheDocument();
@@ -332,19 +336,19 @@ describe('UserProfile Component', () => {
     });
 
     it('should show change password button', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByRole('button', { name: /change password/i })).toBeInTheDocument();
     });
 
     it('should show delete account button in danger zone', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByRole('button', { name: /delete my account/i })).toBeInTheDocument();
     });
 
     it('should have disabled inputs for email', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const emailInput = screen.getByDisplayValue('test@example.com');
       expect(emailInput).toBeDisabled();
@@ -354,7 +358,7 @@ describe('UserProfile Component', () => {
   describe('Charts Tab', () => {
     it('should display list of charts', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -380,7 +384,7 @@ describe('UserProfile Component', () => {
         clearError: vi.fn(),
       });
 
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -390,7 +394,7 @@ describe('UserProfile Component', () => {
 
     it('should show chart count in header', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -401,7 +405,7 @@ describe('UserProfile Component', () => {
     it('should call onViewChart when view button is clicked', async () => {
       const user = userEvent.setup();
       const onViewChart = vi.fn();
-      render(<UserProfile onViewChart={onViewChart} />);
+      renderWithRouter(<UserProfile onViewChart={onViewChart} />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -415,7 +419,7 @@ describe('UserProfile Component', () => {
     it('should call onEditChart when edit button is clicked', async () => {
       const user = userEvent.setup();
       const onEditChart = vi.fn();
-      render(<UserProfile onEditChart={onEditChart} />);
+      renderWithRouter(<UserProfile onEditChart={onEditChart} />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -433,7 +437,7 @@ describe('UserProfile Component', () => {
       const onDeleteChart = vi.fn();
       mockDeleteChart.mockResolvedValue({ success: true });
 
-      render(<UserProfile onDeleteChart={onDeleteChart} />);
+      renderWithRouter(<UserProfile onDeleteChart={onDeleteChart} />);
 
       const chartsTab = screen.getByRole('tab', { name: /my charts/i });
       await user.click(chartsTab);
@@ -457,7 +461,7 @@ describe('UserProfile Component', () => {
 
     it('should show chart details', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       // Click on charts tab
       const chartsTab = screen.getByTestId('tab-charts');
@@ -476,7 +480,7 @@ describe('UserProfile Component', () => {
   describe('Preferences Tab', () => {
     it('should display chart preferences', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
@@ -487,7 +491,7 @@ describe('UserProfile Component', () => {
 
     it('should display aspect orb sliders', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
@@ -499,7 +503,7 @@ describe('UserProfile Component', () => {
 
     it('should display theme options', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
@@ -511,7 +515,7 @@ describe('UserProfile Component', () => {
 
     it('should have save button for preferences', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const preferencesTab = screen.getByRole('tab', { name: /preferences/i });
       await user.click(preferencesTab);
@@ -523,7 +527,7 @@ describe('UserProfile Component', () => {
   describe('Subscription Tab', () => {
     it('should display current plan', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
@@ -534,7 +538,7 @@ describe('UserProfile Component', () => {
 
     it('should display available plans', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
@@ -546,7 +550,7 @@ describe('UserProfile Component', () => {
 
     it('should highlight premium plan as most popular', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
@@ -556,7 +560,7 @@ describe('UserProfile Component', () => {
 
     it('should show billing history section', async () => {
       const user = userEvent.setup();
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const subscriptionTab = screen.getByRole('tab', { name: /subscription/i });
       await user.click(subscriptionTab);
@@ -567,7 +571,7 @@ describe('UserProfile Component', () => {
 
   describe('Accessibility', () => {
     it('should have proper ARIA labels on tabs', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const tabs = screen.getAllByRole('tab');
 
@@ -577,7 +581,7 @@ describe('UserProfile Component', () => {
     });
 
     it('should have accessible form inputs', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const inputs = screen.getAllByRole('textbox');
       inputs.forEach(input => {
@@ -586,7 +590,7 @@ describe('UserProfile Component', () => {
     });
 
     it('should have proper button labels', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       expect(editButton).toBeInTheDocument();
@@ -600,7 +604,7 @@ describe('UserProfile Component', () => {
 
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { /* intentional empty */ });
 
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const editButton = screen.getByRole('button', { name: /edit profile/i });
       await user.click(editButton);
@@ -625,13 +629,13 @@ describe('UserProfile Component', () => {
       // Mock mobile viewport
       global.innerWidth = 375;
 
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       expect(screen.getByText('Test User')).toBeInTheDocument();
     });
 
     it('should scroll tabs horizontally on mobile', () => {
-      render(<UserProfile />);
+      renderWithRouter(<UserProfile />);
 
       const tabNav = screen.getByRole('tablist').closest('.overflow-x-auto');
       expect(tabNav).toBeInTheDocument();

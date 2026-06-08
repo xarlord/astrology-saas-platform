@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth, useCharts } from '../hooks';
 import { EmptyState } from './EmptyState';
 import { logger } from '@/utils/logger';
@@ -90,6 +91,7 @@ interface UserData {
 }
 
 export function UserProfile({ onEditChart, onViewChart, onDeleteChart }: UserProfileProps) {
+  const navigate = useNavigate();
   const { user, updateProfile } = useAuth();
   const { charts, deleteChart } = useCharts();
 
@@ -650,7 +652,7 @@ function ChartsTab({
           title="No charts yet"
           description="Create your first natal chart to get started"
           actionText="Create Your First Chart"
-          onAction={() => window.location.href = '/charts/new'}
+          onAction={() => navigate('/charts/new')}
         />
       </div>
     );
