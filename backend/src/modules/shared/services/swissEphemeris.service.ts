@@ -3,10 +3,10 @@
  * Provides mock astrological calculations for testing when native module is unavailable
  */
 
-// Zodiac signs — re-exported from shared utils for backward compatibility
-export { ZODIAC_SIGNS } from '../../../shared/utils/astroUtils';
+// Zodiac signs — imported from shared utils for backward compatibility
+import { ZODIAC_SIGNS, getZodiacSign } from '../../../shared/utils/astroUtils';
+export { ZODIAC_SIGNS };
 export type { ZodiacSign } from '../../../shared/utils/astroUtils';
-import { getZodiacSign } from '../../../shared/utils/astroUtils';
 
 // Planet symbols for display
 export const PLANET_SYMBOLS: Record<string, string> = {
