@@ -280,6 +280,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Find a chart..."
+                aria-label="Search charts"
                 className="w-full bg-slate-900/50 border border-slate-700 rounded-xl pl-12 pr-4 py-2.5 text-slate-200 focus:ring-primary focus:border-primary transition-all"
               />
             </div>

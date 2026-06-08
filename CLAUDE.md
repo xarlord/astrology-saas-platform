@@ -102,7 +102,7 @@ frontend/src/
 - **deploy.yml** — Production deployment
 
 ### What Works (PASS)
-- **backend-test**: lint + typecheck + 1549 Jest tests + coverage upload — PASS
+- **backend-test**: lint + typecheck + 1439 Jest tests + coverage upload — PASS
 - **frontend-test**: lint + typecheck + 3799 Vitest tests + coverage upload — PASS
 - **mutation-backend/frontend/summary**: Stryker mutation testing — PASS
 - **CI infrastructure**: npm ci, cache paths, knex migration, backend server startup, Playwright install, build — ALL PASS
