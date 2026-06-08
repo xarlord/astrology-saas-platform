@@ -10,13 +10,13 @@ Full-stack astrology platform: natal charts with interactive chart wheel, AI-pow
 ## Project Status
 
 **Current Version:** v1.0.0
-**CI Status:** All 9 pipeline jobs green (backend, frontend, live, e2e, visual, integration, BDD, accessibility, verify-build) + mutation testing
-**Tests:** 1,354 backend (Jest) + 4,382 frontend (Vitest)
+**CI Status:** All pipeline jobs green (backend, frontend, live, e2e, visual, integration, BDD, accessibility, verify-build) + mutation testing
+**Tests:** 1,439 backend (Jest) + 3,818 frontend (Vitest) = 5,257 total
 
 ### What's Done
-- **80+ API endpoints** across 16 backend modules
-- **22 frontend pages** with dark cosmic theme
-- **22 database tables** with full migrations
+- **109 API endpoints** across 16 backend modules
+- **28 frontend pages** with dark cosmic theme
+- **27 database tables** with full migrations
 - Real astronomical calculations via astronomy-engine
 - AI interpretations (OpenAI GPT-4)
 - Stripe billing (Free/Pro/Premium tiers)
