@@ -26,13 +26,14 @@ import {
 const router = Router();
 
 const generateCardSchema = z.object({
-  chartId: z.string().uuid(),
+  chart_id: z.string().uuid(),
   template: z
     .enum(['instagram_story', 'twitter_x', 'pinterest', 'square', 'linkedin'])
     .optional(),
-  planetPlacements: z.array(z.string()).optional(),
-  insightText: z.string().max(500).optional(),
-  showInsight: z.boolean().optional(),
+  planet_placements: z.array(z.string()).optional(),
+  insight_text: z.string().max(500).optional(),
+  show_insight: z.boolean().optional(),
+  referral_code: z.string().optional(),
 });
 
 // Public routes (no auth required)
