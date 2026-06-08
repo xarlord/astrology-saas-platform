@@ -9,13 +9,7 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import { AppError } from '../../../utils/appError';
 import calendarEventModel, { CalendarEvent } from '../models/calendarEvent.model';
 import globalEventsService from '../services/globalEvents.service';
-
-/**
- * Helper: Capitalize first letter
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import { capitalize } from '../../../shared/utils/stringUtils';
 
 /**
  * Generate global astrological events for a month

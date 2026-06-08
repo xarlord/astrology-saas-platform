@@ -593,11 +593,12 @@ function AccountTab({ user }: { user?: UserProfile }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-200 mb-2">
+          <label htmlFor="label-member-since" className="block text-sm font-medium text-slate-200 mb-2">
             Member Since
           </label>
           <input
             type="text"
+            id="label-member-since"
             value={new Date(user.createdAt).toLocaleDateString(APP_LOCALE, {
               month: 'long',
               day: 'numeric',
@@ -859,7 +860,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
       <div className="pt-6 border-t border-white/15">
         <h4 className="text-md font-medium text-white mb-4">Appearance</h4>
         <div>
-          <label className="block text-sm font-medium text-slate-200 mb-2">
+          <label htmlFor="label-theme-light" className="block text-sm font-medium text-slate-200 mb-2">
             Theme
           </label>
           <div
@@ -882,6 +883,7 @@ function PreferencesTab({ user }: { user?: UserProfile }) {
                 type="button"
                 key={theme.value}
                 role="radio"
+                id={theme.value === 'light' ? 'label-theme-light' : undefined}
                 aria-checked={user.preferences.theme === theme.value}
                 onClick={() => {
                   const root = document.documentElement;

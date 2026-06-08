@@ -184,8 +184,9 @@ export const SolarReturnDashboard: React.FC<SolarReturnDashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-200">Sort by:</label>
+          <label htmlFor="label-sort-by" className="text-sm text-slate-200">Sort by:</label>
           <select
+            id="label-sort-by"
             title="Sort solar returns"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'year' | 'date')}

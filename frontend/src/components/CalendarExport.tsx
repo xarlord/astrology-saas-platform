@@ -124,7 +124,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
       <div className="flex flex-col gap-6">
         {/* Quick Select */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">Quick Select</label>
+          <span className="text-sm font-semibold text-slate-200">Quick Select</span>
           <div className="flex gap-2 flex-wrap sm:flex-col">
             <button
               type="button"
@@ -152,7 +152,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
 
         {/* Custom Date Range */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">Custom Date Range</label>
+          <span className="text-sm font-semibold text-slate-200">Custom Date Range</span>
           <div className="flex gap-4 sm:flex-col sm:gap-3">
             <div className="flex-1 flex flex-col gap-1">
               <label htmlFor="startDate" className="text-xs font-medium text-slate-200">From</label>

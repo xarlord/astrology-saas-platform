@@ -286,9 +286,10 @@ export const ChartCreationWizardPage: React.FC = () => {
               {currentStep === 1 && (
                 <>
                   <div className="flex flex-col gap-2">
-                    <label className="text-slate-300 text-sm font-medium ml-1">Chart Name</label>
+                    <label htmlFor="label-chart-name" className="text-slate-300 text-sm font-medium ml-1">Chart Name</label>
                     <Input
                       type="text"
+                      id="label-chart-name"
                       value={personalDetails.name}
                       onChange={(e) =>
                         setPersonalDetails((prev) => ({ ...prev, name: e.target.value }))
@@ -299,7 +300,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="text-slate-300 text-sm font-medium ml-1">Tags</label>
+                    <label htmlFor="label-tags" className="text-slate-300 text-sm font-medium ml-1">Tags</label>
                     <div className="flex flex-wrap gap-2">
                       {TAG_OPTIONS.map((tag) => (
                         <button
@@ -320,10 +321,11 @@ export const ChartCreationWizardPage: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="text-slate-300 text-sm font-medium ml-1">
+                    <label htmlFor="label-notes" className="text-slate-300 text-sm font-medium ml-1">
                       Notes (Optional)
                     </label>
                     <textarea
+                      id="label-notes"
                       value={personalDetails.notes}
                       onChange={(e) =>
                         setPersonalDetails((prev) => ({ ...prev, notes: e.target.value }))
@@ -348,11 +350,12 @@ export const ChartCreationWizardPage: React.FC = () => {
 
                     {!birthData.unknownTime && (
                       <div className="flex flex-col gap-2">
-                        <label className="text-slate-300 text-sm font-medium ml-1">
+                        <label htmlFor="label-time-of-birth" className="text-slate-300 text-sm font-medium ml-1">
                           Time of Birth
                         </label>
                         <Input
                           type="time"
+                          id="label-time-of-birth"
                           value={birthData.time}
                           onChange={(e) =>
                             setBirthData((prev) => ({ ...prev, time: e.target.value }))
@@ -373,7 +376,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label className="text-slate-300 text-sm font-medium ml-1">
+                    <label htmlFor="label-birth-location" className="text-slate-300 text-sm font-medium ml-1">
                       Birth Location
                     </label>
                     <div className="relative">
@@ -382,6 +385,7 @@ export const ChartCreationWizardPage: React.FC = () => {
                       </span>
                       <input
                         type="text"
+                        id="label-birth-location"
                         value={birthData.location}
                         onChange={(e) =>
                           setBirthData((prev) => ({ ...prev, location: e.target.value }))

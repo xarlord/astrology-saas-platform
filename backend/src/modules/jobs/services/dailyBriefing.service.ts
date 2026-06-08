@@ -13,6 +13,7 @@
 import logger from '../../../utils/logger';
 import { calculateMoonPhase } from '../../calendar/services/calendar.service';
 import AstronomyEngineService from '../../shared/services/astronomyEngine.service';
+import { capitalize } from '../../../shared/utils/stringUtils';
 
 const astronomyEngine = new AstronomyEngineService();
 import knex from '../../../config/database';
@@ -454,11 +455,6 @@ function getMoonEmoji(phase: string): string {
     'waning-crescent': '🌘',
   };
   return emojis[phase] || '🌙';
-}
-
-function capitalize(str: string): string {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function escapeHtml(str: string): string {

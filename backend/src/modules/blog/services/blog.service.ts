@@ -9,6 +9,7 @@ import sanitizeHtml from 'sanitize-html';
 import logger from '../../../utils/logger';
 import blogModel from '../models/blog.model';
 import type { BlogPost, CreateBlogPostData, UpdateBlogPostData } from '../models/blog.model';
+import { ensureUploadsDir } from '../../../shared/utils/fileUtils';
 
 /**
  * Sanitize HTML body to prevent XSS while preserving safe formatting tags.
@@ -33,14 +34,6 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
 
 function sanitizeBody(body: string): string {
   return sanitizeHtml(body, SANITIZE_OPTIONS);
-}
-
-const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads', 'blog');
-
-function ensureUploadsDir(): void {
-  if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  }
 }
 
 export class BlogService {
@@ -100,7 +93,7 @@ export class BlogService {
     postId: string,
     file: { buffer: Buffer; originalname: string; mimetype: string },
   ): Promise<string> {
-    ensureUploadsDir();
+    const uploadsDir = ensureUploadsDir('blog');
 
     // Validate postId to prevent path traversal (e.g., "../../etc/passwd")
     if (!/^[a-zA-Z0-9_-]+$/.test(postId)) {
@@ -113,10 +106,10 @@ export class BlogService {
     }
 
     const filename = `${postId}${ext}`;
-    const filePath = path.join(UPLOADS_DIR, filename);
+    const filePath = path.join(uploadsDir, filename);
 
-    // Verify resolved path is still within UPLOADS_DIR
-    if (!filePath.startsWith(UPLOADS_DIR)) {
+    // Verify resolved path is still within uploadsDir
+    if (!filePath.startsWith(uploadsDir)) {
       throw new Error('Invalid file path');
     }
 

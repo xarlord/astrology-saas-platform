@@ -6,7 +6,8 @@
 import { Router } from 'express';
 import { getMonthEvents, createCustomEvent, deleteEvent } from '../controllers/calendar.controller';
 import { authenticate, optionalAuthenticate } from '../../../middleware/auth';
-import { validateBody, createCalendarEventSchema } from '../../../utils/validators';
+import { validateBody, validateParams, uuidParamSchema, createCalendarEventSchema } from '../../../utils/validators';
+import { z } from 'zod';
 
 const router = Router();
 
@@ -49,7 +50,7 @@ const router = Router();
  *       500:
  *         description: Server error
  */
-router.get('/month/:year/:month', optionalAuthenticate, getMonthEvents);
+router.get('/month/:year/:month', optionalAuthenticate, validateParams(z.object({ year: z.coerce.number().int().min(1900).max(2100), month: z.coerce.number().int().min(1).max(12) })), getMonthEvents);
 
 // All other calendar routes require authentication
 router.use(authenticate);
@@ -128,6 +129,6 @@ router.post('/events', validateBody(createCalendarEventSchema), createCustomEven
  *       500:
  *         description: Server error
  */
-router.delete('/events/:id', deleteEvent);
+router.delete('/events/:id', validateParams(uuidParamSchema), deleteEvent);
 
 export { router as calendarRoutes };

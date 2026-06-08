@@ -18,22 +18,7 @@ import {
   AstrologicalEvent,
   AspectType,
 } from '../models/calendar.model';
-
-// Constants
-const ZODIAC_SIGNS = [
-  'aries',
-  'taurus',
-  'gemini',
-  'cancer',
-  'leo',
-  'virgo',
-  'libra',
-  'scorpio',
-  'sagittarius',
-  'capricorn',
-  'aquarius',
-  'pisces',
-];
+import { getZodiacSign } from '../../../shared/utils';
 
 // Exported for future use
 export const ASPECT_ORBS = {
@@ -110,15 +95,6 @@ export function normalizeDegree(degree: number): number {
     return 0;
   }
   return normalized;
-}
-
-/**
- * Get zodiac sign from degree
- */
-export function getZodiacSign(degree: number): string {
-  const normalizedDegree = normalizeDegree(degree);
-  const signIndex = Math.floor(normalizedDegree / 30);
-  return ZODIAC_SIGNS[signIndex];
 }
 
 /**

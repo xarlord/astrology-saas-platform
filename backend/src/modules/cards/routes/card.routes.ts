@@ -94,22 +94,22 @@ router.get('/public/:shareToken/og', validateParams(shareTokenParamSchema), getO
  *         application/json:
  *           schema:
  *             type: object
- *             required: [chartId]
+ *             required: [chart_id]
  *             properties:
- *               chartId:
+ *               chart_id:
  *                 type: string
  *                 format: uuid
  *               template:
  *                 type: string
  *                 enum: [instagram_story, twitter_x, pinterest, square, linkedin]
- *               planetPlacements:
+ *               planet_placements:
  *                 type: array
  *                 items:
  *                   type: string
- *               insightText:
+ *               insight_text:
  *                 type: string
  *                 maxLength: 500
- *               showInsight:
+ *               show_insight:
  *                 type: boolean
  *     responses:
  *       201:

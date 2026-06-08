@@ -110,7 +110,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
       <form onSubmit={(e) => { void handleSubmit(e); }} className="flex flex-col gap-6">
         {/* Event Type Selection */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">Which events?</label>
+          <label htmlFor="label-event-type-all" className="text-sm font-semibold text-slate-200">Which events?</label>
           <div className="flex flex-col gap-2">
             {eventTypes.map((type) => (
               <label
@@ -121,6 +121,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                   type="radio"
                   name="eventType"
                   value={type.value}
+                  id={type.value === 'all' ? 'label-event-type-all' : undefined}
                   checked={formData.eventType === type.value}
                   onChange={(e) => handleEventTypeChange(e.target.value)}
                   className="mr-3 accent-primary"
@@ -136,7 +137,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
 
         {/* Reminder Type */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">How would you like to be notified?</label>
+          <label htmlFor="label-reminder-email" className="text-sm font-semibold text-slate-200">How would you like to be notified?</label>
           <div className="flex gap-3 sm:flex-col">
             <label
               className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 border-white/15 rounded-lg cursor-pointer transition-all duration-200 hover:border-primary/50 hover:bg-white/15 ${formData.reminderType === 'email' ? '!border-primary !bg-primary/10 !text-primary' : ''}`}
@@ -145,6 +146,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 type="radio"
                 name="reminderType"
                 value="email"
+                id="label-reminder-email"
                 checked={formData.reminderType === 'email'}
                 onChange={() => handleReminderTypeChange('email')}
                 className="hidden"
@@ -172,7 +174,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
 
         {/* Advance Timing */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">When should we remind you?</label>
+          <label htmlFor="label-advance-1h" className="text-sm font-semibold text-slate-200">When should we remind you?</label>
           <div className="flex flex-col gap-2">
             {advanceHoursOptions.map((option) => (
               <label
@@ -183,6 +185,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                   type="checkbox"
                   checked={formData.reminderAdvanceHours.includes(option.value)}
                   onChange={() => handleAdvanceHoursToggle(option.value)}
+                  id={option.value === 1 ? 'label-advance-1h' : undefined}
                   className="mr-3 w-[18px] h-[18px] accent-emerald-500"
                 />
                 <span className="flex-1 text-sm text-slate-200">{option.label}</span>

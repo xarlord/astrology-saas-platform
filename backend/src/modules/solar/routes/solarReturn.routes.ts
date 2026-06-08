@@ -6,7 +6,7 @@
 import { Router } from 'express';
 import solarReturnController from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
-import { validateBody } from '../../../utils/validators';
+import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
 import { z } from 'zod';
 
 const router = Router();
@@ -116,6 +116,7 @@ router.post(
  */
 router.get(
   '/year/:year',
+  validateParams(z.object({ year: z.coerce.number().int().min(1900).max(2100) })),
   solarReturnController.getSolarReturnByYear
 );
 
@@ -201,6 +202,7 @@ router.get(
  */
 router.get(
   '/:id',
+  validateParams(uuidParamSchema),
   solarReturnController.getSolarReturnById
 );
 
@@ -280,6 +282,7 @@ router.post(
  */
 router.delete(
   '/:id',
+  validateParams(uuidParamSchema),
   solarReturnController.deleteSolarReturn
 );
 
