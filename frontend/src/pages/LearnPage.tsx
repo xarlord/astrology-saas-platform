@@ -542,7 +542,7 @@ function loadProgress(): Set<string> {
       return new Set(arr);
     }
   } catch {
-    // ignore
+    /* localStorage unavailable or corrupted — return empty set */
   }
   return new Set();
 }
@@ -551,7 +551,7 @@ function saveProgress(completed: Set<string>) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
   } catch {
-    // ignore
+    /* localStorage unavailable or quota exceeded — silently skip */
   }
 }
 

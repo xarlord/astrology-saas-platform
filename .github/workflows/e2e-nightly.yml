@@ -67,6 +67,36 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5434/astrology_saas
 
+      - name: Start backend server
+        run: |
+          cd backend
+          npx tsx src/server.ts &
+          # Wait for server to be ready
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3001/health >/dev/null 2>&1; then
+              echo "Backend server is ready"
+              break
+            fi
+            echo "Waiting for backend server... ($i/30)"
+            sleep 2
+          done
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5434/astrology_saas
+
+      - name: Start frontend dev server
+        run: |
+          cd frontend
+          npx vite --host 0.0.0.0 --port 3000 &
+          # Wait for vite to be ready
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000 >/dev/null 2>&1; then
+              echo "Frontend dev server is ready"
+              break
+            fi
+            echo "Waiting for frontend dev server... ($i/30)"
+            sleep 2
+          done
+
       - name: Seed test data
         run: |
           # Create test user via API after server starts

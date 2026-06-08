@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 interface Location {
   name: string;
@@ -110,7 +110,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       setError(null);
 
       // Use geocoding API (placeholder - would use real geocoding service)
-      const response = await axios.get<GeocodingResponse>('https://geocoding-api.example.com/search', {
+      const response = await api.get<GeocodingResponse>('https://geocoding-api.example.com/search', {
         params: { q: searchQuery },
       });
 

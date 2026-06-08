@@ -71,7 +71,7 @@ describe('Database Configuration', () => {
   describe('Connection Security', () => {
     it('should not use SSL in development', () => {
       const nodeEnv = process.env.NODE_ENV || 'development';
-      const ssl = nodeEnv === 'production' ? { rejectUnauthorized: false } : false;
+      const ssl = nodeEnv === 'production' ? { rejectUnauthorized: true } : false;
       expect(ssl).toBe(false);
     });
 
@@ -79,8 +79,8 @@ describe('Database Configuration', () => {
       const originalEnv = process.env.NODE_ENV;
       process.env.NODE_ENV = 'production';
 
-      const ssl = process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false;
-      expect(ssl).toEqual({ rejectUnauthorized: false });
+      const ssl = process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false;
+      expect(ssl).toEqual({ rejectUnauthorized: true });
 
       process.env.NODE_ENV = originalEnv;
     });

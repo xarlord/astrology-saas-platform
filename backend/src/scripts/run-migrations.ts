@@ -17,14 +17,14 @@ async function runMigrations(): Promise<void> {
   const db = knex({
     client: 'pg',
     connection: config.database.url
-      ? { connectionString: config.database.url, ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: false } : false }
+      ? { connectionString: config.database.url, ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: true } : false }
       : {
           host: config.database.host,
           port: config.database.port,
           user: config.database.user,
           password: config.database.password,
           database: config.database.name,
-          ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+          ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: true } : false,
         },
     pool: { min: 1, max: 2 },
     migrations: {
