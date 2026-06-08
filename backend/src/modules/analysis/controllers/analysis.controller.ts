@@ -8,6 +8,7 @@ import { AuthenticatedRequest } from '../../../middleware/auth';
 import { AppError } from '../../../utils/appError';
 import { ChartModel } from '../models';
 import { swissEphemeris } from '../../shared';
+import { getZodiacSign } from '../../../shared/utils';
 import {
   generateCompletePersonalityAnalysis,
 } from '../services/interpretation.service';
@@ -38,16 +39,6 @@ interface AspectData {
   planet2: string;
   orb: number;
   type?: string;
-}
-
-/**
- * Helper: Convert degree to zodiac sign
- */
-function getZodiacSign(degree: number): string {
-  const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-                 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
-  const normalizedDegree = ((degree % 360) + 360) % 360;
-  return signs[Math.floor(normalizedDegree / 30)];
 }
 
 /**

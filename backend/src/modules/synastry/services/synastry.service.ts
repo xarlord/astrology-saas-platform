@@ -3,7 +3,8 @@
  * Calculates compatibility and synastry between two natal charts
  */
 
-import { getZodiacSign, normalizeDegree } from '../../calendar/services/calendar.service';
+import { getZodiacSign } from '../../../shared/utils/astroUtils';
+import { normalizeDegree } from '../../calendar/services/calendar.service';
 import type { Planet } from '../../calendar/models/calendar.model';
 import type { ZodiacSign } from '../models/synastry.model';
 import {

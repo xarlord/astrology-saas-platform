@@ -3,6 +3,8 @@
  * Provides astrological interpretations for testing
  */
 
+import { getZodiacSign } from '../../shared/utils/astroUtils';
+
 // ============================================================================
 // PLANET IN SIGN INTERPRETATIONS
 // ============================================================================
@@ -191,16 +193,6 @@ export function generatePersonalityAnalysis(data: {
       'Trust your intuition',
     ],
   };
-}
-
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
-
-function getZodiacSign(longitude: number): string {
-  const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
-  const index = Math.floor(longitude / 30) % 12;
-  return signs[index];
 }
 
 // ============================================================================

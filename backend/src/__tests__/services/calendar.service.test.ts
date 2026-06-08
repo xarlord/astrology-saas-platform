@@ -7,7 +7,6 @@
 import {
   calculateJulianDay,
   normalizeDegree,
-  getZodiacSign,
   calculateMoonPhase,
   getRetrogradePeriod,
   getEclipses,
@@ -16,6 +15,7 @@ import {
   calculateTransitIntensity,
   generateICalFormat,
 } from '../../modules/calendar/services/calendar.service';
+import { getZodiacSign } from '../../shared/utils/astroUtils';
 
 describe('Calendar Service', () => {
   describe('Julian Day Calculation', () => {

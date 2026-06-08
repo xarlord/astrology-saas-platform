@@ -6,7 +6,6 @@
 export {
   calculateJulianDay,
   normalizeDegree,
-  getZodiacSign,
   calculateMoonPhase,
   getRetrogradePeriod,
   getEclipses,

@@ -239,8 +239,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <h3 className="text-lg font-semibold text-slate-200">Link Settings</h3>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-200">Link Expiration</label>
+                <label htmlFor="label-link-expiration" className="block text-sm font-medium text-slate-200">Link Expiration</label>
                 <select
+                  id="label-link-expiration"
                   value={linkSettings.expiresIn}
                   onChange={(e) => setLinkSettings({ ...linkSettings, expiresIn: e.target.value })}
                   aria-label="Link expiration period"
@@ -255,8 +256,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-200">Maximum Accesses</label>
+                <label htmlFor="label-max-accesses" className="block text-sm font-medium text-slate-200">Maximum Accesses</label>
                 <select
+                  id="label-max-accesses"
                   value={linkSettings.maxAccesses}
                   onChange={(e) => setLinkSettings({ ...linkSettings, maxAccesses: parseInt(e.target.value) })}
                   aria-label="Maximum number of accesses"
@@ -283,9 +285,10 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
 
               {linkSettings.requirePassword && (
                 <div className="space-y-1">
-                  <label className="block text-sm font-medium text-slate-200">Password</label>
+                  <label htmlFor="label-share-password" className="block text-sm font-medium text-slate-200">Password</label>
                   <input
                     type="password"
+                    id="label-share-password"
                     value={linkSettings.password}
                     onChange={(e) => setLinkSettings({ ...linkSettings, password: e.target.value })}
                     placeholder="Enter password"
@@ -341,9 +344,10 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <h3 className="text-lg font-semibold text-slate-200">Email Settings</h3>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-200">Recipient Email</label>
+                <label htmlFor="label-recipient-email" className="block text-sm font-medium text-slate-200">Recipient Email</label>
                 <input
                   type="email"
+                  id="label-recipient-email"
                   value={emailSettings.to}
                   onChange={(e) => setEmailSettings({ ...emailSettings, to: e.target.value })}
                   placeholder="friend@example.com"
@@ -355,9 +359,10 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-200">Subject</label>
+                <label htmlFor="label-email-subject" className="block text-sm font-medium text-slate-200">Subject</label>
                 <input
                   type="text"
+                  id="label-email-subject"
                   value={emailSettings.subject}
                   onChange={(e) => setEmailSettings({ ...emailSettings, subject: e.target.value })}
                   placeholder="Your Solar Return Reading"
@@ -366,8 +371,9 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-200">Personal Message</label>
+                <label htmlFor="label-personal-message" className="block text-sm font-medium text-slate-200">Personal Message</label>
                 <textarea
+                  id="label-personal-message"
                   value={emailSettings.message}
                   onChange={(e) => setEmailSettings({ ...emailSettings, message: e.target.value })}
                   placeholder="Add a personal message..."

@@ -3,23 +3,10 @@
  * Provides mock astrological calculations for testing when native module is unavailable
  */
 
-// Zodiac signs
-export const ZODIAC_SIGNS = [
-  'aries',
-  'taurus',
-  'gemini',
-  'cancer',
-  'leo',
-  'virgo',
-  'libra',
-  'scorpio',
-  'sagittarius',
-  'capricorn',
-  'aquarius',
-  'pisces',
-] as const;
-
-export type ZodiacSign = typeof ZODIAC_SIGNS[number];
+// Zodiac signs — re-exported from shared utils for backward compatibility
+export { ZODIAC_SIGNS } from '../../../shared/utils/astroUtils';
+export type { ZodiacSign } from '../../../shared/utils/astroUtils';
+import { getZodiacSign } from '../../../shared/utils/astroUtils';
 
 // Planet symbols for display
 export const PLANET_SYMBOLS: Record<string, string> = {
@@ -266,14 +253,6 @@ export function calculateCompositeChart(chart1: Record<string, unknown>, chart2:
     ascendant: (baseLongitude + 15) % 360,
     midheaven: (baseLongitude + 90) % 360,
   };
-}
-
-/**
- * Get zodiac sign from longitude
- */
-function getZodiacSign(longitude: number): ZodiacSign {
-  const index = Math.floor(longitude / 30) % 12;
-  return ZODIAC_SIGNS[index];
 }
 
 /**

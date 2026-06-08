@@ -124,10 +124,11 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
       <div className="flex flex-col gap-6">
         {/* Quick Select */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">Quick Select</label>
+          <label htmlFor="label-quick-select-month" className="text-sm font-semibold text-slate-200">Quick Select</label>
           <div className="flex gap-2 flex-wrap sm:flex-col">
             <button
               type="button"
+              id="label-quick-select-month"
               onClick={() => handleQuickSelect('this-month')}
               className="px-4 py-2 bg-white/15 border border-white/15 rounded-md text-[13px] font-medium text-slate-200 cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/10 hover:text-primary sm:w-full"
             >
@@ -152,7 +153,7 @@ export function CalendarExport({ onExportComplete }: CalendarExportProps) {
 
         {/* Custom Date Range */}
         <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold text-slate-200">Custom Date Range</label>
+          <label htmlFor="startDate" className="text-sm font-semibold text-slate-200">Custom Date Range</label>
           <div className="flex gap-4 sm:flex-col sm:gap-3">
             <div className="flex-1 flex flex-col gap-1">
               <label htmlFor="startDate" className="text-xs font-medium text-slate-200">From</label>

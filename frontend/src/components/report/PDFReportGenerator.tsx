@@ -397,10 +397,11 @@ const PDFReportGenerator: React.FC<PDFReportGeneratorProps> = ({
 
       {/* Report Type Selector */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-slate-300 mb-2">Report Type</label>
+        <label htmlFor="label-report-type" className="block text-sm font-medium text-slate-300 mb-2">Report Type</label>
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
+            id="label-report-type"
             onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
             className="w-full flex items-center justify-between px-4 py-3 bg-surface-dark border border-white/10 rounded-lg text-white hover:border-primary/50 transition-colors"
             data-testid="pdf-type-dropdown-trigger"

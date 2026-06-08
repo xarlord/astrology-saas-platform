@@ -7,6 +7,7 @@ import puppeteer, { type Browser, type Page } from 'puppeteer';
 import * as fs from 'fs';
 import * as path from 'path';
 import logger from '../../../utils/logger';
+import { ensureUploadsDir } from '../../../shared/utils/fileUtils';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -48,8 +49,6 @@ const PLANET_SYMBOLS: Record<string, string> = {
   chiron: '⚷',
 };
 
-const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads', 'cards');
-
 let browserInstance: Browser | null = null;
 
 async function getBrowser(): Promise<Browser> {
@@ -74,15 +73,6 @@ export async function closeBrowser(): Promise<void> {
   }
 }
 
-function ensureUploadsDir(): void {
-  if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  }
-  const userDir = path.join(UPLOADS_DIR);
-  if (!fs.existsSync(userDir)) {
-    fs.mkdirSync(userDir, { recursive: true });
-  }
-}
 
 function buildHtml(opts: CardImageOptions): string {
   const dims = TEMPLATE_DIMENSIONS[opts.template] || TEMPLATE_DIMENSIONS.square;
@@ -248,7 +238,7 @@ export class CardImageService {
     let page: Page | null = null;
 
     try {
-      ensureUploadsDir();
+      const uploadsDir = ensureUploadsDir('cards');
 
       const dims = TEMPLATE_DIMENSIONS[opts.template] || TEMPLATE_DIMENSIONS.square;
       const html = buildHtml(opts);
@@ -282,9 +272,9 @@ export class CardImageService {
       }
 
       // Store to uploads/cards/{userId}/{cardId}.png
-      const userDir = path.join(UPLOADS_DIR, opts.userId);
+      const userDir = path.join(uploadsDir, opts.userId);
       const resolvedUserDir = path.resolve(userDir);
-      const resolvedUploadsDir = path.resolve(UPLOADS_DIR);
+      const resolvedUploadsDir = path.resolve(uploadsDir);
       if (!resolvedUserDir.startsWith(resolvedUploadsDir + path.sep)) {
         logger.error('Path traversal detected — resolved path outside uploads', {
           userId: opts.userId,

@@ -360,23 +360,23 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
           }}
         >
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-200">Location Name</label>
-            <input name="name" type="text" required aria-required="true" placeholder="e.g., Paris, France" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
+            <label htmlFor="label-location-name" className="text-sm font-semibold text-slate-200">Location Name</label>
+            <input name="name" type="text" required aria-required="true" id="label-location-name" placeholder="e.g., Paris, France" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-200">Latitude</label>
-            <input name="latitude" type="number" step="0.0001" required aria-required="true" placeholder="e.g., 48.8566" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
+            <label htmlFor="label-latitude" className="text-sm font-semibold text-slate-200">Latitude</label>
+            <input name="latitude" type="number" step="0.0001" required aria-required="true" id="label-latitude" placeholder="e.g., 48.8566" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-200">Longitude</label>
-            <input name="longitude" type="number" step="0.0001" required aria-required="true" placeholder="e.g., 2.3522" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
+            <label htmlFor="label-longitude" className="text-sm font-semibold text-slate-200">Longitude</label>
+            <input name="longitude" type="number" step="0.0001" required aria-required="true" id="label-longitude" placeholder="e.g., 2.3522" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-200">Timezone</label>
-            <input name="timezone" type="text" required aria-required="true" placeholder="e.g., Europe/Paris" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
+            <label htmlFor="label-timezone" className="text-sm font-semibold text-slate-200">Timezone</label>
+            <input name="timezone" type="text" required aria-required="true" id="label-timezone" placeholder="e.g., Europe/Paris" className="py-2.5 px-2.5 border border-white/15 rounded-md text-sm focus:outline-none focus:border-primary focus:ring-[3px] focus:ring-primary/10 bg-white/15" />
           </div>
 
           <button
