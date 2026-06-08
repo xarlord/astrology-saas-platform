@@ -7,6 +7,7 @@ import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import { vi } from 'vitest';
 
 // Create wrappers for common providers
@@ -36,9 +37,11 @@ export function AllTheProviders({ children, queryClient, route }: AllTheProvider
   }
 
   return (
-    <QueryClientProvider client={qc}>
-      <BrowserRouter>{children}</BrowserRouter>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={qc}>
+        <BrowserRouter>{children}</BrowserRouter>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 

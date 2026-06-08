@@ -181,10 +181,16 @@ export const useLocationStore = create<LocationState>()(
       },
 
       reverseGeocode: async (latitude, longitude) => {
-        const response = await api.get<{ data: GeocodeResult }>(
-          `/v1/location/reverse-geocode?latitude=${latitude}&longitude=${longitude}`,
-        );
-        return response.data.data;
+        try {
+          const response = await api.get<{ data: GeocodeResult }>(
+            `/v1/location/reverse-geocode?latitude=${latitude}&longitude=${longitude}`,
+          );
+          return response.data.data;
+        } catch (error) {
+          throw new Error(
+            error instanceof Error ? error.message : 'Failed to reverse geocode',
+          );
+        }
       },
 
       clearCache: () => {

@@ -4,11 +4,24 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { act } from '@testing-library/react';
-import { useReportStore, type Report, type ReportRequest } from '../../stores/reportStore';
 
-// Mock fetch and localStorage
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
+// Mock the api module before importing the store
+const mockApiPost = vi.fn();
+vi.mock('../../services/api', () => ({
+  default: {
+    get: vi.fn(),
+    post: (...args: unknown[]) => mockApiPost(...args),
+    put: vi.fn(),
+    patch: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
+}));
+
+import { useReportStore, type Report, type ReportRequest } from '../../stores/reportStore';
 
 describe('reportStore', () => {
   // Helper to reset store state
@@ -211,14 +224,13 @@ describe('reportStore', () => {
 
   describe('generateReport action', () => {
     it('should generate report successfully', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+      mockApiPost.mockResolvedValueOnce({
+        data: {
           data: {
             downloadUrl: 'https://example.com/report.pdf',
             expiresAt: '2024-12-31T23:59:59Z',
           },
-        }),
+        },
       });
 
       const report = await act(async () => {
@@ -231,9 +243,8 @@ describe('reportStore', () => {
     });
 
     it('should create pending report initially', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: {} }),
+      mockApiPost.mockResolvedValueOnce({
+        data: { data: {} },
       });
 
       const generatePromise = act(async () => {
@@ -252,9 +263,8 @@ describe('reportStore', () => {
     });
 
     it('should set active report during generation', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: {} }),
+      mockApiPost.mockResolvedValueOnce({
+        data: { data: {} },
       });
 
       await act(async () => {
@@ -269,9 +279,8 @@ describe('reportStore', () => {
     it('should call onComplete callback', async () => {
       const onComplete = vi.fn();
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: {} }),
+      mockApiPost.mockResolvedValueOnce({
+        data: { data: {} },
       });
 
       await act(async () => {
@@ -283,10 +292,7 @@ describe('reportStore', () => {
     });
 
     it('should handle generation failure', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Internal Server Error',
-      });
+      mockApiPost.mockRejectedValueOnce(new Error('Report generation failed: Internal Server Error'));
 
       await act(async () => {
         try {
@@ -309,10 +315,7 @@ describe('reportStore', () => {
     it('should call onError callback on failure', async () => {
       const onError = vi.fn();
 
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Bad Request',
-      });
+      mockApiPost.mockRejectedValueOnce(new Error('Report generation failed: Bad Request'));
 
       await act(async () => {
         try {
@@ -339,9 +342,8 @@ describe('reportStore', () => {
         },
       });
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: {} }),
+      mockApiPost.mockResolvedValueOnce({
+        data: { data: {} },
       });
 
       const report = await act(async () => {

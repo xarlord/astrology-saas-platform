@@ -4,15 +4,28 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { act } from '@testing-library/react';
+
+// Mock the api module before importing the store
+const mockApiGet = vi.fn();
+vi.mock('../../services/api', () => ({
+  default: {
+    get: (...args: unknown[]) => mockApiGet(...args),
+    post: vi.fn(),
+    put: vi.fn(),
+    patch: vi.fn(),
+    delete: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
+}));
+
 import {
   useLocationStore,
   type GeocodeResult,
   type TimezoneInfo,
 } from '../../stores/locationStore';
-
-// Mock fetch and localStorage
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
 
 describe('locationStore', () => {
   // Helper to reset store state
@@ -97,9 +110,8 @@ describe('locationStore', () => {
     });
 
     it('should search locations successfully', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: [mockGeocodeResult] }),
+      mockApiGet.mockResolvedValueOnce({
+        data: { data: [mockGeocodeResult] },
       });
 
       const result = await act(async () => {
@@ -125,16 +137,15 @@ describe('locationStore', () => {
         return await useLocationStore.getState().searchLocations('New York');
       });
 
-      // Should not call fetch when cache hit
-      expect(mockFetch).not.toHaveBeenCalled();
+      // Should not call api.get when cache hit
+      expect(mockApiGet).not.toHaveBeenCalled();
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual(mockGeocodeResult);
     });
 
     it('should cache search results', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: [mockGeocodeResult] }),
+      mockApiGet.mockResolvedValueOnce({
+        data: { data: [mockGeocodeResult] },
       });
 
       await act(async () => {
@@ -147,10 +158,8 @@ describe('locationStore', () => {
     });
 
     it('should handle search error', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Not Found',
-      });
+      const networkError = new Error('Failed to search locations');
+      mockApiGet.mockRejectedValueOnce(networkError);
 
       await act(async () => {
         try {
@@ -169,10 +178,10 @@ describe('locationStore', () => {
     });
 
     it('should set loading state during search', async () => {
-      mockFetch.mockImplementationOnce(
+      mockApiGet.mockImplementationOnce(
         () =>
           new Promise((resolve) =>
-            setTimeout(() => resolve({ ok: true, json: async () => ({ data: [] }) }), 100),
+            setTimeout(() => resolve({ data: { data: [] } }), 100),
           ),
       );
 
@@ -230,9 +239,8 @@ describe('locationStore', () => {
 
   describe('getTimezone action', () => {
     it('should get timezone successfully', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: mockTimezoneInfo }),
+      mockApiGet.mockResolvedValueOnce({
+        data: { data: mockTimezoneInfo },
       });
 
       const result = await act(async () => {
@@ -252,30 +260,27 @@ describe('locationStore', () => {
         return await useLocationStore.getState().getTimezone(40.7128, -74.006);
       });
 
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockApiGet).not.toHaveBeenCalled();
       expect(result).toEqual(mockTimezoneInfo);
     });
 
     it('should include date in request', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: mockTimezoneInfo }),
+      mockApiGet.mockResolvedValueOnce({
+        data: { data: mockTimezoneInfo },
       });
 
       await act(async () => {
         await useLocationStore.getState().getTimezone(40.7128, -74.006, '2024-06-15');
       });
 
-      expect(mockFetch).toHaveBeenCalledWith(
+      expect(mockApiGet).toHaveBeenCalledWith(
         expect.stringContaining('date=2024-06-15'),
-        expect.any(Object),
       );
     });
 
     it('should cache timezone results', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: mockTimezoneInfo }),
+      mockApiGet.mockResolvedValueOnce({
+        data: { data: mockTimezoneInfo },
       });
 
       await act(async () => {
@@ -289,10 +294,7 @@ describe('locationStore', () => {
     });
 
     it('should handle timezone error', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Not Found',
-      });
+      mockApiGet.mockRejectedValueOnce(new Error('Network Error'));
 
       await act(async () => {
         try {
@@ -309,9 +311,8 @@ describe('locationStore', () => {
 
   describe('reverseGeocode action', () => {
     it('should reverse geocode successfully', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: mockGeocodeResult }),
+      mockApiGet.mockResolvedValueOnce({
+        data: { data: mockGeocodeResult },
       });
 
       const result = await act(async () => {
@@ -319,24 +320,21 @@ describe('locationStore', () => {
       });
 
       expect(result).toEqual(mockGeocodeResult);
-      expect(mockFetch).toHaveBeenCalledWith(
+      expect(mockApiGet).toHaveBeenCalledWith(
         expect.stringContaining('latitude=40.7128'),
-        expect.any(Object),
       );
     });
 
     it('should handle reverse geocode error', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        statusText: 'Bad Request',
-      });
+      const error = new Error('Failed to reverse geocode');
+      mockApiGet.mockRejectedValueOnce(error);
 
       await act(async () => {
         try {
           await useLocationStore.getState().reverseGeocode(0, 0);
           expect.fail('Should have thrown');
-        } catch (error) {
-          expect((error as Error).message).toBe('Failed to reverse geocode');
+        } catch (err) {
+          expect((err as Error).message).toBe('Failed to reverse geocode');
         }
       });
     });
