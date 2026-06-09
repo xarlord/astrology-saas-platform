@@ -235,10 +235,11 @@ export async function calculateTransits(req: AuthenticatedRequest, res: Response
   const end = new Date(endDate);
   const daysDiff = differenceInDays(end, start);
 
-  // Limit to 365 days for performance
-  const maxDays = Math.min(daysDiff, 365);
+  // Limit to 365 days, sample at intervals for long ranges
+  const cappedDays = Math.min(daysDiff, 365);
+  const sampleInterval = cappedDays > 90 ? 7 : cappedDays > 30 ? 3 : 1;
 
-  for (let i = 0; i <= maxDays; i++) {
+  for (let i = 0; i <= cappedDays; i += sampleInterval) {
     const transitDate = addDays(start, i);
 
     const transitData = calculateTransitsWithEngine({
@@ -503,9 +504,12 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
   const transitForecast: TransitForecastItem[] = [];
 
   const daysDiff = differenceInDays(endDate, now);
-  const maxDays = Math.min(daysDiff, 365);
 
-  for (let i = 0; i <= maxDays; i++) {
+  // Sample at intervals for long durations to avoid O(365) calculations
+  const sampleInterval = duration === 'year' ? 7 : duration === 'quarter' ? 3 : 1;
+  const cappedDays = Math.min(daysDiff, 365);
+
+  for (let i = 0; i <= cappedDays; i += sampleInterval) {
     const date = addDays(now, i);
 
     const transitData = calculateTransitsWithEngine({

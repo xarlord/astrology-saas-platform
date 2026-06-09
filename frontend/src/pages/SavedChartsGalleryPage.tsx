@@ -270,7 +270,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
           </div>
 
           {/* Actions Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-800/30 p-4 rounded-2xl border border-slate-800">
+          <section aria-label="search" className="flex flex-wrap items-center justify-between gap-4 bg-slate-800/30 p-4 rounded-2xl border border-slate-800">
             <div className="flex-1 min-w-0 sm:min-w-[300px] relative">
               <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                 search
@@ -330,9 +330,10 @@ export const SavedChartsGalleryPage: React.FC = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Gallery Grid */}
+          <section aria-label="charts gallery">
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
               <div className="text-center">
@@ -400,6 +401,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
               </button>
             </div>
           )}
+          </section>
         </main>
       </div>
 

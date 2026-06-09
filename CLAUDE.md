@@ -150,3 +150,27 @@ frontend/src/
 - `/db-migrate` — database management
 - `/refactor-audit [domain]` — audit a code domain for refactoring issues
 - `/refactor-execute [report]` — execute refactoring from an audit report
+
+## File Size Guidelines
+
+### Maximum recommended lines per file
+| Type | Limit | Rationale |
+|------|-------|-----------|
+| React component | 300 lines | Extract sub-components above 300 lines |
+| React page | 400 lines | Defer to hook extraction or sub-components |
+| Express controller | 300 lines | Split into multiple controllers by concern |
+| Express route file | 150 lines | One route file per domain entity |
+| Service/module | 300 lines | Extract helpers into shared utils |
+| Test file | 500 lines | Split by describe block into separate files |
+
+### When a file exceeds limits
+1. Identify logical sections (tabs, CRUD ops, lifecycle stages)
+2. Extract each section into a focused sub-module
+3. Create a barrel file (`index.ts`) for re-exports
+4. Keep the original file as orchestrator (imports + composes sub-modules)
+5. Update test imports if needed
+
+### Enforcement
+- CI `test-enforcement.yml` blocks PRs with files exceeding 500 lines (new files only)
+- Existing oversized files should be refactored when modified (boy scout rule)
+
