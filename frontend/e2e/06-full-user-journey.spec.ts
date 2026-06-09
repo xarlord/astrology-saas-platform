@@ -102,7 +102,7 @@ const test = base.extend<{ consoleMonitor: ConsoleMonitor }>({
 
 /** Fetch CSRF token from the API. */
 async function fetchCsrfToken(page: import('@playwright/test').Page): Promise<string> {
-  const res = await page.request.get(`${API_BASE}/csrf-token`);
+  const res = await page.request.get(`${API_BASE}/health/csrf-token`);
   const body = await res.json();
   if (!body.success) throw new Error(`Failed to get CSRF token: ${JSON.stringify(body)}`);
   return body.data.token as string;

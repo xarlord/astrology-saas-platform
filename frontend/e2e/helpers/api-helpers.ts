@@ -92,7 +92,7 @@ function authHeaders(token: string): Record<string, string> {
 }
 
 async function fetchCsrfToken(request: APIRequestContext): Promise<string> {
-  const response = await request.get(`${API_BASE}/csrf-token`);
+  const response = await request.get(`${API_BASE}/health/csrf-token`);
   const body = await response.json();
   if (!body.success) throw new Error(`Failed to get CSRF token: ${JSON.stringify(body)}`);
   return body.data.token as string;

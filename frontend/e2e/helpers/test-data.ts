@@ -35,7 +35,7 @@ export const TEST_PASSWORD = 'E2Epass123!';
 
 /** Fetch a CSRF token (sets cookie via Playwright request context). */
 export async function fetchCsrfToken(request: APIRequestContext): Promise<string> {
-  const res = await request.get(`${API_BASE}/csrf-token`);
+  const res = await request.get(`${API_BASE}/health/csrf-token`);
   const body = await res.json();
   if (!body.success) throw new Error(`CSRF fetch failed: ${JSON.stringify(body)}`);
   return body.data.token as string;

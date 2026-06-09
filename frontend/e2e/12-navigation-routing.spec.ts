@@ -13,7 +13,7 @@ const VALID_PASSWORD = 'E2eTest123!';
 // ---------------------------------------------------------------------------
 
 async function fetchCsrfToken(request: import('@playwright/test').APIRequestContext) {
-  const res = await request.get(API_BASE + '/csrf-token');
+  const res = await request.get(API_BASE + '/health/csrf-token');
   const body = await res.json();
   const token = body?.data?.token ?? '';
   if (!token) throw new Error('CSRF token fetch failed');
