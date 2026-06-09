@@ -5,7 +5,13 @@
 import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { validateParams } from '../../../utils/validators';
+import { z } from 'zod';
 import * as AnalysisController from '../controllers/analysis.controller';
+
+const chartIdParamSchema = z.object({
+  chartId: z.string().uuid(),
+});
 
 const router = Router();
 
@@ -40,6 +46,7 @@ router.use(authenticate);
  */
 router.get(
   '/:chartId',
+  validateParams(chartIdParamSchema),
   asyncHandler(async (req, res) => {
     await AnalysisController.getPersonalityAnalysis(req as AuthenticatedRequest, res);
   }),
@@ -73,6 +80,7 @@ router.get(
  */
 router.get(
   '/:chartId/aspects',
+  validateParams(chartIdParamSchema),
   asyncHandler(async (req, res) => {
     await AnalysisController.getAspectAnalysis(req as AuthenticatedRequest, res);
   }),
@@ -106,6 +114,7 @@ router.get(
  */
 router.get(
   '/:chartId/patterns',
+  validateParams(chartIdParamSchema),
   asyncHandler(async (req, res) => {
     await AnalysisController.getAspectPatterns(req as AuthenticatedRequest, res);
   }),
@@ -139,6 +148,7 @@ router.get(
  */
 router.get(
   '/:chartId/planets',
+  validateParams(chartIdParamSchema),
   asyncHandler(async (req, res) => {
     await AnalysisController.getPlanetsInSigns(req as AuthenticatedRequest, res);
   }),
@@ -172,6 +182,7 @@ router.get(
  */
 router.get(
   '/:chartId/houses',
+  validateParams(chartIdParamSchema),
   asyncHandler(async (req, res) => {
     await AnalysisController.getHousesAnalysis(req as AuthenticatedRequest, res);
   }),
