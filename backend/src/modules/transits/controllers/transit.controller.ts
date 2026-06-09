@@ -365,8 +365,8 @@ async function calculateTransitPlanetsOnly(date: Date): Promise<TransitResult['t
  */
 export async function getTransitCalendar(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
-  const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
-  const year = parseInt(req.query.year as string) || new Date().getFullYear();
+  const month = Math.max(1, Math.min(12, parseInt(req.query.month as string) || new Date().getMonth() + 1));
+  const year = Math.max(1900, Math.min(2100, parseInt(req.query.year as string) || new Date().getFullYear()));
 
   const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
@@ -492,6 +492,9 @@ export async function getTransitForecast(req: AuthenticatedRequest, res: Respons
       break;
     case 'year':
       endDate = addYears(now, 1);
+      break;
+    default:
+      endDate = addMonths(now, 1); // default to 1 month for invalid duration values
       break;
   }
 

@@ -7,9 +7,15 @@
  */
 
 import { NextFunction, Request, Response, Router } from 'express';
+import { z } from 'zod';
 import { logger } from '../../../utils/logger';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { publicApiRateLimiter } from '../../../middleware/rateLimiter';
+import { validateParams } from '../../../utils/validators';
+
+const placeIdParamSchema = z.object({
+  placeId: z.string().min(1).max(512),
+});
 
 // Manual validation helpers (replacing express-validator)
 function validateQueryParams(
@@ -209,7 +215,7 @@ router.get('/autocomplete', asyncHandler(async (req: Request, res: Response, _ne
  * @desc    Get place details including coordinates
  * @access  Public (rate limited)
  */
-router.get('/details/:placeId', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/details/:placeId', validateParams(placeIdParamSchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
     const validationError = validateQueryParams(req, {
       sessiontoken: { optional: true, isString: true },

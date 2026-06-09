@@ -14,7 +14,7 @@
  * data-testid as fallback, role/text for buttons.
  *
  * CSRF flow: uses csrf-csrf double-submit cookie pattern.
- *   1. GET /api/v1/csrf-token -> sets x-csrf-token cookie + returns token
+ *   1. GET /api/v1/health/csrf-token -> sets x-csrf-token cookie + returns token
  *   2. POST requests include X-CSRF-Token header with the token value
  */
 
@@ -42,12 +42,12 @@ function uniqueEmail(): string {
 }
 
 /**
- * Fetch CSRF token via GET /api/v1/csrf-token.
+ * Fetch CSRF token via GET /api/v1/health/csrf-token.
  * Sets cookie in Playwright request jar.
  * Returns the token header value.
  */
 async function fetchCsrfToken(request: APIRequestContext): Promise<string> {
-  const res = await request.get(API_BASE + '/csrf-token');
+  const res = await request.get(API_BASE + '/health/csrf-token');
   const body = await res.json();
   const token = body?.data?.token ?? '';
   if (!token) {

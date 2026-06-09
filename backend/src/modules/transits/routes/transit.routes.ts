@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { authenticate, optionalAuthenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
-import { validateBody } from '../../../utils/validators';
+import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
 import { calculateTransitsSchema } from '../../../utils/validators';
 import * as TransitController from '../controllers/transit.controller';
 
@@ -181,6 +181,7 @@ router.get(
  */
 router.get(
   '/:id',
+  validateParams(uuidParamSchema),
   asyncHandler(async (req, res) => {
     await TransitController.getTransitDetails(req as AuthenticatedRequest, res);
   }),
