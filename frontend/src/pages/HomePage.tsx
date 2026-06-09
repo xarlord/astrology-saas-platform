@@ -131,7 +131,7 @@ export default function HomePage() {
 
       <main id="main-content" tabIndex={-1}>
         {/* ===== Hero Section ===== */}
-        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden stars-bg">
+        <section aria-label="hero" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden stars-bg">
           {/* Nebula Effect */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] nebula-bg opacity-60 pointer-events-none" />
 
@@ -219,7 +219,7 @@ export default function HomePage() {
         </section>
 
         {/* ===== Features Section ===== */}
-        <section id="features" className="py-24 relative">
+        <section id="features" aria-label="features" className="py-24 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl lg:text-4xl font-bold gradient-text mb-4">Everything You Need</h2>
@@ -281,7 +281,7 @@ export default function HomePage() {
         </section>
 
         {/* ===== Testimonials Section ===== */}
-        <section id="testimonials" className="py-24 relative">
+        <section id="testimonials" aria-label="testimonials" className="py-24 relative">
           <div className="absolute inset-0 nebula-bg opacity-30 pointer-events-none" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-16">
@@ -334,7 +334,7 @@ export default function HomePage() {
         </section>
 
         {/* ===== Pricing Section ===== */}
-        <section id="pricing" className="py-24 relative">
+        <section id="pricing" aria-label="pricing" className="py-24 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl lg:text-4xl font-bold gradient-text mb-4">Simple Pricing</h2>
@@ -411,7 +411,7 @@ export default function HomePage() {
         </section>
 
         {/* ===== Bottom CTA Section ===== */}
-        <section className="py-24 relative">
+        <section aria-label="call to action" className="py-24 relative">
           <div className="absolute inset-0 nebula-bg opacity-40 pointer-events-none" />
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <h2 className="text-3xl lg:text-5xl font-bold gradient-text mb-6">
