@@ -67,7 +67,7 @@ frontend/src/
   pages/               # route-level pages (lazy-loaded)
   hooks/               # 34 custom hooks
   services/            # API client (axios-based)
-  store/               # Zustand state (auth, charts)
+  stores/              # Zustand state (auth, charts)
 ```
 
 ## Features

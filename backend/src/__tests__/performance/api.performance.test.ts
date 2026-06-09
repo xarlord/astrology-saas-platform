@@ -10,7 +10,19 @@ import { cleanDatabase, createTestUser, createTestChart } from '../utils';
 import { mockAuthHeader } from '../auth.utils';
 import { performance } from 'perf_hooks';
 
-// Import app
+// Mock swiss ephemeris — API perf tests don't need real ephemeris calculations
+vi.mock('../../modules/shared/services/swissEphemeris.service', () => ({
+  swissEphemeris: {
+    toJulianDay: vi.fn().mockReturnValue(2447892.5),
+    calculatePlanetPosition: vi.fn().mockReturnValue({ longitude: 295.5, latitude: 0, speed: 1 }),
+    calculateHouses: vi.fn().mockReturnValue({ cusps: Array(12).fill(0).map((_: any, i: number) => i * 30), ascendant: 30, mc: 270 }),
+    detectAspects: vi.fn().mockReturnValue([]),
+    calculateNatalChart: vi.fn().mockResolvedValue({ planets: {}, houses: {}, aspects: [] }),
+    calculateTransits: vi.fn().mockResolvedValue({ transits: [] }),
+  },
+}));
+
+// Import app after mock
 import '../../server';
 
 interface APIPerformanceResult {

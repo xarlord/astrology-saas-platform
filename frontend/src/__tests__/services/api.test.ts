@@ -5,7 +5,6 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import api from '../../services/api';
-import { AxiosError } from 'axios';
 import { setupLocalStorageMock } from './utils';
 
 // Mock axios
@@ -50,90 +49,7 @@ describe('api', () => {
     vi.restoreAllMocks();
   });
 
-  // apiRequest, handleApiError, isNetworkError, isAuthError are not exported
-  // from the committed api.ts. Skipping these tests until they are implemented.
-  describe.skip('apiRequest — not exported in committed api.ts', () => {
-    it('should expose GET method', () => {
-      // Skipped: apiRequest is not exported from api.ts
-      expect(true).toBe(true);
-    });
-
-    it('should expose POST method', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should expose PUT method', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should expose PATCH method', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should expose DELETE method', () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe.skip('handleApiError — not exported in committed api.ts', () => {
-    it('should extract message from AxiosError response', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return error message when no response data', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should handle generic Error', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return default message for unknown errors', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should handle null/undefined errors', () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe.skip('isNetworkError — not exported in committed api.ts', () => {
-    it('should return true for network errors (no response)', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return false when there is a response', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return false for non-AxiosError', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return false when no request', () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe.skip('isAuthError — not exported in committed api.ts', () => {
-    it('should return true for 401 errors', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return true for 403 errors', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return false for other status codes', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return false for non-AxiosError', () => {
-      expect(true).toBe(true);
-    });
-
-    it('should return false when no response', () => {
-      expect(true).toBe(true);
-    });
+  it('should export api instance', () => {
+    expect(api).toBeDefined();
   });
 });

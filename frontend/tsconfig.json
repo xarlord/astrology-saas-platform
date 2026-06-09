@@ -26,6 +26,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@stores/*": [
+        "src/stores/*"
       ]
     }
   },

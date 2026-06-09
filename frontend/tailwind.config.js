@@ -55,11 +55,29 @@ export default {
           800: '#92400e',
           900: '#78350f',
         },
+        // Semantic / astro colors
+        gold: '#F5A623',
         lavender: '#A78BFA',
         'cosmic-blue': '#2563EB',
-        gold: '#F5A623',
         'surface-dark': '#151725',
         'surface-light': '#1e2136',
+        // Extended palette for component migration
+        nebula: {
+          50: '#f5f3ff',
+          100: '#2a1f4e',
+          200: '#3d2d6b',
+          300: '#6d5faa',
+          400: '#818CF8',
+          500: '#C084FC',
+          600: '#9333EA',
+          700: '#1e1538',
+          800: '#16102a',
+          900: '#0d0a1a',
+        },
+        success: '#22c55e',
+        danger: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6',
         // Zodiac colors
         zodiac: {
           fire: '#EF4444',

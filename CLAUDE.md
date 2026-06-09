@@ -51,7 +51,7 @@ frontend/src/
   pages/                 # Route-level page components
   hooks/                 # Custom React hooks
   services/              # API client services (axios-based, import api from shared client)
-  store/                 # Zustand state management
+  stores/                # Zustand state management (useChartStore, etc.)
   types/                 # Centralized type definitions (chart, synastry, lunar, calendar)
   utils/                 # Shared utilities (errorHandling, etc.)
 ```
