@@ -6,8 +6,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { performance } from 'perf_hooks';
-import { swissEphemerisService } from '../../modules/shared/services/swissEphemeris.service';
 import { mockChartData } from '../utils';
+
+// Mock swissEphemeris — performance tests run without real ephemeris data files
+vi.mock('../../modules/shared/services/swissEphemeris.service', () => {
+  const mockJD = 2447892.5; // 1990-01-15
+  return {
+    swissEphemeris: {
+      toJulianDay: vi.fn().mockReturnValue(mockJD),
+      calculatePlanetPosition: vi.fn().mockReturnValue({
+        longitude: 295.5,
+        latitude: 0,
+        speed: 1,
+        distance: 1,
+        name: 'sun',
+      }),
+      calculateHouses: vi.fn().mockReturnValue({
+        cusps: [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+        ascendant: 30,
+        mc: 270,
+      }),
+      detectAspects: vi.fn().mockReturnValue([
+        { planet1: 'sun', planet2: 'moon', aspect: 'square', orb: 2.5, exact: false },
+      ]),
+      calculateNatalChart: vi.fn().mockResolvedValue({
+        planets: { sun: { longitude: 295.5 }, moon: { longitude: 180.3 } },
+        houses: { cusps: Array(12).fill(0).map((_, i) => i * 30) },
+        aspects: [],
+      }),
+      calculateTransits: vi.fn().mockResolvedValue({
+        transits: [{ transitPlanet: 'mars', natalPlanet: 'sun', aspect: 'conjunction' }],
+      }),
+    },
+  };
+});
+
+import { swissEphemeris as swissEphemerisService } from '../../modules/shared/services/swissEphemeris.service';
 
 /**
  * Performance test utility
