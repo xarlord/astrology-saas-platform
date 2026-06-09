@@ -8,6 +8,7 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceChartLimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
 import { validateRequest } from '../../../middleware/validateRequest';
+import { validateParams, uuidParamSchema } from '../../../utils/validators';
 import {
   CreateNatalChartSchema,
   UpdateChartSchema,
@@ -96,6 +97,7 @@ router.get(
  */
 router.get(
   '/:id',
+  validateParams(uuidParamSchema),
   asyncHandler(async (req, res) => {
     await ChartController.getChart(req as AuthenticatedRequest, res);
   }),
@@ -123,6 +125,7 @@ router.get(
  */
 router.put(
   '/:id',
+  validateParams(uuidParamSchema),
   validateRequest(UpdateChartSchema),
   asyncHandler(async (req, res) => {
     await ChartController.updateChart(req as AuthenticatedRequest, res);
@@ -151,6 +154,7 @@ router.put(
  */
 router.delete(
   '/:id',
+  validateParams(uuidParamSchema),
   asyncHandler(async (req, res) => {
     await ChartController.deleteChart(req as AuthenticatedRequest, res);
   }),
@@ -178,6 +182,7 @@ router.delete(
  */
 router.post(
   '/:id/calculate',
+  validateParams(uuidParamSchema),
   asyncHandler(async (req, res) => {
     await ChartController.calculateChart(req as AuthenticatedRequest, res);
   }),

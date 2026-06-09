@@ -11,6 +11,12 @@ import {
   getVapidPublicKey,
 } from '../controllers/pushNotification.controller';
 import { authenticate } from '../../../middleware/auth';
+import { validateParams } from '../../../utils/validators';
+import { z } from 'zod';
+
+const subscriptionIdParamSchema = z.object({
+  subscriptionId: z.string().uuid(),
+});
 
 const router = express.Router();
 
@@ -82,7 +88,7 @@ router.post('/subscribe', saveSubscription);
  *       404:
  *         description: Subscription not found
  */
-router.delete('/subscribe/:subscriptionId', deleteSubscription);
+router.delete('/subscribe/:subscriptionId', validateParams(subscriptionIdParamSchema), deleteSubscription);
 
 /**
  * @route   GET /api/v1/notifications/subscriptions
