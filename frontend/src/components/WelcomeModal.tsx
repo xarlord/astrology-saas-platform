@@ -162,7 +162,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
 
         {/* Chart Preview */}
         {hasChart ? (
-          <div className="bg-[#0B0D17] border border-white/5 rounded-xl p-6 mb-6 text-center">
+          <div className="bg-cosmic-page border border-white/5 rounded-xl p-6 mb-6 text-center">
             <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-cosmic-blue/20 border border-primary/30 flex items-center justify-center">
               <span className="material-symbols-outlined text-5xl text-primary">all_inclusive</span>
             </div>
@@ -185,11 +185,11 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             </div>
           </div>
         ) : (
-          <div className="bg-[#0B0D17] border border-white/5 rounded-xl p-6 mb-6 text-center">
+          <div className="bg-cosmic-page border border-white/5 rounded-xl p-6 mb-6 text-center">
             <div
               className="w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center"
               style={{
-                background: 'linear-gradient(135deg, #1a103c 0%, #2e1065 50%, #0B0D17 100%)',
+                background: 'linear-gradient(135deg, #1a103c 0%, #2e1065 50%, var(--color-bg-page) 100%)',
                 border: '1px solid rgba(255,255,255,0.1)',
               }}
             >

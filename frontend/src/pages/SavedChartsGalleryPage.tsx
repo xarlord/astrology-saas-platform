@@ -428,6 +428,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
                   type="text"
                   value={`${window.location.origin}/charts/${shareChartId}`}
                   readOnly
+                  aria-label="Share chart URL"
                   className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
                 />
                 <button type="button"

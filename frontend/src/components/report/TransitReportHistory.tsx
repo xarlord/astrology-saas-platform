@@ -83,8 +83,8 @@ export const TransitReportHistory: React.FC<TransitReportHistoryProps> = ({
       data-testid={`report-history-${report.id}`}
     >
       <div className="flex items-center gap-3 min-w-0">
-        <div className="size-7 rounded-lg bg-[#6b3de1]/10 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-[#6b3de1] text-[14px]">description</span>
+        <div className="size-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-primary text-[14px]">description</span>
         </div>
         <div className="min-w-0">
           <p className="text-white text-sm font-medium truncate">{formatMonth(report)}</p>
@@ -119,7 +119,7 @@ export const TransitReportHistory: React.FC<TransitReportHistoryProps> = ({
 
   return (
     <div
-      className={`bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
+      className={`bg-cosmic-card/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
       data-testid="transit-report-history"
     >
       <div className="flex items-center justify-between mb-4">

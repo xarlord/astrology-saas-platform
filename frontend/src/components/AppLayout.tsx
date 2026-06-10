@@ -142,7 +142,7 @@ function TopNav({ onMenuClick }: { onMenuClick: () => void }) {
 
           <Link
             to="/charts/new"
-            className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary to-[#8b5cf6] hover:from-primary hover:to-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]"
+            className="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary to-secondary-500 hover:from-primary hover:to-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]"
           >
             <span className="material-symbols-outlined text-lg" aria-hidden="true">add</span>
             New Chart

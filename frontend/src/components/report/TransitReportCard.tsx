@@ -65,7 +65,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
   if (!isPremiumUser) {
     return (
       <motion.div
-        className={`bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
+        className={`bg-cosmic-card/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.45 }}
@@ -73,11 +73,11 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
       >
         {/* Locked icon overlay */}
         <div className="relative mb-4">
-          <div className="flex items-center justify-center h-28 bg-[#0B0D17] rounded-xl border border-white/5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#6b3de1]/5 to-transparent" />
+          <div className="flex items-center justify-center h-28 bg-cosmic-page rounded-xl border border-white/5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
             <div className="relative flex flex-col items-center gap-2">
-              <div className="size-12 rounded-full bg-[#6b3de1]/20 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[#6b3de1] text-xl">lock</span>
+              <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="material-symbols-outlined text-primary text-xl">lock</span>
               </div>
               <span className="text-slate-400 text-xs">Premium Feature</span>
             </div>
@@ -85,7 +85,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
         </div>
 
         <h3 className="text-lg font-bold text-white mb-1.5 flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#6b3de1] text-[20px]">auto_stories</span>
+          <span className="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
           Monthly Transit Report
         </h3>
 
@@ -95,7 +95,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
         </p>
 
         {/* Sample preview hint */}
-        <div className="bg-[#0B0D17] rounded-lg p-3 mb-4 border border-white/5">
+        <div className="bg-cosmic-page rounded-lg p-3 mb-4 border border-white/5">
           <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
             <span className="material-symbols-outlined text-[14px]">preview</span>
             Preview includes:
@@ -131,7 +131,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
   // ── Premium user card ─────────────────────────────────────────────
   return (
     <motion.div
-      className={`bg-[#141627]/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
+      className={`bg-cosmic-card/70 backdrop-blur-md border border-white/10 rounded-2xl p-6 ${className}`}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.45 }}
@@ -140,10 +140,10 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#6b3de1] text-[20px]">auto_stories</span>
+          <span className="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
           Monthly Report
         </h3>
-        <span className="bg-[#6b3de1]/20 text-[#6b3de1] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
+        <span className="bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
           Premium
         </span>
       </div>
@@ -156,7 +156,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
       {/* Generating state */}
       {isGenerating && (
         <div className="flex flex-col items-center justify-center py-6 gap-3">
-          <div className="size-10 rounded-full border-2 border-[#6b3de1]/30 border-t-[#6b3de1] animate-spin" />
+          <div className="size-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
           <p className="text-slate-400 text-sm">Generating your report...</p>
         </div>
       )}
@@ -164,7 +164,7 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
       {/* Report ready state */}
       {!isGenerating && latestReport && (
         <div className="space-y-3">
-          <div className="bg-[#0B0D17] rounded-xl p-4 border border-white/5">
+          <div className="bg-cosmic-page rounded-xl p-4 border border-white/5">
             <div className="flex items-center gap-3 mb-3">
               <div className="size-9 rounded-lg bg-emerald-500/10 flex items-center justify-center">
                 <span className="material-symbols-outlined text-emerald-400 text-[18px]">
@@ -229,8 +229,8 @@ export const TransitReportCard: React.FC<TransitReportCardProps> = ({ className 
       {/* No report yet - generate CTA */}
       {!isGenerating && !latestReport && (
         <div className="flex flex-col items-center justify-center py-4 gap-4">
-          <div className="size-14 rounded-full bg-[#6b3de1]/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-[#6b3de1] text-2xl">summarize</span>
+          <div className="size-14 rounded-full bg-primary/10 flex items-center justify-center">
+            <span className="material-symbols-outlined text-primary text-2xl">summarize</span>
           </div>
 
           <p className="text-slate-400 text-sm text-center">
