@@ -141,7 +141,7 @@ function ZodiacBadge({
       className={clsx(
         'flex flex-col items-center justify-center rounded-xl px-4 py-2 min-w-[80px]',
         isDark
-          ? 'bg-gradient-to-br from-[#141627]/80 to-[#1a1d3a]/80 backdrop-blur-md border border-white/10'
+          ? 'bg-gradient-to-br from-cosmic-card/80 to-cosmic-surface/80 backdrop-blur-md border border-white/10'
           : 'bg-white/90 backdrop-blur-sm border border-violet-200',
       )}
     >
@@ -354,7 +354,7 @@ function InstagramStoryLayout({
       className={clsx(
         'flex flex-col items-center justify-center h-full w-full p-8 relative overflow-hidden',
         isDark
-          ? 'bg-gradient-to-br from-[#0B0D17] via-[#141627] to-[#1a1d3a]'
+          ? 'bg-gradient-to-br from-cosmic-page via-cosmic-card to-cosmic-surface'
           : 'bg-gradient-to-br from-violet-100 via-purple-50 to-pink-50',
       )}
     >
@@ -483,7 +483,7 @@ function TwitterLayout({
       className={clsx(
         'flex items-center justify-between h-full w-full px-12 py-8 relative',
         isDark
-          ? 'bg-gradient-to-br from-[#0B0D17] via-[#141627] to-[#1a1d3a]'
+          ? 'bg-gradient-to-br from-cosmic-page via-cosmic-card to-cosmic-surface'
           : 'bg-gradient-to-r from-violet-100 to-purple-50',
       )}
     >
@@ -572,7 +572,7 @@ function PinterestLayout({
       className={clsx(
         'flex flex-col items-center h-full w-full p-8 relative',
         isDark
-          ? 'bg-gradient-to-br from-[#0B0D17] via-[#141627] to-[#1a1d3a]'
+          ? 'bg-gradient-to-br from-cosmic-page via-cosmic-card to-cosmic-surface'
           : 'bg-gradient-to-br from-violet-100 via-purple-50 to-pink-50',
       )}
     >
@@ -693,7 +693,7 @@ function SquareLayout({
       className={clsx(
         'flex h-full w-full p-8 relative overflow-hidden',
         isDark
-          ? 'bg-gradient-to-br from-[#0B0D17] via-[#141627] to-[#1a1d3a]'
+          ? 'bg-gradient-to-br from-cosmic-page via-cosmic-card to-cosmic-surface'
           : 'bg-gradient-to-br from-violet-100 to-purple-50',
       )}
     >
@@ -819,7 +819,7 @@ function DailyInsightLayout({
       className={clsx(
         'flex h-full w-full items-center px-6 py-4 relative overflow-hidden',
         isDark
-          ? 'bg-gradient-to-br from-[#0B0D17] via-[#141627] to-[#1a1d3a]'
+          ? 'bg-gradient-to-br from-cosmic-page via-cosmic-card to-cosmic-surface'
           : 'bg-gradient-to-r from-violet-100 to-purple-50',
       )}
     >

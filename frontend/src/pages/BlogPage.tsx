@@ -165,7 +165,7 @@ export default function BlogPage() {
               <button type="button"
                 onClick={openCreate}
                 aria-label="Create new blog post"
-                className="flex items-center gap-2 bg-gradient-to-r from-primary to-[#8b5cf6] hover:from-primary hover:to-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]"
+                className="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary-500 hover:from-primary hover:to-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-primary/25 transition-all transform hover:scale-[1.02]"
               >
                 <span className="material-symbols-outlined text-lg">add</span>
                 New Entry
@@ -229,7 +229,7 @@ export default function BlogPage() {
                   />
                 </div>
               ) : (
-                <div className="aspect-video bg-gradient-to-br from-primary/10 to-[#8b5cf6]/10 flex items-center justify-center">
+                <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary-500/10 flex items-center justify-center">
                   <span className="material-symbols-outlined text-5xl text-primary/30">article</span>
                 </div>
               )}
@@ -416,7 +416,7 @@ export default function BlogPage() {
               <button type="button"
                 onClick={() => { void (editingPost ? handleUpdate() : handleCreate()); }}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-[#8b5cf6] text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-secondary-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting && (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -665,7 +665,7 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
           {/* Core Meaning */}
           {interp.coreMeaning && (
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-[#6b3de1] mb-2 flex items-center gap-1.5">
+              <h4 className="text-sm font-medium text-primary mb-2 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
                 Core Meaning
               </h4>

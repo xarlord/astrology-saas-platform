@@ -150,7 +150,7 @@ export const TransitForecastCard: React.FC<TransitForecastCardProps> = ({
     <motion.div
       className={`
         rounded-2xl border overflow-hidden transition-all
-        bg-[#141627]/70 backdrop-blur-md
+        bg-cosmic-card/70 backdrop-blur-md
         ${expanded ? 'border-white/15 shadow-lg' : 'border-white/10 hover:border-white/20'}
         ${className}
       `}

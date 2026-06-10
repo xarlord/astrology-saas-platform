@@ -47,7 +47,7 @@ export default function LoginPageNew() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0D17] to-[#141627] font-display text-slate-100 antialiased overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-cosmic-page to-cosmic-card font-display text-slate-100 antialiased overflow-hidden">
       <Helmet>
         <title>Sign In — AstroVerse</title>
       </Helmet>
@@ -69,7 +69,7 @@ export default function LoginPageNew() {
             />
 
             {/* Overlay Gradient */}
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0B0D17] via-[#0B0D17]/40 to-transparent"></div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-cosmic-page via-cosmic-page/40 to-transparent"></div>
 
             {/* Content */}
             <div className="relative z-20 flex h-full flex-col justify-between p-12 xl:p-16">
@@ -152,7 +152,7 @@ export default function LoginPageNew() {
           </div>
 
           {/* Right Panel: Login Form */}
-          <div className="flex w-full flex-1 flex-col justify-center bg-gradient-to-br from-[#0B0D17] to-[#141627] px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
+          <div className="flex w-full flex-1 flex-col justify-center bg-gradient-to-br from-cosmic-page to-cosmic-card px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
             <div className="mx-auto w-full max-w-[420px]">
               {/* Mobile Logo (visible only on small screens) */}
               <Link to="/" className="mb-8 flex items-center gap-2 lg:hidden">
@@ -294,7 +294,7 @@ export default function LoginPageNew() {
                   {/* Submit Button */}
                   <div>
                     <button
-                      className="group relative flex w-full justify-center rounded-xl py-3.5 px-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-primary/40 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 bg-gradient-to-br from-[#6b3de1] to-[#2563EB]"
+                      className="group relative flex w-full justify-center rounded-xl py-3.5 px-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-primary/40 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 bg-gradient-to-br from-primary to-[#2563EB]"
                       type="submit"
                       data-testid="submit-button"
                       disabled={isLoading}
@@ -316,7 +316,7 @@ export default function LoginPageNew() {
                     <div className="w-full border-t border-white/10"></div>
                   </div>
                   <div className="relative flex justify-center">
-                    <span className="bg-gradient-to-br from-[#0B0D17] to-[#141627] px-3 text-xs font-medium uppercase tracking-wider text-slate-500 rounded-full">
+                    <span className="bg-gradient-to-br from-cosmic-page to-cosmic-card px-3 text-xs font-medium uppercase tracking-wider text-slate-500 rounded-full">
                       Or continue with
                     </span>
                   </div>
@@ -325,7 +325,7 @@ export default function LoginPageNew() {
                 {/* Social Logins */}
                 <div className="mt-8 grid grid-cols-2 gap-4">
                   <button type="button"
-                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
+                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-cosmic-page"
 
                     onClick={() => handleSocialLogin('google')}
                     aria-label="Continue with Google"
@@ -339,7 +339,7 @@ export default function LoginPageNew() {
                     <span className="text-sm font-semibold leading-6">Google</span>
                   </button>
                   <button type="button"
-                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D17]"
+                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-white/5 px-3 py-3 text-sm font-medium text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-cosmic-page"
 
                     onClick={() => handleSocialLogin('apple')}
                     aria-label="Continue with Apple"

@@ -586,7 +586,7 @@ export const ChartCreationWizardPage: React.FC = () => {
             </div>
 
             {/* Mini Chart Wheel */}
-            <div className="relative aspect-square w-full rounded-full border border-white/10 flex items-center justify-center bg-gradient-to-br from-[#0B0D17] to-[#141627]/30 overflow-hidden group">
+            <div className="relative aspect-square w-full rounded-full border border-white/10 flex items-center justify-center bg-gradient-to-br from-cosmic-page to-cosmic-card/30 overflow-hidden group">
               {/* SVG Wheel */}
               <svg
                 className="w-full h-full p-2 opacity-40 animate-[spin_60s_linear_infinite]"
@@ -604,7 +604,7 @@ export const ChartCreationWizardPage: React.FC = () => {
 
               {/* Center content */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#0B0D17] to-[#141627] border border-white/10 flex items-center justify-center mb-1 shadow-lg z-10">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-cosmic-page to-cosmic-card border border-white/10 flex items-center justify-center mb-1 shadow-lg z-10">
                   <span className="material-symbols-outlined text-primary text-[32px]">public</span>
                 </div>
                 <p className="text-[10px] text-slate-500 font-medium">
