@@ -11,7 +11,7 @@ Full-stack astrology platform: natal charts with interactive chart wheel, AI-pow
 
 **Current Version:** v1.0.0
 **CI Status:** All pipeline jobs green (backend, frontend, live, e2e, visual, integration, BDD, accessibility, verify-build) + mutation testing
-**Tests:** 1,439 backend (Jest) + 3,818 frontend (Vitest) = 5,257 total
+**Tests:** 1,439 backend (Jest) + 3,800 frontend (Vitest) = 5,239 total
 
 ### What's Done
 - **109 API endpoints** across 16 backend modules
