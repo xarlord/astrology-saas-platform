@@ -93,7 +93,7 @@ const EphemerisPage: React.FC = () => {
   // Render loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-cosmic-page p-6">
+      <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
         <div className="flex items-center mb-4">
           <button type="button"
             onClick={() => navigate('/dashboard')}
@@ -102,12 +102,12 @@ const EphemerisPage: React.FC = () => {
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <h1 className="text-2xl font-bold text-white">Ephemeris</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Ephemeris</h1>
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse">
-              <div className="bg-white/5 rounded-xl p-6">
+              <div className="bg-white/5 rounded-xl p-4 sm:p-6">
                 <div className="h-6 bg-white/10 rounded w-1/3 mb-4" />
                 <div className="h-4 bg-white/10 rounded w-2/3 mb-2" />
                 <div className="h-4 bg-white/10 rounded w-1/2" />
@@ -122,7 +122,7 @@ const EphemerisPage: React.FC = () => {
   // Render error state
   if (error) {
     return (
-      <div className="min-h-screen bg-cosmic-page p-6">
+      <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
         <div className="flex items-center mb-4">
           <button type="button"
             onClick={() => navigate('/dashboard')}
@@ -131,9 +131,9 @@ const EphemerisPage: React.FC = () => {
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <h1 className="text-2xl font-bold text-white">Ephemeris</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Ephemeris</h1>
         </div>
-        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 sm:p-6 text-center">
           <span className="material-symbols-outlined text-red-400 text-4xl mb-2 block">
             cloud_off
           </span>
@@ -155,7 +155,7 @@ const EphemerisPage: React.FC = () => {
   // Render empty state (no data at all and no transit planets either)
   if (!data && !data?.transitPlanets) {
     return (
-      <div className="min-h-screen bg-cosmic-page p-6">
+      <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
         <div className="flex items-center mb-4">
           <button type="button"
             onClick={() => navigate('/dashboard')}
@@ -164,10 +164,10 @@ const EphemerisPage: React.FC = () => {
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <h1 className="text-2xl font-bold text-white">Ephemeris</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Ephemeris</h1>
         </div>
         <div className="text-center py-12">
-          <span className="material-symbols-outlined text-slate-500 text-5xl block mb-3">
+          <span className="material-symbols-outlined text-slate-500 text-4xl sm:text-5xl block mb-3">
             planet
           </span>
           <h2 className="text-white font-semibold mb-2">No transit data available</h2>
@@ -183,9 +183,9 @@ const EphemerisPage: React.FC = () => {
   const hasTransits = data.transits && Array.isArray(data.transits) && data.transits.length > 0;
 
   return (
-    <div className="min-h-screen bg-cosmic-page p-6">
+    <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div className="flex items-center">
           <button type="button"
             onClick={() => navigate('/dashboard')}
@@ -195,7 +195,7 @@ const EphemerisPage: React.FC = () => {
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">Ephemeris</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">Ephemeris</h1>
             <p className="text-slate-400 text-sm">Current planetary positions and active transits</p>
           </div>
         </div>
@@ -210,17 +210,17 @@ const EphemerisPage: React.FC = () => {
 
       {/* Date Display */}
       {formattedDate && (
-        <div className="mb-6 px-4 py-3 bg-white/5 rounded-xl border border-white/10">
+        <div className="mb-4 sm:mb-6 px-3 sm:px-4 py-3 bg-white/5 rounded-xl border border-white/10">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-lg">calendar_today</span>
-            <span className="text-white font-medium">{formattedDate}</span>
+            <span className="text-white font-medium text-sm sm:text-base">{formattedDate}</span>
           </div>
         </div>
       )}
 
       {/* Transit Planetary Positions */}
       {data.transitPlanets && Object.keys(data.transitPlanets).length > 0 && (
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">public</span>
             Current Planetary Positions
@@ -256,8 +256,8 @@ const EphemerisPage: React.FC = () => {
 
       {/* Active Transits */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">swap_horiz</span>
+        <h2 className="text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary">swap_horiz</span>
           Active Transits
         </h2>
 
@@ -282,13 +282,13 @@ const EphemerisPage: React.FC = () => {
                   key={planet}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-white/5 border border-white/10 rounded-xl p-4"
+                  className="bg-white/5 border border-white/10 rounded-xl p-3 sm:p-4"
                 >
                   {/* Planet header */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className={`text-2xl ${color}`}>{symbol}</span>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                    <span className={`text-xl sm:text-2xl ${color}`}>{symbol}</span>
                     <div>
-                      <h3 className="text-white font-semibold">{displayName}</h3>
+                      <h3 className="text-white font-semibold text-sm sm:text-base">{displayName}</h3>
                       <p className="text-slate-500 text-xs">
                         {transitCount} active transit{transitCount !== 1 ? 's' : ''}
                       </p>
@@ -296,7 +296,7 @@ const EphemerisPage: React.FC = () => {
                   </div>
 
                   {/* Transit details */}
-                  <div className="space-y-2 ml-9">
+                  <div className="space-y-2 ml-6 sm:ml-9">
                     {transits.map((transit, idx) => {
                       const natalPlanetSymbol = PLANET_SYMBOLS[transit.natalPlanet?.toLowerCase()] || '';
                       const natalPlanetName = transit.natalPlanet;
@@ -305,9 +305,9 @@ const EphemerisPage: React.FC = () => {
                       return (
                         <div
                           key={idx}
-                          className="flex items-center justify-between py-2 px-3 bg-white/5 rounded-lg"
+                          className="flex items-center justify-between py-2 px-2 sm:px-3 bg-white/5 rounded-lg gap-2"
                         >
-                          <div className="flex items-center gap-2 text-sm">
+                          <div className="flex items-center gap-2 text-xs sm:text-sm min-w-0">
                             <span className="text-slate-400">→</span>
                             <span className="text-slate-300">
                               {natalPlanetSymbol} {natalPlanetName}
@@ -330,7 +330,7 @@ const EphemerisPage: React.FC = () => {
 
       {/* Last Updated */}
       {data.date && (
-        <div className="mt-8 text-center">
+        <div className="mt-6 sm:mt-8 text-center">
           <p className="text-slate-500 text-xs">
             Last updated: {formattedDate ?? data.date}
           </p>

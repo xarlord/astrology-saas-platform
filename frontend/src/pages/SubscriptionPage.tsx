@@ -61,7 +61,7 @@ function PricingTierCard({
         </div>
       )}
 
-      <div className="p-6 flex-1 flex flex-col">
+      <div className="p-4 sm:p-6 flex-1 flex flex-col">
         {/* Tier header */}
         <div className="flex items-center gap-3 mb-4">
           <div
@@ -70,12 +70,12 @@ function PricingTierCard({
           >
             {icon}
           </div>
-          <h3 className="text-xl font-bold text-white">{name}</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-white">{name}</h3>
         </div>
 
         {/* Price */}
         <div className="mb-6">
-          <span className="text-4xl font-bold text-white">{price}</span>
+          <span className="text-3xl sm:text-4xl font-bold text-white">{price}</span>
           <span className="text-slate-200 text-sm ml-1">{period}</span>
         </div>
 
@@ -189,15 +189,15 @@ export default function SubscriptionPage() {
   return (
     <AppLayout>
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Subscription</h1>
-        <p className="text-slate-200">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Subscription</h1>
+        <p className="text-slate-200 text-sm sm:text-base">
           Manage your plan and usage
         </p>
       </div>
 
       {/* Current Usage */}
-      <div className="max-w-xl mb-10">
+      <div className="max-w-xl mb-8 sm:mb-10">
         <h2 className="text-lg font-semibold text-white mb-4">
           Current Usage
         </h2>
@@ -213,11 +213,11 @@ export default function SubscriptionPage() {
       </div>
 
       {/* Pricing Tiers */}
-      <div id="pricing-tiers" className="mb-12">
-        <h2 className="text-lg font-semibold text-white mb-6">
+      <div id="pricing-tiers" className="mb-8 sm:mb-12">
+        <h2 className="text-lg font-semibold text-white mb-4 sm:mb-6">
           Choose Your Plan
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {TIERS.map((t) => (
             <PricingTierCard
               key={t.tier}
@@ -237,8 +237,8 @@ export default function SubscriptionPage() {
       </div>
 
       {/* Feature Comparison */}
-      <div className="mb-12">
-        <h2 className="text-lg font-semibold text-white mb-6">
+      <div className="mb-8 sm:mb-12">
+        <h2 className="text-lg font-semibold text-white mb-4 sm:mb-6">
           Feature Comparison
         </h2>
         <div className="glass-panel rounded-2xl border border-white/15 overflow-hidden">
@@ -246,16 +246,16 @@ export default function SubscriptionPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.08] bg-white/15">
-                  <th className="px-6 py-4 text-left font-semibold text-white">
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-white">
                     Feature
                   </th>
-                  <th className="px-6 py-4 text-center font-semibold text-slate-200">
+                  <th className="px-4 sm:px-6 py-4 text-center font-semibold text-slate-200">
                     Free
                   </th>
-                  <th className="px-6 py-4 text-center font-semibold text-primary">
+                  <th className="px-4 sm:px-6 py-4 text-center font-semibold text-primary">
                     Pro
                   </th>
-                  <th className="px-6 py-4 text-center font-semibold text-amber-400">
+                  <th className="px-4 sm:px-6 py-4 text-center font-semibold text-amber-400">
                     Premium
                   </th>
                 </tr>
@@ -274,13 +274,13 @@ export default function SubscriptionPage() {
                   { feature: 'API Access', free: false, pro: false, premium: true },
                 ].map((row) => (
                   <tr key={row.feature} className="hover:bg-white/15 transition-colors">
-                    <td className="px-6 py-3.5 text-slate-200 font-medium">
+                    <td className="px-4 sm:px-6 py-3.5 text-slate-200 font-medium">
                       {row.feature}
                     </td>
                     {(['free', 'pro', 'premium'] as const).map((tier) => {
                       const val = row[tier];
                       return (
-                        <td key={tier} className="px-6 py-3.5 text-center">
+                        <td key={tier} className="px-4 sm:px-6 py-3.5 text-center">
                           {typeof val === 'boolean' ? (
                             val ? (
                               <span className="material-symbols-outlined text-green-500" aria-hidden="true" aria-label="Included">check</span>
