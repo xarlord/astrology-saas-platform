@@ -164,6 +164,7 @@ export function ReminderSettings({ onSave: _onSave, existingReminder }: Reminder
                 value="push"
                 checked={formData.reminderType === 'push'}
                 onChange={() => handleReminderTypeChange('push')}
+                aria-label="Push Notification"
                 className="hidden"
               />
               <span className="material-symbols-outlined text-xl" aria-hidden="true">smartphone</span>
