@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import api from '../services/api';
 
 interface Location {
   name: string;
@@ -115,12 +114,12 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         throw new Error('Geocoding request failed');
       }
 
-      const results: Array<{
+      const results: {
         display_name: string;
         lat: string;
         lon: string;
         address?: { country?: string; state?: string };
-      }> = await response.json();
+      }[] = await response.json();
 
       const mapped: Location[] = results.map((r) => ({
         name: r.display_name.split(',').slice(0, 2).join(','),
