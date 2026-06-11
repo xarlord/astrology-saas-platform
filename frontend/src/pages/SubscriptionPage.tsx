@@ -184,7 +184,7 @@ export default function SubscriptionPage() {
   }, [fetchCharts]);
 
   // Map auth plan ('free'|'basic'|'premium') → Tier ('free'|'pro'|'premium')
-  const currentTier = (user?.plan === 'basic' ? 'pro' : user?.plan ?? 'free') as Tier;
+  const currentTier = user?.plan === 'basic' ? 'pro' : user?.plan ?? 'free';
   const chartCount = charts.length;
   const tierLimit = TIER_LIMITS[currentTier] ?? 3;
 
