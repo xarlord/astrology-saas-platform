@@ -7,7 +7,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import UsageMeter from '../components/UsageMeter';
-import { useCharts } from '../hooks';
+import { useCharts, useAuth } from '../hooks';
 import type { Tier } from '../components/UsageMeter';
 
 interface PricingTierProps {
@@ -177,12 +177,14 @@ const TIER_LIMITS: Record<string, number> = {
 export default function SubscriptionPage() {
   const navigate = useNavigate();
   const { charts, fetchCharts } = useCharts();
+  const { user } = useAuth();
 
   useEffect(() => {
     void fetchCharts();
   }, [fetchCharts]);
 
-  const currentTier = (charts.length > 0 ? 'free' : 'free') as Tier;
+  // Map auth plan ('free'|'basic'|'premium') → Tier ('free'|'pro'|'premium')
+  const currentTier = (user?.plan === 'basic' ? 'pro' : user?.plan ?? 'free') as Tier;
   const chartCount = charts.length;
   const tierLimit = TIER_LIMITS[currentTier] ?? 3;
 

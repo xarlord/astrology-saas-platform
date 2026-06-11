@@ -204,7 +204,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             placeholder="Search for a city..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => { if (e.key === 'Enter') void handleSearch(); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') void handleSearch(); }}
             aria-label="Search for a city"
             className="flex-1 border-none outline-none text-base bg-transparent"
           />
@@ -348,9 +348,10 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             </button>
             <button type="button"
               onClick={() => window.print()}
-              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-primary text-white border-none hover:bg-primary/90 md:w-full"
+              className="py-3 px-6 rounded-lg font-semibold cursor-pointer transition-all duration-200 bg-white/15 text-slate-200 border border-white/15 hover:bg-white/25 md:w-full"
+              title="Print the relocated chart comparison"
             >
-              Save Relocated Chart
+              Print Comparison
             </button>
           </div>
         </div>
