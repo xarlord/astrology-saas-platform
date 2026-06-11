@@ -58,8 +58,6 @@ describe('LunarHistoryView', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm
-    global.confirm = vi.fn(() => true);
   });
 
   describe('Loading State', () => {
@@ -238,13 +236,19 @@ describe('LunarHistoryView', () => {
       });
     });
 
-    it('should call deleteLunarReturn when delete button is clicked', async () => {
+    it('should call deleteLunarReturn when delete is confirmed', async () => {
       render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 
       await waitFor(() => {
         const deleteButtons = screen.getAllByText('Delete');
         userEvent.click(deleteButtons[0]);
       });
+
+      // Now click "Yes, Delete" in the inline confirmation
+      await waitFor(() => {
+        expect(screen.getByText('Yes, Delete')).toBeInTheDocument();
+      });
+      await userEvent.click(screen.getByText('Yes, Delete'));
 
       await waitFor(() => {
         expect(mockDeleteLunarReturn).toHaveBeenCalledWith('lr_1');
@@ -252,14 +256,18 @@ describe('LunarHistoryView', () => {
     });
 
     it('should not delete when confirm is cancelled', async () => {
-      (global.confirm as any).mockReturnValueOnce(false);
-
       render(<LunarHistoryView onBack={mockOnBack} onSelect={mockOnSelect} />);
 
       await waitFor(() => {
         const deleteButtons = screen.getAllByText('Delete');
         userEvent.click(deleteButtons[0]);
       });
+
+      // Click "Cancel" in the inline confirmation
+      await waitFor(() => {
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
+      });
+      await userEvent.click(screen.getByText('Cancel'));
 
       expect(mockDeleteLunarReturn).not.toHaveBeenCalled();
     });

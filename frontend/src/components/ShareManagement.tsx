@@ -48,6 +48,7 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
+  const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
   const modalRef = useFocusTrap<HTMLDivElement>({ active: showCreateModal });
 
   const handleCreateShare = useCallback(async () => {
@@ -67,10 +68,8 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
   }, [password, expiresIn, onCreateShare]);
 
   const handleRevokeShare = useCallback(async (shareId: string) => {
-    if (!window.confirm('Are you sure you want to revoke this share link? Anyone with the link will no longer be able to access this chart.')) {
-      return;
-    }
     setIsLoading(true);
+    setConfirmRevokeId(null);
     try {
       await onRevokeShare(shareId);
     } catch (error) {
@@ -180,15 +179,36 @@ export const ShareManagement: React.FC<ShareManagementProps> = ({
                       </>
                     )}
                   </button>
-                  <button type="button"
-                    className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
-                    onClick={() => { void handleRevokeShare(link.id); }}
-                    disabled={isLoading}
-                    aria-label="Revoke share link"
-                  >
-                    <span className="material-symbols-outlined text-4xl" aria-hidden="true">delete</span>
-                    Revoke
-                  </button>
+                  {confirmRevokeId === link.id ? (
+                    <>
+                      <span className="text-xs text-red-400 hidden sm:inline">Revoke?</span>
+                      <button type="button"
+                        className="inline-flex items-center justify-center gap-1 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-600 text-white hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                        onClick={() => { void handleRevokeShare(link.id); }}
+                        disabled={isLoading}
+                        aria-label="Confirm revoke share link"
+                      >
+                        Yes
+                      </button>
+                      <button type="button"
+                        className="inline-flex items-center justify-center gap-1 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-white/15 text-white hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed"
+                        onClick={() => setConfirmRevokeId(null)}
+                        aria-label="Cancel revoke"
+                      >
+                        No
+                      </button>
+                    </>
+                  ) : (
+                    <button type="button"
+                      className="inline-flex items-center justify-center gap-2 py-2 px-3 min-h-[44px] text-xs font-medium rounded-md border-none cursor-pointer transition-all bg-red-500/20 text-red-400 hover:bg-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex-1 sm:flex-initial"
+                      onClick={() => setConfirmRevokeId(link.id)}
+                      disabled={isLoading}
+                      aria-label="Revoke share link"
+                    >
+                      <span className="material-symbols-outlined text-4xl" aria-hidden="true">delete</span>
+                      Revoke
+                    </button>
+                  )}
                 </div>
               </li>
             );

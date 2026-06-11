@@ -42,15 +42,12 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
     void loadHistory();
   }, [loadHistory]);
 
-  const handleDelete = async (id: string) => {
-    // Confirm deletion via notification action
-    const confirmed = window.confirm('Are you sure you want to delete this lunar return?');
-    if (!confirmed) {
-      return;
-    }
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  const handleDelete = async (id: string) => {
     try {
       setDeletingId(id);
+      setConfirmDeleteId(null);
       await deleteLunarReturn(id);
       // Reload the current page
       await loadHistory();
@@ -112,14 +109,36 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
           View Full Details
         </button>
 
-        <button
-          onClick={() => { void handleDelete(lunarReturn.id); }}
-          disabled={deletingId === lunarReturn.id}
-          type="button"
-          className="px-5 py-2.5 border border-white/15 rounded-md font-semibold cursor-pointer transition-all duration-200 bg-white/15 text-red-500 hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {deletingId === lunarReturn.id ? 'Deleting...' : 'Delete'}
-        </button>
+        {confirmDeleteId === lunarReturn.id ? (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-slate-200">Delete this lunar return?</span>
+            <button
+              onClick={() => { void handleDelete(lunarReturn.id); }}
+              disabled={deletingId === lunarReturn.id}
+              type="button"
+              className="px-4 py-2 border-none rounded-md font-semibold cursor-pointer transition-all duration-200 bg-red-600 text-white hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {deletingId === lunarReturn.id ? 'Deleting...' : 'Yes, Delete'}
+            </button>
+            <button
+              onClick={() => setConfirmDeleteId(null)}
+              disabled={deletingId === lunarReturn.id}
+              type="button"
+              className="px-4 py-2 border border-white/15 rounded-md font-semibold cursor-pointer transition-all duration-200 bg-white/15 text-slate-200 hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmDeleteId(lunarReturn.id)}
+            disabled={deletingId === lunarReturn.id}
+            type="button"
+            className="px-5 py-2.5 border border-white/15 rounded-md font-semibold cursor-pointer transition-all duration-200 bg-white/15 text-red-500 hover:bg-white/15 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            Delete
+          </button>
+        )}
       </div>
 
       <div className="px-5 py-3 bg-white/15 border-t border-white/15">
