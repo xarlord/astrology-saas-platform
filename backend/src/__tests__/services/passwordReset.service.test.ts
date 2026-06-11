@@ -90,14 +90,15 @@ describe('Password Reset Service', () => {
       (PasswordResetModel.findResetToken as jest.Mock).mockResolvedValue(mockToken);
       (hashPassword as jest.Mock).mockResolvedValue('new-hash');
       (UserModel.updatePassword as jest.Mock).mockResolvedValue(true);
-      (PasswordResetModel.markTokenUsed as jest.Mock).mockResolvedValue(undefined);
+      (PasswordResetModel.invalidateUserTokens as jest.Mock).mockResolvedValue(undefined);
 
       await PasswordResetService.resetPassword('valid-token', 'NewPass123!');
 
       expect(PasswordResetModel.findResetToken).toHaveBeenCalledWith('valid-token');
       expect(hashPassword).toHaveBeenCalledWith('NewPass123!');
       expect(UserModel.updatePassword).toHaveBeenCalledWith('user-1', 'new-hash');
-      expect(PasswordResetModel.markTokenUsed).toHaveBeenCalledWith('token-1');
+      // After successful reset, ALL sibling tokens are invalidated (not just the used one)
+      expect(PasswordResetModel.invalidateUserTokens).toHaveBeenCalledWith('user-1');
     });
 
     it('should throw 400 for invalid token', async () => {

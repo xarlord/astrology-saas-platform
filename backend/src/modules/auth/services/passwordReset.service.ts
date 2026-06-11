@@ -62,5 +62,8 @@ export async function resetPassword(token: string, newPassword: string): Promise
   const password_hash = await hashPassword(newPassword);
   await UserModel.updatePassword(resetToken.user_id, password_hash);
 
-  await PasswordResetModel.markTokenUsed(resetToken.id);
+  // Invalidate ALL unused reset tokens for this user (including the current one).
+  // This prevents sibling tokens from earlier "forgot password" requests from
+  // being used after the password has already been changed.
+  await PasswordResetModel.invalidateUserTokens(resetToken.user_id);
 }
