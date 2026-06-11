@@ -7,6 +7,7 @@ import { logger } from '@/utils/logger';
 import React, { useState, useEffect, useCallback } from 'react';
 import { SavedLunarReturn, getLunarReturnHistory, deleteLunarReturn } from '@/services/lunarReturn.api';
 import { APP_LOCALE } from '../utils/constants';
+import { useNotificationStore } from '../stores/notificationStore';
 
 interface LunarHistoryViewProps {
   onBack?: () => void;
@@ -42,7 +43,9 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
   }, [loadHistory]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this lunar return?')) {
+    // Confirm deletion via notification action
+    const confirmed = window.confirm('Are you sure you want to delete this lunar return?');
+    if (!confirmed) {
       return;
     }
 
@@ -54,7 +57,7 @@ const LunarHistoryView: React.FC<LunarHistoryViewProps> = ({ onBack, onSelect })
     } catch (err: unknown) {
       logger.error('Error deleting lunar return:', err);
       const axiosErr = err as { response?: { data?: { error?: string } } };
-      alert(axiosErr.response?.data?.error ?? 'Failed to delete lunar return');
+      useNotificationStore.getState().showError(axiosErr.response?.data?.error ?? 'Failed to delete lunar return');
     } finally {
       setDeletingId(null);
     }

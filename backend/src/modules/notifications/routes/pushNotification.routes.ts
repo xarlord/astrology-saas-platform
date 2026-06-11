@@ -11,12 +11,20 @@ import {
   getVapidPublicKey,
 } from '../controllers/pushNotification.controller';
 import { authenticate } from '../../../middleware/auth';
-import { validateParams } from '../../../utils/validators';
+import { validateBody, validateParams } from '../../../utils/validators';
 import { z } from 'zod';
 
 const subscriptionIdParamSchema = z.object({
   subscriptionId: z.string().uuid(),
 });
+
+const pushSubscriptionSchema = z.object({
+  endpoint: z.string().url('Must be a valid push service URL'),
+  keys: z.object({
+    p256dh: z.string().min(1, 'p256dh key is required'),
+    auth: z.string().min(1, 'auth key is required'),
+  }),
+}).strict();
 
 const router = express.Router();
 
@@ -63,7 +71,7 @@ router.use(authenticate);
  *       400:
  *         description: Invalid subscription data
  */
-router.post('/subscribe', saveSubscription);
+router.post('/subscribe', validateBody(pushSubscriptionSchema), saveSubscription);
 
 /**
  * @route   DELETE /api/v1/notifications/subscribe/:subscriptionId

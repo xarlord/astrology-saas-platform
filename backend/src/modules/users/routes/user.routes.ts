@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateRequest } from '../../../middleware/validateRequest';
+import { validateQuery, paginationSchema } from '../../../utils/validators';
 import {
   UpdateUserProfileSchema,
   UpdateUserPreferencesSchema,
@@ -91,6 +92,7 @@ router.put(
  */
 router.get(
   '/me/charts',
+  validateQuery(paginationSchema),
   asyncHandler(async (req, res) => {
     await UserController.getUserCharts(req as AuthenticatedRequest, res);
   }),

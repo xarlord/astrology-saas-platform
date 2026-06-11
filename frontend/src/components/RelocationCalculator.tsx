@@ -45,10 +45,6 @@ interface RelocationCalculatorProps {
   onRecalculate: (location: Location) => Promise<SolarReturnData>;
 }
 
-interface GeocodingResponse {
-  results: Location[];
-}
-
 interface HouseChange {
   planet: string;
   originalHouse: number;
@@ -109,12 +105,33 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
       setLoading(true);
       setError(null);
 
-      // Use geocoding API (placeholder - would use real geocoding service)
-      const response = await api.get<GeocodingResponse>('https://geocoding-api.example.com/search', {
-        params: { q: searchQuery },
-      });
+      // Use OpenStreetMap Nominatim geocoding (free, no key required)
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
 
-      setLocations(response.data.results);
+      if (!response.ok) {
+        throw new Error('Geocoding request failed');
+      }
+
+      const results: Array<{
+        display_name: string;
+        lat: string;
+        lon: string;
+        address?: { country?: string; state?: string };
+      }> = await response.json();
+
+      const mapped: Location[] = results.map((r) => ({
+        name: r.display_name.split(',').slice(0, 2).join(','),
+        latitude: parseFloat(r.lat),
+        longitude: parseFloat(r.lon),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // best-effort
+        country: r.address?.country,
+        region: r.address?.state,
+      }));
+
+      setLocations(mapped);
     } catch {
       // Fallback to manual entry
       setError('Location search unavailable. Please enter coordinates manually.');

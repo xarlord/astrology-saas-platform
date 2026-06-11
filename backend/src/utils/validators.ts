@@ -125,6 +125,24 @@ export const dateParamSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
 });
 
+// Transit query schemas
+export const transitCalendarQuerySchema = z.object({
+  month: z.coerce.number().int().min(1).max(12).optional(),
+  year: z.coerce.number().int().min(1900).max(2100).optional(),
+  chartId: z.string().uuid().optional(),
+});
+
+export const transitForecastQuerySchema = z.object({
+  duration: z.enum(['week', 'month', 'quarter', 'year']).optional(),
+  chartId: z.string().uuid().optional(),
+});
+
+// Solar return query schemas
+export const solarHistoryQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+  includeRelocated: z.coerce.boolean().optional(),
+});
+
 // ─── Validation middleware helpers ─────────────────────────────────────
 
 /**

@@ -18,7 +18,10 @@ jest.mock('../../middleware/errorHandler', () => ({
 jest.mock('../../utils/validators', () => ({
   validateBody: (_schema: unknown) => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateParams: (_schema: unknown) => (_req: Request, _res: Response, next: NextFunction) => next(),
+  validateQuery: (_schema: unknown) => (_req: Request, _res: Response, next: NextFunction) => next(),
   calculateTransitsSchema: {},
+  transitCalendarQuerySchema: {},
+  transitForecastQuerySchema: {},
   uuidParamSchema: {},
 }));
 

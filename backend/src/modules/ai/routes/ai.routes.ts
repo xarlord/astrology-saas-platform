@@ -29,6 +29,8 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
 import { validateRequest } from '../../../middleware/validateRequest';
+import { validateBody } from '../../../utils/validators';
+import { z } from 'zod';
 import {
   AiNatalSchema,
   AiTransitSchema,
@@ -38,6 +40,12 @@ import {
 } from '../validations/ai.validation';
 
 const router = Router();
+
+// Schema for cost estimation endpoint
+const estimateCostSchema = z.object({
+  inputTokens: z.number().int().min(0),
+  outputTokens: z.number().int().min(0),
+}).strict();
 
 // AI interpretation rate limiter — shared across all generation endpoints
 const aiRateLimiter = chartCreationRateLimiter;
@@ -323,7 +331,7 @@ router.get('/usage/pricing', getPricing);
  *       200:
  *         description: Cost estimate
  */
-router.post('/usage/estimate', estimateCost);
+router.post('/usage/estimate', validateBody(estimateCostSchema), estimateCost);
 
 // Legacy endpoint (deprecated - use /usage/stats)
 

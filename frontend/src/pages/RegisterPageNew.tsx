@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
+import { useNotificationStore } from '../stores/notificationStore';
 
 // Password strength calculator
 const calculatePasswordStrength = (
@@ -57,12 +58,12 @@ export default function RegisterPageNew() {
     clearError();
 
     if (!agreeToTerms) {
-      alert('Please agree to the Terms of Service and Privacy Policy');
+      useNotificationStore.getState().showWarning('Please agree to the Terms of Service and Privacy Policy');
       return;
     }
 
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      useNotificationStore.getState().showWarning('Passwords do not match');
       return;
     }
 

@@ -5,8 +5,8 @@
 import { Router } from 'express';
 import { authenticate, optionalAuthenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
-import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
-import { calculateTransitsSchema } from '../../../utils/validators';
+import { validateBody, validateParams, validateQuery, uuidParamSchema } from '../../../utils/validators';
+import { calculateTransitsSchema, transitCalendarQuerySchema, transitForecastQuerySchema } from '../../../utils/validators';
 import * as TransitController from '../controllers/transit.controller';
 
 const router = Router();
@@ -109,6 +109,7 @@ router.post(
  */
 router.get(
   '/calendar',
+  validateQuery(transitCalendarQuerySchema),
   asyncHandler(async (req, res) => {
     await TransitController.getTransitCalendar(req as AuthenticatedRequest, res);
   }),
@@ -144,6 +145,7 @@ router.get(
  */
 router.get(
   '/forecast',
+  validateQuery(transitForecastQuerySchema),
   asyncHandler(async (req, res) => {
     await TransitController.getTransitForecast(req as AuthenticatedRequest, res);
   }),

@@ -6,7 +6,7 @@
 import { Router } from 'express';
 import solarReturnController from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
-import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
+import { validateBody, validateParams, validateQuery, uuidParamSchema, solarHistoryQuerySchema } from '../../../utils/validators';
 import { z } from 'zod';
 
 const router = Router();
@@ -136,6 +136,7 @@ router.get(
  */
 router.get(
   '/history',
+  validateQuery(solarHistoryQuerySchema),
   solarReturnController.getSolarReturnHistory
 );
 

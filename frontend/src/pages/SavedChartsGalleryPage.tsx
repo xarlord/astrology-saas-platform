@@ -16,6 +16,7 @@ import { useCharts } from '../hooks/useCharts';
 import { Button } from '../components/ui/Button';
 import { ChartCard } from '../components/chart/ChartCard';
 import { AppLayout, EmptyState } from '../components';
+import { useNotificationStore } from '../stores/notificationStore';
 import type { Chart } from '../services/api.types';
 
 type ViewMode = 'grid' | 'list';
@@ -122,8 +123,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
       // Fallback: copy to clipboard
       try {
         await navigator.clipboard.writeText(shareUrl);
-        // Could add a toast notification here
-        alert('Link copied to clipboard!');
+        useNotificationStore.getState().showSuccess('Link copied to clipboard!');
       } catch {
         // Final fallback: show the URL
         prompt('Copy this link:', shareUrl);
@@ -147,7 +147,7 @@ export const SavedChartsGalleryPage: React.FC = () => {
     const shareUrl = `${window.location.origin}/charts/${shareChartId}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
-      alert('Link copied to clipboard!');
+      useNotificationStore.getState().showSuccess('Link copied to clipboard!');
     } catch {
       logger.error('Failed to copy link');
     }
