@@ -10,6 +10,7 @@ import { render, screen } from '@testing-library/react';
 import { createElement } from 'react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Mock the Zustand store
 const mockLoadChart = vi.fn();
@@ -144,14 +145,18 @@ const createWrapper = (initialRoute = '/charts/chart-1') => {
 
   return ({ children }: { children: React.ReactNode }) =>
     createElement(
-      QueryClientProvider,
-      { client: queryClient },
+      HelmetProvider,
+      {},
       createElement(
-        MemoryRouter,
-        { initialEntries: [initialRoute] },
-        createElement(Routes, null,
-          createElement(Route, { path: '/charts/:id', element: children }),
-          createElement(Route, { path: '*', element: children }),
+        QueryClientProvider,
+        { client: queryClient },
+        createElement(
+          MemoryRouter,
+          { initialEntries: [initialRoute] },
+          createElement(Routes, null,
+            createElement(Route, { path: '/charts/:id', element: children }),
+            createElement(Route, { path: '*', element: children }),
+          ),
         ),
       ),
     );
