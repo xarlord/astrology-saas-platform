@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { SolarReturnDashboard, SolarReturnChart, SolarReturnInterpretation, RelocationCalculator, BirthdaySharing, AppLayout } from '../components';
 
+import { Helmet } from 'react-helmet-async';
 interface RelocationLocation {
   name: string;
   latitude: number;
@@ -170,6 +171,10 @@ export const SolarReturnsPage: React.FC = () => {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Solar Returns — AstroVerse</title>
+        <meta name="description" content="Calculate and explore your solar return charts." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Solar Returns</h1>
         <p className="text-slate-200">

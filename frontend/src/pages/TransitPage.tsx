@@ -29,6 +29,7 @@ import {
   useTransitCalendar,
 } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
+import { Helmet } from 'react-helmet-async';
 import {
   mapReadingToTransit,
   deriveHighlights,
@@ -107,6 +108,10 @@ export default function TransitPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Transits — AstroVerse</title>
+        <meta name="description" content="Explore current and upcoming planetary transits for your chart." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Current Transits</h1>
         <p className="text-slate-200">

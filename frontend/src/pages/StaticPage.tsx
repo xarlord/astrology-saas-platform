@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PublicPageLayout } from '../components/PublicPageLayout';
 import { staticPages } from '../data/staticPages';
 
+import { Helmet } from 'react-helmet-async';
 interface StaticPageProps {
   pageKey: string;
 }

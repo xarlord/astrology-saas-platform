@@ -9,6 +9,7 @@ import { useBlogStore } from '../stores/blogStore';
 import type { BlogPost } from '../services/blog.service';
 import { APP_LOCALE } from '../utils/constants';
 
+import { Helmet } from 'react-helmet-async';
 const ADMIN_EMAILS: string[] = String(import.meta.env.VITE_ADMIN_EMAILS ?? '')
   .split(',')
   .map((e: string) => e.trim().toLowerCase())
@@ -149,6 +150,10 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-cosmic-page">
+      <Helmet>
+        <title>Blog — AstroVerse</title>
+        <meta name="description" content="Astrology articles, insights, and cosmic updates." />
+      </Helmet>
       {/* Header */}
       <div className="border-b border-white/5 bg-[var(--color-bg-card-solid,#141627)]">
         <div className="max-w-5xl mx-auto px-4 py-12 sm:px-6 lg:px-8">

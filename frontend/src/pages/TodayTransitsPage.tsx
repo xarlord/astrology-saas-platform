@@ -24,6 +24,7 @@ import type {
 import type { TransitReading } from '../services/transit.service';
 import { useCharts, useTodayTransits } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
+import { Helmet } from 'react-helmet-async';
 import {
   mapReadingToTransit,
   deriveHighlights,
@@ -79,6 +80,10 @@ export default function TodayTransitsPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Today's Transits — AstroVerse</title>
+        <meta name="description" content="Current planetary transits and their influence on your day." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Today's Transits</h1>
         <p className="text-slate-200">

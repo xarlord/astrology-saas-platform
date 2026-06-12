@@ -1,5 +1,6 @@
 import { CalendarPageShell } from '../components/CalendarPageShell';
 
+import { Helmet } from 'react-helmet-async';
 export default function CalendarPage() {
   return (
     <CalendarPageShell

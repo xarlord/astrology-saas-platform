@@ -19,6 +19,7 @@ import { AppLayout, EmptyState } from '../components';
 import { useNotificationStore } from '../stores/notificationStore';
 import type { Chart } from '../services/api.types';
 
+import { Helmet } from 'react-helmet-async';
 type ViewMode = 'grid' | 'list';
 type SortBy = 'dateAdded' | 'name' | 'sign';
 type FilterFolder = 'all' | 'personal' | 'clients' | 'relationships' | 'favorites';
@@ -196,6 +197,10 @@ export const SavedChartsGalleryPage: React.FC = () => {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Saved Charts — AstroVerse</title>
+        <meta name="description" content="Browse and manage your saved natal charts gallery." />
+      </Helmet>
       <div className="pb-12 max-w-[1440px] mx-auto px-6 lg:px-12 flex gap-8">
         {/* Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 gap-8 sticky top-24 h-fit">

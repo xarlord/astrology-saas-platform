@@ -11,6 +11,7 @@ import { useChartStore } from '../stores/chartStore';
 import NatalAspectRow from '../components/astrology/NatalAspectRow';
 import type { ChartData, HouseCusp, Aspect, PlanetData, PlanetPosition } from '../types/chart.types';
 
+import { Helmet } from 'react-helmet-async';
 const ZODIAC_SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
 
 function signFromDegree(deg: number): string {
@@ -173,6 +174,10 @@ export default function ChartViewPage() {
   if (!chartId) {
     return (
       <AppLayout>
+      <Helmet>
+        <title>View Chart — AstroVerse</title>
+        <meta name="description" content="View and explore your natal chart with detailed planetary positions." />
+      </Helmet>
         <EmptyState
           icon="📊"
           title="No chart specified"

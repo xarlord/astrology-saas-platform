@@ -4,6 +4,7 @@ import { PublicPageLayout } from '../components/PublicPageLayout';
 import { authService } from '../services/auth.service';
 import { getErrorMessage } from '../utils/errorHandling';
 
+import { Helmet } from 'react-helmet-async';
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);

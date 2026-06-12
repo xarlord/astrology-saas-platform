@@ -8,6 +8,7 @@
 import { useNavigate } from 'react-router-dom';
 import { AppLayout, BirthDataForm } from '../components';
 
+import { Helmet } from 'react-helmet-async';
 export default function ChartCreatePage() {
   const navigate = useNavigate();
 
@@ -17,6 +18,10 @@ export default function ChartCreatePage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Create Chart — AstroVerse</title>
+        <meta name="description" content="Create a new natal chart by entering your birth details." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Create Natal Chart</h1>
         <p className="text-slate-200">

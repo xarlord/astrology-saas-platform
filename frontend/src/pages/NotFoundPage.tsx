@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PublicPageLayout } from '../components/PublicPageLayout';
 
+import { Helmet } from 'react-helmet-async';
 export function NotFoundPage() {
   return (
     <PublicPageLayout>

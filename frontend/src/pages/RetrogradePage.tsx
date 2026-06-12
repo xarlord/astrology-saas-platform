@@ -15,6 +15,7 @@ import { useCharts, useTransitCalendar } from '../hooks';
 import type { TransitReading } from '../services/transit.service';
 import { getErrorMessage } from '../utils/errorHandling';
 
+import { Helmet } from 'react-helmet-async';
 /**
  * Outer planets that can retrograde (beyond the Sun/Moon which never do).
  */
@@ -90,6 +91,10 @@ export default function RetrogradePage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Retrogrades — AstroVerse</title>
+        <meta name="description" content="Track planetary retrogrades and their effects on your chart." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Retrograde Tracker</h1>
         <p className="text-slate-200">
