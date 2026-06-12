@@ -503,7 +503,7 @@ describe('Synastry Controller', () => {
     });
 
     it('should return paginated synastry reports', async () => {
-      mockRequest.query = { page: '1', limit: '10' };
+      mockRequest.query = { page: 1, limit: 10 };
 
       const dbReports = [
         {
@@ -564,7 +564,8 @@ describe('Synastry Controller', () => {
     });
 
     it('should use default pagination when query params are omitted', async () => {
-      mockRequest.query = {};
+      // validateQuery(paginationSchema) sets defaults: page=1, limit=20
+      mockRequest.query = { page: 1, limit: 20 };
 
       mockKnexChain._setResolveValue([]);
       mockKnexChain.first.mockResolvedValueOnce({ count: 0 });
@@ -573,7 +574,7 @@ describe('Synastry Controller', () => {
 
       const callArgs = (mockResponse.json as jest.Mock).mock.calls[0][0];
       expect(callArgs.data.pagination.page).toBe(1);
-      expect(callArgs.data.pagination.limit).toBe(10);
+      expect(callArgs.data.pagination.limit).toBe(20);
       expect(callArgs.data.pagination.totalPages).toBe(0);
     });
   });

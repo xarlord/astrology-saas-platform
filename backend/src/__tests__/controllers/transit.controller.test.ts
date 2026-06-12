@@ -311,7 +311,7 @@ describe('Transit Controller', () => {
         },
       };
 
-      mockRequest.query = { month: '1', year: '2024' };
+      mockRequest.query = { month: 1, year: 2024 };
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([mockChart]);
 
       await getTransitCalendar(mockRequest, mockResponse as Response, mockNext);
@@ -320,7 +320,7 @@ describe('Transit Controller', () => {
     });
 
     it('should throw 404 if no charts found', async () => {
-      mockRequest.query = { month: '1', year: '2024' };
+      mockRequest.query = { month: 1, year: 2024 };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
 

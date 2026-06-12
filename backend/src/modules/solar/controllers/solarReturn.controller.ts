@@ -168,14 +168,15 @@ export class SolarReturnController {
       throw new UnauthorizedError('User authentication required');
     }
 
+    // Query params validated by validateQuery(solarHistoryQuerySchema) middleware
     const { limit, includeRelocated } = req.query;
 
     let solarReturns;
 
-    if (includeRelocated === 'true') {
+    if (includeRelocated === true) {
       solarReturns = await solarReturnModel.findByUserId(userId);
     } else {
-      solarReturns = await solarReturnModel.findRecent(userId, limit ? parseInt(limit as string) : 10);
+      solarReturns = await solarReturnModel.findRecent(userId, (limit as number) ?? 10);
     }
 
     res.status(200).json({

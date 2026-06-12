@@ -62,8 +62,9 @@ export async function updateCurrentUser(req: AuthenticatedRequest, res: Response
  */
 export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 20;
+  // Query params validated by validateQuery(paginationSchema) middleware
+  const page = req.query.page as unknown as number;
+  const limit = req.query.limit as unknown as number;
   const offset = (page - 1) * limit;
 
   const charts = await UserModel.getCharts(userId, limit, offset);

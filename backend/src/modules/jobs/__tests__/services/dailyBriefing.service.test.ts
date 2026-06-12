@@ -4,12 +4,12 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { formatBriefingContent, saveBriefing, getLatestBriefing } from './dailyBriefing.service';
-import knex from '../../../config/database';
+import { formatBriefingContent, saveBriefing, getLatestBriefing } from '../../services/dailyBriefing.service';
+import knex from '../../../../config/database';
 
 // Mock dependencies
-jest.mock('../../../config/database');
-jest.mock('../../../utils/logger');
+jest.mock('../../../../config/database');
+jest.mock('../../../../utils/logger');
 
 describe('DailyBriefing Service', () => {
   const mockUserId = 'user-123';

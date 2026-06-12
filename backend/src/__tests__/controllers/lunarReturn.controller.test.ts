@@ -532,7 +532,7 @@ describe('Lunar Return Controller', () => {
     });
 
     it('should return paginated results with parsed JSON fields', async () => {
-      mockRequest.query = { page: '2', limit: '5' };
+      mockRequest.query = { page: 2, limit: 5 };
 
       const dbReturns = [
         {
@@ -608,7 +608,8 @@ describe('Lunar Return Controller', () => {
     });
 
     it('should use default pagination when query params missing', async () => {
-      mockRequest.query = {};
+      // validateQuery(paginationSchema) sets defaults: page=1, limit=20
+      mockRequest.query = { page: 1, limit: 20 };
 
       const listChain = {
         where: jest.fn().mockReturnThis(),
@@ -630,7 +631,7 @@ describe('Lunar Return Controller', () => {
 
       await getLunarReturnHistory(mockRequest, mockResponse as Response, mockNext);
 
-      expect(listChain.limit).toHaveBeenCalledWith(10);
+      expect(listChain.limit).toHaveBeenCalledWith(20);
       expect(listChain.offset).toHaveBeenCalledWith(0);
     });
 

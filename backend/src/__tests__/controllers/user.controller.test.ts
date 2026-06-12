@@ -202,7 +202,7 @@ describe('User Controller', () => {
 
   describe('getUserCharts', () => {
     it('should get user charts with pagination', async () => {
-      mockRequest.query = { page: '1', limit: '10' };
+      mockRequest.query = { page: 1, limit: 10 };
 
       const mockCharts = [
         { id: '1', name: 'Chart 1' },
@@ -221,8 +221,9 @@ describe('User Controller', () => {
       });
     });
 
-    it('should use default pagination values', async () => {
-      mockRequest.query = {};
+    it('should use default pagination when query params missing', async () => {
+      // validateQuery(paginationSchema) would set defaults: page=1, limit=20
+      mockRequest.query = { page: 1, limit: 20 };
 
       (UserModel.getCharts as jest.Mock).mockResolvedValue([]);
 
@@ -232,7 +233,7 @@ describe('User Controller', () => {
     });
 
     it('should calculate offset correctly', async () => {
-      mockRequest.query = { page: '3', limit: '15' };
+      mockRequest.query = { page: 3, limit: 15 };
 
       (UserModel.getCharts as jest.Mock).mockResolvedValue([]);
 

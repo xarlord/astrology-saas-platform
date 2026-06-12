@@ -485,7 +485,7 @@ describe('SolarReturnController', () => {
     });
 
     it('should use custom limit from query string', async () => {
-      req.query = { limit: '5' };
+      req.query = { limit: 5 };
       (solarReturnModel.findRecent as jest.Mock).mockResolvedValue(mockHistory);
 
       await getSolarReturnHistory(req, res as Response, {} as NextFunction);
@@ -494,7 +494,7 @@ describe('SolarReturnController', () => {
     });
 
     it('should return all solar returns (including relocated) when includeRelocated=true', async () => {
-      req.query = { includeRelocated: 'true' };
+      req.query = { includeRelocated: true };
       (solarReturnModel.findByUserId as jest.Mock).mockResolvedValue(mockHistory);
 
       await getSolarReturnHistory(req, res as Response, {} as NextFunction);
