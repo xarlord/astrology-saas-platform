@@ -11,6 +11,7 @@ import userEvent from '@testing-library/user-event';
 import { createElement } from 'react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
@@ -145,16 +146,20 @@ const createWrapper = (initialRoute = '/solar-returns') => {
 
   return ({ children }: { children: React.ReactNode }) =>
     createElement(
-      QueryClientProvider,
-      { client: queryClient },
+      HelmetProvider,
+      {},
       createElement(
-        MemoryRouter,
-        { initialEntries: [initialRoute] },
+        QueryClientProvider,
+        { client: queryClient },
         createElement(
-          Routes,
-          null,
-          createElement(Route, { path: '/solar-returns', element: children }),
-          createElement(Route, { path: '/solar-returns/:year', element: children }),
+          MemoryRouter,
+          { initialEntries: [initialRoute] },
+          createElement(
+            Routes,
+            null,
+            createElement(Route, { path: '/solar-returns', element: children }),
+            createElement(Route, { path: '/solar-returns/:year', element: children }),
+          ),
         ),
       ),
     );

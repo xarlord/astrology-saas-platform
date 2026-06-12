@@ -9,6 +9,7 @@ import { render, screen } from '@testing-library/react';
 import { createElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Mock the components barrel
 vi.mock('../../components', () => ({
@@ -32,9 +33,13 @@ const createWrapper = (initialRoute = '/charts/new') => {
 
   return ({ children }: { children: React.ReactNode }) =>
     createElement(
-      QueryClientProvider,
-      { client: queryClient },
-      createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
+      HelmetProvider,
+      {},
+      createElement(
+        QueryClientProvider,
+        { client: queryClient },
+        createElement(MemoryRouter, { initialEntries: [initialRoute] }, children),
+      ),
     );
 };
 
