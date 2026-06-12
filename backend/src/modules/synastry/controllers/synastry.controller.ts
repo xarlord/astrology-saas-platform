@@ -214,8 +214,8 @@ export const getSynastryReports = asyncHandler(
     }
 
     // Query params validated by validateQuery(paginationSchema) middleware
-    const page = req.query.page as unknown as number;
-    const limit = req.query.limit as unknown as number;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
     const reports = await knex('synastry_reports')

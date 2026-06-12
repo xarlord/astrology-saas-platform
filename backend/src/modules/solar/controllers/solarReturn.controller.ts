@@ -173,10 +173,10 @@ export class SolarReturnController {
 
     let solarReturns;
 
-    if (includeRelocated === true) {
+    if (String(includeRelocated) === 'true') {
       solarReturns = await solarReturnModel.findByUserId(userId);
     } else {
-      solarReturns = await solarReturnModel.findRecent(userId, (limit as number) ?? 10);
+      solarReturns = await solarReturnModel.findRecent(userId, Number(limit) || 10);
     }
 
     res.status(200).json({

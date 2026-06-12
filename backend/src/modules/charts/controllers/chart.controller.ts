@@ -182,8 +182,8 @@ export async function createChart(req: AuthenticatedRequest, res: Response): Pro
  */
 export async function getUserCharts(req: AuthenticatedRequest, res: Response): Promise<void> {
   // Query params validated by validateQuery(paginationSchema) middleware
-  const page = req.query.page as unknown as number;
-  const limit = req.query.limit as unknown as number;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 20;
   const offset = (page - 1) * limit;
 
   const charts = await ChartModel.findByUserId(req.user.id, limit, offset);
