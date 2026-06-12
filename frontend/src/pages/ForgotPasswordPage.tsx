@@ -5,6 +5,7 @@ import { authService } from '../services/auth.service';
 import { getErrorMessage } from '../utils/errorHandling';
 
 import { Helmet } from 'react-helmet-async';
+
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -27,6 +28,9 @@ export function ForgotPasswordPage() {
 
   return (
     <PublicPageLayout>
+      <Helmet>
+        <title>Reset Password — AstroVerse</title>
+      </Helmet>
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
