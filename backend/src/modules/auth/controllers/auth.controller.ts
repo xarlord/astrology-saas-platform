@@ -20,11 +20,18 @@ import { logAuthFailure } from '../../../utils/securityLogger';
 import logger from '../../../utils/logger';
 
 /**
+ * Safely extract validated request data, falling back to req.body if validation
+ * middleware did not run. Returns the request body cast to the expected type.
+ */
+function getValidated<T>(req: Request): T {
+  return (req.validated ?? req.body) as T;
+}
+
+/**
  * Register new user
  */
 export async function register(req: Request, res: Response): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { name, email, password } = (req as any).validated || req.body;
+  const { name, email, password } = getValidated<{ name: string; email: string; password: string }>(req);
 
   const existingUser = await UserModel.findByEmail(email);
   if (existingUser) {
@@ -77,8 +84,7 @@ export async function register(req: Request, res: Response): Promise<void> {
  * Login user
  */
 export async function login(req: Request, res: Response): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { email, password } = (req as any).validated || req.body;
+  const { email, password } = getValidated<{ email: string; password: string }>(req);
 
   const user = await UserModel.findByEmail(email);
   if (!user) {
@@ -175,7 +181,7 @@ export async function getProfile(req: AuthenticatedRequest, res: Response): Prom
 export async function updateProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const { name, avatar_url, timezone } = (req as any).validated || req.body; // eslint-disable-line @typescript-eslint/no-explicit-any
+  const { name, avatar_url, timezone } = getValidated<{ name: string; avatar_url: string; timezone: string }>(req);
 
   const user = await UserModel.update(userId, {
     name,
@@ -199,7 +205,7 @@ export async function updateProfile(req: AuthenticatedRequest, res: Response): P
 export async function updatePreferences(req: AuthenticatedRequest, res: Response): Promise<void> {
   if (!req.user) throw new AppError('Unauthorized', 401);
   const userId = req.user.id;
-  const preferences = (req as any).validated || req.body; // eslint-disable-line @typescript-eslint/no-explicit-any
+  const preferences = getValidated<Record<string, unknown>>(req);
 
   const user = await UserModel.updatePreferences(userId, preferences);
 
@@ -325,8 +331,7 @@ export async function refreshToken(req: Request, res: Response): Promise<void> {
  * Forgot password
  */
 export async function forgotPassword(req: Request, res: Response): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { email } = (req as any).validated || req.body;
+  const { email } = getValidated<{ email: string }>(req);
 
   await PasswordResetService.requestPasswordReset(email);
 
@@ -340,8 +345,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
  * Reset password
  */
 export async function resetPassword(req: Request, res: Response): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { token, password } = (req as any).validated || req.body;
+  const { token, password } = getValidated<{ token: string; password: string }>(req);
 
   // Validate password strength before resetting
   const validation = validatePassword(password);
