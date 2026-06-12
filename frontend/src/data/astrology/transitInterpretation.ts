@@ -131,20 +131,7 @@ function fmtDate(iso: string): string {
   }
 }
 
-// ─── Aspect nature label ──────────────────────────────────────────────────────
 
-function _natureLabel(nature: string): string {
-  switch (nature) {
-    case 'harmonious':
-      return 'Harmonious — flows naturally';
-    case 'challenging':
-      return 'Challenging — demands growth';
-    case 'dynamic':
-      return 'Dynamic — requires adjustment';
-    default:
-      return 'Neutral — blended intensification';
-  }
-}
 
 // ─── Transit-specific planet meanings ─────────────────────────────────────────
 

@@ -11,7 +11,7 @@
  *  - Reusable data from centralized aspectMeanings + planetPointMeanings
  */
 
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   synthesizeAspectInterpretation,
