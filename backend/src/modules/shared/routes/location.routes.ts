@@ -11,31 +11,28 @@ import { z } from 'zod';
 import { logger } from '../../../utils/logger';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { publicApiRateLimiter } from '../../../middleware/rateLimiter';
-import { validateParams } from '../../../utils/validators';
+import { validateParams, validateQuery } from '../../../utils/validators';
 
 const placeIdParamSchema = z.object({
   placeId: z.string().min(1).max(512),
 });
 
-// Manual validation helpers (replacing express-validator)
-function validateQueryParams(
-  req: Request,
-  rules: Record<
-    string,
-    { optional?: boolean; isString?: boolean; minLen?: number; maxLen?: number }
-  >,
-): string | null {
-  for (const [key, rule] of Object.entries(rules)) {
-    const value = req.query[key];
-    if (!rule.optional && value === undefined) return `Missing required parameter: ${key}`;
-    if (value !== undefined && typeof value !== 'string') return `${key} must be a string`;
-    if (rule.minLen && typeof value === 'string' && value.length < rule.minLen)
-      return `${key} must be at least ${rule.minLen} characters`;
-    if (rule.maxLen && typeof value === 'string' && value.length > rule.maxLen)
-      return `${key} must be at most ${rule.maxLen} characters`;
-  }
-  return null;
-}
+// Query schemas for autocomplete and details endpoints (#343)
+const autocompleteQuerySchema = z.object({
+  input: z.string().min(2).max(100),
+  sessiontoken: z.string().optional(),
+  language: z.string().optional(),
+});
+
+const detailsQuerySchema = z.object({
+  sessiontoken: z.string().optional(),
+  language: z.string().optional(),
+});
+
+const timezoneQuerySchema = z.object({
+  lat: z.coerce.number().min(-90).max(90),
+  lon: z.coerce.number().min(-180).max(180),
+});
 
 
 
@@ -123,34 +120,27 @@ router.use(publicApiRateLimiter);
  * @desc    Proxy for Google Places Autocomplete
  * @access  Public (rate limited)
  */
-router.get('/autocomplete', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/autocomplete', validateQuery(autocompleteQuerySchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
-    const validationError = validateQueryParams(req, {
-      input: { minLen: 2, maxLen: 100 },
-      sessiontoken: { optional: true, isString: true },
-      language: { optional: true, isString: true },
-    });
-    if (validationError) {
-      res.status(400).json({ error: validationError });
-      return;
-    }
-
     if (!GOOGLE_PLACES_API_KEY) {
       // Fallback to Nominatim if no API key configured
-      const nominatimResults = await fetchNominatim(req.query.input as string);
+      const { input } = req.query as { input: string };
+      const nominatimResults = await fetchNominatim(input);
       res.json({ predictions: nominatimResults });
       return;
     }
 
-    const { input, sessiontoken, language = 'en' } = req.query;
+    const { input, sessiontoken, language = 'en' } = req.query as {
+      input: string; sessiontoken?: string; language: string;
+    };
 
     const url = new URL(`${GOOGLE_PLACES_BASE_URL}/autocomplete/json`);
-    url.searchParams.set('input', input as string);
+    url.searchParams.set('input', input);
     url.searchParams.set('key', GOOGLE_PLACES_API_KEY);
-    url.searchParams.set('language', language as string);
+    url.searchParams.set('language', language);
 
     if (sessiontoken) {
-      url.searchParams.set('sessiontoken', sessiontoken as string);
+      url.searchParams.set('sessiontoken', sessiontoken);
     }
 
     const response = await fetchWithTimeout(url.toString());
@@ -215,17 +205,8 @@ router.get('/autocomplete', asyncHandler(async (req: Request, res: Response, _ne
  * @desc    Get place details including coordinates
  * @access  Public (rate limited)
  */
-router.get('/details/:placeId', validateParams(placeIdParamSchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/details/:placeId', validateParams(placeIdParamSchema), validateQuery(detailsQuerySchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
-    const validationError = validateQueryParams(req, {
-      sessiontoken: { optional: true, isString: true },
-      language: { optional: true, isString: true },
-    });
-    if (validationError) {
-      res.status(400).json({ error: validationError });
-      return;
-    }
-
     const { placeId } = req.params;
 
     if (!GOOGLE_PLACES_API_KEY) {
@@ -234,7 +215,9 @@ router.get('/details/:placeId', validateParams(placeIdParamSchema), asyncHandler
       return;
     }
 
-    const { sessiontoken, language = 'en' } = req.query;
+    const { sessiontoken, language = 'en' } = req.query as {
+      sessiontoken?: string; language: string;
+    };
 
     const url = new URL(`${GOOGLE_PLACES_BASE_URL}/details/json`);
     url.searchParams.set('place_id', placeId);
@@ -354,15 +337,11 @@ async function fetchNominatim(query: string): Promise<any[]> {
  * @desc    Get IANA timezone from lat/lon coordinates
  * @access  Public
  */
-router.get('/timezone', asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/timezone', validateQuery(timezoneQuerySchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
-    const lat = parseFloat(req.query.lat as string);
-    const lon = parseFloat(req.query.lon as string);
-
-    if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-      res.status(400).json({ error: 'Valid lat and lon query parameters required' });
-      return;
-    }
+    // validateQuery coerces and validates lat/lon as numbers
+    const lat = Number(req.query.lat);
+    const lon = Number(req.query.lon);
 
     // Try using Google Timezone API if key available
     if (GOOGLE_PLACES_API_KEY) {

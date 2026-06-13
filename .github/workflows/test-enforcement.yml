@@ -3,11 +3,15 @@ name: Test Enforcement Gate
 on:
   pull_request:
     branches: [master, main, develop]
+  push:
+    branches: [master, main]
 
 jobs:
   test-presence-check:
     name: "🧪 Tests Required for Changes"
     runs-on: ubuntu-latest
+    # Only run test-presence check on PRs (requires base_ref)
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
         with:
