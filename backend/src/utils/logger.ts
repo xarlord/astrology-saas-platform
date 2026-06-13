@@ -77,7 +77,7 @@ const logger = winston.createLogger({
     metadata({ fillExcept: ['message', 'level', 'timestamp', 'stack'] })
   ),
   defaultMeta: {
-    service: 'mooncalender-api',
+    service: 'astroverse-api',
     environment: config.nodeEnv || 'development',
   },
   transports: [
@@ -261,7 +261,7 @@ export const queryLogger = winston.createLogger({
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     json()
   ),
-  defaultMeta: { service: 'mooncalender-database' },
+  defaultMeta: { service: 'astroverse-database' },
   transports: [
     new winstonDailyRotateFile({
       dirname: logsDir,
@@ -293,7 +293,7 @@ export const securityLogger = winston.createLogger({
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     json()
   ),
-  defaultMeta: { service: 'mooncalender-security' },
+  defaultMeta: { service: 'astroverse-security' },
   transports: [
     new winstonDailyRotateFile({
       dirname: logsDir,
@@ -323,7 +323,7 @@ export const performanceLogger = winston.createLogger({
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     json()
   ),
-  defaultMeta: { service: 'mooncalender-performance' },
+  defaultMeta: { service: 'astroverse-performance' },
   transports: [
     new winstonDailyRotateFile({
       dirname: logsDir,

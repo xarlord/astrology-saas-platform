@@ -170,8 +170,8 @@ describe('Chart Sharing - LIVE SYSTEM', () => {
         expect(noPassRes.data.error).toBeDefined();
       }
 
-      // Try accessing with wrong password
-      const wrongPassRes = await api('GET', `/share/${protectedToken}?password=WrongPassword456!`);
+      // Try accessing with wrong password (use POST — passwords no longer in query string, #340)
+      const wrongPassRes = await api('POST', `/share/${protectedToken}`, { password: 'WrongPassword456!' });
 
       if (wrongPassRes.status !== 404) {
         expect([401, 403]).toContain(wrongPassRes.status);
