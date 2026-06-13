@@ -13,6 +13,7 @@ import { getErrorMessage } from '../utils/errorHandling';
 import { PLANET_SYMBOLS_LOWER } from '../utils/astrology/planetPosition';
 import { APP_LOCALE } from '../utils/constants';
 
+import { Helmet } from 'react-helmet-async';
 // Aspect label mapping
 const ASPECT_LABELS: Record<string, string> = {
   conjunction: 'Conjunction',
@@ -94,6 +95,10 @@ const EphemerisPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
+      <Helmet>
+        <title>Ephemeris — AstroVerse</title>
+        <meta name="description" content="Planetary ephemeris data and current celestial positions." />
+      </Helmet>
         <div className="flex items-center mb-4">
           <button type="button"
             onClick={() => navigate('/dashboard')}

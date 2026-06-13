@@ -20,6 +20,7 @@ import { Checkbox } from '../components/ui/Checkbox';
 import { CustomDatePicker } from '../components/form/CustomDatePicker';
 import { AppLayout } from '../components';
 
+import { Helmet } from 'react-helmet-async';
 type WizardStep = 1 | 2 | 3;
 
 interface PersonalDetails {
@@ -195,6 +196,10 @@ export const ChartCreationWizardPage: React.FC = () => {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Chart Wizard — AstroVerse</title>
+        <meta name="description" content="Step-by-step guided natal chart creation wizard." />
+      </Helmet>
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />

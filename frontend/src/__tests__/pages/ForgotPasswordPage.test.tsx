@@ -15,6 +15,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { createElement } from 'react';
 import { createElement as h } from 'react';
 
@@ -38,9 +39,13 @@ import { authService } from '../../services/auth.service';
 const renderForgotPasswordPage = () => {
   return render(
     createElement(
-      MemoryRouter,
+      HelmetProvider,
       null,
-      createElement(ForgotPasswordPage),
+      createElement(
+        MemoryRouter,
+        null,
+        createElement(ForgotPasswordPage),
+      ),
     ),
   );
 };

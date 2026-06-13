@@ -7,11 +7,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { Helmet } from 'react-helmet-async';
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="bg-cosmic-page text-slate-100 font-sans antialiased overflow-x-hidden">
+      <Helmet>
+        <title>AstroVerse — Your Cosmic Companion</title>
+        <meta name="description" content="Astrology SaaS platform for natal charts, transits, and cosmic insights." />
+      </Helmet>
       {/* Skip to content */}
       <a href="#main-content" className="skip-link">Skip to main content</a>
 

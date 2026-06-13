@@ -10,6 +10,7 @@ import UsageMeter from '../components/UsageMeter';
 import { useCharts, useAuth } from '../hooks';
 import type { Tier } from '../components/UsageMeter';
 
+import { Helmet } from 'react-helmet-async';
 interface PricingTierProps {
   name: string;
   tier: Tier;
@@ -190,6 +191,10 @@ export default function SubscriptionPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Subscription — AstroVerse</title>
+        <meta name="description" content="Choose your AstroVerse subscription plan." />
+      </Helmet>
       {/* Page Header */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Subscription</h1>

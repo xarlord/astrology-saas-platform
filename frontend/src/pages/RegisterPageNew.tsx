@@ -10,6 +10,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { useNotificationStore } from '../stores/notificationStore';
 
+import { Helmet } from 'react-helmet-async';
 // Password strength calculator
 const calculatePasswordStrength = (
   password: string,
@@ -82,6 +83,10 @@ export default function RegisterPageNew() {
 
   return (
     <div className="font-display bg-gradient-to-br from-cosmic-page to-cosmic-card text-slate-100 min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-x-hidden">
+      <Helmet>
+        <title>Register — AstroVerse</title>
+        <meta name="description" content="Create your AstroVerse account to start exploring the cosmos." />
+      </Helmet>
       <div className="flex flex-col lg:flex-row min-h-screen w-full">
         {/* Left Panel: Brand & Features */}
         <div

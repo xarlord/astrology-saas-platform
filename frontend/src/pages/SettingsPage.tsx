@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import { useAuth } from '../hooks';
 
+import { Helmet } from 'react-helmet-async';
 interface ToggleSwitchProps {
   enabled: boolean;
   onChange: (value: boolean) => void;
@@ -126,6 +127,10 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Settings — AstroVerse</title>
+        <meta name="description" content="Configure your AstroVerse account settings and preferences." />
+      </Helmet>
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Settings</h1>

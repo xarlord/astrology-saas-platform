@@ -13,6 +13,7 @@ import {
 } from '../components';
 import { LunarReturnChart, SavedLunarReturn } from '../services/lunarReturn.api';
 
+import { Helmet } from 'react-helmet-async';
 type ViewMode = 'dashboard' | 'chart' | 'forecast' | 'history';
 
 const LunarReturnsPage: React.FC = () => {
@@ -102,6 +103,10 @@ const LunarReturnsPage: React.FC = () => {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Lunar Returns — AstroVerse</title>
+        <meta name="description" content="Calculate and explore your lunar return charts." />
+      </Helmet>
       <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold mb-2 gradient-text">Lunar Returns</h1>

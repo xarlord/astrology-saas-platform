@@ -7,12 +7,17 @@ import { useAuth } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 import { useNavigate } from 'react-router-dom';
 
+import { Helmet } from 'react-helmet-async';
 export default function ProfilePage() {
   const { user, isLoading, error } = useAuth();
   const navigate = useNavigate();
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Profile — AstroVerse</title>
+        <meta name="description" content="Manage your AstroVerse account profile and preferences." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">My Profile</h1>
       </div>

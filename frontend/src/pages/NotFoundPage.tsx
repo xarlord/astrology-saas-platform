@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
 import { PublicPageLayout } from '../components/PublicPageLayout';
 
+import { Helmet } from 'react-helmet-async';
+
 export function NotFoundPage() {
   return (
     <PublicPageLayout>
+      <Helmet>
+        <title>Page Not Found — AstroVerse</title>
+      </Helmet>
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="text-center">
           <span className="material-symbols-outlined text-primary mb-6 text-8xl" aria-hidden="true">

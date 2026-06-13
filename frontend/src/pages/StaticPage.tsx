@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { PublicPageLayout } from '../components/PublicPageLayout';
 import { staticPages } from '../data/staticPages';
 
+import { Helmet } from 'react-helmet-async';
+
 interface StaticPageProps {
   pageKey: string;
 }
@@ -33,6 +35,10 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey }) => {
 
   return (
     <PublicPageLayout hideAuthLinks>
+      <Helmet>
+        <title>{pageData.title} — AstroVerse</title>
+        <meta name="description" content={pageData.description} />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <header className="mb-8 sm:mb-10">
           <div className="flex items-center gap-3 mb-3">

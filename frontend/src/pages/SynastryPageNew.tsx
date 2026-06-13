@@ -20,6 +20,7 @@ import { chartService } from '../services/chart.service';
 import { AppLayout } from '../components/AppLayout';
 import { SkeletonLoader, EmptyState } from '../components';
 
+import { Helmet } from 'react-helmet-async';
 interface SynastryPageProps {
   charts?: Chart[];
 }
@@ -203,6 +204,10 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
   if (loading) {
     return (
       <AppLayout>
+      <Helmet>
+        <title>Synastry — AstroVerse</title>
+        <meta name="description" content="Compare two natal charts for relationship compatibility analysis." />
+      </Helmet>
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
           <SkeletonLoader variant="card" count={2} />
         </div>

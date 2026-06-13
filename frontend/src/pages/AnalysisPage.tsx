@@ -11,6 +11,7 @@ import type { PersonalityAnalysisData, PlanetSignInterpretation, HouseInterpreta
 import { useChartAnalysis } from '../hooks';
 import { getErrorMessage } from '../utils/errorHandling';
 
+import { Helmet } from 'react-helmet-async';
 /**
  * Map backend interpretation to frontend component shape.
  * The backend returns full PlanetInSignInterpretation objects (keywords,
@@ -148,6 +149,10 @@ export function AnalysisPage() {
 
   return (
     <AppLayout>
+      <Helmet>
+        <title>Personality Analysis — AstroVerse</title>
+        <meta name="description" content="Detailed personality analysis of your natal chart with AI-enhanced interpretations." />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 gradient-text">Personality Analysis</h1>
       </div>
