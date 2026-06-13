@@ -210,7 +210,7 @@ describe('Chart Controller', () => {
 
   describe('getUserCharts', () => {
     it('should get user charts with pagination', async () => {
-      mockRequest.query = { page: '1', limit: '10' };
+      mockRequest.query = { page: 1, limit: 10 };
 
       const mockCharts = [
         { id: '1', name: 'Chart 1' },
@@ -240,7 +240,8 @@ describe('Chart Controller', () => {
     });
 
     it('should use default pagination values', async () => {
-      mockRequest.query = {};
+      // validateQuery(paginationSchema) sets defaults: page=1, limit=20
+      mockRequest.query = { page: 1, limit: 20 };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
       (ChartModel.countByUserId as jest.Mock).mockResolvedValue(0);
@@ -251,7 +252,7 @@ describe('Chart Controller', () => {
     });
 
     it('should calculate pagination correctly', async () => {
-      mockRequest.query = { page: '2', limit: '10' };
+      mockRequest.query = { page: 2, limit: 10 };
 
       (ChartModel.findByUserId as jest.Mock).mockResolvedValue([]);
       (ChartModel.countByUserId as jest.Mock).mockResolvedValue(25);

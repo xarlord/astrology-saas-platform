@@ -6,17 +6,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { CardService } from './card.service';
-import cardModel from '../models/card.model';
-import openaiService from '../../ai/services/openai.service';
-import { cardImageService } from './card-image.service';
-import { AppError } from '../../../utils/appError';
+import { CardService } from '../../services/card.service';
+import cardModel from '../../models/card.model';
+import openaiService from '../../../ai/services/openai.service';
+import { cardImageService } from '../../services/card-image.service';
+import { AppError } from '../../../../utils/appError';
 
 // Mock dependencies
-jest.mock('../models/card.model');
-jest.mock('../../ai/services/openai.service');
-jest.mock('./card-image.service');
-jest.mock('../../../utils/logger');
+jest.mock('../../models/card.model');
+jest.mock('../../../ai/services/openai.service');
+jest.mock('../../services/card-image.service');
+jest.mock('../../../../utils/logger');
 
 describe('CardService', () => {
   let cardService: CardService;

@@ -4,13 +4,13 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { generateMonthlyTransitReport } from './monthlyTransit.service';
-import ChartModel from '../../charts/models/chart.model';
-import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
+import { generateMonthlyTransitReport } from '../../services/monthlyTransit.service';
+import ChartModel from '../../../charts/models/chart.model';
+import { AstronomyEngineService } from '../../../shared/services/astronomyEngine.service';
 
 // Mock dependencies
-jest.mock('../../charts/models/chart.model');
-jest.mock('../../shared/services/astronomyEngine.service');
+jest.mock('../../../charts/models/chart.model');
+jest.mock('../../../shared/services/astronomyEngine.service');
 
 describe('MonthlyTransitReport Service', () => {
   const mockUserId = 'user-123';

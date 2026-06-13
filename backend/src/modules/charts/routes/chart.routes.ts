@@ -8,7 +8,7 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceChartLimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
 import { validateRequest } from '../../../middleware/validateRequest';
-import { validateParams, uuidParamSchema } from '../../../utils/validators';
+import { validateParams, validateQuery, paginationSchema, uuidParamSchema } from '../../../utils/validators';
 import {
   CreateNatalChartSchema,
   UpdateChartSchema,
@@ -70,6 +70,7 @@ router.post(
  */
 router.get(
   '/',
+  validateQuery(paginationSchema),
   asyncHandler(async (req, res) => {
     await ChartController.getUserCharts(req as AuthenticatedRequest, res);
   }),

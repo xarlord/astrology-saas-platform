@@ -366,8 +366,9 @@ async function calculateTransitPlanetsOnly(date: Date): Promise<TransitResult['t
  */
 export async function getTransitCalendar(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
-  const month = Math.max(1, Math.min(12, parseInt(req.query.month as string) || new Date().getMonth() + 1));
-  const year = Math.max(1900, Math.min(2100, parseInt(req.query.year as string) || new Date().getFullYear()));
+  // Query params validated by validateQuery(transitCalendarQuerySchema) middleware
+  const month = Number(req.query.month) || new Date().getMonth() + 1;
+  const year = Number(req.query.year) || new Date().getFullYear();
 
   const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);
 
@@ -471,6 +472,7 @@ export async function getTransitDetails(req: AuthenticatedRequest, res: Response
  */
 export async function getTransitForecast(req: AuthenticatedRequest, res: Response): Promise<void> {
   const userId = req.user.id;
+  // Query params validated by validateQuery(transitForecastQuerySchema) middleware
   const { duration = 'month' } = req.query; // 'week', 'month', 'quarter', 'year'
 
   const chart = await findCalculatedChart(userId, req.query.chartId as string | undefined);

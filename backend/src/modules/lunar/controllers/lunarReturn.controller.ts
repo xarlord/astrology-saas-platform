@@ -236,8 +236,9 @@ export const getLunarReturnHistory = asyncHandler(
       throw new UnauthorizedError('User authentication required');
     }
 
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    // Query params validated by validateQuery(paginationSchema) middleware
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
     const returns = await knex('lunar_returns')
