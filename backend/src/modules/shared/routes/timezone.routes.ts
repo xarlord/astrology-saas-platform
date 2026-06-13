@@ -3,11 +3,50 @@
  */
 
 import { Router } from 'express';
+import { z } from 'zod';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { publicApiRateLimiter } from '../../../middleware/rateLimiter';
+import { validateBody, validateParams, validateQuery } from '../../../utils/validators';
 import { timezoneService } from '../services/timezone.service';
 
 const router = Router();
+
+// Query/body schemas for timezone endpoints (#344)
+const searchQuerySchema = z.object({
+  q: z.string().min(1).max(200),
+});
+
+const commonQuerySchema = z.object({
+  region: z.string().optional(),
+});
+
+const detectQuerySchema = z.object({
+  lat: z.coerce.number().min(-90).max(90),
+  lng: z.coerce.number().min(-180).max(180),
+});
+
+const timezoneInfoQuerySchema = z.object({
+  date: z.string().optional(),
+});
+
+const convertBodySchema = z.object({
+  year: z.coerce.number().int().min(1900).max(2200),
+  month: z.coerce.number().int().min(1).max(12),
+  day: z.coerce.number().int().min(1).max(31),
+  hour: z.coerce.number().int().min(0).max(23),
+  minute: z.coerce.number().int().min(0).max(59),
+  timezone: z.string().min(1),
+  latitude: z.coerce.number().min(-90).max(90).optional(),
+  longitude: z.coerce.number().min(-180).max(180).optional(),
+});
+
+const timezoneParamSchema = z.object({
+  timezone: z.string().min(1).max(100),
+});
+
+const dstQuerySchema = z.object({
+  year: z.coerce.number().int().min(1900).max(2200).optional(),
+});
 
 // Apply rate limiting to all timezone routes
 router.use(publicApiRateLimiter);
@@ -38,16 +77,9 @@ router.use(publicApiRateLimiter);
  */
 router.get(
   '/search',
+  validateQuery(searchQuerySchema),
   asyncHandler(async (req, res) => {
-    const { q } = req.query;
-
-    if (!q || typeof q !== 'string') {
-      res.status(400).json({
-        success: false,
-        error: 'Query parameter "q" is required',
-      });
-      return;
-    }
+    const { q } = req.query as { q: string };
 
     const results = timezoneService.searchTimezones(q);
 
@@ -81,10 +113,11 @@ router.get(
  */
 router.get(
   '/common',
+  validateQuery(commonQuerySchema),
   asyncHandler(async (req, res) => {
-    const { region } = req.query;
+    const { region } = req.query as { region?: string };
 
-    const timezones = timezoneService.getCommonTimezones(region as string);
+    const timezones = timezoneService.getCommonTimezones(region);
 
     res.status(200).json({
       success: true,
@@ -126,17 +159,10 @@ router.get(
  */
 router.get(
   '/detect',
+  validateQuery(detectQuerySchema),
   asyncHandler(async (req, res) => {
-    const lat = parseFloat(req.query.lat as string);
-    const lng = parseFloat(req.query.lng as string);
-
-    if (isNaN(lat) || isNaN(lng)) {
-      res.status(400).json({
-        success: false,
-        error: 'Valid latitude and longitude required',
-      });
-      return;
-    }
+    const lat = Number(req.query.lat);
+    const lng = Number(req.query.lng);
 
     const timezone = timezoneService.detectTimezoneFromCoordinates(lat, lng);
 
@@ -190,11 +216,13 @@ router.get(
  */
 router.get(
   '/:timezone',
+  validateParams(timezoneParamSchema),
+  validateQuery(timezoneInfoQuerySchema),
   asyncHandler(async (req, res) => {
     const { timezone } = req.params;
-    const { date } = req.query;
+    const { date } = req.query as { date?: string };
 
-    const dateObj = date ? new Date(date as string) : undefined;
+    const dateObj = date ? new Date(date) : undefined;
 
     if (!timezoneService.isValidTimezone(timezone)) {
       res.status(400).json({
@@ -257,17 +285,12 @@ router.get(
  */
 router.post(
   '/convert',
+  validateBody(convertBodySchema),
   asyncHandler(async (req, res) => {
-    const { year, month, day, hour, minute, timezone, latitude, longitude } = req.body;
-
-    // Validate required fields
-    if (!year || !month || !day || hour === undefined || minute === undefined || !timezone) {
-      res.status(400).json({
-        success: false,
-        error: 'Missing required fields: year, month, day, hour, minute, timezone',
-      });
-      return;
-    }
+    const { year, month, day, hour, minute, timezone, latitude, longitude } = req.body as {
+      year: number; month: number; day: number; hour: number; minute: number;
+      timezone: string; latitude?: number; longitude?: number;
+    };
 
     // Validate timezone
     if (!timezoneService.isValidTimezone(timezone)) {
@@ -339,9 +362,13 @@ router.post(
  */
 router.get(
   '/:timezone/dst',
+  validateParams(timezoneParamSchema),
+  validateQuery(dstQuerySchema),
   asyncHandler(async (req, res) => {
     const { timezone } = req.params;
-    const year = parseInt(req.query.year as string) || new Date().getFullYear();
+    const year = req.query.year
+      ? Number(req.query.year)
+      : new Date().getFullYear();
 
     if (!timezoneService.isValidTimezone(timezone)) {
       res.status(400).json({
