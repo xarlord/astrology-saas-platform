@@ -265,4 +265,41 @@ router.get('/:token/stats', validateParams(shareTokenSchema), authenticate, asyn
   });
 }));
 
+/**
+ * @route   DELETE /api/share/:token
+ * @desc    Revoke (delete) a share link — only the share creator can revoke
+ * @access  Private (requires authentication)
+ *
+ * @openapi
+ * /api/share/{token}:
+ *   delete:
+ *     tags: [Sharing]
+ *     summary: Revoke a share link
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Share link revoked
+ *       404:
+ *         description: Share link not found
+ */
+router.delete('/:token', validateParams(shareTokenSchema), authenticate, asyncHandler(async (req: AuthenticatedRequest, res) => {
+  const { token } = req.params;
+
+  const revoked = await chartSharingService.revokeShareLink(token, req.user.id);
+
+  if (!revoked) {
+    throw new AppError('Share link not found or you do not have permission to revoke it', 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: { revoked: true },
+  });
+}));
+
 export { router };
