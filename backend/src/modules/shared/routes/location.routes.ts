@@ -296,6 +296,12 @@ router.get('/details/:placeId', validateParams(placeIdParamSchema), asyncHandler
 }));
 
 /**
+ * Track the last Nominatim request timestamp to enforce the 1 req/sec rate limit
+ * across ALL concurrent requests (not just per-request delay).
+ */
+let lastNominatimRequest = 0;
+
+/**
  * Fallback: Nominatim (OpenStreetMap) autocomplete
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -307,8 +313,13 @@ async function fetchNominatim(query: string): Promise<any[]> {
     url.searchParams.set('addressdetails', '1');
     url.searchParams.set('limit', '5');
 
-    // Respect Nominatim rate limit (1 req/sec)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Respect Nominatim rate limit (1 req/sec) — enforce minimum 1.1s between
+    // requests globally (shared timestamp), so concurrent requests queue properly.
+    const waitMs = Math.max(0, 1100 - (Date.now() - lastNominatimRequest));
+    if (waitMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+    lastNominatimRequest = Date.now();
 
     const response = await fetchWithTimeout(url.toString(), {
       headers: {
