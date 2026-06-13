@@ -118,7 +118,8 @@ describe('Timezone Routes — Validation Schemas (#344)', () => {
     });
 
     it('should reject missing timezone', () => {
-      const { timezone, ...noTz } = validBody;
+      const { timezone: _timezone, ...noTz } = validBody;
+      void _timezone;
       expect(convertBodySchema.safeParse(noTz).success).toBe(false);
     });
 
@@ -143,7 +144,8 @@ describe('Timezone Routes — Validation Schemas (#344)', () => {
     });
 
     it('should reject missing year', () => {
-      const { year, ...noYear } = validBody;
+      const { year: _year, ...noYear } = validBody;
+      void _year;
       expect(convertBodySchema.safeParse(noYear).success).toBe(false);
     });
   });
