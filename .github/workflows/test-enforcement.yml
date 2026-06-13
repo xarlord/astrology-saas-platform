@@ -32,8 +32,6 @@ jobs:
   coverage-gate:
     name: "📊 Coverage Must Not Decrease"
     runs-on: ubuntu-latest
-    needs: []  # Runs in parallel with other CI jobs
-    fail-fast: true
     steps:
       - uses: actions/checkout@v4
         with:
