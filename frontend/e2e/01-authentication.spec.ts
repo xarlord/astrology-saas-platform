@@ -16,10 +16,12 @@ test.describe('Authentication', () => {
 
     await page.goto('/register');
 
-    await page.locator('input[name="name"]').fill('E2E Test User');
-    await page.locator('input[name="email"]').fill(email);
-    await page.locator('input[name="password"]').fill(TEST_PASSWORD);
-    await page.locator('input[name="confirmPassword"]').fill(TEST_PASSWORD);
+    // RegisterPageNew uses id/data-testid attributes (no `name` attrs).
+    // Fallback chain mirrors the LoginPage object for resilience.
+    await page.locator('[data-testid="name-input"], #fullname').fill('E2E Test User');
+    await page.locator('[data-testid="register-email-input"], #email').fill(email);
+    await page.locator('[data-testid="register-password-input"], #password').fill(TEST_PASSWORD);
+    await page.locator('[data-testid="confirm-password-input"], #confirm-password').fill(TEST_PASSWORD);
 
     // Check the terms checkbox if present
     const termsCheckbox = page.locator('#terms');
@@ -56,10 +58,10 @@ test.describe('Authentication', () => {
   test('should block form submission for an invalid email on registration', async ({ page }) => {
     await page.goto('/register');
 
-    await page.locator('input[name="name"]').fill('Test');
-    await page.locator('input[name="email"]').fill('notanemail');
-    await page.locator('input[name="password"]').fill(TEST_PASSWORD);
-    await page.locator('input[name="confirmPassword"]').fill(TEST_PASSWORD);
+    await page.locator('[data-testid="name-input"], #fullname').fill('Test');
+    await page.locator('[data-testid="register-email-input"], #email').fill('notanemail');
+    await page.locator('[data-testid="register-password-input"], #password').fill(TEST_PASSWORD);
+    await page.locator('[data-testid="confirm-password-input"], #confirm-password').fill(TEST_PASSWORD);
 
     await page.locator('button[type="submit"]').click();
 
@@ -71,10 +73,10 @@ test.describe('Authentication', () => {
   test('should show validation error for a weak password on registration', async ({ page }) => {
     await page.goto('/register');
 
-    await page.locator('input[name="name"]').fill('Test');
-    await page.locator('input[name="email"]').fill(uniqueEmail());
-    await page.locator('input[name="password"]').fill('123');
-    await page.locator('input[name="confirmPassword"]').fill('123');
+    await page.locator('[data-testid="name-input"], #fullname').fill('Test');
+    await page.locator('[data-testid="register-email-input"], #email').fill(uniqueEmail());
+    await page.locator('[data-testid="register-password-input"], #password').fill('123');
+    await page.locator('[data-testid="confirm-password-input"], #confirm-password').fill('123');
 
     await page.locator('button[type="submit"]').click();
 

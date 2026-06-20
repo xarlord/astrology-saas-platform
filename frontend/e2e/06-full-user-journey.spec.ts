@@ -169,10 +169,10 @@ test.describe.serial('Full User Journey with Console Monitoring', () => {
     await settle(page);
     consoleMonitor.assertNoErrors('register page load');
 
-    await page.locator('input[name="name"]').fill(userName);
-    await page.locator('input[name="email"]').fill(userEmail);
-    await page.locator('input[name="password"]').fill(userPassword);
-    await page.locator('input[name="confirmPassword"]').fill(userPassword);
+    await page.locator('[data-testid="name-input"], #fullname').fill(userName);
+    await page.locator('[data-testid="register-email-input"], #email').fill(userEmail);
+    await page.locator('[data-testid="register-password-input"], #password').fill(userPassword);
+    await page.locator('[data-testid="confirm-password-input"], #confirm-password').fill(userPassword);
 
     const terms = page.locator('#terms');
     if (await terms.count() > 0) {

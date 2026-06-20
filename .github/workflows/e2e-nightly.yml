@@ -44,6 +44,11 @@ jobs:
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
       JWT_SECRET: test-jwt-secret-for-e2e
+      # CSRF_SECRET is required by the real server (csrf-csrf getSecret throws
+      # if unset). Jest tests skip CSRF via NODE_ENV=test, but the nightly job
+      # runs `npx tsx src/server.ts` with CSRF enabled, so every request to
+      # /health/csrf-token returned 500 -> cascading E2E failures.
+      CSRF_SECRET: test-csrf-secret-for-e2e
       RATE_LIMIT_MAX_REQUESTS: 10000
 
     steps:
