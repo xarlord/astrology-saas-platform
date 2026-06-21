@@ -125,6 +125,28 @@ export const AiLunarReturnSchema = AiNatalSchema;
 export const AiSolarReturnSchema = AiNatalSchema;
 
 /**
+ * Query parameter schemas for AI usage endpoints
+ */
+
+export const AiUsageStatsQuerySchema = z.object({
+  days: z.coerce.number().int().min(1).max(365).default(30).optional(),
+}).strict();
+
+export const AiUsageHistoryQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(100).default(20).optional(),
+  offset: z.coerce.number().int().min(0).default(0).optional(),
+}).strict();
+
+export const AiUsageDailyQuerySchema = z.object({
+  days: z.coerce.number().int().min(1).max(365).default(30).optional(),
+}).strict();
+
+export const AiUsageRangeQuerySchema = z.object({
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+}).strict();
+
+/**
  * Type exports
  */
 export type AiNatalInput = z.infer<typeof AiNatalSchema>;
