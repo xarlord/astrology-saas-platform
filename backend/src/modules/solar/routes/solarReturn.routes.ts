@@ -4,7 +4,16 @@
  */
 
 import { Router } from 'express';
-import solarReturnController from '../controllers/solarReturn.controller';
+import {
+  calculateSolarReturn,
+  getSolarReturnByYear,
+  getSolarReturnHistory,
+  getSolarReturnStats,
+  getAvailableYears,
+  getSolarReturnById,
+  recalculateSolarReturn,
+  deleteSolarReturn,
+} from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
 import { validateBody, validateParams, validateQuery, uuidParamSchema, solarHistoryQuerySchema } from '../../../utils/validators';
 import { z } from 'zod';
@@ -89,7 +98,7 @@ router.use(authenticate);
 router.post(
   '/calculate',
   validateBody(calculateSchema),
-  solarReturnController.calculateSolarReturn
+  calculateSolarReturn
 );
 
 /**
@@ -117,7 +126,7 @@ router.post(
 router.get(
   '/year/:year',
   validateParams(z.object({ year: z.coerce.number().int().min(1900).max(2100) })),
-  solarReturnController.getSolarReturnByYear
+  getSolarReturnByYear
 );
 
 /**
@@ -137,7 +146,7 @@ router.get(
 router.get(
   '/history',
   validateQuery(solarHistoryQuerySchema),
-  solarReturnController.getSolarReturnHistory
+  getSolarReturnHistory
 );
 
 /**
@@ -156,7 +165,7 @@ router.get(
  */
 router.get(
   '/stats',
-  solarReturnController.getSolarReturnStats
+  getSolarReturnStats
 );
 
 /**
@@ -175,7 +184,7 @@ router.get(
  */
 router.get(
   '/years/available',
-  solarReturnController.getAvailableYears
+  getAvailableYears
 );
 
 /**
@@ -204,7 +213,7 @@ router.get(
 router.get(
   '/:id',
   validateParams(uuidParamSchema),
-  solarReturnController.getSolarReturnById
+  getSolarReturnById
 );
 
 /**
@@ -255,7 +264,7 @@ router.get(
 router.post(
   '/:id/recalculate',
   validateBody(recalculateSchema),
-  solarReturnController.recalculateSolarReturn
+  recalculateSolarReturn
 );
 
 /**
@@ -284,7 +293,7 @@ router.post(
 router.delete(
   '/:id',
   validateParams(uuidParamSchema),
-  solarReturnController.deleteSolarReturn
+  deleteSolarReturn
 );
 
 export { router as solarReturnRoutes };

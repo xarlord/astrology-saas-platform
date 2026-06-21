@@ -94,8 +94,6 @@ const MARGIN_RIGHT = 20;
 
 // Content area dimensions
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
-// Note: CONTENT_HEIGHT is not currently used but kept for future use
-// const CONTENT_HEIGHT = PAGE_HEIGHT - MARGIN_TOP - MARGIN_BOTTOM;
 
 // Cosmic theme colors (RGB values for PDF)
 const COLORS = {

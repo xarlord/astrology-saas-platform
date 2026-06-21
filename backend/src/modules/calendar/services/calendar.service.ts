@@ -344,7 +344,6 @@ export function getEclipses(year: number): Eclipse[] {
  */
 export function calculateMoonPhases(month: number, year: number): MoonPhaseEvent[] {
   const phases: MoonPhaseEvent[] = [];
-  // const synodicMonth = 29.53058867; // days - removed unused
   const startDate = new Date(`${year}-${String(month).padStart(2, '0')}-01T00:00:00Z`);
 
   // Find first new moon of the month

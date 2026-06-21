@@ -11,9 +11,7 @@
 /* eslint-disable no-var */
 
 import { Response, NextFunction } from 'express';
-import solarReturnController from '../../modules/solar/controllers/solarReturn.controller';
-
-const {
+import {
   calculateSolarReturn,
   getSolarReturnByYear,
   getSolarReturnById,
@@ -22,7 +20,7 @@ const {
   getSolarReturnStats,
   deleteSolarReturn,
   getAvailableYears,
-} = solarReturnController;
+} from '../../modules/solar/controllers/solarReturn.controller';
 import solarReturnService from '../../modules/solar/services/solarReturn.service';
 import solarReturnModel from '../../modules/solar/models/solarReturn.model';
 import {
