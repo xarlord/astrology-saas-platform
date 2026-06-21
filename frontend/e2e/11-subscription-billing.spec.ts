@@ -15,7 +15,8 @@ import { test, expect } from '@playwright/test';
 // ---------------------------------------------------------------------------
 
 const API_BASE = '/api/v1';
-const VALID_PASSWORD = 'E2eTest123!';
+// >=12 chars per backend RegisterSchema (passwordRegex {12,}).
+const VALID_PASSWORD = 'E2eTest123!!';
 
 // ---------------------------------------------------------------------------
 // Inline helpers

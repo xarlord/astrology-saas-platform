@@ -7,7 +7,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import { requireAdmin } from '../../../middleware/admin';
-import { validateBody, validateParams, uuidParamSchema } from '../../../utils/validators';
+import { validateBody, validateParams, validateQuery, uuidParamSchema } from '../../../utils/validators';
 import {
   createPost,
   getPosts,
@@ -32,6 +32,14 @@ const updatePostSchema = z.object({
   image_url: z.string().max(500).nullable().optional(),
 });
 
+// Query schema for GET /api/v1/blog pagination.
+// Validates limit/offset at the route boundary (consistent with other paginated
+// routes) and prevents negative offsets from reaching the service layer (#347).
+const blogQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+  offset: z.coerce.number().int().min(0).default(0),
+});
+
 // Rate limiter for blog public GET routes
 const blogReadRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -42,7 +50,7 @@ const blogReadRateLimiter = rateLimit({
 });
 
 // Public routes
-router.get('/', blogReadRateLimiter, getPosts);
+router.get('/', blogReadRateLimiter, validateQuery(blogQuerySchema), getPosts);
 router.get('/:id', blogReadRateLimiter, validateParams(uuidParamSchema), getPost);
 
 // Admin routes

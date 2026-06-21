@@ -160,7 +160,8 @@ export async function registerAndLogin(
   userData?: { name?: string; email?: string; password?: string },
 ): Promise<AuthResponse> {
   const email = userData?.email ?? `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@astroverse.com`;
-  const password = userData?.password ?? 'E2eTest123!';
+  // >=12 chars per backend RegisterSchema (passwordRegex {12,}).
+  const password = userData?.password ?? 'E2eTest123!!';
 
   return registerUser(request, {
     name: userData?.name ?? 'E2E Test User',
@@ -301,7 +302,7 @@ export function generateTestUser() {
   return {
     name: `E2E User ${id}`,
     email: `e2e-${id}@astroverse.com`,
-    password: 'E2eTest123!',
+    password: 'E2eTest123!!', // >=12 chars per backend RegisterSchema
   };
 }
 

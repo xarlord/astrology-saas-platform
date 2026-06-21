@@ -22,7 +22,8 @@ import { test, expect } from '@playwright/test';
 import type { APIRequestContext, Page } from '@playwright/test';
 
 const API_BASE = '/api/v1';
-const VALID_PASSWORD = 'E2eTest123!';
+// NOTE: must be >=12 chars per backend RegisterSchema (passwordRegex {12,}).
+const VALID_PASSWORD = 'E2eTest123!!';
 
 // ---------------------------------------------------------------------------
 // Inline API helpers (relative URLs -> Vite proxy -> backend)
