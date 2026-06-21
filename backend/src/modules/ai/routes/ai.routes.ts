@@ -29,7 +29,7 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
 import { chartCreationRateLimiter } from '../../../middleware/rateLimiter';
 import { validateRequest } from '../../../middleware/validateRequest';
-import { validateBody } from '../../../utils/validators';
+import { validateBody, validateQuery } from '../../../utils/validators';
 import { z } from 'zod';
 import {
   AiNatalSchema,
@@ -37,6 +37,10 @@ import {
   AiCompatibilitySchema,
   AiLunarReturnSchema,
   AiSolarReturnSchema,
+  AiUsageStatsQuerySchema,
+  AiUsageHistoryQuerySchema,
+  AiUsageDailyQuerySchema,
+  AiUsageRangeQuerySchema,
 } from '../validations/ai.validation';
 
 const router = Router();
@@ -225,11 +229,19 @@ router.post(
  *     tags: [AI]
  *     summary: Get AI usage statistics
  *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - name: days
+ *         in: query
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 365
+ *           default: 30
  *     responses:
  *       200:
  *         description: Usage statistics
  */
-router.get('/usage/stats', getUserStats);
+router.get('/usage/stats', validateQuery(AiUsageStatsQuerySchema), getUserStats);
 
 /**
  * @route   GET /api/v1/ai/usage/history
@@ -242,11 +254,25 @@ router.get('/usage/stats', getUserStats);
  *     tags: [AI]
  *     summary: Get AI usage history
  *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - name: limit
+ *         in: query
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *       - name: offset
+ *         in: query
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *           default: 0
  *     responses:
  *       200:
  *         description: Usage history
  */
-router.get('/usage/history', getUsageHistory);
+router.get('/usage/history', validateQuery(AiUsageHistoryQuerySchema), getUsageHistory);
 
 /**
  * @route   GET /api/v1/ai/usage/daily
@@ -259,11 +285,19 @@ router.get('/usage/history', getUsageHistory);
  *     tags: [AI]
  *     summary: Get daily AI usage
  *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - name: days
+ *         in: query
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 365
+ *           default: 30
  *     responses:
  *       200:
  *         description: Daily usage data
  */
-router.get('/usage/daily', getDailyUsage);
+router.get('/usage/daily', validateQuery(AiUsageDailyQuerySchema), getDailyUsage);
 
 /**
  * @route   GET /api/v1/ai/usage/range
@@ -276,11 +310,22 @@ router.get('/usage/daily', getDailyUsage);
  *     tags: [AI]
  *     summary: Get AI usage by date range
  *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - name: startDate
+ *         in: query
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - name: endDate
+ *         in: query
+ *         schema:
+ *           type: string
+ *           format: date-time
  *     responses:
  *       200:
  *         description: Usage data for date range
  */
-router.get('/usage/range', getUsageByDateRange);
+router.get('/usage/range', validateQuery(AiUsageRangeQuerySchema), getUsageByDateRange);
 
 /**
  * @route   GET /api/v1/ai/usage/limit
