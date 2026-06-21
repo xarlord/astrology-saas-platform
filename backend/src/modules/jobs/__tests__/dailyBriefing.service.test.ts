@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import { formatBriefingContent, saveBriefing, getLatestBriefing } from '../services/dailyBriefing.service';
+import { formatBriefingContent, saveBriefing, getLatestBriefing, getBriefingByDate } from '../services/dailyBriefing.service';
 import knex from '../../../config/database';
 
 // Mock dependencies
@@ -376,6 +376,87 @@ describe('DailyBriefing Service', () => {
   });
 
   // ===== Data Structure Validation =====
+
+  // ===== getBriefingByDate =====
+
+  describe('getBriefingByDate', () => {
+    it('should retrieve the briefing for the requested date', async () => {
+      // Given
+      const mockRow = {
+        user_id: mockUserId,
+        date: '2026-04-08',
+        moon_phase: JSON.stringify(mockBriefing.moonPhase),
+        top_transits: JSON.stringify(mockBriefing.topTransits),
+        daily_theme: mockBriefing.dailyTheme,
+        affirmation: mockBriefing.affirmation,
+        planetary_highlight: JSON.stringify(mockBriefing.planetaryHighlight),
+      };
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      (knex('daily_briefings').where().first as jest.MockedFunction<any>).mockResolvedValue(
+        mockRow,
+      );
+
+      // When
+      const result = await getBriefingByDate(mockUserId, '2026-04-08');
+
+      // Then
+      expect(result).not.toBeNull();
+      expect(result!.userId).toBe(mockUserId);
+      expect(result!.date).toBe('2026-04-08');
+      expect(result!.moonPhase).toEqual(mockBriefing.moonPhase);
+    });
+
+    it('should return null when no briefing exists for the date', async () => {
+      // Given
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      (knex('daily_briefings').where().first as jest.MockedFunction<any>).mockResolvedValue(
+        null,
+      );
+
+      // When
+      const result = await getBriefingByDate(mockUserId, '1999-01-01');
+
+      // Then
+      expect(result).toBeNull();
+    });
+
+    it('should query by user_id AND date (not just latest)', async () => {
+      // Given — capture the query builder returned by knex() so we can inspect
+      // how it was chained. Use a distinct resolved value so the call is real.
+      const mockRow = {
+        user_id: mockUserId,
+        date: '2026-04-08',
+        moon_phase: JSON.stringify(mockBriefing.moonPhase),
+        top_transits: JSON.stringify(mockBriefing.topTransits),
+        daily_theme: mockBriefing.dailyTheme,
+        affirmation: mockBriefing.affirmation,
+        planetary_highlight: JSON.stringify(mockBriefing.planetaryHighlight),
+      };
+      const capturedBuilder: Record<string, any> = {
+        where: jest.fn().mockReturnThis(),
+        first: jest.fn().mockResolvedValue(mockRow),
+      };
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      (knex as jest.MockedFunction<typeof knex>).mockImplementationOnce(
+        () => capturedBuilder as any,
+      );
+
+      // When
+      const result = await getBriefingByDate(mockUserId, '2026-04-08');
+
+      // Then — the where clause must include BOTH user_id and date,
+      // which is what distinguishes this from getLatestBriefing (which only
+      // filters by user_id and orders by date desc).
+      expect(capturedBuilder.where).toHaveBeenCalledTimes(1);
+      expect(capturedBuilder.where).toHaveBeenCalledWith({
+        user_id: mockUserId,
+        date: '2026-04-08',
+      });
+      // Must NOT use orderBy('date','desc') like getLatestBriefing does
+      expect(capturedBuilder.orderBy).toBeUndefined();
+      expect(result!.date).toBe('2026-04-08');
+    });
+  });
 
   describe('DailyBriefing Interface', () => {
     it('should maintain valid interface structure', () => {
