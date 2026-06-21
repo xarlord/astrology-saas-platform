@@ -3,7 +3,6 @@
  * Visual display of lunar return chart
  */
 
-// import React from 'react';
 import { LunarReturnChart, LunarAspect } from '@/services/lunarReturn.api';
 import { INTENSITY_THRESHOLDS } from '../utils/constants';
 import './LunarReturn.css';
