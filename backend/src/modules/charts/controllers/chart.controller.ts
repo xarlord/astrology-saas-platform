@@ -227,12 +227,13 @@ export async function updateChart(req: AuthenticatedRequest, res: Response): Pro
 
   const { name, house_system, zodiac, sidereal_mode } = validatedData;
 
-  // Map validation schema values to model enum values
-  const mappedHouseSystem = house_system === 'whole-sign' ? ('whole' as any) : house_system; // eslint-disable-line @typescript-eslint/no-explicit-any
+  // Map validation schema values to model enum values using the type-safe mapper
+  // (same mapper used by createChart — maps 'whole-sign' → 'whole' without `as any`)
+  const mappedHouseSystem = house_system !== undefined ? mapHouseSystem(house_system) : undefined;
 
   const chart = await ChartModel.update(id, req.user.id, {
     name,
-    house_system: mappedHouseSystem as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    house_system: mappedHouseSystem,
     zodiac,
     sidereal_mode,
   });
