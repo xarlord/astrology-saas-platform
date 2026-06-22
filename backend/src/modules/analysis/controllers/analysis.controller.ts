@@ -269,9 +269,9 @@ export async function getHousesAnalysis(req: AuthenticatedRequest, res: Response
   const housesAnalysis = {
     houses: houseArray,
     planetsInHouses: buildPlanetsInHouses(planets, houses),
-    houseRulers: {},        // TODO(#124): implement house ruler calculation
-    emptyHouses: [] as number[],  // TODO(#124): implement empty house identification
-    stelliums: [] as unknown[],   // TODO(#124): implement stellium detection
+    houseRulers: {},        // See issue #362: implement house ruler calculation
+    emptyHouses: [] as number[],  // See issue #362: implement empty house identification
+    stelliums: [] as unknown[],   // See issue #362: implement stellium detection
   };
 
   res.status(200).json({
