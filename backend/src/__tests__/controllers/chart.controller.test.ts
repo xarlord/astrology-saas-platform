@@ -331,14 +331,17 @@ describe('Chart Controller', () => {
 
     it('should update house system', async () => {
       mockRequest.params = { id: '456' };
-      mockRequest.validated = { house_system: 'whole_sign' };
+      mockRequest.validated = { house_system: 'whole-sign' };
 
-      (ChartModel.update as jest.Mock).mockResolvedValue({ id: '456', house_system: 'whole_sign' });
+      (ChartModel.update as jest.Mock).mockResolvedValue({ id: '456', house_system: 'whole' });
 
       await updateChart(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(ChartModel.update).toHaveBeenCalledWith('456', '123', {
-        house_system: 'whole_sign',
+        house_system: 'whole',
+        name: undefined,
+        zodiac: undefined,
+        sidereal_mode: undefined,
       });
     });
 
