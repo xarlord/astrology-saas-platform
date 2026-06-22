@@ -9,6 +9,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import {
   getLatestBriefing,
+  getBriefingByDate as fetchBriefingByDate,
   generateBriefing,
   formatBriefingContent,
 } from '../services/dailyBriefing.service';
@@ -86,9 +87,9 @@ export async function getBriefingByDate(req: AuthenticatedRequest, res: Response
     return;
   }
 
-  const briefing = await getLatestBriefing(userId);
+  const briefing = await fetchBriefingByDate(userId, date);
 
-  if (!briefing || briefing.date !== date) {
+  if (!briefing) {
     res.status(404).json({ success: false, error: `No briefing found for ${date}` });
     return;
   }

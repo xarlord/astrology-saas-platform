@@ -260,14 +260,36 @@ export async function getLatestBriefing(userId: string): Promise<DailyBriefing |
 
   if (!row) return null;
 
+  return mapBriefingRow(row);
+}
+
+/**
+ * Get a briefing for a user on a specific date (history lookup).
+ * Returns null when no briefing exists for that exact date.
+ */
+export async function getBriefingByDate(
+  userId: string,
+  date: string,
+): Promise<DailyBriefing | null> {
+  const row = await knex('daily_briefings')
+    .where({ user_id: userId, date })
+    .first();
+
+  if (!row) return null;
+
+  return mapBriefingRow(row);
+}
+
+/** Map a raw DB row to a DailyBriefing domain object. */
+function mapBriefingRow(row: Record<string, unknown>): DailyBriefing {
   return {
-    userId: row.user_id,
-    date: row.date,
-    moonPhase: JSON.parse(row.moon_phase),
-    topTransits: JSON.parse(row.top_transits),
-    dailyTheme: row.daily_theme,
-    affirmation: row.affirmation,
-    planetaryHighlight: JSON.parse(row.planetary_highlight),
+    userId: row.user_id as string,
+    date: row.date as string,
+    moonPhase: JSON.parse(row.moon_phase as string),
+    topTransits: JSON.parse(row.top_transits as string),
+    dailyTheme: row.daily_theme as string,
+    affirmation: row.affirmation as string,
+    planetaryHighlight: JSON.parse(row.planetary_highlight as string),
   };
 }
 
@@ -472,4 +494,5 @@ export default {
   sendBriefingPush,
   saveBriefing,
   getLatestBriefing,
+  getBriefingByDate,
 };
