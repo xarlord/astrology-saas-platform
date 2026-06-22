@@ -3,7 +3,7 @@
  * Handles AI-powered interpretation requests
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
 import aiInterpretationService from '../services/aiInterpretation.service';
 import openaiService from '../services/openai.service';
@@ -14,7 +14,7 @@ import type { ChartData, TransitData, SynastryData } from '../services/aiInterpr
  * Generate AI-powered natal chart interpretation
  * POST /api/v1/ai/natal
  */
-export async function generateNatal(req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function generateNatal(req: Request, res: Response): Promise<void> {
   // Zod validation (AiNatalSchema) ensures runtime shape; cast to ChartData
   // for the service layer which uses a different type definition
   const chartData = req.validated as unknown as ChartData;
@@ -38,7 +38,7 @@ export async function generateNatal(req: Request, res: Response, _next: NextFunc
  * Generate AI-powered transit forecast
  * POST /api/v1/ai/transit
  */
-export async function generateTransit(req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function generateTransit(req: Request, res: Response): Promise<void> {
   const transitData = req.validated as unknown as TransitData;
 
   // Validate input
@@ -60,7 +60,7 @@ export async function generateTransit(req: Request, res: Response, _next: NextFu
  * Generate AI-powered compatibility analysis
  * POST /api/v1/ai/compatibility
  */
-export async function generateCompatibility(req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function generateCompatibility(req: Request, res: Response): Promise<void> {
   const validated = req.validated as unknown as SynastryData;
   const { chartA, chartB } = validated;
 
@@ -91,7 +91,7 @@ export async function generateCompatibility(req: Request, res: Response, _next: 
  * Generate AI-powered lunar return interpretation
  * POST /api/v1/ai/lunar-return
  */
-export async function generateLunarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function generateLunarReturn(req: Request, res: Response): Promise<void> {
   const chartData = req.validated as unknown as ChartData;
 
   // Validate input
@@ -113,7 +113,7 @@ export async function generateLunarReturn(req: Request, res: Response, _next: Ne
  * Generate AI-powered solar return interpretation
  * POST /api/v1/ai/solar-return
  */
-export async function generateSolarReturn(req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function generateSolarReturn(req: Request, res: Response): Promise<void> {
   const chartData = req.validated as unknown as ChartData;
 
   // Validate input
@@ -135,7 +135,7 @@ export async function generateSolarReturn(req: Request, res: Response, _next: Ne
  * Check AI service status
  * GET /api/v1/ai/status
  */
-export async function checkStatus(_req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function checkStatus(_req: Request, res: Response): Promise<void> {
   const configured = openaiService.isConfigured();
   const configStatus = openaiService.getConfigStatus();
 
@@ -153,7 +153,7 @@ export async function checkStatus(_req: Request, res: Response, _next: NextFunct
  * Get AI usage statistics
  * GET /api/v1/ai/usage
  */
-export async function getUsageStats(_req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function getUsageStats(_req: Request, res: Response): Promise<void> {
   const stats = await openaiService.getUsageStats();
 
   res.json({
@@ -166,7 +166,7 @@ export async function getUsageStats(_req: Request, res: Response, _next: NextFun
  * Clear AI interpretation cache
  * POST /api/v1/ai/cache/clear
  */
-export async function clearCache(req: Request, res: Response, _next: NextFunction): Promise<void> {
+export async function clearCache(req: Request, res: Response): Promise<void> {
   await aiInterpretationService.clearCache();
 
   logger.info('AI interpretation cache cleared', { userId: req.user?.id });

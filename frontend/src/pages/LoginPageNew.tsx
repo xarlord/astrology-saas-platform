@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Helmet } from 'react-helmet-async';
+import { wasDailyBriefingViewedToday } from '../utils/uiPreferences';
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
@@ -29,9 +30,8 @@ export default function LoginPageNew() {
       // Show daily briefing if not viewed today, otherwise go to intended page
       const from =
         (location.state as { from?: { pathname?: string } })?.from?.pathname ?? '/dashboard';
-      const lastViewed = localStorage.getItem('dailyBriefingLastViewed');
-      const today = new Date().toISOString().split('T')[0];
-      if (lastViewed !== today && from === '/dashboard') {
+      const viewedToday = wasDailyBriefingViewedToday();
+      if (!viewedToday && from === '/dashboard') {
         navigate('/daily-briefing', { replace: true });
       } else {
         navigate(from, { replace: true });

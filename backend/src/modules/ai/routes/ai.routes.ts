@@ -80,7 +80,7 @@ const aiRateLimiter = chartCreationRateLimiter;
  *                 data:
  *                   type: object
  */
-router.get('/status', asyncHandler(async (req, res, next) => { await checkStatus(req, res, next); }));
+router.get('/status', asyncHandler(async (req, res) => { await checkStatus(req, res); }));
 
 // Protected endpoints (authentication required)
 router.use(authenticate);
@@ -113,7 +113,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiNatalSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res, next) => { await generateNatal(req, res, next); }),
+  asyncHandler(async (req, res) => { await generateNatal(req, res); }),
 );
 
 /**
@@ -138,7 +138,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiTransitSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res, next) => { await generateTransit(req, res, next); }),
+  asyncHandler(async (req, res) => { await generateTransit(req, res); }),
 );
 
 /**
@@ -163,7 +163,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiCompatibilitySchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res, next) => { await generateCompatibility(req, res, next); }),
+  asyncHandler(async (req, res) => { await generateCompatibility(req, res); }),
 );
 
 /**
@@ -188,7 +188,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiLunarReturnSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res, next) => { await generateLunarReturn(req, res, next); }),
+  asyncHandler(async (req, res) => { await generateLunarReturn(req, res); }),
 );
 
 /**
@@ -213,7 +213,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiSolarReturnSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res, next) => { await generateSolarReturn(req, res, next); }),
+  asyncHandler(async (req, res) => { await generateSolarReturn(req, res); }),
 );
 
 // Usage tracking endpoints
@@ -396,7 +396,7 @@ router.post('/usage/estimate', validateBody(estimateCostSchema), estimateCost);
  *       200:
  *         description: Usage statistics
  */
-router.get('/usage', asyncHandler(async (req, res, next) => { await getUsageStats(req, res, next); }));
+router.get('/usage', asyncHandler(async (req, res) => { await getUsageStats(req, res); }));
 
 /**
  * @route   POST /api/v1/ai/cache/clear
@@ -414,6 +414,6 @@ router.get('/usage', asyncHandler(async (req, res, next) => { await getUsageStat
  *         description: Cache cleared
  */
 // Cache clear requires admin — requireAdmin includes authenticate
-router.post('/cache/clear', requireAdmin[0], requireAdmin[1], asyncHandler(async (req, res, next) => { await clearCache(req, res, next); }));
+router.post('/cache/clear', requireAdmin[0], requireAdmin[1], asyncHandler(async (req, res) => { await clearCache(req, res); }));
 
 export { router as aiRoutes };
