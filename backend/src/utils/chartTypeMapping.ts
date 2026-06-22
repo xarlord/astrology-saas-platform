@@ -6,18 +6,25 @@
 
 /**
  * Valid house system values from validation schema
+ *
+ * NOTE: Must match the z.enum() in shared/schemas/chart.validation.ts:
+ *   z.enum(['placidus', 'koch', 'porphyry', 'equal', 'whole-sign', 'whole', 'topocentric'])
+ *
+ * The validation schema accepts BOTH 'whole-sign' and 'whole' as separate values.
+ * The model (chart.model.ts) only stores 'whole'.
  */
-export type ValidationHouseSystem = 
+export type ValidationHouseSystem =
   | 'placidus'
   | 'koch'
   | 'porphyry'
   | 'whole-sign'
+  | 'whole'
   | 'equal'
-  | 'topocentric'
-  | 'campanus';
+  | 'topocentric';
 
 /**
  * House system values in the database model
+ * Matches the type in chart.model.ts: 'placidus' | 'koch' | 'porphyry' | 'whole' | 'equal' | 'topocentric'
  */
 export type ModelHouseSystem =
   | 'placidus'
@@ -25,11 +32,11 @@ export type ModelHouseSystem =
   | 'porphyry'
   | 'whole'
   | 'equal'
-  | 'topocentric'
-  | 'campanus';
+  | 'topocentric';
 
 /**
  * Map validation house system to model house system
+ * Both 'whole-sign' and 'whole' from validation map to model's 'whole'.
  */
 export const mapHouseSystem = (
   houseSystem: ValidationHouseSystem
@@ -39,9 +46,9 @@ export const mapHouseSystem = (
     'koch': 'koch',
     'porphyry': 'porphyry',
     'whole-sign': 'whole',
+    'whole': 'whole',
     'equal': 'equal',
     'topocentric': 'topocentric',
-    'campanus': 'campanus',
   };
   return mapping[houseSystem];
 };

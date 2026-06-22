@@ -10,16 +10,38 @@ import {
 } from '../uiPreferences';
 
 describe('uiPreferences utility', () => {
+  // The global test setup (src/__tests__/setup.ts) installs a no-op localStorage
+  // mock whose getItem() always returns undefined. uiPreferences uses real
+  // get/set semantics, so install a proper in-memory localStorage for this suite.
+  let store: Record<string, string>;
+  const inMemoryStorage = {
+    getItem: (key: string): string | null => (key in store ? store[key] : null),
+    setItem: (key: string, value: string): void => {
+      store[key] = String(value);
+    },
+    removeItem: (key: string): void => {
+      delete store[key];
+    },
+    clear: (): void => {
+      store = {};
+    },
+    key: (index: number): string | null => Object.keys(store)[index] ?? null,
+    get length(): number {
+      return Object.keys(store).length;
+    },
+  };
+
   beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear();
+    store = {};
+    // Temporarily replace the global no-op mock with a real in-memory one.
+    vi.stubGlobal('localStorage', inMemoryStorage);
     // Mock Date to ensure consistent test results
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-22T12:00:00Z'));
   });
 
   afterEach(() => {
-    localStorage.clear();
+    vi.unstubAllGlobals();
     vi.useRealTimers();
   });
 

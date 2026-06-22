@@ -31,8 +31,8 @@ describe('chartTypeMapping utilities', () => {
       expect(mapHouseSystem('topocentric')).toBe('topocentric');
     });
 
-    it('should pass through campanus unchanged', () => {
-      expect(mapHouseSystem('campanus')).toBe('campanus');
+    it('should pass through whole unchanged', () => {
+      expect(mapHouseSystem('whole')).toBe('whole');
     });
   });
 
