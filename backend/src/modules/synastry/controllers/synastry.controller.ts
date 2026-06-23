@@ -65,7 +65,7 @@ const buildChartFromRow = (row: Record<string, unknown>): Chart => {
  * Compare two natal charts
  * POST /synastry/compare
  */
-export const compareCharts = asyncHandler(
+const compareCharts = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
 
@@ -146,7 +146,7 @@ export const compareCharts = asyncHandler(
  * Calculate compatibility score
  * POST /synastry/compatibility
  */
-export const getCompatibility = asyncHandler(
+const getCompatibility = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
 
@@ -205,7 +205,7 @@ export const getCompatibility = asyncHandler(
  * Get all synastry comparisons for user
  * GET /synastry/reports
  */
-export const getSynastryReports = asyncHandler(
+const getSynastryReports = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
 
@@ -269,7 +269,7 @@ export const getSynastryReports = asyncHandler(
  * Get specific synastry report
  * GET /synastry/reports/:id
  */
-export const getSynastryReport = asyncHandler(
+const getSynastryReport = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
     const { id } = req.params;
@@ -309,7 +309,7 @@ export const getSynastryReport = asyncHandler(
  * Delete synastry report
  * DELETE /synastry/reports/:id
  */
-export const deleteSynastryReport = asyncHandler(
+const deleteSynastryReport = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
     const { id } = req.params;
@@ -338,7 +338,7 @@ export const deleteSynastryReport = asyncHandler(
  * Update synastry report (notes, favorite status)
  * PATCH /synastry/reports/:id
  */
-export const updateSynastryReport = asyncHandler(
+const updateSynastryReport = asyncHandler(
   async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
     const { id } = req.params;
@@ -377,7 +377,7 @@ export const updateSynastryReport = asyncHandler(
   },
 );
 
-export default {
+export {
   compareCharts,
   getCompatibility,
   getSynastryReports,
