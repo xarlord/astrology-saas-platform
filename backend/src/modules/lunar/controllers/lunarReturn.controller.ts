@@ -64,7 +64,7 @@ async function getUserNatalChart(userId: string): Promise<NatalChart | null> {
  * Get next lunar return date
  * GET /lunar-return/next
  */
-export const getNextLunarReturn = asyncHandler(
+const getNextLunarReturn = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
@@ -93,7 +93,7 @@ export const getNextLunarReturn = asyncHandler(
  * Get current lunar return information
  * GET /lunar-return/current
  */
-export const getCurrentLunarReturn = asyncHandler(
+const getCurrentLunarReturn = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
@@ -127,7 +127,7 @@ export const getCurrentLunarReturn = asyncHandler(
  * Get lunar return chart
  * POST /lunar-return/chart
  */
-export const getLunarReturnChart = asyncHandler(
+const getLunarReturnChart = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
@@ -164,7 +164,7 @@ export const getLunarReturnChart = asyncHandler(
  * Get monthly forecast
  * POST /lunar-return/forecast
  */
-export const getLunarMonthForecast = asyncHandler(
+const getLunarMonthForecast = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
@@ -229,7 +229,7 @@ export const getLunarMonthForecast = asyncHandler(
  * Get saved lunar returns
  * GET /lunar-return/history
  */
-export const getLunarReturnHistory = asyncHandler(
+const getLunarReturnHistory = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
@@ -285,7 +285,7 @@ export const getLunarReturnHistory = asyncHandler(
  * Delete a lunar return
  * DELETE /lunar-return/:id
  */
-export const deleteLunarReturn = asyncHandler(
+const deleteLunarReturn = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     const { id } = req.params;
@@ -313,7 +313,7 @@ export const deleteLunarReturn = asyncHandler(
  * Calculate custom lunar return for any date
  * POST /lunar-return/calculate
  */
-export const calculateCustomLunarReturn = asyncHandler(
+const calculateCustomLunarReturn = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
     const userId = req.user?.id;
     if (!userId) {
@@ -356,7 +356,7 @@ export const calculateCustomLunarReturn = asyncHandler(
   },
 );
 
-export default {
+export {
   getNextLunarReturn,
   getCurrentLunarReturn,
   getLunarReturnChart,

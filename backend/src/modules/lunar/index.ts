@@ -19,4 +19,3 @@ export {
   deleteLunarReturn,
   calculateCustomLunarReturn,
 } from './controllers/lunarReturn.controller';
-export { default as lunarReturnController } from './controllers/lunarReturn.controller';
