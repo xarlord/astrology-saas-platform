@@ -5,6 +5,7 @@
 
 import { Request, Response } from 'express';
 import { AppError } from '../../../utils/appError';
+import { AuthenticatedRequest } from '../../../middleware/auth';
 import aiInterpretationService from '../services/aiInterpretation.service';
 import openaiService from '../services/openai.service';
 import logger from '../../../utils/logger';
@@ -14,7 +15,7 @@ import type { ChartData, TransitData, SynastryData } from '../services/aiInterpr
  * Generate AI-powered natal chart interpretation
  * POST /api/v1/ai/natal
  */
-export async function generateNatal(req: Request, res: Response): Promise<void> {
+export async function generateNatal(req: AuthenticatedRequest, res: Response): Promise<void> {
   // Zod validation (AiNatalSchema) ensures runtime shape; cast to ChartData
   // for the service layer which uses a different type definition
   const chartData = req.validated as unknown as ChartData;
@@ -24,7 +25,7 @@ export async function generateNatal(req: Request, res: Response): Promise<void> 
     throw new AppError('Chart data must include at least one planet position', 400);
   }
 
-  logger.info('Generating AI natal interpretation', { userId: req.user?.id });
+  logger.info('Generating AI natal interpretation', { userId: req.user.id });
 
   const interpretation = await aiInterpretationService.generateNatal(chartData);
 
@@ -38,7 +39,7 @@ export async function generateNatal(req: Request, res: Response): Promise<void> 
  * Generate AI-powered transit forecast
  * POST /api/v1/ai/transit
  */
-export async function generateTransit(req: Request, res: Response): Promise<void> {
+export async function generateTransit(req: AuthenticatedRequest, res: Response): Promise<void> {
   const transitData = req.validated as unknown as TransitData;
 
   // Validate input
@@ -46,7 +47,7 @@ export async function generateTransit(req: Request, res: Response): Promise<void
     throw new AppError('Transit data must include at least one transit event', 400);
   }
 
-  logger.info('Generating AI transit forecast', { userId: req.user?.id });
+  logger.info('Generating AI transit forecast', { userId: req.user.id });
 
   const forecast = await aiInterpretationService.generateTransit(transitData);
 
@@ -60,7 +61,7 @@ export async function generateTransit(req: Request, res: Response): Promise<void
  * Generate AI-powered compatibility analysis
  * POST /api/v1/ai/compatibility
  */
-export async function generateCompatibility(req: Request, res: Response): Promise<void> {
+export async function generateCompatibility(req: AuthenticatedRequest, res: Response): Promise<void> {
   const validated = req.validated as unknown as SynastryData;
   const { chartA, chartB } = validated;
 
@@ -77,7 +78,7 @@ export async function generateCompatibility(req: Request, res: Response): Promis
     throw new AppError('chartB must include at least one planet position', 400);
   }
 
-  logger.info('Generating AI compatibility analysis', { userId: req.user?.id });
+  logger.info('Generating AI compatibility analysis', { userId: req.user.id });
 
   const analysis = await aiInterpretationService.generateCompatibility({ chartA, chartB });
 
@@ -91,7 +92,7 @@ export async function generateCompatibility(req: Request, res: Response): Promis
  * Generate AI-powered lunar return interpretation
  * POST /api/v1/ai/lunar-return
  */
-export async function generateLunarReturn(req: Request, res: Response): Promise<void> {
+export async function generateLunarReturn(req: AuthenticatedRequest, res: Response): Promise<void> {
   const chartData = req.validated as unknown as ChartData;
 
   // Validate input
@@ -99,7 +100,7 @@ export async function generateLunarReturn(req: Request, res: Response): Promise<
     throw new AppError('Chart data must include at least one planet position', 400);
   }
 
-  logger.info('Generating AI lunar return interpretation', { userId: req.user?.id });
+  logger.info('Generating AI lunar return interpretation', { userId: req.user.id });
 
   const interpretation = await aiInterpretationService.generateLunarReturn(chartData);
 
@@ -113,7 +114,7 @@ export async function generateLunarReturn(req: Request, res: Response): Promise<
  * Generate AI-powered solar return interpretation
  * POST /api/v1/ai/solar-return
  */
-export async function generateSolarReturn(req: Request, res: Response): Promise<void> {
+export async function generateSolarReturn(req: AuthenticatedRequest, res: Response): Promise<void> {
   const chartData = req.validated as unknown as ChartData;
 
   // Validate input
@@ -121,7 +122,7 @@ export async function generateSolarReturn(req: Request, res: Response): Promise<
     throw new AppError('Chart data must include at least one planet position', 400);
   }
 
-  logger.info('Generating AI solar return interpretation', { userId: req.user?.id });
+  logger.info('Generating AI solar return interpretation', { userId: req.user.id });
 
   const interpretation = await aiInterpretationService.generateSolarReturn(chartData);
 
@@ -166,10 +167,10 @@ export async function getUsageStats(_req: Request, res: Response): Promise<void>
  * Clear AI interpretation cache
  * POST /api/v1/ai/cache/clear
  */
-export async function clearCache(req: Request, res: Response): Promise<void> {
+export async function clearCache(req: AuthenticatedRequest, res: Response): Promise<void> {
   await aiInterpretationService.clearCache();
 
-  logger.info('AI interpretation cache cleared', { userId: req.user?.id });
+  logger.info('AI interpretation cache cleared', { userId: req.user.id });
 
   res.json({
     success: true,

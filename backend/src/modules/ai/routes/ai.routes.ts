@@ -23,7 +23,7 @@ import {
   getPricing,
   checkUsageLimit,
 } from '../controllers/aiUsage.controller';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { requireAdmin } from '../../../middleware/admin';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { enforceAILimit } from '../../../middleware/planEnforcement';
@@ -113,7 +113,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiNatalSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res) => { await generateNatal(req, res); }),
+  asyncHandler(async (req, res) => { await generateNatal(req as AuthenticatedRequest, res); }),
 );
 
 /**
@@ -138,7 +138,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiTransitSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res) => { await generateTransit(req, res); }),
+  asyncHandler(async (req, res) => { await generateTransit(req as AuthenticatedRequest, res); }),
 );
 
 /**
@@ -163,7 +163,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiCompatibilitySchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res) => { await generateCompatibility(req, res); }),
+  asyncHandler(async (req, res) => { await generateCompatibility(req as AuthenticatedRequest, res); }),
 );
 
 /**
@@ -188,7 +188,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiLunarReturnSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res) => { await generateLunarReturn(req, res); }),
+  asyncHandler(async (req, res) => { await generateLunarReturn(req as AuthenticatedRequest, res); }),
 );
 
 /**
@@ -213,7 +213,7 @@ router.post(
   aiRateLimiter,
   validateRequest(AiSolarReturnSchema),
   enforceAILimit as RequestHandler,
-  asyncHandler(async (req, res) => { await generateSolarReturn(req, res); }),
+  asyncHandler(async (req, res) => { await generateSolarReturn(req as AuthenticatedRequest, res); }),
 );
 
 // Usage tracking endpoints
@@ -414,6 +414,6 @@ router.get('/usage', asyncHandler(async (req, res) => { await getUsageStats(req,
  *         description: Cache cleared
  */
 // Cache clear requires admin — requireAdmin includes authenticate
-router.post('/cache/clear', requireAdmin[0], requireAdmin[1], asyncHandler(async (req, res) => { await clearCache(req, res); }));
+router.post('/cache/clear', requireAdmin[0], requireAdmin[1], asyncHandler(async (req, res) => { await clearCache(req as AuthenticatedRequest, res); }));
 
 export { router as aiRoutes };
