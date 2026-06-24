@@ -7,6 +7,7 @@
 
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import ChartModel from '../../charts/models/chart.model';
+import { NotFoundError, BadRequestError } from '../../../../utils/appError';
 
 export interface TransitDay {
   date: string; // YYYY-MM-DD
@@ -89,7 +90,7 @@ export async function generateMonthlyTransitReport(
   const charts = await ChartModel.findByUserId(userId);
   const chart = charts[0]; // Get the first (primary) chart
   if (!chart) {
-    throw new Error('No natal chart found. Please create a natal chart first.');
+    throw new NotFoundError('No natal chart found. Please create a natal chart first.');
   }
 
   // Parse month or use current month
@@ -98,7 +99,7 @@ export async function generateMonthlyTransitReport(
 
   // Validate month format
   if (!year || !monthNum || monthNum < 1 || monthNum > 12) {
-    throw new Error('Invalid month format. Use YYYY-MM.');
+    throw new BadRequestError('Invalid month format. Use YYYY-MM.');
   }
 
   // Calculate last day of month

@@ -11,6 +11,7 @@ import {
 import { calculateMoonPhase } from '../../calendar/services/calendar.service';
 import { MoonPhase } from '../../calendar/models/calendar.model';
 import knex from '../../../config/database';
+import { NotFoundError } from '../../../../utils/appError';
 
 // Module-level singleton for the real calculation engine
 const astronomyEngine = new AstronomyEngineService();
@@ -797,7 +798,7 @@ export async function getCurrentLunarReturn(userId: string): Promise<{
 
   if (!userChart) {
     // No natal chart — throw so the controller catches it as NotFoundError
-    throw new Error('No natal chart found. Please create a birth chart first.');
+    throw new NotFoundError('No natal chart found. Please create a birth chart first.');
   }
 
   // Extract moon position from calculated_data JSONB (same as controller helper)
