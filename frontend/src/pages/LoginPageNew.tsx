@@ -52,9 +52,9 @@ export default function LoginPageNew() {
         <title>Sign In — AstroVerse</title>
       </Helmet>
       {/* WCAG 2.1 AA - Skip Navigation Link */}
-      <a href="#main-content" className="skip-link">
+      <Link to="#main-content" className="skip-link">
         Skip to main content
-      </a>
+      </Link>
       <main id="main-content">
         <div className="flex min-h-screen w-full flex-col lg:flex-row">
           {/* Left Panel: Cosmic Artwork */}

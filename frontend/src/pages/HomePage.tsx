@@ -18,7 +18,7 @@ export default function HomePage() {
         <meta name="description" content="Astrology SaaS platform for natal charts, transits, and cosmic insights." />
       </Helmet>
       {/* Skip to content */}
-      <a href="#main-content" className="skip-link">Skip to main content</a>
+      <Link to="#main-content" className="skip-link">Skip to main content</Link>
 
       {/* ===== Navigation ===== */}
       <nav className="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
@@ -34,9 +34,9 @@ export default function HomePage() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Features</a>
-              <a href="#testimonials" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Testimonials</a>
-              <a href="#pricing" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Pricing</a>
+              <Link to="#features" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Features</Link>
+              <Link to="#testimonials" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Testimonials</Link>
+              <Link to="#pricing" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Pricing</Link>
             </div>
 
             {/* CTA Buttons */}
@@ -95,27 +95,27 @@ export default function HomePage() {
           </button>
         </div>
         <div className="flex flex-col p-6 gap-1">
-          <a
-            href="#features"
+          <Link
+            to="#features"
             className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Features
-          </a>
-          <a
-            href="#testimonials"
+          </Link>
+          <Link
+            to="#testimonials"
             className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Testimonials
-          </a>
-          <a
-            href="#pricing"
+          </Link>
+          <Link
+            to="#pricing"
             className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Pricing
-          </a>
+          </Link>
           <div className="my-4 border-t border-cosmic-border" />
           <Link
             to="/login"
