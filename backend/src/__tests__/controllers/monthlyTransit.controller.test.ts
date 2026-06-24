@@ -1,6 +1,9 @@
 /**
  * Monthly Transit Controller Unit Tests
- * Tests getMonthlyTransitReport function
+ * Tests getMonthlyTransitReport and getCurrentMonthlyReport functions.
+ *
+ * Controllers follow the project convention: standalone async functions
+ * (req, res) that throw AppError on failure (caught by global errorHandler).
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -33,9 +36,9 @@ jest.mock('../../utils/logger', () => ({
 // Imports (after mocks are set up)
 // ---------------------------------------------------------------------------
 
-import { Response, NextFunction } from 'express';
-import { getMonthlyTransitReport } from '../../modules/reports/controllers/monthlyTransit.controller';
-import { AppError } from '../../utils/appError';
+import { Response } from 'express';
+import { getMonthlyTransitReport, getCurrentMonthlyReport } from '../../modules/reports/controllers/monthlyTransit.controller';
+import { AppError, UnauthorizedError, NotFoundError, ForbiddenError } from '../../utils/appError';
 import UserModel from '../../modules/users/models/user.model';
 
 // Mock UserModel
@@ -87,54 +90,42 @@ describe('Monthly Transit Controller', () => {
   });
 
   describe('getMonthlyTransitReport', () => {
-    it('should return 401 if user is not authenticated', async () => {
+    it('should throw UnauthorizedError (401) if user is not authenticated', async () => {
       const req = createMockRequest({ user: null });
       const res = createMockResponse();
-      const next = jest.fn() as unknown as NextFunction;
 
-      await getMonthlyTransitReport(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({
-          statusCode: 401,
-          message: 'Authentication required',
-        }),
-      );
+      await expect(getMonthlyTransitReport(req, res)).rejects.toThrow(UnauthorizedError);
+      await expect(getMonthlyTransitReport(req, res)).rejects.toMatchObject({
+        statusCode: 401,
+        message: 'Authentication required',
+      });
     });
 
-    it('should return 404 if user not found', async () => {
+    it('should throw NotFoundError (404) if user not found', async () => {
       const req = createMockRequest();
       const res = createMockResponse();
-      const next = jest.fn() as unknown as NextFunction;
       (UserModel.findById as jest.Mock).mockResolvedValue(null);
 
-      await getMonthlyTransitReport(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({
-          statusCode: 404,
-          message: 'User not found',
-        }),
-      );
+      await expect(getMonthlyTransitReport(req, res)).rejects.toThrow(NotFoundError);
+      await expect(getMonthlyTransitReport(req, res)).rejects.toMatchObject({
+        statusCode: 404,
+        message: 'User not found',
+      });
     });
 
-    it('should return 403 if user is not premium', async () => {
+    it('should throw ForbiddenError (403) if user is not premium', async () => {
       const req = createMockRequest();
       const res = createMockResponse();
-      const next = jest.fn() as unknown as NextFunction;
       (UserModel.findById as jest.Mock).mockResolvedValue({
         id: 'user-123',
         plan: 'free',
       });
 
-      await getMonthlyTransitReport(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({
-          statusCode: 403,
-          message: expect.stringContaining('Premium subscription'),
-        }),
-      );
+      await expect(getMonthlyTransitReport(req, res)).rejects.toThrow(ForbiddenError);
+      await expect(getMonthlyTransitReport(req, res)).rejects.toMatchObject({
+        statusCode: 403,
+        message: expect.stringContaining('Premium subscription'),
+      });
     });
 
     it('should generate report for premium user', async () => {
@@ -153,7 +144,7 @@ describe('Monthly Transit Controller', () => {
       });
       mockRegistry.generateMonthlyTransitReport.mockResolvedValue(mockReport);
 
-      await getMonthlyTransitReport(req, res, jest.fn() as unknown as NextFunction);
+      await getMonthlyTransitReport(req, res);
 
       expect(UserModel.findById).toHaveBeenCalledWith('user-123');
       expect(mockRegistry.generateMonthlyTransitReport).toHaveBeenCalledWith('user-123', undefined);
@@ -179,7 +170,7 @@ describe('Monthly Transit Controller', () => {
       });
       mockRegistry.generateMonthlyTransitReport.mockResolvedValue(mockReport);
 
-      await getMonthlyTransitReport(req, res, jest.fn() as unknown as NextFunction);
+      await getMonthlyTransitReport(req, res);
 
       expect(mockRegistry.generateMonthlyTransitReport).toHaveBeenCalledWith('user-123', '2024-02');
       expect(res.json).toHaveBeenCalledWith({
@@ -188,10 +179,9 @@ describe('Monthly Transit Controller', () => {
       });
     });
 
-    it('should call next on service error', async () => {
+    it('should propagate service errors (no try/catch swallowing)', async () => {
       const req = createMockRequest();
       const res = createMockResponse();
-      const next = jest.fn() as unknown as NextFunction;
       const serviceError = new AppError('Service unavailable', 503);
       (UserModel.findById as jest.Mock).mockResolvedValue({
         id: 'user-123',
@@ -199,9 +189,41 @@ describe('Monthly Transit Controller', () => {
       });
       mockRegistry.generateMonthlyTransitReport.mockRejectedValue(serviceError);
 
-      await getMonthlyTransitReport(req, res, next);
+      // Controller should propagate the error directly (global errorHandler catches it)
+      await expect(getMonthlyTransitReport(req, res)).rejects.toBe(serviceError);
+    });
+  });
 
-      expect(next).toHaveBeenCalledWith(serviceError);
+  describe('getCurrentMonthlyReport', () => {
+    it('should throw UnauthorizedError (401) if user is not authenticated', async () => {
+      const req = createMockRequest({ user: null, method: 'GET', path: '/api/v1/reports/monthly/current' });
+      const res = createMockResponse();
+
+      await expect(getCurrentMonthlyReport(req, res)).rejects.toThrow(UnauthorizedError);
+    });
+
+    it('should generate current month report for premium user', async () => {
+      const req = createMockRequest({ method: 'GET', path: '/api/v1/reports/monthly/current' });
+      const res = createMockResponse();
+      const mockReport = {
+        userId: 'user-123',
+        month: '2024-03',
+        dailyTransits: [],
+      };
+      (UserModel.findById as jest.Mock).mockResolvedValue({
+        id: 'user-123',
+        plan: 'premium',
+      });
+      mockRegistry.generateMonthlyTransitReport.mockResolvedValue(mockReport);
+
+      await getCurrentMonthlyReport(req, res);
+
+      // Current month endpoint calls service with only userId (no month)
+      expect(mockRegistry.generateMonthlyTransitReport).toHaveBeenCalledWith('user-123');
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockReport,
+      });
     });
   });
 });
