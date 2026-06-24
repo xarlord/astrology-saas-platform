@@ -72,6 +72,17 @@ export function addRecentLocationSearch(location: { name: string; country: strin
 }
 
 /**
+ * Clear all recent location searches
+ */
+export function clearRecentLocationSearches(): void {
+  try {
+    localStorage.removeItem(KEYS.RECENT_LOCATION_SEARCHES);
+  } catch {
+    // Silently swallow storage errors (e.g. private mode)
+  }
+}
+
+/**
  * Get Learn page completed sections
  */
 export function getLearnPageCompleted(): string[] {
