@@ -7,8 +7,7 @@
 
 import { Router, RequestHandler } from 'express';
 import { z } from 'zod';
-import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
-import { asyncHandler } from '../../../middleware/errorHandler';
+import { authenticate } from '../../../middleware/auth';
 import { validateBody } from '../../../utils/validators';
 import {
   getMonthlyTransitReport,
@@ -57,9 +56,7 @@ router.use(authenticate);
 router.post(
   '/',
   validateBody(monthlyReportSchema),
-  asyncHandler(async (req, res) => {
-    await getMonthlyTransitReport(req as AuthenticatedRequest, res);
-  }) as RequestHandler,
+  getMonthlyTransitReport as RequestHandler,
 );
 
 /**
@@ -82,9 +79,7 @@ router.post(
  */
 router.get(
   '/current',
-  asyncHandler(async (req, res) => {
-    await getCurrentMonthlyReport(req as AuthenticatedRequest, res);
-  }) as RequestHandler,
+  getCurrentMonthlyReport as RequestHandler,
 );
 
 export { router as monthlyTransitRoutes };

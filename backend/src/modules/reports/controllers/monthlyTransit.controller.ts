@@ -5,7 +5,7 @@
  * CHI-123: Backend API endpoint for monthly transit reports
  */
 
-import { Response } from 'express';
+import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { generateMonthlyTransitReport } from '../services/monthlyTransit.service';
 import UserModel from '../../users/models/user.model';
@@ -46,27 +46,32 @@ async function requirePremiumUser(req: AuthenticatedRequest): Promise<void> {
 export async function getMonthlyTransitReport(
   req: AuthenticatedRequest,
   res: Response,
+  next: NextFunction,
 ): Promise<void> {
-  await requirePremiumUser(req);
+  try {
+    await requirePremiumUser(req);
 
-  const userId = req.user?.id;
-  if (!userId) {
-    throw new BadRequestError('User authentication required');
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new BadRequestError('User authentication required');
+    }
+    const { month } = req.body;
+
+    // Validate month format if provided
+    if (month && !/^\d{4}-\d{2}$/.test(month)) {
+      throw new BadRequestError('Invalid month format. Use YYYY-MM.');
+    }
+
+    // Generate monthly transit report
+    const report = await generateMonthlyTransitReport(userId, month);
+
+    res.json({
+      success: true,
+      data: report,
+    });
+  } catch (err) {
+    next(err);
   }
-  const { month } = req.body;
-
-  // Validate month format if provided
-  if (month && !/^\d{4}-\d{2}$/.test(month)) {
-    throw new BadRequestError('Invalid month format. Use YYYY-MM.');
-  }
-
-  // Generate monthly transit report
-  const report = await generateMonthlyTransitReport(userId, month);
-
-  res.json({
-    success: true,
-    data: report,
-  });
 }
 
 /**
@@ -76,19 +81,24 @@ export async function getMonthlyTransitReport(
 export async function getCurrentMonthlyReport(
   req: AuthenticatedRequest,
   res: Response,
+  next: NextFunction,
 ): Promise<void> {
-  await requirePremiumUser(req);
+  try {
+    await requirePremiumUser(req);
 
-  const userId = req.user?.id;
-  if (!userId) {
-    throw new BadRequestError('User authentication required');
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new BadRequestError('User authentication required');
+    }
+
+    // Generate current month's report
+    const report = await generateMonthlyTransitReport(userId);
+
+    res.json({
+      success: true,
+      data: report,
+    });
+  } catch (err) {
+    next(err);
   }
-
-  // Generate current month's report
-  const report = await generateMonthlyTransitReport(userId);
-
-  res.json({
-    success: true,
-    data: report,
-  });
 }
