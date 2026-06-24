@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { useCharts } from '../hooks';
 import { authService } from '../services';
+import { setOnboardingDone } from '../utils/uiStorage';
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -82,7 +83,7 @@ export default function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
       // Silently fail - also use localStorage as fallback
     }
     // localStorage fallback for onboarding state
-    localStorage.setItem('astroscope_onboarding_done', 'true');
+    setOnboardingDone();
     onClose();
   };
 

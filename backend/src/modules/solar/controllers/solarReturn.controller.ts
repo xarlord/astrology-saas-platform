@@ -3,7 +3,7 @@
  * Handles HTTP requests for solar return calculations
  */
 
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import solarReturnService from '../services/solarReturn.service';
 import solarReturnModel from '../models/solarReturn.model';
 import { generateSolarReturnInterpretation } from '../../../data/solarReturnInterpretations';
@@ -14,6 +14,7 @@ import {
   ConflictError,
 } from '../../../utils/appError';
 import { asyncHandler } from '../../../middleware/errorHandler';
+import { AuthenticatedRequest } from '../../../middleware/auth';
 import { SolarReturnCalculationParams } from '../models/types';
 import knex from '../../../config/database';
 
@@ -21,11 +22,8 @@ import knex from '../../../config/database';
  * Calculate solar return for a given year
  * POST /api/v1/solar-returns/calculate
  */
-export const calculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const calculateSolarReturn = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const { natalChartId, year, location, houseSystem, zodiacType } = req.body;
 
@@ -62,7 +60,6 @@ export const calculateSolarReturn = asyncHandler(async (req: Request, res: Respo
     };
 
     const { returnDate, chartData } = await solarReturnService.calculateSolarReturn(params);
-
     // Generate interpretation
     const interpretation = generateSolarReturnInterpretation(chartData, year);
 
@@ -103,11 +100,8 @@ export const calculateSolarReturn = asyncHandler(async (req: Request, res: Respo
  * Get solar return for a specific year
  * GET /api/v1/solar-returns/year/:year
  */
-export const getSolarReturnByYear = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const getSolarReturnByYear = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const { year } = req.params;
     const yearNum = parseInt(year);
@@ -132,11 +126,8 @@ export const getSolarReturnByYear = asyncHandler(async (req: Request, res: Respo
  * Get solar return by ID
  * GET /api/v1/solar-returns/:id
  */
-export const getSolarReturnById = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const getSolarReturnById = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const { id } = req.params;
 
@@ -161,11 +152,8 @@ export const getSolarReturnById = asyncHandler(async (req: Request, res: Respons
  * Get user's solar return history
  * GET /api/v1/solar-returns/history
  */
-export const getSolarReturnHistory = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const getSolarReturnHistory = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     // Query params validated by validateQuery(solarHistoryQuerySchema) middleware
     const { limit, includeRelocated } = req.query;
@@ -189,11 +177,8 @@ export const getSolarReturnHistory = asyncHandler(async (req: Request, res: Resp
  * Recalculate solar return with new location
  * POST /api/v1/solar-returns/:id/recalculate
  */
-export const recalculateSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const recalculateSolarReturn = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const { id } = req.params;
     const { location, houseSystem, zodiacType } = req.body;
@@ -257,11 +242,8 @@ export const recalculateSolarReturn = asyncHandler(async (req: Request, res: Res
  * Get solar return statistics
  * GET /api/v1/solar-returns/stats
  */
-export const getSolarReturnStats = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const getSolarReturnStats = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const stats = await solarReturnModel.getStats(userId);
 
@@ -275,11 +257,8 @@ export const getSolarReturnStats = asyncHandler(async (req: Request, res: Respon
  * Delete solar return
  * DELETE /api/v1/solar-returns/:id
  */
-export const deleteSolarReturn = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const deleteSolarReturn = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const { id } = req.params;
 
@@ -306,11 +285,8 @@ export const deleteSolarReturn = asyncHandler(async (req: Request, res: Response
  * Get available years for solar returns
  * GET /api/v1/solar-returns/years/available
  */
-export const getAvailableYears = asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+export const getAvailableYears = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user.id;
 
     const solarReturns = await solarReturnModel.findByUserId(userId);
     const availableYears = solarReturns.map(sr => sr.year).sort((a, b) => b - a);

@@ -7,6 +7,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { AppLayout } from '../components/AppLayout';
+import { getLearnPageCompleted, addLearnPageCompleted } from '../utils/uiStorage';
 import {
   planets,
   houses,
@@ -332,29 +333,18 @@ function GlossarySection({ searchQuery }: { searchQuery: string }) {
 }
 
 // ────────────────────────────────────────────
-// Progress helpers (localStorage)
+// Progress helpers (localStorage via uiStorage utility)
 // ────────────────────────────────────────────
-const STORAGE_KEY = 'astroverse-learn-progress';
-
 function loadProgress(): Set<string> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const arr: string[] = JSON.parse(raw) as string[];
-      return new Set(arr);
-    }
-  } catch {
-    /* localStorage unavailable or corrupted — return empty set */
-  }
-  return new Set();
+  const completed = getLearnPageCompleted();
+  return new Set(completed);
 }
 
 function saveProgress(completed: Set<string>) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
-  } catch {
-    /* localStorage unavailable or quota exceeded — silently skip */
-  }
+  // Save only newly completed topics
+  const existing = getLearnPageCompleted();
+  const newTopics = [...completed].filter(id => !existing.includes(id));
+  newTopics.forEach(id => addLearnPageCompleted(id));
 }
 
 // ────────────────────────────────────────────

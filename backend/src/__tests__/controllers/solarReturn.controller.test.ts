@@ -7,7 +7,6 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-var */
 
 import { Response, NextFunction } from 'express';
@@ -173,18 +172,7 @@ describe('SolarReturnController', () => {
   // 1. calculateSolarReturn
   // =========================================================================
   describe('calculateSolarReturn', () => {
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-
-      try {
-        await calculateSolarReturn(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should throw BadRequestError when natalChartId is missing', async () => {
       req.body = { year: currentYear };
 
@@ -337,19 +325,7 @@ describe('SolarReturnController', () => {
   // 2. getSolarReturnByYear
   // =========================================================================
   describe('getSolarReturnByYear', () => {
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-      req.params = { year: String(currentYear) };
-
-      try {
-        await getSolarReturnByYear(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should throw BadRequestError for non-numeric year', async () => {
       req.params = { year: 'abc' };
 
@@ -393,19 +369,7 @@ describe('SolarReturnController', () => {
   // 3. getSolarReturnById
   // =========================================================================
   describe('getSolarReturnById', () => {
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-      req.params = { id: 'sr-1' };
-
-      try {
-        await getSolarReturnById(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should throw NotFoundError when solar return does not exist', async () => {
       req.params = { id: 'sr-nonexistent' };
       (solarReturnModel.findById as jest.Mock).mockResolvedValue(null);
@@ -452,19 +416,7 @@ describe('SolarReturnController', () => {
   // =========================================================================
   describe('getSolarReturnHistory', () => {
     const mockHistory = [mockSolarReturn];
-
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-
-      try {
-        await getSolarReturnHistory(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should return recent solar returns when includeRelocated is not set', async () => {
       (solarReturnModel.findRecent as jest.Mock).mockResolvedValue(mockHistory);
 
@@ -520,20 +472,7 @@ describe('SolarReturnController', () => {
       longitude: -0.12,
       timezone: 'Europe/London',
     };
-
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-      req.params = { id: 'sr-1' };
-
-      try {
-        await recalculateSolarReturn(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should throw BadRequestError when location is not provided', async () => {
       req.params = { id: 'sr-1' };
       req.body = {};
@@ -656,19 +595,7 @@ describe('SolarReturnController', () => {
       relocated: 2,
       byYear: { [currentYear]: 1, [currentYear - 1]: 1 },
     };
-
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-
-      try {
-        await getSolarReturnStats(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should return stats on happy path', async () => {
       (solarReturnModel.getStats as jest.Mock).mockResolvedValue(mockStats);
 
@@ -686,19 +613,7 @@ describe('SolarReturnController', () => {
   // 7. deleteSolarReturn
   // =========================================================================
   describe('deleteSolarReturn', () => {
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-      req.params = { id: 'sr-1' };
-
-      try {
-        await deleteSolarReturn(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should throw NotFoundError when solar return does not exist', async () => {
       req.params = { id: 'sr-nonexistent' };
       (solarReturnModel.findById as jest.Mock).mockResolvedValue(null);
@@ -754,19 +669,7 @@ describe('SolarReturnController', () => {
       { ...mockSolarReturn, year: currentYear - 1, id: 'sr-2' },
       { ...mockSolarReturn, year: currentYear - 2, id: 'sr-3' },
     ];
-
-    it('should throw UnauthorizedError when no user is authenticated', async () => {
-      req.user = undefined;
-
-      try {
-        await getAvailableYears(req, res as Response, {} as NextFunction);
-        fail('Expected UnauthorizedError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(UnauthorizedError);
-        expect((err as UnauthorizedError).message).toBe('User authentication required');
-      }
-    });
-
+    
     it('should return sorted years (descending) on happy path', async () => {
       (solarReturnModel.findByUserId as jest.Mock).mockResolvedValue(mockReturns);
 

@@ -13,6 +13,7 @@ import {
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { NatalChartService } from '../../shared/services/natalChart.service';
 import knex from '../../../config/database';
+import { NotFoundError } from '../../../utils/appError';
 
 // Module-level singletons for the real calculation engines
 const astronomyEngine = new AstronomyEngineService();
@@ -95,7 +96,7 @@ export class SolarReturnService {
     const positions = astronomyEngine.calculatePlanetaryPositions(date, 0, 0);
     const sunPos = positions.get('Sun');
     if (!sunPos) {
-      throw new Error('Failed to calculate Sun position');
+      throw new NotFoundError('Failed to calculate Sun position');
     }
     return sunPos.longitude;
   }
@@ -325,7 +326,7 @@ export class SolarReturnService {
     const chart = await knex('charts').where({ id: chartId }).first();
 
     if (!chart) {
-      throw new Error(`Natal chart not found: ${chartId}`);
+      throw new NotFoundError(`Natal chart not found: ${chartId}`);
     }
 
     const calculatedData = typeof chart.calculated_data === 'string'

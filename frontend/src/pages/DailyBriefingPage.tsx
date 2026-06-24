@@ -13,6 +13,9 @@ import { Helmet } from 'react-helmet-async';
 
 // Hooks
 import { useAuth } from '../hooks/useAuth';
+
+// Utils
+import { setDailyBriefingLastViewed } from '../utils/uiStorage';
 import { useTodayTransits } from '../hooks';
 import type { TransitReading } from '../services/transit.service';
 
@@ -228,7 +231,7 @@ const DailyBriefingPage: React.FC = () => {
     if (hasMarkedViewed.current) return;
     hasMarkedViewed.current = true;
     const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem('dailyBriefingLastViewed', today);
+    setDailyBriefingLastViewed(today);
   }, []);
 
   // Dwell tracking: 30s timer + scroll-to-bottom detection

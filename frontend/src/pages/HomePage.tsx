@@ -95,27 +95,27 @@ export default function HomePage() {
           </button>
         </div>
         <div className="flex flex-col p-6 gap-1">
-          <a
-            href="#features"
+          <Link
+            to="#features"
             className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Features
-          </a>
-          <a
-            href="#testimonials"
+          </Link>
+          <Link
+            to="#testimonials"
             className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Testimonials
-          </a>
-          <a
-            href="#pricing"
+          </Link>
+          <Link
+            to="#pricing"
             className="px-4 py-3 rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Pricing
-          </a>
+          </Link>
           <div className="my-4 border-t border-cosmic-border" />
           <Link
             to="/login"

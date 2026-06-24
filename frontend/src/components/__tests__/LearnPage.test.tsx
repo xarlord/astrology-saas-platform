@@ -197,7 +197,7 @@ describe('LearnPage', () => {
     it('loads progress from localStorage', () => {
       localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(['sun']));
       renderWithProviders(<LearnPage />);
-      expect(localStorageMock.getItem).toHaveBeenCalledWith('astroverse-learn-progress');
+      expect(localStorageMock.getItem).toHaveBeenCalledWith('astroscope-learn-completed');
     });
 
     it('shows progress indicator', () => {

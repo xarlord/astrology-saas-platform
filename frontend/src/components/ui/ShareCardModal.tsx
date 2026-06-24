@@ -20,6 +20,7 @@ import ShareableChartCard, {
   type ShareableChartCardProps,
   CARD_SIZES,
 } from '../chart/ShareableChartCard';
+import { getShareTemplate, setShareTemplate } from '@/utils/uiStorage';
 
 // ============================================================================
 // TYPES
@@ -272,17 +273,11 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   chartData,
   className = '',
 }) => {
-  // Load saved template from localStorage or use default
+  // Load saved template from uiStorage or use default
   const getInitialTemplate = (): CardTemplate => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('astroverse-share-template');
-        if (saved && TEMPLATE_OPTIONS.some((t) => t.id === saved)) {
-          return saved as CardTemplate;
-        }
-      } catch {
-        // Ignore localStorage errors
-      }
+    const saved = getShareTemplate();
+    if (saved && TEMPLATE_OPTIONS.some((t) => t.id === saved)) {
+      return saved as CardTemplate;
     }
     return 'instagram-story';
   };
@@ -318,12 +313,8 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
     setExportState('idle');
     setShareState('idle');
 
-    // Save preference to localStorage
-    try {
-      localStorage.setItem('astroverse-share-template', template);
-    } catch {
-      // Ignore localStorage errors
-    }
+    // Save preference to uiStorage
+    setShareTemplate(template);
   }, []);
 
   // Handle download

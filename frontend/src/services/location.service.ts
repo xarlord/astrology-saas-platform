@@ -8,6 +8,7 @@ import { logger } from '@/utils/logger';
 
 import api from './api';
 import type { Location, GeocodingResult, ApiResponse } from './api.types';
+import { getRecentLocationSearches as getRecentSearchesFromStorage, addRecentLocationSearch as addRecentSearchToStorage } from '@/utils/uiStorage';
 
 /**
  * Location Service Class
@@ -194,37 +195,14 @@ class LocationService {
    * Get recent location searches from localStorage
    */
   getRecentSearches(maxItems = 5): Location[] {
-    try {
-      const stored = localStorage.getItem('recentLocationSearches');
-      if (!stored) return [];
-
-      const searches = JSON.parse(stored) as unknown;
-      if (!Array.isArray(searches)) return [];
-      return (searches as Location[]).slice(0, maxItems);
-    } catch {
-      return [];
-    }
+    return getRecentSearchesFromStorage().slice(0, maxItems);
   }
 
   /**
    * Add a location to recent searches
    */
   addRecentSearch(location: Location): void {
-    try {
-      const searches = this.getRecentSearches(10);
-
-      // Remove if already exists
-      const filtered = searches.filter(
-        (s) => s.name !== location.name || s.country !== location.country,
-      );
-
-      // Add to beginning
-      const updated = [location, ...filtered].slice(0, 10);
-
-      localStorage.setItem('recentLocationSearches', JSON.stringify(updated));
-    } catch (error) {
-      logger.error('Failed to save recent search:', error);
-    }
+    addRecentSearchToStorage(location);
   }
 
   /**
