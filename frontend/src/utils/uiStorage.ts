@@ -45,12 +45,12 @@ export function setTheme(theme: string): void {
 /**
  * Get recent location searches
  */
-export function getRecentLocationSearches(): Array<{ name: string; country: string; latitude: number; longitude: number; timezone: string }> {
+export function getRecentLocationSearches(): { name: string; country: string; latitude: number; longitude: number; timezone: string }[] {
   try {
     const stored = localStorage.getItem(KEYS.RECENT_LOCATION_SEARCHES);
     if (!stored) return [];
-    const parsed = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed: unknown = JSON.parse(stored);
+    return Array.isArray(parsed) ? (parsed as { name: string; country: string; latitude: number; longitude: number; timezone: string }[]) : [];
   } catch {
     return [];
   }
@@ -65,7 +65,7 @@ export function addRecentLocationSearch(location: { name: string; country: strin
     const filtered = current.filter((l) => l.name !== location.name);
     const updated = [location, ...filtered].slice(0, 10);
     localStorage.setItem(KEYS.RECENT_LOCATION_SEARCHES, JSON.stringify(updated));
-  } catch (error) {
+  } catch {
     // Silently swallow storage errors (e.g. quota exceeded, private mode)
     // to match the defensive error handling used elsewhere in the codebase.
   }
@@ -78,7 +78,8 @@ export function getLearnPageCompleted(): string[] {
   const stored = localStorage.getItem(KEYS.LEARN_PAGE_COMPLETED);
   if (!stored) return [];
   try {
-    return JSON.parse(stored);
+    const parsed: unknown = JSON.parse(stored);
+    return Array.isArray(parsed) ? (parsed as string[]) : [];
   } catch {
     return [];
   }
