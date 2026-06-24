@@ -8,7 +8,7 @@ import { logger } from '@/utils/logger';
 
 import api from './api';
 import type { Location, GeocodingResult, ApiResponse } from './api.types';
-import { getRecentLocationSearches as getRecentSearchesFromStorage, addRecentLocationSearch as addRecentSearchToStorage } from '@/utils/uiStorage';
+import { getRecentLocationSearches as getRecentSearchesFromStorage, addRecentLocationSearch as addRecentSearchToStorage, clearRecentLocationSearches as clearRecentSearchesFromStorage } from '@/utils/uiStorage';
 
 /**
  * Location Service Class
@@ -210,7 +210,7 @@ class LocationService {
    */
   clearRecentSearches(): void {
     try {
-      localStorage.removeItem('recentLocationSearches');
+      clearRecentSearchesFromStorage();
     } catch (error) {
       logger.error('Failed to clear recent searches:', error);
     }

@@ -5,9 +5,10 @@
  * CHI-123: Backend API endpoint for monthly transit reports
  */
 
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import { z } from 'zod';
-import { authenticate } from '../../../middleware/auth';
+import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
+import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
 import {
   getMonthlyTransitReport,
@@ -56,7 +57,7 @@ router.use(authenticate);
 router.post(
   '/',
   validateBody(monthlyReportSchema),
-  getMonthlyTransitReport as RequestHandler,
+  asyncHandler(async (req, res) => { await getMonthlyTransitReport(req as AuthenticatedRequest, res); }),
 );
 
 /**
@@ -79,7 +80,7 @@ router.post(
  */
 router.get(
   '/current',
-  getCurrentMonthlyReport as RequestHandler,
+  asyncHandler(async (req, res) => { await getCurrentMonthlyReport(req as AuthenticatedRequest, res); }),
 );
 
 export { router as monthlyTransitRoutes };

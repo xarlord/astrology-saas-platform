@@ -5,7 +5,7 @@
  * CHI-123: Backend API endpoint for monthly transit reports
  */
 
-import { Response, NextFunction } from 'express';
+import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../middleware/auth';
 import { generateMonthlyTransitReport } from '../services/monthlyTransit.service';
 import UserModel from '../../users/models/user.model';
@@ -46,32 +46,29 @@ async function requirePremiumUser(req: AuthenticatedRequest): Promise<void> {
 export async function getMonthlyTransitReport(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
 ): Promise<void> {
-  try {
-    await requirePremiumUser(req);
+  await requirePremiumUser(req);
 
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new BadRequestError('User authentication required');
-    }
-    const { month } = req.body;
-
-    // Validate month format if provided
-    if (month && !/^\d{4}-\d{2}$/.test(month)) {
-      throw new BadRequestError('Invalid month format. Use YYYY-MM.');
-    }
-
-    // Generate monthly transit report
-    const report = await generateMonthlyTransitReport(userId, month);
-
-    res.json({
-      success: true,
-      data: report,
-    });
-  } catch (err) {
-    next(err);
+  const userId = req.user?.id;
+  if (!userId) {
+    // Should be unreachable after requirePremiumUser, but satisfies type narrowing
+    throw new UnauthorizedError('Authentication required');
   }
+  const { month } = req.body;
+
+  // Validate month format if provided (Zod schema in routes also validates,
+  // but keep this guard in case the route's validator is bypassed)
+  if (month && !/^\d{4}-\d{2}$/.test(month)) {
+    throw new BadRequestError('Invalid month format. Use YYYY-MM.');
+  }
+
+  // Generate monthly transit report
+  const report = await generateMonthlyTransitReport(userId, month);
+
+  res.json({
+    success: true,
+    data: report,
+  });
 }
 
 /**
@@ -81,24 +78,19 @@ export async function getMonthlyTransitReport(
 export async function getCurrentMonthlyReport(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
 ): Promise<void> {
-  try {
-    await requirePremiumUser(req);
+  await requirePremiumUser(req);
 
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new BadRequestError('User authentication required');
-    }
-
-    // Generate current month's report
-    const report = await generateMonthlyTransitReport(userId);
-
-    res.json({
-      success: true,
-      data: report,
-    });
-  } catch (err) {
-    next(err);
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new UnauthorizedError('Authentication required');
   }
+
+  // Generate current month's report
+  const report = await generateMonthlyTransitReport(userId);
+
+  res.json({
+    success: true,
+    data: report,
+  });
 }
