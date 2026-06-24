@@ -13,7 +13,7 @@ import {
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { NatalChartService } from '../../shared/services/natalChart.service';
 import knex from '../../../config/database';
-import { NotFoundError } from '../../../../utils/appError';
+import { NotFoundError } from '../../../utils/appError';
 
 // Module-level singletons for the real calculation engines
 const astronomyEngine = new AstronomyEngineService();

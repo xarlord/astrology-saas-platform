@@ -12,12 +12,12 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-cosmic-page">
       {/* WCAG 2.1 AA - Skip Navigation Link */}
-      <Link
-        to="#main-content"
+      <a
+        href="#main-content"
         className="skip-link"
       >
         Skip to main content
-      </Link>
+      </a>
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (

@@ -11,7 +11,7 @@ import {
 import { calculateMoonPhase } from '../../calendar/services/calendar.service';
 import { MoonPhase } from '../../calendar/models/calendar.model';
 import knex from '../../../config/database';
-import { NotFoundError } from '../../../../utils/appError';
+import { NotFoundError } from '../../../utils/appError';
 
 // Module-level singleton for the real calculation engine
 const astronomyEngine = new AstronomyEngineService();

@@ -7,7 +7,7 @@
 
 import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import ChartModel from '../../charts/models/chart.model';
-import { NotFoundError, BadRequestError } from '../../../../utils/appError';
+import { NotFoundError, BadRequestError } from '../../../utils/appError';
 
 export interface TransitDay {
   date: string; // YYYY-MM-DD

@@ -18,7 +18,7 @@ export default function HomePage() {
         <meta name="description" content="Astrology SaaS platform for natal charts, transits, and cosmic insights." />
       </Helmet>
       {/* Skip to content */}
-      <Link to="#main-content" className="skip-link">Skip to main content</Link>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {/* ===== Navigation ===== */}
       <nav className="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
@@ -34,9 +34,9 @@ export default function HomePage() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <Link to="#features" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Features</Link>
-              <Link to="#testimonials" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Testimonials</Link>
-              <Link to="#pricing" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Pricing</Link>
+              <a href="#features" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Features</a>
+              <a href="#testimonials" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Testimonials</a>
+              <a href="#pricing" className="text-sm font-medium text-slate-200 hover:text-white transition-colors">Pricing</a>
             </div>
 
             {/* CTA Buttons */}

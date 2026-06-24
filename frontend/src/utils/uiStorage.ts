@@ -45,11 +45,12 @@ export function setTheme(theme: string): void {
 /**
  * Get recent location searches
  */
-export function getRecentLocationSearches(): Array<{ name: string; lat: number; lon: number; country: string }> {
-  const stored = localStorage.getItem(KEYS.RECENT_LOCATION_SEARCHES);
-  if (!stored) return [];
+export function getRecentLocationSearches(): Array<{ name: string; country: string; latitude: number; longitude: number; timezone: string }> {
   try {
-    return JSON.parse(stored);
+    const stored = localStorage.getItem(KEYS.RECENT_LOCATION_SEARCHES);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
@@ -58,11 +59,16 @@ export function getRecentLocationSearches(): Array<{ name: string; lat: number; 
 /**
  * Add location to recent searches (max 10, LRU eviction)
  */
-export function addRecentLocationSearch(location: { name: string; lat: number; lon: number; country: string }): void {
-  const current = getRecentLocationSearches();
-  const filtered = current.filter((l) => l.name !== location.name);
-  const updated = [location, ...filtered].slice(0, 10);
-  localStorage.setItem(KEYS.RECENT_LOCATION_SEARCHES, JSON.stringify(updated));
+export function addRecentLocationSearch(location: { name: string; country: string; latitude: number; longitude: number; timezone: string }): void {
+  try {
+    const current = getRecentLocationSearches();
+    const filtered = current.filter((l) => l.name !== location.name);
+    const updated = [location, ...filtered].slice(0, 10);
+    localStorage.setItem(KEYS.RECENT_LOCATION_SEARCHES, JSON.stringify(updated));
+  } catch (error) {
+    // Silently swallow storage errors (e.g. quota exceeded, private mode)
+    // to match the defensive error handling used elsewhere in the codebase.
+  }
 }
 
 /**

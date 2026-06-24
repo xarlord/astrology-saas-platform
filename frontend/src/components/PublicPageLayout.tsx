@@ -8,9 +8,9 @@ interface PublicPageLayoutProps {
 export function PublicPageLayout({ children, hideAuthLinks }: PublicPageLayoutProps) {
   return (
     <div className="min-h-screen bg-[var(--color-bg-page)]">
-      <Link to="#main-content" className="skip-link">
+      <a href="#main-content" className="skip-link">
         Skip to main content
-      </Link>
+      </a>
 
       <main
         id="main-content"
