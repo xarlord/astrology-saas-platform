@@ -1,4 +1,5 @@
 import type { UserProfile } from './types';
+import { setTheme } from '../../utils/uiStorage';
 
 export interface PreferencesTabProps {
   user?: UserProfile;
@@ -150,7 +151,7 @@ export function PreferencesTab({ user }: PreferencesTabProps) {
                       root.classList.add('light');
                     }
                   }
-                  localStorage.setItem('theme', theme.value);
+                  setTheme(theme.value);
                 }}
                 className={`
                   p-4 rounded-lg border-2 text-center transition-all
