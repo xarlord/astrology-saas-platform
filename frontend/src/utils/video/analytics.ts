@@ -5,6 +5,7 @@
  * watch time, completion rate, and user interactions
  */
 import { logger } from '../logger';
+import { getItem, setItem, removeItem } from '../uiStorage';
 
 export interface VideoAnalyticsEvent {
   type: VideoEventType;
@@ -325,7 +326,7 @@ class VideoAnalytics {
         sessions: Array.from(this.sessions.entries()),
         lastUpdated: Date.now(),
       };
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+      setItem(this.STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       logger.warn('[VideoAnalytics] Failed to save to storage:', error);
     }
@@ -336,7 +337,7 @@ class VideoAnalytics {
    */
   private loadFromStorage(): void {
     try {
-      const stored = localStorage.getItem(this.STORAGE_KEY);
+      const stored = getItem(this.STORAGE_KEY);
       if (stored) {
         const data = JSON.parse(stored) as {
           sessions: [string, VideoSessionData][];
@@ -355,7 +356,7 @@ class VideoAnalytics {
   clearAll(): void {
     this.sessions.clear();
     this.eventQueue = [];
-    localStorage.removeItem(this.STORAGE_KEY);
+    removeItem(this.STORAGE_KEY);
   }
 
   /**

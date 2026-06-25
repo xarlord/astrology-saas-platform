@@ -7,6 +7,7 @@
  */
 
 import { DateTime, IANAZone } from 'luxon';
+import { BadRequestError } from '../../../utils/appError';
 
 export interface TimezoneInfo {
   id: string;
@@ -53,7 +54,7 @@ export class TimezoneService {
     const localDate = DateTime.fromObject({ year, month, day, hour, minute }, { zone: timezone });
 
     if (!localDate.isValid) {
-      throw new Error(
+      throw new BadRequestError(
         `Invalid date/time for timezone ${timezone}: ${localDate.invalidExplanation}`,
       );
     }
