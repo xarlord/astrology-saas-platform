@@ -43,23 +43,29 @@ const SynastryPage: React.FC<SynastryPageProps> = ({ charts: propCharts }) => {
   } | null>(null);
 
   useEffect(() => {
+    // Mounted guard prevents state updates after unmount (async effect cleanup).
+    // Without this, `setLoading(false)` in the finally block fires after the
+    // component unmounts, causing an unhandled rejection in tests (and a real
+    // race in the live app if the user navigates away while charts are loading).
+    let mounted = true;
     if (!propCharts) {
-      void loadCharts();
+      void (async () => {
+        try {
+          setLoading(true);
+          const { charts: loadedCharts } = await chartService.getCharts();
+          if (mounted) setCharts(loadedCharts);
+        } catch (err) {
+          logger.error('Error loading charts:', err);
+          if (mounted) setError('Failed to load charts');
+        } finally {
+          if (mounted) setLoading(false);
+        }
+      })();
     }
+    return () => {
+      mounted = false;
+    };
   }, [propCharts]);
-
-  const loadCharts = async () => {
-    try {
-      setLoading(true);
-      const { charts: loadedCharts } = await chartService.getCharts();
-      setCharts(loadedCharts);
-    } catch (err) {
-      logger.error('Error loading charts:', err);
-      setError('Failed to load charts');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSwap = () => {
     const temp = chart1Id;
