@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { SkipLink } from './SkipLink';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -8,7 +9,7 @@ interface AuthLayoutProps {
 export function AuthLayout({ children, leftPanel }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen w-full flex-col lg:flex-row bg-cosmic-page">
-      <a href="#main-content" className="skip-link">Skip to main content</a>
+      <SkipLink target="#main-content">Skip to main content</SkipLink>
 
       {/* Left Panel — Brand & Artwork */}
       <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col justify-between overflow-hidden bg-cosmic-page">

@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Helmet } from 'react-helmet-async';
+import { SkipLink } from '../components/SkipLink';
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -18,7 +19,7 @@ export default function HomePage() {
         <meta name="description" content="Astrology SaaS platform for natal charts, transits, and cosmic insights." />
       </Helmet>
       {/* Skip to content */}
-      <a href="#main-content" className="skip-link">Skip to main content</a>
+      <SkipLink target="#main-content">Skip to main content</SkipLink>
 
       {/* ===== Navigation ===== */}
       <nav className="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
