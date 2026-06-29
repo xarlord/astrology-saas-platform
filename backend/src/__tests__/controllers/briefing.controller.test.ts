@@ -4,6 +4,8 @@
  *
  * Covers issue #358 (getBriefingByDate now queries by date, not "latest").
  * Also provides the missing controller coverage flagged in #355.
+ * Updated for asyncHandler wrapping (#436): errors are now forwarded via
+ * next() instead of being written directly to res.status().
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -44,7 +46,7 @@ jest.mock('../../utils/logger', () => ({
 // Imports (after mocks are set up)
 // ---------------------------------------------------------------------------
 
-import { Response } from 'express';
+import { Response, NextFunction } from 'express';
 import { getBriefing, getBriefingByDate } from '../../modules/jobs/controllers/briefing.controller';
 
 // ---------------------------------------------------------------------------
@@ -78,6 +80,10 @@ function createMockResponse() {
   return res as Response;
 }
 
+function createMockNext(): NextFunction {
+  return jest.fn() as unknown as NextFunction;
+}
+
 const mockBriefing = {
   userId: 'user-123',
   date: '2026-04-08',
@@ -101,10 +107,12 @@ const mockContent = {
 
 describe('Briefing Controller', () => {
   let mockResponse: Partial<Response>;
+  let mockNext: NextFunction;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockResponse = createMockResponse();
+    mockNext = createMockNext();
     mockRegistry.formatBriefingContent!.mockReturnValue(mockContent);
   });
 
@@ -115,7 +123,7 @@ describe('Briefing Controller', () => {
     it('should return cached briefing when one exists for today', async () => {
       mockRegistry.getLatestBriefing!.mockResolvedValue(mockBriefing);
 
-      await getBriefing(createMockRequest() as any, mockResponse as Response);
+      await getBriefing(createMockRequest() as any, mockResponse as Response, mockNext);
 
       expect(mockResponse.json).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -131,7 +139,7 @@ describe('Briefing Controller', () => {
       mockRegistry.getLatestBriefing!.mockResolvedValue(null);
       mockRegistry.generateBriefing!.mockResolvedValue(mockBriefing);
 
-      await getBriefing(createMockRequest() as any, mockResponse as Response);
+      await getBriefing(createMockRequest() as any, mockResponse as Response, mockNext);
 
       expect(mockRegistry.generateBriefing).toHaveBeenCalledWith('user-123');
       expect(mockResponse.json).toHaveBeenCalledWith(
@@ -139,32 +147,33 @@ describe('Briefing Controller', () => {
       );
     });
 
-    it('should return 401 when user is not authenticated', async () => {
-      await getBriefing(createMockRequest({ user: undefined }) as any, mockResponse as Response);
+    it('should forward 401 via next() when user is not authenticated', async () => {
+      await getBriefing(createMockRequest({ user: undefined }) as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false }),
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401 }),
       );
     });
 
-    it('should return 404 when generation fails with "No natal chart found"', async () => {
+    it('should forward 404 via next() when generation fails with "No natal chart found"', async () => {
       mockRegistry.getLatestBriefing!.mockResolvedValue(null);
       mockRegistry.generateBriefing!.mockRejectedValue(new Error('No natal chart found for user'));
 
-      await getBriefing(createMockRequest() as any, mockResponse as Response);
+      await getBriefing(createMockRequest() as any, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404 }),
+      );
     });
 
-    it('should rethrow unexpected generation errors', async () => {
+    it('should forward unexpected generation errors via next()', async () => {
       mockRegistry.getLatestBriefing!.mockResolvedValue(null);
       const unexpected = new Error('DB down');
       mockRegistry.generateBriefing!.mockRejectedValue(unexpected);
 
-      await expect(
-        getBriefing(createMockRequest() as any, mockResponse as Response),
-      ).rejects.toThrow('DB down');
+      await getBriefing(createMockRequest() as any, mockResponse as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(unexpected);
     });
   });
 
@@ -178,6 +187,7 @@ describe('Briefing Controller', () => {
       await getBriefingByDate(
         createMockRequest({ params: { date: '2026-04-08' } }) as any,
         mockResponse as Response,
+        mockNext,
       );
 
       // CRITICAL: must call getBriefingByDate(userId, date), NOT getLatestBriefing(userId)
@@ -191,50 +201,56 @@ describe('Briefing Controller', () => {
       );
     });
 
-    it('should return 404 when no briefing exists for the date', async () => {
+    it('should forward 404 via next() when no briefing exists for the date', async () => {
       mockRegistry.getBriefingByDate!.mockResolvedValue(null);
 
       await getBriefingByDate(
         createMockRequest({ params: { date: '1999-01-01' } }) as any,
         mockResponse as Response,
+        mockNext,
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: false,
-          error: expect.stringContaining('1999-01-01'),
-        }),
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 404 }),
       );
     });
 
-    it('should return 400 for an invalid date format', async () => {
+    it('should forward 400 via next() for an invalid date format', async () => {
       await getBriefingByDate(
         createMockRequest({ params: { date: '08-04-2026' } }) as any,
         mockResponse as Response,
+        mockNext,
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400 }),
+      );
       // Must NOT hit the DB on invalid input
       expect(mockRegistry.getBriefingByDate).not.toHaveBeenCalled();
     });
 
-    it('should return 400 for a malformed date (not YYYY-MM-DD)', async () => {
+    it('should forward 400 via next() for a malformed date (not YYYY-MM-DD)', async () => {
       await getBriefingByDate(
         createMockRequest({ params: { date: '2026-4-8' } }) as any,
         mockResponse as Response,
+        mockNext,
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 400 }),
+      );
     });
 
-    it('should return 401 when user is not authenticated', async () => {
+    it('should forward 401 via next() when user is not authenticated', async () => {
       await getBriefingByDate(
         createMockRequest({ user: undefined, params: { date: '2026-04-08' } }) as any,
         mockResponse as Response,
+        mockNext,
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 401 }),
+      );
       expect(mockRegistry.getBriefingByDate).not.toHaveBeenCalled();
     });
   });

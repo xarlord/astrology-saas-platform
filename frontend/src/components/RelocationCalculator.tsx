@@ -121,14 +121,36 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         address?: { country?: string; state?: string };
       }[] = await response.json();
 
-      const mapped: Location[] = results.map((r) => ({
-        name: r.display_name.split(',').slice(0, 2).join(','),
-        latitude: parseFloat(r.lat),
-        longitude: parseFloat(r.lon),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // best-effort
-        country: r.address?.country,
-        region: r.address?.state,
-      }));
+      // Fetch the timezone for each result location via Open-Meteo timezone API.
+      // Previously this used the browser's local timezone (Intl.DateTimeFormat),
+      // which is wrong — a user in New York searching for "Tokyo" would get
+      // "America/New_York" instead of "Asia/Tokyo". See issue #435.
+      const mapped: Location[] = await Promise.all(
+        results.map(async (r) => {
+          const latitude = parseFloat(r.lat);
+          const longitude = parseFloat(r.lon);
+          let timezone = 'UTC';
+          try {
+            const tzResponse = await fetch(
+              `https://timezone-api.open-meteo.com/v1/timezone?latitude=${latitude}&longitude=${longitude}`,
+            );
+            if (tzResponse.ok) {
+              const tzData = (await tzResponse.json()) as { timezone?: string };
+              timezone = tzData.timezone ?? 'UTC';
+            }
+          } catch {
+            // Fall back to UTC if timezone lookup fails
+          }
+          return {
+            name: r.display_name.split(',').slice(0, 2).join(','),
+            latitude,
+            longitude,
+            timezone,
+            country: r.address?.country,
+            region: r.address?.state,
+          };
+        }),
+      );
 
       setLocations(mapped);
     } catch {
