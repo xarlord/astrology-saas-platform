@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, useCharts } from '../hooks';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { SkipLink } from './SkipLink';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -12,12 +13,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-cosmic-page">
       {/* WCAG 2.1 AA - Skip Navigation Link */}
-      <a
-        href="#main-content"
-        className="skip-link"
-      >
-        Skip to main content
-      </a>
+      <SkipLink target="#main-content">Skip to main content</SkipLink>
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (

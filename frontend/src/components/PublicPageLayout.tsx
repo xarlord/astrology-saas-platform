@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SkipLink } from './SkipLink';
 
 interface PublicPageLayoutProps {
   children: React.ReactNode;
@@ -8,9 +9,7 @@ interface PublicPageLayoutProps {
 export function PublicPageLayout({ children, hideAuthLinks }: PublicPageLayoutProps) {
   return (
     <div className="min-h-screen bg-[var(--color-bg-page)]">
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
+      <SkipLink target="#main-content">Skip to main content</SkipLink>
 
       <main
         id="main-content"

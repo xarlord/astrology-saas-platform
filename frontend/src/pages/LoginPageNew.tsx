@@ -10,6 +10,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Helmet } from 'react-helmet-async';
 import { wasDailyBriefingViewedToday } from '../utils/uiPreferences';
+import { SkipLink } from '../components/SkipLink';
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
@@ -52,9 +53,7 @@ export default function LoginPageNew() {
         <title>Sign In — AstroVerse</title>
       </Helmet>
       {/* WCAG 2.1 AA - Skip Navigation Link */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
+      <SkipLink target="#main-content">Skip to main content</SkipLink>
       <main id="main-content">
         <div className="flex min-h-screen w-full flex-col lg:flex-row">
           {/* Left Panel: Cosmic Artwork */}
