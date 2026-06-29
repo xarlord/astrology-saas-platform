@@ -5,7 +5,7 @@
  * CHI-68: In-app briefing page accessible from dashboard
  */
 
-import { Router, RequestHandler } from 'express';
+import { Router } from 'express';
 import { authenticate } from '../../../middleware/auth';
 import { validateParams, dateParamSchema } from '../../../utils/validators';
 import { getBriefing, getBriefingByDate } from '../controllers/briefing.controller';
@@ -29,7 +29,7 @@ router.use(authenticate);
  *       200:
  *         description: Daily briefing data
  */
-router.get('/', getBriefing as RequestHandler);
+router.get('/', getBriefing);
 
 /**
  * @route   GET /api/v1/briefing/:date
@@ -53,6 +53,6 @@ router.get('/', getBriefing as RequestHandler);
  *       400:
  *         description: Invalid date format
  */
-router.get('/:date', validateParams(dateParamSchema), getBriefingByDate as RequestHandler);
+router.get('/:date', validateParams(dateParamSchema), getBriefingByDate);
 
 export { router as briefingRoutes };

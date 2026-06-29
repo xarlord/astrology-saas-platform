@@ -7,6 +7,7 @@ import OpenAI from 'openai';
 import { openaiConfig, PROMPT_TEMPLATES, INTERPRETATION_PARAMS } from '../config/openai.config';
 import logger from '../../../utils/logger';
 import aiUsageService from './aiUsage.service';
+import { AppError } from '../../../utils/appError';
 
 /**
  * Singleton OpenAI client instance — reused across requests
@@ -585,13 +586,13 @@ class OpenAIService {
    */
   private validateChartInput(data: NatalChartInput): void {
     if (!data || !data.planets || data.planets.length === 0) {
-      throw new Error('Chart data must include at least one planet position');
+      throw new AppError('Chart data must include at least one planet position', 400);
     }
 
     // Validate planet structure
     for (const planet of data.planets) {
       if (!planet.planet || !planet.sign || typeof planet.degree !== 'number' || typeof planet.house !== 'number') {
-        throw new Error('Invalid planet data structure');
+        throw new AppError('Invalid planet data structure', 400);
       }
     }
   }
@@ -601,7 +602,7 @@ class OpenAIService {
    */
   private validateTransitInput(data: TransitInput): void {
     if (!data || !data.currentTransits || data.currentTransits.length === 0) {
-      throw new Error('Transit data must include at least one transit event');
+      throw new AppError('Transit data must include at least one transit event', 400);
     }
 
     for (const transit of data.currentTransits) {
@@ -612,7 +613,7 @@ class OpenAIService {
         !transit.startDate ||
         !transit.endDate
       ) {
-        throw new Error('Invalid transit data structure');
+        throw new AppError('Invalid transit data structure', 400);
       }
     }
   }
@@ -622,7 +623,7 @@ class OpenAIService {
    */
   private validateSynastryInput(data: SynastryInput): void {
     if (!data || !data.chartA || !data.chartB) {
-      throw new Error('Synastry data must include both charts');
+      throw new AppError('Synastry data must include both charts', 400);
     }
 
     this.validateChartInput(data.chartA);

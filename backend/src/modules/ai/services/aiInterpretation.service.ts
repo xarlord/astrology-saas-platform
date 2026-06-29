@@ -13,6 +13,7 @@
  */
 
 import openaiService from './openai.service';
+import { AppError } from '../../../utils/appError';
 import type { ParsedInterpretation } from './openai.service';
 import aiCacheService from './aiCache.service';
 import { generateCompletePersonalityAnalysis } from '../../analysis/services/interpretation.service';
@@ -124,7 +125,7 @@ class AIInterpretationService {
           const aiResult = await openaiService.generateNatalInterpretation(chartData);
 
           if (!aiResult.success) {
-            throw new Error(aiResult.error || 'AI generation failed');
+            throw new AppError(aiResult.error || 'AI generation failed', 502);
           }
 
           // Combine with rule-based for comprehensive reading
@@ -173,7 +174,7 @@ class AIInterpretationService {
           const aiResult = await openaiService.generateTransitForecast(transitData);
 
           if (!aiResult.success) {
-            throw new Error(aiResult.error || 'AI generation failed');
+            throw new AppError(aiResult.error || 'AI generation failed', 502);
           }
 
           return {
@@ -212,7 +213,7 @@ class AIInterpretationService {
           const aiResult = await openaiService.generateCompatibilityAnalysis(synastryData);
 
           if (!aiResult.success) {
-            throw new Error(aiResult.error || 'AI generation failed');
+            throw new AppError(aiResult.error || 'AI generation failed', 502);
           }
 
           return {
@@ -255,7 +256,7 @@ class AIInterpretationService {
           const aiResult = await openaiService.generateLunarReturnInterpretation(chartData);
 
           if (!aiResult.success) {
-            throw new Error(aiResult.error || 'AI generation failed');
+            throw new AppError(aiResult.error || 'AI generation failed', 502);
           }
 
           return {
@@ -302,7 +303,7 @@ class AIInterpretationService {
           const aiResult = await openaiService.generateSolarReturnInterpretation(chartData);
 
           if (!aiResult.success) {
-            throw new Error(aiResult.error || 'AI generation failed');
+            throw new AppError(aiResult.error || 'AI generation failed', 502);
           }
 
           return {
