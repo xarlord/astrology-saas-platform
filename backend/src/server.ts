@@ -110,11 +110,11 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  // Skip rate limiting for auth endpoints and CSRF
+  // Skip rate limiting for auth endpoints, CSRF, and authenticated report endpoints
   skip: (req) => {
     // req.path includes /v1/ prefix since limiter is mounted at /api/
     const path = req.path; // e.g. /v1/csrf-token or /v1/auth/login
-    const skipSuffixes = ['/csrf-token', '/auth/login', '/auth/refresh', '/auth/logout', '/auth/me', '/auth/social', '/billing/webhook'];
+    const skipSuffixes = ['/csrf-token', '/auth/login', '/auth/refresh', '/auth/logout', '/auth/me', '/auth/social', '/billing/webhook', '/reports/monthly'];
     return skipSuffixes.some(p => path === p || path.endsWith(p) || path.startsWith('/v1' + p));
   },
 });

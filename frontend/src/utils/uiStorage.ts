@@ -144,3 +144,41 @@ export function wasDailyBriefingViewedToday(): boolean {
   const today = new Date().toISOString().split('T')[0];
   return lastViewed === today;
 }
+
+/**
+ * Generic storage operations for arbitrary keys (e.g., third-party utilities)
+ * These provide the same SSR-safe storage handling as specific key functions.
+ */
+export function setItem(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Silently swallow storage errors (e.g., private mode, quota exceeded)
+  }
+}
+
+export function getItem(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function removeItem(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Silently swallow storage errors
+  }
+}
+
+/**
+ * uiStorage namespace export for convenient importing
+ * Provides centralized localStorage access for non-auth UI preferences
+ */
+export const uiStorage = {
+  getItem,
+  setItem,
+  removeItem,
+};

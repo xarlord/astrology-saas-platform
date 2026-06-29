@@ -5,9 +5,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { VideoAnalytics, PROGRESS_MILESTONES } from '../analytics';
 
-// Mock localStorage
+// Mock uiStorage FIRST, before importing analytics
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -25,6 +24,22 @@ const localStorageMock = (() => {
 })();
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+// Mock uiStorage FIRST, before importing analytics
+vi.mock('../uiStorage', () => ({
+  uiStorage: {
+    getItem: localStorageMock.getItem,
+    setItem: localStorageMock.setItem,
+    removeItem: localStorageMock.removeItem,
+  },
+  // Also mock the named exports that might be imported directly
+  getItem: localStorageMock.getItem,
+  setItem: localStorageMock.setItem,
+  removeItem: localStorageMock.removeItem,
+}));
+
+// Now import analytics after mocking its dependency
+import { VideoAnalytics, PROGRESS_MILESTONES } from '../analytics';
 
 // Mock console.debug
 vi.spyOn(console, 'debug').mockImplementation(() => {});
