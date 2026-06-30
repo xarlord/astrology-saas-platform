@@ -37,7 +37,7 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
     <div className={className} role="status" aria-live="polite" aria-label="Loading content">
       <span className="sr-only">Loading...</span>
       {Array.from({ length: count }).map((_, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={`skeleton-${variant}-${index}`}>
           {renderSkeleton()}
         </React.Fragment>
       ))}
