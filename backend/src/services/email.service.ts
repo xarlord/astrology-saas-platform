@@ -6,6 +6,7 @@
  */
 
 import logger from '../utils/logger';
+import { AppError } from '../utils/appError';
 
 const fromEmail = process.env.EMAIL_FROM || 'noreply@astroverse.app';
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -174,7 +175,7 @@ async function sendEmail(to: string, subject: string, html: string, options?: { 
     // Silent mode: don't throw — used for password reset to prevent email enumeration
     // Transactional emails (welcome, subscription, reports): throw so callers can alert/retry
     if (!options?.silent) {
-      throw new Error(`Email send failed: ${errMsg}`);
+      throw new AppError(`Email send failed: ${errMsg}`, 503, true, 'EMAIL_SEND_FAILED', { to, subject });
     }
   }
 }

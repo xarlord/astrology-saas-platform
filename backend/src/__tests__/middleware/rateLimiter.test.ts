@@ -155,15 +155,16 @@ describe('Rate Limiter Middleware', () => {
 
     it('should use user ID for rate limiting', () => {
       const chartConfig = configs[4];
-      const mockReq = { user: { id: 'user-123' } };
+      const mockReq = { user: { id: 'user-123' }, ip: '192.168.1.1' };
       const generatedKey = chartConfig.keyGenerator(mockReq as any);
       expect(generatedKey).toBe('chart:user-123');
     });
 
-    it('should throw error when user is not authenticated', () => {
+    it('should fall back to IP-based rate limiting when user is not authenticated', () => {
       const chartConfig = configs[4];
-      const mockReq = {};
-      expect(() => chartConfig.keyGenerator(mockReq as any)).toThrow('User must be authenticated');
+      const mockReq = { ip: '192.168.1.1' };
+      const generatedKey = chartConfig.keyGenerator(mockReq as any);
+      expect(generatedKey).toBe('chart:anon:192.168.1.1');
     });
 
     it('should return correct error message and code', () => {
@@ -240,7 +241,7 @@ describe('Rate Limiter Middleware', () => {
 
     it('should handle request with missing IP and connection', () => {
       const pdfConfig = configs[0];
-      const mockReq = { connection: {} }; // Connection exists but no remoteAddress
+      const mockReq = {}; // No IP, no connection
       const generatedKey = pdfConfig.keyGenerator(mockReq as any);
       expect(generatedKey).toBe('unknown');
     });

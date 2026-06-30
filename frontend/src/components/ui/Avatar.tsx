@@ -204,7 +204,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
     <div className={clsx('flex items-center', className)}>
       {visibleChildren.map((child, index) => (
         <div
-          key={index}
+          key={`avatar-group-${index}-${(child as React.ReactElement)?.props?.name || index}`}
           className={clsx(
             index > 0 && overlapStyles[size],
             'ring-2 ring-white dark:ring-gray-900 rounded-full',
