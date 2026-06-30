@@ -23,7 +23,7 @@ export const pdfRateLimiter = rateLimit({
   // Use IP + user ID for rate limiting if authenticated
   keyGenerator: (req) => {
     const userId = req.user?.id;
-    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    const ip = req.ip || (req.connection && req.connection.remoteAddress) || 'unknown';
     return userId ? `${ip}:${userId}` : ip;
   },
 });
@@ -102,7 +102,7 @@ export const chartCreationRateLimiter = rateLimit({
   keyGenerator: (req) => {
     // Use user ID for authenticated users, fall back to IP for anonymous
     const userId = req.user?.id;
-    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    const ip = req.ip || (req.connection && req.connection.remoteAddress) || 'unknown';
     return userId ? `chart:${userId}` : `chart:anon:${ip}`;
   },
 });
