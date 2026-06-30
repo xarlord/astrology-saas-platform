@@ -100,12 +100,10 @@ export const chartCreationRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => {
-    // Use user ID for authenticated users
+    // Use user ID for authenticated users, fall back to IP for anonymous
     const userId = req.user?.id;
-    if (!userId) {
-      throw new Error('User must be authenticated');
-    }
-    return `chart:${userId}`;
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    return userId ? `chart:${userId}` : `chart:anon:${ip}`;
   },
 });
 
