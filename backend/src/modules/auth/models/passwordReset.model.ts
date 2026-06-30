@@ -6,6 +6,7 @@
 
 import db from '../../../config/database';
 import * as crypto from 'crypto';
+import { InternalServerError } from '../../../utils/appError';
 
 export interface PasswordResetToken {
   id: string;
@@ -24,7 +25,7 @@ export interface PasswordResetToken {
 function hashToken(token: string): string {
   const secret = process.env.PASSWORD_RESET_HASH_SECRET;
   if (!secret) {
-    throw new Error('PASSWORD_RESET_HASH_SECRET environment variable is required');
+    throw new InternalServerError('PASSWORD_RESET_HASH_SECRET environment variable is required');
   }
   return crypto.createHmac('sha256', secret).update(token).digest('hex');
 }

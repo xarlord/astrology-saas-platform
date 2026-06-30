@@ -10,6 +10,7 @@ import logger from '../../../utils/logger';
 import blogModel from '../models/blog.model';
 import type { BlogPost, CreateBlogPostData, UpdateBlogPostData } from '../models/blog.model';
 import { ensureUploadsDir } from '../../../shared/utils/fileUtils';
+import { BadRequestError } from '../../../utils/appError';
 
 /**
  * Sanitize HTML body to prevent XSS while preserving safe formatting tags.
@@ -97,12 +98,12 @@ export class BlogService {
 
     // Validate postId to prevent path traversal (e.g., "../../etc/passwd")
     if (!/^[a-zA-Z0-9_-]+$/.test(postId)) {
-      throw new Error('Invalid post ID format');
+      throw new BadRequestError('Invalid post ID format');
     }
 
     const ext = path.extname(file.originalname).toLowerCase();
     if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-      throw new Error('Invalid image format. Allowed: jpg, jpeg, png, webp');
+      throw new BadRequestError('Invalid image format. Allowed: jpg, jpeg, png, webp');
     }
 
     const filename = `${postId}${ext}`;
@@ -110,7 +111,7 @@ export class BlogService {
 
     // Verify resolved path is still within uploadsDir
     if (!filePath.startsWith(uploadsDir)) {
-      throw new Error('Invalid file path');
+      throw new BadRequestError('Invalid file path');
     }
 
     fs.promises.writeFile(filePath, file.buffer);

@@ -7,6 +7,7 @@
 
 import { Job } from 'bullmq';
 import logger from '../../../utils/logger';
+import { BadRequestError } from '../../../utils/appError';
 import {
   JobType,
   JobPayload,
@@ -47,7 +48,7 @@ async function processDailyBriefing(job: Job<DailyBriefingPayload>): Promise<Job
     );
 
     if (!userId) {
-      throw new Error('Missing userId in daily briefing payload');
+      throw new BadRequestError('Missing userId in daily briefing payload');
     }
 
     // Generate the briefing
@@ -86,7 +87,7 @@ async function processMonthlyReport(job: Job<MonthlyReportPayload>): Promise<Job
     logger.info(`[Processor:monthly-report] Processing for user ${userId}, ${month}/${year}`);
 
     if (!userId || !month || !year) {
-      throw new Error('Missing required fields in monthly report payload');
+      throw new BadRequestError('Missing required fields in monthly report payload');
     }
 
     const monthStr = `${year}-${String(month).padStart(2, '0')}`;
@@ -159,7 +160,7 @@ async function processEmailDigest(job: Job<EmailDigestPayload>): Promise<JobResu
     logger.info(`[Processor:email-digest] Processing ${digestType} digest for user ${userId}`);
 
     if (!userId || !digestType) {
-      throw new Error('Missing required fields in email digest payload');
+      throw new BadRequestError('Missing required fields in email digest payload');
     }
 
     const user = await knex('users').where({ id: userId }).first();

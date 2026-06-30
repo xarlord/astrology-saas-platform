@@ -7,6 +7,7 @@
  */
 
 import puppeteer, { Browser, PDFOptions } from 'puppeteer';
+import { ServiceUnavailableError } from '../../../utils/appError';
 
 // Planet position interface
 export interface PlanetPosition {
@@ -216,7 +217,7 @@ export class PDFGenerationService {
     });
 
     this.browser = await this.browserPromise;
-    if (!this.browser) throw new Error('Failed to launch browser');
+    if (!this.browser) throw new ServiceUnavailableError('Failed to launch browser');
     return this.browser;
   }
 
