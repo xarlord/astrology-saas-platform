@@ -8,6 +8,7 @@
 import Redis from 'ioredis';
 import config from '../../../config';
 import logger from '../../../utils/logger';
+import { ServiceUnavailableError } from '../../../utils/appError';
 
 let redisClient: Redis | null = null;
 let isConnected = false;
@@ -85,7 +86,7 @@ export function isRedisConnected(): boolean {
 export function requireRedis(): Redis {
   const client = getRedisClient();
   if (!client || !isConnected) {
-    throw new Error('Redis is not available');
+    throw new ServiceUnavailableError('Redis is not available');
   }
   return client;
 }

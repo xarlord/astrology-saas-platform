@@ -14,6 +14,7 @@ import logger from '../../../utils/logger';
 import { calculateMoonPhase } from '../../calendar/services/calendar.service';
 import AstronomyEngineService from '../../shared/services/astronomyEngine.service';
 import { capitalize } from '../../../shared/utils/stringUtils';
+import { NotFoundError } from '../../../utils/appError';
 
 const astronomyEngine = new AstronomyEngineService();
 import knex from '../../../config/database';
@@ -127,7 +128,7 @@ export async function generateBriefing(userId: string, dateStr?: string): Promis
     .first();
 
   if (!chart) {
-    throw new Error(`No natal chart found for user ${userId}`);
+    throw new NotFoundError(`No natal chart found for user ${userId}`);
   }
 
   // 2. Moon phase
