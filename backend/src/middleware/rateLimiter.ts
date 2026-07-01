@@ -187,6 +187,31 @@ export const calendarRateLimiter = rateLimit({
   },
 });
 
+/**
+ * Monthly Report Rate Limiter
+ * Limits monthly transit report generation (premium feature)
+ * - 10 reports per month per user
+ */
+export const monthlyReportRateLimiter = rateLimit({
+  windowMs: 30 * 24 * 60 * 60 * 1000, // 30 days (1 month)
+  max: process.env.NODE_ENV !== 'production' ? 100 : 10,
+  message: {
+    success: false,
+    error: 'Monthly report limit reached. You can generate up to 10 reports per month.',
+    code: 'RATE_LIMIT_MONTHLY_REPORT',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      return ip;
+    }
+    return `monthly_report:${userId}`;
+  },
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,
@@ -196,4 +221,5 @@ export default {
   webhook: webhookRateLimiter,
   publicApi: publicApiRateLimiter,
   calendar: calendarRateLimiter,
+  monthlyReport: monthlyReportRateLimiter,
 };

@@ -246,9 +246,9 @@ function TodaysTransits({ transits, onTransitClick }: { transits: Transit[]; onT
         />
       ) : (
         <div className="space-y-3">
-          {sortedTransits.map((transit, index) => (
+          {sortedTransits.map((transit) => (
             <TransitForecastCard
-              key={index}
+              key={`${transit.transitingPlanet}-${transit.natalPlanet}-${transit.type}-${transit.peakDate}`}
               transit={transitToForecastData(transit)}
               onTransitClick={() => onTransitClick?.(transit)}
             />
@@ -289,9 +289,9 @@ function WeeklyTransits({ transits, onTransitClick }: { transits: Transit[]; onT
             })}
           </h4>
           <div className="space-y-3">
-            {transitsByDate[date].map((transit, index) => (
+            {transitsByDate[date].map((transit) => (
               <TransitForecastCard
-                key={index}
+                key={`${transit.transitingPlanet}-${transit.natalPlanet}-${transit.type}-${transit.peakDate}`}
                 transit={transitToForecastData(transit)}
                 onTransitClick={() => onTransitClick?.(transit)}
               />
@@ -653,8 +653,8 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
             <div className="mb-6">
               <h4 className="text-sm font-medium text-slate-200 mb-2">Key Themes</h4>
               <div className="flex flex-wrap gap-2">
-                {interp.themes.map((theme, index) => (
-                  <span key={index} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                {interp.themes.map((theme) => (
+                  <span key={`theme-${theme}`} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
                     {theme}
                   </span>
                 ))}
@@ -703,8 +703,8 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
                 Best Practices
               </h4>
               <ul className="space-y-1">
-                {interp.advice.positive.map((item, index) => (
-                  <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+                {interp.advice.positive.map((item) => (
+                  <li key={`positive-${item}`} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-green-500 mt-0.5">✓</span>
                     {item}
                   </li>
@@ -717,8 +717,8 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
                 Challenges to Navigate
               </h4>
               <ul className="space-y-1">
-                {interp.advice.challenges.map((item, index) => (
-                  <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+                {interp.advice.challenges.map((item) => (
+                  <li key={`challenge-${item}`} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-orange-500 mt-0.5">!</span>
                     {item}
                   </li>
