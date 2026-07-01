@@ -162,6 +162,31 @@ export const publicApiRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/**
+ * Calendar Operations Rate Limiter
+ * Limits calendar event operations to prevent abuse
+ * - 100 requests per 15 minutes per user
+ */
+export const calendarRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 500 : 100,
+  message: {
+    success: false,
+    error: 'Too many calendar operations. Please try again later.',
+    code: 'RATE_LIMIT_CALENDAR',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      return ip;
+    }
+    return `calendar:${userId}`;
+  },
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,
@@ -170,4 +195,5 @@ export default {
   passwordReset: passwordResetRateLimiter,
   webhook: webhookRateLimiter,
   publicApi: publicApiRateLimiter,
+  calendar: calendarRateLimiter,
 };
