@@ -8,6 +8,7 @@ import { getMonthEvents, createCustomEvent, deleteEvent } from '../controllers/c
 import { authenticate, optionalAuthenticate } from '../../../middleware/auth';
 import { validateBody, validateParams, uuidParamSchema, createCalendarEventSchema } from '../../../utils/validators';
 import { z } from 'zod';
+import { calendarRateLimiter } from '../../../middleware/rateLimiter';
 
 const router = Router();
 
@@ -96,7 +97,7 @@ router.use(authenticate);
  *       500:
  *         description: Server error
  */
-router.post('/events', validateBody(createCalendarEventSchema), createCustomEvent);
+router.post('/events', calendarRateLimiter, validateBody(createCalendarEventSchema), createCustomEvent);
 
 // DELETE /api/calendar/events/:id - Delete a calendar event
 
@@ -129,6 +130,6 @@ router.post('/events', validateBody(createCalendarEventSchema), createCustomEven
  *       500:
  *         description: Server error
  */
-router.delete('/events/:id', validateParams(uuidParamSchema), deleteEvent);
+router.delete('/events/:id', calendarRateLimiter, validateParams(uuidParamSchema), deleteEvent);
 
 export { router as calendarRoutes };

@@ -9,6 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 import { doubleCsrf } from 'csrf-csrf';
 import { logger } from '../utils/logger';
 import { logCSRFViolation } from '../utils/securityLogger';
+import { InternalServerError } from '../utils/appError';
 
 // Generate a session identifier from the request
 const getSessionIdentifier = (req: Request): string => {
@@ -25,7 +26,7 @@ const getSessionIdentifier = (req: Request): string => {
 const { generateCsrfToken, validateRequest, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => {
     if (!process.env.CSRF_SECRET) {
-      throw new Error(
+      throw new InternalServerError(
         'CSRF_SECRET environment variable is required. Set it before starting the server.',
       );
     }
