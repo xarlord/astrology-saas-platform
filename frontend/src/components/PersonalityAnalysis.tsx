@@ -185,9 +185,9 @@ function AspectsTab({ data }: { data: PersonalityAnalysisData }) {
             Aspect Patterns
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.patterns.map((pattern, index) => (
+            {data.patterns.map((pattern) => (
               <div
-                key={index}
+                key={`${pattern.type}-${pattern.planets.join('-')}`}
                 className="bg-white/15 rounded-lg border border-white/15 p-4"
               >
                 <h4 className="font-semibold text-slate-200 mb-2">
@@ -215,8 +215,8 @@ function AspectsTab({ data }: { data: PersonalityAnalysisData }) {
             {aspectType}s
           </h4>
           <div className="space-y-3">
-            {aspects.map((aspect, index) => (
-              <AspectCard key={index} aspect={aspect} />
+            {aspects.map((aspect) => (
+              <AspectCard key={`${aspect.planet1}-${aspect.planet2}-${aspect.aspect}`} aspect={aspect} />
             ))}
           </div>
         </div>
@@ -275,9 +275,9 @@ function PlanetInterpretationContent({
       <div>
         <h4 className="text-sm font-medium text-slate-200 mb-2">Keywords</h4>
         <div className="flex flex-wrap gap-2">
-          {interpretation.keywords.map((keyword, index) => (
+          {interpretation.keywords.map((keyword) => (
             <span
-              key={index}
+              key={keyword}
               className="px-2 py-1 bg-white/15 rounded-full text-xs text-slate-200"
             >
               {keyword}
@@ -303,8 +303,8 @@ function PlanetInterpretationContent({
             Strengths
           </h4>
           <ul className="space-y-1">
-            {interpretation.strengths.map((strength, index) => (
-              <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+            {interpretation.strengths.map((strength) => (
+              <li key={strength} className="text-xs text-slate-200 flex items-start gap-2">
                 <span className="text-green-500 mt-0.5">✓</span>
                 {strength}
               </li>
@@ -316,8 +316,8 @@ function PlanetInterpretationContent({
             Challenges
           </h4>
           <ul className="space-y-1">
-            {interpretation.challenges.map((challenge, index) => (
-              <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+            {interpretation.challenges.map((challenge) => (
+              <li key={challenge} className="text-xs text-slate-200 flex items-start gap-2">
                 <span className="text-orange-500 mt-0.5">!</span>
                 {challenge}
               </li>
@@ -333,8 +333,8 @@ function PlanetInterpretationContent({
             Guidance
           </h4>
           <ul className="space-y-1">
-            {interpretation.advice.map((item, index) => (
-              <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+            {interpretation.advice.map((item) => (
+              <li key={item} className="text-xs text-slate-200 flex items-start gap-2">
                 <span className="text-primary">💡</span>
                 {item}
               </li>
@@ -416,9 +416,9 @@ function HouseCard({ house }: { house: HouseInterpretation }) {
       {/* Themes */}
       {house.themes && house.themes.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-3">
-          {house.themes.map((theme, index) => (
+          {house.themes.map((theme) => (
             <span
-              key={index}
+              key={theme}
               className="px-2 py-0.5 bg-white/15 rounded text-xs text-slate-200"
             >
               {theme}
@@ -465,9 +465,9 @@ function AspectCard({ aspect }: { aspect: AspectInterpretation }) {
       {/* Keywords */}
       {aspect.keywords && aspect.keywords.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
-          {aspect.keywords.map((keyword, index) => (
+          {aspect.keywords.map((keyword) => (
             <span
-              key={index}
+              key={keyword}
               className="px-2 py-0.5 bg-white/15 rounded text-xs text-slate-200"
             >
               {keyword}

@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody } from '../../../utils/validators';
+import { monthlyReportRateLimiter } from '../../../middleware/rateLimiter';
 import {
   getMonthlyTransitReport,
   getCurrentMonthlyReport,
@@ -56,6 +57,7 @@ router.use(authenticate);
  */
 router.post(
   '/',
+  monthlyReportRateLimiter,
   validateBody(monthlyReportSchema),
   asyncHandler(async (req, res) => { await getMonthlyTransitReport(req as AuthenticatedRequest, res); }),
 );
@@ -80,6 +82,7 @@ router.post(
  */
 router.get(
   '/current',
+  monthlyReportRateLimiter,
   asyncHandler(async (req, res) => { await getCurrentMonthlyReport(req as AuthenticatedRequest, res); }),
 );
 
