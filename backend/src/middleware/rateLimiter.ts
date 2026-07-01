@@ -4,6 +4,7 @@
  */
 
 import rateLimit from 'express-rate-limit';
+import { UnauthorizedError } from '../utils/appError';
 
 /**
  * PDF Generation Rate Limiter
@@ -103,7 +104,7 @@ export const chartCreationRateLimiter = rateLimit({
     // Use user ID for authenticated users
     const userId = req.user?.id;
     if (!userId) {
-      throw new Error('User must be authenticated');
+      throw new UnauthorizedError('User must be authenticated');
     }
     return `chart:${userId}`;
   },
