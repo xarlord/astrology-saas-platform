@@ -11,7 +11,6 @@ import {
   generateLunarReturn,
   generateSolarReturn,
   checkStatus,
-  getUsageStats,
   clearCache,
 } from '../controllers/ai.controller';
 import {
