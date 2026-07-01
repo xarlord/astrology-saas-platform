@@ -253,7 +253,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 md:grid-cols-1" aria-label="Popular locations">
           {popularLocations.map((location, index) => (
             <button type="button"
-              key={index}
+              key={`location-${location.name}-${location.lat}-${location.lon}`}
               aria-label={`Select ${location.name}`}
               className="glass-panel rounded-xl p-3.5 cursor-pointer flex items-center gap-3 transition-all duration-200 hover:border-primary hover:shadow-[0_2px_8px_rgba(99,102,241,0.2)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => void handleLocationSelect(location)}

@@ -229,7 +229,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                   <h3 className="m-0 mb-4 text-white text-xl">Strengths</h3>
                   <ul className="list-none p-0 m-0 flex flex-col gap-3">
                     {(synastryData.strengths ?? []).map((strength, index) => (
-                      <li key={index} className="flex items-start gap-3 p-4 bg-green-900/20 border-l-4 border-green-500 rounded">
+                      <li key={`strength-${index}`} className="flex items-start gap-3 p-4 bg-green-900/20 border-l-4 border-green-500 rounded">
                         <span className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full shrink-0 font-bold text-sm">✓</span>
                         {strength}
                       </li>
@@ -242,7 +242,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                   <h3 className="m-0 mb-4 text-white text-xl">Challenges</h3>
                   <ul className="list-none p-0 m-0 flex flex-col gap-3">
                     {(synastryData.challenges ?? []).map((challenge, index) => (
-                      <li key={index} className="flex items-start gap-3 p-4 bg-red-900/20 border-l-4 border-red-500 rounded">
+                      <li key={`challenge-${index}`} className="flex items-start gap-3 p-4 bg-red-900/20 border-l-4 border-red-500 rounded">
                         <span className="flex items-center justify-center w-6 h-6 bg-red-500 text-white rounded-full shrink-0 font-bold text-sm">!</span>
                         {challenge}
                       </li>
@@ -326,7 +326,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                   <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
                     {(synastryData.synastryAspects ?? []).map((aspect, index) => (
                       <div
-                        key={index}
+                        key={`aspect-${aspect.aspect1}-${aspect.aspect2}-${aspect.type}`}
                         className={`p-6 rounded-lg border-2 border-transparent transition-all hover:border-white/15 hover:-translate-y-0.5 ${
                           aspect.soulmateIndicator
                             ? 'border-pink-500 bg-gradient-to-br from-pink-900/30 to-pink-800/30'

@@ -759,7 +759,7 @@ export function TransitDetailModal({ transit, onClose }: { transit: Transit; onC
               <h4 className="text-sm font-medium text-primary mb-2">Suggestions</h4>
               <ul className="space-y-1">
                 {interp.advice.suggestions.map((item, index) => (
-                  <li key={index} className="text-xs text-slate-200 flex items-start gap-2">
+                  <li key={`suggestion-${index}`} className="text-xs text-slate-200 flex items-start gap-2">
                     <span className="text-primary">💡</span>
                     {item}
                   </li>
