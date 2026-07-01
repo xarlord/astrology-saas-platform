@@ -163,7 +163,7 @@ export const FormErrorSummary: React.FC<FormErrorSummaryProps> = ({
           </h4>
           <ul className={clsx('space-y-1', itemClasses[size])}>
             {errors.map((error, index) => (
-              <li key={index} className="flex items-start gap-2">
+              <li key={`error-${index}`} className="flex items-start gap-2">
                 <span
                   className={clsx('flex-shrink-0 rounded-full bg-error mt-1.5', bulletSize[size])}
                   aria-hidden="true"

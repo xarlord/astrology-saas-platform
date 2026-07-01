@@ -8,11 +8,12 @@
 import { resolve } from 'path';
 import knex from 'knex';
 import config from '../config/index';
+import { logger } from '../utils/logger';
 
 async function runMigrations(): Promise<void> {
   // __dirname = /app/backend/dist/scripts → resolve up to /app/backend/migrations
   const migrationsDir = resolve(__dirname, '..', '..', 'migrations');
-  console.log(`[migrations] Migration directory: ${migrationsDir}`);
+  logger.info(`[migrations] Migration directory: ${migrationsDir}`);
 
   const db = knex({
     client: 'pg',
@@ -36,17 +37,17 @@ async function runMigrations(): Promise<void> {
   });
 
   try {
-    console.log('[migrations] Running pending migrations...');
+    logger.info('[migrations] Running pending migrations...');
     const [batchNo, log] = await db.migrate.latest();
     if (log.length === 0) {
-      console.log('[migrations] Already up to date.');
+      logger.info('[migrations] Already up to date.');
     } else {
-      console.log(`[migrations] Batch ${batchNo} applied: ${log.join(', ')}`);
+      logger.info(`[migrations] Batch ${batchNo} applied: ${log.join(', ')}`);
     }
   } catch (err) {
-    console.error('[migrations] FAILED:', err);
+    logger.error('[migrations] FAILED:', err);
     // Non-fatal: log error but let server continue starting
-    console.error('[migrations] Continuing server startup despite migration failure.');
+    logger.warn('[migrations] Continuing server startup despite migration failure.');
   }
 
   await db.destroy();

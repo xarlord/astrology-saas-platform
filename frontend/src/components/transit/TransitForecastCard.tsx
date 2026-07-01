@@ -267,7 +267,7 @@ export const TransitForecastCard: React.FC<TransitForecastCardProps> = ({
                 <div className="flex flex-wrap gap-1.5">
                   {interp.themes.map((theme, i) => (
                     <span
-                      key={i}
+                      key={`theme-${theme}`}
                       className="px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-[11px] font-medium"
                     >
                       {theme}
@@ -318,7 +318,7 @@ export const TransitForecastCard: React.FC<TransitForecastCardProps> = ({
                 >
                   <ul className="space-y-1.5">
                     {interp.advice.positive.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-slate-200">
+                      <li key={`positive-${i}`} className="flex items-start gap-2 text-xs text-slate-200">
                         <span className="text-green-500 mt-0.5 shrink-0">✓</span>
                         {item}
                       </li>
@@ -333,7 +333,7 @@ export const TransitForecastCard: React.FC<TransitForecastCardProps> = ({
                 >
                   <ul className="space-y-1.5">
                     {interp.advice.challenges.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-slate-200">
+                      <li key={`challenge-${i}`} className="flex items-start gap-2 text-xs text-slate-200">
                         <span className="text-amber-500 mt-0.5 shrink-0">!</span>
                         {item}
                       </li>

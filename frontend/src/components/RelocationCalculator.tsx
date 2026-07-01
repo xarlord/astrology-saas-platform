@@ -253,7 +253,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 md:grid-cols-1" aria-label="Popular locations">
           {popularLocations.map((location, index) => (
             <button type="button"
-              key={index}
+              key={`location-${location.name}-${location.lat}-${location.lon}`}
               aria-label={`Select ${location.name}`}
               className="glass-panel rounded-xl p-3.5 cursor-pointer flex items-center gap-3 transition-all duration-200 hover:border-primary hover:shadow-[0_2px_8px_rgba(99,102,241,0.2)] hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => void handleLocationSelect(location)}
@@ -285,7 +285,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                   <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes:</h5>
                   <div className="flex flex-wrap gap-1.5">
                     {originalReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-white/15 text-slate-200">{theme}</span>
+                      <span key={`orig-theme-${theme}`} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-white/15 text-slate-200">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                   <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes:</h5>
                   <div className="flex flex-wrap gap-1.5">
                     {relocatedReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-primary/10 text-slate-200">{theme}</span>
+                      <span key={`reloc-theme-${theme}`} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-primary/10 text-slate-200">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             <h4 className="text-lg font-semibold text-slate-200 mb-4">House Placement Changes</h4>
             <div className="flex flex-col gap-3">
               {getHouseChanges().map((change, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-white/15 rounded-md">
+                <div key={`house-change-${change.planet}`} className="flex items-center gap-3 p-3 bg-white/15 rounded-md">
                   <span className="font-semibold text-slate-200 min-w-[80px]">{change.planet}</span>
                   <span className="text-slate-200">House {change.originalHouse}</span>
                   <span className="material-symbols-outlined text-4xl" aria-hidden="true">arrow_forward</span>

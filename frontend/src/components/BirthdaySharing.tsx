@@ -134,7 +134,7 @@ export const BirthdaySharing: React.FC<BirthdaySharingProps> = ({
               <h4 className="font-medium text-slate-200 mb-1">Themes for {year}:</h4>
               <div className="flex flex-wrap gap-2">
                 {interpretation.themes?.slice(0, 4).map((theme: string, i: number) => (
-                  <span key={i} className="inline-block rounded-full bg-primary/20 px-3 py-1 text-sm text-primary">{theme}</span>
+                  <span key={`theme-${theme}`} className="inline-block rounded-full bg-primary/20 px-3 py-1 text-sm text-primary">{theme}</span>
               ))}
               {interpretation.themes && interpretation.themes.length > 4 && (
                 <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-sm text-slate-200">+{interpretation.themes.length - 4} more</span>

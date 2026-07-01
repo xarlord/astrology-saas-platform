@@ -271,7 +271,7 @@ export function TransitCalendar({
 
           return (
             <div
-              key={index}
+              key={`day-${day.date.toISOString()}`}
               className={`
                 relative min-h-[60px] sm:min-h-[100px] md:min-h-[80px] p-1 sm:p-2 border-b border-r border-white/15
                 ${!day.isCurrentMonth ? 'bg-white/[0.03]' : ''}
@@ -328,7 +328,7 @@ export function TransitCalendar({
 
                   return (
                     <div
-                      key={i}
+                      key={`transit-${transit.transitingPlanet}-${transit.type}-${transit.natalPlanet}`}
                       className="flex items-center gap-1 p-0.5 rounded hover:bg-white/15 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -410,7 +410,7 @@ export function TransitCalendar({
 
                 return (
                   <div
-                    key={i}
+                    key={`transit-${transit.transitingPlanet}-${transit.type}-${transit.natalPlanet}`}
                     className="flex items-center gap-3 p-3 glass-panel rounded-2xl transition-shadow cursor-pointer"
                     onClick={() => onTransitClick?.(transit)}
                     role="button"
