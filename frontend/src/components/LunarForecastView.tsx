@@ -85,7 +85,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
             <span className="text-sm">Likelihood:</span>
             <div className="flex gap-0.5">
               {likelihoodBars.map((_, i) => (
-                <span key={i} className={`text-[0.6rem] ${i < prediction.likelihood ? 'text-primary' : 'text-slate-200'}`}>&#9632;</span>
+                <span key={`likelihood-bar-${prediction.date}-${i}`} className={`text-[0.6rem] ${i < prediction.likelihood ? 'text-primary' : 'text-slate-200'}`}>&#9632;</span>
               ))}
             </div>
             <span className="font-semibold text-primary">{prediction.likelihood}/10</span>
@@ -295,7 +295,7 @@ const LunarForecastView: React.FC<LunarForecastViewProps> = ({ returnDate, onBac
             </p>
             <div className="flex flex-col gap-4">
               {forecast.journalPrompts.map((prompt, i) => (
-                <div key={i} className="flex gap-4 p-5 bg-white/15 rounded-xl">
+                <div key={`journal-prompt-${forecast.date}-${i}`} className="flex gap-4 p-5 bg-white/15 rounded-xl">
                   <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full font-semibold">{i + 1}</span>
                   <p className="m-0 text-slate-200 leading-relaxed">{prompt}</p>
                 </div>

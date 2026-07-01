@@ -285,7 +285,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                   <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes:</h5>
                   <div className="flex flex-wrap gap-1.5">
                     {originalReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-white/15 text-slate-200">{theme}</span>
+                      <span key={`orig-theme-${theme}`} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-white/15 text-slate-200">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
                   <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes:</h5>
                   <div className="flex flex-wrap gap-1.5">
                     {relocatedReturn.interpretation.themes.slice(0, 3).map((theme: string, i: number) => (
-                      <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-primary/10 text-slate-200">{theme}</span>
+                      <span key={`reloc-theme-${theme}`} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-primary/10 text-slate-200">{theme}</span>
                     ))}
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
             <h4 className="text-lg font-semibold text-slate-200 mb-4">House Placement Changes</h4>
             <div className="flex flex-col gap-3">
               {getHouseChanges().map((change, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-white/15 rounded-md">
+                <div key={`house-change-${change.planet}`} className="flex items-center gap-3 p-3 bg-white/15 rounded-md">
                   <span className="font-semibold text-slate-200 min-w-[80px]">{change.planet}</span>
                   <span className="text-slate-200">House {change.originalHouse}</span>
                   <span className="material-symbols-outlined text-4xl" aria-hidden="true">arrow_forward</span>
