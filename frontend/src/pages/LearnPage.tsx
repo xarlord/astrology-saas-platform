@@ -133,7 +133,7 @@ function QuestionList({ questions }: { questions: string[] }) {
   return (
     <ul className="space-y-1.5">
       {questions.map((q, i) => (
-        <li key={i} className="flex items-start gap-2 text-sm text-slate-200">
+        <li key={`question-${i}`} className="flex items-start gap-2 text-sm text-slate-200">
           <span className="text-primary mt-0.5 flex-shrink-0">•</span>
           <span>{q}</span>
         </li>
@@ -703,7 +703,7 @@ export default function LearnPage() {
                 <InfoBlock label="Life Areas" icon="dashboard">
                   <div className="flex flex-wrap gap-1.5">
                     {h.lifeAreas.map((area, i) => (
-                      <span key={i} className="text-xs px-2 py-0.5 bg-white/5 rounded-full text-slate-200">{area}</span>
+                      <span key={`life-area-${i}`} className="text-xs px-2 py-0.5 bg-white/5 rounded-full text-slate-200">{area}</span>
                     ))}
                   </div>
                 </InfoBlock>

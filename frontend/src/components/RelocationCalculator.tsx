@@ -341,8 +341,8 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               <div className="mb-4">
                 <h5 className="text-sm font-semibold text-slate-200 mb-2">New Themes:</h5>
                 <div className="flex flex-wrap gap-1.5">
-                  {themesAdded.map((theme: string, i: number) => (
-                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-300">{theme}</span>
+                  {themesAdded.map((theme: string) => (
+                    <span key={`theme-added-${theme}`} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-300">{theme}</span>
                   ))}
                 </div>
               </div>
@@ -352,8 +352,8 @@ export const RelocationCalculator: React.FC<RelocationCalculatorProps> = ({
               <div>
                 <h5 className="text-sm font-semibold text-slate-200 mb-2">Themes No Longer Active:</h5>
                 <div className="flex flex-wrap gap-1.5">
-                  {themesRemoved.map((theme: string, i: number) => (
-                    <span key={i} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-300">{theme}</span>
+                  {themesRemoved.map((theme: string) => (
+                    <span key={`theme-removed-${theme}`} className="py-1 px-2.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-300">{theme}</span>
                   ))}
                 </div>
               </div>

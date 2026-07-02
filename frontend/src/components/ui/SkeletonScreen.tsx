@@ -34,7 +34,7 @@ export const SkeletonText: React.FC<SkeletonTextProps> = ({
     <div className={clsx('space-y-2', className)} role="status" aria-live="polite">
       <span className="sr-only">Loading text content...</span>
       {Array.from({ length: lines }).map((_, i) => (
-        <div key={i} className={clsx(skeletonBase, 'h-4')} style={{ width: widths[i] ?? '100%' }} />
+        <div key={`text-line-${i}`} className={clsx(skeletonBase, 'h-4')} style={{ width: widths[i] ?? '100%' }} />
       ))}
     </div>
   );
@@ -124,14 +124,14 @@ export const SkeletonTable: React.FC<SkeletonTableProps> = ({
     {/* Header */}
     <div className="flex space-x-4">
       {Array.from({ length: columns }).map((_, i) => (
-        <div key={`header-${i}`} className={clsx(skeletonBase, 'h-6 flex-1')} />
+        <div key={`table-header-${i}`} className={clsx(skeletonBase, 'h-6 flex-1')} />
       ))}
     </div>
     {/* Rows */}
     {Array.from({ length: rows }).map((_, rowIndex) => (
-      <div key={rowIndex} className="flex space-x-4">
+      <div key={`table-row-${rowIndex}`} className="flex space-x-4">
         {Array.from({ length: columns }).map((_, colIndex) => (
-          <div key={`cell-${rowIndex}-${colIndex}`} className={clsx(skeletonBase, 'h-10 flex-1')} />
+          <div key={`table-cell-${rowIndex}-${colIndex}`} className={clsx(skeletonBase, 'h-10 flex-1')} />
         ))}
       </div>
     ))}
@@ -152,13 +152,13 @@ export const SkeletonCalendar: React.FC<SkeletonProps> = ({ className }) => (
     {/* Days of week */}
     <div className="grid grid-cols-7 gap-2 mb-4">
       {Array.from({ length: 7 }).map((_, i) => (
-        <div key={i} className={clsx(skeletonBase, 'h-8')} />
+        <div key={`dow-${i}`} className={clsx(skeletonBase, 'h-8')} />
       ))}
     </div>
     {/* Calendar grid */}
     <div className="grid grid-cols-7 gap-2">
       {Array.from({ length: 35 }).map((_, i) => (
-        <div key={i} className={clsx(skeletonBase, 'h-24 rounded')} />
+        <div key={`calendar-day-${i}`} className={clsx(skeletonBase, 'h-24 rounded')} />
       ))}
     </div>
     <span className="sr-only">Loading calendar...</span>
@@ -178,7 +178,7 @@ export const SkeletonList: React.FC<SkeletonListProps> = ({
 }) => (
   <div className={clsx('space-y-4', className)} role="status" aria-label="Loading list">
     {Array.from({ length: items }).map((_, i) => (
-      <div key={i} className="flex items-center space-x-4">
+      <div key={`list-item-${i}`} className="flex items-center space-x-4">
         {showAvatar && <SkeletonCircle size={40} />}
         <div className="flex-1">
           <SkeletonText lines={2} width={['70%', '50%']} />
@@ -192,7 +192,7 @@ export const SkeletonList: React.FC<SkeletonListProps> = ({
 export const SkeletonForm: React.FC<SkeletonProps> = ({ className }) => (
   <div className={clsx('space-y-6', className)} role="status" aria-label="Loading form">
     {Array.from({ length: 4 }).map((_, i) => (
-      <div key={i} className="space-y-2">
+      <div key={`form-field-${i}`} className="space-y-2">
         <div className={clsx(skeletonBase, 'h-5 w-1/4')} />
         <div className={clsx(skeletonBase, 'h-10 w-full')} />
       </div>

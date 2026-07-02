@@ -207,7 +207,7 @@ export default function HomePage() {
                       { cx: 280, cy: 320, color: '#FF0000' },
                       { cx: 220, cy: 300, color: '#FFA500' },
                     ].map((p, i) => (
-                      <circle key={i} cx={p.cx} cy={p.cy} r="5" fill={p.color} opacity="0.8" />
+                      <circle key={`hero-planet-${i}`} cx={p.cx} cy={p.cy} r="5" fill={p.color} opacity="0.8" />
                     ))}
                     <defs>
                       <linearGradient gradientUnits="userSpaceOnUse" id="heroGrad" x1="250" x2="250" y1="0" y2="500">
@@ -319,7 +319,7 @@ export default function HomePage() {
                 <div key={testimonial.name} className="glass-card rounded-2xl p-6">
                   <div className="flex items-center gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i} className="text-gold text-sm" aria-hidden="true">star</span>
+                      <span key={`star-rating-${i}`} className="text-gold text-sm" aria-hidden="true">star</span>
                     ))}
                     <span className="sr-only">5 out of 5 stars</span>
                   </div>
