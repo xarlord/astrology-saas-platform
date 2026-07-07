@@ -265,7 +265,7 @@ export const TransitForecastCard: React.FC<TransitForecastCardProps> = ({
               {/* Themes Tags */}
               {interp.themes.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  {interp.themes.map((theme, i) => (
+                  {interp.themes.map((theme) => (
                     <span
                       key={`theme-${theme}`}
                       className="px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-[11px] font-medium"

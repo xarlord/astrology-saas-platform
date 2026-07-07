@@ -324,7 +324,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                   <p className="text-center text-slate-200 italic">No significant aspects found between these charts.</p>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
-                    {(synastryData.synastryAspects ?? []).map((aspect, index) => (
+                    {(synastryData.synastryAspects ?? []).map((aspect) => (
                       <div
                         key={`aspect-${aspect.aspect1}-${aspect.aspect2}-${aspect.type}`}
                         className={`p-6 rounded-lg border-2 border-transparent transition-all hover:border-white/15 hover:-translate-y-0.5 ${
