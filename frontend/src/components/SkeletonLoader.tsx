@@ -37,7 +37,7 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
     <div className={className} role="status" aria-live="polite" aria-label="Loading content">
       <span className="sr-only">Loading...</span>
       {Array.from({ length: count }).map((_, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={`skeleton-${variant}-${index}`}>
           {renderSkeleton()}
         </React.Fragment>
       ))}
@@ -106,7 +106,7 @@ const SkeletonCalendar = () => (
     </div>
     <div className="grid grid-cols-7 gap-2">
       {Array.from({ length: 35 }).map((_, index) => (
-        <div key={index} className={`${shimmerBar} aspect-square`} />
+        <div key={`calendar-cell-${index}`} className={`${shimmerBar} aspect-square`} />
       ))}
     </div>
   </div>
@@ -121,7 +121,7 @@ const SkeletonChart = () => (
     </div>
     <div className="flex flex-col gap-3">
       {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="flex justify-between items-center py-3 border-b border-white/[0.06]">
+        <div key={`chart-item-${index}`} className="flex justify-between items-center py-3 border-b border-white/[0.06]">
           <div className={`${shimmerBar} w-24 h-4`} />
           <div className={`${shimmerBar} w-32 h-4`} />
         </div>
@@ -134,7 +134,7 @@ const SkeletonChart = () => (
 export const SkeletonGrid: React.FC<{ count?: number }> = ({ count = 3 }) => (
   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     {Array.from({ length: count }).map((_, index) => (
-      <SkeletonLoader key={index} variant="card" />
+      <SkeletonLoader key={`skeleton-grid-${index}`} variant="card" />
     ))}
   </div>
 );

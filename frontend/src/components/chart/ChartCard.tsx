@@ -233,7 +233,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ chart, onDelete, onShare, 
               const x = 40 + 32 * Math.cos(rad);
               const y = 40 + 32 * Math.sin(rad);
               const colors = ['#ffd700','#c0c0c0','#ff6b6b','#ff69b4','#ff4500','#daa520','#deb887','#40e0d0','#4169e1','#8b008b'];
-              return <circle key={i} cx={x} cy={y} r="2.5" fill={colors[i % colors.length]} />;
+              return <circle key={`chart-dot-${i}`} cx={x} cy={y} r="2.5" fill={colors[i % colors.length]} />;
             })}
             {/* Center dot */}
             <circle cx="40" cy="40" r="2" fill="rgba(107,61,225,0.5)" />

@@ -120,8 +120,8 @@ const LunarChartView: React.FC<LunarChartViewProps> = ({ chart, onBack }) => {
     );
   };
 
-  const renderAspect = (aspect: LunarAspect, index: number) => (
-    <div key={index} className="aspect-item">
+  const renderAspect = (aspect: LunarAspect, _index: number) => (
+    <div key={`aspect-${aspect.type}-${aspect.planets[0]}-${aspect.planets[1]}`} className="aspect-item">
       <div className="aspect-header">
         <span className="aspect-symbol" style={{ color: getAspectColor(aspect.type) }}>
           {getAspectIcon(aspect.type)}

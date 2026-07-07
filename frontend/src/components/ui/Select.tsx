@@ -60,7 +60,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     },
     ref,
   ) => {
-    const selectId = id ?? `select-${Math.random().toString(36).substr(2, 9)}`;
+    const selectId = id ?? `select-${Math.random().toString(36).substring(2, 11)}`;
     const errorId = `${selectId}-error`;
     const helperId = `${selectId}-helper`;
     const listboxId = `${selectId}-listbox`;

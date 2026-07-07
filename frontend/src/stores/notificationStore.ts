@@ -47,7 +47,7 @@ export const useNotificationStore = create<NotificationState>()(
       maxNotifications: 5,
 
       addNotification: (notification) => {
-        const id = `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const id = `notification-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
         const newNotification: Notification = {
           ...notification,
           id,
