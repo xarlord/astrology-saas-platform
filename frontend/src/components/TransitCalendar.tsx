@@ -327,7 +327,7 @@ export function TransitCalendar({
 
                   return (
                     <div
-                      key={`transit-${transit.transitingPlanet}-${transit.type}-${transit.natalPlanet}`}
+                      key={`transit-${transit.planet}-${transit.sign}`}
                       className="flex items-center gap-1 p-0.5 rounded hover:bg-white/15 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -409,7 +409,7 @@ export function TransitCalendar({
 
                 return (
                   <div
-                    key={`transit-${transit.transitingPlanet}-${transit.type}-${transit.natalPlanet}`}
+                    key={`transit-${transit.planet}-${transit.sign}`}
                     className="flex items-center gap-3 p-3 glass-panel rounded-2xl transition-shadow cursor-pointer"
                     onClick={() => onTransitClick?.(transit)}
                     role="button"

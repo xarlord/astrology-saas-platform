@@ -326,7 +326,7 @@ const SynastryCalculator: React.FC<SynastryCalculatorProps> = ({ charts, onRepor
                   <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
                     {(synastryData.synastryAspects ?? []).map((aspect) => (
                       <div
-                        key={`aspect-${aspect.aspect1}-${aspect.aspect2}-${aspect.type}`}
+                        key={`aspect-${aspect.planet1}-${aspect.planet2}-${aspect.aspect}`}
                         className={`p-6 rounded-lg border-2 border-transparent transition-all hover:border-white/15 hover:-translate-y-0.5 ${
                           aspect.soulmateIndicator
                             ? 'border-pink-500 bg-gradient-to-br from-pink-900/30 to-pink-800/30'
