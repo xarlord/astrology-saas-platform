@@ -157,8 +157,8 @@ const EphemerisPage: React.FC = () => {
     );
   }
 
-  // Render empty state (no data at all and no transit planets either)
-  if (!data && !data?.transitPlanets) {
+  // Render empty state (no data at all)
+  if (!data) {
     return (
       <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
         <div className="flex items-center mb-4">
