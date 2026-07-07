@@ -108,7 +108,7 @@ export const useReportStore = create<ReportState>()(
       },
 
       generateReport: async (request, options) => {
-        const reportId = `report-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const reportId = `report-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
         // Create pending report
         const pendingReport: Report = {
