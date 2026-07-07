@@ -212,6 +212,28 @@ export const monthlyReportRateLimiter = rateLimit({
   },
 });
 
+/**
+ * Card Generation Rate Limiter
+ * Limits shareable card generation (uses Puppeteer — resource-intensive)
+ * - 10 cards per 15 minutes per user
+ */
+export const cardGenerationRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 100 : 10,
+  message: {
+    success: false,
+    error: 'Too many card generation requests. Please try again later.',
+    code: 'RATE_LIMIT_CARD_GENERATION',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    return userId ? `card-gen:${userId}` : `card-gen:${ip}`;
+  },
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,
@@ -222,4 +244,5 @@ export default {
   publicApi: publicApiRateLimiter,
   calendar: calendarRateLimiter,
   monthlyReport: monthlyReportRateLimiter,
+  cardGeneration: cardGenerationRateLimiter,
 };

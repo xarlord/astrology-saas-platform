@@ -6,6 +6,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { authenticate } from '../../../middleware/auth';
+import { cardGenerationRateLimiter } from '../../../middleware/rateLimiter';
 import {
   validateBody,
   validateQuery,
@@ -120,6 +121,7 @@ router.get('/public/:shareToken/og', validateParams(shareTokenParamSchema), getO
 router.post(
   '/generate',
   authenticate,
+  cardGenerationRateLimiter,
   validateBody(generateCardSchema),
   generateCard,
 );

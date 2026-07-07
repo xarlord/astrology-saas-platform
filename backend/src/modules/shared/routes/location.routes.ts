@@ -6,7 +6,7 @@
  * @security API key is stored server-side, not exposed to frontend
  */
 
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { logger } from '../../../utils/logger';
 import { asyncHandler } from '../../../middleware/errorHandler';
@@ -120,7 +120,7 @@ router.use(publicApiRateLimiter);
  * @desc    Proxy for Google Places Autocomplete
  * @access  Public (rate limited)
  */
-router.get('/autocomplete', validateQuery(autocompleteQuerySchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/autocomplete', validateQuery(autocompleteQuerySchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
   try {
     if (!GOOGLE_PLACES_API_KEY) {
       // Fallback to Nominatim if no API key configured
@@ -205,7 +205,7 @@ router.get('/autocomplete', validateQuery(autocompleteQuerySchema), asyncHandler
  * @desc    Get place details including coordinates
  * @access  Public (rate limited)
  */
-router.get('/details/:placeId', validateParams(placeIdParamSchema), validateQuery(detailsQuerySchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/details/:placeId', validateParams(placeIdParamSchema), validateQuery(detailsQuerySchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
   try {
     const { placeId } = req.params;
 
@@ -337,7 +337,7 @@ async function fetchNominatim(query: string): Promise<any[]> {
  * @desc    Get IANA timezone from lat/lon coordinates
  * @access  Public
  */
-router.get('/timezone', validateQuery(timezoneQuerySchema), asyncHandler(async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+router.get('/timezone', validateQuery(timezoneQuerySchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
   try {
     // validateQuery coerces and validates lat/lon as numbers
     const lat = Number(req.query.lat);
