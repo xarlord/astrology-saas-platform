@@ -234,6 +234,28 @@ export const cardGenerationRateLimiter = rateLimit({
   },
 });
 
+/**
+ * Rate limiter for astronomical computation endpoints (synastry, solar return,
+ * lunar return, transit calculations, personality analysis).
+ * These are CPU-intensive and require ephemeris data processing.
+ */
+export const astroComputationRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 100 : 20,
+  message: {
+    success: false,
+    error: 'Too many computation requests. Please try again later.',
+    code: 'RATE_LIMIT_ASTRO_COMPUTATION',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    return userId ? `astro-calc:${userId}` : `astro-calc:${ip}`;
+  },
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,

@@ -12,7 +12,7 @@
 
 import logger from '../../../utils/logger';
 import { calculateMoonPhase } from '../../calendar/services/calendar.service';
-import AstronomyEngineService from '../../shared/services/astronomyEngine.service';
+import { AstronomyEngineService } from '../../shared/services/astronomyEngine.service';
 import { capitalize } from '../../../shared/utils/stringUtils';
 import { NotFoundError } from '../../../utils/appError';
 
