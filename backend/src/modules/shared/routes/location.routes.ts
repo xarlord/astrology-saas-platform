@@ -13,6 +13,20 @@ import { asyncHandler } from '../../../middleware/errorHandler';
 import { publicApiRateLimiter } from '../../../middleware/rateLimiter';
 import { validateParams, validateQuery } from '../../../utils/validators';
 
+/** Nominatim search API response item */
+interface NominatimResult {
+  place_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+  type: string;
+  address?: {
+    country?: string;
+    country_code?: string;
+    [key: string]: unknown;
+  };
+}
+
 const placeIdParamSchema = z.object({
   placeId: z.string().min(1).max(512),
 });
@@ -311,11 +325,9 @@ async function fetchNominatim(query: string): Promise<any[]> {
       },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const results = (await response.json()) as any[];
+    const results = (await response.json()) as NominatimResult[];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return results.map((item: any, index: number) => ({
+    return results.map((item: NominatimResult, index: number) => ({
       placeId: `nominatim_${index}_${Date.now()}`,
       description: item.display_name,
       mainText: item.display_name.split(',')[0],
