@@ -7,6 +7,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import * as lunarReturnController from '../controllers/lunarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
+import { astroComputationRateLimiter } from '../../../middleware/rateLimiter';
 import {
   validateBody,
   validateQuery,
@@ -92,6 +93,7 @@ router.get('/current', lunarReturnController.getCurrentLunarReturn);
  */
 router.post(
   '/chart',
+  astroComputationRateLimiter,
   validateBody(lunarReturnChartSchema),
   lunarReturnController.getLunarReturnChart,
 );
@@ -121,6 +123,7 @@ router.post(
  */
 router.post(
   '/forecast',
+  astroComputationRateLimiter,
   validateBody(lunarForecastSchema),
   lunarReturnController.getLunarMonthForecast,
 );
@@ -205,6 +208,7 @@ router.delete('/:id', validateParams(uuidParamSchema), lunarReturnController.del
  */
 router.post(
   '/calculate',
+  astroComputationRateLimiter,
   validateBody(lunarCalculateSchema),
   lunarReturnController.calculateCustomLunarReturn,
 );

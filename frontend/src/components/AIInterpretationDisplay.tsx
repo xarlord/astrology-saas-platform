@@ -47,7 +47,7 @@ export const AIInterpretationDisplay: React.FC<AIInterpretationDisplayProps> = (
               ) : Array.isArray(value) ? (
                 <ul>
                   {value.map((item, i) => (
-                    <li key={i}>
+                    <li key={`item-${i}`}>
                       {typeof item === 'string' ? item : JSON.stringify(item)}
                     </li>
                   ))}

@@ -46,7 +46,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
     ref,
   ) => {
     const [internalChecked, setInternalChecked] = useState(defaultChecked);
-    const toggleId = `toggle-${Math.random().toString(36).substr(2, 9)}`;
+    const toggleId = `toggle-${Math.random().toString(36).substring(2, 11)}`;
     const errorId = `${toggleId}-error`;
     const helperId = `${toggleId}-helper`;
 

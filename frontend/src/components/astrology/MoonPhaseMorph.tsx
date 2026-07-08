@@ -163,7 +163,7 @@ const MoonPhaseMorph: React.FC<MoonPhaseMorphProps> = ({
           >
             {craters.map((crater, i) => (
               <circle
-                key={i}
+                key={`crater-${crater.cx}-${crater.cy}-${i}`}
                 cx={crater.cx}
                 cy={crater.cy}
                 r={crater.r}

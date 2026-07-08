@@ -4,6 +4,7 @@
 
 import { Router } from 'express';
 import { authenticate, optionalAuthenticate, AuthenticatedRequest } from '../../../middleware/auth';
+import { astroComputationRateLimiter } from '../../../middleware/rateLimiter';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateBody, validateParams, validateQuery, uuidParamSchema } from '../../../utils/validators';
 import { calculateTransitsSchema, transitCalendarQuerySchema, transitForecastQuerySchema } from '../../../utils/validators';
@@ -80,6 +81,7 @@ router.use(authenticate);
  */
 router.post(
   '/calculate',
+  astroComputationRateLimiter,
   validateBody(calculateTransitsSchema),
   asyncHandler(async (req, res) => {
     await TransitController.calculateTransits(req as AuthenticatedRequest, res);

@@ -7,6 +7,7 @@ import { Router, RequestHandler } from 'express';
 import { z } from 'zod';
 import * as synastryController from '../controllers/synastry.controller';
 import { authenticate } from '../../../middleware/auth';
+import { astroComputationRateLimiter } from '../../../middleware/rateLimiter';
 import {
   validateBody,
   validateQuery,
@@ -67,6 +68,7 @@ const updateReportSchema = z.object({
  */
 router.post(
   '/compare',
+  astroComputationRateLimiter,
   validateBody(compareSchema),
   synastryController.compareCharts as RequestHandler,
 );
@@ -104,6 +106,7 @@ router.post(
  */
 router.post(
   '/compatibility',
+  astroComputationRateLimiter,
   validateBody(compatibilitySchema),
   synastryController.getCompatibility as RequestHandler,
 );

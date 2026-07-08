@@ -273,7 +273,10 @@ describe('Rate Limiter Middleware', () => {
     it('should ensure all rate limiters have reasonable window sizes', () => {
       configs.forEach((config) => {
         expect(config.windowMs).toBeGreaterThan(0);
-        expect(config.windowMs).toBeLessThanOrEqual(60 * 60 * 1000);
+        // Monthly report rate limiter is an exception (30 days is legitimate for monthly reports)
+        if (config.message.code !== 'RATE_LIMIT_MONTHLY_REPORT') {
+          expect(config.windowMs).toBeLessThanOrEqual(60 * 60 * 1000);
+        }
         expect(typeof config.windowMs).toBe('number');
       });
     });

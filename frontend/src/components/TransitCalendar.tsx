@@ -263,15 +263,14 @@ export function TransitCalendar({
       <div className="min-w-[320px]" role="grid">
         {Array.from({ length: Math.ceil(calendarDays.length / 7) }, (_, weekIdx) => (
           <div key={weekIdx} className="grid grid-cols-7" role="row">
-            {calendarDays.slice(weekIdx * 7, weekIdx * 7 + 7).map((day, cellIdx) => {
-              const index = weekIdx * 7 + cellIdx;
+            {calendarDays.slice(weekIdx * 7, weekIdx * 7 + 7).map((day) => {
           const isSelected =
             selectedDate?.toDateString() === day.date.toDateString();
           const hasRetrograde = day.transits.some((t) => t.retrograde);
 
           return (
             <div
-              key={index}
+              key={`day-${day.date.toISOString()}`}
               className={`
                 relative min-h-[60px] sm:min-h-[100px] md:min-h-[80px] p-1 sm:p-2 border-b border-r border-white/15
                 ${!day.isCurrentMonth ? 'bg-white/[0.03]' : ''}
@@ -320,7 +319,7 @@ export function TransitCalendar({
 
               {/* Transits */}
               <div className="space-y-0.5 overflow-hidden text-[10px] sm:text-xs">
-                {day.transits.slice(0, 3).map((transit, i) => {
+                {day.transits.slice(0, 3).map((transit) => {
                   const config = PLANET_CONFIG[transit.planet.toLowerCase() as keyof typeof PLANET_CONFIG];
                   if (!config) return null;
 
@@ -328,7 +327,7 @@ export function TransitCalendar({
 
                   return (
                     <div
-                      key={i}
+                      key={`transit-${transit.planet}-${transit.sign}`}
                       className="flex items-center gap-1 p-0.5 rounded hover:bg-white/15 cursor-pointer motion-safe:animate-[fadeIn_0.2s_ease-out]"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -402,7 +401,7 @@ export function TransitCalendar({
             </p>
           ) : (
             <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {getTransitsForDate(selectedDate).map((transit, i) => {
+              {getTransitsForDate(selectedDate).map((transit) => {
                 const config = PLANET_CONFIG[transit.planet.toLowerCase() as keyof typeof PLANET_CONFIG];
                 if (!config) return null;
 
@@ -410,7 +409,7 @@ export function TransitCalendar({
 
                 return (
                   <div
-                    key={i}
+                    key={`transit-${transit.planet}-${transit.sign}`}
                     className="flex items-center gap-3 p-3 glass-panel rounded-2xl transition-shadow cursor-pointer"
                     onClick={() => onTransitClick?.(transit)}
                     role="button"

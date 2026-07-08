@@ -2,7 +2,7 @@
  * Push Notification Routes
  */
 
-import express from 'express';
+import { Router } from 'express';
 import {
   saveSubscription,
   deleteSubscription,
@@ -26,7 +26,7 @@ const pushSubscriptionSchema = z.object({
   }),
 }).strict();
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @route   GET /api/v1/notifications/vapid-key
@@ -132,4 +132,4 @@ router.get('/subscriptions', getSubscriptions);
  */
 router.post('/test', sendTestNotification);
 
-export { router as PushNotificationRoutes };
+export { router as pushNotificationRoutes };

@@ -6,6 +6,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { authenticate } from '../../../middleware/auth';
+import { cardGenerationRateLimiter, publicApiRateLimiter } from '../../../middleware/rateLimiter';
 import {
   validateBody,
   validateQuery,
@@ -36,7 +37,7 @@ const generateCardSchema = z.object({
   referral_code: z.string().optional(),
 });
 
-// Public routes (no auth required)
+// Public routes (no auth required — rate limited)
 
 /**
  * @openapi
@@ -57,7 +58,7 @@ const generateCardSchema = z.object({
  *       404:
  *         description: Card not found
  */
-router.get('/public/:shareToken', validateParams(shareTokenParamSchema), getPublicCard);
+router.get('/public/:shareToken', publicApiRateLimiter, validateParams(shareTokenParamSchema), getPublicCard);
 
 /**
  * @openapi
@@ -78,7 +79,7 @@ router.get('/public/:shareToken', validateParams(shareTokenParamSchema), getPubl
  *       404:
  *         description: Card not found
  */
-router.get('/public/:shareToken/og', validateParams(shareTokenParamSchema), getOgData);
+router.get('/public/:shareToken/og', publicApiRateLimiter, validateParams(shareTokenParamSchema), getOgData);
 
 // Protected routes (auth required)
 
@@ -120,6 +121,7 @@ router.get('/public/:shareToken/og', validateParams(shareTokenParamSchema), getO
 router.post(
   '/generate',
   authenticate,
+  cardGenerationRateLimiter,
   validateBody(generateCardSchema),
   generateCard,
 );
