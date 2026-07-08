@@ -15,6 +15,7 @@ import {
   deleteSolarReturn,
 } from '../controllers/solarReturn.controller';
 import { authenticate } from '../../../middleware/auth';
+import { astroComputationRateLimiter } from '../../../middleware/rateLimiter';
 import { validateBody, validateParams, validateQuery, uuidParamSchema, solarHistoryQuerySchema } from '../../../utils/validators';
 import { z } from 'zod';
 
@@ -97,6 +98,7 @@ router.use(authenticate);
  */
 router.post(
   '/calculate',
+  astroComputationRateLimiter,
   validateBody(calculateSchema),
   calculateSolarReturn
 );
@@ -263,6 +265,7 @@ router.get(
  */
 router.post(
   '/:id/recalculate',
+  astroComputationRateLimiter,
   validateBody(recalculateSchema),
   recalculateSolarReturn
 );

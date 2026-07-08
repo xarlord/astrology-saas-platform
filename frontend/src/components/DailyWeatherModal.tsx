@@ -176,8 +176,8 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
               <div className="flex-1">
                 <h4 className="m-0 mb-2 text-sm font-semibold text-emerald-500">✨ Favorable For:</h4>
                 <ul className="m-0 pl-5 list-disc">
-                  {weather.luckyActivities.map((activity, index) => (
-                    <li key={index} className="text-[13px] text-slate-200 mb-1 leading-snug">{activity}</li>
+                  {weather.luckyActivities.map((activity) => (
+                    <li key={`lucky-${activity}`} className="text-[13px] text-slate-200 mb-1 leading-snug">{activity}</li>
                   ))}
                 </ul>
               </div>
@@ -187,8 +187,8 @@ export function DailyWeatherModal({ date, weather, onClose }: DailyWeatherModalP
               <div className="flex-1">
                 <h4 className="m-0 mb-2 text-sm font-semibold text-red-500">⚠️ Challenging For:</h4>
                 <ul className="m-0 pl-5 list-disc">
-                  {weather.challengingActivities.map((activity, index) => (
-                    <li key={index} className="text-[13px] text-slate-200 mb-1 leading-snug">{activity}</li>
+                  {weather.challengingActivities.map((activity) => (
+                    <li key={`challenging-${activity}`} className="text-[13px] text-slate-200 mb-1 leading-snug">{activity}</li>
                   ))}
                 </ul>
               </div>

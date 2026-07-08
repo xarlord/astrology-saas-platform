@@ -2,6 +2,18 @@
  * UI Storage Utility
  * Centralized localStorage access for non-auth UI preferences
  *
+ * IMPORTANT: This is the ONLY place where direct localStorage access is acceptable.
+ * All other frontend code should use either:
+ * - `tokenStorage` (from services/tokenStorage.ts) for auth tokens
+ * - `uiStorage` (this file) for UI preferences like theme, onboarding, etc.
+ *
+ * Why direct localStorage here?
+ * - This IS the utility layer that other components use
+ * - Keeps localStorage access centralized and auditable
+ * - Makes it easy to swap storage backend later if needed
+ *
+ * NEVER use localStorage directly in components — always use this utility.
+ *
  * For auth tokens, use tokenStorage utility (reads from Zustand store)
  */
 

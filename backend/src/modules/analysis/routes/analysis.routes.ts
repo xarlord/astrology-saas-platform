@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { authenticate, AuthenticatedRequest } from '../../../middleware/auth';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { validateParams } from '../../../utils/validators';
+import { astroComputationRateLimiter } from '../../../middleware/rateLimiter';
 import { z } from 'zod';
 import * as AnalysisController from '../controllers/analysis.controller';
 
@@ -17,6 +18,7 @@ const router = Router();
 
 // All analysis routes require authentication
 router.use(authenticate);
+router.use(astroComputationRateLimiter);
 
 /**
  * @openapi

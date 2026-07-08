@@ -11,7 +11,6 @@ import {
   generateLunarReturn,
   generateSolarReturn,
   checkStatus,
-  getUsageStats,
   clearCache,
 } from '../controllers/ai.controller';
 import {
@@ -377,26 +376,6 @@ router.get('/usage/pricing', getPricing);
  *         description: Cost estimate
  */
 router.post('/usage/estimate', validateBody(estimateCostSchema), estimateCost);
-
-// Legacy endpoint (deprecated - use /usage/stats)
-
-/**
- * @route   GET /api/v1/ai/usage
- * @desc    Get AI usage stats (legacy)
- * @access  Private
- *
- * @openapi
- * /api/v1/ai/usage:
- *   get:
- *     tags: [AI]
- *     summary: Get AI usage (legacy, use /usage/stats)
- *     deprecated: true
- *     security: [{ bearerAuth: [] }]
- *     responses:
- *       200:
- *         description: Usage statistics
- */
-router.get('/usage', asyncHandler(async (req, res) => { await getUsageStats(req, res); }));
 
 /**
  * @route   POST /api/v1/ai/cache/clear

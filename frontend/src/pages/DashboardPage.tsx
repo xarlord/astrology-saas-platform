@@ -299,7 +299,7 @@ export default function DashboardPage() {
             {/* Planetary Positions Grid */}
             {transitsLoading ? (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {[0, 1, 2, 3].map((i) => <SkeletonLoader key={i} variant="card" />)}
+                {[0, 1, 2, 3].map((i) => <SkeletonLoader key={`dashboard-skeleton-${i}`} variant="card" />)}
               </div>
             ) : (
             <div className="bg-cosmic-card-solid border border-white/15 rounded-2xl p-6">
@@ -348,7 +348,7 @@ export default function DashboardPage() {
               </div>
               {transitsLoading ? (
                 <div className="space-y-4">
-                  {[0, 1, 2].map((i) => <SkeletonLoader key={i} variant="list" />)}
+                  {[0, 1, 2].map((i) => <SkeletonLoader key={`dashboard-list-skeleton-${i}`} variant="list" />)}
                 </div>
               ) : (
               <div className="space-y-4">

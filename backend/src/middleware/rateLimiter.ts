@@ -4,6 +4,7 @@
  */
 
 import rateLimit from 'express-rate-limit';
+import { UnauthorizedError } from '../utils/appError';
 
 /**
  * PDF Generation Rate Limiter
@@ -103,7 +104,7 @@ export const chartCreationRateLimiter = rateLimit({
     // Use user ID for authenticated users
     const userId = req.user?.id;
     if (!userId) {
-      throw new Error('User must be authenticated');
+      throw new UnauthorizedError('User must be authenticated');
     }
     return `chart:${userId}`;
   },
@@ -161,6 +162,100 @@ export const publicApiRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/**
+ * Calendar Operations Rate Limiter
+ * Limits calendar event operations to prevent abuse
+ * - 100 requests per 15 minutes per user
+ */
+export const calendarRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 500 : 100,
+  message: {
+    success: false,
+    error: 'Too many calendar operations. Please try again later.',
+    code: 'RATE_LIMIT_CALENDAR',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      return ip;
+    }
+    return `calendar:${userId}`;
+  },
+});
+
+/**
+ * Monthly Report Rate Limiter
+ * Limits monthly transit report generation (premium feature)
+ * - 10 reports per month per user
+ */
+export const monthlyReportRateLimiter = rateLimit({
+  windowMs: 30 * 24 * 60 * 60 * 1000, // 30 days (1 month)
+  max: process.env.NODE_ENV !== 'production' ? 100 : 10,
+  message: {
+    success: false,
+    error: 'Monthly report limit reached. You can generate up to 10 reports per month.',
+    code: 'RATE_LIMIT_MONTHLY_REPORT',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      const ip = req.ip || req.connection.remoteAddress || 'unknown';
+      return ip;
+    }
+    return `monthly_report:${userId}`;
+  },
+});
+
+/**
+ * Card Generation Rate Limiter
+ * Limits shareable card generation (uses Puppeteer — resource-intensive)
+ * - 10 cards per 15 minutes per user
+ */
+export const cardGenerationRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 100 : 10,
+  message: {
+    success: false,
+    error: 'Too many card generation requests. Please try again later.',
+    code: 'RATE_LIMIT_CARD_GENERATION',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    return userId ? `card-gen:${userId}` : `card-gen:${ip}`;
+  },
+});
+
+/**
+ * Rate limiter for astronomical computation endpoints (synastry, solar return,
+ * lunar return, transit calculations, personality analysis).
+ * These are CPU-intensive and require ephemeris data processing.
+ */
+export const astroComputationRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV !== 'production' ? 100 : 20,
+  message: {
+    success: false,
+    error: 'Too many computation requests. Please try again later.',
+    code: 'RATE_LIMIT_ASTRO_COMPUTATION',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const userId = req.user?.id;
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    return userId ? `astro-calc:${userId}` : `astro-calc:${ip}`;
+  },
+});
+
 export default {
   pdf: pdfRateLimiter,
   share: shareRateLimiter,
@@ -169,4 +264,7 @@ export default {
   passwordReset: passwordResetRateLimiter,
   webhook: webhookRateLimiter,
   publicApi: publicApiRateLimiter,
+  calendar: calendarRateLimiter,
+  monthlyReport: monthlyReportRateLimiter,
+  cardGeneration: cardGenerationRateLimiter,
 };

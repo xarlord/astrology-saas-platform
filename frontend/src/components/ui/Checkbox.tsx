@@ -44,7 +44,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const [internalChecked, setInternalChecked] = useState(Boolean(defaultChecked));
     const [isIndeterminate, setIsIndeterminate] = useState(indeterminate);
 
-    const checkboxId = id ?? `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+    const checkboxId = id ?? `checkbox-${Math.random().toString(36).substring(2, 11)}`;
     const errorId = `${checkboxId}-error`;
     const helperId = `${checkboxId}-helper`;
     const internalRef = React.useRef<HTMLInputElement>(null);

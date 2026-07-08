@@ -111,7 +111,7 @@ const EphemerisPage: React.FC = () => {
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse">
+            <div key={`ephemeris-skeleton-${i}`} className="animate-pulse">
               <div className="bg-white/5 rounded-xl p-4 sm:p-6">
                 <div className="h-6 bg-white/10 rounded w-1/3 mb-4" />
                 <div className="h-4 bg-white/10 rounded w-2/3 mb-2" />
@@ -157,8 +157,8 @@ const EphemerisPage: React.FC = () => {
     );
   }
 
-  // Render empty state (no data at all and no transit planets either)
-  if (!data && !data?.transitPlanets) {
+  // Render empty state (no data at all)
+  if (!data) {
     return (
       <div className="min-h-screen bg-cosmic-page p-4 sm:p-6">
         <div className="flex items-center mb-4">
