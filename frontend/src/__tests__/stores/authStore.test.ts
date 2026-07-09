@@ -151,7 +151,10 @@ describe('authStore', () => {
 
     it('should handle login error', async () => {
       const errorMessage = 'Invalid credentials';
-      vi.mocked(authService.login).mockRejectedValueOnce(new Error(errorMessage));
+      vi.mocked(authService.login).mockRejectedValueOnce({
+        response: { data: { error: errorMessage } },
+        message: 'Request failed with status code 401',
+      });
 
       await act(async () => {
         try {
@@ -229,7 +232,10 @@ describe('authStore', () => {
 
     it('should handle register error', async () => {
       const errorMessage = 'Email already exists';
-      vi.mocked(authService.register).mockRejectedValueOnce(new Error(errorMessage));
+      vi.mocked(authService.register).mockRejectedValueOnce({
+        response: { data: { error: errorMessage } },
+        message: 'Request failed with status code 409',
+      });
 
       await act(async () => {
         try {
@@ -392,7 +398,10 @@ describe('authStore', () => {
     });
 
     it('should handle profile update error', async () => {
-      vi.mocked(authService.updateProfile).mockRejectedValueOnce(new Error('Update failed'));
+      vi.mocked(authService.updateProfile).mockRejectedValueOnce({
+        response: { data: { error: 'Update failed' } },
+        message: 'Request failed with status code 400',
+      });
 
       await act(async () => {
         try {
@@ -428,9 +437,10 @@ describe('authStore', () => {
     });
 
     it('should handle preferences update error', async () => {
-      vi.mocked(authService.updatePreferences).mockRejectedValueOnce(
-        new Error('Preferences error'),
-      );
+      vi.mocked(authService.updatePreferences).mockRejectedValueOnce({
+        response: { data: { error: 'Preferences error' } },
+        message: 'Request failed with status code 400',
+      });
 
       await act(async () => {
         try {
