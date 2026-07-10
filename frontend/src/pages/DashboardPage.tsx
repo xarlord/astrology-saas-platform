@@ -11,7 +11,6 @@ import { useAuth, useCharts, useTodayTransits, useTransitForecast } from '../hoo
 import type { TransitReading } from '../services/transit.service';
 import { deriveHighlights } from '../utils/transitHelpers';
 import { SkeletonGrid, SkeletonLoader, EmptyStates, AppLayout } from '../components';
-import { SYNODIC_MONTH_DAYS, KNOWN_NEW_MOON_MS } from '../utils/constants';
 
 const PLANET_META: Record<string, { icon: string; color: string }> = {
   Sun: { icon: 'sunny', color: 'text-gold' },
@@ -26,34 +25,21 @@ const PLANET_META: Record<string, { icon: string; color: string }> = {
   Pluto: { icon: 'change_history', color: 'text-rose-400' },
 };
 
-function getMoonPhaseInfo() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-  // Simple moon phase approximation
-  const synodicMonth = SYNODIC_MONTH_DAYS;
-  const knownNewMoon = KNOWN_NEW_MOON_MS;
-  const diff = (now.getTime() - knownNewMoon) / 86400000;
-  const phase = ((diff % synodicMonth) + synodicMonth) % synodicMonth;
-
-  let phaseName = 'New Moon';
-  let sign = 'Aries';
-  const signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
-  sign = signs[Math.floor((now.getDate() * 1.3 + now.getMonth() * 2.7) % 12)];
-
-  if (phase < 1.85) phaseName = 'New Moon';
-  else if (phase < 7.38) phaseName = 'Waxing Crescent';
-  else if (phase < 9.23) phaseName = 'First Quarter';
-  else if (phase < 14.77) phaseName = 'Waxing Gibbous';
-  else if (phase < 16.61) phaseName = 'Full Moon';
-  else if (phase < 22.15) phaseName = 'Waning Gibbous';
-  else if (phase < 23.99) phaseName = 'Last Quarter';
-  else if (phase < 29.53) phaseName = 'Waning Crescent';
-
-  return { phaseName, sign, dateStr };
+/**
+ * Format moon phase name from API phase slug.
+ */
+function formatPhaseName(phase: string): string {
+  const names: Record<string, string> = {
+    'new': 'New Moon',
+    'waxing-crescent': 'Waxing Crescent',
+    'first-quarter': 'First Quarter',
+    'waxing-gibbous': 'Waxing Gibbous',
+    'full': 'Full Moon',
+    'waning-gibbous': 'Waning Gibbous',
+    'last-quarter': 'Last Quarter',
+    'waning-crescent': 'Waning Crescent',
+  };
+  return names[phase] ?? phase;
 }
 
 function getInitials(name: string) {
@@ -86,8 +72,11 @@ export default function DashboardPage() {
     void fetchCharts();
   }, [isAuthenticated, fetchCharts]);
 
-  const moon = getMoonPhaseInfo();
   const transitPlanets = todayTransits?.transitPlanets;
+  const moonPhase = todayTransits?.moonPhase;
+  const moonPhaseName = moonPhase ? formatPhaseName(moonPhase.phase) : 'New Moon';
+  const moonSign = moonPhase?.sign ?? transitPlanets?.moon?.sign ?? 'Aries';
+  const todayStr = new Date().toISOString().slice(0, 10);
   const planetEntries: [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }][] = transitPlanets
     ? Object.entries(transitPlanets).slice(0, 4).map(([name, data]) => [name, { ...data, degree: data.longitude % 30 }] as [string, { sign: string; degree: number; longitude: number; speed: number; retrograde: boolean }])
     : [
@@ -131,8 +120,8 @@ export default function DashboardPage() {
     }
     const phase = todayTransits?.moonPhase?.phase;
     if (phase) return `Cosmic Overview: The Moon is in ${phase} phase. A day for reflection and inner alignment.`;
-    return `Cosmic Overview: ${moon.phaseName} in ${moon.sign}. Set intentions aligned with the current lunar energy.`;
-  }, [highlights, todayTransits, moon]);
+    return `Cosmic Overview: ${moonPhaseName} in ${moonSign}. Set intentions aligned with the current lunar energy.`;
+  }, [highlights, todayTransits, moonPhaseName, moonSign]);
 
   interface ForecastItem {
     badge: string;
@@ -225,8 +214,8 @@ export default function DashboardPage() {
               <span className="material-symbols-outlined" aria-hidden="true">dark_mode</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-slate-200 font-medium uppercase tracking-wide">{moon.dateStr}</span>
-              <span className="text-sm font-bold text-white">{moon.phaseName} in {moon.sign}</span>
+              <span className="text-xs text-slate-200 font-medium uppercase tracking-wide">{todayStr}</span>
+              <span className="text-sm font-bold text-white">{moonPhaseName} in {moonSign}</span>
             </div>
           </div>
         </header>
@@ -353,7 +342,7 @@ export default function DashboardPage() {
               ) : (
               <div className="space-y-4">
                 {(forecastItems.length > 0 ? forecastItems : [
-                  { month: moon.dateStr.slice(5, 7), day: moon.dateStr.slice(8, 10), name: 'Awaiting forecast data', desc: 'Transit forecast will appear here once available.', icon: 'hourglass_empty' as const, iconColor: 'text-slate-200', badge: 'Pending', badgeBg: 'bg-slate-500/10', badgeText: 'text-slate-200', badgeBorder: 'border-slate-500/20' },
+                  { month: todayStr.slice(5, 7), day: todayStr.slice(8, 10), name: 'Awaiting forecast data', desc: 'Transit forecast will appear here once available.', icon: 'hourglass_empty' as const, iconColor: 'text-slate-200', badge: 'Pending', badgeBg: 'bg-slate-500/10', badgeText: 'text-slate-200', badgeBorder: 'border-slate-500/20' },
                 ]).map((transit) => (
                   <div
                     key={transit.name}
