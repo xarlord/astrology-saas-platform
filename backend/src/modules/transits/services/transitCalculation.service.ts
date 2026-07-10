@@ -97,6 +97,7 @@ export interface MoonPhase {
     | 'waning-crescent';
   degrees: number;
   illumination: number;
+  sign: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -237,11 +238,14 @@ export async function calculateTransitPlanetsOnly(date: Date): Promise<TransitPl
 /**
  * Calculate the moon phase from ecliptic longitudes of the Moon and Sun.
  */
+const ZODIAC_SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'] as const;
+
 export function calculateMoonPhase(moonLong: number, sunLong: number): MoonPhase {
   let diff = moonLong - sunLong;
   if (diff < 0) diff += 360;
 
   const degrees = diff;
+  const signIndex = Math.floor(((moonLong % 360 + 360) % 360) / 30) % 12;
 
   let phase: string;
   let illumination: number;
@@ -276,6 +280,7 @@ export function calculateMoonPhase(moonLong: number, sunLong: number): MoonPhase
     phase: phase as MoonPhase['phase'],
     degrees: Math.round(degrees * 100) / 100,
     illumination: Math.round(illumination * 100) / 100,
+    sign: ZODIAC_SIGNS[signIndex],
   };
 }
 

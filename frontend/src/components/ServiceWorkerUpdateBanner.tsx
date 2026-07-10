@@ -8,6 +8,13 @@ import { useServiceWorkerUpdate } from '../hooks/useServiceWorkerUpdate';
 
 export const ServiceWorkerUpdateBanner: React.FC = () => {
   const { needRefresh, offlineReady, update: _update, skipWaiting: _skipWaiting } = useServiceWorkerUpdate();
+  const [dismissed, setDismissed] = React.useState(() => {
+    const dismissedUntil = localStorage.getItem('sw-update-dismissed-until');
+    if (dismissedUntil) {
+      return Date.now() < parseInt(dismissedUntil, 10);
+    }
+    return false;
+  });
 
   const handleRefresh = () => {
     // New SW already activated — just reload the page
@@ -15,8 +22,10 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
   };
 
   const handleReload = () => {
-    // Dismiss — user will see banner again next visit
-    // No-op: banner stays until refresh
+    // Dismiss for 24 hours
+    const cooldown = 24 * 60 * 60 * 1000;
+    localStorage.setItem('sw-update-dismissed-until', String(Date.now() + cooldown));
+    setDismissed(true);
   };
 
   if (offlineReady) {
@@ -33,7 +42,7 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
     );
   }
 
-  if (!needRefresh) {
+  if (!needRefresh || dismissed) {
     return null;
   }
 

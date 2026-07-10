@@ -24,6 +24,7 @@ export interface TransitReading {
     phase: string;
     degrees: number;
     illumination: number;
+    sign: string;
   };
   transitPlanets?: Record<string, {
     longitude: number;
@@ -51,7 +52,7 @@ interface TransitCalendarResponse {
       date: string;
       day: number;
       aspects: { planet1: string; planet2: string; type: string; orb: number; applying?: boolean }[];
-      moonPhase?: { phase: string; degrees: number; illumination: number };
+      moonPhase?: { phase: string; degrees: number; illumination: number; sign: string };
       retrogrades?: string[];
     }[];
   };
