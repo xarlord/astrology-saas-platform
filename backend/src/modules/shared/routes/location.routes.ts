@@ -298,11 +298,23 @@ router.get('/details/:placeId', validateParams(placeIdParamSchema), validateQuer
  */
 let lastNominatimRequest = 0;
 
+/** Mapped Nominatim result for API responses */
+interface MappedLocationResult {
+  placeId: string;
+  description: string;
+  mainText: string;
+  secondaryText: string;
+  types: string[];
+  lat: number;
+  lon: number;
+  country: string;
+  countryCode: string;
+}
+
 /**
  * Fallback: Nominatim (OpenStreetMap) autocomplete
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function fetchNominatim(query: string): Promise<any[]> {
+async function fetchNominatim(query: string): Promise<MappedLocationResult[]> {
   try {
     const url = new URL('https://nominatim.openstreetmap.org/search');
     url.searchParams.set('q', query);
