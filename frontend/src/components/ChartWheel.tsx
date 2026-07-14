@@ -177,7 +177,7 @@ export function ChartWheel({
       <svg
         role="img" aria-label={`Natal chart wheel with ${planets.length} planets`}
         data-testid="chart-wheel"
-        viewBox={`0 0 ${totalSize} ${totalSize}`} className="w-full h-auto"
+        viewBox={`0 0 ${totalSize} ${totalSize}`} className="w-full h-auto max-w-full overflow-hidden"
         style={{ fontFamily: 'system-ui, sans-serif' }}
       >
         <defs>
