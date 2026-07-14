@@ -342,19 +342,19 @@ export default function RegisterPageNew() {
                         />
                       ))}
                     </div>
-                    <p className="text-xs text-slate-500 px-1 flex items-center gap-2">
+                    <div className="text-xs text-slate-500 px-1 flex items-center gap-2">
                       {passwordStrength.label && (
                         <>
                           <span
                             className={`inline-block w-2 h-2 rounded-full ${passwordStrength.color}`}
                           ></span>
-                          Password strength: {passwordStrength.label}
-                          {password && password.length < 12 && (
-                            <p className="text-xs text-slate-400 mt-0.5">Min 12 chars: uppercase, lowercase, number, special (@$!%*?&)</p>
+                          <span>Password strength: {passwordStrength.label}</span>
+                          {password.length < 12 && (
+                            <span className="text-slate-400 mt-0.5">Min 12 chars: uppercase, lowercase, number, special (@$!%*?&)</span>
                           )}
                         </>
                       )}
-                    </p>
+                    </div>
                   </>
                 )}
               </div>
