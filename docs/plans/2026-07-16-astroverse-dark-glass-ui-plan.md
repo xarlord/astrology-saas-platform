@@ -45,15 +45,14 @@ Maintain a route-and-surface matrix so every routed page and shared/non-route su
 
 ### Task 2: Define semantic token contract
 
-**Files:** Modify `frontend/src/index.css`, `frontend/tailwind.config.js`, `frontend/src/utils/design-tokens.ts`; test in `frontend/src/utils/__tests__/design-tokens.test.ts`.
+**Files:** Modify `frontend/src/assets/styles/globals.css` as the canonical imported stylesheet, `frontend/tailwind.config.js`, and `frontend/src/utils/design-tokens.ts`; coordinate removal/consolidation of `frontend/src/index.css` with #526. Test in `frontend/src/utils/__tests__/design-tokens.test.ts`.
 
-Add canvas, surface, border, text, accent, feedback, elevation, radius, blur, spacing, focus, and motion tokens. Map Tailwind and runtime chart consumers to the same semantic names. Keep raw palette values out of routed pages.
-
+Add canvas, surface, border, text, accent, feedback, elevation, radius, blur, spacing, focus, and motion tokens. Map Tailwind and runtime chart consumers to the same semantic names. Keep raw palette values out of routed pages and do not emit duplicate Tailwind base layers during stylesheet consolidation.
 **TDD:** Add token existence and mapping tests first; verify they fail; implement; rerun.
 
 ### Task 3: Add reduced-motion and focus defaults
 
-**Files:** Modify `frontend/src/index.css`; test with a small browser/accessibility fixture.
+**Files:** Modify `frontend/src/assets/styles/globals.css` and remove/consolidate duplicate rules from `frontend/src/index.css` as part of #526; test with a small browser/accessibility fixture.
 
 Ensure focus-visible rings are consistent and non-essential transitions are disabled under `prefers-reduced-motion: reduce`.
 
