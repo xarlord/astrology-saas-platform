@@ -10,15 +10,38 @@
 
 ---
 
+## PR sequence and gate policy
+
+The overhaul uses exactly eight implementation PRs. Every PR runs the complete applicable quality suite; a focused suite is an early feedback step, never a substitute for required CI. The eight PRs are:
+
+1. Audit, token foundation, and deterministic visual harness.
+2. Shared glass UI primitives.
+3. Application shell and Issue #514 integration.
+4. Authentication, onboarding, and account surfaces.
+5. Chart creation and chart-results experience.
+6. Transits, forecasts, synastry, and interpretation pages.
+7. Secondary, informational, and exceptional routes.
+8. Visual-regression convergence and cleanup for Issue #516.
+
+Existing `Card`, `Modal`, and related primitives remain compatibility aliases during migration. A primitive may be replaced only after all consumers are migrated, tests are transferred, and the old export is removed in a dedicated cleanup commit.
+
 ## Phase 1 — Foundation PR
 
-### Task 1: Build route and state audit matrix
+### Task 1: Build route and surface audit matrix
 
 **Files:** Create `docs/superpowers/audits/astroverse-ui-route-audit.md`; inspect `frontend/src/App.tsx`, `frontend/src/pages/`, `frontend/src/components/`.
 
-Record every route, shell, state, viewport, test coverage, and migration status. Include hard-coded visual values, duplicate patterns, accessibility risks, and performance risks.
+Record every route, shared component, overlay, PWA state, share/export/PDF surface, and exceptional state. For each, record:
 
-**Verification:** Audit contains every route and has no placeholder/TBD entries.
+- Route or surface path and owning component.
+- Public, authenticated, demo, loading, empty, partial-data, error, permission, modal, drawer, and export states.
+- Desktop, tablet, narrow-mobile, short-viewport, zoom, and reduced-motion behavior.
+- Shared shells used: header, navigation, footer, sidebars, breadcrumbs, page containers.
+- Forms, dialogs, drawers, menus, tables, charts, tooltips, tabs, cards, toasts, share cards, and generated documents.
+- Existing screenshot, unit, accessibility, and Playwright coverage.
+- Hard-coded visual values, duplicate patterns, accessibility risks, performance risks, and migration disposition.
+
+Maintain a route-and-surface matrix so every routed page and shared/non-route surface has an auditable status, owner PR, and explicit migrated/retained/replaced disposition.
 
 ### Task 2: Define semantic token contract
 
@@ -64,7 +87,7 @@ Implement/test skeleton, loading, empty, error, retry, and partial-data states. 
 
 ### Task 9: Review primitives with Sol xhigh
 
-Run component tests, accessibility tests, browser fixture tests, and AGY visual review. Resolve all high-severity findings before opening the PR.
+Run component tests, accessibility tests, browser fixture tests, and AGY visual review. Resolve all high-severity findings before opening the PR. AGY is the visual/usability reviewer; Sol xhigh independently reviews architecture, specification compliance, code quality, and test adequacy as a separate gate.
 
 ---
 
@@ -138,15 +161,16 @@ Run full visual suite, accessibility suite, frontend tests, build, performance c
 
 ## Final verification checklist
 
-- [ ] Full route audit has no unmigrated route.
+- [ ] Full route audit has no unmigrated route or shared surface.
 - [ ] Semantic token contract is the only page-level visual contract.
 - [ ] Shared primitives have behavior/accessibility tests.
 - [ ] Existing functionality and API behavior are unchanged.
 - [ ] Desktop/tablet/mobile browser flows pass.
-- [ ] Keyboard, focus, landmarks, headings, announcements, and contrast pass.
+- [ ] Keyboard, focus, landmarks, headings, announcements, and contrast pass with zero new serious/critical automated violations and zero unresolved manual critical/high findings.
 - [ ] Reduced-motion mode passes.
 - [ ] Visual regression passes without weakened gates.
 - [ ] No unexpected console or network errors.
-- [ ] Performance has no material regression.
-- [ ] AGY Sol xhigh review has no unresolved high-severity finding.
+- [ ] Performance stays within agreed budgets: no more than 5% regression in LCP/CLS/interaction baseline, no more than 10% increase in route JS/CSS without Sol-approved rationale, and no new long tasks over 200ms in representative flows.
+- [ ] AGY visual review is complete and separate from Sol xhigh architecture/code review.
+- [ ] No unresolved high-severity AGY or Sol finding.
 - [ ] Human visual review passes.

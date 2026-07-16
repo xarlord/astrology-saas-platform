@@ -35,10 +35,11 @@ Glass surfaces use controlled opacity, blur, borders, and shadows. Dense text, f
 
 ## Token architecture
 
-- `frontend/src/index.css`: CSS custom properties, base styles, focus defaults, reduced-motion rules, and reusable low-level surface utilities.
+- `frontend/src/assets/styles/globals.css` is the canonical imported global stylesheet. Coordinate with #526 to consolidate the currently competing `index.css` definitions into this loaded entry without duplicate Tailwind base emission.
+- `frontend/src/index.css` may be retained only as a migration source until its tokens/utilities are moved and verified; it must not remain an untracked competing source of truth.
 - `frontend/tailwind.config.js`: map Tailwind colors, radii, shadows, blur, and animations to semantic CSS variables.
 - `frontend/src/utils/design-tokens.ts`: typed token names and runtime mappings for charts and JavaScript.
-- `frontend/src/components/ui`: variant-based primitives consuming semantic tokens.
+- `frontend/src/components/ui`: variant-based primitives consuming semantic tokens, with compatibility adapters for existing `Card`/`Modal` APIs during migration.
 
 Token layers:
 
