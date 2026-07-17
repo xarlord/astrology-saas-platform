@@ -36,10 +36,10 @@ export const UI_TOKENS = {
 } as const;
 
 export type UiTokenPath =
-  | keyof typeof UI_TOKENS.color
-  | keyof typeof UI_TOKENS.radius
-  | keyof typeof UI_TOKENS.elevation
-  | keyof typeof UI_TOKENS.motion;
+  | `color.${keyof typeof UI_TOKENS.color}`
+  | `radius.${keyof typeof UI_TOKENS.radius}`
+  | `elevation.${keyof typeof UI_TOKENS.elevation}`
+  | `motion.${keyof typeof UI_TOKENS.motion}`;
 
 export const COSMIC_COLORS = {
   pageBg: '#0B0D17',

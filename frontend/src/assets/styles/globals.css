@@ -140,22 +140,21 @@
   --aspect-sextile: #3B82F6;
 }
 
-/* Dark Mode Overrides */
+/* Theme compatibility aliases. Semantic roles above remain stable while legacy consumers migrate. */
 .dark {
   --color-background: var(--color-background-dark);
-  --color-surface: var(--color-surface-dark);
+  --color-surface-legacy: var(--color-surface-dark);
   --color-text-primary: #ffffff;
   --color-text-secondary: #a0aec0;
-  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-legacy: rgba(255, 255, 255, 0.1);
 }
 
-/* Light Mode Overrides */
 .light {
   --color-background: var(--color-background-light);
-  --color-surface: var(--color-surface-light);
+  --color-surface-legacy: var(--color-surface-light);
   --color-text-primary: #1a202c;
   --color-text-secondary: #4a5568;
-  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-legacy: rgba(0, 0, 0, 0.1);
 }
 
 /* ===================================
