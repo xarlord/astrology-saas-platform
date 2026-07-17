@@ -474,7 +474,7 @@ export default function BlogPage() {
       <div className="text-center pb-12">
         <Link
           to="/"
-          className="text-sm text-slate-500 hover:text-primary transition-colors"
+          className="text-sm text-slate-400 hover:text-lavender transition-colors"
         >
           ← Back to AstroVerse
         </Link>

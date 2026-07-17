@@ -424,7 +424,7 @@ export default function RegisterPageNew() {
                   I agree to the{' '}
                   <Link
                     to="/terms"
-                    className="text-primary hover:text-primary-dark underline underline-offset-2"
+                    className="text-lavender hover:text-white underline underline-offset-2"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -433,7 +433,7 @@ export default function RegisterPageNew() {
                   and{' '}
                   <Link
                     to="/privacy"
-                    className="text-primary hover:text-primary-dark underline underline-offset-2"
+                    className="text-lavender hover:text-white underline underline-offset-2"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

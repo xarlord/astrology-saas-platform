@@ -1,7 +1,7 @@
 {
-  "name": "@mooncalender/shared-constants",
+  "name": "@astrology-saas/shared-constants",
   "version": "1.0.0",
-  "description": "Shared constants for MoonCalender platform",
+  "description": "Shared constants for the AstroVerse platform",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -15,6 +15,6 @@
     "astrology",
     "shared"
   ],
-  "author": "MoonCalender Dev Team",
+  "author": "AstroVerse Contributors",
   "license": "MIT"
 }

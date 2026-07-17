@@ -4,7 +4,7 @@ Astrology SaaS platform — natal charts, personality analysis, forecasting, PWA
 
 ## Tech Stack
 - Backend: Express 4 + TypeScript 5 (ES2022/NodeNext) + Knex + PostgreSQL 15
-- Frontend: React 18 + Vite 5 + Tailwind 3 + Zustand + React Query + D3
+- Frontend: React 18 + Vite 8 + Tailwind 3 + Zustand + React Query + D3
 - Shared packages: @astrology-saas/shared-types, shared-utils, shared-constants
 - Testing: Jest (backend), Vitest (frontend), Playwright (E2E)
 
