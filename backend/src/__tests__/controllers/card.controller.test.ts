@@ -265,7 +265,7 @@ describe('Card Controller', () => {
       expect(mockCardService.getUserCards).toHaveBeenCalledWith(mockUser.id, 20, 0);
       expect(res.json).toHaveBeenCalledWith({
         success: true,
-        data: { cards: [mockCard], limit: 20, offset: 0 },
+        data: { cards: [mockCard], page: 1, limit: 20, offset: 0 },
       });
     });
 
@@ -277,17 +277,30 @@ describe('Card Controller', () => {
 
       expect(res.json).toHaveBeenCalledWith({
         success: true,
-        data: { cards: [], limit: 20, offset: 0 },
+        data: { cards: [], page: 1, limit: 20, offset: 0 },
       });
     });
 
     it('should enforce max limit of 50', async () => {
-      const req = buildReq({ query: { limit: '200', offset: '5' } });
+      const req = buildReq({ query: { page: 2, limit: '200' } });
       mockCardService.getUserCards.mockResolvedValue([]);
 
       await getCardHistory(req, res, next);
 
-      expect(mockCardService.getUserCards).toHaveBeenCalledWith(mockUser.id, 50, 5);
+      expect(mockCardService.getUserCards).toHaveBeenCalledWith(mockUser.id, 50, 50);
+    });
+
+    it('should calculate the database offset from the validated page', async () => {
+      const req = buildReq({ query: { page: 2, limit: 10 } });
+      mockCardService.getUserCards.mockResolvedValue([]);
+
+      await getCardHistory(req, res, next);
+
+      expect(mockCardService.getUserCards).toHaveBeenCalledWith(mockUser.id, 10, 10);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        data: { cards: [], page: 2, limit: 10, offset: 10 },
+      });
     });
 
     it('should forward service errors to next()', async () => {
