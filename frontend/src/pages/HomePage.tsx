@@ -22,7 +22,8 @@ export default function HomePage() {
       <SkipLink target="#main-content">Skip to main content</SkipLink>
 
       {/* ===== Navigation ===== */}
-      <nav className="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+      <header>
+        <nav className="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -64,9 +65,8 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
+        </nav>
+      </header>
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"

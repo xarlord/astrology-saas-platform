@@ -140,6 +140,21 @@ describe('ServiceWorkerUpdateBanner', () => {
     expect(banner).toHaveClass('fixed');
   });
 
+  it('keeps the update banner constrained to a centered card on larger screens', () => {
+    vi.mocked(useServiceWorkerUpdate).mockReturnValue({
+      needRefresh: true,
+      offlineReady: false,
+      update: vi.fn(),
+      skipWaiting: vi.fn(),
+    });
+
+    const { container } = render(<ServiceWorkerUpdateBanner />);
+    const banner = container.querySelector('.fixed');
+
+    expect(banner).toHaveClass('w-full', 'max-w-full', 'sm:w-[400px]', 'sm:max-w-[90%]');
+    expect(banner).not.toHaveClass('sm:left-0', 'sm:right-0', 'sm:w-full', 'sm:max-w-full');
+  });
+
   it('should render offline banner with offline-specific styling', () => {
     vi.mocked(useServiceWorkerUpdate).mockReturnValue({
       needRefresh: false,

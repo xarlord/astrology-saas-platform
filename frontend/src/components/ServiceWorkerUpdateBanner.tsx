@@ -30,7 +30,7 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
 
   if (offlineReady) {
     return (
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-sw-banner max-w-[90%] w-[400px] bg-[#423d0f] border border-[#ca8a04] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.4)] px-5 py-4 animate-slide-up sm:bottom-0 sm:left-0 sm:right-0 sm:translate-none sm:w-full sm:max-w-full sm:rounded-b-none sm:rounded-t-xl sm:animate-slide-up-mobile">
+      <div className="fixed bottom-0 left-0 right-0 z-sw-banner w-full max-w-full bg-[#423d0f] border border-[#ca8a04] rounded-b-none rounded-t-xl shadow-[0_4px_20px_rgba(0,0,0,0.4)] px-5 py-4 animate-slide-up sm:bottom-5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[400px] sm:max-w-[90%] sm:rounded-xl">
         <div className="flex items-center gap-3">
           <span className="text-2xl leading-none shrink-0">📶</span>
           <div className="flex-1 flex flex-col gap-0.5">
@@ -47,7 +47,7 @@ export const ServiceWorkerUpdateBanner: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-sw-banner max-w-[90%] w-[400px] bg-cosmic-card/90 backdrop-blur-md border border-white/15 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.4)] px-5 py-4 animate-slide-up sm:bottom-0 sm:left-0 sm:right-0 sm:translate-none sm:w-full sm:max-w-full sm:rounded-b-none sm:rounded-t-xl sm:animate-slide-up-mobile">
+    <div className="fixed bottom-0 left-0 right-0 z-sw-banner w-full max-w-full bg-cosmic-card/90 backdrop-blur-md border border-white/15 rounded-b-none rounded-t-xl shadow-[0_4px_20px_rgba(0,0,0,0.4)] px-5 py-4 animate-slide-up sm:bottom-5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[400px] sm:max-w-[90%] sm:rounded-xl">
       <div className="flex items-center gap-3 sm:flex-row sm:flex-wrap">
         <span className="text-2xl leading-none shrink-0">🔄</span>
         <div className="flex-1 sm:min-w-0">
