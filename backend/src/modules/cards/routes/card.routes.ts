@@ -11,7 +11,7 @@ import {
   validateBody,
   validateQuery,
   validateParams,
-  paginationSchema,
+  cardHistoryPaginationSchema,
   uuidParamSchema,
   shareTokenParamSchema,
 } from '../../../utils/validators';
@@ -145,7 +145,7 @@ router.post(
  *       200:
  *         description: Paginated card history
  */
-router.get('/history', authenticate, validateQuery(paginationSchema), getCardHistory);
+router.get('/history', authenticate, validateQuery(cardHistoryPaginationSchema), getCardHistory);
 
 /**
  * @openapi

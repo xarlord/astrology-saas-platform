@@ -10,6 +10,7 @@ import {
   createChartSchema,
   calculateTransitsSchema,
   paginationSchema,
+  cardHistoryPaginationSchema,
   validateBody,
   validateQuery,
 } from '../../utils/validators';
@@ -355,6 +356,23 @@ describe('Validators', () => {
       const result = paginationSchema.safeParse(data);
 
       expect(result.success).toBe(false);
+    });
+  });
+
+  describe('cardHistoryPaginationSchema', () => {
+    it('rejects the legacy unvalidated offset query', () => {
+      const result = cardHistoryPaginationSchema.safeParse({ offset: '-1', limit: 20 });
+
+      expect(result.success).toBe(false);
+    });
+
+    it('coerces page and limit while keeping only the documented fields', () => {
+      const result = cardHistoryPaginationSchema.safeParse({ page: '2', limit: '10' });
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({ page: 2, limit: 10 });
+      }
     });
   });
 

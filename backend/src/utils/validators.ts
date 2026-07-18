@@ -104,6 +104,8 @@ export const paginationSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
+export const cardHistoryPaginationSchema = paginationSchema.strict();
+
 // Calendar event validators
 export const createCalendarEventSchema = z.object({
   event_type: z.string().min(1).max(100),
