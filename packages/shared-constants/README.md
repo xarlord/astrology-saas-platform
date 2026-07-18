@@ -1,11 +1,11 @@
-# @mooncalender/shared-constants
+# @astrology-saas/shared-constants
 
 Shared astrology constants used across the AstroVerse monorepo.
 
 ## Installation
 
 ```bash
-npm install @mooncalender/shared-constants
+npm install @astrology-saas/shared-constants
 ```
 
 ## Build
@@ -41,8 +41,8 @@ npm run clean    # remove dist/
 ## Usage
 
 ```typescript
-import { ZODIAC_SIGNS, PLANETS } from '@mooncalender/shared-constants';
-import { ASPECT_TYPES } from '@mooncalender/shared-constants/aspects';
+import { ZODIAC_SIGNS, PLANETS } from '@astrology-saas/shared-constants';
+import { ASPECT_TYPES } from '@astrology-saas/shared-constants/aspects';
 ```
 
 *Last updated: 2026-04-05*

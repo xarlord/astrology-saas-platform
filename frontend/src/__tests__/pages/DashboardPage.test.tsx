@@ -430,11 +430,7 @@ describe('DashboardPage', () => {
     it('should render current date in moon phase card', () => {
       renderWithProviders(createElement(DashboardPage));
       // Page renders date as YYYY-MM-DD format in the moon phase card
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      const expectedDateStr = `${year}-${month}-${day}`;
+      const expectedDateStr = new Date().toISOString().slice(0, 10);
       expect(screen.getByText(expectedDateStr)).toBeInTheDocument();
     });
   });

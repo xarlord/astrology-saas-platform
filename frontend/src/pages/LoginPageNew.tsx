@@ -204,7 +204,7 @@ export default function LoginPageNew() {
                         <span className="material-symbols-outlined text-[20px]">mail</span>
                       </div>
                       <input
-                        className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-4 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
+                        className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-4 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
                         id="email"
                         name="email"
                         type="email"
@@ -217,7 +217,7 @@ export default function LoginPageNew() {
                         data-testid="email-input"
                       />
                     </div>
-                    <p id="email-description" className="mt-1 text-xs text-slate-500">
+                    <p id="email-description" className="mt-1 text-xs text-slate-400">
                       We'll never share your email with anyone else.
                     </p>
                   </div>
@@ -235,7 +235,7 @@ export default function LoginPageNew() {
                         <span className="material-symbols-outlined text-[20px]">lock</span>
                       </div>
                       <input
-                        className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-12 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
+                        className="block w-full rounded-xl border-0 bg-surface-dark py-3.5 pl-11 pr-12 text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all duration-200"
                         id="password"
                         name="password"
                         type={showPassword ? 'text' : 'password'}
@@ -249,7 +249,7 @@ export default function LoginPageNew() {
                       />
                       <button
                         type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-slate-300 transition-colors"
+                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-300 transition-colors"
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                         data-testid="password-visibility-toggle"
@@ -315,7 +315,7 @@ export default function LoginPageNew() {
                     <div className="w-full border-t border-white/10"></div>
                   </div>
                   <div className="relative flex justify-center">
-                    <span className="bg-gradient-to-br from-cosmic-page to-cosmic-card px-3 text-xs font-medium uppercase tracking-wider text-slate-500 rounded-full">
+                    <span className="bg-gradient-to-br from-cosmic-page to-cosmic-card px-3 text-xs font-medium uppercase tracking-wider text-slate-400 rounded-full">
                       Or continue with
                     </span>
                   </div>

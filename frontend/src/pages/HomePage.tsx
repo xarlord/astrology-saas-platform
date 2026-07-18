@@ -175,8 +175,8 @@ export default function HomePage() {
                     to="/login"
                     className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white border border-cosmic-border hover:border-primary/50 hover:bg-white/15 backdrop-blur-sm transition-all group"
                   >
-                    <span className="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" aria-hidden="true">play_circle</span>
-                    Watch Demo
+                    <span className="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" aria-hidden="true">login</span>
+                    Sign In
                   </Link>
                 </div>
               </div>
@@ -238,7 +238,7 @@ export default function HomePage() {
                   icon: 'auto_awesome',
                   gradient: 'from-purple-500 to-indigo-600',
                   title: 'Natal Charts',
-                  desc: 'High-precision calculations using Swiss Ephemeris for accurate birth chart generation.',
+                  desc: 'High-precision astronomical calculations for accurate birth chart generation.',
                 },
                 {
                   icon: 'psychology',
@@ -319,7 +319,7 @@ export default function HomePage() {
                 <div key={testimonial.name} className="glass-card rounded-2xl p-6">
                   <div className="flex items-center gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={`star-rating-${i}`} className="text-gold text-sm" aria-hidden="true">star</span>
+                      <span key={`star-rating-${i}`} className="material-symbols-outlined text-gold text-sm" aria-hidden="true">star</span>
                     ))}
                     <span className="sr-only">5 out of 5 stars</span>
                   </div>
@@ -383,7 +383,7 @@ export default function HomePage() {
                   }`}
                 >
                   {plan.featured && (
-                    <div className="inline-flex self-start items-center px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-4">
+                    <div className="inline-flex self-start items-center px-3 py-1 rounded-full bg-primary/20 text-lavender text-xs font-bold mb-4">
                       Most Popular
                     </div>
                   )}
