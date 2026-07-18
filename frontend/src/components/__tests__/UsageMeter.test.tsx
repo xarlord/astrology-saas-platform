@@ -163,6 +163,17 @@ describe('UsageMeter', () => {
       expect(screen.getByText('1000 charts')).toBeInTheDocument();
       expect(screen.getByText('Priority support')).toBeInTheDocument();
     });
+
+    it('should render a visible decorative checkmark for every included feature', () => {
+      const { container } = render(<UsageMeter {...defaultProps} tier="free" />);
+
+      const checkmarks = container.querySelectorAll('[data-testid="tier-feature-checkmark"]');
+      expect(checkmarks).toHaveLength(3);
+      checkmarks.forEach((checkmark) => {
+        expect(checkmark).toHaveTextContent('✓');
+        expect(checkmark).toHaveAttribute('aria-hidden', 'true');
+      });
+    });
   });
 
   describe('Accessibility', () => {

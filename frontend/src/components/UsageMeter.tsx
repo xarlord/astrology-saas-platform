@@ -163,7 +163,10 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
         <span className="text-xs text-slate-200 block mb-2">Plan includes:</span>
         <ul className="list-none p-0 m-0 flex flex-wrap gap-1.5 gap-x-3">
           {tierConfig.features.map((feature) => (
-            <li key={feature} className="text-xs text-slate-200 relative pl-3.5 before:content-['\2713'] before:absolute before:left-0 before:text-green-500">{feature}</li>
+            <li key={feature} className="text-xs text-slate-200 relative flex items-center gap-1.5">
+              <span data-testid="tier-feature-checkmark" aria-hidden="true" className="text-green-500">✓</span>
+              {feature}
+            </li>
           ))}
         </ul>
       </div>
