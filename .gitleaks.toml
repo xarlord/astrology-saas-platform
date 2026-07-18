@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "google-e2e-email"
+description = "Google E2E account identifiers must not be committed"
+regex = '''(?i)[A-Za-z0-9._%+-]+@(gmail|googlemail)\.com'''
+keywords = ["gmail", "googlemail"]
+
+[[rules]]
+id = "google-e2e-password-assignment"
+description = "Google E2E passwords must come from runtime secrets"
+regex = '''(?i)(GOOGLE_E2E_PASSWORD|google.*password)\s*[:=]\s*["'][^"']+["']'''
+keywords = ["GOOGLE_E2E_PASSWORD", "password"]

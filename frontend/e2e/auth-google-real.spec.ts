@@ -12,20 +12,26 @@
  *  - Backend running at localhost:3001 (or BASE_URL)
  *  - Frontend running at localhost:5173 (or set BASE_URL)
  *  - PostgreSQL + Redis running (Docker: docker compose -f docker-compose.dev.yml up -d)
- *  - Google test account: testastroversedev@gmail.com / DevAstro1234!
+ *  - Google test account credentials must be supplied through GOOGLE_E2E_EMAIL and
+ *    GOOGLE_E2E_PASSWORD by an explicitly authorized runtime. The provider tests
+ *    are skipped with an audit-visible reason when either variable is absent.
  *
  * RUN:
  *  BASE_URL=http://localhost:5173 npx playwright test --config=playwright-google-real.config.ts
  */
 
-import { test, expect, type BrowserContext, type Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
-const GOOGLE_EMAIL = 'testastroversedev@gmail.com';
-const GOOGLE_PASSWORD = 'DevAstro1234!';
+const GOOGLE_EMAIL = process.env.GOOGLE_E2E_EMAIL ?? '';
+const GOOGLE_PASSWORD = process.env.GOOGLE_E2E_PASSWORD ?? '';
+const GOOGLE_CREDENTIALS_CONFIGURED = Boolean(GOOGLE_EMAIL && GOOGLE_PASSWORD);
+const GOOGLE_SKIP_REASON =
+  'Skipped: real-provider E2E requires explicitly authorized GOOGLE_E2E_EMAIL and GOOGLE_E2E_PASSWORD runtime secrets.';
 const APP_BASE = process.env.BASE_URL || 'http://localhost:5173';
 const API_BASE = process.env.API_BASE || 'http://localhost:3001';
 
 test.describe('Real Google Login E2E Flow', () => {
+  test.skip(!GOOGLE_CREDENTIALS_CONFIGURED, GOOGLE_SKIP_REASON);
   test.setTimeout(180_000);
 
   test('should complete full Google Sign-In → dashboard navigation', async ({
@@ -275,6 +281,7 @@ test.describe('Backend /auth/social endpoint', () => {
 // Auth state verification tests (run after successful Google login)
 // ─────────────────────────────────────────────────────────────────────────────
 test.describe('Post-Login: Auth State Verification', () => {
+  test.skip(!GOOGLE_CREDENTIALS_CONFIGURED, GOOGLE_SKIP_REASON);
   test('should persist auth state after page refresh', async ({ page, context }) => {
     // First, do the Google login
     await page.goto(`${APP_BASE}/login`);
