@@ -1,4 +1,7 @@
 import { describe, expect, it, jest } from '@jest/globals';
+import express, { type ErrorRequestHandler } from 'express';
+import rateLimit from 'express-rate-limit';
+import request from 'supertest';
 import { MonthlyRateLimitStore } from '../../middleware/monthlyRateLimitStore';
 
 interface MockRedisClient {
@@ -127,5 +130,55 @@ describe('MonthlyRateLimitStore', () => {
     });
 
     await expect(store.increment('user-1')).rejects.toThrow('Redis is not available');
+  });
+
+  it('shares atomic counters across store instances and concurrent increments', async () => {
+    const counts = new Map<string, number>();
+    const expiries = new Map<string, number>();
+    const evalCommand = jest.fn(
+      async (_script: string, _numberOfKeys: number, key: string, expiresAt: number) => {
+        const next = (counts.get(key) ?? 0) + 1;
+        counts.set(key, next);
+        if (!expiries.has(key)) expiries.set(key, expiresAt);
+        return next;
+      },
+    );
+    const sharedClient = { ...createClient(), eval: evalCommand };
+    const now = () => new Date('2026-06-15T00:00:00.000Z');
+    const storeA = new MonthlyRateLimitStore({ client: () => sharedClient, now });
+    const storeB = new MonthlyRateLimitStore({ client: () => sharedClient, now });
+
+    const results = await Promise.all(
+      Array.from({ length: 50 }, (_, index) =>
+        (index % 2 === 0 ? storeA : storeB).increment('shared-user'),
+      ),
+    );
+
+    expect(results.map(({ totalHits }) => totalHits).sort((a, b) => a - b)).toEqual(
+      Array.from({ length: 50 }, (_, index) => index + 1),
+    );
+    expect(counts.get('monthly-report-rate-limit:2026-06:shared-user')).toBe(50);
+    expect(expiries.get('monthly-report-rate-limit:2026-06:shared-user')).toBe(
+      Date.parse('2026-07-01T00:00:00.000Z'),
+    );
+  });
+
+  it('prevents the protected handler from running when Redis is unavailable', async () => {
+    const store = new MonthlyRateLimitStore({
+      client: async () => Promise.reject(new Error('Redis unavailable')),
+    });
+    const limiter = rateLimit({ windowMs: 60_000, limit: 1, store, validate: false });
+    const protectedHandler = jest.fn((_request, response) => response.sendStatus(204));
+    const app = express();
+    app.get('/protected', limiter, protectedHandler);
+    const errorHandler: ErrorRequestHandler = (_error, _request, response, _next) => {
+      response.status(503).json({ success: false });
+    };
+    app.use(errorHandler);
+
+    const response = await request(app).get('/protected');
+
+    expect(response.status).toBe(503);
+    expect(protectedHandler).not.toHaveBeenCalled();
   });
 });
