@@ -4,7 +4,20 @@
  */
 
 import rateLimit from 'express-rate-limit';
+import {
+  connectRedis,
+  isRedisConnected,
+  requireRedis,
+} from '../modules/shared/services/redis.service';
 import { UnauthorizedError } from '../utils/appError';
+import { MonthlyRateLimitStore } from './monthlyRateLimitStore';
+
+async function requireConnectedRedis() {
+  if (!isRedisConnected()) {
+    await connectRedis();
+  }
+  return requireRedis();
+}
 
 /**
  * PDF Generation Rate Limiter
@@ -193,8 +206,9 @@ export const calendarRateLimiter = rateLimit({
  * - 10 reports per month per user
  */
 export const monthlyReportRateLimiter = rateLimit({
-  windowMs: 30 * 24 * 60 * 60 * 1000, // 30 days (1 month)
+  windowMs: 30 * 24 * 60 * 60 * 1000, // Store uses exact UTC calendar-month boundaries
   max: process.env.NODE_ENV !== 'production' ? 100 : 10,
+  store: new MonthlyRateLimitStore({ client: requireConnectedRedis }),
   message: {
     success: false,
     error: 'Monthly report limit reached. You can generate up to 10 reports per month.',
