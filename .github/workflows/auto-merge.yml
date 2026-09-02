@@ -1,10 +1,8 @@
 name: Auto-Merge Passing PRs
 
 on:
-  check_suite:
-    types: [completed]
   pull_request:
-    types: [synchronize, opened, reopened]
+    types: [synchronize, opened, reopened, ready_for_review]
 
 permissions:
   contents: write
@@ -14,27 +12,25 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     if: >
-      github.event.sender.login == 'xarlord' ||
-      contains(github.event.pull_request.head.ref, 'auto-review')
+      github.event.pull_request.base.ref == 'master' &&
+      github.event.pull_request.draft == false &&
+      (github.event.sender.login == 'xarlord' ||
+      contains(github.event.pull_request.head.ref, 'auto-review'))
     steps:
-      - name: Wait for required checks
-        uses: lewagon/wait-on-check-action@v1.3.4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 30
-          running-workflow-name: auto-merge
-
-      - name: Auto-merge PR
+      - name: Enable protected native auto-merge
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          CHECKS=$(gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/check-runs --jq '.check_runs[] | select(.name == "build-and-test" or .name == "lint" or .name == "TDD" or .name == "Unit Tests" or .name == "Kotlin Linting" or .name == "Android Lint" or .name == "build" or .name == "test" or .name == "Security Checklist" or .name == "Documentation Check")')
-          FAILED=$(echo "$CHECKS" | jq -r '[.[] | select(.conclusion == "FAILURE")] | length')
-          PENDING=$(echo "$CHECKS" | jq -r '[.[] | select(.status != "completed")] | length')
-          if [ "$FAILED" -gt 0 ] || [ "$PENDING" -gt 0 ]; then
-            echo "::notice::Skipping auto-merge: $FAILED failures, $PENDING pending"
-            exit 0
-          fi
-          echo "::notice::All checks passed, merging PR #${{ github.event.pull_request.number }}"
-          gh pr merge ${{ github.event.pull_request.number }} --squash --admin || true
+          set -euo pipefail
+
+          PR=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --json state,isDraft,baseRefName,headRefOid)
+
+          test "$(jq -r '.state' <<<"$PR")" = "OPEN"
+          test "$(jq -r '.isDraft' <<<"$PR")" = "false"
+          test "$(jq -r '.baseRefName' <<<"$PR")" = "master"
+          test "$(jq -r '.headRefOid' <<<"$PR")" = "$EXPECTED_HEAD_SHA"
+
+          gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --auto
