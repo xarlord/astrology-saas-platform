@@ -118,6 +118,7 @@ declare module 'ioredis' {
     constructor(url?: string, options?: Record<string, unknown>);
     get(key: string): Promise<string | null>;
     set(key: string, value: string, ...args: unknown[]): Promise<unknown>;
+    eval(script: string, numberOfKeys: number, ...args: Array<string | number>): Promise<unknown>;
     del(...keys: string[]): Promise<number>;
     keys(pattern: string): Promise<string[]>;
     ping(): Promise<string>;

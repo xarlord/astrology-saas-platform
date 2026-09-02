@@ -12,6 +12,7 @@ jest.mock('express-rate-limit', () => ({
 }));
 
 import rateLimit from 'express-rate-limit';
+import { MonthlyRateLimitStore } from '../../middleware/monthlyRateLimitStore';
 
 describe('Rate Limiter Middleware', () => {
   let configs: any[];
@@ -199,6 +200,19 @@ describe('Rate Limiter Middleware', () => {
         error: 'Too many password reset requests. Please check your email or try again later.',
         code: 'RATE_LIMIT_PASSWORD_RESET',
       });
+    });
+  });
+
+  // ===== Monthly Report Rate Limiter =====
+
+  describe('Monthly Report Rate Limiter', () => {
+    it('uses the distributed long-window store instead of the timer-based MemoryStore', () => {
+      const monthlyConfig = configs.find(
+        (config) => config.message.code === 'RATE_LIMIT_MONTHLY_REPORT',
+      );
+
+      expect(monthlyConfig.store).toBeInstanceOf(MonthlyRateLimitStore);
+      expect(monthlyConfig.windowMs).toBe(30 * 24 * 60 * 60 * 1000);
     });
   });
 
