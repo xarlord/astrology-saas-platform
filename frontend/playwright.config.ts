@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const shouldStartLocalServers = process.env.PLAYWRIGHT_SKIP_WEBSERVER !== '1';
+
 /**
  * Playwright E2E Test Configuration
  * Testing extended user scenarios with 100% user journey coverage
@@ -125,22 +127,21 @@ export default defineConfig({
     },
   ],
 
-  // Timeout for setup tests (bcrypt hashing can be slow)
-  timeout: 30000,
-
-  // Run local dev servers before starting the tests
-  webServer: [
-    {
-      command: 'cd ../backend && npm run start:e2e',
-      url: 'http://localhost:3001/health',
-      reuseExistingServer: true,
-      timeout: 120000,
-    },
-    {
-      command: 'npm run dev',
-      url: 'http://localhost:3000',
-      reuseExistingServer: true,
-      timeout: 120000,
-    },
-  ],
+  // Remote workflow dispatches must never silently start and test local apps.
+  webServer: shouldStartLocalServers
+    ? [
+        {
+          command: 'cd ../backend && npm run start:e2e',
+          url: 'http://localhost:3001/health',
+          reuseExistingServer: true,
+          timeout: 120000,
+        },
+        {
+          command: 'npm run dev',
+          url: 'http://localhost:3000',
+          reuseExistingServer: true,
+          timeout: 120000,
+        },
+      ]
+    : [],
 });
