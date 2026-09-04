@@ -2,24 +2,41 @@ name: Nightly E2E — Live Scenarios
 
 on:
   schedule:
-    # Run every night at 2 AM UTC (5 AM Istanbul)
     - cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       base_url:
-        description: 'Base URL to test against'
+        description: 'Base URL to test against (empty uses the local integrated stack)'
         required: false
         default: ''
 
-env:
-  # Default: test against local server. Override for staging/prod.
-  BASE_URL: ${{ github.event.inputs.base_url || 'http://localhost:3000' }}
-
 jobs:
-  e2e-live-scenarios:
-    name: 🎭 E2E Live Scenario Tests
+  local-e2e:
+    name: 🎭 Local E2E — ${{ matrix.label }}
+    if: github.event_name == 'schedule' || inputs.base_url == '' || inputs.base_url == 'http://localhost:3000'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - phase: critical
+            label: Critical User Flows
+            specs: >-
+              01-authentication.spec.ts
+              02-chart-creation.spec.ts
+              03-transits.spec.ts
+              06-full-user-journey.spec.ts
+              smoke-core-flows.spec.ts
+          - phase: console
+            label: Console Error Audit
+            specs: >-
+              00-console-audit.spec.ts
+              console-error-check.spec.ts
+              13-full-user-flow-console-monitored.spec.ts
+          - phase: accessibility
+            label: Accessibility Audit
+            specs: accessibility-audit.spec.ts
 
     services:
       postgres:
@@ -31,12 +48,14 @@ jobs:
         ports:
           - 5434:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres -d astrology_saas"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     env:
+      TARGET_KIND: local
+      BASE_URL: http://localhost:3000
       NODE_ENV: test
       DATABASE_HOST: localhost
       DATABASE_PORT: 5434
@@ -44,13 +63,8 @@ jobs:
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
       JWT_SECRET: test-jwt-secret-for-e2e
-      # CSRF_SECRET is required by the real server (csrf-csrf getSecret throws
-      # if unset). Jest tests skip CSRF via NODE_ENV=test, but the nightly job
-      # runs `npx tsx src/server.ts` with CSRF enabled, so every request to
-      # /health/csrf-token returned 500 -> cascading E2E failures.
       CSRF_SECRET: test-csrf-secret-for-e2e
       RATE_LIMIT_MAX_REQUESTS: 10000
-      HAS_SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -59,13 +73,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: npm
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
+      - name: Install Playwright Chromium
         run: cd frontend && npx playwright install --with-deps chromium
 
       - name: Run database migrations
@@ -77,15 +91,16 @@ jobs:
         run: |
           cd backend
           npx tsx src/server.ts &
-          # Wait for server to be ready
           for i in $(seq 1 30); do
-            if curl -sf http://localhost:3001/health >/dev/null 2>&1; then
+            if curl -sf http://localhost:3001/health >/dev/null; then
               echo "Backend server is ready"
-              break
+              exit 0
             fi
             echo "Waiting for backend server... ($i/30)"
             sleep 2
           done
+          echo "Backend server did not become ready" >&2
+          exit 1
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5434/astrology_saas
 
@@ -93,83 +108,156 @@ jobs:
         run: |
           cd frontend
           npx vite --host 0.0.0.0 --port 3000 &
-          # Wait for vite to be ready
           for i in $(seq 1 30); do
-            if curl -sf http://localhost:3000 >/dev/null 2>&1; then
-              echo "Frontend dev server is ready"
-              break
+            if curl -sf http://localhost:3000 >/dev/null; then
+              echo "Frontend server is ready"
+              exit 0
             fi
-            echo "Waiting for frontend dev server... ($i/30)"
+            echo "Waiting for frontend server... ($i/30)"
             sleep 2
           done
+          echo "Frontend server did not become ready" >&2
+          exit 1
 
-      - name: Seed test data
+      - name: Run bounded Playwright phase
         run: |
-          # Create test user via API after server starts
-          echo "Test data will be created by E2E test setup"
-
-      - name: Run E2E tests — Critical User Flows
-        run: |
+          mkdir -p "frontend/test-results/${{ matrix.phase }}"
+          echo "phase=${{ matrix.phase }} target=$BASE_URL status=started" > "frontend/test-results/${{ matrix.phase }}/phase-status.txt"
+          set +e
           cd frontend
-          npx playwright test \
-            01-authentication.spec.ts \
-            02-chart-creation.spec.ts \
-            03-transits.spec.ts \
-            06-full-user-journey.spec.ts \
-            smoke-core-flows.spec.ts \
-            --reporter=html,json \
-            --output=test-results/
-        env:
-          BASE_URL: http://localhost:3000
+          timeout --signal=INT --kill-after=30s 20m \
+            npx playwright test ${{ matrix.specs }} \
+              --project=chromium \
+              --output="test-results/${{ matrix.phase }}"
+          status=$?
+          set -e
+          echo "phase=${{ matrix.phase }} target=$BASE_URL exit_code=$status" >> "test-results/${{ matrix.phase }}/phase-status.txt"
+          exit "$status"
 
-      - name: Run E2E tests — Console Error Audit
-        run: |
-          cd frontend
-          npx playwright test \
-            00-console-audit.spec.ts \
-            console-error-check.spec.ts \
-            13-full-user-flow-console-monitored.spec.ts \
-            --reporter=html,json \
-            --output=test-results/
-        env:
-          BASE_URL: http://localhost:3000
-
-      - name: Run E2E tests — Accessibility Audit
-        run: |
-          cd frontend
-          npx playwright test \
-            accessibility-audit.spec.ts \
-            --reporter=html,json \
-            --output=test-results/
-        env:
-          BASE_URL: http://localhost:3000
-
-      - name: Upload test results
+      - name: Upload phase evidence
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ always() }}
         with:
-          name: e2e-results
+          name: nightly-local-${{ matrix.phase }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             frontend/playwright-report/
-            frontend/test-results/
+            frontend/test-results/${{ matrix.phase }}/
             frontend/test-results.json
+          retention-days: 14
 
-      - name: Generate summary
-        if: always()
+      - name: Summarize phase
+        if: ${{ always() }}
         run: |
-          echo "## 🎭 E2E Live Scenario Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          node .github/scripts/summarize-playwright.mjs \
+            frontend/test-results.json \
+            "${{ matrix.label }}" \
+            "$BASE_URL" \
+            "nightly-${TARGET_KIND}-${{ matrix.phase }}-${{ github.run_id }}-${{ github.run_attempt }}"
 
-          if [ -f frontend/test-results.json ]; then
-            PASSED=$(python3 -c "import json; d=json.load(open('frontend/test-results.json')); print(sum(1 for s in d.get('suites',[]) for t in s.get('specifications',[]) if t.get('status')=='passed'))")
-            FAILED=$(python3 -c "import json; d=json.load(open('frontend/test-results.json')); print(sum(1 for s in d.get('suites',[]) for t in s.get('specifications',[]) if t.get('status')=='failed'))")
-            echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
-            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
-            echo "| ✅ Passed | ${PASSED:-?} |" >> $GITHUB_STEP_SUMMARY
-            echo "| ❌ Failed | ${FAILED:-?} |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ No test results JSON found" >> $GITHUB_STEP_SUMMARY
+  remote-e2e:
+    name: 🎭 Remote E2E — ${{ matrix.label }}
+    if: github.event_name == 'workflow_dispatch' && inputs.base_url != '' && inputs.base_url != 'http://localhost:3000'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - phase: critical
+            label: Critical User Flows
+            specs: >-
+              01-authentication.spec.ts
+              02-chart-creation.spec.ts
+              03-transits.spec.ts
+              06-full-user-journey.spec.ts
+              smoke-core-flows.spec.ts
+          - phase: console
+            label: Console Error Audit
+            specs: >-
+              00-console-audit.spec.ts
+              console-error-check.spec.ts
+              13-full-user-flow-console-monitored.spec.ts
+          - phase: accessibility
+            label: Accessibility Audit
+            specs: accessibility-audit.spec.ts
+
+    env:
+      TARGET_KIND: remote
+      BASE_URL: ${{ inputs.base_url }}
+      PLAYWRIGHT_SKIP_WEBSERVER: '1'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: cd frontend && npx playwright install --with-deps chromium
+
+      - name: Run bounded Playwright phase
+        run: |
+          mkdir -p "frontend/test-results/${{ matrix.phase }}"
+          echo "phase=${{ matrix.phase }} target=$BASE_URL status=started" > "frontend/test-results/${{ matrix.phase }}/phase-status.txt"
+          set +e
+          cd frontend
+          timeout --signal=INT --kill-after=30s 20m \
+            npx playwright test ${{ matrix.specs }} \
+              --project=chromium \
+              --output="test-results/${{ matrix.phase }}"
+          status=$?
+          set -e
+          echo "phase=${{ matrix.phase }} target=$BASE_URL exit_code=$status" >> "test-results/${{ matrix.phase }}/phase-status.txt"
+          exit "$status"
+
+      - name: Upload phase evidence
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: nightly-remote-${{ matrix.phase }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/${{ matrix.phase }}/
+            frontend/test-results.json
+          retention-days: 14
+
+      - name: Summarize phase
+        if: ${{ always() }}
+        run: |
+          node .github/scripts/summarize-playwright.mjs \
+            frontend/test-results.json \
+            "${{ matrix.label }}" \
+            "$BASE_URL" \
+            "nightly-${TARGET_KIND}-${{ matrix.phase }}-${{ github.run_id }}-${{ github.run_attempt }}"
+
+  nightly-e2e-gate:
+    name: 🎭 Nightly E2E Aggregate Gate
+    needs: [local-e2e, remote-e2e]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    env:
+      HAS_SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
+    steps:
+      - name: Require the selected target matrix to pass
+        env:
+          LOCAL_RESULT: ${{ needs.local-e2e.result }}
+          REMOTE_RESULT: ${{ needs.remote-e2e.result }}
+        run: |
+          echo "Local matrix: $LOCAL_RESULT"
+          echo "Remote matrix: $REMOTE_RESULT"
+          if { [ "$LOCAL_RESULT" = success ] && [ "$REMOTE_RESULT" = skipped ]; } || \
+             { [ "$LOCAL_RESULT" = skipped ] && [ "$REMOTE_RESULT" = success ]; }; then
+            exit 0
           fi
+          echo "The selected nightly E2E matrix did not pass" >&2
+          exit 1
 
       - name: Notify on failure
         if: failure() && env.HAS_SLACK_WEBHOOK == 'true'

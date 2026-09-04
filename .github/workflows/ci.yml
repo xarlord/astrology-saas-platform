@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run workflow contract tests
+        run: npm run test:workflows
+
       - name: Run linter
         run: cd backend && npm run lint
 
